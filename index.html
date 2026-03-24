@@ -24,37 +24,51 @@
             min-height: 100vh;
         }
 
-        /* 🟢 HEADER LOGO & NAMA TOKO (DIPERBARUI) */
+        /* 🟢 HEADER LOGO & NAMA TOKO (LAYOUT BARU) */
         .header-content {
             display: flex;
             align-items: center;
-            justify-content: center; /* Posisikan di tengah */
-            gap: 15px; /* Jarak antara logo dan nama */
-            margin-bottom: 20px;
+            justify-content: center; 
+            gap: 15px; /* Jarak antara logo kiri dan teks kanan */
+            margin-bottom: 25px;
             width: 100%;
-            max-width: 400px; /* Samakan dengan kartu */
+            max-width: 400px;
         }
         
-        /* Gaya Logo Toko */
+        /* Gaya Logo Kiri */
         .store-logo {
-            width: 40px; /* Ukuran logo */
-            height: 40px;
-            border-radius: 50%; /* Bulat sempurna */
-            object-fit: cover; /* Biar gambar gak gepeng */
+            width: 55px; /* Agak digedein biar pas sama tinggi 2 baris teks */
+            height: 55px;
+            border-radius: 12px; /* Dibuat kotak tumpul biar elegan */
+            object-fit: cover; 
             border: 2px solid rgba(0, 242, 254, 0.5); /* Neon glow tipis */
             box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
         }
         
-        /* Gaya Nama Toko */
-        .store-name {
-            font-size: 1.3rem;
+        /* Kontainer Teks Kanan (Dibuat Kolom atas bawah) */
+        .store-text {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            line-height: 1.1; /* Ngerapetin jarak atas bawah */
+        }
+        
+        .store-name-top {
+            font-size: 1.4rem;
             font-weight: 700;
             letter-spacing: 1px;
-            /* Gradien Teks Mewah Putih ke Abu-abu */
             background: linear-gradient(90deg, #ffffff, #a0aec0);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+        }
+
+        .store-name-bottom {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #00f2fe; /* Warna cyan neon menyesuaikan tema */
+            letter-spacing: 3px;
+            text-transform: uppercase;
         }
 
         /* Hero Section (Kartu Profil Klien) - Kaca & Neon Cyan */
@@ -259,8 +273,11 @@
 <body>
 
     <div class="header-content">
-        <img src="URL_LOGO_ANDA_DISINI" alt="Logo" class="store-logo">
-        <span class="store-name">XianBee-Tech Store</span>
+        <img src="logo.jpg" alt="Logo" class="store-logo">
+        <div class="store-text">
+            <span class="store-name-top">XianBee-Tech</span>
+            <span class="store-name-bottom">Store</span>
+        </div>
     </div>
 
     <div class="hero-card">
@@ -372,7 +389,7 @@
         tg.expand(); // Paksa layar kebuka penuh
         tg.ready();
 
-        // 🟢 Nangkep data klien secara dinamis (DIPERBARUI)
+        // Nangkep data klien secara dinamis
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             let user = tg.initDataUnsafe.user;
             // Gunakan username jika ada, jika tidak, gunakan nama depan
