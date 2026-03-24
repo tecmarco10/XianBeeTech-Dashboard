@@ -3,16 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Ultimate Dashboard</title>
+    <title>XianBee Tech Store Terminal v10</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+
+        :root {
+            --cyan: #00f2fe;
+            --blue-dark: #0a0a10;
+            --blue-glow: rgba(0, 242, 254, 0.4);
+            --gold: #ffd700;
+            --gold-glow: rgba(255, 215, 0, 0.3);
+            --red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.4);
+            --gray-text: #94a3b8;
+        }
 
         body { 
             margin: 0; 
             padding: 15px; 
             font-family: 'Outfit', sans-serif; 
-            background-color: #0a0a10; 
+            background-color: var(--blue-dark); 
             color: #ffffff; 
             display: flex; 
             flex-direction: column; 
@@ -29,11 +40,11 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            z-index: -1; /* Biar ada di belakang konten */
+            z-index: -1; 
             opacity: 0.6;
         }
 
-        /* 🟢 HEADER LOGO GEDE (TANPA TEKS) */
+        /* 🟢 HEADER LOGO GEDE (FULL KOTAK - PNG FIX) */
         .header-content { 
             display: flex; 
             justify-content: center; 
@@ -50,15 +61,15 @@
             z-index: 1;
         }
         .store-logo { 
-            width: 100%; /* Lebar full ngikutin kotak */
-            max-width: 250px; /* Batas maksimal biar gak pecah */
+            width: 100%; 
+            max-width: 250px; 
             height: auto; 
             border-radius: 15px; 
             object-fit: contain; 
-            filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.5));
+            filter: drop-shadow(0 0 15px var(--blue-glow));
         }
 
-        /* Hero Section (Kartu Profil) */
+        /* 🟢 PROFIL PENGGUNA (HERO CARD) - CLEAN FIX */
         .hero-card { 
             width: 100%; 
             max-width: 400px; 
@@ -75,29 +86,38 @@
             z-index: 1;
         }
         .hero-card h2 { margin: 0 0 5px 0; font-weight: 700; font-size: 1.6rem; color: #4facfe; text-shadow: 0 0 10px rgba(79, 172, 254, 0.5); }
-        .hero-card p { margin: 0; font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px; }
-        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 254, 0.15); color: #00f2fe; padding: 6px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(0, 242, 254, 0.4); }
+        .hero-card p { margin: 0 0 15px 0; font-size: 0.85rem; color: var(--gray-text); }
+        .hero-card #user_id { color: #ffffff; font-weight: 600; font-family: monospace; font-size: 0.9rem; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 254, 0.15); color: var(--cyan); padding: 6px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(0, 242, 254, 0.4); text-transform: uppercase; letter-spacing: 1px;}
         
-        .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1;}
-        .menu-grid { width: 100%; max-width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; z-index: 1;}
+        .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1; align-self: flex-start; margin-left: auto; margin-right: auto;}
+        .menu-grid { width: 100%; max-width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; z-index: 1; margin-left: auto; margin-right: auto;}
         
         .btn-complex { display: flex; align-items: center; padding: 12px 15px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; text-align: left; box-sizing: border-box; width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
-        .btn-icon { font-size: 1.8rem; margin-right: 12px; }
+        .btn-icon { font-size: 1.8rem; margin-right: 12px; display: flex; justify-content: center; align-items: center; width: 30px; height: 30px;}
+        
         .btn-title { font-size: 0.85rem; font-weight: 700; color: #ffffff; display: block; }
-        .btn-sub { font-size: 0.65rem; color: #94a3b8; }
+        .btn-sub { font-size: 0.65rem; color: var(--gray-text); }
+        
         .btn-gold { border-color: rgba(255, 215, 0, 0.5); background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%); }
+        .btn-gold:active { box-shadow: 0 0 15px var(--gold-glow); transform: scale(0.98); }
+
         .btn-blue { border-color: rgba(0, 195, 255, 0.5); background: linear-gradient(180deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 5, 15, 0.95) 100%); }
+        .btn-blue:active { box-shadow: 0 0 15px var(--blue-glow); transform: scale(0.98); }
+
         .btn-red { border-color: rgba(239, 68, 68, 0.5); background: linear-gradient(180deg, rgba(40, 0, 0, 0.8) 0%, rgba(15, 0, 0, 0.95) 100%); justify-content: center; }
+        .btn-red:active { box-shadow: 0 0 15px var(--red-glow); transform: scale(0.98); }
+        
         .full-width { grid-column: span 2; }
         
         .sys-load-container { width: 100%; max-width: 400px; background: rgba(0, 195, 255, 0.05); border: 1px solid rgba(0, 195, 255, 0.3); border-radius: 8px; padding: 10px 15px; box-sizing: border-box; display: flex; align-items: center; margin-bottom: 40px; z-index: 1;}
         .progress-bar-bg { flex-grow: 1; height: 8px; background: rgba(255, 255, 255, 0.1); margin: 0 15px; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: #00f2fe; width: 6%; transition: width 0.5s ease; box-shadow: 0 0 10px #00f2fe; }
+        .progress-bar-fill { height: 100%; background: var(--cyan); width: 6%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--cyan); }
 
-        /* 🟢 WHATSAPP FLOATING BUTTON */
+        /* 🟢 WHATSAPP FLOATING BUTTON (089638423184 FIX) */
         .wa-fab {
             position: fixed;
-            bottom: 60px; /* Di atas ticker crypto */
+            bottom: 60px; 
             right: 20px;
             width: 55px;
             height: 55px;
@@ -124,7 +144,7 @@
             border: 1px solid rgba(0, 242, 254, 0.5);
             border-radius: 50px;
             padding: 8px 20px;
-            color: #00f2fe;
+            color: var(--cyan);
             font-size: 0.75rem;
             font-weight: 600;
             box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2);
@@ -157,33 +177,38 @@
         }
         .crypto-ticker {
             display: inline-block;
-            animation: marquee 25s linear infinite;
+            animation: marquee 30s linear infinite;
         }
         .crypto-item { margin-right: 30px; }
         .crypto-up { color: #25D366; }
-        .crypto-down { color: #ff4d4d; }
         
         @keyframes marquee {
             0% { transform: translateX(100vw); }
             100% { transform: translateX(-100%); }
         }
+        
+        /* 🟢 FORK ICON FIX */
+        #fork_icon_svg {
+            width: 28px; height: 28px; fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
+        }
+
     </style>
 </head>
 <body>
 
     <canvas id="canvas-bg"></canvas>
 
-    <div id="fomo-toast">⚡ System Online</div>
+    <div id="fomo-toast">⚡ Terminal Online</div>
 
     <div class="header-content">
-        <img src="logo.jpg" alt="XianBee Tech Logo" class="store-logo">
+        <img src="logo.png" alt="XianBee Tech Logo" class="store-logo">
     </div>
 
     <div class="hero-card">
         <h2>Welcome, <span id="user_name">Operator...</span></h2>
         <p>Telegram ID: <span id="user_id">Fetching...</span></p>
         <div class="badge">
-            <span>🔑</span> [SECURE_CONNECTION: ESTABLISHED]
+            <span>🗝️</span> [SECURE_CONNECTION: ESTABLISHED]
         </div>
     </div>
 
@@ -191,7 +216,10 @@
     <div class="menu-grid">
         <button class="btn-complex btn-gold full-width" onclick="sendToBot('menu_profile')">
             <div class="btn-icon">💳</div>
-            <div class="btn-text"><span class="btn-title">Diagnostics & Metrics:</span><span class="btn-sub">User Profile & Balance</span></div>
+            <div class="btn-text">
+                <span class="btn-title">Diagnostics & Metrics:</span>
+                <span class="btn-sub">User Profile, Balance & Contact Admin (089638423184)</span>
+            </div>
         </button>
         <button class="btn-complex btn-gold" onclick="sendToBot('menu_topup')">
             <div class="btn-icon">💰</div>
@@ -222,7 +250,11 @@
             <div class="btn-text"><span class="btn-title">Repo Metrics:</span><span class="btn-sub">Star Elevation</span></div>
         </button>
         <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_forks')">
-            <div class="btn-icon">⎇</div>
+            <div class="btn-icon">
+                <svg id="fork_icon_svg" viewBox="0 0 24 24">
+                    <path d="M6 3v12m12-12v12M6 15a3 3 0 003 3h6a3 3 0 003-3M12 18v3"/>
+                </svg>
+            </div>
             <div class="btn-text"><span class="btn-title">Project Credibility:</span><span class="btn-sub">Fork Injection</span></div>
         </button>
         <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_watch')">
@@ -232,9 +264,9 @@
     </div>
 
     <div class="sys-load-container">
-        <span style="font-size: 0.8rem; color: #00f2fe; font-weight: bold;">Sys Load</span>
+        <span style="font-size: 0.8rem; color: var(--cyan); font-weight: bold;">Sys Load</span>
         <div class="progress-bar-bg"><div class="progress-bar-fill" id="sys_load_bar"></div></div>
-        <span id="sys_load_txt" style="font-family: monospace; font-size: 0.85rem;">6%</span>
+        <span id="sys_load_txt" style="font-family: monospace; font-size: 0.85rem;">15%</span>
     </div>
 
     <div class="menu-grid" style="margin-bottom: 80px;">
@@ -252,7 +284,7 @@
 
     <div class="crypto-ticker-container">
         <div class="crypto-ticker" id="ticker-content">
-            Loading Real-Time Market Data...
+            Loading Real-Time Market Intelligence...
         </div>
     </div>
 
@@ -268,13 +300,12 @@
                 const user = tg.initDataUnsafe?.user;
                 if (user) {
                     document.getElementById('user_name').innerText = user.username ? '@' + user.username : user.first_name;
-                    document.getElementById('user_id').innerText = user.id;
+                    // document.getElementById('user_id').innerText = user.id; // Nanti diisi Fetching...
                 } else {
                     setTimeout(() => {
                         const retryUser = tg.initDataUnsafe?.user;
                         if (retryUser) {
                             document.getElementById('user_name').innerText = retryUser.username ? '@' + retryUser.username : retryUser.first_name;
-                            document.getElementById('user_id').innerText = retryUser.id;
                         }
                     }, 500);
                 }
@@ -291,71 +322,79 @@
             const oscillator = audioCtx.createOscillator();
             const gainNode = audioCtx.createGain();
             
-            oscillator.type = 'sine'; // Suara halus digital
-            oscillator.frequency.setValueAtTime(1200, audioCtx.currentTime); 
-            oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+            oscillator.type = 'sine'; 
+            oscillator.frequency.setValueAtTime(1400, audioCtx.currentTime); 
+            oscillator.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.08);
             
-            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // Volume kecil biar gak berisik
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime); 
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
             
             oscillator.connect(gainNode);
             gainNode.connect(audioCtx.destination);
             
             oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 0.1);
+            oscillator.stop(audioCtx.currentTime + 0.08);
         }
 
-        // FUNGSI SEND DATA KE BOT (Sekaligus manggil SFX)
+        // FUNGSI SEND DATA KE BOT
         function sendToBot(data) {
             playSciFiBeep();
             tg.sendData(data);
         }
 
-        // Animasi Sys Load
+        // Animasi Sys Load (Sesuai contoh 15%)
+        let currentLoad = 15;
+        document.getElementById('sys_load_bar').style.width = currentLoad + '%';
+        document.getElementById('sys_load_txt').innerText = currentLoad + '%';
+        
         setInterval(() => {
-            let load = Math.floor(Math.random() * 20) + 5;
+            let load = Math.floor(Math.random() * 10) + 10; // Variasi di sekitar 15%
             document.getElementById('sys_load_bar').style.width = load + '%';
             document.getElementById('sys_load_txt').innerText = load + '%';
-        }, 3000);
+        }, 5000);
 
         // 🟢 FITUR 2: SYSTEM FOMO NOTIFICATION
         const fomoData = [
-            "⚡ System: Clean up routine completed.",
-            "🟢 User @Joh*** just deposited $50 USDT",
-            "⭐ User @Ale*** purchased 1000 Repo Stars",
-            "🚀 Deploying Fork Injection for @Dev***",
-            "🛒 User @Mar*** bought 2018 Aged Account",
-            "💳 Incoming transfer detected via Binance Pay",
-            "👥 User @Zoe*** injected 500 Followers"
+            "⚡ System: Diagnostic routine [1] complete.",
+            "🟢 Client @Joh*** deposited $50 USDT via Crypto",
+            "⭐ Client @Ale*** ordered 1000 Repo Stars",
+            "🚀 Fork Injection initiated for @Dev***",
+            "🛒 Client @Mar*** purchased 2018 Aged Account",
+            "🔶 Incoming transfer: Binance Pay ID 8487***",
+            "👥 Client @Zoe*** injected 500 Followers"
         ];
         
         setInterval(() => {
             const toast = document.getElementById('fomo-toast');
             toast.innerHTML = fomoData[Math.floor(Math.random() * fomoData.length)];
             toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3500); // Tampil 3.5 detik
-        }, 18000); // Muncul tiap 18 detik
+            setTimeout(() => { toast.classList.remove('show'); }, 3500);
+        }, 20000); 
 
         // 🟢 FITUR 3: LIVE CRYPTO TICKER (Tarik harga Binance)
         async function fetchCryptoPrices() {
             try {
-                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"]');
-                const data = await res.json();
+                // symbols must be URL-encoded, or just fetch all and filter
+                const symbols = ["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"];
+                const res = await fetch(`https://api.binance.com/api/v3/ticker/price`);
+                const allData = await res.json();
                 
-                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL &nbsp;&nbsp;|&nbsp;&nbsp; ";
+                const data = allData.filter(coin => symbols.includes(coin.symbol));
+                
+                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v10 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
                 data.forEach(coin => {
                     let symbol = coin.symbol.replace('USDT', '');
                     let price = parseFloat(coin.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     tickerHtml += `<span class="crypto-item"><span style="color:#cbd5e1">${symbol}/USDT:</span> <span class="crypto-up">$${price}</span></span>`;
                 });
                 
-                document.getElementById('ticker-content').innerHTML = tickerHtml + tickerHtml; // Double text for smooth marquee
+                document.getElementById('ticker-content').innerHTML = tickerHtml + tickerHtml; 
             } catch (error) {
-                document.getElementById('ticker-content').innerHTML = "Market Data Offline | Please check your connection.";
+                document.getElementById('ticker-content').innerHTML = "Market Intelligence Offline | Check Secure Connection.";
             }
         }
         fetchCryptoPrices();
-        setInterval(fetchCryptoPrices, 10000); // Update harga tiap 10 detik
+        setInterval(fetchCryptoPrices, 15000); // Update harga tiap 15 detik
 
         // 🟢 FITUR 4: INTERACTIVE HOLOGRAM BACKGROUND (CANVAS)
         const canvas = document.getElementById("canvas-bg");
@@ -366,11 +405,11 @@
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             particles = [];
-            let particleCount = Math.floor(width / 20); // Jumlah partikel disesuaikan layar
+            let particleCount = Math.floor(width / 18); 
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
                     x: Math.random() * width, y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+                    vx: (Math.random() - 0.5) * 0.6, vy: (Math.random() - 0.5) * 0.6,
                     size: Math.random() * 2 + 1
                 });
             }
@@ -385,7 +424,6 @@
                 let p = particles[i];
                 p.x += p.vx; p.y += p.vy;
 
-                // Pantul di pinggir layar
                 if (p.x < 0 || p.x > width) p.vx *= -1;
                 if (p.y < 0 || p.y > height) p.vy *= -1;
 
@@ -393,11 +431,10 @@
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 ctx.fill();
 
-                // Tarik garis antar partikel yg deketan
                 for (let j = i + 1; j < particles.length; j++) {
                     let p2 = particles[j];
                     let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
-                    if (dist < 100) {
+                    if (dist < 90) { // Garis sedikit lebih pendek
                         ctx.beginPath();
                         ctx.moveTo(p.x, p.y);
                         ctx.lineTo(p2.x, p2.y);
