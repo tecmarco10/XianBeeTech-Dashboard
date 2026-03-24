@@ -24,51 +24,59 @@
             min-height: 100vh;
         }
 
-        /* 🟢 HEADER LOGO & NAMA TOKO (LAYOUT BARU) */
+        /* 🟢 HEADER LOGO GEDE & NAMA TOKO DI TENGAH */
         .header-content {
             display: flex;
+            flex-direction: column; /* Bikin logo di atas, teks di bawah */
             align-items: center;
             justify-content: center; 
-            gap: 15px; /* Jarak antara logo kiri dan teks kanan */
+            gap: 15px; 
             margin-bottom: 25px;
             width: 100%;
             max-width: 400px;
+            /* Tambahan Kotak Neon buat Header biar persis gambar */
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.05) 0%, rgba(0, 0, 0, 0.5) 100%);
+            border: 1px solid rgba(0, 242, 254, 0.5);
+            border-radius: 15px;
+            padding: 25px 20px;
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15), inset 0 0 15px rgba(0, 242, 254, 0.05);
+            box-sizing: border-box;
         }
         
-        /* Gaya Logo Kiri */
+        /* Gaya Logo Super Gede */
         .store-logo {
-            width: 55px; /* Agak digedein biar pas sama tinggi 2 baris teks */
-            height: 55px;
-            border-radius: 12px; /* Dibuat kotak tumpul biar elegan */
+            width: 110px; /* LOGO JADI JAUH LEBIH GEDE */
+            height: 110px;
+            border-radius: 20px; /* Sudut agak membulat elegan */
             object-fit: cover; 
-            border: 2px solid rgba(0, 242, 254, 0.5); /* Neon glow tipis */
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+            border: 2px solid rgba(0, 242, 254, 0.6); /* Neon glow */
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
+            margin-bottom: 5px;
         }
         
-        /* Kontainer Teks Kanan (Dibuat Kolom atas bawah) */
+        /* Kontainer Teks (Tengah) */
         .store-text {
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            line-height: 1.1; /* Ngerapetin jarak atas bawah */
+            align-items: center;
+            line-height: 1.2; 
         }
         
         .store-name-top {
-            font-size: 1.4rem;
+            font-size: 1.8rem;
             font-weight: 700;
             letter-spacing: 1px;
-            background: linear-gradient(90deg, #ffffff, #a0aec0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.2);
+            color: #ffffff;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(0, 242, 254, 0.3);
         }
 
         .store-name-bottom {
-            font-size: 0.95rem;
-            font-weight: 500;
-            color: #00f2fe; /* Warna cyan neon menyesuaikan tema */
-            letter-spacing: 3px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #00f2fe; /* Warna cyan neon */
+            letter-spacing: 4px;
             text-transform: uppercase;
+            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
         }
 
         /* Hero Section (Kartu Profil Klien) - Kaca & Neon Cyan */
@@ -392,7 +400,6 @@
         // Nangkep data klien secara dinamis
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             let user = tg.initDataUnsafe.user;
-            // Gunakan username jika ada, jika tidak, gunakan nama depan
             let displayName = user.username ? '@' + user.username : user.first_name;
             document.getElementById('user_name').innerText = displayName;
             document.getElementById('user_id').innerText = user.id;
@@ -407,7 +414,6 @@
 
         // Fungsi ngirim perintah ke Bot
         function sendToBot(actionData) {
-            // Ngirim data layaknya mencet tombol inline
             tg.sendData(actionData); 
         }
     </script>
