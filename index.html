@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Tech Store Ultimate Terminal V14</title>
+    <title>XianBee Tech Store Ultimate Terminal V15</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
@@ -105,14 +105,15 @@
             display: flex; justify-content: center; align-items: center;
             margin-bottom: 30px; width: 100%; max-width: 400px;
             background: transparent; border: none; box-shadow: none; 
-            padding: 15px; box-sizing: border-box; z-index: 1;
+            padding: 15px; box-sizing: border-box; z-index: 5;
             transform-style: preserve-3d; transform: perspective(1000px);
-            cursor: pointer; /* Indikasi bisa diklik */
+            cursor: pointer; 
+            /* 🪄 FIX: Mantra Screen pindah ke SINI biar nembus 3D context! */
+            mix-blend-mode: screen; 
         }
         .store-logo { 
             width: 100%; max-width: 250px; height: auto; object-fit: contain; 
             transform: translateZ(30px); /* 3D pop out */
-            mix-blend-mode: screen; /* Transparan Fix */
             filter: drop-shadow(0 0 15px var(--current-glow));
             transition: filter 0.5s;
         }
@@ -341,7 +342,7 @@
         <div class="menu-grid" style="margin-bottom: 80px;">
             <button class="btn-complex btn-red full-width btn-3d" onclick="sendToBot(this, 'close_terminal')">
                 <div class="btn-icon">🛑</div>
-                <div class="btn-text"><span class="btn-title" style="text-align: center;">Close Dashboard</span></div>
+                <div class="btn-text"><span class="btn-title" style="text-align: center;" data-text="Close Dashboard">Close Dashboard</span></div>
             </button>
         </div>
 
@@ -394,8 +395,8 @@
             const text = "Secure Connection Established. Welcome to XianBee Terminal.";
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
-            utterance.rate = 1.1; // Sedikit cepet ala robot pro
-            utterance.pitch = 0.8; // Suara robot cewek agak berat (sexy sci-fi)
+            utterance.rate = 1.1; 
+            utterance.pitch = 0.8; 
             synth.speak(utterance);
         }
 
@@ -421,7 +422,6 @@
             alarmGain = audioCtx.createGain();
             alarmOsc.type = 'sawtooth';
             alarmOsc.frequency.setValueAtTime(600, audioCtx.currentTime);
-            // Alarm naik turun
             alarmOsc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.25);
             alarmOsc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.5);
             alarmGain.gain.setValueAtTime(0, audioCtx.currentTime);
@@ -429,7 +429,6 @@
             
             alarmOsc.connect(alarmGain); alarmGain.connect(audioCtx.destination);
             alarmOsc.start();
-            // Loop suara alarm
             alarmOsc.loop = true;
             alarmOsc.loopStart = 0; alarmOsc.loopEnd = 0.5;
         }
@@ -452,7 +451,6 @@
         ];
         
         window.onload = () => {
-            // Setup biometric scan
             setTimeout(() => { document.getElementById("biometric-visual").style.opacity = "1"; }, 300);
 
             let termContainer = document.getElementById("term-text");
@@ -461,7 +459,6 @@
             bootTexts.forEach((text, i) => {
                 setTimeout(() => {
                     termContainer.innerHTML += text + "<br>";
-                    // Pas teks Verified muncul, matiin scanner
                     if (text.includes("Verified")) {
                         document.getElementById("biometric-visual").style.opacity = "0";
                     }
@@ -472,9 +469,9 @@
                             setTimeout(() => {
                                 document.getElementById("preloader").style.visibility = "hidden";
                                 document.getElementById("main-wrapper").style.opacity = "1";
-                                playBootSound(); // Bunyi nyala mesin
-                                speakJarvisWelcome(); // Robot ngomong
-                                initHackerDecryption(); // Efek teks decrypt
+                                playBootSound(); 
+                                speakJarvisWelcome(); 
+                                initHackerDecryption(); 
                             }, 500);
                         }, 800);
                     }
@@ -483,40 +480,36 @@
             });
         };
 
-        // 🟢 HAPTIC FEEDBACK (GETARAN HP NYATA)
+        // 🟢 HAPTIC FEEDBACK
         function triggerHapticFeedback() {
             if ('vibrate' in navigator) {
-                navigator.vibrate(60); // Getar singkat 60ms ala haptic iPhone
+                navigator.vibrate(60); 
             } else if (window.Telegram.WebApp.HapticFeedback) {
-                // Fallback pake API Telegram
                 window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
             }
         }
 
-        // 🟢 3D TILT EFFECT (GYROSCOPE RESPONSIVE)
+        // 🟢 3D TILT EFFECT
         function handleTilt(card, x, y) {
             let rect = card.getBoundingClientRect();
             let centerX = rect.width / 2;
             let centerY = rect.height / 2;
-            let rotateX = ((y - centerY) / centerY) * -12; // Miring maks 12 deg
+            let rotateX = ((y - centerY) / centerY) * -12; 
             let rotateY = ((x - centerX) / centerX) * 12;
             card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
             card.style.boxShadow = `${-rotateY}px ${rotateX}px 20px rgba(0, 242, 254, 0.2)`;
         }
 
         document.querySelectorAll('.btn-3d').forEach(card => {
-            // Desktop Mouse
             card.addEventListener('mousemove', e => {
                 let rect = card.getBoundingClientRect();
                 handleTilt(card, e.clientX - rect.left, e.clientY - rect.top);
             });
-            // Touch Mobile (Biar kerasa 3D pas diteken)
             card.addEventListener('touchstart', e => {
                 let rect = card.getBoundingClientRect();
                 let touch = e.touches[0];
                 handleTilt(card, touch.clientX - rect.left, touch.clientY - rect.top);
             });
-            // Reset
             card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);
             card.addEventListener('touchend', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);
         });
@@ -535,15 +528,15 @@
                     }).join('');
                     
                     if (iterations >= originalText.length) clearInterval(interval);
-                    iterations += 1 / 2; // Kecepatan decrypt
+                    iterations += 1 / 2; 
                 }, 30);
             });
         }
 
-        // 🟢 FUNGSI SEND DATA + EFEK GLITCH + HAPTIC (GETAR HP)
+        // 🟢 FUNGSI SEND DATA + EFEK GLITCH + HAPTIC
         function sendToBot(element, actionData) {
-            playSciFiBeep(); // Suara
-            triggerHapticFeedback(); // Getar HP beneran!
+            playSciFiBeep(); 
+            triggerHapticFeedback(); 
             
             element.classList.add('btn-glitch-active');
             setTimeout(() => {
@@ -556,20 +549,18 @@
             }, 250);
         }
 
-        // 🟢 ACTIVE OPERATORS COUNTER (LIVE FAKE)
+        // 🟢 ACTIVE OPERATORS COUNTER
         const opCountEl = document.getElementById('op-count');
         setInterval(() => {
             let currentCount = parseInt(opCountEl.innerText);
-            // Acak naik turun dikit
             let variation = Math.random() > 0.5 ? 1 : -1;
             let newCount = currentCount + variation;
-            // Batasin biar gak kurang dari 8, gak lebih dari 19
             if(newCount < 8) newCount = 8;
             if(newCount > 19) newCount = 19;
             opCountEl.innerText = newCount;
-        }, 12000); // Berubah tiap 12 detik
+        }, 12000); 
 
-        // Animasi Sys Load (15% fix)
+        // Animasi Sys Load 
         let currentLoad = 15;
         document.getElementById('sys_load_bar').style.width = currentLoad + '%';
         document.getElementById('sys_load_txt').innerText = currentLoad + '%';
@@ -582,7 +573,7 @@
             "🛒 Client @Mar*** purchased an Aged Account",
             "🔶 Incoming transfer: Binance Pay ID 8487***",
             "👥 Client @Zoe*** bought 500 Followers",
-            "🚀 Order #8921 successfully delivered."
+            "🚀 System: Order #8921 successfully delivered."
         ];
         setInterval(() => {
             const toast = document.getElementById('fomo-toast');
@@ -591,20 +582,17 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3500);
         }, 20000); 
 
-        // 🟢 LIVE CRYPTO TICKER & DYNAMIC AMBIENT (Napas Ijo/Merah)
+        // 🟢 LIVE CRYPTO TICKER & DYNAMIC AMBIENT
         async function fetchCryptoPrices() {
             try {
                 const symbols = ["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"];
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/price`);
                 const allData = await res.json();
                 
-                // Cari data BTCUSDT buat nentuin Ambient Aura (Hijau/Merah)
                 const btcDataRaw = allData.find(coin => coin.symbol === "BTCUSDT");
-                
-                // Tarik data ticker masal
                 const data = allData.filter(coin => symbols.includes(coin.symbol));
                 
-                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v14 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
+                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v15 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
                 data.forEach(coin => {
                     let symbol = coin.symbol.replace('USDT', '');
                     let priceVal = parseFloat(coin.price);
@@ -614,10 +602,9 @@
                 });
                 document.getElementById('ticker-content').innerHTML = tickerHtml + tickerHtml; 
                 
-                // DYNAMIC MARKET AMBIENT (Sesuaikan Glow napas)
+                // DYNAMIC MARKET AMBIENT 
                 const btcPrice = parseFloat(btcDataRaw.price);
-                const marketAmbientColor = btcPrice >= 65000 ? 'rgba(37, 211, 102, 0.4)' : 'rgba(239, 68, 68, 0.4)'; // Ijo kalo mahal, merah kalo crash
-                // Terapin warna ke variabel CSS
+                const marketAmbientColor = btcPrice >= 65000 ? 'rgba(37, 211, 102, 0.4)' : 'rgba(239, 68, 68, 0.4)';
                 document.documentElement.style.setProperty('--market-color', marketAmbientColor);
 
             } catch (error) {
@@ -627,7 +614,7 @@
         fetchCryptoPrices();
         setInterval(fetchCryptoPrices, 15000);
 
-        // 🟢 EFEK DEBU MELAYANG (AMBIENT CYBER DUST) pelan
+        // 🟢 EFEK DEBU MELAYANG (AMBIENT CYBER DUST)
         const canvas = document.getElementById("canvas-bg");
         const ctx = canvas.getContext("2d");
         let width, height, particles;
@@ -665,7 +652,7 @@
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = isSecretMode ? `rgba(239, 68, 68, ${p.alpha})` : `rgba(0, 242, 254, ${p.alpha})`; // Cyan atau Merah
+                ctx.fillStyle = isSecretMode ? `rgba(239, 68, 68, ${p.alpha})` : `rgba(0, 242, 254, ${p.alpha})`; 
                 ctx.fill();
             }
             requestAnimationFrame(drawParticles);
@@ -679,16 +666,14 @@
         document.getElementById('main-logo-container').addEventListener('click', () => {
             clearTimeout(logoTapTimeout);
             logoTapCount++;
-            triggerHapticFeedback(); // Getar tiap tap
+            triggerHapticFeedback(); 
             
-            // Suara beep makin tinggi tiap tap
             playSciFiBeepCustom(1400 + (logoTapCount * 200));
 
             if (logoTapCount === 5) {
                 activateSecretAdminMode();
                 logoTapCount = 0;
             } else {
-                // Reset count kalo gak pencet cepet dalam 1.5 detik
                 logoTapTimeout = setTimeout(() => { logoTapCount = 0; }, 1500);
             }
         });
@@ -706,37 +691,32 @@
         }
         
         function activateSecretAdminMode() {
-            if (isSecretMode) return; // Udah aktif
+            if (isSecretMode) return; 
             isSecretMode = true;
             
-            triggerHapticFeedback(); // Getar parah
+            triggerHapticFeedback(); 
             if ('vibrate' in navigator) navigator.vibrate([100, 50, 100, 50, 300]);
 
-            playSciFiBeepCustom(400); // Bunyi error/glitch
+            playSciFiBeepCustom(400); 
             setTimeout(() => { playSciFiBeepCustom(300); }, 150);
             
-            speakJarvisAdminActivated(); // Robot ngomong Admin Mode
+            speakJarvisAdminActivated(); 
 
-            // Terapin Tema Merah
             document.body.classList.add('secret-mode');
             
-            // Ubah Warna Variabel CSS Aktif jadi Merah
             document.documentElement.style.setProperty('--current-primary', '#ef4444');
             document.documentElement.style.setProperty('--current-glow', 'rgba(239, 68, 68, 0.5)');
             
-            // Ubah Logo jadi Merah (Filter)
             document.getElementById('main-logo-img').style.filter = 'hue-rotate(180deg) invert(10%) drop-shadow(0 0 15px rgba(239, 68, 68, 0.7))';
             
-            startAlarmSound(); // Mulai suara alarm
+            startAlarmSound(); 
 
-            // Nampilin Toast Admin
             const toast = document.getElementById('fomo-toast');
             toast.innerHTML = "🚨 <b>WARNING: ADMIN MODE ACTIVATED</b>";
             toast.classList.add('show');
             
             try { window.Telegram.WebApp.HapticFeedback.notificationOccurred('warning'); } catch(e){}
 
-            // Reset balik normal setelah 30 detik
             setTimeout(() => { deactivateSecretAdminMode(); }, 30000);
         }
         
@@ -747,7 +727,6 @@
             
             document.body.classList.remove('secret-mode');
             
-            // Balikin Warna Variabel CSS ke Cyan
             document.documentElement.style.setProperty('--current-primary', '#00f2fe');
             document.documentElement.style.setProperty('--current-glow', 'rgba(0, 242, 254, 0.4)');
             
@@ -764,7 +743,7 @@
             const text = "Unauthorized Access Detected. Secret Admin Mode Activated. System under full operator control.";
             const utterance = new SpeechSynthesisUtterance(text);
             utterance.lang = 'en-US';
-            utterance.rate = 1.0; utterance.pitch = 0.6; // Suara robot lebih berat dan menyeramkan
+            utterance.rate = 1.0; utterance.pitch = 0.6; 
             synth.speak(utterance);
         }
 
