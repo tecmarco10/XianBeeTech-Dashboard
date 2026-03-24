@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Tech Store Ultimate Terminal V15</title>
+    <title>XianBee Tech Store Ultimate Terminal V16</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
@@ -108,7 +108,6 @@
             padding: 15px; box-sizing: border-box; z-index: 5;
             transform-style: preserve-3d; transform: perspective(1000px);
             cursor: pointer; 
-            /* 🪄 FIX: Mantra Screen pindah ke SINI biar nembus 3D context! */
             mix-blend-mode: screen; 
         }
         .store-logo { 
@@ -368,12 +367,13 @@
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
         
-        // State Secret Mode
+        // 🟢 FIX: Variabel untuk toggle Admin Mode manual
         let isSecretMode = false;
         let logoTapCount = 0;
         let logoTapTimeout;
+        let adminModeTimeout; 
 
-        // 🟢 FUNGSI SUARA & ROBOT JARVIS (欢迎)
+        // FUNGSI SUARA BOOT MESIN
         function playBootSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
@@ -592,7 +592,7 @@
                 const btcDataRaw = allData.find(coin => coin.symbol === "BTCUSDT");
                 const data = allData.filter(coin => symbols.includes(coin.symbol));
                 
-                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v15 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
+                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v16 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
                 data.forEach(coin => {
                     let symbol = coin.symbol.replace('USDT', '');
                     let priceVal = parseFloat(coin.price);
@@ -662,7 +662,7 @@
         initCanvas();
         drawParticles();
         
-        // 🚨 SECRET EASTER EGG: TAP LOGO 5X TO ACTIVATE ADMIN/CARNAGE MODE
+        // 🚨 🟢 FIX: SECRET EASTER EGG BISA DIMATIIN MANUAL (TOGGLE)
         document.getElementById('main-logo-container').addEventListener('click', () => {
             clearTimeout(logoTapTimeout);
             logoTapCount++;
@@ -671,7 +671,11 @@
             playSciFiBeepCustom(1400 + (logoTapCount * 200));
 
             if (logoTapCount === 5) {
-                activateSecretAdminMode();
+                if (isSecretMode) {
+                    deactivateSecretAdminMode(); // Matiin manual saat itu juga!
+                } else {
+                    activateSecretAdminMode(); // Nyalain
+                }
                 logoTapCount = 0;
             } else {
                 logoTapTimeout = setTimeout(() => { logoTapCount = 0; }, 1500);
@@ -717,12 +721,15 @@
             
             try { window.Telegram.WebApp.HapticFeedback.notificationOccurred('warning'); } catch(e){}
 
-            setTimeout(() => { deactivateSecretAdminMode(); }, 30000);
+            // Disimpen ke variabel biar bisa dibatalin kalau dimatiin manual
+            adminModeTimeout = setTimeout(() => { deactivateSecretAdminMode(); }, 30000);
         }
         
         function deactivateSecretAdminMode() {
             if (!isSecretMode) return;
             isSecretMode = false;
+            
+            clearTimeout(adminModeTimeout); // Batalin mati otomatisnya
             stopAlarmSound();
             
             document.body.classList.remove('secret-mode');
