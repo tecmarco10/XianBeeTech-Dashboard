@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Ultimate Dashboard</title>
+    <title>XianBee Personalized Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
@@ -24,19 +24,37 @@
             min-height: 100vh;
         }
 
-        /* Header Logo */
-        .header-logo {
+        /* 🟢 HEADER LOGO & NAMA TOKO (DIPERBARUI) */
+        .header-content {
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-            color: #a0aec0;
-            margin-bottom: 15px;
-            font-weight: 600;
-            letter-spacing: 1px;
+            justify-content: center; /* Posisikan di tengah */
+            gap: 15px; /* Jarak antara logo dan nama */
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 400px; /* Samakan dengan kartu */
         }
-        .header-logo span {
-            font-size: 1.5rem;
+        
+        /* Gaya Logo Toko */
+        .store-logo {
+            width: 40px; /* Ukuran logo */
+            height: 40px;
+            border-radius: 50%; /* Bulat sempurna */
+            object-fit: cover; /* Biar gambar gak gepeng */
+            border: 2px solid rgba(0, 242, 254, 0.5); /* Neon glow tipis */
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.3);
+        }
+        
+        /* Gaya Nama Toko */
+        .store-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            /* Gradien Teks Mewah Putih ke Abu-abu */
+            background: linear-gradient(90deg, #ffffff, #a0aec0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.3);
         }
 
         /* Hero Section (Kartu Profil Klien) - Kaca & Neon Cyan */
@@ -240,15 +258,16 @@
 </head>
 <body>
 
-    <div class="header-logo">
-        <span>🐝</span> XianBee Tech Store
+    <div class="header-content">
+        <img src="URL_LOGO_ANDA_DISINI" alt="Logo" class="store-logo">
+        <span class="store-name">XianBee-Tech Store</span>
     </div>
 
     <div class="hero-card">
-        <h2>Welcome, <span id="user_name">Guest</span></h2>
+        <h2>Welcome, <span id="user_name">Operator...</span></h2>
         <p>Telegram ID: <span id="user_id">Unknown</span></p>
         <div class="badge">
-            <span>🔑</span> Secure Connection Established
+            <span>🔑</span> [SECURE_CONNECTION: ESTABLISHED]
         </div>
     </div>
 
@@ -353,10 +372,13 @@
         tg.expand(); // Paksa layar kebuka penuh
         tg.ready();
 
-        // Nangkep data klien
+        // 🟢 Nangkep data klien secara dinamis (DIPERBARUI)
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('user_name').innerText = tg.initDataUnsafe.user.first_name;
-            document.getElementById('user_id').innerText = tg.initDataUnsafe.user.id;
+            let user = tg.initDataUnsafe.user;
+            // Gunakan username jika ada, jika tidak, gunakan nama depan
+            let displayName = user.username ? '@' + user.username : user.first_name;
+            document.getElementById('user_name').innerText = displayName;
+            document.getElementById('user_id').innerText = user.id;
         }
 
         // Animasi Sys Load Palsu biar kerasa idup
