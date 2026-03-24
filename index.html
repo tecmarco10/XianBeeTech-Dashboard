@@ -3,17 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Premium Dashboard</title>
+    <title>XianBee Ultimate Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
         body {
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             font-family: 'Outfit', sans-serif;
-            /* Background Mewah Gradient Dark Blue/Purple */
-            background: linear-gradient(135deg, #0f172a 0%, #1e1e38 100%);
+            /* Background Premium Carbon Fiber / Dark Mesh */
+            background-color: #0a0a10;
+            background-image: 
+                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 10px),
+                repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 10px);
             color: #ffffff;
             display: flex;
             flex-direction: column;
@@ -21,59 +24,77 @@
             min-height: 100vh;
         }
 
-        /* Hero Section (Kartu Profil Klien) */
+        /* Header Logo */
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: #a0aec0;
+            margin-bottom: 15px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+        .header-logo span {
+            font-size: 1.5rem;
+        }
+
+        /* Hero Section (Kartu Profil Klien) - Kaca & Neon Cyan */
         .hero-card {
             width: 100%;
             max-width: 400px;
-            /* Glassmorphism Effect */
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.1) 0%, rgba(0, 0, 0, 0.6) 100%);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 242, 254, 0.5);
+            border-radius: 12px;
             padding: 20px;
             margin-bottom: 25px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2), inset 0 0 15px rgba(0, 242, 254, 0.1);
             text-align: center;
+            box-sizing: border-box;
         }
 
         .hero-card h2 {
             margin: 0 0 5px 0;
             font-weight: 700;
-            font-size: 1.5rem;
-            background: linear-gradient(90deg, #00f2fe, #4facfe);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            font-size: 1.6rem;
+            color: #4facfe;
+            text-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
         }
 
         .hero-card p {
             margin: 0;
-            font-size: 0.9rem;
-            color: #a0aec0;
+            font-size: 0.85rem;
+            color: #94a3b8;
             margin-bottom: 15px;
         }
 
         .badge {
-            display: inline-block;
-            background: rgba(0, 242, 254, 0.2);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(0, 242, 254, 0.15);
             color: #00f2fe;
-            padding: 5px 12px;
+            padding: 6px 15px;
             border-radius: 50px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            border: 1px solid rgba(0, 242, 254, 0.3);
+            font-size: 0.75rem;
+            font-weight: 600;
+            border: 1px solid rgba(0, 242, 254, 0.4);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
         }
 
         /* Judul Menu */
         .section-title {
             width: 100%;
             max-width: 400px;
-            font-size: 1rem;
-            font-weight: 500;
+            font-size: 0.85rem;
+            font-weight: 600;
             color: #cbd5e1;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            padding-left: 5px;
         }
 
         /* Grid System buat Tombol */
@@ -82,105 +103,247 @@
             max-width: 400px;
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 30px;
+            gap: 12px;
+            margin-bottom: 25px;
         }
 
-        /* Tombol Glassmorphism Mewah */
-        .glass-btn {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 20px 10px;
-            color: #ffffff;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 500;
-            font-size: 0.9rem;
+        /* Style Dasar Tombol Complex (Icon Kiri, Teks Kanan) */
+        .btn-complex {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 12px 15px;
+            border-radius: 10px;
             cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: left;
+            box-sizing: border-box;
+            width: 100%;
+            text-decoration: none;
+            outline: none;
+        }
+
+        .btn-icon {
+            font-size: 1.8rem;
+            margin-right: 12px;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+        }
+
+        .btn-text {
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
-        .glass-btn:hover, .glass-btn:active {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
+        .btn-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px;
+        }
+
+        .btn-sub {
+            font-family: 'Outfit', sans-serif;
+            font-size: 0.65rem;
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        /* Kategori EMAS (Wallet & Profile) */
+        .btn-gold {
+            background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%);
+            border: 1px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.1);
+        }
+        .btn-gold:hover, .btn-gold:active {
+            background: linear-gradient(180deg, rgba(50, 40, 0, 0.9) 0%, rgba(20, 20, 0, 1) 100%);
+            border-color: rgba(255, 215, 0, 0.8);
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.2);
         }
 
-        .full-width {
-            grid-column: span 2;
-            flex-direction: row;
-            padding: 15px;
+        /* Kategori BIRU (Automation & Assets) */
+        .btn-blue {
+            background: linear-gradient(180deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 5, 15, 0.95) 100%);
+            border: 1px solid rgba(0, 195, 255, 0.5);
+            box-shadow: 0 4px 15px rgba(0, 195, 255, 0.1);
+        }
+        .btn-blue:hover, .btn-blue:active {
+            background: linear-gradient(180deg, rgba(0, 30, 60, 0.9) 0%, rgba(0, 10, 25, 1) 100%);
+            border-color: rgba(0, 195, 255, 0.8);
+            box-shadow: 0 0 15px rgba(0, 195, 255, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Kategori MERAH (Disconnect) */
+        .btn-red {
+            background: linear-gradient(180deg, rgba(40, 0, 0, 0.8) 0%, rgba(15, 0, 0, 0.95) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.5);
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
             justify-content: center;
-            gap: 15px;
-            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
-            border-color: rgba(0, 242, 254, 0.3);
         }
-
-        .danger-btn {
-            background: rgba(239, 68, 68, 0.1);
-            border-color: rgba(239, 68, 68, 0.3);
+        .btn-red .btn-title {
             color: #fca5a5;
         }
-
-        .icon {
-            font-size: 1.8rem;
+        .btn-red:hover, .btn-red:active {
+            border-color: rgba(239, 68, 68, 0.8);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+            transform: translateY(-2px);
         }
-        .full-width .icon {
-            font-size: 1.4rem;
+
+        /* Full Width Modifier */
+        .full-width {
+            grid-column: span 2;
+        }
+
+        /* System Load Bar Animation */
+        .sys-load-container {
+            width: 100%;
+            max-width: 400px;
+            background: rgba(0, 195, 255, 0.05);
+            border: 1px solid rgba(0, 195, 255, 0.3);
+            border-radius: 8px;
+            padding: 10px 15px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .sys-load-title {
+            font-size: 0.8rem;
+            color: #00f2fe;
+            font-weight: 600;
+        }
+        .progress-bar-bg {
+            flex-grow: 1;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            margin: 0 15px;
+            border-radius: 4px;
+            overflow: hidden;
+            position: relative;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe, #00f2fe);
+            width: 6%; /* Default val */
+            box-shadow: 0 0 10px #00f2fe;
+            transition: width 0.5s ease;
+        }
+        .sys-load-pct {
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            color: #ffffff;
         }
     </style>
 </head>
 <body>
 
+    <div class="header-logo">
+        <span>🐝</span> XianBee Tech Store
+    </div>
+
     <div class="hero-card">
         <h2>Welcome, <span id="user_name">Guest</span></h2>
         <p>Telegram ID: <span id="user_id">Unknown</span></p>
-        <div class="badge">🟢 Secure Connection Established</div>
+        <div class="badge">
+            <span>🔑</span> Secure Connection Established
+        </div>
     </div>
 
     <div class="section-title">Wallet & Account</div>
     <div class="menu-grid">
-        <button class="glass-btn full-width" onclick="sendToBot('menu_profile')">
-            <span class="icon">💳</span> View Profile & Balance
+        <button class="btn-complex btn-gold full-width" onclick="sendToBot('menu_profile')">
+            <div class="btn-icon">💳</div>
+            <div class="btn-text">
+                <span class="btn-title">Diagnostics & Metrics:</span>
+                <span class="btn-sub">User Profile & Balance</span>
+            </div>
         </button>
-        <button class="glass-btn" onclick="sendToBot('menu_topup')">
-            <span class="icon">💰</span> Deposit
+
+        <button class="btn-complex btn-gold" onclick="sendToBot('menu_topup')">
+            <div class="btn-icon">💰</div>
+            <div class="btn-text">
+                <span class="btn-title">Asset Acquisition:</span>
+                <span class="btn-sub">Fund Wallet</span>
+            </div>
         </button>
-        <button class="glass-btn" onclick="sendToBot('menu_referral')">
-            <span class="icon">🤝</span> Referral
+
+        <button class="btn-complex btn-gold" onclick="sendToBot('menu_referral')">
+            <div class="btn-icon">🤝</div>
+            <div class="btn-text">
+                <span class="btn-title">Network Growth:</span>
+                <span class="btn-sub">Affiliate Commission</span>
+            </div>
+        </button>
+
+        <button class="btn-complex btn-gold full-width" onclick="sendToBot('user_check_flag')">
+            <div class="btn-icon">🔍</div>
+            <div class="btn-text">
+                <span class="btn-title">Security Check:</span>
+                <span class="btn-sub">Verify GitHub Account Integrity</span>
+            </div>
         </button>
     </div>
 
-    <div class="section-title">Automation Services</div>
+    <div class="section-title">Automation & Assets</div>
     <div class="menu-grid">
-        <button class="glass-btn full-width" onclick="sendToBot('menu_akun')">
-            <span class="icon">🛒</span> Buy Aged Accounts
+        <button class="btn-complex btn-blue full-width" onclick="sendToBot('menu_akun')">
+            <div class="btn-icon">🛒</div>
+            <div class="btn-text">
+                <span class="btn-title">Digital Asset Vault:</span>
+                <span class="btn-sub">Purchase Aged GitHub Accounts</span>
+            </div>
         </button>
-        <button class="glass-btn" onclick="sendToBot('menu_jasa_followers')">
-            <span class="icon">👥</span> Followers
+
+        <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_followers')">
+            <div class="btn-icon">👥</div>
+            <div class="btn-text">
+                <span class="btn-title">Audience Engagement:</span>
+                <span class="btn-sub">Follower Injection</span>
+            </div>
         </button>
-        <button class="glass-btn" onclick="sendToBot('menu_jasa_stars')">
-            <span class="icon">⭐</span> Stars
+
+        <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_stars')">
+            <div class="btn-icon">⭐</div>
+            <div class="btn-text">
+                <span class="btn-title">Repo Metrics:</span>
+                <span class="btn-sub">Star Elevation</span>
+            </div>
         </button>
-        <button class="glass-btn" onclick="sendToBot('menu_jasa_forks')">
-            <span class="icon">⎇</span> Forks
+
+        <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_forks')">
+            <div class="btn-icon">⎇</div>
+            <div class="btn-text">
+                <span class="btn-title">Project Credibility:</span>
+                <span class="btn-sub">Fork Injection</span>
+            </div>
         </button>
-        <button class="glass-btn" onclick="sendToBot('menu_jasa_watch')">
-            <span class="icon">👁️</span> Watchers
+
+        <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_watch')">
+            <div class="btn-icon">👁️</div>
+            <div class="btn-text">
+                <span class="btn-title">Repo Visibility:</span>
+                <span class="btn-sub">Watcher Boost</span>
+            </div>
         </button>
     </div>
 
-    <div class="menu-grid">
-        <button class="glass-btn full-width danger-btn" onclick="tg.close()">
-            <span class="icon">🛑</span> Close Dashboard
+    <div class="sys-load-container">
+        <span class="sys-load-title">Sys Load</span>
+        <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="sys_load_bar"></div>
+        </div>
+        <span class="sys-load-pct" id="sys_load_txt">6%</span>
+    </div>
+
+    <div class="menu-grid" style="margin-bottom: 40px;">
+        <button class="btn-complex btn-red full-width" onclick="tg.close()">
+            <div class="btn-icon">🛑</div>
+            <div class="btn-text">
+                <span class="btn-title" style="text-align: center;">Terminate_Signal: Disconnect Terminal</span>
+            </div>
         </button>
     </div>
 
@@ -196,8 +359,16 @@
             document.getElementById('user_id').innerText = tg.initDataUnsafe.user.id;
         }
 
+        // Animasi Sys Load Palsu biar kerasa idup
+        setInterval(() => {
+            let load = Math.floor(Math.random() * (25 - 5 + 1) + 5);
+            document.getElementById('sys_load_bar').style.width = load + '%';
+            document.getElementById('sys_load_txt').innerText = load + '%';
+        }, 3000);
+
         // Fungsi ngirim perintah ke Bot
         function sendToBot(actionData) {
+            // Ngirim data layaknya mencet tombol inline
             tg.sendData(actionData); 
         }
     </script>
