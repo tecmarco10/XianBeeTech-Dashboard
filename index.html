@@ -3,271 +3,258 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Tech Store Terminal</title>
+    <title>XianBee Tech Store Ultimate Terminal V14</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
         :root {
-            --cyan: #00f2fe;
+            /* Warna Tema Utama (Cyan) */
+            --primary: #00f2fe;
+            --primary-glow: rgba(0, 242, 254, 0.4);
+            
+            /* Warna Tema Merah (Secret Mode) */
+            --red: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.5);
+            
             --blue-dark: #0a0a10;
-            --blue-glow: rgba(0, 242, 254, 0.4);
             --gold: #ffd700;
             --gold-glow: rgba(255, 215, 0, 0.3);
-            --red: #ef4444;
-            --red-glow: rgba(239, 68, 68, 0.4);
+            
             --gray-text: #94a3b8;
+            
+            /* Pointer Warna Aktif (Diubah lewat JS) */
+            --current-primary: #00f2fe;
+            --current-glow: rgba(0, 242, 254, 0.4);
         }
 
         body { 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             font-family: 'Outfit', sans-serif; 
-            background-color: var(--blue-dark); 
+            background-color: #000000; 
             color: #ffffff; 
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
+            min-height: 100vh; overflow-x: hidden; position: relative;
         }
 
-        /* 🟢 PRELOADER TERMINAL BOOT-UP */
+        /* 🟢 PRELOADER BOOT-UP & BIOMETRIC SCANNER */
         #preloader {
-            position: fixed;
-            top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            padding: 30px;
-            box-sizing: border-box;
-            transition: opacity 0.5s ease, visibility 0.5s;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: #000000; z-index: 9999;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 30px; box-sizing: border-box; transition: opacity 0.8s ease, visibility 0.8s;
         }
+        
+        /* Animasi Sidik Jari */
+        .fingerprint-container {
+            width: 100px; height: 100px; margin-bottom: 30px;
+            position: relative; opacity: 0; transition: opacity 0.5s ease;
+        }
+        #fork_icon_svg_biometric {
+             fill: none; stroke: var(--current-primary); stroke-width: 2; filter: drop-shadow(0 0 10px var(--current-glow));
+        }
+        
+        /* Garis Laser Scanner */
+        .scan-bar {
+            position: absolute; top: 0; left: -10px; width: 120px; height: 4px;
+            background: linear-gradient(90deg, rgba(0,0,0,0) 0%, var(--current-primary) 50%, rgba(0,0,0,0) 100%);
+            border-radius: 10px; box-shadow: 0 0 15px var(--current-primary);
+            animation: scan 2s ease-in-out infinite;
+        }
+        @keyframes scan { 0%, 100% { top: 0%; } 50% { top: 100%; } }
+
+        /* Teks Terminal */
         #term-text {
-            font-family: 'Courier New', Courier, monospace;
-            color: var(--cyan);
-            font-size: 1rem;
-            line-height: 1.8;
-            text-shadow: 0 0 8px var(--cyan);
+            font-family: 'Courier New', Courier, monospace; color: var(--current-primary);
+            font-size: 0.95rem; line-height: 1.8; text-shadow: 0 0 8px var(--current-glow);
+            text-align: left; width: 100%; max-width: 350px;
         }
-        .cursor {
-            display: inline-block;
-            width: 10px; height: 1.2rem;
-            background-color: var(--cyan);
-            animation: blink 1s step-end infinite;
-            vertical-align: middle;
-            margin-left: 5px;
-        }
+        .cursor { display: inline-block; width: 10px; height: 1.1rem; background-color: var(--current-primary); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 5px; }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* 🟢 WRAPPER UTAMA */
+        /* 🟢 MAIN WRAPPER */
         #main-wrapper {
-            opacity: 0; 
-            transition: opacity 1s ease-in;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-            box-sizing: border-box;
-            width: 100%;
+            opacity: 0; transition: opacity 1.5s ease-in;
+            display: flex; flex-direction: column; align-items: center;
+            padding: 15px; box-sizing: border-box; width: 100%;
         }
 
         /* 🟢 CANVAS BACKGROUND - RELAXING CYBER DUST */
         #canvas-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            z-index: -1; 
-            opacity: 0.8; 
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; opacity: 0.7; 
         }
 
-        /* 🟢 HEADER LOGO GEDE (EFEK MELAYANG TRANSPARAN) */
+        /* 🟢 LIVE ACTIVE OPERATORS COUNTER */
+        #active-operators {
+            position: fixed; top: 15px; right: 15px;
+            background: rgba(0, 0, 0, 0.7); border: 1px solid var(--current-glow);
+            border-radius: 50px; padding: 5px 15px;
+            font-size: 0.75rem; font-weight: 700; color: #ffffff;
+            display: flex; align-items: center; gap: 8px; z-index: 100;
+            backdrop-filter: blur(5px); transition: border-color 0.5s;
+        }
+        #op-lamp {
+            width: 8px; height: 8px; background-color: #25D366;
+            border-radius: 50%; box-shadow: 0 0 10px #25D366;
+            animation: lamp-blink 1s ease-in-out infinite;
+        }
+        @keyframes lamp-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+        /* HEADER LOGO GEDE (TRANSPARAN + SECRET TAP) */
         .header-content { 
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            margin-bottom: 25px; 
-            width: 100%; 
-            max-width: 400px; 
-            /* Background dan border dihapus biar logonya beneran nyatu sama wallpaper */
-            background: transparent; 
-            border: none; 
-            box-shadow: none; 
-            padding: 15px; 
-            box-sizing: border-box;
-            z-index: 1;
-            transform-style: preserve-3d;
-            transform: perspective(1000px);
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 30px; width: 100%; max-width: 400px;
+            background: transparent; border: none; box-shadow: none; 
+            padding: 15px; box-sizing: border-box; z-index: 1;
+            transform-style: preserve-3d; transform: perspective(1000px);
+            cursor: pointer; /* Indikasi bisa diklik */
         }
         .store-logo { 
-            width: 100%; 
-            max-width: 250px; 
-            height: auto; 
-            object-fit: contain; 
-            transform: translateZ(20px); 
-            /* 🪄 INI MANTRA SIHIRNYA BOS: Bikin warna hitam di foto jadi tembus pandang 100% */
-            mix-blend-mode: screen; 
-            filter: drop-shadow(0 0 15px var(--blue-glow));
+            width: 100%; max-width: 250px; height: auto; object-fit: contain; 
+            transform: translateZ(30px); /* 3D pop out */
+            mix-blend-mode: screen; /* Transparan Fix */
+            filter: drop-shadow(0 0 15px var(--current-glow));
+            transition: filter 0.5s;
         }
         
-        .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1; align-self: flex-start; margin-left: auto; margin-right: auto;}
+        .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1;}
         
         /* GRID & TOMBOL 3D */
         .menu-grid { 
-            width: 100%; 
-            max-width: 400px; 
-            display: grid; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 12px; 
-            margin-bottom: 25px; 
-            z-index: 1; 
-            margin-left: auto; 
-            margin-right: auto;
+            width: 100%; max-width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; z-index: 1;
         }
         
         .btn-complex { 
-            display: flex; 
-            align-items: center; 
-            padding: 12px 15px; 
-            border-radius: 10px; 
-            cursor: pointer; 
-            text-align: left; 
-            box-sizing: border-box; 
-            width: 100%; 
-            background: rgba(0,0,0,0.6); 
-            border: 1px solid rgba(255,255,255,0.1); 
-            backdrop-filter: blur(5px); 
-            transform-style: preserve-3d;
-            transition: transform 0.1s ease, box-shadow 0.1s ease;
+            display: flex; align-items: center; padding: 12px 15px; border-radius: 10px; cursor: pointer; text-align: left; box-sizing: border-box; width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); 
+            transform-style: preserve-3d; transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.5s;
             position: relative;
         }
+        /* DYNAMIC MARKET AMBIENT (Glow Napas -JS controlled) */
+        .btn-market-ambient {
+            animation: market-breathe 4s ease-in-out infinite;
+        }
+        @keyframes market-breathe {
+            0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.05); }
+            50% { box-shadow: 0 0 15px var(--market-color, rgba(255,255,255,0.1)); }
+        }
         
-        .btn-icon { font-size: 1.8rem; margin-right: 12px; display: flex; justify-content: center; align-items: center; width: 30px; height: 30px; transform: translateZ(15px); }
+        .btn-icon { font-size: 1.8rem; margin-right: 12px; display: flex; justify-content: center; align-items: center; width: 30px; height: 30px; transform: translateZ(20px); }
         .btn-text { transform: translateZ(10px); }
         
-        .btn-title { font-size: 0.9rem; font-weight: 700; color: #ffffff; display: block; margin-bottom: 2px; }
+        /* Teks Judul (Bakal kena efek Decrypt) */
+        .btn-title { font-size: 0.9rem; font-weight: 700; color: #ffffff; display: block; margin-bottom: 2px; font-family: 'Outfit', sans-serif;}
         .btn-sub { font-size: 0.65rem; color: var(--gray-text); }
         
-        .btn-gold { border-color: rgba(255, 215, 0, 0.5); background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%); }
-        .btn-blue { border-color: rgba(0, 195, 255, 0.5); background: linear-gradient(180deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 5, 15, 0.95) 100%); }
-        .btn-red { border-color: rgba(239, 68, 68, 0.5); background: linear-gradient(180deg, rgba(40, 0, 0, 0.8) 0%, rgba(15, 0, 0, 0.95) 100%); justify-content: center; }
+        /* Warna Tombol & Glow */
+        .btn-gold { border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%); }
+        .btn-blue { border-color: var(--current-glow); background: linear-gradient(180deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 5, 15, 0.95) 100%); }
+        .btn-red { border-color: rgba(239, 68, 68, 0.4); background: linear-gradient(180deg, rgba(40, 0, 0, 0.8) 0%, rgba(15, 0, 0, 0.95) 100%); justify-content: center; }
         
         .full-width { grid-column: span 2; }
 
-        /* 🟢 CYBERPUNK GLITCH EFFECT */
-        .btn-glitch {
-            animation: glitch-anim 0.3s cubic-bezier(.25, .46, .45, .94) both;
+        /* 🟢 CYBERPUNK GLITCH EFFECT ON CLICK */
+        .btn-glitch-active {
+            animation: glitch-anim 0.25s cubic-bezier(.25, .46, .45, .94) both;
             border-color: var(--red) !important;
-            box-shadow: 0 0 10px var(--red), inset 0 0 10px var(--red);
+            box-shadow: 0 0 15px var(--red), inset 0 0 10px var(--red) !important;
         }
         @keyframes glitch-anim {
-            0% { transform: translate(0) scale3d(1,1,1); filter: hue-rotate(0deg); }
-            20% { transform: translate(-3px, 2px) scale3d(0.98,0.98,1); filter: hue-rotate(90deg); }
-            40% { transform: translate(-3px, -2px) scale3d(1.02,1.02,1); filter: invert(100%); }
-            60% { transform: translate(3px, 2px) scale3d(0.95,0.95,1); filter: hue-rotate(180deg); }
-            80% { transform: translate(3px, -2px) scale3d(1.05,1.05,1); filter: hue-rotate(270deg); }
-            100% { transform: translate(0) scale3d(1,1,1); filter: hue-rotate(0deg); }
+            0% { transform: translate(0) scale3d(1.02,1.02,1); filter: hue-rotate(0deg); }
+            20% { transform: translate(-4px, 3px); filter: hue-rotate(90deg); }
+            40% { transform: translate(-4px, -3px); filter: invert(100%); }
+            60% { transform: translate(4px, 3px); filter: hue-rotate(180deg); }
+            80% { transform: translate(4px, -3px); filter: hue-rotate(270deg); }
+            100% { transform: translate(0) scale3d(1.02,1.02,1); filter: hue-rotate(0deg); }
         }
         
         /* SYS LOAD */
         .sys-load-container { width: 100%; max-width: 400px; background: rgba(0, 195, 255, 0.05); border: 1px solid rgba(0, 195, 255, 0.3); border-radius: 8px; padding: 10px 15px; box-sizing: border-box; display: flex; align-items: center; margin-bottom: 40px; z-index: 1;}
         .progress-bar-bg { flex-grow: 1; height: 8px; background: rgba(255, 255, 255, 0.1); margin: 0 15px; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: var(--cyan); width: 6%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--cyan); }
+        .progress-bar-fill { height: 100%; background: var(--cyan); width: 15%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--cyan); }
 
         /* 🟢 WHATSAPP FLOATING BUTTON */
         .wa-fab {
-            position: fixed;
-            bottom: 60px; 
-            right: 20px;
-            width: 55px;
-            height: 55px;
-            background-color: #25D366;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
-            z-index: 100;
-            text-decoration: none;
-            transition: transform 0.3s ease;
+            position: fixed; bottom: 60px; right: 20px;
+            width: 55px; height: 55px; background-color: #25D366; border-radius: 50%;
+            display: flex; justify-content: center; align-items: center;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 100;
+            text-decoration: none; transition: transform 0.3s ease;
         }
         .wa-fab:active { transform: scale(0.9); }
         .wa-fab img { width: 35px; height: 35px; }
 
         /* 🟢 SYSTEM FOMO NOTIFICATION */
         #fomo-toast {
-            position: fixed;
-            top: -100px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.85);
-            border: 1px solid rgba(0, 242, 254, 0.5);
-            border-radius: 50px;
-            padding: 8px 20px;
-            color: var(--cyan);
-            font-size: 0.75rem;
-            font-weight: 600;
-            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2);
-            z-index: 1000;
-            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85); border: 1px solid var(--current-glow);
+            border-radius: 50px; padding: 8px 20px; color: var(--cyan);
+            font-size: 0.75rem; font-weight: 600; box-shadow: 0 5px 15px var(--current-glow);
+            z-index: 1000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), border-color 0.5s, box-shadow 0.5s;
+            white-space: nowrap; display: flex; align-items: center; gap: 8px;
         }
         #fomo-toast.show { top: 20px; }
 
         /* 🟢 LIVE CRYPTO TICKER */
         .crypto-ticker-container {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: #000000;
-            border-top: 1px solid rgba(0, 242, 254, 0.3);
-            color: #ffffff;
-            font-size: 0.75rem;
-            font-family: 'Courier New', Courier, monospace;
-            font-weight: bold;
-            padding: 5px 0;
-            z-index: 50;
-            overflow: hidden;
-            display: flex;
-            white-space: nowrap;
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background: #000000; border-top: 1px solid rgba(0, 242, 254, 0.3);
+            color: #ffffff; font-size: 0.75rem; font-family: 'Courier New', Courier, monospace; font-weight: bold;
+            padding: 5px 0; z-index: 50; overflow: hidden; display: flex; white-space: nowrap;
         }
-        .crypto-ticker {
-            display: inline-block;
-            animation: marquee 30s linear infinite;
-        }
+        .crypto-ticker { display: inline-block; animation: marquee 30s linear infinite; }
         .crypto-item { margin-right: 30px; }
-        .crypto-up { color: #25D366; }
+        .crypto-up { color: #25D366; } .crypto-down { color: #ef4444; }
+        @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
         
-        @keyframes marquee {
-            0% { transform: translateX(100vw); }
-            100% { transform: translateX(-100%); }
+        /* Fork Icon Svg */
+        #fork_icon_svg { width: 28px; height: 28px; fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;}
+
+        /* 🚨 SECRET ADMIN MODE (Merah) */
+        body.secret-mode { background-color: #050000; }
+        body.secret-mode canvas { opacity: 0.2; }
+        body.secret-mode #canvas-bg { filter: hue-rotate(180deg) brightness(0.5); }
+        body.secret-mode .crypto-ticker-container { border-color: rgba(239, 68, 68, 0.3); }
+
+        /* Screen Glitch Overlay untuk Secret Mode Alarm */
+        #secret-alarm-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background-color: rgba(239, 68, 68, 0.1); z-index: 9998;
+            pointer-events: none; opacity: 0;
+            animation: alarm-blink 0.5s ease infinite;
+            display: none;
         }
-        
-        #fork_icon_svg {
-            width: 28px; height: 28px; fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-        }
+        body.secret-mode #secret-alarm-overlay { display: block; }
+        @keyframes alarm-blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
     </style>
 </head>
 <body>
 
     <canvas id="canvas-bg"></canvas>
+    
+    <div id="secret-alarm-overlay"></div>
 
     <div id="preloader">
+        <div class="fingerprint-container" id="biometric-visual">
+            <svg id="fork_icon_svg_biometric" viewBox="0 0 24 24">
+                <path d="M6 3v12m12-12v12M6 15a3 3 0 003 3h6a3 3 0 003-3M12 18v3"/>
+            </svg>
+            <div class="scan-bar"></div>
+        </div>
         <div id="term-text"></div>
     </div>
 
     <div id="fomo-toast">⚡ System Online</div>
+    
+    <div id="active-operators">
+        <div id="op-lamp"></div>
+        <span id="op-count">14</span> Active Ops
+    </div>
 
     <div id="main-wrapper">
         
-        <div class="header-content btn-3d">
-            <img src="logo.png" alt="XianBee Tech Logo" class="store-logo">
+        <div class="header-content btn-3d" id="main-logo-container">
+            <img src="logo.png" alt="XianBee Tech Logo" class="store-logo" id="main-logo-img">
         </div>
 
         <div class="section-title">Wallet & Account</div>
@@ -275,28 +262,28 @@
             <button class="btn-complex btn-gold full-width btn-3d" onclick="sendToBot(this, 'menu_profile')">
                 <div class="btn-icon">👤</div>
                 <div class="btn-text">
-                    <span class="btn-title">My Profile & Balance</span>
+                    <span class="btn-title" data-text="My Profile & Balance">My Profile & Balance</span>
                     <span class="btn-sub">View Account Details</span>
                 </div>
             </button>
-            <button class="btn-complex btn-gold btn-3d" onclick="sendToBot(this, 'menu_topup')">
+            <button class="btn-complex btn-gold btn-3d btn-market-ambient" onclick="sendToBot(this, 'menu_topup')">
                 <div class="btn-icon">💰</div>
                 <div class="btn-text">
-                    <span class="btn-title">Top Up Balance</span>
-                    <span class="btn-sub">Add Funds to Wallet</span>
+                    <span class="btn-title" data-text="Top Up Balance">Top Up Balance</span>
+                    <span class="btn-sub">Add Funds (USDT Rate)</span>
                 </div>
             </button>
             <button class="btn-complex btn-gold btn-3d" onclick="sendToBot(this, 'menu_referral')">
                 <div class="btn-icon">🤝</div>
                 <div class="btn-text">
-                    <span class="btn-title">Referral & Earn</span>
+                    <span class="btn-title" data-text="Referral & Earn">Referral & Earn</span>
                     <span class="btn-sub">Invite Friends & Get Bonus</span>
                 </div>
             </button>
             <button class="btn-complex btn-gold full-width btn-3d" onclick="sendToBot(this, 'user_check_flag')">
                 <div class="btn-icon">🛡️</div>
                 <div class="btn-text">
-                    <span class="btn-title">Check Account Status</span>
+                    <span class="btn-title" data-text="Check Account Status">Check Account Status</span>
                     <span class="btn-sub">Verify GitHub Shadowban</span>
                 </div>
             </button>
@@ -307,21 +294,21 @@
             <button class="btn-complex btn-blue full-width btn-3d" onclick="sendToBot(this, 'menu_akun')">
                 <div class="btn-icon">🛒</div>
                 <div class="btn-text">
-                    <span class="btn-title">Buy GitHub Accounts</span>
+                    <span class="btn-title" data-text="Buy GitHub Accounts">Buy GitHub Accounts</span>
                     <span class="btn-sub">High Quality Aged Accounts</span>
                 </div>
             </button>
             <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_followers')">
                 <div class="btn-icon">👥</div>
                 <div class="btn-text">
-                    <span class="btn-title">Buy Followers</span>
+                    <span class="btn-title" data-text="Buy Followers">Buy Followers</span>
                     <span class="btn-sub">Boost Your Profile</span>
                 </div>
             </button>
             <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_stars')">
                 <div class="btn-icon">⭐</div>
                 <div class="btn-text">
-                    <span class="btn-title">Buy Repo Stars</span>
+                    <span class="btn-title" data-text="Buy Repo Stars">Buy Repo Stars</span>
                     <span class="btn-sub">Increase Repo Rating</span>
                 </div>
             </button>
@@ -332,14 +319,14 @@
                     </svg>
                 </div>
                 <div class="btn-text">
-                    <span class="btn-title">Buy Repo Forks</span>
-                    <span class="btn-sub">Boost Project Credibility</span>
+                    <span class="btn-title" data-text="Buy Repo Forks">Buy Repo Forks</span>
+                    <span class="btn-sub">Boost Credibility</span>
                 </div>
             </button>
             <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_watch')">
                 <div class="btn-icon">👁️</div>
                 <div class="btn-text">
-                    <span class="btn-title">Buy Repo Watchers</span>
+                    <span class="btn-title" data-text="Buy Repo Watchers">Buy Repo Watchers</span>
                     <span class="btn-sub">Increase Visibility</span>
                 </div>
             </button>
@@ -379,8 +366,13 @@
         // AUDIO CONTEXT
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
+        
+        // State Secret Mode
+        let isSecretMode = false;
+        let logoTapCount = 0;
+        let logoTapTimeout;
 
-        // FUNGSI SUARA BOOT MESIN
+        // 🟢 FUNGSI SUARA & ROBOT JARVIS (欢迎)
         function playBootSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
@@ -395,6 +387,18 @@
             osc.start(); osc.stop(audioCtx.currentTime + 0.5);
         }
 
+        // FUNGSI ROBOT NGOMONG (Welcome)
+        function speakJarvisWelcome() {
+            if (!('speechSynthesis' in window)) return;
+            const synth = window.speechSynthesis;
+            const text = "Secure Connection Established. Welcome to XianBee Terminal.";
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 1.1; // Sedikit cepet ala robot pro
+            utterance.pitch = 0.8; // Suara robot cewek agak berat (sexy sci-fi)
+            synth.speak(utterance);
+        }
+
         // FUNGSI BEEP KLIK TOMBOL
         function playSciFiBeep() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -405,86 +409,171 @@
             oscillator.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.08);
             gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime); 
             gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            oscillator.start();
-            oscillator.stop(audioCtx.currentTime + 0.08);
+            oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.08);
+        }
+        
+        // ALARM SUARA SECRET MODE
+        let alarmOsc, alarmGain;
+        function startAlarmSound() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            alarmOsc = audioCtx.createOscillator();
+            alarmGain = audioCtx.createGain();
+            alarmOsc.type = 'sawtooth';
+            alarmOsc.frequency.setValueAtTime(600, audioCtx.currentTime);
+            // Alarm naik turun
+            alarmOsc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.25);
+            alarmOsc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.5);
+            alarmGain.gain.setValueAtTime(0, audioCtx.currentTime);
+            alarmGain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 0.1);
+            
+            alarmOsc.connect(alarmGain); alarmGain.connect(audioCtx.destination);
+            alarmOsc.start();
+            // Loop suara alarm
+            alarmOsc.loop = true;
+            alarmOsc.loopStart = 0; alarmOsc.loopEnd = 0.5;
+        }
+        function stopAlarmSound() {
+            if(alarmOsc) {
+                alarmGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+                setTimeout(() => { alarmOsc.stop(); }, 150);
+            }
         }
 
-        // 🟢 TERMINAL BOOT SEQUENCE
+        // 🟢 TERMINAL BOOT SEQUENCE & BIOMETRIC
         const bootTexts = [
             "> Executing startup protocol...",
             "> Bypassing network limits...",
             "> Establishing secure link...",
+            "> Scanning biometric data...",
+            "> Operator Verified.",
             "> Handshake successful.",
             "> ACCESS GRANTED."
         ];
         
         window.onload = () => {
+            // Setup biometric scan
+            setTimeout(() => { document.getElementById("biometric-visual").style.opacity = "1"; }, 300);
+
             let termContainer = document.getElementById("term-text");
             let delay = 0;
             
             bootTexts.forEach((text, i) => {
                 setTimeout(() => {
                     termContainer.innerHTML += text + "<br>";
+                    // Pas teks Verified muncul, matiin scanner
+                    if (text.includes("Verified")) {
+                        document.getElementById("biometric-visual").style.opacity = "0";
+                    }
+                    
                     if (i === bootTexts.length - 1) {
                         setTimeout(() => {
                             document.getElementById("preloader").style.opacity = "0";
                             setTimeout(() => {
                                 document.getElementById("preloader").style.visibility = "hidden";
                                 document.getElementById("main-wrapper").style.opacity = "1";
-                                playBootSound(); 
+                                playBootSound(); // Bunyi nyala mesin
+                                speakJarvisWelcome(); // Robot ngomong
+                                initHackerDecryption(); // Efek teks decrypt
                             }, 500);
                         }, 800);
                     }
                 }, delay);
-                delay += 400; 
+                delay += 450; 
             });
         };
 
-        // 🟢 3D TILT EFFECT
+        // 🟢 HAPTIC FEEDBACK (GETARAN HP NYATA)
+        function triggerHapticFeedback() {
+            if ('vibrate' in navigator) {
+                navigator.vibrate(60); // Getar singkat 60ms ala haptic iPhone
+            } else if (window.Telegram.WebApp.HapticFeedback) {
+                // Fallback pake API Telegram
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            }
+        }
+
+        // 🟢 3D TILT EFFECT (GYROSCOPE RESPONSIVE)
+        function handleTilt(card, x, y) {
+            let rect = card.getBoundingClientRect();
+            let centerX = rect.width / 2;
+            let centerY = rect.height / 2;
+            let rotateX = ((y - centerY) / centerY) * -12; // Miring maks 12 deg
+            let rotateY = ((x - centerX) / centerX) * 12;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+            card.style.boxShadow = `${-rotateY}px ${rotateX}px 20px rgba(0, 242, 254, 0.2)`;
+        }
+
         document.querySelectorAll('.btn-3d').forEach(card => {
+            // Desktop Mouse
             card.addEventListener('mousemove', e => {
                 let rect = card.getBoundingClientRect();
-                let x = e.clientX - rect.left;
-                let y = e.clientY - rect.top;
-                let centerX = rect.width / 2;
-                let centerY = rect.height / 2;
-                let rotateX = ((y - centerY) / centerY) * -12; 
-                let rotateY = ((x - centerX) / centerX) * 12;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-                card.style.boxShadow = `${-rotateY}px ${rotateX}px 20px rgba(0, 242, 254, 0.2)`;
+                handleTilt(card, e.clientX - rect.left, e.clientY - rect.top);
             });
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
-                card.style.boxShadow = `none`;
+            // Touch Mobile (Biar kerasa 3D pas diteken)
+            card.addEventListener('touchstart', e => {
+                let rect = card.getBoundingClientRect();
+                let touch = e.touches[0];
+                handleTilt(card, touch.clientX - rect.left, touch.clientY - rect.top);
             });
+            // Reset
+            card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);
+            card.addEventListener('touchend', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);
         });
 
-        // 🟢 FUNGSI SEND DATA + EFEK GLITCH
+        // 🟢 HACKER DECRYPTION TEXT EFFECT
+        function initHackerDecryption() {
+            document.querySelectorAll('.btn-title').forEach(titleElement => {
+                const originalText = titleElement.getAttribute('data-text');
+                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
+                let iterations = 0;
+                
+                const interval = setInterval(() => {
+                    titleElement.innerText = originalText.split('').map((char, index) => {
+                        if (index < iterations) return originalText[index];
+                        return characters.charAt(Math.floor(Math.random() * characters.length));
+                    }).join('');
+                    
+                    if (iterations >= originalText.length) clearInterval(interval);
+                    iterations += 1 / 2; // Kecepatan decrypt
+                }, 30);
+            });
+        }
+
+        // 🟢 FUNGSI SEND DATA + EFEK GLITCH + HAPTIC (GETAR HP)
         function sendToBot(element, actionData) {
-            playSciFiBeep();
-            element.classList.add('btn-glitch');
+            playSciFiBeep(); // Suara
+            triggerHapticFeedback(); // Getar HP beneran!
+            
+            element.classList.add('btn-glitch-active');
             setTimeout(() => {
-                element.classList.remove('btn-glitch');
+                element.classList.remove('btn-glitch-active');
                 if(actionData === "close_terminal") {
                     tg.close();
                 } else {
                     tg.sendData(actionData);
                 }
-            }, 300);
+            }, 250);
         }
 
-        // Animasi Sys Load
+        // 🟢 ACTIVE OPERATORS COUNTER (LIVE FAKE)
+        const opCountEl = document.getElementById('op-count');
+        setInterval(() => {
+            let currentCount = parseInt(opCountEl.innerText);
+            // Acak naik turun dikit
+            let variation = Math.random() > 0.5 ? 1 : -1;
+            let newCount = currentCount + variation;
+            // Batasin biar gak kurang dari 8, gak lebih dari 19
+            if(newCount < 8) newCount = 8;
+            if(newCount > 19) newCount = 19;
+            opCountEl.innerText = newCount;
+        }, 12000); // Berubah tiap 12 detik
+
+        // Animasi Sys Load (15% fix)
         let currentLoad = 15;
         document.getElementById('sys_load_bar').style.width = currentLoad + '%';
         document.getElementById('sys_load_txt').innerText = currentLoad + '%';
         
-        setInterval(() => {
-            let load = Math.floor(Math.random() * 10) + 10; 
-            document.getElementById('sys_load_bar').style.width = load + '%';
-            document.getElementById('sys_load_txt').innerText = load + '%';
-        }, 5000);
 
         // 🟢 SYSTEM FOMO NOTIFICATION
         const fomoData = [
@@ -493,7 +582,7 @@
             "🛒 Client @Mar*** purchased an Aged Account",
             "🔶 Incoming transfer: Binance Pay ID 8487***",
             "👥 Client @Zoe*** bought 500 Followers",
-            "🚀 System: Order #8921 successfully delivered."
+            "🚀 Order #8921 successfully delivered."
         ];
         setInterval(() => {
             const toast = document.getElementById('fomo-toast');
@@ -502,22 +591,35 @@
             setTimeout(() => { toast.classList.remove('show'); }, 3500);
         }, 20000); 
 
-        // 🟢 LIVE CRYPTO TICKER
+        // 🟢 LIVE CRYPTO TICKER & DYNAMIC AMBIENT (Napas Ijo/Merah)
         async function fetchCryptoPrices() {
             try {
                 const symbols = ["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"];
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/price`);
                 const allData = await res.json();
                 
+                // Cari data BTCUSDT buat nentuin Ambient Aura (Hijau/Merah)
+                const btcDataRaw = allData.find(coin => coin.symbol === "BTCUSDT");
+                
+                // Tarik data ticker masal
                 const data = allData.filter(coin => symbols.includes(coin.symbol));
                 
-                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v13 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
+                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v14 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
                 data.forEach(coin => {
                     let symbol = coin.symbol.replace('USDT', '');
-                    let price = parseFloat(coin.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    tickerHtml += `<span class="crypto-item"><span style="color:#cbd5e1">${symbol}/USDT:</span> <span class="crypto-up">$${price}</span></span>`;
+                    let priceVal = parseFloat(coin.price);
+                    let priceStr = priceVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    
+                    tickerHtml += `<span class="crypto-item"><span style="color:#cbd5e1">${symbol}/USDT:</span> <span class="crypto-up">$${priceStr}</span></span>`;
                 });
                 document.getElementById('ticker-content').innerHTML = tickerHtml + tickerHtml; 
+                
+                // DYNAMIC MARKET AMBIENT (Sesuaikan Glow napas)
+                const btcPrice = parseFloat(btcDataRaw.price);
+                const marketAmbientColor = btcPrice >= 65000 ? 'rgba(37, 211, 102, 0.4)' : 'rgba(239, 68, 68, 0.4)'; // Ijo kalo mahal, merah kalo crash
+                // Terapin warna ke variabel CSS
+                document.documentElement.style.setProperty('--market-color', marketAmbientColor);
+
             } catch (error) {
                 document.getElementById('ticker-content').innerHTML = "Market Intelligence Offline | Check Secure Connection.";
             }
@@ -525,7 +627,7 @@
         fetchCryptoPrices();
         setInterval(fetchCryptoPrices, 15000);
 
-        // 🟢 EFEK DEBU MELAYANG (AMBIENT CYBER DUST)
+        // 🟢 EFEK DEBU MELAYANG (AMBIENT CYBER DUST) pelan
         const canvas = document.getElementById("canvas-bg");
         const ctx = canvas.getContext("2d");
         let width, height, particles;
@@ -563,7 +665,7 @@
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 242, 254, ${p.alpha})`; 
+                ctx.fillStyle = isSecretMode ? `rgba(239, 68, 68, ${p.alpha})` : `rgba(0, 242, 254, ${p.alpha})`; // Cyan atau Merah
                 ctx.fill();
             }
             requestAnimationFrame(drawParticles);
@@ -572,6 +674,99 @@
         window.addEventListener("resize", initCanvas);
         initCanvas();
         drawParticles();
+        
+        // 🚨 SECRET EASTER EGG: TAP LOGO 5X TO ACTIVATE ADMIN/CARNAGE MODE
+        document.getElementById('main-logo-container').addEventListener('click', () => {
+            clearTimeout(logoTapTimeout);
+            logoTapCount++;
+            triggerHapticFeedback(); // Getar tiap tap
+            
+            // Suara beep makin tinggi tiap tap
+            playSciFiBeepCustom(1400 + (logoTapCount * 200));
+
+            if (logoTapCount === 5) {
+                activateSecretAdminMode();
+                logoTapCount = 0;
+            } else {
+                // Reset count kalo gak pencet cepet dalam 1.5 detik
+                logoTapTimeout = setTimeout(() => { logoTapCount = 0; }, 1500);
+            }
+        });
+        
+        function playSciFiBeepCustom(freq) {
+             if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            oscillator.type = 'sine'; 
+            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime); 
+            gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime); 
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
+            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.1);
+        }
+        
+        function activateSecretAdminMode() {
+            if (isSecretMode) return; // Udah aktif
+            isSecretMode = true;
+            
+            triggerHapticFeedback(); // Getar parah
+            if ('vibrate' in navigator) navigator.vibrate([100, 50, 100, 50, 300]);
+
+            playSciFiBeepCustom(400); // Bunyi error/glitch
+            setTimeout(() => { playSciFiBeepCustom(300); }, 150);
+            
+            speakJarvisAdminActivated(); // Robot ngomong Admin Mode
+
+            // Terapin Tema Merah
+            document.body.classList.add('secret-mode');
+            
+            // Ubah Warna Variabel CSS Aktif jadi Merah
+            document.documentElement.style.setProperty('--current-primary', '#ef4444');
+            document.documentElement.style.setProperty('--current-glow', 'rgba(239, 68, 68, 0.5)');
+            
+            // Ubah Logo jadi Merah (Filter)
+            document.getElementById('main-logo-img').style.filter = 'hue-rotate(180deg) invert(10%) drop-shadow(0 0 15px rgba(239, 68, 68, 0.7))';
+            
+            startAlarmSound(); // Mulai suara alarm
+
+            // Nampilin Toast Admin
+            const toast = document.getElementById('fomo-toast');
+            toast.innerHTML = "🚨 <b>WARNING: ADMIN MODE ACTIVATED</b>";
+            toast.classList.add('show');
+            
+            try { window.Telegram.WebApp.HapticFeedback.notificationOccurred('warning'); } catch(e){}
+
+            // Reset balik normal setelah 30 detik
+            setTimeout(() => { deactivateSecretAdminMode(); }, 30000);
+        }
+        
+        function deactivateSecretAdminMode() {
+            if (!isSecretMode) return;
+            isSecretMode = false;
+            stopAlarmSound();
+            
+            document.body.classList.remove('secret-mode');
+            
+            // Balikin Warna Variabel CSS ke Cyan
+            document.documentElement.style.setProperty('--current-primary', '#00f2fe');
+            document.documentElement.style.setProperty('--current-glow', 'rgba(0, 242, 254, 0.4)');
+            
+            document.getElementById('main-logo-img').style.filter = 'drop-shadow(0 0 15px var(--blue-glow))';
+            
+            const toast = document.getElementById('fomo-toast');
+            toast.innerHTML = "🟢 System Restored to Normal Operations.";
+            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+        
+        function speakJarvisAdminActivated() {
+             if (!('speechSynthesis' in window)) return;
+            const synth = window.speechSynthesis;
+            const text = "Unauthorized Access Detected. Secret Admin Mode Activated. System under full operator control.";
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'en-US';
+            utterance.rate = 1.0; utterance.pitch = 0.6; // Suara robot lebih berat dan menyeramkan
+            synth.speak(utterance);
+        }
 
     </script>
 </body>
