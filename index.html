@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>XianBee Core Dashboard</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body {
+            background-color: #0d1117; /* GitHub Dark Theme */
+            color: #39ff14; /* Neon Green */
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .terminal-box {
+            width: 100%;
+            max-width: 400px;
+            border: 1px solid #39ff14;
+            padding: 20px;
+            box-sizing: border-box;
+            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        h2 {
+            text-align: center;
+            border-bottom: 1px dashed #39ff14;
+            padding-bottom: 10px;
+            margin-top: 0;
+            text-transform: uppercase;
+            text-shadow: 0 0 5px #39ff14;
+        }
+        .sys-info {
+            background: rgba(57, 255, 20, 0.1);
+            padding: 15px;
+            border-left: 3px solid #39ff14;
+            margin-bottom: 20px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        .btn-cyber {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: transparent;
+            color: #39ff14;
+            border: 1px solid #39ff14;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .btn-cyber:hover, .btn-cyber:active {
+            background: #39ff14;
+            color: #000;
+            box-shadow: 0 0 10px #39ff14;
+        }
+        .typing-effect {
+            overflow: hidden;
+            white-space: nowrap;
+            border-right: 2px solid #39ff14;
+            animation: typing 2s steps(30, end), blink-caret .75s step-end infinite;
+        }
+        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #39ff14; } }
+    </style>
+</head>
+<body>
+
+    <div class="terminal-box">
+        <h2>XIANBEE CORE v3.0</h2>
+        
+        <div class="sys-info">
+            <div>>_ AUTH_USER : <span id="user_name" style="color: white;">Guest</span></div>
+            <div>>_ USER_ID   : <span id="user_id" style="color: white;">Unknown</span></div>
+            <div>>_ SYS_STAT  : <span style="text-shadow: 0 0 5px #39ff14;">ONLINE 🟢</span></div>
+            <div>>_ PING      : <span id="ping_val">24</span>ms</div>
+        </div>
+
+        <p class="typing-effect">>_ Awaiting directive...</p>
+
+        <button class="btn-cyber" onclick="sendToBot('menu_topup')">[ DEPOSIT_FUNDS ]</button>
+        <button class="btn-cyber" onclick="sendToBot('menu_akun')">[ BUY_ASSETS ]</button>
+        <button class="btn-cyber" onclick="sendToBot('menu_jasa_followers')">[ INJECT_FOLLOWERS ]</button>
+        <button class="btn-cyber" onclick="tg.close()">[ CLOSE_TERMINAL ]</button>
+    </div>
+
+    <script>
+        // Inisialisasi API Telegram WebApp
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Paksa layar kebuka penuh
+        tg.ready();
+
+        // Nangkep data klien yang lagi buka WebApp ini
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('user_name').innerText = tg.initDataUnsafe.user.first_name;
+            document.getElementById('user_id').innerText = tg.initDataUnsafe.user.id;
+        }
+
+        // Bikin ping palsu biar keliatan keren
+        setInterval(() => {
+            document.getElementById('ping_val').innerText = Math.floor(Math.random() * (45 - 15 + 1) + 15);
+        }, 2000);
+
+        // Fungsi buat ngirim perintah ke Bot saat tombol diklik
+        function sendToBot(actionData) {
+            // Ngirim data ke bot (layaknya mencet tombol inline biasa)
+            tg.sendData(actionData); 
+        }
+    </script>
+</body>
+</html>
