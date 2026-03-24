@@ -80,10 +80,10 @@
             width: 100vw;
             height: 100vh;
             z-index: -1; 
-            opacity: 0.8; /* Lebih jelas tapi santai */
+            opacity: 0.8; 
         }
 
-        /* HEADER LOGO GEDE (FULL KOTAK - PNG) */
+        /* 🟢 HEADER LOGO GEDE (EFEK MELAYANG TRANSPARAN) */
         .header-content { 
             display: flex; 
             justify-content: center; 
@@ -91,11 +91,11 @@
             margin-bottom: 25px; 
             width: 100%; 
             max-width: 400px; 
-            background: linear-gradient(180deg, rgba(0, 242, 254, 0.05) 0%, rgba(0, 0, 0, 0.5) 100%); 
-            border: 1px solid rgba(0, 242, 254, 0.5); 
-            border-radius: 15px; 
+            /* Background dan border dihapus biar logonya beneran nyatu sama wallpaper */
+            background: transparent; 
+            border: none; 
+            box-shadow: none; 
             padding: 15px; 
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15), inset 0 0 15px rgba(0, 242, 254, 0.05); 
             box-sizing: border-box;
             z-index: 1;
             transform-style: preserve-3d;
@@ -105,10 +105,11 @@
             width: 100%; 
             max-width: 250px; 
             height: auto; 
-            border-radius: 15px; 
             object-fit: contain; 
-            filter: drop-shadow(0 0 15px var(--blue-glow));
             transform: translateZ(20px); 
+            /* 🪄 INI MANTRA SIHIRNYA BOS: Bikin warna hitam di foto jadi tembus pandang 100% */
+            mix-blend-mode: screen; 
+            filter: drop-shadow(0 0 15px var(--blue-glow));
         }
         
         .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1; align-self: flex-start; margin-left: auto; margin-right: auto;}
@@ -437,7 +438,7 @@
                         }, 800);
                     }
                 }, delay);
-                delay += 400; // Agak dicepetin biar klien gak bosen nunggu
+                delay += 400; 
             });
         };
 
@@ -510,7 +511,7 @@
                 
                 const data = allData.filter(coin => symbols.includes(coin.symbol));
                 
-                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v12 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
+                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v13 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
                 data.forEach(coin => {
                     let symbol = coin.symbol.replace('USDT', '');
                     let price = parseFloat(coin.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -524,7 +525,7 @@
         fetchCryptoPrices();
         setInterval(fetchCryptoPrices, 15000);
 
-        // 🟢 EFEK DEBU MELAYANG (AMBIENT CYBER DUST) - GAK BIKIN PUSING
+        // 🟢 EFEK DEBU MELAYANG (AMBIENT CYBER DUST)
         const canvas = document.getElementById("canvas-bg");
         const ctx = canvas.getContext("2d");
         let width, height, particles;
@@ -533,15 +534,15 @@
             width = canvas.width = window.innerWidth;
             height = canvas.height = window.innerHeight;
             particles = [];
-            let particleCount = Math.floor(width / 15); // Jumlah partikel yang pas
+            let particleCount = Math.floor(width / 15); 
             for (let i = 0; i < particleCount; i++) {
                 particles.push({
                     x: Math.random() * width,
                     y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.1, // Kecepatan X sangat lambat
-                    vy: Math.random() * -0.3 - 0.1, // Pelan melayang ke atas
-                    size: Math.random() * 2 + 0.5, // Ukuran kecil bervariasi
-                    alpha: Math.random() * 0.5 + 0.1 // Transparansi
+                    vx: (Math.random() - 0.5) * 0.1, 
+                    vy: Math.random() * -0.3 - 0.1, 
+                    size: Math.random() * 2 + 0.5, 
+                    alpha: Math.random() * 0.5 + 0.1 
                 });
             }
         }
@@ -553,7 +554,6 @@
                 p.x += p.vx; 
                 p.y += p.vy;
 
-                // Kalau tembus layar atas, reset ke bawah
                 if (p.y < 0) { 
                     p.y = height; 
                     p.x = Math.random() * width; 
@@ -563,7 +563,7 @@
 
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(0, 242, 254, ${p.alpha})`; // Warna Cyan XianBee
+                ctx.fillStyle = `rgba(0, 242, 254, ${p.alpha})`; 
                 ctx.fill();
             }
             requestAnimationFrame(drawParticles);
