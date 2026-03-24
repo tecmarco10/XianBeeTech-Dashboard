@@ -3,91 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Core Dashboard</title>
+    <title>XianBee Premium Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700&display=swap');
+
         body {
-            background-color: #0d1117; /* GitHub Dark Theme */
-            color: #39ff14; /* Neon Green */
-            font-family: 'Courier New', Courier, monospace;
             margin: 0;
             padding: 20px;
+            font-family: 'Outfit', sans-serif;
+            /* Background Mewah Gradient Dark Blue/Purple */
+            background: linear-gradient(135deg, #0f172a 0%, #1e1e38 100%);
+            color: #ffffff;
             display: flex;
             flex-direction: column;
             align-items: center;
+            min-height: 100vh;
         }
-        .terminal-box {
+
+        /* Hero Section (Kartu Profil Klien) */
+        .hero-card {
             width: 100%;
             max-width: 400px;
-            border: 1px solid #39ff14;
+            /* Glassmorphism Effect */
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
             padding: 20px;
-            box-sizing: border-box;
-            box-shadow: 0 0 15px rgba(57, 255, 20, 0.2);
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-        h2 {
+            margin-bottom: 25px;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3);
             text-align: center;
-            border-bottom: 1px dashed #39ff14;
-            padding-bottom: 10px;
-            margin-top: 0;
-            text-transform: uppercase;
-            text-shadow: 0 0 5px #39ff14;
         }
-        .sys-info {
-            background: rgba(57, 255, 20, 0.1);
-            padding: 15px;
-            border-left: 3px solid #39ff14;
-            margin-bottom: 20px;
-            font-size: 14px;
-            line-height: 1.6;
+
+        .hero-card h2 {
+            margin: 0 0 5px 0;
+            font-weight: 700;
+            font-size: 1.5rem;
+            background: linear-gradient(90deg, #00f2fe, #4facfe);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .btn-cyber {
-            display: block;
+
+        .hero-card p {
+            margin: 0;
+            font-size: 0.9rem;
+            color: #a0aec0;
+            margin-bottom: 15px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: rgba(0, 242, 254, 0.2);
+            color: #00f2fe;
+            padding: 5px 12px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 1px solid rgba(0, 242, 254, 0.3);
+        }
+
+        /* Judul Menu */
+        .section-title {
             width: 100%;
-            padding: 15px;
-            margin-bottom: 10px;
-            background: transparent;
-            color: #39ff14;
-            border: 1px solid #39ff14;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 16px;
-            font-weight: bold;
+            max-width: 400px;
+            font-size: 1rem;
+            font-weight: 500;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Grid System buat Tombol */
+        .menu-grid {
+            width: 100%;
+            max-width: 400px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        /* Tombol Glassmorphism Mewah */
+        .glass-btn {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 20px 10px;
+            color: #ffffff;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
             cursor: pointer;
-            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
-        .btn-cyber:hover, .btn-cyber:active {
-            background: #39ff14;
-            color: #000;
-            box-shadow: 0 0 10px #39ff14;
+
+        .glass-btn:hover, .glass-btn:active {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(79, 172, 254, 0.2);
         }
-        .typing-effect {
-            overflow: hidden;
-            white-space: nowrap;
-            border-right: 2px solid #39ff14;
-            animation: typing 2s steps(30, end), blink-caret .75s step-end infinite;
+
+        .full-width {
+            grid-column: span 2;
+            flex-direction: row;
+            padding: 15px;
+            justify-content: center;
+            gap: 15px;
+            background: linear-gradient(135deg, rgba(79, 172, 254, 0.1), rgba(0, 242, 254, 0.1));
+            border-color: rgba(0, 242, 254, 0.3);
         }
-        @keyframes blink-caret { from, to { border-color: transparent } 50% { border-color: #39ff14; } }
+
+        .danger-btn {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+
+        .icon {
+            font-size: 1.8rem;
+        }
+        .full-width .icon {
+            font-size: 1.4rem;
+        }
     </style>
 </head>
 <body>
 
-    <div class="terminal-box">
-        <h2>XIANBEE CORE v3.0</h2>
-        
-        <div class="sys-info">
-            <div>>_ AUTH_USER : <span id="user_name" style="color: white;">Guest</span></div>
-            <div>>_ USER_ID   : <span id="user_id" style="color: white;">Unknown</span></div>
-            <div>>_ SYS_STAT  : <span style="text-shadow: 0 0 5px #39ff14;">ONLINE 🟢</span></div>
-            <div>>_ PING      : <span id="ping_val">24</span>ms</div>
-        </div>
+    <div class="hero-card">
+        <h2>Welcome, <span id="user_name">Guest</span></h2>
+        <p>Telegram ID: <span id="user_id">Unknown</span></p>
+        <div class="badge">🟢 Secure Connection Established</div>
+    </div>
 
-        <p class="typing-effect">>_ Awaiting directive...</p>
+    <div class="section-title">Wallet & Account</div>
+    <div class="menu-grid">
+        <button class="glass-btn full-width" onclick="sendToBot('menu_profile')">
+            <span class="icon">💳</span> View Profile & Balance
+        </button>
+        <button class="glass-btn" onclick="sendToBot('menu_topup')">
+            <span class="icon">💰</span> Deposit
+        </button>
+        <button class="glass-btn" onclick="sendToBot('menu_referral')">
+            <span class="icon">🤝</span> Referral
+        </button>
+    </div>
 
-        <button class="btn-cyber" onclick="sendToBot('menu_topup')">[ DEPOSIT_FUNDS ]</button>
-        <button class="btn-cyber" onclick="sendToBot('menu_akun')">[ BUY_ASSETS ]</button>
-        <button class="btn-cyber" onclick="sendToBot('menu_jasa_followers')">[ INJECT_FOLLOWERS ]</button>
-        <button class="btn-cyber" onclick="tg.close()">[ CLOSE_TERMINAL ]</button>
+    <div class="section-title">Automation Services</div>
+    <div class="menu-grid">
+        <button class="glass-btn full-width" onclick="sendToBot('menu_akun')">
+            <span class="icon">🛒</span> Buy Aged Accounts
+        </button>
+        <button class="glass-btn" onclick="sendToBot('menu_jasa_followers')">
+            <span class="icon">👥</span> Followers
+        </button>
+        <button class="glass-btn" onclick="sendToBot('menu_jasa_stars')">
+            <span class="icon">⭐</span> Stars
+        </button>
+        <button class="glass-btn" onclick="sendToBot('menu_jasa_forks')">
+            <span class="icon">⎇</span> Forks
+        </button>
+        <button class="glass-btn" onclick="sendToBot('menu_jasa_watch')">
+            <span class="icon">👁️</span> Watchers
+        </button>
+    </div>
+
+    <div class="menu-grid">
+        <button class="glass-btn full-width danger-btn" onclick="tg.close()">
+            <span class="icon">🛑</span> Close Dashboard
+        </button>
     </div>
 
     <script>
@@ -96,20 +190,14 @@
         tg.expand(); // Paksa layar kebuka penuh
         tg.ready();
 
-        // Nangkep data klien yang lagi buka WebApp ini
+        // Nangkep data klien
         if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
             document.getElementById('user_name').innerText = tg.initDataUnsafe.user.first_name;
             document.getElementById('user_id').innerText = tg.initDataUnsafe.user.id;
         }
 
-        // Bikin ping palsu biar keliatan keren
-        setInterval(() => {
-            document.getElementById('ping_val').innerText = Math.floor(Math.random() * (45 - 15 + 1) + 15);
-        }, 2000);
-
-        // Fungsi buat ngirim perintah ke Bot saat tombol diklik
+        // Fungsi ngirim perintah ke Bot
         function sendToBot(actionData) {
-            // Ngirim data ke bot (layaknya mencet tombol inline biasa)
             tg.sendData(actionData); 
         }
     </script>
