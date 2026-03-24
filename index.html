@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Tech Store Terminal v11</title>
+    <title>XianBee Tech Store Terminal</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
@@ -21,7 +21,7 @@
 
         body { 
             margin: 0; 
-            padding: 0; /* Padding dipindah ke main-wrapper */
+            padding: 0; 
             font-family: 'Outfit', sans-serif; 
             background-color: var(--blue-dark); 
             color: #ffffff; 
@@ -60,9 +60,9 @@
         }
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
-        /* 🟢 WRAPPER UTAMA (Biar bisa di-fade-in setelah preloader) */
+        /* 🟢 WRAPPER UTAMA */
         #main-wrapper {
-            opacity: 0; /* Disembunyikan dulu */
+            opacity: 0; 
             transition: opacity 1s ease-in;
             display: flex;
             flex-direction: column;
@@ -72,7 +72,7 @@
             width: 100%;
         }
 
-        /* 🟢 CANVAS BACKGROUND - MATRIX RAIN */
+        /* 🟢 CANVAS BACKGROUND - RELAXING CYBER DUST */
         #canvas-bg {
             position: fixed;
             top: 0;
@@ -80,10 +80,10 @@
             width: 100vw;
             height: 100vh;
             z-index: -1; 
-            opacity: 0.4; /* Opacity diturunin biar tombol tetep jelas */
+            opacity: 0.8; /* Lebih jelas tapi santai */
         }
 
-        /* HEADER LOGO GEDE (FULL KOTAK - PNG FIX) */
+        /* HEADER LOGO GEDE (FULL KOTAK - PNG) */
         .header-content { 
             display: flex; 
             justify-content: center; 
@@ -98,7 +98,6 @@
             box-shadow: 0 0 25px rgba(0, 242, 254, 0.15), inset 0 0 15px rgba(0, 242, 254, 0.05); 
             box-sizing: border-box;
             z-index: 1;
-            /* 3D Property */
             transform-style: preserve-3d;
             transform: perspective(1000px);
         }
@@ -109,7 +108,7 @@
             border-radius: 15px; 
             object-fit: contain; 
             filter: drop-shadow(0 0 15px var(--blue-glow));
-            transform: translateZ(20px); /* Efek melayang 3D */
+            transform: translateZ(20px); 
         }
         
         .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1; align-self: flex-start; margin-left: auto; margin-right: auto;}
@@ -139,16 +138,15 @@
             background: rgba(0,0,0,0.6); 
             border: 1px solid rgba(255,255,255,0.1); 
             backdrop-filter: blur(5px); 
-            /* 3D Tilt setup */
             transform-style: preserve-3d;
             transition: transform 0.1s ease, box-shadow 0.1s ease;
             position: relative;
         }
-        /* Bikin elemen di dalam tombol melayang di 3D space */
+        
         .btn-icon { font-size: 1.8rem; margin-right: 12px; display: flex; justify-content: center; align-items: center; width: 30px; height: 30px; transform: translateZ(15px); }
         .btn-text { transform: translateZ(10px); }
         
-        .btn-title { font-size: 0.85rem; font-weight: 700; color: #ffffff; display: block; }
+        .btn-title { font-size: 0.9rem; font-weight: 700; color: #ffffff; display: block; margin-bottom: 2px; }
         .btn-sub { font-size: 0.65rem; color: var(--gray-text); }
         
         .btn-gold { border-color: rgba(255, 215, 0, 0.5); background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%); }
@@ -220,7 +218,7 @@
         }
         #fomo-toast.show { top: 20px; }
 
-        /* 🟢 LIVE CRYPTO TICKER (BOTTOM) */
+        /* 🟢 LIVE CRYPTO TICKER */
         .crypto-ticker-container {
             position: fixed;
             bottom: 0;
@@ -263,7 +261,7 @@
         <div id="term-text"></div>
     </div>
 
-    <div id="fomo-toast">⚡ Terminal Online</div>
+    <div id="fomo-toast">⚡ System Online</div>
 
     <div id="main-wrapper">
         
@@ -274,39 +272,57 @@
         <div class="section-title">Wallet & Account</div>
         <div class="menu-grid">
             <button class="btn-complex btn-gold full-width btn-3d" onclick="sendToBot(this, 'menu_profile')">
-                <div class="btn-icon">💳</div>
+                <div class="btn-icon">👤</div>
                 <div class="btn-text">
-                    <span class="btn-title">Diagnostics & Metrics:</span>
-                    <span class="btn-sub">User Profile & Balance</span>
+                    <span class="btn-title">My Profile & Balance</span>
+                    <span class="btn-sub">View Account Details</span>
                 </div>
             </button>
             <button class="btn-complex btn-gold btn-3d" onclick="sendToBot(this, 'menu_topup')">
                 <div class="btn-icon">💰</div>
-                <div class="btn-text"><span class="btn-title">Asset Acquisition:</span><span class="btn-sub">Fund Wallet</span></div>
+                <div class="btn-text">
+                    <span class="btn-title">Top Up Balance</span>
+                    <span class="btn-sub">Add Funds to Wallet</span>
+                </div>
             </button>
             <button class="btn-complex btn-gold btn-3d" onclick="sendToBot(this, 'menu_referral')">
                 <div class="btn-icon">🤝</div>
-                <div class="btn-text"><span class="btn-title">Network Growth:</span><span class="btn-sub">Affiliate Commission</span></div>
+                <div class="btn-text">
+                    <span class="btn-title">Referral & Earn</span>
+                    <span class="btn-sub">Invite Friends & Get Bonus</span>
+                </div>
             </button>
             <button class="btn-complex btn-gold full-width btn-3d" onclick="sendToBot(this, 'user_check_flag')">
-                <div class="btn-icon">🔍</div>
-                <div class="btn-text"><span class="btn-title">Security Check:</span><span class="btn-sub">Verify GitHub Account Integrity</span></div>
+                <div class="btn-icon">🛡️</div>
+                <div class="btn-text">
+                    <span class="btn-title">Check Account Status</span>
+                    <span class="btn-sub">Verify GitHub Shadowban</span>
+                </div>
             </button>
         </div>
 
-        <div class="section-title">Automation & Assets</div>
+        <div class="section-title">Services & Assets</div>
         <div class="menu-grid">
             <button class="btn-complex btn-blue full-width btn-3d" onclick="sendToBot(this, 'menu_akun')">
                 <div class="btn-icon">🛒</div>
-                <div class="btn-text"><span class="btn-title">Digital Asset Vault:</span><span class="btn-sub">Purchase Aged GitHub Accounts</span></div>
+                <div class="btn-text">
+                    <span class="btn-title">Buy GitHub Accounts</span>
+                    <span class="btn-sub">High Quality Aged Accounts</span>
+                </div>
             </button>
             <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_followers')">
                 <div class="btn-icon">👥</div>
-                <div class="btn-text"><span class="btn-title">Audience Engagement:</span><span class="btn-sub">Follower Injection</span></div>
+                <div class="btn-text">
+                    <span class="btn-title">Buy Followers</span>
+                    <span class="btn-sub">Boost Your Profile</span>
+                </div>
             </button>
             <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_stars')">
                 <div class="btn-icon">⭐</div>
-                <div class="btn-text"><span class="btn-title">Repo Metrics:</span><span class="btn-sub">Star Elevation</span></div>
+                <div class="btn-text">
+                    <span class="btn-title">Buy Repo Stars</span>
+                    <span class="btn-sub">Increase Repo Rating</span>
+                </div>
             </button>
             <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_forks')">
                 <div class="btn-icon">
@@ -314,11 +330,17 @@
                         <path d="M6 3v12m12-12v12M6 15a3 3 0 003 3h6a3 3 0 003-3M12 18v3"/>
                     </svg>
                 </div>
-                <div class="btn-text"><span class="btn-title">Project Credibility:</span><span class="btn-sub">Fork Injection</span></div>
+                <div class="btn-text">
+                    <span class="btn-title">Buy Repo Forks</span>
+                    <span class="btn-sub">Boost Project Credibility</span>
+                </div>
             </button>
             <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_watch')">
                 <div class="btn-icon">👁️</div>
-                <div class="btn-text"><span class="btn-title">Repo Visibility:</span><span class="btn-sub">Watcher Boost</span></div>
+                <div class="btn-text">
+                    <span class="btn-title">Buy Repo Watchers</span>
+                    <span class="btn-sub">Increase Visibility</span>
+                </div>
             </button>
         </div>
 
@@ -331,7 +353,7 @@
         <div class="menu-grid" style="margin-bottom: 80px;">
             <button class="btn-complex btn-red full-width btn-3d" onclick="sendToBot(this, 'close_terminal')">
                 <div class="btn-icon">🛑</div>
-                <div class="btn-text"><span class="btn-title" style="text-align: center;">Terminate_Signal: Disconnect</span></div>
+                <div class="btn-text"><span class="btn-title" style="text-align: center;">Close Dashboard</span></div>
             </button>
         </div>
 
@@ -357,7 +379,7 @@
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
 
-        // 🟢 FUNGSI SUARA BOOT MESIN
+        // FUNGSI SUARA BOOT MESIN
         function playBootSound() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const osc = audioCtx.createOscillator();
@@ -372,7 +394,7 @@
             osc.start(); osc.stop(audioCtx.currentTime + 0.5);
         }
 
-        // 🟢 FUNGSI BEEP KLIK TOMBOL
+        // FUNGSI BEEP KLIK TOMBOL
         function playSciFiBeep() {
             if (audioCtx.state === 'suspended') audioCtx.resume();
             const oscillator = audioCtx.createOscillator();
@@ -391,9 +413,9 @@
         // 🟢 TERMINAL BOOT SEQUENCE
         const bootTexts = [
             "> Executing startup protocol...",
-            "> Bypassing GitHub API rate limits...",
-            "> Injecting stealth modules...",
-            "> Handshake established.",
+            "> Bypassing network limits...",
+            "> Establishing secure link...",
+            "> Handshake successful.",
             "> ACCESS GRANTED."
         ];
         
@@ -404,37 +426,34 @@
             bootTexts.forEach((text, i) => {
                 setTimeout(() => {
                     termContainer.innerHTML += text + "<br>";
-                    // Kalo udah kalimat terakhir, ilangin preloader dan munculin dashboard
                     if (i === bootTexts.length - 1) {
                         setTimeout(() => {
                             document.getElementById("preloader").style.opacity = "0";
                             setTimeout(() => {
                                 document.getElementById("preloader").style.visibility = "hidden";
                                 document.getElementById("main-wrapper").style.opacity = "1";
-                                playBootSound(); // Bunyi nyala mesin
+                                playBootSound(); 
                             }, 500);
                         }, 800);
                     }
                 }, delay);
-                delay += 500; // Kecepatan ngetik
+                delay += 400; // Agak dicepetin biar klien gak bosen nunggu
             });
         };
 
-        // 🟢 3D TILT EFFECT & GLITCH ON CLICK
+        // 🟢 3D TILT EFFECT
         document.querySelectorAll('.btn-3d').forEach(card => {
-            // Efek 3D pas kursor/jari gerak
             card.addEventListener('mousemove', e => {
                 let rect = card.getBoundingClientRect();
                 let x = e.clientX - rect.left;
                 let y = e.clientY - rect.top;
                 let centerX = rect.width / 2;
                 let centerY = rect.height / 2;
-                let rotateX = ((y - centerY) / centerY) * -12; // Miring maks 12 derajat
+                let rotateX = ((y - centerY) / centerY) * -12; 
                 let rotateY = ((x - centerX) / centerX) * 12;
                 card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
                 card.style.boxShadow = `${-rotateY}px ${rotateX}px 20px rgba(0, 242, 254, 0.2)`;
             });
-            // Reset balik lurus pas dilepas
             card.addEventListener('mouseleave', () => {
                 card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
                 card.style.boxShadow = `none`;
@@ -444,11 +463,7 @@
         // 🟢 FUNGSI SEND DATA + EFEK GLITCH
         function sendToBot(element, actionData) {
             playSciFiBeep();
-            
-            // Trigger efek kesemutan/glitch
             element.classList.add('btn-glitch');
-            
-            // Tunggu 300ms biar klien ngerasain efeknya, baru kirim perintah
             setTimeout(() => {
                 element.classList.remove('btn-glitch');
                 if(actionData === "close_terminal") {
@@ -472,13 +487,12 @@
 
         // 🟢 SYSTEM FOMO NOTIFICATION
         const fomoData = [
-            "⚡ System: Diagnostic routine [1] complete.",
-            "🟢 Client @Joh*** deposited $50 USDT via Crypto",
+            "🟢 Client @Joh*** deposited $50 USDT",
             "⭐ Client @Ale*** ordered 1000 Repo Stars",
-            "🚀 Fork Injection initiated for @Dev***",
-            "🛒 Client @Mar*** purchased 2018 Aged Account",
+            "🛒 Client @Mar*** purchased an Aged Account",
             "🔶 Incoming transfer: Binance Pay ID 8487***",
-            "👥 Client @Zoe*** injected 500 Followers"
+            "👥 Client @Zoe*** bought 500 Followers",
+            "🚀 System: Order #8921 successfully delivered."
         ];
         setInterval(() => {
             const toast = document.getElementById('fomo-toast');
@@ -496,7 +510,7 @@
                 
                 const data = allData.filter(coin => symbols.includes(coin.symbol));
                 
-                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v11 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
+                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v12 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
                 data.forEach(coin => {
                     let symbol = coin.symbol.replace('USDT', '');
                     let price = parseFloat(coin.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -510,52 +524,54 @@
         fetchCryptoPrices();
         setInterval(fetchCryptoPrices, 15000);
 
-        // 🟢 MATRIX RAIN EFFECT (Hacker Background)
+        // 🟢 EFEK DEBU MELAYANG (AMBIENT CYBER DUST) - GAK BIKIN PUSING
         const canvas = document.getElementById("canvas-bg");
         const ctx = canvas.getContext("2d");
-        
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-        
-        // Karakter yang turun (Kombinasi huruf, angka, simbol jepang/cyrillic)
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*アイウエオカキクケコサシスセソ";
-        const fontSize = 14;
-        const columns = canvas.width / fontSize;
-        
-        // Array buat nyimpen posisi jatuhnya tiap kolom
-        const drops = [];
-        for(let x = 0; x < columns; x++) {
-            drops[x] = 1;
-        }
-        
-        function drawMatrix() {
-            // Fill background pake item transparan biar ada efek buntut (trail)
-            ctx.fillStyle = "rgba(10, 10, 16, 0.05)";
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            
-            // Warna teks matrix cyan/neon
-            ctx.fillStyle = "#00f2fe"; 
-            ctx.font = fontSize + "px monospace";
-            
-            for(let i = 0; i < drops.length; i++) {
-                const text = letters.charAt(Math.floor(Math.random() * letters.length));
-                // Cetak huruf
-                ctx.fillText(text, i * fontSize, drops[i] * fontSize);
-                
-                // Kalo udah nyampe bawah layar, reset ke atas secara random
-                if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
-                    drops[i] = 0;
-                }
-                drops[i]++;
+        let width, height, particles;
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            let particleCount = Math.floor(width / 15); // Jumlah partikel yang pas
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width,
+                    y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.1, // Kecepatan X sangat lambat
+                    vy: Math.random() * -0.3 - 0.1, // Pelan melayang ke atas
+                    size: Math.random() * 2 + 0.5, // Ukuran kecil bervariasi
+                    alpha: Math.random() * 0.5 + 0.1 // Transparansi
+                });
             }
-            requestAnimationFrame(drawMatrix);
         }
-        drawMatrix();
-        
-        window.addEventListener("resize", () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height);
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx; 
+                p.y += p.vy;
+
+                // Kalau tembus layar atas, reset ke bawah
+                if (p.y < 0) { 
+                    p.y = height; 
+                    p.x = Math.random() * width; 
+                }
+                if (p.x < 0) p.x = width;
+                if (p.x > width) p.x = 0;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(0, 242, 254, ${p.alpha})`; // Warna Cyan XianBee
+                ctx.fill();
+            }
+            requestAnimationFrame(drawParticles);
+        }
+
+        window.addEventListener("resize", initCanvas);
+        initCanvas();
+        drawParticles();
 
     </script>
 </body>
