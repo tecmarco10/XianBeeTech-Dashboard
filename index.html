@@ -3,294 +3,185 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Personalized Dashboard</title>
+    <title>XianBee Ultimate Dashboard</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
 
-        body {
-            margin: 0;
-            padding: 15px;
-            font-family: 'Outfit', sans-serif;
-            /* Background Premium Carbon Fiber / Dark Mesh */
-            background-color: #0a0a10;
-            background-image: 
-                repeating-linear-gradient(45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 10px),
-                repeating-linear-gradient(-45deg, rgba(255, 255, 255, 0.03) 0px, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 10px);
-            color: #ffffff;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+        body { 
+            margin: 0; 
+            padding: 15px; 
+            font-family: 'Outfit', sans-serif; 
+            background-color: #0a0a10; 
+            color: #ffffff; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
             min-height: 100vh;
-        }
-
-        /* 🟢 HEADER LOGO GEDE & NAMA TOKO DI TENGAH */
-        .header-content {
-            display: flex;
-            flex-direction: column; /* Bikin logo di atas, teks di bawah */
-            align-items: center;
-            justify-content: center; 
-            gap: 15px; 
-            margin-bottom: 25px;
-            width: 100%;
-            max-width: 400px;
-            /* Tambahan Kotak Neon buat Header biar persis gambar */
-            background: linear-gradient(180deg, rgba(0, 242, 254, 0.05) 0%, rgba(0, 0, 0, 0.5) 100%);
-            border: 1px solid rgba(0, 242, 254, 0.5);
-            border-radius: 15px;
-            padding: 25px 20px;
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15), inset 0 0 15px rgba(0, 242, 254, 0.05);
-            box-sizing: border-box;
-        }
-        
-        /* Gaya Logo Super Gede */
-        .store-logo {
-            width: 110px; /* LOGO JADI JAUH LEBIH GEDE */
-            height: 110px;
-            border-radius: 20px; /* Sudut agak membulat elegan */
-            object-fit: cover; 
-            border: 2px solid rgba(0, 242, 254, 0.6); /* Neon glow */
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.4);
-            margin-bottom: 5px;
-        }
-        
-        /* Kontainer Teks (Tengah) */
-        .store-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            line-height: 1.2; 
-        }
-        
-        .store-name-top {
-            font-size: 1.8rem;
-            font-weight: 700;
-            letter-spacing: 1px;
-            color: #ffffff;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5), 0 0 20px rgba(0, 242, 254, 0.3);
-        }
-
-        .store-name-bottom {
-            font-size: 1.2rem;
-            font-weight: 600;
-            color: #00f2fe; /* Warna cyan neon */
-            letter-spacing: 4px;
-            text-transform: uppercase;
-            text-shadow: 0 0 10px rgba(0, 242, 254, 0.6);
-        }
-
-        /* Hero Section (Kartu Profil Klien) - Kaca & Neon Cyan */
-        .hero-card {
-            width: 100%;
-            max-width: 400px;
-            background: linear-gradient(180deg, rgba(0, 242, 254, 0.1) 0%, rgba(0, 0, 0, 0.6) 100%);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(0, 242, 254, 0.5);
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 25px;
-            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2), inset 0 0 15px rgba(0, 242, 254, 0.1);
-            text-align: center;
-            box-sizing: border-box;
-        }
-
-        .hero-card h2 {
-            margin: 0 0 5px 0;
-            font-weight: 700;
-            font-size: 1.6rem;
-            color: #4facfe;
-            text-shadow: 0 0 10px rgba(79, 172, 254, 0.5);
-        }
-
-        .hero-card p {
-            margin: 0;
-            font-size: 0.85rem;
-            color: #94a3b8;
-            margin-bottom: 15px;
-        }
-
-        .badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(0, 242, 254, 0.15);
-            color: #00f2fe;
-            padding: 6px 15px;
-            border-radius: 50px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            border: 1px solid rgba(0, 242, 254, 0.4);
-            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
-        }
-
-        /* Judul Menu */
-        .section-title {
-            width: 100%;
-            max-width: 400px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            color: #cbd5e1;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            padding-left: 5px;
-        }
-
-        /* Grid System buat Tombol */
-        .menu-grid {
-            width: 100%;
-            max-width: 400px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 25px;
-        }
-
-        /* Style Dasar Tombol Complex (Icon Kiri, Teks Kanan) */
-        .btn-complex {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            padding: 12px 15px;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: left;
-            box-sizing: border-box;
-            width: 100%;
-            text-decoration: none;
-            outline: none;
-        }
-
-        .btn-icon {
-            font-size: 1.8rem;
-            margin-right: 12px;
-            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5));
-        }
-
-        .btn-text {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .btn-title {
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.85rem;
-            font-weight: 700;
-            color: #ffffff;
-            margin-bottom: 2px;
-        }
-
-        .btn-sub {
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.65rem;
-            color: #94a3b8;
-            font-weight: 400;
-        }
-
-        /* Kategori EMAS (Wallet & Profile) */
-        .btn-gold {
-            background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%);
-            border: 1px solid rgba(255, 215, 0, 0.5);
-            box-shadow: 0 4px 15px rgba(255, 215, 0, 0.1);
-        }
-        .btn-gold:hover, .btn-gold:active {
-            background: linear-gradient(180deg, rgba(50, 40, 0, 0.9) 0%, rgba(20, 20, 0, 1) 100%);
-            border-color: rgba(255, 215, 0, 0.8);
-            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* Kategori BIRU (Automation & Assets) */
-        .btn-blue {
-            background: linear-gradient(180deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 5, 15, 0.95) 100%);
-            border: 1px solid rgba(0, 195, 255, 0.5);
-            box-shadow: 0 4px 15px rgba(0, 195, 255, 0.1);
-        }
-        .btn-blue:hover, .btn-blue:active {
-            background: linear-gradient(180deg, rgba(0, 30, 60, 0.9) 0%, rgba(0, 10, 25, 1) 100%);
-            border-color: rgba(0, 195, 255, 0.8);
-            box-shadow: 0 0 15px rgba(0, 195, 255, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* Kategori MERAH (Disconnect) */
-        .btn-red {
-            background: linear-gradient(180deg, rgba(40, 0, 0, 0.8) 0%, rgba(15, 0, 0, 0.95) 100%);
-            border: 1px solid rgba(239, 68, 68, 0.5);
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.1);
-            justify-content: center;
-        }
-        .btn-red .btn-title {
-            color: #fca5a5;
-        }
-        .btn-red:hover, .btn-red:active {
-            border-color: rgba(239, 68, 68, 0.8);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
-            transform: translateY(-2px);
-        }
-
-        /* Full Width Modifier */
-        .full-width {
-            grid-column: span 2;
-        }
-
-        /* System Load Bar Animation */
-        .sys-load-container {
-            width: 100%;
-            max-width: 400px;
-            background: rgba(0, 195, 255, 0.05);
-            border: 1px solid rgba(0, 195, 255, 0.3);
-            border-radius: 8px;
-            padding: 10px 15px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 20px;
-        }
-        .sys-load-title {
-            font-size: 0.8rem;
-            color: #00f2fe;
-            font-weight: 600;
-        }
-        .progress-bar-bg {
-            flex-grow: 1;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            margin: 0 15px;
-            border-radius: 4px;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
         }
-        .progress-bar-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #4facfe, #00f2fe);
-            width: 6%; /* Default val */
-            box-shadow: 0 0 10px #00f2fe;
-            transition: width 0.5s ease;
+
+        /* 🟢 CANVAS BACKGROUND - INTERACTIVE NODES */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1; /* Biar ada di belakang konten */
+            opacity: 0.6;
         }
-        .sys-load-pct {
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 0.85rem;
+
+        /* 🟢 HEADER LOGO GEDE (TANPA TEKS) */
+        .header-content { 
+            display: flex; 
+            justify-content: center; 
+            align-items: center;
+            margin-bottom: 25px; 
+            width: 100%; 
+            max-width: 400px; 
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.05) 0%, rgba(0, 0, 0, 0.5) 100%); 
+            border: 1px solid rgba(0, 242, 254, 0.5); 
+            border-radius: 15px; 
+            padding: 15px; 
+            box-shadow: 0 0 25px rgba(0, 242, 254, 0.15), inset 0 0 15px rgba(0, 242, 254, 0.05); 
+            box-sizing: border-box;
+            z-index: 1;
+        }
+        .store-logo { 
+            width: 100%; /* Lebar full ngikutin kotak */
+            max-width: 250px; /* Batas maksimal biar gak pecah */
+            height: auto; 
+            border-radius: 15px; 
+            object-fit: contain; 
+            filter: drop-shadow(0 0 15px rgba(0, 242, 254, 0.5));
+        }
+
+        /* Hero Section (Kartu Profil) */
+        .hero-card { 
+            width: 100%; 
+            max-width: 400px; 
+            background: linear-gradient(180deg, rgba(0, 242, 254, 0.1) 0%, rgba(0, 0, 0, 0.6) 100%); 
+            backdrop-filter: blur(10px); 
+            -webkit-backdrop-filter: blur(10px); 
+            border: 1px solid rgba(0, 242, 254, 0.5); 
+            border-radius: 12px; 
+            padding: 20px; 
+            margin-bottom: 25px; 
+            box-shadow: 0 0 20px rgba(0, 242, 254, 0.2); 
+            text-align: center; 
+            box-sizing: border-box;
+            z-index: 1;
+        }
+        .hero-card h2 { margin: 0 0 5px 0; font-weight: 700; font-size: 1.6rem; color: #4facfe; text-shadow: 0 0 10px rgba(79, 172, 254, 0.5); }
+        .hero-card p { margin: 0; font-size: 0.85rem; color: #94a3b8; margin-bottom: 15px; }
+        .badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(0, 242, 254, 0.15); color: #00f2fe; padding: 6px 15px; border-radius: 50px; font-size: 0.75rem; font-weight: 600; border: 1px solid rgba(0, 242, 254, 0.4); }
+        
+        .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1;}
+        .menu-grid { width: 100%; max-width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; z-index: 1;}
+        
+        .btn-complex { display: flex; align-items: center; padding: 12px 15px; border-radius: 10px; cursor: pointer; transition: all 0.3s ease; text-align: left; box-sizing: border-box; width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); }
+        .btn-icon { font-size: 1.8rem; margin-right: 12px; }
+        .btn-title { font-size: 0.85rem; font-weight: 700; color: #ffffff; display: block; }
+        .btn-sub { font-size: 0.65rem; color: #94a3b8; }
+        .btn-gold { border-color: rgba(255, 215, 0, 0.5); background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%); }
+        .btn-blue { border-color: rgba(0, 195, 255, 0.5); background: linear-gradient(180deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 5, 15, 0.95) 100%); }
+        .btn-red { border-color: rgba(239, 68, 68, 0.5); background: linear-gradient(180deg, rgba(40, 0, 0, 0.8) 0%, rgba(15, 0, 0, 0.95) 100%); justify-content: center; }
+        .full-width { grid-column: span 2; }
+        
+        .sys-load-container { width: 100%; max-width: 400px; background: rgba(0, 195, 255, 0.05); border: 1px solid rgba(0, 195, 255, 0.3); border-radius: 8px; padding: 10px 15px; box-sizing: border-box; display: flex; align-items: center; margin-bottom: 40px; z-index: 1;}
+        .progress-bar-bg { flex-grow: 1; height: 8px; background: rgba(255, 255, 255, 0.1); margin: 0 15px; border-radius: 4px; overflow: hidden; }
+        .progress-bar-fill { height: 100%; background: #00f2fe; width: 6%; transition: width 0.5s ease; box-shadow: 0 0 10px #00f2fe; }
+
+        /* 🟢 WHATSAPP FLOATING BUTTON */
+        .wa-fab {
+            position: fixed;
+            bottom: 60px; /* Di atas ticker crypto */
+            right: 20px;
+            width: 55px;
+            height: 55px;
+            background-color: #25D366;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            z-index: 100;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+        .wa-fab:active { transform: scale(0.9); }
+        .wa-fab img { width: 35px; height: 35px; }
+
+        /* 🟢 SYSTEM FOMO NOTIFICATION */
+        #fomo-toast {
+            position: fixed;
+            top: -100px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.85);
+            border: 1px solid rgba(0, 242, 254, 0.5);
+            border-radius: 50px;
+            padding: 8px 20px;
+            color: #00f2fe;
+            font-size: 0.75rem;
+            font-weight: 600;
+            box-shadow: 0 5px 15px rgba(0, 242, 254, 0.2);
+            z-index: 1000;
+            transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        #fomo-toast.show { top: 20px; }
+
+        /* 🟢 LIVE CRYPTO TICKER (BOTTOM) */
+        .crypto-ticker-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #000000;
+            border-top: 1px solid rgba(0, 242, 254, 0.3);
             color: #ffffff;
+            font-size: 0.75rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            padding: 5px 0;
+            z-index: 50;
+            overflow: hidden;
+            display: flex;
+            white-space: nowrap;
+        }
+        .crypto-ticker {
+            display: inline-block;
+            animation: marquee 25s linear infinite;
+        }
+        .crypto-item { margin-right: 30px; }
+        .crypto-up { color: #25D366; }
+        .crypto-down { color: #ff4d4d; }
+        
+        @keyframes marquee {
+            0% { transform: translateX(100vw); }
+            100% { transform: translateX(-100%); }
         }
     </style>
 </head>
 <body>
 
+    <canvas id="canvas-bg"></canvas>
+
+    <div id="fomo-toast">⚡ System Online</div>
+
     <div class="header-content">
-        <img src="logo.png" alt="Logo" class="store-logo">
-        <div class="store-text">
-            <span class="store-name-top">XianBee-Tech</span>
-            <span class="store-name-bottom">Store</span>
-        </div>
+        <img src="logo.jpg" alt="XianBee Tech Logo" class="store-logo">
     </div>
 
     <div class="hero-card">
         <h2>Welcome, <span id="user_name">Operator...</span></h2>
-        <p>Telegram ID: <span id="user_id">Unknown</span></p>
+        <p>Telegram ID: <span id="user_id">Fetching...</span></p>
         <div class="badge">
             <span>🔑</span> [SECURE_CONNECTION: ESTABLISHED]
         </div>
@@ -300,34 +191,19 @@
     <div class="menu-grid">
         <button class="btn-complex btn-gold full-width" onclick="sendToBot('menu_profile')">
             <div class="btn-icon">💳</div>
-            <div class="btn-text">
-                <span class="btn-title">Diagnostics & Metrics:</span>
-                <span class="btn-sub">User Profile & Balance</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Diagnostics & Metrics:</span><span class="btn-sub">User Profile & Balance</span></div>
         </button>
-
         <button class="btn-complex btn-gold" onclick="sendToBot('menu_topup')">
             <div class="btn-icon">💰</div>
-            <div class="btn-text">
-                <span class="btn-title">Asset Acquisition:</span>
-                <span class="btn-sub">Fund Wallet</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Asset Acquisition:</span><span class="btn-sub">Fund Wallet</span></div>
         </button>
-
         <button class="btn-complex btn-gold" onclick="sendToBot('menu_referral')">
             <div class="btn-icon">🤝</div>
-            <div class="btn-text">
-                <span class="btn-title">Network Growth:</span>
-                <span class="btn-sub">Affiliate Commission</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Network Growth:</span><span class="btn-sub">Affiliate Commission</span></div>
         </button>
-
         <button class="btn-complex btn-gold full-width" onclick="sendToBot('user_check_flag')">
             <div class="btn-icon">🔍</div>
-            <div class="btn-text">
-                <span class="btn-title">Security Check:</span>
-                <span class="btn-sub">Verify GitHub Account Integrity</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Security Check:</span><span class="btn-sub">Verify GitHub Account Integrity</span></div>
         </button>
     </div>
 
@@ -335,87 +211,207 @@
     <div class="menu-grid">
         <button class="btn-complex btn-blue full-width" onclick="sendToBot('menu_akun')">
             <div class="btn-icon">🛒</div>
-            <div class="btn-text">
-                <span class="btn-title">Digital Asset Vault:</span>
-                <span class="btn-sub">Purchase Aged GitHub Accounts</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Digital Asset Vault:</span><span class="btn-sub">Purchase Aged GitHub Accounts</span></div>
         </button>
-
         <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_followers')">
             <div class="btn-icon">👥</div>
-            <div class="btn-text">
-                <span class="btn-title">Audience Engagement:</span>
-                <span class="btn-sub">Follower Injection</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Audience Engagement:</span><span class="btn-sub">Follower Injection</span></div>
         </button>
-
         <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_stars')">
             <div class="btn-icon">⭐</div>
-            <div class="btn-text">
-                <span class="btn-title">Repo Metrics:</span>
-                <span class="btn-sub">Star Elevation</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Repo Metrics:</span><span class="btn-sub">Star Elevation</span></div>
         </button>
-
         <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_forks')">
             <div class="btn-icon">⎇</div>
-            <div class="btn-text">
-                <span class="btn-title">Project Credibility:</span>
-                <span class="btn-sub">Fork Injection</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Project Credibility:</span><span class="btn-sub">Fork Injection</span></div>
         </button>
-
         <button class="btn-complex btn-blue" onclick="sendToBot('menu_jasa_watch')">
             <div class="btn-icon">👁️</div>
-            <div class="btn-text">
-                <span class="btn-title">Repo Visibility:</span>
-                <span class="btn-sub">Watcher Boost</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Repo Visibility:</span><span class="btn-sub">Watcher Boost</span></div>
         </button>
     </div>
 
     <div class="sys-load-container">
-        <span class="sys-load-title">Sys Load</span>
-        <div class="progress-bar-bg">
-            <div class="progress-bar-fill" id="sys_load_bar"></div>
-        </div>
-        <span class="sys-load-pct" id="sys_load_txt">6%</span>
+        <span style="font-size: 0.8rem; color: #00f2fe; font-weight: bold;">Sys Load</span>
+        <div class="progress-bar-bg"><div class="progress-bar-fill" id="sys_load_bar"></div></div>
+        <span id="sys_load_txt" style="font-family: monospace; font-size: 0.85rem;">6%</span>
     </div>
 
-    <div class="menu-grid" style="margin-bottom: 40px;">
-        <button class="btn-complex btn-red full-width" onclick="tg.close()">
+    <div class="menu-grid" style="margin-bottom: 80px;">
+        <button class="btn-complex btn-red full-width" onclick="window.Telegram.WebApp.close()">
             <div class="btn-icon">🛑</div>
-            <div class="btn-text">
-                <span class="btn-title" style="text-align: center;">Terminate_Signal: Disconnect Terminal</span>
-            </div>
+            <div class="btn-text"><span class="btn-title">Terminate_Signal: Disconnect Terminal</span></div>
         </button>
     </div>
 
-    <script>
-        // Inisialisasi API Telegram WebApp
-        let tg = window.Telegram.WebApp;
-        tg.expand(); // Paksa layar kebuka penuh
-        tg.ready();
+    <a href="https://wa.me/6289638423184" class="wa-fab" target="_blank">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="#ffffff" style="width: 30px; height: 30px;">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157.1zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+    </a>
 
-        // Nangkep data klien secara dinamis
-        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            let user = tg.initDataUnsafe.user;
-            let displayName = user.username ? '@' + user.username : user.first_name;
-            document.getElementById('user_name').innerText = displayName;
-            document.getElementById('user_id').innerText = user.id;
+    <div class="crypto-ticker-container">
+        <div class="crypto-ticker" id="ticker-content">
+            Loading Real-Time Market Data...
+        </div>
+    </div>
+
+    <script>
+        // INISIALISASI WEBAPP
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        // AMBIL DATA USER
+        function initUser() {
+            try {
+                const user = tg.initDataUnsafe?.user;
+                if (user) {
+                    document.getElementById('user_name').innerText = user.username ? '@' + user.username : user.first_name;
+                    document.getElementById('user_id').innerText = user.id;
+                } else {
+                    setTimeout(() => {
+                        const retryUser = tg.initDataUnsafe?.user;
+                        if (retryUser) {
+                            document.getElementById('user_name').innerText = retryUser.username ? '@' + retryUser.username : retryUser.first_name;
+                            document.getElementById('user_id').innerText = retryUser.id;
+                        }
+                    }, 500);
+                }
+            } catch (e) { console.log(e); }
+        }
+        window.onload = initUser;
+
+        // 🟢 FITUR 1: CYBERPUNK SFX (BEEP)
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        const audioCtx = new AudioContext();
+        
+        function playSciFiBeep() {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const oscillator = audioCtx.createOscillator();
+            const gainNode = audioCtx.createGain();
+            
+            oscillator.type = 'sine'; // Suara halus digital
+            oscillator.frequency.setValueAtTime(1200, audioCtx.currentTime); 
+            oscillator.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.1);
+            
+            gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // Volume kecil biar gak berisik
+            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            oscillator.start();
+            oscillator.stop(audioCtx.currentTime + 0.1);
         }
 
-        // Animasi Sys Load Palsu biar kerasa idup
+        // FUNGSI SEND DATA KE BOT (Sekaligus manggil SFX)
+        function sendToBot(data) {
+            playSciFiBeep();
+            tg.sendData(data);
+        }
+
+        // Animasi Sys Load
         setInterval(() => {
-            let load = Math.floor(Math.random() * (25 - 5 + 1) + 5);
+            let load = Math.floor(Math.random() * 20) + 5;
             document.getElementById('sys_load_bar').style.width = load + '%';
             document.getElementById('sys_load_txt').innerText = load + '%';
         }, 3000);
 
-        // Fungsi ngirim perintah ke Bot
-        function sendToBot(actionData) {
-            tg.sendData(actionData); 
+        // 🟢 FITUR 2: SYSTEM FOMO NOTIFICATION
+        const fomoData = [
+            "⚡ System: Clean up routine completed.",
+            "🟢 User @Joh*** just deposited $50 USDT",
+            "⭐ User @Ale*** purchased 1000 Repo Stars",
+            "🚀 Deploying Fork Injection for @Dev***",
+            "🛒 User @Mar*** bought 2018 Aged Account",
+            "💳 Incoming transfer detected via Binance Pay",
+            "👥 User @Zoe*** injected 500 Followers"
+        ];
+        
+        setInterval(() => {
+            const toast = document.getElementById('fomo-toast');
+            toast.innerHTML = fomoData[Math.floor(Math.random() * fomoData.length)];
+            toast.classList.add('show');
+            setTimeout(() => { toast.classList.remove('show'); }, 3500); // Tampil 3.5 detik
+        }, 18000); // Muncul tiap 18 detik
+
+        // 🟢 FITUR 3: LIVE CRYPTO TICKER (Tarik harga Binance)
+        async function fetchCryptoPrices() {
+            try {
+                const res = await fetch('https://api.binance.com/api/v3/ticker/price?symbols=["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"]');
+                const data = await res.json();
+                
+                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL &nbsp;&nbsp;|&nbsp;&nbsp; ";
+                data.forEach(coin => {
+                    let symbol = coin.symbol.replace('USDT', '');
+                    let price = parseFloat(coin.price).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    tickerHtml += `<span class="crypto-item"><span style="color:#cbd5e1">${symbol}/USDT:</span> <span class="crypto-up">$${price}</span></span>`;
+                });
+                
+                document.getElementById('ticker-content').innerHTML = tickerHtml + tickerHtml; // Double text for smooth marquee
+            } catch (error) {
+                document.getElementById('ticker-content').innerHTML = "Market Data Offline | Please check your connection.";
+            }
         }
+        fetchCryptoPrices();
+        setInterval(fetchCryptoPrices, 10000); // Update harga tiap 10 detik
+
+        // 🟢 FITUR 4: INTERACTIVE HOLOGRAM BACKGROUND (CANVAS)
+        const canvas = document.getElementById("canvas-bg");
+        const ctx = canvas.getContext("2d");
+        let width, height, particles;
+
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            let particleCount = Math.floor(width / 20); // Jumlah partikel disesuaikan layar
+            for (let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width, y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.5, vy: (Math.random() - 0.5) * 0.5,
+                    size: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = "rgba(0, 242, 254, 0.8)";
+            ctx.strokeStyle = "rgba(0, 242, 254, 0.2)";
+
+            for (let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy;
+
+                // Pantul di pinggir layar
+                if (p.x < 0 || p.x > width) p.vx *= -1;
+                if (p.y < 0 || p.y > height) p.vy *= -1;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Tarik garis antar partikel yg deketan
+                for (let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dist = Math.hypot(p.x - p2.x, p.y - p2.y);
+                    if (dist < 100) {
+                        ctx.beginPath();
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(drawParticles);
+        }
+
+        window.addEventListener("resize", initCanvas);
+        initCanvas();
+        drawParticles();
+
     </script>
 </body>
 </html>
