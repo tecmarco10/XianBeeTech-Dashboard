@@ -12,17 +12,17 @@
             /* Warna Tema Utama (Cyan) */
             --primary: #00f2fe;
             --primary-glow: rgba(0, 242, 254, 0.4);
-            
+
             /* Warna Tema Merah (Secret Mode) */
             --red: #ef4444;
             --red-glow: rgba(239, 68, 68, 0.5);
-            
+
             --blue-dark: #0a0a10;
             --gold: #ffd700;
             --gold-glow: rgba(255, 215, 0, 0.3);
-            
+
             --gray-text: #94a3b8;
-            
+
             /* Pointer Warna Aktif (Diubah lewat JS) */
             --current-primary: #00f2fe;
             --current-glow: rgba(0, 242, 254, 0.4);
@@ -43,7 +43,7 @@
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             padding: 30px; box-sizing: border-box; transition: opacity 0.8s ease, visibility 0.8s;
         }
-        
+
         /* Animasi Sidik Jari */
         .fingerprint-container {
             width: 100px; height: 100px; margin-bottom: 30px;
@@ -52,7 +52,7 @@
         #fork_icon_svg_biometric {
              fill: none; stroke: var(--current-primary); stroke-width: 2; filter: drop-shadow(0 0 10px var(--current-glow));
         }
-        
+
         /* Garis Laser Scanner */
         .scan-bar {
             position: absolute; top: 0; left: -10px; width: 120px; height: 4px;
@@ -113,17 +113,16 @@
         .store-logo { 
             width: 100%; max-width: 250px; height: auto; object-fit: contain; 
             transform: translateZ(30px); /* 3D pop out */
-            filter: drop-shadow(0 0 15px var(--current-glow));
             transition: filter 0.5s;
         }
-        
+
         .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1;}
-        
+
         /* GRID & TOMBOL 3D */
         .menu-grid { 
             width: 100%; max-width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; z-index: 1;
         }
-        
+
         .btn-complex { 
             display: flex; align-items: center; padding: 12px 15px; border-radius: 10px; cursor: pointer; text-align: left; box-sizing: border-box; width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); 
             transform-style: preserve-3d; transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.5s;
@@ -137,19 +136,19 @@
             0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.05); }
             50% { box-shadow: 0 0 15px var(--market-color, rgba(255,255,255,0.1)); }
         }
-        
+
         .btn-icon { font-size: 1.8rem; margin-right: 12px; display: flex; justify-content: center; align-items: center; width: 30px; height: 30px; transform: translateZ(20px); }
         .btn-text { transform: translateZ(10px); }
-        
+
         /* Teks Judul (Bakal kena efek Decrypt) */
         .btn-title { font-size: 0.9rem; font-weight: 700; color: #ffffff; display: block; margin-bottom: 2px; font-family: 'Outfit', sans-serif;}
         .btn-sub { font-size: 0.65rem; color: var(--gray-text); }
-        
+
         /* Warna Tombol & Glow */
         .btn-gold { border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%); }
         .btn-blue { border-color: var(--current-glow); background: linear-gradient(180deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 5, 15, 0.95) 100%); }
         .btn-red { border-color: rgba(239, 68, 68, 0.4); background: linear-gradient(180deg, rgba(40, 0, 0, 0.8) 0%, rgba(15, 0, 0, 0.95) 100%); justify-content: center; }
-        
+
         .full-width { grid-column: span 2; }
 
         /* 🟢 CYBERPUNK GLITCH EFFECT ON CLICK */
@@ -166,7 +165,7 @@
             80% { transform: translate(4px, -3px); filter: hue-rotate(270deg); }
             100% { transform: translate(0) scale3d(1.02,1.02,1); filter: hue-rotate(0deg); }
         }
-        
+
         /* SYS LOAD */
         .sys-load-container { width: 100%; max-width: 400px; background: rgba(0, 195, 255, 0.05); border: 1px solid rgba(0, 195, 255, 0.3); border-radius: 8px; padding: 10px 15px; box-sizing: border-box; display: flex; align-items: center; margin-bottom: 40px; z-index: 1;}
         .progress-bar-bg { flex-grow: 1; height: 8px; background: rgba(255, 255, 255, 0.1); margin: 0 15px; border-radius: 4px; overflow: hidden; }
@@ -205,7 +204,7 @@
         .crypto-item { margin-right: 30px; }
         .crypto-up { color: #25D366; } .crypto-down { color: #ef4444; }
         @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
-        
+
         /* Fork Icon Svg */
         #fork_icon_svg { width: 28px; height: 28px; fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;}
 
@@ -231,7 +230,7 @@
 <body>
 
     <canvas id="canvas-bg"></canvas>
-    
+
     <div id="secret-alarm-overlay"></div>
 
     <div id="preloader">
@@ -245,14 +244,14 @@
     </div>
 
     <div id="fomo-toast">⚡ System Online</div>
-    
+
     <div id="active-operators">
         <div id="op-lamp"></div>
         <span id="op-count">14</span> Active Ops
     </div>
 
     <div id="main-wrapper">
-        
+
         <div class="header-content btn-3d" id="main-logo-container">
             <img src="logo.png" alt="XianBee Tech Logo" class="store-logo" id="main-logo-img">
         </div>
@@ -366,7 +365,7 @@
         // AUDIO CONTEXT
         const AudioContext = window.AudioContext || window.webkitAudioContext;
         const audioCtx = new AudioContext();
-        
+
         // 🟢 FIX: Variabel untuk toggle Admin Mode manual
         let isSecretMode = false;
         let logoTapCount = 0;
@@ -413,7 +412,7 @@
             oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
             oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.08);
         }
-        
+
         // ALARM SUARA SECRET MODE
         let alarmOsc, alarmGain;
         function startAlarmSound() {
@@ -426,7 +425,7 @@
             alarmOsc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.5);
             alarmGain.gain.setValueAtTime(0, audioCtx.currentTime);
             alarmGain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 0.1);
-            
+
             alarmOsc.connect(alarmGain); alarmGain.connect(audioCtx.destination);
             alarmOsc.start();
             alarmOsc.loop = true;
@@ -449,20 +448,20 @@
             "> Handshake successful.",
             "> ACCESS GRANTED."
         ];
-        
+
         window.onload = () => {
             setTimeout(() => { document.getElementById("biometric-visual").style.opacity = "1"; }, 300);
 
             let termContainer = document.getElementById("term-text");
             let delay = 0;
-            
+
             bootTexts.forEach((text, i) => {
                 setTimeout(() => {
                     termContainer.innerHTML += text + "<br>";
                     if (text.includes("Verified")) {
                         document.getElementById("biometric-visual").style.opacity = "0";
                     }
-                    
+
                     if (i === bootTexts.length - 1) {
                         setTimeout(() => {
                             document.getElementById("preloader").style.opacity = "0";
@@ -520,13 +519,13 @@
                 const originalText = titleElement.getAttribute('data-text');
                 const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
                 let iterations = 0;
-                
+
                 const interval = setInterval(() => {
                     titleElement.innerText = originalText.split('').map((char, index) => {
                         if (index < iterations) return originalText[index];
                         return characters.charAt(Math.floor(Math.random() * characters.length));
                     }).join('');
-                    
+
                     if (iterations >= originalText.length) clearInterval(interval);
                     iterations += 1 / 2; 
                 }, 30);
@@ -537,7 +536,7 @@
         function sendToBot(element, actionData) {
             playSciFiBeep(); 
             triggerHapticFeedback(); 
-            
+
             element.classList.add('btn-glitch-active');
             setTimeout(() => {
                 element.classList.remove('btn-glitch-active');
@@ -564,7 +563,7 @@
         let currentLoad = 15;
         document.getElementById('sys_load_bar').style.width = currentLoad + '%';
         document.getElementById('sys_load_txt').innerText = currentLoad + '%';
-        
+
 
         // 🟢 SYSTEM FOMO NOTIFICATION
         const fomoData = [
@@ -588,20 +587,20 @@
                 const symbols = ["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"];
                 const res = await fetch(`https://api.binance.com/api/v3/ticker/price`);
                 const allData = await res.json();
-                
+
                 const btcDataRaw = allData.find(coin => coin.symbol === "BTCUSDT");
                 const data = allData.filter(coin => symbols.includes(coin.symbol));
-                
+
                 let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v16 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
                 data.forEach(coin => {
                     let symbol = coin.symbol.replace('USDT', '');
                     let priceVal = parseFloat(coin.price);
                     let priceStr = priceVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                    
+
                     tickerHtml += `<span class="crypto-item"><span style="color:#cbd5e1">${symbol}/USDT:</span> <span class="crypto-up">$${priceStr}</span></span>`;
                 });
                 document.getElementById('ticker-content').innerHTML = tickerHtml + tickerHtml; 
-                
+
                 // DYNAMIC MARKET AMBIENT 
                 const btcPrice = parseFloat(btcDataRaw.price);
                 const marketAmbientColor = btcPrice >= 65000 ? 'rgba(37, 211, 102, 0.4)' : 'rgba(239, 68, 68, 0.4)';
@@ -661,13 +660,13 @@
         window.addEventListener("resize", initCanvas);
         initCanvas();
         drawParticles();
-        
+
         // 🚨 🟢 FIX: SECRET EASTER EGG BISA DIMATIIN MANUAL (TOGGLE)
         document.getElementById('main-logo-container').addEventListener('click', () => {
             clearTimeout(logoTapTimeout);
             logoTapCount++;
             triggerHapticFeedback(); 
-            
+
             playSciFiBeepCustom(1400 + (logoTapCount * 200));
 
             if (logoTapCount === 5) {
@@ -681,7 +680,7 @@
                 logoTapTimeout = setTimeout(() => { logoTapCount = 0; }, 1500);
             }
         });
-        
+
         function playSciFiBeepCustom(freq) {
              if (audioCtx.state === 'suspended') audioCtx.resume();
             const oscillator = audioCtx.createOscillator();
@@ -693,57 +692,57 @@
             oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
             oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.1);
         }
-        
+
         function activateSecretAdminMode() {
             if (isSecretMode) return; 
             isSecretMode = true;
-            
+
             triggerHapticFeedback(); 
             if ('vibrate' in navigator) navigator.vibrate([100, 50, 100, 50, 300]);
 
             playSciFiBeepCustom(400); 
             setTimeout(() => { playSciFiBeepCustom(300); }, 150);
-            
+
             speakJarvisAdminActivated(); 
 
             document.body.classList.add('secret-mode');
-            
+
             document.documentElement.style.setProperty('--current-primary', '#ef4444');
             document.documentElement.style.setProperty('--current-glow', 'rgba(239, 68, 68, 0.5)');
-            
-            document.getElementById('main-logo-img').style.filter = 'hue-rotate(180deg) invert(10%) drop-shadow(0 0 15px rgba(239, 68, 68, 0.7))';
-            
+
+            document.getElementById('main-logo-img').style.filter = 'hue-rotate(180deg) invert(10%)';
+
             startAlarmSound(); 
 
             const toast = document.getElementById('fomo-toast');
             toast.innerHTML = "🚨 <b>WARNING: ADMIN MODE ACTIVATED</b>";
             toast.classList.add('show');
-            
+
             try { window.Telegram.WebApp.HapticFeedback.notificationOccurred('warning'); } catch(e){}
 
             // Disimpen ke variabel biar bisa dibatalin kalau dimatiin manual
             adminModeTimeout = setTimeout(() => { deactivateSecretAdminMode(); }, 30000);
         }
-        
+
         function deactivateSecretAdminMode() {
             if (!isSecretMode) return;
             isSecretMode = false;
-            
+
             clearTimeout(adminModeTimeout); // Batalin mati otomatisnya
             stopAlarmSound();
-            
+
             document.body.classList.remove('secret-mode');
-            
+
             document.documentElement.style.setProperty('--current-primary', '#00f2fe');
             document.documentElement.style.setProperty('--current-glow', 'rgba(0, 242, 254, 0.4)');
-            
-            document.getElementById('main-logo-img').style.filter = 'drop-shadow(0 0 15px var(--blue-glow))';
-            
+
+            document.getElementById('main-logo-img').style.filter = 'none';
+
             const toast = document.getElementById('fomo-toast');
             toast.innerHTML = "🟢 System Restored to Normal Operations.";
             setTimeout(() => { toast.classList.remove('show'); }, 3000);
         }
-        
+
         function speakJarvisAdminActivated() {
              if (!('speechSynthesis' in window)) return;
             const synth = window.speechSynthesis;
