@@ -401,6 +401,48 @@
                             </div>
                             <span class="badge-status bg-sync">COMING SOON</span>
                         </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Facebook')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📘</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Facebook</span><span class="btn-desc">Aged Accounts</span></div>
+                            </div>
+                            <span class="badge-status bg-off">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Instagram')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📸</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Instagram</span><span class="btn-desc">Followers</span></div>
+                            </div>
+                            <span class="badge-status bg-off">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Telegram')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">✈️</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Telegram</span><span class="btn-desc">Group Members</span></div>
+                            </div>
+                            <span class="badge-status bg-sync">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Reddit')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">👽</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Reddit</span><span class="btn-desc">High Karma Accounts</span></div>
+                            </div>
+                            <span class="badge-status bg-off">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Gmail')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">✉️</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Gmail</span><span class="btn-desc">Aged, Verified</span></div>
+                            </div>
+                            <span class="badge-status bg-sync">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Outlook')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📧</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Outlook</span><span class="btn-desc">Bulk Accounts</span></div>
+                            </div>
+                            <span class="badge-status bg-off">COMING SOON</span>
+                        </button>
                     </div>
 
                     <div class="menu-category" style="margin-top: 20px;">SYSTEM ADMIN</div>
@@ -945,17 +987,20 @@
             { icon: '📁', title: 'Sold/History/Suspended', cmd: 'admin_view_history' }
         ];
 
-        // Daftar ID Admin (Samain kayak di Python lu)
-        const ADMIN_IDS = [6740043923, 7095661271];
+        // Daftar ID Admin (Format STRING biar kebal dari error JS!)
+        const ADMIN_IDS = ["6740043923", "7095661271"];
 
         function openAdminPanel() {
-            // Tarik ID Telegram orang yang lagi buka Web App
-            const userId = tg.initDataUnsafe?.user?.id;
+            // Tarik ID Telegram, ubah jadi String, kalo kosong kasih nilai "0"
+            let userId = "0";
+            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                userId = tg.initDataUnsafe.user.id.toString();
+            }
             
             // Kalau ID-nya GAK ADA di daftar Admin, TENDANG!
             if (!ADMIN_IDS.includes(userId)) {
-                showGlitchAlert(); // Munculin peringatan ACCESS DENIED
-                return; // Berhenti di sini, jangan buka panelnya
+                showGlitchAlert(); 
+                return; 
             }
 
             const adminContent = document.getElementById('admin-content');
