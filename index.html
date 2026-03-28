@@ -469,8 +469,7 @@
                         <div class="header-spacer"></div> 
                     </div>
                     
-                    <div id="sub-menu-content">
-                        </div>
+                    <div id="sub-menu-content"></div>
                 </div>
 
                 <div class="slide-page" id="page-service-detail">
@@ -482,8 +481,7 @@
                         <div class="header-spacer"></div> 
                     </div>
                     
-                    <div id="service-detail-content">
-                        </div>
+                    <div id="service-detail-content"></div>
                 </div>
 
                 <div class="slide-page" id="page-admin">
@@ -496,14 +494,11 @@
                     </div>
                     
                     <div class="menu-category" style="color: var(--danger);">WARNING: RESTRICTED COMMANDS</div>
-                    <div id="admin-content">
-                        </div>
+                    <div id="admin-content"></div>
                 </div>
-
             </div>
         </div>
     </div>
-
     <div class="modal-overlay" id="orderModal">
         <div class="modal-box">
             <h2 class="modal-title" id="orderTitle" style="text-align: center;">Order Details</h2>
@@ -536,8 +531,7 @@
             <h2 class="modal-title" id="stockTitle" style="text-align: center;">Available Stock</h2>
             <p class="modal-desc" style="text-align: center;">Select an account to add to cart. Reserved for 3 mins.</p>
             
-            <div class="stock-list" id="stockListContent">
-                </div>
+            <div class="stock-list" id="stockListContent"></div>
             
             <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 10px;" onclick="closeModal('stockModal')">Close</button>
         </div>
@@ -548,8 +542,7 @@
             <h2 class="modal-title" style="text-align: center;">Shopping Cart</h2>
             <p class="modal-desc" style="text-align: center;">Items are reserved for 3 minutes.</p>
             
-            <div id="cartContent" style="margin-bottom: 20px; max-height: 250px; overflow-y: auto;">
-                </div>
+            <div id="cartContent" style="margin-bottom: 20px; max-height: 250px; overflow-y: auto;"></div>
 
             <div class="price-display">
                 <span class="price-label">Total Payable:</span>
@@ -724,7 +717,7 @@
                 
                 if(item.type === 'nav') { btn.onclick = () => openSubMenu(item.title, item.target); } 
                 else if(item.type === 'acc') { 
-                    btn.onclick = () => sendActionToBot("VIEW_CATALOG", { year: item.year }); 
+                    btn.onclick = () => openStockModal(item.title, item.price, item.year); 
                 } 
                 else if(item.type === 'svc_menu') { btn.onclick = () => openServiceDetail(item.title, item.target); }
                 
@@ -775,11 +768,10 @@
                     grid.appendChild(btn);
                 });
                 
-                // Custom Qty Button
                 const btnCustom = document.createElement('button');
                 btnCustom.className = 'menu-btn';
                 btnCustom.style.marginBottom = '0';
-                btnCustom.style.gridColumn = '1 / -1'; // span full width
+                btnCustom.style.gridColumn = '1 / -1'; 
                 btnCustom.innerHTML = `<div class="btn-content"><div class="btn-text-wrapper"><span class="btn-title">✍️ Custom Quantity</span><span class="btn-desc">Enter your own amount</span></div></div>`;
                 btnCustom.onclick = () => openOrderModalCustom(`${title} (${t.name})`, svcType, t.speed, t.base);
                 grid.appendChild(btnCustom);
@@ -811,7 +803,8 @@
 
         function requestBalanceSync() {
             document.getElementById('counter').innerText = "...";
-            sendActionToBot("GET_BALANCE");
+            showToast('Syncing balance with server...');
+            sendActionToBot("REFRESH_BALANCE");
         }
 
         // ---------------- ORDER MODALS ----------------
@@ -882,10 +875,8 @@
             if(!target) { showToast('Please enter target URL!', true); triggerHaptic('error'); return; }
             if(isCustomQty && currentQty < 10) { showToast('Minimum order is 10 units!', true); triggerHaptic('error'); return; }
             
-            sendActionToBot("ORDER_SERVICE", {
-                item_name: currentItem,
-                service_type: currentSvcType,
-                speed: currentSpeed,
+            sendActionToBot("NEW_ORDER", {
+                item_id: `jasa_${currentSvcType}_${currentQty}`,
                 quantity: currentQty,
                 total_price: currentPrice.toFixed(2),
                 target: target
@@ -900,7 +891,6 @@
             triggerHaptic('light'); document.getElementById('stockTitle').innerText = title;
             const stockBox = document.getElementById('stockListContent'); stockBox.innerHTML = '';
             
-            // Generate 3 fake dummy IDs for visual simulation
             for(let i=0; i<3; i++) {
                 const fakeId = yearStr + "-" + Math.random().toString(36).substring(2,8);
                 const isReserved = cart.find(c => c.id === fakeId); 
@@ -915,7 +905,11 @@
         function addToCart(itemId, title, price, yearStr) {
             triggerHaptic('medium');
             const expireAt = Date.now() + (3 * 60 * 1000); 
-            cart.push({ id: itemId, title: title, price: price, year: yearStr, expireAt: expireAt });
+            // Parsing untuk backend
+            let categoryStr = title.replace("GitHub + ", "").replace(" Account", "").replace(" ", "").toLowerCase();
+            let finalItemId = `akun_${categoryStr}`;
+            
+            cart.push({ id: itemId, item_id: finalItemId, title: title, price: price, expireAt: expireAt });
             
             const btn = document.getElementById('btn-'+itemId);
             if(btn) { btn.innerText = 'Reserved'; btn.disabled = true; btn.style.opacity = '0.5'; }
@@ -998,6 +992,7 @@
         }
         function submitTopup(method) {
             closeModal('topupSelectModal');
+            // Kita arahkan jadi pesan teks biasa aja biar sistem lama di bot tetap jalan
             sendActionToBot("TOPUP", { amount: currentTopupAmount, method: method });
         }
 
@@ -1014,14 +1009,12 @@
             { icon: '📁', title: 'Sold/History/Suspended', cmd: 'admin_view_history' }
         ];
 
-        // Daftar ID Admin (Format STRING)
+        // Daftar ID Admin
         const ADMIN_IDS = ["6740043923", "7095661271"];
 
         function openAdminPanel() {
-            // 🔥 TARIK ID DARI URL PYTHON (10.000% PASTI KEBACA) 🔥
             let userId = urlUid;
             
-            // Kalau ID-nya GAK ADA di daftar Admin ATAU null, TENDANG!
             if (!userId || !ADMIN_IDS.includes(userId)) {
                 showGlitchAlert(); 
                 return; 
