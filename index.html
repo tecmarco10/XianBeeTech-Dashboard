@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee-Tech Store</title>
+    <title>XianBee-Tech Enterprise</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
@@ -16,6 +16,7 @@
             /* Gradient Master */
             --grad-master: linear-gradient(135deg, #0072ff 0%, #8b5cf6 50%, #f85032 100%);
             --grad-hover: linear-gradient(135deg, #009dff 0%, #a78bfa 50%, #ff6b55 100%);
+            --grad-admin: linear-gradient(135deg, #ff0055 0%, #ff1493 50%, #9400d3 100%);
             
             --text-main: #ffffff;
             --text-muted: #94a3b8;
@@ -24,6 +25,7 @@
             --glow-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
             --danger: #ef4444;
             --success: #10b981;
+            --warning: #f59e0b;
         }
 
         * { box-sizing: border-box; }
@@ -51,22 +53,22 @@
 
         @media (min-width: 450px) { .app-frame { height: 85vh; border-radius: 28px; border: 1px solid var(--border); } }
 
-        /* 🎬 SLIDER MECHANICS (TAMBAH SLIDE 3) */
+        /* 🎬 SLIDER MECHANICS (5 SLIDES NOW) */
         .slider-viewport { flex-grow: 1; position: relative; width: 100%; overflow: hidden; }
         .slider-track {
-            display: flex; width: 400%; height: 100%; /* Sekarang 400% karena ada 4 Slide (Wallet, Home, Sub, Service Detail) */
-            transform: translateX(-25%); /* Home ada di index 1 (25%) */
+            display: flex; width: 500%; height: 100%; /* 500% for 5 pages */
+            transform: translateX(-20%); /* Home is index 1 (20%) */
             transition: transform 0.4s cubic-bezier(0.25, 1, 0.4, 1);
         }
         .slide-page {
-            width: 25%; height: 100%; padding: 25px 20px; box-sizing: border-box;
+            width: 20%; height: 100%; padding: 25px 20px; box-sizing: border-box;
             display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden;
             padding-bottom: 90px; 
         }
 
         ::-webkit-scrollbar { width: 0px; background: transparent; } 
 
-        /* 🏷️ COMMON HEADER FIX */
+        /* 🏷️ COMMON HEADER */
         .page-header { 
             display: flex; align-items: center; justify-content: space-between; 
             margin-bottom: 25px; width: 100%; gap: 10px;
@@ -160,6 +162,9 @@
         .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
         .user-id { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; letter-spacing: 2px; color: #fff; font-weight: 600;}
         
+        .btn-refresh { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); font-size: 0.75rem; transition: 0.2s;}
+        .btn-refresh:active { transform: scale(0.9); background: rgba(255,255,255,0.4); }
+
         /* TOP UP GRID */
         .topup-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
         .topup-btn { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 16px; padding: 14px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;}
@@ -168,21 +173,15 @@
         .topup-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.4rem; background: rgba(255,255,255,0.05); color: #fff;}
         .topup-text { font-size: 0.75rem; font-weight: 700; color: #fff;}
 
-        /* LEDGER TRANSACTIONS */
-        .tx-list { display: flex; flex-direction: column; gap: 12px; }
-        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; }
-        .tx-left { display: flex; align-items: center; gap: 14px; }
-        .tx-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.1rem; font-weight:bold;}
-        .tx-in { background: rgba(16, 185, 129, 0.15); color: var(--success); }
-        .tx-out { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
-        .tx-info { display: flex; flex-direction: column; gap: 3px; }
-        .tx-title { font-size: 0.85rem; font-weight: 700;}
-        .tx-date { font-size: 0.7rem; color: var(--text-muted); font-weight: 600;}
-        .tx-amount { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 1rem; }
-        .amt-in { color: var(--success); }
+        /* TOOLS GRID */
+        .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
+        .tool-btn { background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; color:#fff;}
+        .tool-btn:active { transform: scale(0.95); background: rgba(255,255,255,0.05); }
+        .tool-icon { font-size: 1.2rem; }
+        .tool-text { font-size: 0.8rem; font-weight: 700; text-align: left;}
 
         /* ---------------- SUB-MENUS ---------------- */
-        #sub-menu-content, #service-detail-content { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px;}
+        #sub-menu-content, #service-detail-content, #admin-content { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px;}
 
         /* ---------------- CART (FAB & MODAL) ---------------- */
         .cart-fab {
@@ -238,9 +237,6 @@
         .btn-confirm { background: var(--grad-master); color: #fff; box-shadow: var(--glow-shadow);}
         .btn-confirm:active { transform: scale(0.95); }
 
-        .qr-box { width: 160px; height: 160px; background: #fff; border-radius: 16px; margin: 0 auto 20px; display: flex; justify-content: center; align-items: center; font-size: 3rem; color: #000; }
-        .wallet-address { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 10px; font-family: 'JetBrains Mono'; font-size: 0.85rem; font-weight: 700; color: #fff; text-align: center; word-break: break-all; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);}
-
         .toast-ui { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #ffffff; color: #000; padding: 14px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.3); z-index: 9999; opacity: 0; transition: 0.4s; }
         .toast-ui.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
@@ -253,7 +249,7 @@
             .topup-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .home-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
             .btn-master, .menu-btn { margin-bottom: 0; } 
-            #sub-menu-content, #service-detail-content { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+            #sub-menu-content, #service-detail-content, #admin-content { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
             .home-logo-title { font-size: 3rem; }
             .digital-card { height: 230px; }
             .balance-amount { font-size: 3rem; }
@@ -300,14 +296,14 @@
                                         <div style="display: flex; justify-content: space-between; align-items: flex-end;">
                                             <div>
                                                 <div class="balance-label">USDT Balance</div>
-                                                <div class="balance-amount">$<span id="counter">0.00</span></div>
+                                                <div class="balance-amount">$<span id="counter">---</span></div>
                                             </div>
-                                            <button onclick="requestBalanceSync()" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px);">
+                                            <button class="btn-refresh" onclick="requestBalanceSync()">
                                                 🔄 Refresh
                                             </button>
                                         </div>
-                                        <div class="card-bottom">
-                                            <div class="user-id">XB-8849201</div>
+                                        <div class="card-bottom" style="margin-top: 15px;">
+                                            <div class="user-id" id="displayUserId">XB-USER</div>
                                         </div>
                                     </div>
                                 </div>
@@ -315,46 +311,43 @@
                         </div>
 
                         <div class="wallet-desktop-right">
-                            <div class="menu-category" style="margin-top:0;">TOP UP BALANCE</div>
+                            <div class="menu-category" style="margin-top:0;">QUICK ACTIONS</div>
+                            <div class="tools-grid">
+                                <button class="tool-btn" onclick="sendActionToBot('CHECK_STATUS')">
+                                    <span class="tool-icon">🔍</span>
+                                    <span class="tool-text">Check Account Status</span>
+                                </button>
+                                <button class="tool-btn" onclick="sendActionToBot('REFERRAL')">
+                                    <span class="tool-icon">🤝</span>
+                                    <span class="tool-text">Referral & Affiliate</span>
+                                </button>
+                                <button class="tool-btn" onclick="sendActionToBot('FAQ')">
+                                    <span class="tool-icon">📜</span>
+                                    <span class="tool-text">FAQ & Terms</span>
+                                </button>
+                                <button class="tool-btn" onclick="sendActionToBot('SYS_STATUS')">
+                                    <span class="tool-icon">📈</span>
+                                    <span class="tool-text">Infra Status</span>
+                                </button>
+                            </div>
+
+                            <div class="menu-category">DEPOSIT FUNDS</div>
                             <div class="topup-grid">
-                                <div class="topup-btn" onclick="tg.sendData('topup_10'); tg.close();">
+                                <div class="topup-btn" onclick="openTopupSelection(10)">
                                     <div class="topup-icon">💵</div>
                                     <div class="topup-text">$10 USDT</div>
                                 </div>
-                                <div class="topup-btn" onclick="tg.sendData('topup_25'); tg.close();">
+                                <div class="topup-btn" onclick="openTopupSelection(25)">
                                     <div class="topup-icon">💸</div>
                                     <div class="topup-text">$25 USDT</div>
                                 </div>
-                                <div class="topup-btn" onclick="tg.sendData('topup_50'); tg.close();">
+                                <div class="topup-btn" onclick="openTopupSelection(50)">
                                     <div class="topup-icon">💰</div>
                                     <div class="topup-text">$50 USDT</div>
                                 </div>
-                                <div class="topup-btn" onclick="tg.sendData('topup_100'); tg.close();">
-                                    <div class="topup-icon">💎</div>
-                                    <div class="topup-text">$100 USDT</div>
-                                </div>
-                            </div>
-<div class="menu-category">TRANSACTION HISTORY</div>
-                            <div class="tx-list">
-                                <div class="tx-item">
-                                    <div class="tx-left">
-                                        <div class="tx-icon tx-out">🛒</div>
-                                        <div class="tx-info">
-                                            <span class="tx-title">Buy Repository Stars</span>
-                                            <span class="tx-date">Today, 14:30 WIB</span>
-                                        </div>
-                                    </div>
-                                    <div class="tx-amount">-$50.00</div>
-                                </div>
-                                <div class="tx-item">
-                                    <div class="tx-left">
-                                        <div class="tx-icon tx-in">↓</div>
-                                        <div class="tx-info">
-                                            <span class="tx-title">Deposit Crypto</span>
-                                            <span class="tx-date">Yesterday, 09:15 WIB</span>
-                                        </div>
-                                    </div>
-                                    <div class="tx-amount amt-in">+$100.00</div>
+                                <div class="topup-btn" onclick="openCustomTopup()">
+                                    <div class="topup-icon">✍️</div>
+                                    <div class="topup-text">Custom</div>
                                 </div>
                             </div>
                         </div>
@@ -363,7 +356,7 @@
 
                 <div class="slide-page" id="page-main">
                     <div class="home-logo-container">
-                        <h1 class="home-logo-title">XianBee-Tech Store</h1>
+                        <h1 class="home-logo-title">XianBee-Tech</h1>
                         <span class="home-logo-sub">ENTERPRISE</span>
                     </div>
 
@@ -408,53 +401,11 @@
                             </div>
                             <span class="badge-status bg-sync">COMING SOON</span>
                         </button>
-                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Facebook')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📘</div>
-                                <div class="btn-text-wrapper"><span class="btn-title">Facebook</span><span class="btn-desc">Aged Accounts</span></div>
-                            </div>
-                            <span class="badge-status bg-off">COMING SOON</span>
-                        </button>
-                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Instagram')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📸</div>
-                                <div class="btn-text-wrapper"><span class="btn-title">Instagram</span><span class="btn-desc">Followers</span></div>
-                            </div>
-                            <span class="badge-status bg-off">COMING SOON</span>
-                        </button>
-                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Telegram')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">✈️</div>
-                                <div class="btn-text-wrapper"><span class="btn-title">Telegram</span><span class="btn-desc">Group Members</span></div>
-                            </div>
-                            <span class="badge-status bg-sync">COMING SOON</span>
-                        </button>
-                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Reddit')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">👽</div>
-                                <div class="btn-text-wrapper"><span class="btn-title">Reddit</span><span class="btn-desc">High Karma Accounts</span></div>
-                            </div>
-                            <span class="badge-status bg-off">COMING SOON</span>
-                        </button>
-                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Gmail')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">✉️</div>
-                                <div class="btn-text-wrapper"><span class="btn-title">Gmail</span><span class="btn-desc">Aged, Verified</span></div>
-                            </div>
-                            <span class="badge-status bg-sync">COMING SOON</span>
-                        </button>
-                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Outlook')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📧</div>
-                                <div class="btn-text-wrapper"><span class="btn-title">Outlook</span><span class="btn-desc">Bulk Accounts</span></div>
-                            </div>
-                            <span class="badge-status bg-off">COMING SOON</span>
-                        </button>
                     </div>
 
                     <div class="menu-category" style="margin-top: 20px;">SYSTEM ADMIN</div>
                     <div class="home-menu-grid">
-                        <button class="menu-btn" style="border-color: rgba(239, 68, 68, 0.5);" onclick="showGlitchAlert()">
+                        <button class="menu-btn" style="border-color: rgba(239, 68, 68, 0.5);" onclick="openAdminPanel()">
                             <div class="btn-content">
                                 <div class="btn-icon" style="color: #fff; background: var(--danger);">⚙️</div>
                                 <div class="btn-text-wrapper">
@@ -493,6 +444,20 @@
                         </div>
                 </div>
 
+                <div class="slide-page" id="page-admin">
+                    <div class="page-header">
+                        <button class="btn-back" onclick="goToHome()">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        </button>
+                        <h1 class="header-title" style="color: var(--danger);">ADMIN CONTROL PANEL</h1>
+                        <div class="header-spacer"></div> 
+                    </div>
+                    
+                    <div class="menu-category" style="color: var(--danger);">WARNING: RESTRICTED COMMANDS</div>
+                    <div id="admin-content">
+                        </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -500,7 +465,7 @@
     <div class="modal-overlay" id="orderModal">
         <div class="modal-box">
             <h2 class="modal-title" id="orderTitle" style="text-align: center;">Order Details</h2>
-            <p class="modal-desc" style="text-align: center;">Enter your order details below.</p>
+            <p class="modal-desc" style="text-align: center;">Enter your target URL below.</p>
             
             <div class="input-group">
                 <label id="orderLabel">Target URL</label>
@@ -508,7 +473,7 @@
             </div>
             
             <div class="input-group" style="display:none;" id="qtyGroup">
-                <label>Quantity</label>
+                <label>Custom Quantity</label>
                 <input type="number" id="orderQty" value="100" oninput="calcTotal()">
             </div>
             
@@ -551,41 +516,43 @@
             
             <div class="modal-actions">
                 <button class="btn-modal btn-cancel" onclick="closeModal('cartModal')">Close</button>
-                <button class="btn-modal btn-confirm" id="btnCheckout" onclick="checkoutCart()">Checkout</button>
+                <button class="btn-modal btn-confirm" id="btnCheckout" onclick="checkoutCart()">Pay with Balance</button>
             </div>
         </div>
     </div>
 
-    <div class="modal-overlay" id="ewalletModal">
+    <div class="modal-overlay" id="topupSelectModal">
         <div class="modal-box" style="padding-bottom: 20px;">
-            <h2 class="modal-title" style="margin-bottom: 20px; text-align: center;">Select E-Wallet</h2>
+            <h2 class="modal-title" style="margin-bottom: 20px; text-align: center;">Select Gateway</h2>
+            <p class="modal-desc" style="text-align: center;">Select your preferred payment method.</p>
             
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
-                <div class="topup-btn" style="margin:0;" onclick="closeModal('ewalletModal'); openTopUpModal('DANA Balance', 'No: 0812-XXXX-XXXX', '🔵')">
-                    <div class="topup-icon">🔵</div><div class="topup-text">DANA</div>
+                <div class="topup-btn" style="margin:0;" onclick="submitTopup('ewallet')">
+                    <div class="topup-icon">📱</div><div class="topup-text">E-Wallet</div>
                 </div>
-                <div class="topup-btn" style="margin:0;" onclick="closeModal('ewalletModal'); openTopUpModal('OVO Cash', 'No: 0812-XXXX-XXXX', '🟣')">
-                    <div class="topup-icon">🟣</div><div class="topup-text">OVO</div>
+                <div class="topup-btn" style="margin:0;" onclick="submitTopup('bank')">
+                    <div class="topup-icon">🏦</div><div class="topup-text">Bank</div>
                 </div>
-                <div class="topup-btn" style="margin:0;" onclick="closeModal('ewalletModal'); openTopUpModal('GoPay', 'No: 0812-XXXX-XXXX', '🟢')">
-                    <div class="topup-icon">🟢</div><div class="topup-text">GoPay</div>
+                <div class="topup-btn" style="margin:0;" onclick="submitTopup('binance')">
+                    <div class="topup-icon">🔶</div><div class="topup-text">Binance</div>
                 </div>
-                <div class="topup-btn" style="margin:0;" onclick="closeModal('ewalletModal'); openTopUpModal('ShopeePay', 'No: 0812-XXXX-XXXX', '🟠')">
-                    <div class="topup-icon">🟠</div><div class="topup-text">Shopee</div>
+                <div class="topup-btn" style="margin:0;" onclick="submitTopup('crypto')">
+                    <div class="topup-icon">🪙</div><div class="topup-text">Crypto</div>
                 </div>
             </div>
-            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('ewalletModal')">Cancel</button>
+            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('topupSelectModal')">Cancel</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="topupModal">
-        <div class="modal-box" style="text-align: center;">
-            <div class="topup-icon" id="topupIconBadge" style="margin: 0 auto 15px; width:55px; height:55px; font-size:1.8rem; border-radius: 16px; background: var(--grad-master); color:#fff;">₮</div>
-            <h2 class="modal-title" id="topupTitle">Deposit USDT</h2>
-            <p class="modal-desc" style="margin-bottom: 15px;">Transfer funds to the details below.</p>
-            <div class="qr-box" id="topupQR">🔲</div>
-            <div class="wallet-address" id="topupAddress">T9s8x...A2z9</div>
-            <button class="btn-modal btn-confirm" style="width: 100%;" onclick="closeModal('topupModal'); showToast('Gateway closed.');">Close</button>
+    <div class="modal-overlay" id="adminCmdModal">
+        <div class="modal-box" style="border-color: var(--danger);">
+            <h2 class="modal-title" id="adminCmdTitle" style="text-align: center; color: var(--danger);">Admin Command</h2>
+            <p class="modal-desc" id="adminCmdDesc" style="text-align: center;">Are you sure?</p>
+            
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeModal('adminCmdModal')">Cancel</button>
+                <button class="btn-modal btn-confirm" style="background: var(--danger); box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);" id="btnAdminConfirm">Proceed</button>
+            </div>
         </div>
     </div>
 
@@ -597,16 +564,13 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="glitchModal">
-        <div class="modal-box" style="border-color: var(--danger); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);">
-            <h2 class="modal-title" style="margin-bottom: 10px; color: var(--danger); text-align: center;">ACCESS DENIED</h2>
-            <p class="modal-desc" style="color: #fff; text-align: center;">You do not have permission to access the Admin Panel. This area is restricted.</p>
-            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('glitchModal')">Go Back</button>
-        </div>
-    </div>
-
     <script>
         const tg = window.Telegram.WebApp; tg.expand(); tg.ready();
+
+        // Ambil User ID dari Telegram
+        if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('displayUserId').innerText = "ID: " + tg.initDataUnsafe.user.id;
+        }
 
         // 1. DUST AMBIENT BACKGROUND
         const canvas = document.getElementById("canvas-bg"); const ctx = canvas.getContext("2d");
@@ -617,13 +581,13 @@
 
         // 2. SLIDER NAVIGATION
         const slider = document.getElementById('slider'); let isWalletOpened = false;
-        function goToHome() { slider.style.transform = 'translateX(-25%)'; triggerHaptic('light'); } // Index 1 = 25% (Home)
-        function goToWallet() { slider.style.transform = 'translateX(0%)'; triggerHaptic('medium'); if(!isWalletOpened) { setTimeout(startCounter, 300); isWalletOpened = true; } } // Index 0 = 0% (Wallet)
-
-        // SET AWAL POSISI SLIDER KE HOME (INDEX 1)
+        function goToWallet() { slider.style.transform = 'translateX(0%)'; triggerHaptic('medium'); if(!isWalletOpened) { requestBalanceSync(); isWalletOpened = true; } } // 0%
+        function goToHome() { slider.style.transform = 'translateX(-20%)'; triggerHaptic('light'); } // 20%
+        
+        // SET AWAL POSISI SLIDER KE HOME
         setTimeout(() => { goToHome(); }, 100);
 
-        // 3. DATABASE MENU GITHUB DENGAN HARGA DARI PYTHON LU (10000% URUTAN BENAR)
+        // 3. DATABASE MENU GITHUB
         const subTitle = document.getElementById('sub-title'); const subContent = document.getElementById('sub-menu-content');
         
         const dbMenu = {
@@ -632,27 +596,27 @@
                 { icon: '🚀', title: 'GitHub Cloud Services', desc: 'Followers, Forks, Stars', type: 'nav', target: 'services' }
             ]},
             'assets': { items: [
-                { icon: '💎', title: 'GitHub Arctic Vault', desc: 'Rare 2020 Badge Contributor', price: 25.00, type: 'acc' },
-                { icon: '🏅', title: '6 Badges Account', desc: 'Pull Shark, YOLO, Starstruck...', price: 40.00, type: 'acc' }, // Diupdate jadi 40 sesuai Python
-                { icon: '👥', title: 'GitHub + Followers', desc: 'Pre-warmed, high authority', price: 35.00, type: 'acc' }, // Diupdate jadi 35 sesuai Python
-                { icon: '📁', title: 'GitHub + Old Repository', desc: 'Aged repository for high trust', price: 30.00, type: 'acc' }, // Diupdate jadi 30 sesuai Python
-                { icon: '🎒', title: 'GitHub Student Pack', desc: 'Approved with Free Credits', price: 50.00, type: 'acc' }, // Diupdate jadi 50 sesuai Python
-                { icon: '🏛️', title: 'Aged Account (2011)', desc: 'Vintage Tier - Extreme Trust', price: 15.00, type: 'acc' },
-                { icon: '🏛️', title: 'Aged Account (2012)', desc: 'Vintage Tier - Extreme Trust', price: 14.50, type: 'acc' },
-                { icon: '🏛️', title: 'Aged Account (2013)', desc: 'Vintage Tier - Extreme Trust', price: 14.00, type: 'acc' },
-                { icon: '🏛️', title: 'Aged Account (2014)', desc: 'Vintage Tier - Extreme Trust', price: 13.50, type: 'acc' },
-                { icon: '🏛️', title: 'Aged Account (2015)', desc: 'Vintage Tier - Extreme Trust', price: 13.00, type: 'acc' },
-                { icon: '📦', title: 'Aged Account (2016)', desc: 'Premium Tier - High Trust', price: 12.00, type: 'acc' },
-                { icon: '📦', title: 'Aged Account (2017)', desc: 'Premium Tier - High Trust', price: 11.00, type: 'acc' },
-                { icon: '📦', title: 'Aged Account (2018)', desc: 'Premium Tier - High Trust', price: 10.00, type: 'acc' },
-                { icon: '📦', title: 'Aged Account (2019)', desc: 'Premium Tier - High Trust', price: 9.00, type: 'acc' },
-                { icon: '📦', title: 'Aged Account (2020)', desc: 'Premium Tier - High Trust', price: 8.00, type: 'acc' },
-                { icon: '📁', title: 'Standard Account (2021)', desc: 'Standard Tier - Warmed up', price: 7.00, type: 'acc' },
-                { icon: '📁', title: 'Standard Account (2022)', desc: 'Standard Tier - Warmed up', price: 6.00, type: 'acc' },
-                { icon: '📁', title: 'Standard Account (2023)', desc: 'Standard Tier - Warmed up', price: 5.00, type: 'acc' },
-                { icon: '📁', title: 'Standard Account (2024)', desc: 'Standard Tier - Warmed up', price: 4.00, type: 'acc' },
-                { icon: '✨', title: 'Fresh Account (2025)', desc: 'Verified - Ready to use', price: 3.00, type: 'acc' },
-                { icon: '✨', title: 'Fresh Account (2026)', desc: 'Verified - New Creation', price: 2.00, type: 'acc' }
+                { icon: '💎', title: 'GitHub Arctic Vault', desc: 'Rare 2020 Badge Contributor', price: 25.00, type: 'acc', year: 'Arctic' },
+                { icon: '🏅', title: '6 Badges Account', desc: 'Pull Shark, YOLO, Starstruck...', price: 40.00, type: 'acc', year: '2020' }, 
+                { icon: '👥', title: 'GitHub + Followers', desc: 'Pre-warmed, high authority', price: 35.00, type: 'acc', year: '2021' }, 
+                { icon: '📁', title: 'GitHub + Old Repository', desc: 'Aged repository for high trust', price: 30.00, type: 'acc', year: '2019' }, 
+                { icon: '🎒', title: 'GitHub Student Pack', desc: 'Approved with Free Credits', price: 50.00, type: 'acc', year: '2024' }, 
+                { icon: '🏛️', title: 'Aged Account (2011)', desc: 'Vintage Tier - Extreme Trust', price: 15.00, type: 'acc', year: '2011' },
+                { icon: '🏛️', title: 'Aged Account (2012)', desc: 'Vintage Tier - Extreme Trust', price: 14.50, type: 'acc', year: '2012' },
+                { icon: '🏛️', title: 'Aged Account (2013)', desc: 'Vintage Tier - Extreme Trust', price: 14.00, type: 'acc', year: '2013' },
+                { icon: '🏛️', title: 'Aged Account (2014)', desc: 'Vintage Tier - Extreme Trust', price: 13.50, type: 'acc', year: '2014' },
+                { icon: '🏛️', title: 'Aged Account (2015)', desc: 'Vintage Tier - Extreme Trust', price: 13.00, type: 'acc', year: '2015' },
+                { icon: '📦', title: 'Aged Account (2016)', desc: 'Premium Tier - High Trust', price: 12.00, type: 'acc', year: '2016' },
+                { icon: '📦', title: 'Aged Account (2017)', desc: 'Premium Tier - High Trust', price: 11.00, type: 'acc', year: '2017' },
+                { icon: '📦', title: 'Aged Account (2018)', desc: 'Premium Tier - High Trust', price: 10.00, type: 'acc', year: '2018' },
+                { icon: '📦', title: 'Aged Account (2019)', desc: 'Premium Tier - High Trust', price: 9.00, type: 'acc', year: '2019' },
+                { icon: '📦', title: 'Aged Account (2020)', desc: 'Premium Tier - High Trust', price: 8.00, type: 'acc', year: '2020' },
+                { icon: '📁', title: 'Standard Account (2021)', desc: 'Standard Tier - Warmed up', price: 7.00, type: 'acc', year: '2021' },
+                { icon: '📁', title: 'Standard Account (2022)', desc: 'Standard Tier - Warmed up', price: 6.00, type: 'acc', year: '2022' },
+                { icon: '📁', title: 'Standard Account (2023)', desc: 'Standard Tier - Warmed up', price: 5.00, type: 'acc', year: '2023' },
+                { icon: '📁', title: 'Standard Account (2024)', desc: 'Standard Tier - Warmed up', price: 4.00, type: 'acc', year: '2024' },
+                { icon: '✨', title: 'Fresh Account (2025)', desc: 'Verified - Ready to use', price: 3.00, type: 'acc', year: '2025' },
+                { icon: '✨', title: 'Fresh Account (2026)', desc: 'Verified - New Creation', price: 2.00, type: 'acc', year: '2026' }
             ]},
             'services': { items: [
                 { icon: '👥', title: 'Buy Followers', desc: 'Select execution speed', type: 'svc_menu', target: 'followers' },
@@ -662,7 +626,6 @@
             ]}
         };
 
-        // HARGA SERVICES SESUAI PYTHON
         const svcPrices = {
             "followers": {"reg": 0.13, "fast": 0.18, "ultra": 0.23},
             "forks":     {"reg": 0.10, "fast": 0.15, "ultra": 0.20},
@@ -693,32 +656,13 @@
                 
                 if(window.innerWidth >= 768) btn.style.marginBottom = '0';
                 
-                if(item.type === 'nav') { 
-                    btn.onclick = () => openSubMenu(item.title, item.target); 
-                } 
-                else if(item.type === 'acc') { 
-                    btn.onclick = () => {
-                        // Nembak langsung ke bot buat buka katalog tahun itu (Misal: buy_akun_2021)
-                        let yearMatch = item.title.match(/\((\d{4})\)/);
-                        let year = yearMatch ? yearMatch[1] : (item.title.includes("Arctic") ? "Arctic" : "");
-                        
-                        if(year) {
-                            tg.sendData(`buy_akun_${year}`);
-                            tg.close(); // Otomatis nutup mini app
-                        }
-                    }; 
-                } 
-                else if(item.type === 'svc_menu') { 
-                    btn.onclick = () => {
-                        // Nembak langsung ke bot buat milih track service (Misal: menu_jasa_followers)
-                        tg.sendData(`menu_jasa_${item.target}`);
-                        tg.close(); // Otomatis nutup mini app
-                    }; 
-                }
+                if(item.type === 'nav') { btn.onclick = () => openSubMenu(item.title, item.target); } 
+                else if(item.type === 'acc') { btn.onclick = () => openStockModal(item.title, item.price, item.year); } 
+                else if(item.type === 'svc_menu') { btn.onclick = () => openServiceDetail(item.title, item.target); }
                 
                 subContent.appendChild(btn);
             });
-            slider.style.transform = 'translateX(-50%)'; // Geser ke Slide 2
+            slider.style.transform = 'translateX(-40%)'; // Slide 2
             triggerHaptic('medium');
         }
 
@@ -729,22 +673,20 @@
             
             const p = svcPrices[svcType];
             const tracks = [
-                { icon: '🐌', name: 'Regular Track', desc: '24-48 Hours Completion', speed: 'reg', base: p.reg },
-                { icon: '🚀', name: 'Fast Track', desc: '12-24 Hours Completion', speed: 'fast', base: p.fast },
-                { icon: '⚡', name: 'Ultra Track', desc: '1-6 Hours VIP Completion', speed: 'ultra', base: p.ultra }
+                { icon: '🐌', name: 'Regular Track', desc: 'Natural organic speed (1 Node)', speed: 'reg', base: p.reg },
+                { icon: '🚀', name: 'Fast Track', desc: 'Load Balancing (2 Nodes)', speed: 'fast', base: p.fast },
+                { icon: '⚡', name: 'Ultra Track', desc: 'Swarm Mode Instant (3 Nodes)', speed: 'ultra', base: p.ultra }
             ];
 
             tracks.forEach(t => {
                 const block = document.createElement('div');
                 block.style.marginBottom = '20px';
                 
-                // Track Header
                 const hdr = document.createElement('div');
                 hdr.className = 'menu-category';
-                hdr.innerHTML = `${t.icon} ${t.name} ($${t.base.toFixed(2)}/unit)`;
+                hdr.innerHTML = `${t.icon} ${t.name} ($${t.base.toFixed(2)}/u)`;
                 block.appendChild(hdr);
 
-                // Buat 4 tombol paket (100, 200, 300, 400)
                 const grid = document.createElement('div');
                 grid.className = 'home-menu-grid';
                 
@@ -761,99 +703,151 @@
                     btn.className = 'menu-btn';
                     btn.style.marginBottom = '0';
                     btn.innerHTML = `<div class="btn-content"><div class="btn-text-wrapper"><span class="btn-title">${qItem.q} Units</span><span class="btn-desc" style="color:var(--success); font-weight:700;">$${price.toFixed(2)}</span></div></div>`;
-                    btn.onclick = () => openOrderModal(`${title} (${t.name})`, price, svcType, qItem.q);
+                    btn.onclick = () => openOrderModal(`${title} (${t.name})`, price, svcType, qItem.q, t.speed);
                     grid.appendChild(btn);
                 });
                 
+                // Custom Qty Button
+                const btnCustom = document.createElement('button');
+                btnCustom.className = 'menu-btn';
+                btnCustom.style.marginBottom = '0';
+                btnCustom.style.gridColumn = '1 / -1'; // span full width
+                btnCustom.innerHTML = `<div class="btn-content"><div class="btn-text-wrapper"><span class="btn-title">✍️ Custom Quantity</span><span class="btn-desc">Enter your own amount</span></div></div>`;
+                btnCustom.onclick = () => openOrderModalCustom(`${title} (${t.name})`, svcType, t.speed, t.base);
+                grid.appendChild(btnCustom);
+
                 block.appendChild(grid);
                 detailContent.appendChild(block);
             });
 
-            slider.style.transform = 'translateX(-75%)'; // Geser ke Slide 3
+            slider.style.transform = 'translateX(-60%)'; // Slide 3
             triggerHaptic('medium');
         }
 
-        // 4. HOLOGRAPHIC CARD FIX BIAR GAK NYANGKUT
+        // HOLOGRAPHIC CARD
         const cardWrapper = document.getElementById('cardWrapper'); const card = document.getElementById('digitalCard');
         cardWrapper.addEventListener('mousemove', (e) => { const rect = cardWrapper.getBoundingClientRect(); const rotateX = (((e.clientY - rect.top) - (rect.height/2)) / (rect.height/2)) * -10; const rotateY = (((e.clientX - rect.left) - (rect.width/2)) / (rect.width/2)) * 10; card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`; });
         cardWrapper.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`);
         cardWrapper.addEventListener('touchend', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`);
         
-        // Animasi loading doang pas web dibuka
-        function startCounter() { document.getElementById('counter').innerText = "---"; }
-
-        // Fungsi buat nembak ke bot minta saldo asli
-        function requestBalanceSync() {
+        // ---------------- API COMMUNICATION TO TELEGRAM BOT ----------------
+        
+        function sendActionToBot(actionType, extraData = {}) {
             triggerHaptic('medium');
-            showToast("Syncing balance from server...");
-            
-            // Format minta saldo
-            const payload = { action: "GET_BALANCE" };
-            
+            const payload = { action: actionType, ...extraData };
             try { 
                 tg.sendData(JSON.stringify(payload)); 
-                tg.close(); // Tutup WebApp biar klien liat balasan bot lu di chat
-            } catch(e) { 
-                console.log(payload); 
-            }
+                tg.close(); 
+            } catch(e) { console.log("Payload:", payload); }
         }
 
-        // 5. ORDER MODAL (SERVICES)
-        let currentPrice = 0; let currentItem = ""; let currentSvcType = ""; let currentQty = 100;
-        function openOrderModal(title, price, type, qty) {
+        function requestBalanceSync() {
+            document.getElementById('counter').innerText = "...";
+            sendActionToBot("GET_BALANCE");
+        }
+
+        // ---------------- ORDER MODALS ----------------
+        
+        let currentPrice = 0; let currentItem = ""; let currentSvcType = ""; let currentQty = 100; let currentSpeed = "reg"; let currentBasePrice = 0;
+        let isCustomQty = false;
+
+        function openOrderModal(title, price, type, qty, speed) {
             triggerHaptic('light');
+            isCustomQty = false;
             document.getElementById('orderTitle').innerText = title;
             document.getElementById('orderTarget').value = '';
+            document.getElementById('qtyGroup').style.display = 'none';
             
             const label = document.getElementById('orderLabel');
-            if(type === 'follow') {
-                label.innerText = 'Target (Username / Profile URL)';
-                document.getElementById('orderTarget').placeholder = 'e.g. ithallodieh';
+            if(type === 'followers') {
+                label.innerText = 'Target (Username)';
+                document.getElementById('orderTarget').placeholder = 'e.g. abieharyatmo';
             } else {
                 label.innerText = 'Target (Repository URL)';
-                document.getElementById('orderTarget').placeholder = 'e.g. ithallodieh/repo-name';
+                document.getElementById('orderTarget').placeholder = 'e.g. owner/repo';
             }
             
-            currentPrice = price; currentItem = title; currentSvcType = type; currentQty = qty;
+            currentPrice = price; currentItem = title; currentSvcType = type; currentQty = qty; currentSpeed = speed;
             document.getElementById('orderTotal').innerText = '$' + price.toFixed(2);
             document.getElementById('orderModal').classList.add('active');
         }
-        function submitOrder() {
-            const target = document.getElementById('orderTarget').value;
-            if(!target) { showToast('Please fill all fields!', true); triggerHaptic('error'); return; }
+
+        function openOrderModalCustom(title, type, speed, basePrice) {
+            triggerHaptic('light');
+            isCustomQty = true;
+            document.getElementById('orderTitle').innerText = title + " (Custom)";
+            document.getElementById('orderTarget').value = '';
+            document.getElementById('orderQty').value = '100';
+            document.getElementById('qtyGroup').style.display = 'block';
             
-            // Format ID agar match dengan Python (jasa_jenis_qty)
-            const payload = { action: "NEW_ORDER", item: currentItem, item_id: `jasa_${currentSvcType}_${currentQty}`, target: target, quantity: currentQty, total_price: currentPrice.toFixed(2) };
-            closeModal('orderModal'); showToast(`Processing order for ${currentQty}x ${currentSvcType}...`); triggerHaptic('success');
-            try { tg.sendData(JSON.stringify(payload)); } catch(e) { console.log(payload); }
+            const label = document.getElementById('orderLabel');
+            if(type === 'followers') {
+                label.innerText = 'Target (Username)';
+                document.getElementById('orderTarget').placeholder = 'e.g. abieharyatmo';
+            } else {
+                label.innerText = 'Target (Repository URL)';
+                document.getElementById('orderTarget').placeholder = 'e.g. owner/repo';
+            }
+            
+            currentItem = title; currentSvcType = type; currentSpeed = speed; currentBasePrice = basePrice;
+            calcTotal();
+            document.getElementById('orderModal').classList.add('active');
         }
 
-        // 6. CART SYSTEM & 3 MINUTE TIMER LOGIC
+        function calcTotal() {
+            if(!isCustomQty) return;
+            let q = parseInt(document.getElementById('orderQty').value) || 0;
+            if(q < 0) q = 0;
+            currentQty = q;
+            
+            let mult = 1.0;
+            if (q >= 400) mult = 0.85;
+            else if (q >= 300) mult = 0.90;
+            else if (q >= 200) mult = 0.95;
+
+            currentPrice = q * (currentBasePrice * mult);
+            document.getElementById('orderTotal').innerText = '$' + currentPrice.toFixed(2);
+        }
+
+        function submitOrder() {
+            const target = document.getElementById('orderTarget').value.trim();
+            if(!target) { showToast('Please enter target URL!', true); triggerHaptic('error'); return; }
+            if(isCustomQty && currentQty < 10) { showToast('Minimum order is 10 units!', true); triggerHaptic('error'); return; }
+            
+            sendActionToBot("ORDER_SERVICE", {
+                item_name: currentItem,
+                service_type: currentSvcType,
+                speed: currentSpeed,
+                quantity: currentQty,
+                total_price: currentPrice.toFixed(2),
+                target: target
+            });
+        }
+
+        // ---------------- ACCOUNT STOCK & CART ----------------
+        
         let cart = []; let cartTimerInterval;
 
-        function openStockModal(title, price) {
+        function openStockModal(title, price, yearStr) {
             triggerHaptic('light'); document.getElementById('stockTitle').innerText = title;
             const stockBox = document.getElementById('stockListContent'); stockBox.innerHTML = '';
             
+            // Generate 3 fake dummy IDs for visual simulation
             for(let i=0; i<3; i++) {
-                const fakeId = "XB-" + Math.floor(Math.random() * 9000 + 1000);
+                const fakeId = yearStr + "-" + Math.random().toString(36).substring(2,8);
                 const isReserved = cart.find(c => c.id === fakeId); 
                 
                 const itemDiv = document.createElement('div'); itemDiv.className = 'stock-item';
-                itemDiv.innerHTML = `<span class="stock-id">${fakeId}</span><button class="btn-add-cart" id="btn-${fakeId}" ${isReserved ? 'disabled style="opacity:0.5;"' : `onclick="addToCart('${fakeId}', '${title}', ${price})"`}>${isReserved ? 'Reserved' : '+ Cart'}</button>`;
+                itemDiv.innerHTML = `<span class="stock-id">${fakeId}</span><button class="btn-add-cart" id="btn-${fakeId}" ${isReserved ? 'disabled style="opacity:0.5;"' : `onclick="addToCart('${fakeId}', '${title}', ${price}, '${yearStr}')"`}>${isReserved ? 'Reserved' : '+ Cart'}</button>`;
                 stockBox.appendChild(itemDiv);
             }
             document.getElementById('stockModal').classList.add('active');
         }
 
-        function addToCart(itemId, title, price) {
+        function addToCart(itemId, title, price, yearStr) {
             triggerHaptic('medium');
             const expireAt = Date.now() + (3 * 60 * 1000); 
-            // Parsing buat ngasih tahu python
-            let categoryStr = title.replace("GitHub + ", "").replace(" Account", "").replace(" ", "").lower();
-            let finalItemId = `akun_${categoryStr}`;
-            
-            cart.push({ id: itemId, item_id: finalItemId, title: title, price: price, expireAt: expireAt });
+            cart.push({ id: itemId, title: title, price: price, year: yearStr, expireAt: expireAt });
             
             const btn = document.getElementById('btn-'+itemId);
             if(btn) { btn.innerText = 'Reserved'; btn.disabled = true; btn.style.opacity = '0.5'; }
@@ -910,17 +904,91 @@
 
         function checkoutCart() {
             if(cart.length === 0) return;
-            const payload = { action: "CHECKOUT_CART", items: cart };
+            sendActionToBot("CHECKOUT_CART", { items: cart });
             cart = []; updateCartBadge(); closeModal('cartModal');
-            showToast('Checkout successful! Assets delivered to email.'); triggerHaptic('success');
-            try { tg.sendData(JSON.stringify(payload)); } catch(e) { console.log(payload); }
         }
 
-        // 7. OTHER MODALS
-        function openEwalletModal() { triggerHaptic('light'); document.getElementById('ewalletModal').classList.add('active'); }
-        function openTopUpModal(title, info, iconChar) { triggerHaptic('light'); document.getElementById('topupTitle').innerText = 'Deposit: ' + title; document.getElementById('topupAddress').innerText = info; if(iconChar === '🏦' || title.includes('DANA') || title.includes('OVO') || title.includes('GoPay') || title.includes('Shopee')) { document.getElementById('topupQR').style.display = 'none'; } else { document.getElementById('topupQR').style.display = 'flex'; } document.getElementById('topupIconBadge').innerHTML = iconChar; document.getElementById('topupModal').classList.add('active'); }
+        // ---------------- TOP UP ----------------
+        let currentTopupAmount = 0;
+        function openTopupSelection(amount) {
+            currentTopupAmount = amount;
+            triggerHaptic('light');
+            document.getElementById('topupSelectModal').classList.add('active');
+        }
+        function openCustomTopup() {
+            let val = prompt("Enter amount to deposit (USDT):", "100");
+            if(val) {
+                let parsed = parseFloat(val);
+                if(parsed >= 5) {
+                    currentTopupAmount = parsed;
+                    triggerHaptic('light');
+                    document.getElementById('topupSelectModal').classList.add('active');
+                } else {
+                    alert("Minimum deposit is $5.");
+                }
+            }
+        }
+        function submitTopup(method) {
+            closeModal('topupSelectModal');
+            sendActionToBot("TOPUP", { amount: currentTopupAmount, method: method });
+        }
+
+        // ---------------- ADMIN PANEL ----------------
+        const adminTools = [
+            { icon: '📢', title: 'Broadcast Message', cmd: 'admin_broadcast' },
+            { icon: '💰', title: 'Update Prices', cmd: 'admin_update_price' },
+            { icon: '📦', title: 'Add Account Stock', cmd: 'admin_addstock' },
+            { icon: '🗑️', title: 'Delete Account', cmd: 'admin_delstock' },
+            { icon: '🧹', title: 'System Cleanup', cmd: 'admin_cleanup' },
+            { icon: '⚙️', title: 'Manage Engines', cmd: 'admin_manage_engines' },
+            { icon: '🚀', title: 'Manual Deploy', cmd: 'admin_manual_deploy' },
+            { icon: '📁', title: 'Sold/History/Suspended', cmd: 'admin_view_history' }
+        ];
+
+        // Daftar ID Admin (Samain kayak di Python lu)
+        const ADMIN_IDS = [6740043923, 7095661271];
+
+        function openAdminPanel() {
+            // Tarik ID Telegram orang yang lagi buka Web App
+            const userId = tg.initDataUnsafe?.user?.id;
+            
+            // Kalau ID-nya GAK ADA di daftar Admin, TENDANG!
+            if (!ADMIN_IDS.includes(userId)) {
+                showGlitchAlert(); // Munculin peringatan ACCESS DENIED
+                return; // Berhenti di sini, jangan buka panelnya
+            }
+
+            const adminContent = document.getElementById('admin-content');
+            adminContent.innerHTML = '';
+            adminTools.forEach(tool => {
+                const btn = document.createElement('button');
+                btn.className = 'menu-btn';
+                btn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                btn.innerHTML = `<div class="btn-content"><div class="btn-icon" style="background:var(--panel-bg); border:1px solid rgba(255,255,255,0.2);">${tool.icon}</div><div class="btn-text-wrapper"><span class="btn-title">${tool.title}</span><span class="btn-desc" style="font-family:monospace;">${tool.cmd}</span></div></div>`;
+                btn.onclick = () => confirmAdminCommand(tool.title, tool.cmd);
+                adminContent.appendChild(btn);
+            });
+            slider.style.transform = 'translateX(-80%)'; // Slide 4
+            triggerHaptic('medium');
+        }
+
+        let pendingAdminCmd = "";
+        function confirmAdminCommand(title, cmd) {
+            triggerHaptic('light');
+            pendingAdminCmd = cmd;
+            document.getElementById('adminCmdTitle').innerText = title;
+            document.getElementById('adminCmdDesc').innerText = `Proceed with execution to Bot terminal?`;
+            document.getElementById('adminCmdModal').classList.add('active');
+        }
+
+        document.getElementById('btnAdminConfirm').onclick = function() {
+            closeModal('adminCmdModal');
+            sendActionToBot("ADMIN_CMD", { command: pendingAdminCmd });
+        };
+
+
+        // ---------------- UTILS ----------------
         function showOfflineModal(platformName) { triggerHaptic('error'); document.getElementById('offlineTarget').innerText = platformName; document.getElementById('offlineModal').classList.add('active'); }
-        function showGlitchAlert() { triggerHaptic('error'); document.getElementById('glitchModal').classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         let tstTm;
