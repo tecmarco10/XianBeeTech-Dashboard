@@ -606,41 +606,54 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="glitchModal">
+        <div class="modal-box" style="border-color: var(--danger); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);">
+            <h2 class="modal-title" style="margin-bottom: 10px; color: var(--danger); text-align: center;">ACCESS DENIED</h2>
+            <p class="modal-desc" style="color: #fff; text-align: center;">You do not have permission to access the Admin Panel. This area is restricted.</p>
+            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('glitchModal')">Go Back</button>
+        </div>
+    </div>
+
     <script>
         const tg = window.Telegram.WebApp; tg.expand(); tg.ready();
 
-        // Ambil User ID dari Telegram
-        if(tg.initDataUnsafe && tg.initDataUnsafe.user) {
-            document.getElementById('displayUserId').innerText = "ID: " + tg.initDataUnsafe.user.id;
-        }
-
-        // 🔥 MAGIC DATA INJECTOR DARI URL 🔥
-        // Sedot parameter '?bal=xxx' dari link yang dibikin sama Bot Python
+        // 🔥 MAGIC DATA INJECTOR DARI URL PYTHON 🔥
         const urlParams = new URLSearchParams(window.location.search);
         const userBalance = urlParams.get('bal');
-        
+        const urlUid = urlParams.get('uid');
+        const urlUname = urlParams.get('uname');
+
+        // 1. TAMPILIN SALDO
         if (userBalance !== null) {
             document.getElementById('counter').innerText = parseFloat(userBalance).toFixed(2);
         } else {
             document.getElementById('counter').innerText = "0.00";
         }
 
-        // 1. DUST AMBIENT BACKGROUND
+        // 2. TAMPILIN USERNAME TELEGRAM DI KARTU VIP
+        if (urlUname) {
+            let display = urlUname.includes(" ") ? urlUname : "@" + urlUname; 
+            document.getElementById('displayUserId').innerText = display;
+        } else {
+            document.getElementById('displayUserId').innerText = "XB-USER";
+        }
+
+        // 3. DUST AMBIENT BACKGROUND
         const canvas = document.getElementById("canvas-bg"); const ctx = canvas.getContext("2d");
         let width, height, particles;
         function initCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; particles = []; for (let i=0; i<30; i++) particles.push({ x: Math.random()*width, y: Math.random()*height, vx: (Math.random()-0.5)*0.2, vy: Math.random()*-0.5-0.1, size: Math.random()*2 + 1, alpha: Math.random()*0.3 }); }
         function drawParticles() { ctx.clearRect(0,0,width,height); for (let i=0; i<particles.length; i++) { let p = particles[i]; p.x += p.vx; p.y += p.vy; if (p.y<0) { p.y = height; p.x = Math.random()*width; } if (p.x<0) p.x=width; if (p.x>width) p.x=0; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fillStyle = `rgba(139, 92, 246, ${p.alpha})`; ctx.fill(); } requestAnimationFrame(drawParticles); }
         window.addEventListener("resize", initCanvas); initCanvas(); drawParticles();
 
-        // 2. SLIDER NAVIGATION
+        // 4. SLIDER NAVIGATION
         const slider = document.getElementById('slider'); let isWalletOpened = false;
-        function goToWallet() { slider.style.transform = 'translateX(0%)'; triggerHaptic('medium'); } // Hapus auto-sync karena saldo udah disedot dari URL!
+        function goToWallet() { slider.style.transform = 'translateX(0%)'; triggerHaptic('medium'); } // 0%
         function goToHome() { slider.style.transform = 'translateX(-20%)'; triggerHaptic('light'); } // 20%
         
         // SET AWAL POSISI SLIDER KE HOME
         setTimeout(() => { goToHome(); }, 100);
 
-        // 3. DATABASE MENU GITHUB
+        // 5. DATABASE MENU GITHUB
         const subTitle = document.getElementById('sub-title'); const subContent = document.getElementById('sub-menu-content');
         
         const dbMenu = {
@@ -710,7 +723,9 @@
                 if(window.innerWidth >= 768) btn.style.marginBottom = '0';
                 
                 if(item.type === 'nav') { btn.onclick = () => openSubMenu(item.title, item.target); } 
-                else if(item.type === 'acc') { btn.onclick = () => openStockModal(item.title, item.price, item.year); } 
+                else if(item.type === 'acc') { 
+                    btn.onclick = () => sendActionToBot("VIEW_CATALOG", { year: item.year }); 
+                } 
                 else if(item.type === 'svc_menu') { btn.onclick = () => openServiceDetail(item.title, item.target); }
                 
                 subContent.appendChild(btn);
@@ -990,6 +1005,7 @@
         const adminTools = [
             { icon: '📢', title: 'Broadcast Message', cmd: 'admin_broadcast' },
             { icon: '💰', title: 'Update Prices', cmd: 'admin_update_price' },
+            { icon: '💸', title: 'Update Service Prices', cmd: 'admin_svc_price' },
             { icon: '📦', title: 'Add Account Stock', cmd: 'admin_addstock' },
             { icon: '🗑️', title: 'Delete Account', cmd: 'admin_delstock' },
             { icon: '🧹', title: 'System Cleanup', cmd: 'admin_cleanup' },
@@ -998,18 +1014,15 @@
             { icon: '📁', title: 'Sold/History/Suspended', cmd: 'admin_view_history' }
         ];
 
-        // Daftar ID Admin (Format STRING biar kebal dari error JS!)
+        // Daftar ID Admin (Format STRING)
         const ADMIN_IDS = ["6740043923", "7095661271"];
 
         function openAdminPanel() {
-            // Tarik ID Telegram, ubah jadi String, kalo kosong kasih nilai "0"
-            let userId = "0";
-            if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
-                userId = tg.initDataUnsafe.user.id.toString();
-            }
+            // 🔥 TARIK ID DARI URL PYTHON (10.000% PASTI KEBACA) 🔥
+            let userId = urlUid;
             
-            // Kalau ID-nya GAK ADA di daftar Admin, TENDANG!
-            if (!ADMIN_IDS.includes(userId)) {
+            // Kalau ID-nya GAK ADA di daftar Admin ATAU null, TENDANG!
+            if (!userId || !ADMIN_IDS.includes(userId)) {
                 showGlitchAlert(); 
                 return; 
             }
@@ -1045,6 +1058,7 @@
 
         // ---------------- UTILS ----------------
         function showOfflineModal(platformName) { triggerHaptic('error'); document.getElementById('offlineTarget').innerText = platformName; document.getElementById('offlineModal').classList.add('active'); }
+        function showGlitchAlert() { triggerHaptic('error'); document.getElementById('glitchModal').classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
 
         let tstTm;
