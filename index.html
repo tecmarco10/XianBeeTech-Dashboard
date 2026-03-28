@@ -614,6 +614,17 @@
             document.getElementById('displayUserId').innerText = "ID: " + tg.initDataUnsafe.user.id;
         }
 
+        // 🔥 MAGIC DATA INJECTOR DARI URL 🔥
+        // Sedot parameter '?bal=xxx' dari link yang dibikin sama Bot Python
+        const urlParams = new URLSearchParams(window.location.search);
+        const userBalance = urlParams.get('bal');
+        
+        if (userBalance !== null) {
+            document.getElementById('counter').innerText = parseFloat(userBalance).toFixed(2);
+        } else {
+            document.getElementById('counter').innerText = "0.00";
+        }
+
         // 1. DUST AMBIENT BACKGROUND
         const canvas = document.getElementById("canvas-bg"); const ctx = canvas.getContext("2d");
         let width, height, particles;
