@@ -3,756 +3,929 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee Tech Store Ultimate Terminal V16</title>
+    <title>XianBee-Tech Store</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
         :root {
-            /* Warna Tema Utama (Cyan) */
-            --primary: #00f2fe;
-            --primary-glow: rgba(0, 242, 254, 0.4);
-
-            /* Warna Tema Merah (Secret Mode) */
-            --red: #ef4444;
-            --red-glow: rgba(239, 68, 68, 0.5);
-
-            --blue-dark: #0a0a10;
-            --gold: #ffd700;
-            --gold-glow: rgba(255, 215, 0, 0.3);
-
-            --gray-text: #94a3b8;
-
-            /* Pointer Warna Aktif (Diubah lewat JS) */
-            --current-primary: #00f2fe;
-            --current-glow: rgba(0, 242, 254, 0.4);
+            /* 🌌 CYBER NEBULA LUXURY THEME (BLUE - PURPLE - RED) */
+            --bg-base: #07050f;
+            --panel-bg: rgba(20, 15, 35, 0.85);
+            
+            /* Gradient Master */
+            --grad-master: linear-gradient(135deg, #0072ff 0%, #8b5cf6 50%, #f85032 100%);
+            --grad-hover: linear-gradient(135deg, #009dff 0%, #a78bfa 50%, #ff6b55 100%);
+            
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --border: rgba(139, 92, 246, 0.3);
+            
+            --glow-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            --danger: #ef4444;
+            --success: #10b981;
         }
 
-        body { 
-            margin: 0; padding: 0; 
-            font-family: 'Outfit', sans-serif; 
-            background-color: #000000; 
-            color: #ffffff; 
-            min-height: 100vh; overflow-x: hidden; position: relative;
-        }
+        * { box-sizing: border-box; }
 
-        /* 🟢 PRELOADER BOOT-UP & BIOMETRIC SCANNER */
-        #preloader {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: #000000; z-index: 9999;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            padding: 30px; box-sizing: border-box; transition: opacity 0.8s ease, visibility 0.8s;
-        }
-
-        /* Animasi Sidik Jari */
-        .fingerprint-container {
-            width: 100px; height: 100px; margin-bottom: 30px;
-            position: relative; opacity: 0; transition: opacity 0.5s ease;
-        }
-        #fork_icon_svg_biometric {
-             fill: none; stroke: var(--current-primary); stroke-width: 2; filter: drop-shadow(0 0 10px var(--current-glow));
-        }
-
-        /* Garis Laser Scanner */
-        .scan-bar {
-            position: absolute; top: 0; left: -10px; width: 120px; height: 4px;
-            background: linear-gradient(90deg, rgba(0,0,0,0) 0%, var(--current-primary) 50%, rgba(0,0,0,0) 100%);
-            border-radius: 10px; box-shadow: 0 0 15px var(--current-primary);
-            animation: scan 2s ease-in-out infinite;
-        }
-        @keyframes scan { 0%, 100% { top: 0%; } 50% { top: 100%; } }
-
-        /* Teks Terminal */
-        #term-text {
-            font-family: 'Courier New', Courier, monospace; color: var(--current-primary);
-            font-size: 0.95rem; line-height: 1.8; text-shadow: 0 0 8px var(--current-glow);
-            text-align: left; width: 100%; max-width: 350px;
-        }
-        .cursor { display: inline-block; width: 10px; height: 1.1rem; background-color: var(--current-primary); animation: blink 1s step-end infinite; vertical-align: middle; margin-left: 5px; }
-        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-
-        /* 🟢 MAIN WRAPPER */
-        #main-wrapper {
-            opacity: 0; transition: opacity 1.5s ease-in;
-            display: flex; flex-direction: column; align-items: center;
-            padding: 15px; box-sizing: border-box; width: 100%;
-        }
-
-        /* 🟢 CANVAS BACKGROUND - RELAXING CYBER DUST */
-        #canvas-bg {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            z-index: -1; opacity: 0.7; 
-        }
-
-        /* 🟢 LIVE ACTIVE OPERATORS COUNTER */
-        #active-operators {
-            position: fixed; top: 15px; right: 15px;
-            background: rgba(0, 0, 0, 0.7); border: 1px solid var(--current-glow);
-            border-radius: 50px; padding: 5px 15px;
-            font-size: 0.75rem; font-weight: 700; color: #ffffff;
-            display: flex; align-items: center; gap: 8px; z-index: 100;
-            backdrop-filter: blur(5px); transition: border-color 0.5s;
-        }
-        #op-lamp {
-            width: 8px; height: 8px; background-color: #25D366;
-            border-radius: 50%; box-shadow: 0 0 10px #25D366;
-            animation: lamp-blink 1s ease-in-out infinite;
-        }
-        @keyframes lamp-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
-
-        /* HEADER LOGO GEDE (TRANSPARAN + SECRET TAP) */
-        .header-content { 
+        body {
+            margin: 0; padding: 0;
+            background-color: var(--bg-base); color: var(--text-main);
+            font-family: 'Plus Jakarta Sans', sans-serif;
             display: flex; justify-content: center; align-items: center;
-            margin-bottom: 30px; width: 100%; max-width: 400px;
-            background: transparent; border: none; box-shadow: none; 
-            padding: 15px; box-sizing: border-box; z-index: 5;
-            transform-style: preserve-3d; transform: perspective(1000px);
-            cursor: pointer; 
-            mix-blend-mode: screen; 
-        }
-        .store-logo { 
-            width: 100%; max-width: 250px; height: auto; object-fit: contain; 
-            transform: translateZ(30px); /* 3D pop out */
-            transition: filter 0.5s;
+            min-height: 100vh; overflow: hidden;
+            background-image: radial-gradient(circle at center, rgba(139, 92, 246, 0.15) 0%, transparent 60%);
         }
 
-        .section-title { width: 100%; max-width: 400px; font-size: 0.85rem; font-weight: 600; color: #cbd5e1; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 2px; z-index: 1;}
+        /* 🟢 AMBIENT DUST ANIMATION */
+        #canvas-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 0; opacity: 0.6; pointer-events: none; }
 
-        /* GRID & TOMBOL 3D */
-        .menu-grid { 
-            width: 100%; max-width: 400px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 25px; z-index: 1;
+        /* 📱 APP FRAME */
+        .app-frame {
+            width: 100%; max-width: 420px; height: 100vh; max-height: 850px;
+            background: var(--bg-base); border: 1px solid rgba(255,255,255,0.05);
+            position: relative; overflow: hidden; backdrop-filter: blur(10px);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 1);
+            display: flex; flex-direction: column; z-index: 1;
         }
 
-        .btn-complex { 
-            display: flex; align-items: center; padding: 12px 15px; border-radius: 10px; cursor: pointer; text-align: left; box-sizing: border-box; width: 100%; background: rgba(0,0,0,0.6); border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(5px); 
-            transform-style: preserve-3d; transition: transform 0.1s ease, box-shadow 0.1s ease, border-color 0.5s;
-            position: relative;
+        @media (min-width: 450px) { .app-frame { height: 85vh; border-radius: 28px; border: 1px solid var(--border); } }
+
+        /* 🎬 SLIDER MECHANICS (TAMBAH SLIDE 3) */
+        .slider-viewport { flex-grow: 1; position: relative; width: 100%; overflow: hidden; }
+        .slider-track {
+            display: flex; width: 400%; height: 100%; /* Sekarang 400% karena ada 4 Slide (Wallet, Home, Sub, Service Detail) */
+            transform: translateX(-25%); /* Home ada di index 1 (25%) */
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.4, 1);
         }
-        /* DYNAMIC MARKET AMBIENT (Glow Napas -JS controlled) */
-        .btn-market-ambient {
-            animation: market-breathe 4s ease-in-out infinite;
-        }
-        @keyframes market-breathe {
-            0%, 100% { box-shadow: 0 0 5px rgba(255,255,255,0.05); }
-            50% { box-shadow: 0 0 15px var(--market-color, rgba(255,255,255,0.1)); }
-        }
-
-        .btn-icon { font-size: 1.8rem; margin-right: 12px; display: flex; justify-content: center; align-items: center; width: 30px; height: 30px; transform: translateZ(20px); }
-        .btn-text { transform: translateZ(10px); }
-
-        /* Teks Judul (Bakal kena efek Decrypt) */
-        .btn-title { font-size: 0.9rem; font-weight: 700; color: #ffffff; display: block; margin-bottom: 2px; font-family: 'Outfit', sans-serif;}
-        .btn-sub { font-size: 0.65rem; color: var(--gray-text); }
-
-        /* Warna Tombol & Glow */
-        .btn-gold { border-color: rgba(255, 215, 0, 0.4); background: linear-gradient(180deg, rgba(30, 25, 0, 0.8) 0%, rgba(10, 10, 0, 0.95) 100%); }
-        .btn-blue { border-color: var(--current-glow); background: linear-gradient(180deg, rgba(0, 20, 40, 0.8) 0%, rgba(0, 5, 15, 0.95) 100%); }
-        .btn-red { border-color: rgba(239, 68, 68, 0.4); background: linear-gradient(180deg, rgba(40, 0, 0, 0.8) 0%, rgba(15, 0, 0, 0.95) 100%); justify-content: center; }
-
-        .full-width { grid-column: span 2; }
-
-        /* 🟢 CYBERPUNK GLITCH EFFECT ON CLICK */
-        .btn-glitch-active {
-            animation: glitch-anim 0.25s cubic-bezier(.25, .46, .45, .94) both;
-            border-color: var(--red) !important;
-            box-shadow: 0 0 15px var(--red), inset 0 0 10px var(--red) !important;
-        }
-        @keyframes glitch-anim {
-            0% { transform: translate(0) scale3d(1.02,1.02,1); filter: hue-rotate(0deg); }
-            20% { transform: translate(-4px, 3px); filter: hue-rotate(90deg); }
-            40% { transform: translate(-4px, -3px); filter: invert(100%); }
-            60% { transform: translate(4px, 3px); filter: hue-rotate(180deg); }
-            80% { transform: translate(4px, -3px); filter: hue-rotate(270deg); }
-            100% { transform: translate(0) scale3d(1.02,1.02,1); filter: hue-rotate(0deg); }
+        .slide-page {
+            width: 25%; height: 100%; padding: 25px 20px; box-sizing: border-box;
+            display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden;
+            padding-bottom: 90px; 
         }
 
-        /* SYS LOAD */
-        .sys-load-container { width: 100%; max-width: 400px; background: rgba(0, 195, 255, 0.05); border: 1px solid rgba(0, 195, 255, 0.3); border-radius: 8px; padding: 10px 15px; box-sizing: border-box; display: flex; align-items: center; margin-bottom: 40px; z-index: 1;}
-        .progress-bar-bg { flex-grow: 1; height: 8px; background: rgba(255, 255, 255, 0.1); margin: 0 15px; border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; background: var(--cyan); width: 15%; transition: width 0.5s ease; box-shadow: 0 0 10px var(--cyan); }
+        ::-webkit-scrollbar { width: 0px; background: transparent; } 
 
-        /* 🟢 WHATSAPP FLOATING BUTTON */
-        .wa-fab {
-            position: fixed; bottom: 60px; right: 20px;
-            width: 55px; height: 55px; background-color: #25D366; border-radius: 50%;
+        /* 🏷️ COMMON HEADER FIX */
+        .page-header { 
+            display: flex; align-items: center; justify-content: space-between; 
+            margin-bottom: 25px; width: 100%; gap: 10px;
+        }
+        .header-title { 
+            font-weight: 800; font-size: 1.15rem; margin: 0; 
+            text-transform: uppercase; letter-spacing: 1px; text-align: center; 
+            flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; 
+            color: var(--text-main);
+        }
+        .btn-back {
+            background: var(--panel-bg); border: 1px solid var(--border);
+            color: var(--text-main); width: 40px; height: 40px; border-radius: 12px;
             display: flex; justify-content: center; align-items: center;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); z-index: 100;
-            text-decoration: none; transition: transform 0.3s ease;
+            cursor: pointer; transition: 0.2s; flex-shrink: 0;
         }
-        .wa-fab:active { transform: scale(0.9); }
-        .wa-fab img { width: 35px; height: 35px; }
+        .btn-back:active { transform: scale(0.9); background: var(--grad-master); border-color: transparent; }
+        .header-spacer { width: 40px; height: 40px; flex-shrink: 0; }
 
-        /* 🟢 SYSTEM FOMO NOTIFICATION */
-        #fomo-toast {
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
-            background: rgba(0, 0, 0, 0.85); border: 1px solid var(--current-glow);
-            border-radius: 50px; padding: 8px 20px; color: var(--cyan);
-            font-size: 0.75rem; font-weight: 600; box-shadow: 0 5px 15px var(--current-glow);
-            z-index: 1000; transition: top 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55), border-color 0.5s, box-shadow 0.5s;
-            white-space: nowrap; display: flex; align-items: center; gap: 8px;
+        /* ---------------- MIDDLE ROOM (HOME) ---------------- */
+        .home-logo-container { text-align: center; margin-bottom: 25px; margin-top: 10px; position: relative; }
+        .home-logo-title { font-weight: 800; font-size: 2.2rem; color: #fff; margin:0; letter-spacing: -0.5px;}
+        .home-logo-sub { font-weight: 700; font-size: 0.8rem; color: #fff; letter-spacing: 2px; background: var(--grad-master); padding: 3px 12px; border-radius: 12px; display: inline-block; margin-top: 5px; box-shadow: var(--glow-shadow);}
+        
+        .menu-category { font-weight: 800; font-size: 0.8rem; color: var(--text-muted); margin: 20px 0 10px 5px; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px;}
+        .menu-category::before { content: ''; display: block; width: 6px; height: 6px; background: #8b5cf6; border-radius: 50%; box-shadow: 0 0 8px #8b5cf6; }
+        
+        /* 🎨 MASTER BUTTONS */
+        .btn-master {
+            width: 100%; padding: 16px; margin-bottom: 15px;
+            background: var(--grad-master); border: none; border-radius: 16px;
+            cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            display: flex; align-items: center; justify-content: space-between; position: relative;
+            box-shadow: var(--glow-shadow); color: #fff;
         }
-        #fomo-toast.show { top: 20px; }
+        .btn-master:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(139, 92, 246, 0.2); }
+        .btn-master .btn-icon { background: rgba(0,0,0,0.2); font-size: 1.5rem; width: 46px; height: 46px; border-radius: 12px; display: flex; justify-content: center; align-items: center; }
+        .btn-master .btn-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 2px; color: #fff; }
+        .btn-master .btn-desc { font-size: 0.8rem; color: rgba(255,255,255,0.8); font-weight: 600;}
 
-        /* 🟢 LIVE CRYPTO TICKER */
-        .crypto-ticker-container {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: #000000; border-top: 1px solid rgba(0, 242, 254, 0.3);
-            color: #ffffff; font-size: 0.75rem; font-family: 'Courier New', Courier, monospace; font-weight: bold;
-            padding: 5px 0; z-index: 50; overflow: hidden; display: flex; white-space: nowrap;
+        /* 🔘 LIST BUTTONS */
+        .menu-btn {
+            width: 100%; padding: 14px; margin-bottom: 12px;
+            background: var(--panel-bg); border: 1px solid var(--border); border-radius: 14px;
+            cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between;
         }
-        .crypto-ticker { display: inline-block; animation: marquee 30s linear infinite; }
-        .crypto-item { margin-right: 30px; }
-        .crypto-up { color: #25D366; } .crypto-down { color: #ef4444; }
-        @keyframes marquee { 0% { transform: translateX(100vw); } 100% { transform: translateX(-100%); } }
+        .menu-btn:active { transform: scale(0.97); border-color: #8b5cf6; background: rgba(139, 92, 246, 0.1); }
+        
+        .btn-content { display: flex; align-items: center; gap: 14px; text-align: left; }
+        .menu-btn .btn-icon { font-size: 1.4rem; width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; background: var(--grad-master); border-radius: 10px; color: #fff; box-shadow: 0 4px 10px rgba(139, 92, 246, 0.3);}
+        
+        .btn-text-wrapper { display: flex; flex-direction: column; }
+        .btn-title { font-weight: 700; font-size: 0.95rem; color: #fff; margin-bottom: 2px;}
+        .btn-desc { font-size: 0.75rem; color: var(--text-muted); font-weight: 600;}
+        .arrow-icon { color: #8b5cf6; font-size: 1.2rem; font-weight: 800;}
 
-        /* Fork Icon Svg */
-        #fork_icon_svg { width: 28px; height: 28px; fill: none; stroke: #ffffff; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;}
+        /* OFFLINE PLATFORM STYLES */
+        .btn-offline { opacity: 0.6; filter: grayscale(1); }
+        .btn-offline:active { transform: scale(0.96); opacity: 1; filter: grayscale(0); }
+        .badge-status { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 10px; }
+        .bg-sync { color: #fff; background: var(--grad-master); box-shadow: 0 0 10px rgba(139, 92, 246, 0.4); border:none;}
+        .bg-off { color: var(--text-muted); background: rgba(255,255,255,0.1); border:none;}
 
-        /* 🚨 SECRET ADMIN MODE (Merah) */
-        body.secret-mode { background-color: #050000; }
-        body.secret-mode canvas { opacity: 0.2; }
-        body.secret-mode #canvas-bg { filter: hue-rotate(180deg) brightness(0.5); }
-        body.secret-mode .crypto-ticker-container { border-color: rgba(239, 68, 68, 0.3); }
+        /* ---------------- LEFT ROOM (WALLET) ---------------- */
+        .wallet-desktop-layout { display: flex; flex-direction: column; gap: 0; }
+        .wallet-desktop-left, .wallet-desktop-right { width: 100%; }
 
-        /* Screen Glitch Overlay untuk Secret Mode Alarm */
-        #secret-alarm-overlay {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background-color: rgba(239, 68, 68, 0.1); z-index: 9998;
-            pointer-events: none; opacity: 0;
-            animation: alarm-blink 0.5s ease infinite;
-            display: none;
+        .card-wrapper { perspective: 1000px; margin-bottom: 25px; }
+        
+        .digital-card {
+            width: 100%; height: 215px;
+            background: var(--grad-master);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 25px;
+            position: relative; transform-style: preserve-3d;
+            box-shadow: var(--glow-shadow); overflow: hidden; transition: transform 0.1s;
         }
-        body.secret-mode #secret-alarm-overlay { display: block; }
-        @keyframes alarm-blink { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+        .digital-card::before { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-20deg); animation: shine 5s infinite; pointer-events: none; }
+        @keyframes shine { 0%, 15% { left: -150%; } 25%, 100% { left: 200%; } }
+        
+        .card-bg-shape { position: absolute; right: -20px; bottom: -40px; width: 160px; height: 160px; background: rgba(0,0,0,0.2); border-radius: 50%; filter: blur(20px); z-index: 1; }
+        
+        .card-content { position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-top { display: flex; justify-content: space-between; align-items: center; }
+        .chip { width: 40px; height: 30px; background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); border-radius: 6px; position: relative; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.3);}
+        .chip::after { content: ''; position: absolute; width: 100%; height: 1px; background: rgba(0,0,0,0.3); top: 50%; }
+        .chip::before { content: ''; position: absolute; height: 100%; width: 1px; background: rgba(0,0,0,0.3); left: 50%; }
+        
+        .card-type { font-weight: 800; font-size: 0.85rem; letter-spacing: 2px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3);}
+        .balance-label { font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700;}
+        .balance-amount { font-family: 'JetBrains Mono', monospace; font-size: 2.6rem; font-weight: 800; text-shadow: 0 4px 10px rgba(0,0,0,0.3); color: #fff;}
+        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
+        .user-id { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; letter-spacing: 2px; color: #fff; font-weight: 600;}
+        
+        /* TOP UP GRID */
+        .topup-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
+        .topup-btn { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 16px; padding: 14px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: 0.2s;}
+        .topup-btn:active { transform: scale(0.95); background: rgba(139, 92, 246, 0.15); border-color: #8b5cf6;}
+        
+        .topup-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.4rem; background: rgba(255,255,255,0.05); color: #fff;}
+        .topup-text { font-size: 0.75rem; font-weight: 700; color: #fff;}
+
+        /* LEDGER TRANSACTIONS */
+        .tx-list { display: flex; flex-direction: column; gap: 12px; }
+        .tx-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 16px; background: var(--panel-bg); border: 1px solid rgba(255,255,255,0.05); border-radius: 16px; }
+        .tx-left { display: flex; align-items: center; gap: 14px; }
+        .tx-icon { width: 38px; height: 38px; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.1rem; font-weight:bold;}
+        .tx-in { background: rgba(16, 185, 129, 0.15); color: var(--success); }
+        .tx-out { background: rgba(239, 68, 68, 0.15); color: var(--danger); }
+        .tx-info { display: flex; flex-direction: column; gap: 3px; }
+        .tx-title { font-size: 0.85rem; font-weight: 700;}
+        .tx-date { font-size: 0.7rem; color: var(--text-muted); font-weight: 600;}
+        .tx-amount { font-family: 'JetBrains Mono', monospace; font-weight: 800; font-size: 1rem; }
+        .amt-in { color: var(--success); }
+
+        /* ---------------- SUB-MENUS ---------------- */
+        #sub-menu-content, #service-detail-content { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px;}
+
+        /* ---------------- CART (FAB & MODAL) ---------------- */
+        .cart-fab {
+            position: absolute; bottom: 25px; right: 25px; width: 65px; height: 65px;
+            background: var(--grad-master);
+            border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            font-size: 1.6rem; color: #fff; cursor: pointer; z-index: 100;
+            box-shadow: var(--glow-shadow); transition: 0.3s;
+        }
+        .cart-fab:active { transform: scale(0.9); }
+        .cart-badge {
+            position: absolute; top: -2px; right: -2px; background: #fff; color: #000;
+            font-size: 0.75rem; font-weight: 800;
+            width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center;
+            border: 2px solid #000; opacity: 0; transition: 0.3s;
+        }
+        .cart-badge.show { opacity: 1; transform: scale(1); }
+
+        .cart-item-row { background: rgba(0,0,0,0.5); border: 1px solid var(--border); padding: 14px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .cart-item-info h4 { margin: 0 0 6px 0; font-size: 0.9rem; color: #fff; font-weight: 700; }
+        .cart-item-info p { margin: 0; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 5px;}
+        .cart-item-price { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: bold; color: var(--success); }
+
+        .stock-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; padding-right: 5px;}
+        .stock-item { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
+        .stock-id { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: #fff; font-weight:bold;}
+        .btn-add-cart { background: var(--grad-master); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-family: 'Plus Jakarta Sans'; cursor: pointer; transition: 0.2s; }
+        .btn-add-cart:disabled { background: rgba(255,255,255,0.1); color: var(--text-muted); cursor: not-allowed; }
+
+        /* ---------------- SMART MODALS (GENERAL) ---------------- */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .modal-box { background: #130f24; border: 1px solid #8b5cf6; border-radius: 24px; width: 90%; max-width: 360px; padding: 25px; transform: translateY(30px) scale(0.95); transition: 0.3s; box-shadow: 0 20px 50px rgba(0,0,0,0.9), inset 0 0 20px rgba(139, 92, 246, 0.1); position: relative; overflow: hidden; }
+        .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
+        
+        .modal-title { font-weight: 800; color: #fff; font-size: 1.25rem; margin: 0 0 5px 0; text-align: center;}
+        .modal-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; font-weight: 500; line-height: 1.4; text-align: center;}
+        
+        .input-group { margin-bottom: 16px; }
+        .input-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; text-transform: uppercase;}
+        .input-group input { width: 100%; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 14px 16px; border-radius: 12px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.95rem; outline: none; transition: 0.2s; box-sizing: border-box; }
+        .input-group input:focus { border-color: #8b5cf6; box-shadow: 0 0 10px rgba(139, 92, 246, 0.3); background: rgba(255,255,255,0.05); }
+        
+        .price-display { background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); padding: 14px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .price-label { font-size: 0.85rem; font-weight: 700; color: #fff; }
+        .price-value { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 800; color: #fff; }
+        
+        .modal-actions { display: flex; gap: 10px; }
+        .btn-modal { flex: 1; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s; border: none; }
+        .btn-cancel { background: rgba(255,255,255,0.1); color: #fff; }
+        .btn-cancel:active { background: rgba(255,255,255,0.2); }
+        .btn-confirm { background: var(--grad-master); color: #fff; box-shadow: var(--glow-shadow);}
+        .btn-confirm:active { transform: scale(0.95); }
+
+        .qr-box { width: 160px; height: 160px; background: #fff; border-radius: 16px; margin: 0 auto 20px; display: flex; justify-content: center; align-items: center; font-size: 3rem; color: #000; }
+        .wallet-address { background: rgba(0,0,0,0.5); padding: 12px; border-radius: 10px; font-family: 'JetBrains Mono'; font-size: 0.85rem; font-weight: 700; color: #fff; text-align: center; word-break: break-all; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.1);}
+
+        .toast-ui { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: #ffffff; color: #000; padding: 14px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.3); z-index: 9999; opacity: 0; transition: 0.4s; }
+        .toast-ui.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* 🖥️ DESKTOP RESPONSIVE MODE */
+        @media (min-width: 768px) {
+            .app-frame { max-width: 850px; height: 85vh; border-radius: 28px; }
+            .wallet-desktop-layout { flex-direction: row; gap: 30px; align-items: stretch;}
+            .wallet-desktop-left { flex: 1; width: 50%; }
+            .wallet-desktop-right { flex: 1; width: 50%; display: flex; flex-direction: column; }
+            .topup-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .home-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+            .btn-master, .menu-btn { margin-bottom: 0; } 
+            #sub-menu-content, #service-detail-content { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+            .home-logo-title { font-size: 3rem; }
+            .digital-card { height: 230px; }
+            .balance-amount { font-size: 3rem; }
+        }
 
     </style>
 </head>
 <body>
-
+    
     <canvas id="canvas-bg"></canvas>
 
-    <div id="secret-alarm-overlay"></div>
-
-    <div id="preloader">
-        <div class="fingerprint-container" id="biometric-visual">
-            <svg id="fork_icon_svg_biometric" viewBox="0 0 24 24">
-                <path d="M6 3v12m12-12v12M6 15a3 3 0 003 3h6a3 3 0 003-3M12 18v3"/>
-            </svg>
-            <div class="scan-bar"></div>
-        </div>
-        <div id="term-text"></div>
+    <div class="toast-ui" id="sysToast">
+        <span style="font-size:1.2rem;">✅</span> <span id="toastMsg">Action Successful!</span>
     </div>
 
-    <div id="fomo-toast">⚡ System Online</div>
+    <div class="app-frame">
+        
+        <div class="cart-fab" onclick="openCartModal()">
+            🛒<div class="cart-badge" id="cartBadge">0</div>
+        </div>
 
-    <div id="active-operators">
-        <div id="op-lamp"></div>
-        <span id="op-count">14</span> Active Ops
+        <div class="slider-viewport">
+            <div class="slider-track" id="slider">
+                
+                <div class="slide-page" id="page-wallet">
+                    <div class="page-header">
+                        <button class="btn-back" onclick="goToHome()">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        </button>
+                        <h1 class="header-title">MY WALLET</h1>
+                        <div class="header-spacer"></div> 
+                    </div>
+
+                    <div class="wallet-desktop-layout">
+                        <div class="wallet-desktop-left">
+                            <div class="card-wrapper" id="cardWrapper">
+                                <div class="digital-card" id="digitalCard">
+                                    <div class="card-bg-shape"></div>
+                                    <div class="card-content">
+                                        <div class="card-top">
+                                            <div class="chip"></div>
+                                            <div class="card-type">VIP MEMBER</div>
+                                        </div>
+                                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
+                                            <div>
+                                                <div class="balance-label">USDT Balance</div>
+                                                <div class="balance-amount">$<span id="counter">0.00</span></div>
+                                            </div>
+                                            <button onclick="requestBalanceSync()" style="background: rgba(255,255,255,0.2); border: none; padding: 8px 12px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px);">
+                                                🔄 Refresh
+                                            </button>
+                                        </div>
+                                        <div class="card-bottom">
+                                            <div class="user-id">XB-8849201</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="wallet-desktop-right">
+                            <div class="menu-category" style="margin-top:0;">TOP UP BALANCE</div>
+                            <div class="topup-grid">
+                                <div class="topup-btn" onclick="tg.sendData('topup_10'); tg.close();">
+                                    <div class="topup-icon">💵</div>
+                                    <div class="topup-text">$10 USDT</div>
+                                </div>
+                                <div class="topup-btn" onclick="tg.sendData('topup_25'); tg.close();">
+                                    <div class="topup-icon">💸</div>
+                                    <div class="topup-text">$25 USDT</div>
+                                </div>
+                                <div class="topup-btn" onclick="tg.sendData('topup_50'); tg.close();">
+                                    <div class="topup-icon">💰</div>
+                                    <div class="topup-text">$50 USDT</div>
+                                </div>
+                                <div class="topup-btn" onclick="tg.sendData('topup_100'); tg.close();">
+                                    <div class="topup-icon">💎</div>
+                                    <div class="topup-text">$100 USDT</div>
+                                </div>
+                            </div>
+<div class="menu-category">TRANSACTION HISTORY</div>
+                            <div class="tx-list">
+                                <div class="tx-item">
+                                    <div class="tx-left">
+                                        <div class="tx-icon tx-out">🛒</div>
+                                        <div class="tx-info">
+                                            <span class="tx-title">Buy Repository Stars</span>
+                                            <span class="tx-date">Today, 14:30 WIB</span>
+                                        </div>
+                                    </div>
+                                    <div class="tx-amount">-$50.00</div>
+                                </div>
+                                <div class="tx-item">
+                                    <div class="tx-left">
+                                        <div class="tx-icon tx-in">↓</div>
+                                        <div class="tx-info">
+                                            <span class="tx-title">Deposit Crypto</span>
+                                            <span class="tx-date">Yesterday, 09:15 WIB</span>
+                                        </div>
+                                    </div>
+                                    <div class="tx-amount amt-in">+$100.00</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="slide-page" id="page-main">
+                    <div class="home-logo-container">
+                        <h1 class="home-logo-title">XianBee-Tech Store</h1>
+                        <span class="home-logo-sub">ENTERPRISE</span>
+                    </div>
+
+                    <button class="btn-master" style="margin-bottom: 25px;" onclick="goToWallet()">
+                        <div class="btn-content">
+                            <div class="btn-icon">💳</div>
+                            <div class="btn-text-wrapper">
+                                <span class="btn-title">My Wallet & Profile</span>
+                                <span class="btn-desc">Check Balance & Deposit</span>
+                            </div>
+                        </div>
+                        <span class="arrow-icon" style="color:#fff; font-size:1.5rem; font-weight:800;">◀</span>
+                    </button>
+
+                    <div class="menu-category">AVAILABLE SERVICES</div>
+                    
+                    <button class="btn-master" style="margin-bottom: 25px;" onclick="openSubMenu('GitHub Services', 'github_main')">
+                        <div class="btn-content">
+                            <div class="btn-icon" style="font-size:1.8rem;">🐙</div>
+                            <div class="btn-text-wrapper">
+                                <span class="btn-title">GitHub Infrastructure</span>
+                                <span class="btn-desc">Accounts, Services & Bots</span>
+                            </div>
+                        </div>
+                        <span class="arrow-icon" style="color:#fff; font-size:1.5rem; font-weight:800;">▶</span>
+                    </button>
+
+                    <div class="menu-category">OTHER PLATFORMS (COMING SOON)</div>
+                    
+                    <div class="home-menu-grid">
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('X (Twitter)')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">𝕏</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">X (Twitter)</span><span class="btn-desc">Verified, Likes</span></div>
+                            </div>
+                            <span class="badge-status bg-sync">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('TikTok')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🎵</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">TikTok</span><span class="btn-desc">For You Page Boost</span></div>
+                            </div>
+                            <span class="badge-status bg-sync">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Facebook')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📘</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Facebook</span><span class="btn-desc">Aged Accounts</span></div>
+                            </div>
+                            <span class="badge-status bg-off">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Instagram')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📸</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Instagram</span><span class="btn-desc">Followers</span></div>
+                            </div>
+                            <span class="badge-status bg-off">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Telegram')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">✈️</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Telegram</span><span class="btn-desc">Group Members</span></div>
+                            </div>
+                            <span class="badge-status bg-sync">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Reddit')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">👽</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Reddit</span><span class="btn-desc">High Karma Accounts</span></div>
+                            </div>
+                            <span class="badge-status bg-off">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Gmail')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">✉️</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Gmail</span><span class="btn-desc">Aged, Verified</span></div>
+                            </div>
+                            <span class="badge-status bg-sync">COMING SOON</span>
+                        </button>
+                        <button class="menu-btn btn-offline" onclick="showOfflineModal('Outlook')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📧</div>
+                                <div class="btn-text-wrapper"><span class="btn-title">Outlook</span><span class="btn-desc">Bulk Accounts</span></div>
+                            </div>
+                            <span class="badge-status bg-off">COMING SOON</span>
+                        </button>
+                    </div>
+
+                    <div class="menu-category" style="margin-top: 20px;">SYSTEM ADMIN</div>
+                    <div class="home-menu-grid">
+                        <button class="menu-btn" style="border-color: rgba(239, 68, 68, 0.5);" onclick="showGlitchAlert()">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="color: #fff; background: var(--danger);">⚙️</div>
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title" style="color: var(--danger);">Admin Dashboard</span>
+                                    <span class="btn-desc">Restricted Access</span>
+                                </div>
+                            </div>
+                            <span class="arrow-icon" style="color: var(--danger);">🔒</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="slide-page" id="page-sub">
+                    <div class="page-header">
+                        <button class="btn-back" id="subBackBtn" onclick="goToHome()">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        </button>
+                        <h1 class="header-title" id="sub-title">CHOOSE CATEGORY</h1>
+                        <div class="header-spacer"></div> 
+                    </div>
+                    
+                    <div id="sub-menu-content">
+                        </div>
+                </div>
+
+                <div class="slide-page" id="page-service-detail">
+                    <div class="page-header">
+                        <button class="btn-back" onclick="openSubMenu('GitHub Services', 'services')">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+                        </button>
+                        <h1 class="header-title" id="detail-title">SELECT PACKAGES</h1>
+                        <div class="header-spacer"></div> 
+                    </div>
+                    
+                    <div id="service-detail-content">
+                        </div>
+                </div>
+
+            </div>
+        </div>
     </div>
 
-    <div id="main-wrapper">
-
-        <div class="header-content btn-3d" id="main-logo-container">
-            <img src="logo.png" alt="XianBee Tech Logo" class="store-logo" id="main-logo-img">
+    <div class="modal-overlay" id="orderModal">
+        <div class="modal-box">
+            <h2 class="modal-title" id="orderTitle" style="text-align: center;">Order Details</h2>
+            <p class="modal-desc" style="text-align: center;">Enter your order details below.</p>
+            
+            <div class="input-group">
+                <label id="orderLabel">Target URL</label>
+                <input type="text" id="orderTarget" placeholder="Enter target here">
+            </div>
+            
+            <div class="input-group" style="display:none;" id="qtyGroup">
+                <label>Quantity</label>
+                <input type="number" id="orderQty" value="100" oninput="calcTotal()">
+            </div>
+            
+            <div class="price-display">
+                <span class="price-label">Total Cost:</span>
+                <span class="price-value" id="orderTotal">$0.00</span>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeModal('orderModal')">Cancel</button>
+                <button class="btn-modal btn-confirm" onclick="submitOrder()">Place Order</button>
+            </div>
         </div>
+    </div>
 
-        <div class="section-title">Wallet & Account</div>
-        <div class="menu-grid">
-            <button class="btn-complex btn-gold full-width btn-3d" onclick="sendToBot(this, 'menu_profile')">
-                <div class="btn-icon">👤</div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="My Profile & Balance">My Profile & Balance</span>
-                    <span class="btn-sub">View Account Details</span>
+    <div class="modal-overlay" id="stockModal">
+        <div class="modal-box">
+            <h2 class="modal-title" id="stockTitle" style="text-align: center;">Available Stock</h2>
+            <p class="modal-desc" style="text-align: center;">Select an account to add to cart. Reserved for 3 mins.</p>
+            
+            <div class="stock-list" id="stockListContent">
                 </div>
-            </button>
-            <button class="btn-complex btn-gold btn-3d btn-market-ambient" onclick="sendToBot(this, 'menu_topup')">
-                <div class="btn-icon">💰</div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="Top Up Balance">Top Up Balance</span>
-                    <span class="btn-sub">Add Funds (USDT Rate)</span>
-                </div>
-            </button>
-            <button class="btn-complex btn-gold btn-3d" onclick="sendToBot(this, 'menu_referral')">
-                <div class="btn-icon">🤝</div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="Referral & Earn">Referral & Earn</span>
-                    <span class="btn-sub">Invite Friends & Get Bonus</span>
-                </div>
-            </button>
-            <button class="btn-complex btn-gold full-width btn-3d" onclick="sendToBot(this, 'user_check_flag')">
-                <div class="btn-icon">🛡️</div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="Check Account Status">Check Account Status</span>
-                    <span class="btn-sub">Verify GitHub Shadowban</span>
-                </div>
-            </button>
+            
+            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 10px;" onclick="closeModal('stockModal')">Close</button>
         </div>
+    </div>
 
-        <div class="section-title">Services & Assets</div>
-        <div class="menu-grid">
-            <button class="btn-complex btn-blue full-width btn-3d" onclick="sendToBot(this, 'menu_akun')">
-                <div class="btn-icon">🛒</div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="Buy GitHub Accounts">Buy GitHub Accounts</span>
-                    <span class="btn-sub">High Quality Aged Accounts</span>
+    <div class="modal-overlay" id="cartModal">
+        <div class="modal-box">
+            <h2 class="modal-title" style="text-align: center;">Shopping Cart</h2>
+            <p class="modal-desc" style="text-align: center;">Items are reserved for 3 minutes.</p>
+            
+            <div id="cartContent" style="margin-bottom: 20px; max-height: 250px; overflow-y: auto;">
                 </div>
-            </button>
-            <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_followers')">
-                <div class="btn-icon">👥</div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="Buy Followers">Buy Followers</span>
-                    <span class="btn-sub">Boost Your Profile</span>
-                </div>
-            </button>
-            <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_stars')">
-                <div class="btn-icon">⭐</div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="Buy Repo Stars">Buy Repo Stars</span>
-                    <span class="btn-sub">Increase Repo Rating</span>
-                </div>
-            </button>
-            <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_forks')">
-                <div class="btn-icon">
-                    <svg id="fork_icon_svg" viewBox="0 0 24 24">
-                        <path d="M6 3v12m12-12v12M6 15a3 3 0 003 3h6a3 3 0 003-3M12 18v3"/>
-                    </svg>
-                </div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="Buy Repo Forks">Buy Repo Forks</span>
-                    <span class="btn-sub">Boost Credibility</span>
-                </div>
-            </button>
-            <button class="btn-complex btn-blue btn-3d" onclick="sendToBot(this, 'menu_jasa_watch')">
-                <div class="btn-icon">👁️</div>
-                <div class="btn-text">
-                    <span class="btn-title" data-text="Buy Repo Watchers">Buy Repo Watchers</span>
-                    <span class="btn-sub">Increase Visibility</span>
-                </div>
-            </button>
+
+            <div class="price-display">
+                <span class="price-label">Total Payable:</span>
+                <span class="price-value" id="cartTotal">$0.00</span>
+            </div>
+            
+            <div class="modal-actions">
+                <button class="btn-modal btn-cancel" onclick="closeModal('cartModal')">Close</button>
+                <button class="btn-modal btn-confirm" id="btnCheckout" onclick="checkoutCart()">Checkout</button>
+            </div>
         </div>
+    </div>
 
-        <div class="sys-load-container">
-            <span style="font-size: 0.8rem; color: var(--cyan); font-weight: bold;">Sys Load</span>
-            <div class="progress-bar-bg"><div class="progress-bar-fill" id="sys_load_bar"></div></div>
-            <span id="sys_load_txt" style="font-family: monospace; font-size: 0.85rem;">15%</span>
+    <div class="modal-overlay" id="ewalletModal">
+        <div class="modal-box" style="padding-bottom: 20px;">
+            <h2 class="modal-title" style="margin-bottom: 20px; text-align: center;">Select E-Wallet</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+                <div class="topup-btn" style="margin:0;" onclick="closeModal('ewalletModal'); openTopUpModal('DANA Balance', 'No: 0812-XXXX-XXXX', '🔵')">
+                    <div class="topup-icon">🔵</div><div class="topup-text">DANA</div>
+                </div>
+                <div class="topup-btn" style="margin:0;" onclick="closeModal('ewalletModal'); openTopUpModal('OVO Cash', 'No: 0812-XXXX-XXXX', '🟣')">
+                    <div class="topup-icon">🟣</div><div class="topup-text">OVO</div>
+                </div>
+                <div class="topup-btn" style="margin:0;" onclick="closeModal('ewalletModal'); openTopUpModal('GoPay', 'No: 0812-XXXX-XXXX', '🟢')">
+                    <div class="topup-icon">🟢</div><div class="topup-text">GoPay</div>
+                </div>
+                <div class="topup-btn" style="margin:0;" onclick="closeModal('ewalletModal'); openTopUpModal('ShopeePay', 'No: 0812-XXXX-XXXX', '🟠')">
+                    <div class="topup-icon">🟠</div><div class="topup-text">Shopee</div>
+                </div>
+            </div>
+            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('ewalletModal')">Cancel</button>
         </div>
+    </div>
 
-        <div class="menu-grid" style="margin-bottom: 80px;">
-            <button class="btn-complex btn-red full-width btn-3d" onclick="sendToBot(this, 'close_terminal')">
-                <div class="btn-icon">🛑</div>
-                <div class="btn-text"><span class="btn-title" style="text-align: center;" data-text="Close Dashboard">Close Dashboard</span></div>
-            </button>
+    <div class="modal-overlay" id="topupModal">
+        <div class="modal-box" style="text-align: center;">
+            <div class="topup-icon" id="topupIconBadge" style="margin: 0 auto 15px; width:55px; height:55px; font-size:1.8rem; border-radius: 16px; background: var(--grad-master); color:#fff;">₮</div>
+            <h2 class="modal-title" id="topupTitle">Deposit USDT</h2>
+            <p class="modal-desc" style="margin-bottom: 15px;">Transfer funds to the details below.</p>
+            <div class="qr-box" id="topupQR">🔲</div>
+            <div class="wallet-address" id="topupAddress">T9s8x...A2z9</div>
+            <button class="btn-modal btn-confirm" style="width: 100%;" onclick="closeModal('topupModal'); showToast('Gateway closed.');">Close</button>
         </div>
+    </div>
 
-    </div> <a href="https://wa.me/6289638423184" class="wa-fab" target="_blank">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" fill="#ffffff" style="width: 30px; height: 30px;">
-            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157.1zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
-        </svg>
-    </a>
+    <div class="modal-overlay" id="offlineModal">
+        <div class="modal-box" style="border-color: #8b5cf6; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);">
+            <h2 class="modal-title" style="margin-bottom: 10px; color: #fff; text-align: center;">SERVICE UNAVAILABLE</h2>
+            <p class="modal-desc" style="color: #fff; text-align: center;">The <span id="offlineTarget" style="font-weight:800; color:#8b5cf6;"></span> service is currently under maintenance. Please check back later.</p>
+            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('offlineModal')">Understood</button>
+        </div>
+    </div>
 
-    <div class="crypto-ticker-container">
-        <div class="crypto-ticker" id="ticker-content">
-            Loading Real-Time Market Intelligence...
+    <div class="modal-overlay" id="glitchModal">
+        <div class="modal-box" style="border-color: var(--danger); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);">
+            <h2 class="modal-title" style="margin-bottom: 10px; color: var(--danger); text-align: center;">ACCESS DENIED</h2>
+            <p class="modal-desc" style="color: #fff; text-align: center;">You do not have permission to access the Admin Panel. This area is restricted.</p>
+            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('glitchModal')">Go Back</button>
         </div>
     </div>
 
     <script>
-        // INISIALISASI WEBAPP
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        tg.expand();
+        const tg = window.Telegram.WebApp; tg.expand(); tg.ready();
 
-        // AUDIO CONTEXT
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        const audioCtx = new AudioContext();
+        // 1. DUST AMBIENT BACKGROUND
+        const canvas = document.getElementById("canvas-bg"); const ctx = canvas.getContext("2d");
+        let width, height, particles;
+        function initCanvas() { width = canvas.width = window.innerWidth; height = canvas.height = window.innerHeight; particles = []; for (let i=0; i<30; i++) particles.push({ x: Math.random()*width, y: Math.random()*height, vx: (Math.random()-0.5)*0.2, vy: Math.random()*-0.5-0.1, size: Math.random()*2 + 1, alpha: Math.random()*0.3 }); }
+        function drawParticles() { ctx.clearRect(0,0,width,height); for (let i=0; i<particles.length; i++) { let p = particles[i]; p.x += p.vx; p.y += p.vy; if (p.y<0) { p.y = height; p.x = Math.random()*width; } if (p.x<0) p.x=width; if (p.x>width) p.x=0; ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fillStyle = `rgba(139, 92, 246, ${p.alpha})`; ctx.fill(); } requestAnimationFrame(drawParticles); }
+        window.addEventListener("resize", initCanvas); initCanvas(); drawParticles();
 
-        // 🟢 FIX: Variabel untuk toggle Admin Mode manual
-        let isSecretMode = false;
-        let logoTapCount = 0;
-        let logoTapTimeout;
-        let adminModeTimeout; 
+        // 2. SLIDER NAVIGATION
+        const slider = document.getElementById('slider'); let isWalletOpened = false;
+        function goToHome() { slider.style.transform = 'translateX(-25%)'; triggerHaptic('light'); } // Index 1 = 25% (Home)
+        function goToWallet() { slider.style.transform = 'translateX(0%)'; triggerHaptic('medium'); if(!isWalletOpened) { setTimeout(startCounter, 300); isWalletOpened = true; } } // Index 0 = 0% (Wallet)
 
-        // FUNGSI SUARA BOOT MESIN
-        function playBootSound() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const osc = audioCtx.createOscillator();
-            const gain = audioCtx.createGain();
-            osc.type = 'square';
-            osc.frequency.setValueAtTime(100, audioCtx.currentTime);
-            osc.frequency.exponentialRampToValueAtTime(800, audioCtx.currentTime + 0.5);
-            gain.gain.setValueAtTime(0, audioCtx.currentTime);
-            gain.gain.linearRampToValueAtTime(0.05, audioCtx.currentTime + 0.1);
-            gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.5);
-            osc.connect(gain); gain.connect(audioCtx.destination);
-            osc.start(); osc.stop(audioCtx.currentTime + 0.5);
-        }
+        // SET AWAL POSISI SLIDER KE HOME (INDEX 1)
+        setTimeout(() => { goToHome(); }, 100);
 
-        // FUNGSI ROBOT NGOMONG (Welcome)
-        function speakJarvisWelcome() {
-            if (!('speechSynthesis' in window)) return;
-            const synth = window.speechSynthesis;
-            const text = "Secure Connection Established. Welcome to XianBee Terminal.";
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 1.1; 
-            utterance.pitch = 0.8; 
-            synth.speak(utterance);
-        }
-
-        // FUNGSI BEEP KLIK TOMBOL
-        function playSciFiBeep() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.type = 'sine'; 
-            oscillator.frequency.setValueAtTime(1400, audioCtx.currentTime); 
-            oscillator.frequency.exponentialRampToValueAtTime(700, audioCtx.currentTime + 0.08);
-            gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime); 
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
-            oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
-            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.08);
-        }
-
-        // ALARM SUARA SECRET MODE
-        let alarmOsc, alarmGain;
-        function startAlarmSound() {
-            if (audioCtx.state === 'suspended') audioCtx.resume();
-            alarmOsc = audioCtx.createOscillator();
-            alarmGain = audioCtx.createGain();
-            alarmOsc.type = 'sawtooth';
-            alarmOsc.frequency.setValueAtTime(600, audioCtx.currentTime);
-            alarmOsc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.25);
-            alarmOsc.frequency.exponentialRampToValueAtTime(600, audioCtx.currentTime + 0.5);
-            alarmGain.gain.setValueAtTime(0, audioCtx.currentTime);
-            alarmGain.gain.linearRampToValueAtTime(0.03, audioCtx.currentTime + 0.1);
-
-            alarmOsc.connect(alarmGain); alarmGain.connect(audioCtx.destination);
-            alarmOsc.start();
-            alarmOsc.loop = true;
-            alarmOsc.loopStart = 0; alarmOsc.loopEnd = 0.5;
-        }
-        function stopAlarmSound() {
-            if(alarmOsc) {
-                alarmGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-                setTimeout(() => { alarmOsc.stop(); }, 150);
-            }
-        }
-
-        // 🟢 TERMINAL BOOT SEQUENCE & BIOMETRIC
-        const bootTexts = [
-            "> Executing startup protocol...",
-            "> Bypassing network limits...",
-            "> Establishing secure link...",
-            "> Scanning biometric data...",
-            "> Operator Verified.",
-            "> Handshake successful.",
-            "> ACCESS GRANTED."
-        ];
-
-        window.onload = () => {
-            setTimeout(() => { document.getElementById("biometric-visual").style.opacity = "1"; }, 300);
-
-            let termContainer = document.getElementById("term-text");
-            let delay = 0;
-
-            bootTexts.forEach((text, i) => {
-                setTimeout(() => {
-                    termContainer.innerHTML += text + "<br>";
-                    if (text.includes("Verified")) {
-                        document.getElementById("biometric-visual").style.opacity = "0";
-                    }
-
-                    if (i === bootTexts.length - 1) {
-                        setTimeout(() => {
-                            document.getElementById("preloader").style.opacity = "0";
-                            setTimeout(() => {
-                                document.getElementById("preloader").style.visibility = "hidden";
-                                document.getElementById("main-wrapper").style.opacity = "1";
-                                playBootSound(); 
-                                speakJarvisWelcome(); 
-                                initHackerDecryption(); 
-                            }, 500);
-                        }, 800);
-                    }
-                }, delay);
-                delay += 450; 
-            });
+        // 3. DATABASE MENU GITHUB DENGAN HARGA DARI PYTHON LU (10000% URUTAN BENAR)
+        const subTitle = document.getElementById('sub-title'); const subContent = document.getElementById('sub-menu-content');
+        
+        const dbMenu = {
+            'github_main': { items: [
+                { icon: '🛒', title: 'Buy GitHub Accounts', desc: 'Arctic, Badges, 2011-2026', type: 'nav', target: 'assets' },
+                { icon: '🚀', title: 'GitHub Cloud Services', desc: 'Followers, Forks, Stars', type: 'nav', target: 'services' }
+            ]},
+            'assets': { items: [
+                { icon: '💎', title: 'GitHub Arctic Vault', desc: 'Rare 2020 Badge Contributor', price: 25.00, type: 'acc' },
+                { icon: '🏅', title: '6 Badges Account', desc: 'Pull Shark, YOLO, Starstruck...', price: 40.00, type: 'acc' }, // Diupdate jadi 40 sesuai Python
+                { icon: '👥', title: 'GitHub + Followers', desc: 'Pre-warmed, high authority', price: 35.00, type: 'acc' }, // Diupdate jadi 35 sesuai Python
+                { icon: '📁', title: 'GitHub + Old Repository', desc: 'Aged repository for high trust', price: 30.00, type: 'acc' }, // Diupdate jadi 30 sesuai Python
+                { icon: '🎒', title: 'GitHub Student Pack', desc: 'Approved with Free Credits', price: 50.00, type: 'acc' }, // Diupdate jadi 50 sesuai Python
+                { icon: '🏛️', title: 'Aged Account (2011)', desc: 'Vintage Tier - Extreme Trust', price: 15.00, type: 'acc' },
+                { icon: '🏛️', title: 'Aged Account (2012)', desc: 'Vintage Tier - Extreme Trust', price: 14.50, type: 'acc' },
+                { icon: '🏛️', title: 'Aged Account (2013)', desc: 'Vintage Tier - Extreme Trust', price: 14.00, type: 'acc' },
+                { icon: '🏛️', title: 'Aged Account (2014)', desc: 'Vintage Tier - Extreme Trust', price: 13.50, type: 'acc' },
+                { icon: '🏛️', title: 'Aged Account (2015)', desc: 'Vintage Tier - Extreme Trust', price: 13.00, type: 'acc' },
+                { icon: '📦', title: 'Aged Account (2016)', desc: 'Premium Tier - High Trust', price: 12.00, type: 'acc' },
+                { icon: '📦', title: 'Aged Account (2017)', desc: 'Premium Tier - High Trust', price: 11.00, type: 'acc' },
+                { icon: '📦', title: 'Aged Account (2018)', desc: 'Premium Tier - High Trust', price: 10.00, type: 'acc' },
+                { icon: '📦', title: 'Aged Account (2019)', desc: 'Premium Tier - High Trust', price: 9.00, type: 'acc' },
+                { icon: '📦', title: 'Aged Account (2020)', desc: 'Premium Tier - High Trust', price: 8.00, type: 'acc' },
+                { icon: '📁', title: 'Standard Account (2021)', desc: 'Standard Tier - Warmed up', price: 7.00, type: 'acc' },
+                { icon: '📁', title: 'Standard Account (2022)', desc: 'Standard Tier - Warmed up', price: 6.00, type: 'acc' },
+                { icon: '📁', title: 'Standard Account (2023)', desc: 'Standard Tier - Warmed up', price: 5.00, type: 'acc' },
+                { icon: '📁', title: 'Standard Account (2024)', desc: 'Standard Tier - Warmed up', price: 4.00, type: 'acc' },
+                { icon: '✨', title: 'Fresh Account (2025)', desc: 'Verified - Ready to use', price: 3.00, type: 'acc' },
+                { icon: '✨', title: 'Fresh Account (2026)', desc: 'Verified - New Creation', price: 2.00, type: 'acc' }
+            ]},
+            'services': { items: [
+                { icon: '👥', title: 'Buy Followers', desc: 'Select execution speed', type: 'svc_menu', target: 'followers' },
+                { icon: '⎇', title: 'Buy Repository Forks', desc: 'Select execution speed', type: 'svc_menu', target: 'forks' },
+                { icon: '⭐', title: 'Buy Repository Stars', desc: 'Select execution speed', type: 'svc_menu', target: 'stars' },
+                { icon: '👁️', title: 'Buy Repository Watchers', desc: 'Select execution speed', type: 'svc_menu', target: 'watch' }
+            ]}
         };
 
-        // 🟢 HAPTIC FEEDBACK
-        function triggerHapticFeedback() {
-            if ('vibrate' in navigator) {
-                navigator.vibrate(60); 
-            } else if (window.Telegram.WebApp.HapticFeedback) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-            }
-        }
+        // HARGA SERVICES SESUAI PYTHON
+        const svcPrices = {
+            "followers": {"reg": 0.13, "fast": 0.18, "ultra": 0.23},
+            "forks":     {"reg": 0.10, "fast": 0.15, "ultra": 0.20},
+            "stars":     {"reg": 0.09, "fast": 0.14, "ultra": 0.19},
+            "watch":     {"reg": 0.08, "fast": 0.13, "ultra": 0.18}
+        };
 
-        // 🟢 3D TILT EFFECT
-        function handleTilt(card, x, y) {
-            let rect = card.getBoundingClientRect();
-            let centerX = rect.width / 2;
-            let centerY = rect.height / 2;
-            let rotateX = ((y - centerY) / centerY) * -12; 
-            let rotateY = ((x - centerX) / centerX) * 12;
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-            card.style.boxShadow = `${-rotateY}px ${rotateX}px 20px rgba(0, 242, 254, 0.2)`;
-        }
-
-        document.querySelectorAll('.btn-3d').forEach(card => {
-            card.addEventListener('mousemove', e => {
-                let rect = card.getBoundingClientRect();
-                handleTilt(card, e.clientX - rect.left, e.clientY - rect.top);
-            });
-            card.addEventListener('touchstart', e => {
-                let rect = card.getBoundingClientRect();
-                let touch = e.touches[0];
-                handleTilt(card, touch.clientX - rect.left, touch.clientY - rect.top);
-            });
-            card.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);
-            card.addEventListener('touchend', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`);
-        });
-
-        // 🟢 HACKER DECRYPTION TEXT EFFECT
-        function initHackerDecryption() {
-            document.querySelectorAll('.btn-title').forEach(titleElement => {
-                const originalText = titleElement.getAttribute('data-text');
-                const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*';
-                let iterations = 0;
-
-                const interval = setInterval(() => {
-                    titleElement.innerText = originalText.split('').map((char, index) => {
-                        if (index < iterations) return originalText[index];
-                        return characters.charAt(Math.floor(Math.random() * characters.length));
-                    }).join('');
-
-                    if (iterations >= originalText.length) clearInterval(interval);
-                    iterations += 1 / 2; 
-                }, 30);
-            });
-        }
-
-        // 🟢 FUNGSI SEND DATA + EFEK GLITCH + HAPTIC
-        function sendToBot(element, actionData) {
-            playSciFiBeep(); 
-            triggerHapticFeedback(); 
-
-            element.classList.add('btn-glitch-active');
-            setTimeout(() => {
-                element.classList.remove('btn-glitch-active');
-                if(actionData === "close_terminal") {
-                    tg.close();
-                } else {
-                    tg.sendData(actionData);
-                }
-            }, 250);
-        }
-
-        // 🟢 ACTIVE OPERATORS COUNTER
-        const opCountEl = document.getElementById('op-count');
-        setInterval(() => {
-            let currentCount = parseInt(opCountEl.innerText);
-            let variation = Math.random() > 0.5 ? 1 : -1;
-            let newCount = currentCount + variation;
-            if(newCount < 8) newCount = 8;
-            if(newCount > 19) newCount = 19;
-            opCountEl.innerText = newCount;
-        }, 12000); 
-
-        // Animasi Sys Load 
-        let currentLoad = 15;
-        document.getElementById('sys_load_bar').style.width = currentLoad + '%';
-        document.getElementById('sys_load_txt').innerText = currentLoad + '%';
-
-
-        // 🟢 SYSTEM FOMO NOTIFICATION
-        const fomoData = [
-            "🟢 Client @Joh*** deposited $50 USDT",
-            "⭐ Client @Ale*** ordered 1000 Repo Stars",
-            "🛒 Client @Mar*** purchased an Aged Account",
-            "🔶 Incoming transfer: Binance Pay ID 8487***",
-            "👥 Client @Zoe*** bought 500 Followers",
-            "🚀 System: Order #8921 successfully delivered."
-        ];
-        setInterval(() => {
-            const toast = document.getElementById('fomo-toast');
-            toast.innerHTML = fomoData[Math.floor(Math.random() * fomoData.length)];
-            toast.classList.add('show');
-            setTimeout(() => { toast.classList.remove('show'); }, 3500);
-        }, 20000); 
-
-        // 🟢 LIVE CRYPTO TICKER & DYNAMIC AMBIENT
-        async function fetchCryptoPrices() {
-            try {
-                const symbols = ["BTCUSDT","ETHUSDT","SOLUSDT","BNBUSDT"];
-                const res = await fetch(`https://api.binance.com/api/v3/ticker/price`);
-                const allData = await res.json();
-
-                const btcDataRaw = allData.find(coin => coin.symbol === "BTCUSDT");
-                const data = allData.filter(coin => symbols.includes(coin.symbol));
-
-                let tickerHtml = "🌐 XIANBEE SECURE TERMINAL v16 [WIB] &nbsp;&nbsp;|&nbsp;&nbsp; ";
-                data.forEach(coin => {
-                    let symbol = coin.symbol.replace('USDT', '');
-                    let priceVal = parseFloat(coin.price);
-                    let priceStr = priceVal.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-                    tickerHtml += `<span class="crypto-item"><span style="color:#cbd5e1">${symbol}/USDT:</span> <span class="crypto-up">$${priceStr}</span></span>`;
-                });
-                document.getElementById('ticker-content').innerHTML = tickerHtml + tickerHtml; 
-
-                // DYNAMIC MARKET AMBIENT 
-                const btcPrice = parseFloat(btcDataRaw.price);
-                const marketAmbientColor = btcPrice >= 65000 ? 'rgba(37, 211, 102, 0.4)' : 'rgba(239, 68, 68, 0.4)';
-                document.documentElement.style.setProperty('--market-color', marketAmbientColor);
-
-            } catch (error) {
-                document.getElementById('ticker-content').innerHTML = "Market Intelligence Offline | Check Secure Connection.";
-            }
-        }
-        fetchCryptoPrices();
-        setInterval(fetchCryptoPrices, 15000);
-
-        // 🟢 EFEK DEBU MELAYANG (AMBIENT CYBER DUST)
-        const canvas = document.getElementById("canvas-bg");
-        const ctx = canvas.getContext("2d");
-        let width, height, particles;
-
-        function initCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = [];
-            let particleCount = Math.floor(width / 15); 
-            for (let i = 0; i < particleCount; i++) {
-                particles.push({
-                    x: Math.random() * width,
-                    y: Math.random() * height,
-                    vx: (Math.random() - 0.5) * 0.1, 
-                    vy: Math.random() * -0.3 - 0.1, 
-                    size: Math.random() * 2 + 0.5, 
-                    alpha: Math.random() * 0.5 + 0.1 
-                });
-            }
-        }
-
-        function drawParticles() {
-            ctx.clearRect(0, 0, width, height);
-            for (let i = 0; i < particles.length; i++) {
-                let p = particles[i];
-                p.x += p.vx; 
-                p.y += p.vy;
-
-                if (p.y < 0) { 
-                    p.y = height; 
-                    p.x = Math.random() * width; 
-                }
-                if (p.x < 0) p.x = width;
-                if (p.x > width) p.x = 0;
-
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = isSecretMode ? `rgba(239, 68, 68, ${p.alpha})` : `rgba(0, 242, 254, ${p.alpha})`; 
-                ctx.fill();
-            }
-            requestAnimationFrame(drawParticles);
-        }
-
-        window.addEventListener("resize", initCanvas);
-        initCanvas();
-        drawParticles();
-
-        // 🚨 🟢 FIX: SECRET EASTER EGG BISA DIMATIIN MANUAL (TOGGLE)
-        document.getElementById('main-logo-container').addEventListener('click', () => {
-            clearTimeout(logoTapTimeout);
-            logoTapCount++;
-            triggerHapticFeedback(); 
-
-            playSciFiBeepCustom(1400 + (logoTapCount * 200));
-
-            if (logoTapCount === 5) {
-                if (isSecretMode) {
-                    deactivateSecretAdminMode(); // Matiin manual saat itu juga!
-                } else {
-                    activateSecretAdminMode(); // Nyalain
-                }
-                logoTapCount = 0;
+        function openSubMenu(title, category) {
+            subTitle.innerText = title; subContent.innerHTML = '';
+            
+            const backBtn = document.getElementById('subBackBtn');
+            if(category === 'assets' || category === 'services') {
+                backBtn.onclick = () => openSubMenu('GitHub Services', 'github_main'); 
             } else {
-                logoTapTimeout = setTimeout(() => { logoTapCount = 0; }, 1500);
+                backBtn.onclick = () => goToHome();
             }
-        });
 
-        function playSciFiBeepCustom(freq) {
-             if (audioCtx.state === 'suspended') audioCtx.resume();
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.type = 'sine'; 
-            oscillator.frequency.setValueAtTime(freq, audioCtx.currentTime); 
-            gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime); 
-            gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
-            oscillator.connect(gainNode); gainNode.connect(audioCtx.destination);
-            oscillator.start(); oscillator.stop(audioCtx.currentTime + 0.1);
+            dbMenu[category].items.forEach((item) => {
+                const btn = document.createElement('button'); 
+                
+                if(category === 'github_main') {
+                    btn.className = 'btn-master';
+                    btn.innerHTML = `<div class="btn-content"><div class="btn-icon">${item.icon}</div><div class="btn-text-wrapper"><span class="btn-title">${item.title}</span><span class="btn-desc" style="color:rgba(255,255,255,0.8);">${item.desc}</span></div></div><span class="arrow-icon" style="color:#fff; font-size:1.5rem; font-weight:800;">▶</span>`;
+                } else {
+                    btn.className = 'menu-btn';
+                    btn.innerHTML = `<div class="btn-content"><div class="btn-icon">${item.icon}</div><div class="btn-text-wrapper"><span class="btn-title">${item.title}</span><span class="btn-desc">${item.desc}</span></div></div>`;
+                }
+                
+                if(window.innerWidth >= 768) btn.style.marginBottom = '0';
+                
+                if(item.type === 'nav') { 
+                    btn.onclick = () => openSubMenu(item.title, item.target); 
+                } 
+                else if(item.type === 'acc') { 
+                    btn.onclick = () => {
+                        // Nembak langsung ke bot buat buka katalog tahun itu (Misal: buy_akun_2021)
+                        let yearMatch = item.title.match(/\((\d{4})\)/);
+                        let year = yearMatch ? yearMatch[1] : (item.title.includes("Arctic") ? "Arctic" : "");
+                        
+                        if(year) {
+                            tg.sendData(`buy_akun_${year}`);
+                            tg.close(); // Otomatis nutup mini app
+                        }
+                    }; 
+                } 
+                else if(item.type === 'svc_menu') { 
+                    btn.onclick = () => {
+                        // Nembak langsung ke bot buat milih track service (Misal: menu_jasa_followers)
+                        tg.sendData(`menu_jasa_${item.target}`);
+                        tg.close(); // Otomatis nutup mini app
+                    }; 
+                }
+                
+                subContent.appendChild(btn);
+            });
+            slider.style.transform = 'translateX(-50%)'; // Geser ke Slide 2
+            triggerHaptic('medium');
         }
 
-        function activateSecretAdminMode() {
-            if (isSecretMode) return; 
-            isSecretMode = true;
+        function openServiceDetail(title, svcType) {
+            document.getElementById('detail-title').innerText = title;
+            const detailContent = document.getElementById('service-detail-content');
+            detailContent.innerHTML = '';
+            
+            const p = svcPrices[svcType];
+            const tracks = [
+                { icon: '🐌', name: 'Regular Track', desc: '24-48 Hours Completion', speed: 'reg', base: p.reg },
+                { icon: '🚀', name: 'Fast Track', desc: '12-24 Hours Completion', speed: 'fast', base: p.fast },
+                { icon: '⚡', name: 'Ultra Track', desc: '1-6 Hours VIP Completion', speed: 'ultra', base: p.ultra }
+            ];
 
-            triggerHapticFeedback(); 
-            if ('vibrate' in navigator) navigator.vibrate([100, 50, 100, 50, 300]);
+            tracks.forEach(t => {
+                const block = document.createElement('div');
+                block.style.marginBottom = '20px';
+                
+                // Track Header
+                const hdr = document.createElement('div');
+                hdr.className = 'menu-category';
+                hdr.innerHTML = `${t.icon} ${t.name} ($${t.base.toFixed(2)}/unit)`;
+                block.appendChild(hdr);
 
-            playSciFiBeepCustom(400); 
-            setTimeout(() => { playSciFiBeepCustom(300); }, 150);
+                // Buat 4 tombol paket (100, 200, 300, 400)
+                const grid = document.createElement('div');
+                grid.className = 'home-menu-grid';
+                
+                const qtys = [
+                    { q: 100, mult: 1.0 },
+                    { q: 200, mult: 0.95 },
+                    { q: 300, mult: 0.90 },
+                    { q: 400, mult: 0.85 }
+                ];
 
-            speakJarvisAdminActivated(); 
+                qtys.forEach(qItem => {
+                    const price = qItem.q * (t.base * qItem.mult);
+                    const btn = document.createElement('button');
+                    btn.className = 'menu-btn';
+                    btn.style.marginBottom = '0';
+                    btn.innerHTML = `<div class="btn-content"><div class="btn-text-wrapper"><span class="btn-title">${qItem.q} Units</span><span class="btn-desc" style="color:var(--success); font-weight:700;">$${price.toFixed(2)}</span></div></div>`;
+                    btn.onclick = () => openOrderModal(`${title} (${t.name})`, price, svcType, qItem.q);
+                    grid.appendChild(btn);
+                });
+                
+                block.appendChild(grid);
+                detailContent.appendChild(block);
+            });
 
-            document.body.classList.add('secret-mode');
-
-            document.documentElement.style.setProperty('--current-primary', '#ef4444');
-            document.documentElement.style.setProperty('--current-glow', 'rgba(239, 68, 68, 0.5)');
-
-            document.getElementById('main-logo-img').style.filter = 'hue-rotate(180deg) invert(10%)';
-
-            startAlarmSound(); 
-
-            const toast = document.getElementById('fomo-toast');
-            toast.innerHTML = "🚨 <b>WARNING: ADMIN MODE ACTIVATED</b>";
-            toast.classList.add('show');
-
-            try { window.Telegram.WebApp.HapticFeedback.notificationOccurred('warning'); } catch(e){}
-
-            // Disimpen ke variabel biar bisa dibatalin kalau dimatiin manual
-            adminModeTimeout = setTimeout(() => { deactivateSecretAdminMode(); }, 30000);
+            slider.style.transform = 'translateX(-75%)'; // Geser ke Slide 3
+            triggerHaptic('medium');
         }
 
-        function deactivateSecretAdminMode() {
-            if (!isSecretMode) return;
-            isSecretMode = false;
+        // 4. HOLOGRAPHIC CARD FIX BIAR GAK NYANGKUT
+        const cardWrapper = document.getElementById('cardWrapper'); const card = document.getElementById('digitalCard');
+        cardWrapper.addEventListener('mousemove', (e) => { const rect = cardWrapper.getBoundingClientRect(); const rotateX = (((e.clientY - rect.top) - (rect.height/2)) / (rect.height/2)) * -10; const rotateY = (((e.clientX - rect.left) - (rect.width/2)) / (rect.width/2)) * 10; card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`; });
+        cardWrapper.addEventListener('mouseleave', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`);
+        cardWrapper.addEventListener('touchend', () => card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`);
+        
+        // Animasi loading doang pas web dibuka
+        function startCounter() { document.getElementById('counter').innerText = "---"; }
 
-            clearTimeout(adminModeTimeout); // Batalin mati otomatisnya
-            stopAlarmSound();
-
-            document.body.classList.remove('secret-mode');
-
-            document.documentElement.style.setProperty('--current-primary', '#00f2fe');
-            document.documentElement.style.setProperty('--current-glow', 'rgba(0, 242, 254, 0.4)');
-
-            document.getElementById('main-logo-img').style.filter = 'none';
-
-            const toast = document.getElementById('fomo-toast');
-            toast.innerHTML = "🟢 System Restored to Normal Operations.";
-            setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        // Fungsi buat nembak ke bot minta saldo asli
+        function requestBalanceSync() {
+            triggerHaptic('medium');
+            showToast("Syncing balance from server...");
+            
+            // Format minta saldo
+            const payload = { action: "GET_BALANCE" };
+            
+            try { 
+                tg.sendData(JSON.stringify(payload)); 
+                tg.close(); // Tutup WebApp biar klien liat balasan bot lu di chat
+            } catch(e) { 
+                console.log(payload); 
+            }
         }
 
-        function speakJarvisAdminActivated() {
-             if (!('speechSynthesis' in window)) return;
-            const synth = window.speechSynthesis;
-            const text = "Unauthorized Access Detected. Secret Admin Mode Activated. System under full operator control.";
-            const utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'en-US';
-            utterance.rate = 1.0; utterance.pitch = 0.6; 
-            synth.speak(utterance);
+        // 5. ORDER MODAL (SERVICES)
+        let currentPrice = 0; let currentItem = ""; let currentSvcType = ""; let currentQty = 100;
+        function openOrderModal(title, price, type, qty) {
+            triggerHaptic('light');
+            document.getElementById('orderTitle').innerText = title;
+            document.getElementById('orderTarget').value = '';
+            
+            const label = document.getElementById('orderLabel');
+            if(type === 'follow') {
+                label.innerText = 'Target (Username / Profile URL)';
+                document.getElementById('orderTarget').placeholder = 'e.g. ithallodieh';
+            } else {
+                label.innerText = 'Target (Repository URL)';
+                document.getElementById('orderTarget').placeholder = 'e.g. ithallodieh/repo-name';
+            }
+            
+            currentPrice = price; currentItem = title; currentSvcType = type; currentQty = qty;
+            document.getElementById('orderTotal').innerText = '$' + price.toFixed(2);
+            document.getElementById('orderModal').classList.add('active');
+        }
+        function submitOrder() {
+            const target = document.getElementById('orderTarget').value;
+            if(!target) { showToast('Please fill all fields!', true); triggerHaptic('error'); return; }
+            
+            // Format ID agar match dengan Python (jasa_jenis_qty)
+            const payload = { action: "NEW_ORDER", item: currentItem, item_id: `jasa_${currentSvcType}_${currentQty}`, target: target, quantity: currentQty, total_price: currentPrice.toFixed(2) };
+            closeModal('orderModal'); showToast(`Processing order for ${currentQty}x ${currentSvcType}...`); triggerHaptic('success');
+            try { tg.sendData(JSON.stringify(payload)); } catch(e) { console.log(payload); }
         }
 
+        // 6. CART SYSTEM & 3 MINUTE TIMER LOGIC
+        let cart = []; let cartTimerInterval;
+
+        function openStockModal(title, price) {
+            triggerHaptic('light'); document.getElementById('stockTitle').innerText = title;
+            const stockBox = document.getElementById('stockListContent'); stockBox.innerHTML = '';
+            
+            for(let i=0; i<3; i++) {
+                const fakeId = "XB-" + Math.floor(Math.random() * 9000 + 1000);
+                const isReserved = cart.find(c => c.id === fakeId); 
+                
+                const itemDiv = document.createElement('div'); itemDiv.className = 'stock-item';
+                itemDiv.innerHTML = `<span class="stock-id">${fakeId}</span><button class="btn-add-cart" id="btn-${fakeId}" ${isReserved ? 'disabled style="opacity:0.5;"' : `onclick="addToCart('${fakeId}', '${title}', ${price})"`}>${isReserved ? 'Reserved' : '+ Cart'}</button>`;
+                stockBox.appendChild(itemDiv);
+            }
+            document.getElementById('stockModal').classList.add('active');
+        }
+
+        function addToCart(itemId, title, price) {
+            triggerHaptic('medium');
+            const expireAt = Date.now() + (3 * 60 * 1000); 
+            // Parsing buat ngasih tahu python
+            let categoryStr = title.replace("GitHub + ", "").replace(" Account", "").replace(" ", "").lower();
+            let finalItemId = `akun_${categoryStr}`;
+            
+            cart.push({ id: itemId, item_id: finalItemId, title: title, price: price, expireAt: expireAt });
+            
+            const btn = document.getElementById('btn-'+itemId);
+            if(btn) { btn.innerText = 'Reserved'; btn.disabled = true; btn.style.opacity = '0.5'; }
+            
+            updateCartBadge(); showToast(`Added to Cart! Reserved for 3 mins.`);
+            if(!cartTimerInterval) cartTimerInterval = setInterval(tickCartTimers, 1000);
+        }
+
+        function tickCartTimers() {
+            const now = Date.now(); let changed = false;
+            cart = cart.filter(item => {
+                if(now >= item.expireAt) {
+                    showToast(`Timer expired! ${item.id} returned to stock.`, true); changed = true;
+                    const btn = document.getElementById('btn-'+item.id);
+                    if(btn) { btn.innerText = '+ Cart'; btn.disabled = false; btn.style.opacity = '1'; }
+                    return false;
+                } return true;
+            });
+            if(changed) { updateCartBadge(); if(document.getElementById('cartModal').classList.contains('active')) renderCartModal(); }
+            cart.forEach(item => {
+                const timeEl = document.getElementById('time-'+item.id);
+                if(timeEl) {
+                    const diff = Math.floor((item.expireAt - now)/1000);
+                    timeEl.innerText = `${Math.floor(diff/60).toString().padStart(2,'0')}:${(diff%60).toString().padStart(2,'0')}`;
+                }
+            });
+            if(cart.length === 0 && cartTimerInterval) { clearInterval(cartTimerInterval); cartTimerInterval = null; }
+        }
+
+        function updateCartBadge() {
+            const badge = document.getElementById('cartBadge'); badge.innerText = cart.length;
+            if(cart.length > 0) badge.classList.add('show'); else badge.classList.remove('show');
+        }
+
+        function openCartModal() { triggerHaptic('light'); renderCartModal(); document.getElementById('cartModal').classList.add('active'); }
+
+        function renderCartModal() {
+            const content = document.getElementById('cartContent'); const totalEl = document.getElementById('cartTotal'); const btnCheck = document.getElementById('btnCheckout');
+            content.innerHTML = '';
+            
+            if(cart.length === 0) {
+                content.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-weight:600; margin-top:20px;">Your cart is empty.</p>';
+                totalEl.innerText = '$0.00'; btnCheck.disabled = true; btnCheck.style.opacity = '0.5'; return;
+            }
+
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price; const div = document.createElement('div'); div.className = 'cart-item-row';
+                div.innerHTML = `<div class="cart-item-info"><h4>${item.title} <span style="font-size:0.75rem; color:#8b5cf6;">[${item.id}]</span></h4><p>⏳ Expires in: <span id="time-${item.id}" style="color:var(--danger);">03:00</span></p></div><div class="cart-item-price">$${item.price.toFixed(2)}</div>`;
+                content.appendChild(div);
+            });
+            totalEl.innerText = '$' + total.toFixed(2); btnCheck.disabled = false; btnCheck.style.opacity = '1';
+        }
+
+        function checkoutCart() {
+            if(cart.length === 0) return;
+            const payload = { action: "CHECKOUT_CART", items: cart };
+            cart = []; updateCartBadge(); closeModal('cartModal');
+            showToast('Checkout successful! Assets delivered to email.'); triggerHaptic('success');
+            try { tg.sendData(JSON.stringify(payload)); } catch(e) { console.log(payload); }
+        }
+
+        // 7. OTHER MODALS
+        function openEwalletModal() { triggerHaptic('light'); document.getElementById('ewalletModal').classList.add('active'); }
+        function openTopUpModal(title, info, iconChar) { triggerHaptic('light'); document.getElementById('topupTitle').innerText = 'Deposit: ' + title; document.getElementById('topupAddress').innerText = info; if(iconChar === '🏦' || title.includes('DANA') || title.includes('OVO') || title.includes('GoPay') || title.includes('Shopee')) { document.getElementById('topupQR').style.display = 'none'; } else { document.getElementById('topupQR').style.display = 'flex'; } document.getElementById('topupIconBadge').innerHTML = iconChar; document.getElementById('topupModal').classList.add('active'); }
+        function showOfflineModal(platformName) { triggerHaptic('error'); document.getElementById('offlineTarget').innerText = platformName; document.getElementById('offlineModal').classList.add('active'); }
+        function showGlitchAlert() { triggerHaptic('error'); document.getElementById('glitchModal').classList.add('active'); }
+        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+
+        let tstTm;
+        function showToast(msg, isError=false) { const t = document.getElementById('sysToast'); t.innerHTML = `<span style="font-size:1.4rem;">${isError ? '❌' : '✅'}</span> <span style="font-weight:700;">${msg}</span>`; t.classList.add('show'); clearTimeout(tstTm); tstTm = setTimeout(() => t.classList.remove('show'), 3000); }
+        function triggerHaptic(style) { try { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred(style); } catch(e) {} }
     </script>
 </body>
 </html>
