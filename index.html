@@ -1120,53 +1120,16 @@
                     </button>
 
                     <div class="menu-category">DIGITAL MARKETING SERVICES</div>
-                    <div class="home-menu-grid">
-                        <button class="menu-btn" onclick="openSubMenu('Social Media Services', 'socmed_svc')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🔥</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">Social Media Boost</span>
-                                    <span class="btn-desc">Followers & Engagements</span>
-                                </div>
+                    <button class="btn-master" style="margin-bottom: 25px;" onclick="openSubMenu('Digital Marketing', 'digital_marketing')">
+                        <div class="btn-content">
+                            <div class="btn-icon" style="font-size:1.8rem; background:rgba(255,255,255,0.1);">🔥</div>
+                            <div class="btn-text-wrapper">
+                                <span class="btn-title">Digital Marketing Services</span>
+                                <span class="btn-desc">Boost, Traffic, Streams, etc.</span>
                             </div>
-                        </button>
-                        <button class="menu-btn" onclick="openSubMenu('Streaming Services', 'streaming_svc')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🎥</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">Stream & Video</span>
-                                    <span class="btn-desc">Twitch, YouTube, Kick</span>
-                                </div>
-                            </div>
-                        </button>
-                        <button class="menu-btn" onclick="openSubMenu('Web Traffic & Forums', 'web_traffic_svc')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📈</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">Traffic & Forums</span>
-                                    <span class="btn-desc">Website, Reddit, Quora</span>
-                                </div>
-                            </div>
-                        </button>
-                        <button class="menu-btn" onclick="openSubMenu('Music Distributions', 'music_svc')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🎧</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">Music & Audio</span>
-                                    <span class="btn-desc">Spotify, Shazam, Tidal</span>
-                                </div>
-                            </div>
-                        </button>
-                        <button class="menu-btn" style="grid-column: 1 / -1;" onclick="openSubMenu('E-Commerce & Creative', 'ecommerce_creative')">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🛒</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">E-Commerce & Creative</span>
-                                    <span class="btn-desc">Shopee, Lazada, Canva, Threads</span>
-                                </div>
-                            </div>
-                        </button>
-                    </div>
+                        </div>
+                        <span class="arrow-icon" style="color:#fff; font-size:1.5rem; font-weight:800;">▶</span>
+                    </button>
 
                     <div class="menu-category" style="margin-top: 20px;">PREMIUM SUBSCRIPTIONS</div>
                     <button class="btn-master" style="margin-bottom: 25px;" onclick="openSubMenu('Premium Subscriptions', 'subscriptions')">
@@ -1484,18 +1447,29 @@
         const subContent = document.getElementById('sub-menu-content');
         
         const dbMenu = {
+            'digital_marketing': {
+                items: [
+                    { icon: '🔥', title: 'Social Media Boost', desc: 'Followers & Engagements', type: 'nav', target: 'socmed_svc' },
+                    { icon: '🎥', title: 'Stream & Video', desc: 'Twitch, YouTube, Kick', type: 'nav', target: 'streaming_svc' },
+                    { icon: '📈', title: 'Traffic & Forums', desc: 'Website, Reddit, Quora', type: 'nav', target: 'web_traffic_svc' },
+                    { icon: '🎧', title: 'Music & Audio', desc: 'Spotify, Shazam, Tidal', type: 'nav', target: 'music_svc' },
+                    { icon: '🛒', title: 'E-Commerce & Creative', desc: 'Shopee, Canva, Threads', type: 'nav', target: 'ecommerce_creative' }
+                ]
+            },
             'github_main': { 
                 items: [
                     { icon: '🛒', title: 'Buy GitHub Accounts', desc: 'Arctic, Badges, 2011-2026', type: 'nav', target: 'assets' },
-                    { icon: '🚀', title: 'GitHub Cloud Services', desc: 'Followers, Forks, Stars', type: 'nav', target: 'services' }
+                    { icon: '🚀', title: 'GitHub Cloud Services', desc: 'Followers, Forks, Stars, Watch', type: 'nav', target: 'services' }
                 ]
             },
             'assets': { 
                 items: [
                     { icon: '💎', title: 'GitHub Arctic Vault', desc: 'Rare 2020 Badge Contributor', price: 25.00, type: 'acc', year: 'Arctic' },
                     { icon: '🏅', title: '6 Badges Account', desc: 'Pull Shark, YOLO, Starstruck...', price: 40.00, type: 'acc', year: '6Badge' },
-                    { icon: '🎒', title: 'GitHub Student Pack', desc: 'Approved with Free Credits', price: 50.00, type: 'acc', year: 'StudentPack' },
+                    { icon: '👥', title: 'GitHub + Followers', desc: 'Pre-warmed, high authority', price: 35.00, type: 'acc', year: 'Followers' }, 
+                    { icon: '📁', title: 'GitHub + Old Repository', desc: 'Aged repository for high trust', price: 30.00, type: 'acc', year: 'OldRepo' }, 
                     { icon: '📈', title: 'High Contributions', desc: 'Massive green commit history', price: 40.00, type: 'acc', year: 'Contrib' },
+                    { icon: '🎒', title: 'GitHub Student Pack', desc: 'Approved with Free Credits', price: 50.00, type: 'acc', year: 'StudentPack' },
                     { icon: '🏛️', title: 'Aged Account (2011)', desc: 'Vintage Tier - Extreme Trust', price: 20.00, type: 'acc', year: '2011' },
                     { icon: '🏛️', title: 'Aged Account (2012)', desc: 'Vintage Tier - Extreme Trust', price: 18.00, type: 'acc', year: '2012' },
                     { icon: '🏛️', title: 'Aged Account (2013)', desc: 'Vintage Tier - Extreme Trust', price: 16.00, type: 'acc', year: '2013' },
@@ -1703,6 +1677,8 @@
             const backBtn = document.getElementById('subBackBtn');
             if(category === 'assets' || category === 'services') { 
                 backBtn.onclick = () => openSubMenu('GitHub Services', 'github_main'); 
+            } else if (['socmed_svc', 'streaming_svc', 'web_traffic_svc', 'music_svc', 'ecommerce_creative'].includes(category)) {
+                backBtn.onclick = () => openSubMenu('Digital Marketing', 'digital_marketing'); 
             } else { 
                 backBtn.onclick = () => goToHome(); 
             }
