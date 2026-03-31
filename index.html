@@ -1107,14 +1107,74 @@
                         <span class="arrow-icon" style="color:#fff; font-size:1.5rem; font-weight:800;">▶</span>
                     </button>
 
-                    <div class="menu-category">OTHER PLATFORMS</div>
-                    
-                    <button class="btn-master" style="margin-bottom: 25px;" onclick="openSubMenu('Upcoming Platforms', 'other_main')">
+                    <div class="menu-category">SOCIAL MEDIA ACCOUNTS</div>
+                    <button class="btn-master" style="margin-bottom: 15px;" onclick="openSubMenu('Social Media Accounts', 'socmed_acc')">
                         <div class="btn-content">
-                            <div class="btn-icon" style="font-size:1.8rem; background:rgba(255,255,255,0.1);">🌐</div>
+                            <div class="btn-icon" style="font-size:1.8rem; background:rgba(255,255,255,0.1);">📱</div>
                             <div class="btn-text-wrapper">
-                                <span class="btn-title">Upcoming Services</span>
-                                <span class="btn-desc">Social Media & Email (Soon)</span>
+                                <span class="btn-title">Social Media Accounts</span>
+                                <span class="btn-desc">Twitter, TikTok, IG, Discord, etc.</span>
+                            </div>
+                        </div>
+                        <span class="arrow-icon" style="color:#fff; font-size:1.5rem; font-weight:800;">▶</span>
+                    </button>
+
+                    <div class="menu-category">DIGITAL MARKETING SERVICES</div>
+                    <div class="home-menu-grid">
+                        <button class="menu-btn" onclick="openSubMenu('Social Media Services', 'socmed_svc')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🔥</div>
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title">Social Media Boost</span>
+                                    <span class="btn-desc">Followers & Engagements</span>
+                                </div>
+                            </div>
+                        </button>
+                        <button class="menu-btn" onclick="openSubMenu('Streaming Services', 'streaming_svc')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🎥</div>
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title">Stream & Video</span>
+                                    <span class="btn-desc">Twitch, YouTube, Kick</span>
+                                </div>
+                            </div>
+                        </button>
+                        <button class="menu-btn" onclick="openSubMenu('Web Traffic & Forums', 'web_traffic_svc')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">📈</div>
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title">Traffic & Forums</span>
+                                    <span class="btn-desc">Website, Reddit, Quora</span>
+                                </div>
+                            </div>
+                        </button>
+                        <button class="menu-btn" onclick="openSubMenu('Music Distributions', 'music_svc')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🎧</div>
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title">Music & Audio</span>
+                                    <span class="btn-desc">Spotify, Shazam, Tidal</span>
+                                </div>
+                            </div>
+                        </button>
+                        <button class="menu-btn" style="grid-column: 1 / -1;" onclick="openSubMenu('E-Commerce & Creative', 'ecommerce_creative')">
+                            <div class="btn-content">
+                                <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">🛒</div>
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title">E-Commerce & Creative</span>
+                                    <span class="btn-desc">Shopee, Lazada, Canva, Threads</span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
+
+                    <div class="menu-category" style="margin-top: 20px;">PREMIUM SUBSCRIPTIONS</div>
+                    <button class="btn-master" style="margin-bottom: 25px;" onclick="openSubMenu('Premium Subscriptions', 'subscriptions')">
+                        <div class="btn-content">
+                            <div class="btn-icon" style="font-size:1.8rem; background:rgba(255,255,255,0.1);">👑</div>
+                            <div class="btn-text-wrapper">
+                                <span class="btn-title">Premium Subscriptions</span>
+                                <span class="btn-desc">Canva 1 Year, CapCut Pro</span>
                             </div>
                         </div>
                         <span class="arrow-icon" style="color:#fff; font-size:1.5rem; font-weight:800;">▶</span>
@@ -1424,57 +1484,216 @@
         const subContent = document.getElementById('sub-menu-content');
         
         const dbMenu = {
-            'github_main': { items: [
-                { icon: '🛒', title: 'Buy GitHub Accounts', desc: 'Arctic, Badges, 2011-2026', type: 'nav', target: 'assets' },
-                { icon: '🚀', title: 'GitHub Cloud Services', desc: 'Followers, Forks, Stars', type: 'nav', target: 'services' }
-            ]},
-            'assets': { items: [
-                { icon: '👥', title: 'GitHub + Followers', desc: 'Pre-warmed, high authority', price: 35.00, type: 'acc', year: '2021' }, 
-                { icon: '💎', title: 'GitHub Arctic Vault', desc: 'Rare 2020 Badge Contributor', price: 25.00, type: 'acc', year: 'Arctic' },
-                { icon: '🏅', title: '6 Badges Account', desc: 'Pull Shark, YOLO, Starstruck...', price: 40.00, type: 'acc', year: '2020' }, 
-                { icon: '📁', title: 'GitHub + Old Repository', desc: 'Aged repository for high trust', price: 30.00, type: 'acc', year: '2019' }, 
-                { icon: '📈', title: 'GitHub + High Contributions', desc: 'Massive green commit history', price: 40.00, type: 'acc', year: 'Contrib' },
-                { icon: '🎒', title: 'GitHub Student Pack', desc: 'Approved with Free Credits', price: 50.00, type: 'acc', year: '2024' }, 
-                { icon: '🏛️', title: 'Aged Account (2011)', desc: 'Vintage Tier - Extreme Trust', price: 15.00, type: 'acc', year: '2011' },
-                { icon: '🏛️', title: 'Aged Account (2012)', desc: 'Vintage Tier - Extreme Trust', price: 14.50, type: 'acc', year: '2012' },
-                { icon: '🏛️', title: 'Aged Account (2013)', desc: 'Vintage Tier - Extreme Trust', price: 14.00, type: 'acc', year: '2013' },
-                { icon: '🏛️', title: 'Aged Account (2014)', desc: 'Vintage Tier - Extreme Trust', price: 13.50, type: 'acc', year: '2014' },
-                { icon: '🏛️', title: 'Aged Account (2015)', desc: 'Vintage Tier - Extreme Trust', price: 13.00, type: 'acc', year: '2015' },
-                { icon: '📦', title: 'Aged Account (2016)', desc: 'Premium Tier - High Trust', price: 12.00, type: 'acc', year: '2016' },
-                { icon: '📦', title: 'Aged Account (2017)', desc: 'Premium Tier - High Trust', price: 11.00, type: 'acc', year: '2017' },
-                { icon: '📦', title: 'Aged Account (2018)', desc: 'Premium Tier - High Trust', price: 10.00, type: 'acc', year: '2018' },
-                { icon: '📦', title: 'Aged Account (2019)', desc: 'Premium Tier - High Trust', price: 9.00, type: 'acc', year: '2019' },
-                { icon: '📦', title: 'Aged Account (2020)', desc: 'Premium Tier - High Trust', price: 8.00, type: 'acc', year: '2020' },
-                { icon: '📁', title: 'Standard Account (2021)', desc: 'Standard Tier - Warmed up', price: 7.00, type: 'acc', year: '2021' },
-                { icon: '📁', title: 'Standard Account (2022)', desc: 'Standard Tier - Warmed up', price: 6.00, type: 'acc', year: '2022' },
-                { icon: '📁', title: 'Standard Account (2023)', desc: 'Standard Tier - Warmed up', price: 5.00, type: 'acc', year: '2023' },
-                { icon: '📁', title: 'Standard Account (2024)', desc: 'Standard Tier - Warmed up', price: 4.00, type: 'acc', year: '2024' },
-                { icon: '✨', title: 'Fresh Account (2025)', desc: 'Verified - Ready to use', price: 3.00, type: 'acc', year: '2025' },
-                { icon: '✨', title: 'Fresh Account (2026)', desc: 'Verified - New Creation', price: 2.00, type: 'acc', year: '2026' }
-            ]},
-            'services': { items: [
-                { icon: '👥', title: 'Buy Followers', desc: 'Select execution speed', type: 'svc_menu', target: 'followers' },
-                { icon: '⎇', title: 'Buy Repository Forks', desc: 'Select execution speed', type: 'svc_menu', target: 'forks' },
-                { icon: '⭐', title: 'Buy Repository Stars', desc: 'Select execution speed', type: 'svc_menu', target: 'stars' },
-                { icon: '👁️', title: 'Buy Repository Watchers', desc: 'Select execution speed', type: 'svc_menu', target: 'watch' }
-            ]},
-            'other_main': { items: [
-                { icon: '𝕏', title: 'X (Twitter)', desc: 'Verified, Likes', type: 'offline' },
-                { icon: '🎵', title: 'TikTok', desc: 'For You Page Boost', type: 'offline' },
-                { icon: '📘', title: 'Facebook', desc: 'Aged Accounts', type: 'offline' },
-                { icon: '📸', title: 'Instagram', desc: 'Followers', type: 'offline' },
-                { icon: '✈️', title: 'Telegram', desc: 'Group Members', type: 'offline' },
-                { icon: '👽', title: 'Reddit', desc: 'High Karma Accounts', type: 'offline' },
-                { icon: '✉️', title: 'Gmail', desc: 'Aged, Verified', type: 'offline' },
-                { icon: '📧', title: 'Outlook', desc: 'Bulk Accounts', type: 'offline' }
-            ]}
+            'github_main': { 
+                items: [
+                    { icon: '🛒', title: 'Buy GitHub Accounts', desc: 'Arctic, Badges, 2011-2026', type: 'nav', target: 'assets' },
+                    { icon: '🚀', title: 'GitHub Cloud Services', desc: 'Followers, Forks, Stars', type: 'nav', target: 'services' }
+                ]
+            },
+            'assets': { 
+                items: [
+                    { icon: '💎', title: 'GitHub Arctic Vault', desc: 'Rare 2020 Badge Contributor', price: 25.00, type: 'acc', year: 'Arctic' },
+                    { icon: '🏅', title: '6 Badges Account', desc: 'Pull Shark, YOLO, Starstruck...', price: 40.00, type: 'acc', year: '6Badge' },
+                    { icon: '🎒', title: 'GitHub Student Pack', desc: 'Approved with Free Credits', price: 50.00, type: 'acc', year: 'StudentPack' },
+                    { icon: '📈', title: 'High Contributions', desc: 'Massive green commit history', price: 40.00, type: 'acc', year: 'Contrib' },
+                    { icon: '🏛️', title: 'Aged Account (2011)', desc: 'Vintage Tier - Extreme Trust', price: 20.00, type: 'acc', year: '2011' },
+                    { icon: '🏛️', title: 'Aged Account (2012)', desc: 'Vintage Tier - Extreme Trust', price: 18.00, type: 'acc', year: '2012' },
+                    { icon: '🏛️', title: 'Aged Account (2013)', desc: 'Vintage Tier - Extreme Trust', price: 16.00, type: 'acc', year: '2013' },
+                    { icon: '🏛️', title: 'Aged Account (2014)', desc: 'Vintage Tier - Extreme Trust', price: 15.00, type: 'acc', year: '2014' },
+                    { icon: '🏛️', title: 'Aged Account (2015)', desc: 'Vintage Tier - Extreme Trust', price: 14.00, type: 'acc', year: '2015' },
+                    { icon: '📦', title: 'Aged Account (2016)', desc: 'Premium Tier - High Trust', price: 13.00, type: 'acc', year: '2016' },
+                    { icon: '📦', title: 'Aged Account (2017)', desc: 'Premium Tier - High Trust', price: 12.00, type: 'acc', year: '2017' },
+                    { icon: '📦', title: 'Aged Account (2018)', desc: 'Premium Tier - High Trust', price: 11.00, type: 'acc', year: '2018' },
+                    { icon: '📦', title: 'Aged Account (2019)', desc: 'Premium Tier - High Trust', price: 10.00, type: 'acc', year: '2019' },
+                    { icon: '📦', title: 'Aged Account (2020)', desc: 'Premium Tier - High Trust', price: 9.00, type: 'acc', year: '2020' },
+                    { icon: '📁', title: 'Standard Account (2021)', desc: 'Standard Tier - Warmed up', price: 8.00, type: 'acc', year: '2021' },
+                    { icon: '📁', title: 'Standard Account (2022)', desc: 'Standard Tier - Warmed up', price: 7.00, type: 'acc', year: '2022' },
+                    { icon: '📁', title: 'Standard Account (2023)', desc: 'Standard Tier - Warmed up', price: 6.00, type: 'acc', year: '2023' },
+                    { icon: '📁', title: 'Standard Account (2024)', desc: 'Standard Tier - Warmed up', price: 5.00, type: 'acc', year: '2024' },
+                    { icon: '✨', title: 'Fresh Account (2025)', desc: 'Verified - Ready to use', price: 4.00, type: 'acc', year: '2025' },
+                    { icon: '✨', title: 'Fresh Account (2026)', desc: 'Verified - New Creation', price: 3.00, type: 'acc', year: '2026' }
+                ]
+            },
+            'services': { 
+                items: [
+                    { icon: '👥', title: 'GitHub Followers', desc: 'Global Authority Boost', type: 'svc_menu', target: 'followers' },
+                    { icon: '⎇', title: 'GitHub Repository Forks', desc: 'Project Reach Expansion', type: 'svc_menu', target: 'forks' },
+                    { icon: '⭐', title: 'GitHub Repository Stars', desc: 'Reputation Escalation', type: 'svc_menu', target: 'stars' },
+                    { icon: '👁️', title: 'GitHub Repository Watchers', desc: 'Engagement Authority', type: 'svc_menu', target: 'watch' }
+                ]
+            },
+            'socmed_acc': { 
+                items: [
+                    { icon: '🐦', title: 'Twitter (X) Accounts', desc: 'Old / Followers / Crypto', type: 'nav', target: 'acc_twitter' },
+                    { icon: '🎵', title: 'TikTok Accounts', desc: 'Old / High Followers', type: 'nav', target: 'acc_tiktok' },
+                    { icon: '📸', title: 'Instagram Accounts', desc: 'Old / High Followers', type: 'nav', target: 'acc_ig' },
+                    { icon: '📘', title: 'Facebook Accounts', desc: 'Old / High Followers', type: 'nav', target: 'acc_fb' },
+                    { icon: '👾', title: 'Discord Accounts', desc: 'Aged Accounts', type: 'nav', target: 'acc_discord' },
+                    { icon: '👽', title: 'Reddit Accounts', desc: 'Old & High Karma', type: 'nav', target: 'acc_reddit' },
+                    { icon: '✈️', title: 'Telegram Accounts', desc: 'Old & Fresh Session', type: 'nav', target: 'acc_telegram' },
+                    { icon: '✉️', title: 'Gmail Accounts', desc: 'Aged / PVA Verified', type: 'nav', target: 'acc_gmail' },
+                    { icon: '📧', title: 'Outlook Accounts', desc: 'Bulk / Aged Accounts', type: 'nav', target: 'acc_outlook' }
+                ]
+            },
+            'acc_twitter': {
+                items: [
+                    { icon: '⏳', title: 'Twitter Old Account', desc: 'Aged years for high trust', price: 5.00, type: 'acc', year: 'TwitterOld' },
+                    { icon: '👥', title: 'Twitter + Followers', desc: 'Pre-warmed authority', price: 15.00, type: 'acc', year: 'TwitterFollowers' },
+                    { icon: '🪙', title: 'Twitter Crypto Ready', desc: 'Targeted niche account', price: 20.00, type: 'acc', year: 'TwitterCrypto' }
+                ]
+            },
+            'acc_tiktok': {
+                items: [
+                    { icon: '⏳', title: 'TikTok Old Account', desc: 'Aged for better reach', price: 8.00, type: 'acc', year: 'TikTokOld' },
+                    { icon: '👥', title: 'TikTok + Followers', desc: 'Ready for Live / Creator', price: 18.00, type: 'acc', year: 'TikTokFollowers' }
+                ]
+            },
+            'acc_ig': {
+                items: [
+                    { icon: '⏳', title: 'Instagram Old Account', desc: 'Aged for high stability', price: 8.00, type: 'acc', year: 'IGOld' },
+                    { icon: '👥', title: 'Instagram + Followers', desc: 'Pre-warmed business ready', price: 18.00, type: 'acc', year: 'IGFollowers' }
+                ]
+            },
+            'acc_fb': {
+                items: [
+                    { icon: '⏳', title: 'Facebook Old Account', desc: 'High trust advertising access', price: 7.00, type: 'acc', year: 'FBOld' },
+                    { icon: '👥', title: 'Facebook + Followers', desc: 'Influencer ready account', price: 15.00, type: 'acc', year: 'FBFollowers' }
+                ]
+            },
+            'acc_discord': {
+                items: [
+                    { icon: '👾', title: 'Discord Old Account', desc: 'Rare aged discord tokens', price: 3.00, type: 'acc', year: 'DiscordOld' }
+                ]
+            },
+            'acc_reddit': {
+                items: [
+                    { icon: '⏳', title: 'Reddit Old Account', desc: 'Aged reddit account', price: 5.00, type: 'acc', year: 'RedditOld' },
+                    { icon: '🔥', title: 'Reddit High Karma', desc: 'High authority reddit assets', price: 15.00, type: 'acc', year: 'RedditKarma' }
+                ]
+            },
+            'acc_telegram': {
+                items: [
+                    { icon: '⏳', title: 'Telegram Old Account', desc: 'Aged session files', price: 4.00, type: 'acc', year: 'TGOld' },
+                    { icon: '✨', title: 'Telegram Fresh Account', desc: 'New verified session', price: 2.00, type: 'acc', year: 'TGFresh' }
+                ]
+            },
+            'acc_gmail': {
+                items: [
+                    { icon: '⏳', title: 'Gmail Old Account', desc: 'Aged Google accounts', price: 3.00, type: 'acc', year: 'GmailOld' },
+                    { icon: '✨', title: 'Gmail Fresh PVA', desc: 'Phone verified fresh', price: 1.00, type: 'acc', year: 'GmailFresh' }
+                ]
+            },
+            'acc_outlook': {
+                items: [
+                    { icon: '⏳', title: 'Outlook Old Account', desc: 'Aged Microsoft accounts', price: 2.50, type: 'acc', year: 'OutlookOld' },
+                    { icon: '✨', title: 'Outlook Fresh Account', desc: 'Freshly created', price: 0.50, type: 'acc', year: 'OutlookFresh' }
+                ]
+            },
+            'socmed_svc': {
+                items: [
+                    { icon: '📸', title: 'Instagram Services', desc: 'Followers, Likes, Views', type: 'svc_menu', target: 'ig_svc' },
+                    { icon: '🎵', title: 'TikTok Services', desc: 'Followers, Views, Shares', type: 'svc_menu', target: 'tiktok_svc' },
+                    { icon: '📘', title: 'Facebook Services', desc: 'Followers, Page Likes', type: 'svc_menu', target: 'fb_svc' },
+                    { icon: '✈️', title: 'Telegram Services', desc: 'Members, Post Views', type: 'svc_menu', target: 'tg_svc' },
+                    { icon: '👾', title: 'Discord Services', desc: 'Server Members, Boosts', type: 'svc_menu', target: 'discord_svc' },
+                    { icon: '👽', title: 'Reddit Services', desc: 'Upvotes, Karma boost', type: 'svc_menu', target: 'reddit_svc' }
+                ]
+            },
+            'streaming_svc': {
+                items: [
+                    { icon: '📺', title: 'YouTube Services', desc: 'Subscribers, Watch Hour', type: 'svc_menu', target: 'youtube' },
+                    { icon: '🟪', title: 'Twitch Services', desc: 'Live Views & Followers', type: 'svc_menu', target: 'twitch' },
+                    { icon: '🟩', title: 'Kick.com Services', desc: 'Followers & Live Viewers', type: 'svc_menu', target: 'kick' },
+                    { icon: '🦖', title: 'Bigo Live Services', desc: 'Stream Viewers', type: 'svc_menu', target: 'bigo' },
+                    { icon: '🍿', title: 'SnackVideo Services', desc: 'Followers & Likes', type: 'svc_menu', target: 'snackvideo' },
+                    { icon: '👻', title: 'Snapchat Services', desc: 'Followers & Views', type: 'svc_menu', target: 'snapchat' },
+                    { icon: '🎬', title: 'Likee Services', desc: 'Followers & Views', type: 'svc_menu', target: 'likee' },
+                    { icon: '📱', title: 'Kwai Services', desc: 'Views & Engagements', type: 'svc_menu', target: 'kwai' },
+                    { icon: '📹', title: 'Vimeo Services', desc: 'Video Plays', type: 'svc_menu', target: 'vimeo' },
+                    { icon: '🧊', title: 'Coub Services', desc: 'Loops & Likes', type: 'svc_menu', target: 'coub' }
+                ]
+            },
+            'web_traffic_svc': {
+                items: [
+                    { icon: '📈', title: 'Website Traffic Global', desc: 'Global visitor boost', type: 'svc_menu', target: 'traffic' },
+                    { icon: '🇮🇩', title: 'Website Traffic ID', desc: 'Indonesian visitors', type: 'svc_menu', target: 'traffic_id' },
+                    { icon: '💬', title: 'Quora Services', desc: 'Real Active Users', type: 'svc_menu', target: 'quora' },
+                    { icon: '📝', title: 'Medium Services', desc: 'Claps & Followers', type: 'svc_menu', target: 'medium' },
+                    { icon: '🎙️', title: 'Clubhouse Services', desc: 'Room Visitors', type: 'svc_menu', target: 'clubhouse' },
+                    { icon: '🔍', title: 'Yandex Services', desc: 'Search Traffic', type: 'svc_menu', target: 'yandex' },
+                    { icon: '🟦', title: 'VK.com Services', desc: 'Community & Followers', type: 'svc_menu', target: 'vk' },
+                    { icon: '🧊', title: 'Tumblr Services', desc: 'Reblogs & Followers', type: 'svc_menu', target: 'tumblr' }
+                ]
+            },
+            'music_svc': {
+                items: [
+                    { icon: '🟢', title: 'Spotify Services', desc: 'Plays & Followers', type: 'svc_menu', target: 'spotify' },
+                    { icon: '🎶', title: 'Shazam Services', desc: 'Shazams boost', type: 'svc_menu', target: 'shazam' },
+                    { icon: '📻', title: 'Mixcloud Services', desc: 'Plays & Listeners', type: 'svc_menu', target: 'mixcloud' },
+                    { icon: '🎙️', title: 'Podcast iTunes', desc: 'Reviews & Downloads', type: 'svc_menu', target: 'podcast' },
+                    { icon: '🌊', title: 'Tidal Services', desc: 'Stream Plays', type: 'svc_menu', target: 'tidal' },
+                    { icon: '🎧', title: 'Audiomack Services', desc: 'Plays & Followers', type: 'svc_menu', target: 'audiomack' },
+                    { icon: '💥', title: 'Boomplay Services', desc: 'Streams', type: 'svc_menu', target: 'boomplay' },
+                    { icon: '🎸', title: 'Reverbnation', desc: 'Song Plays', type: 'svc_menu', target: 'reverbnation' }
+                ]
+            },
+            'ecommerce_creative': {
+                items: [
+                    { icon: '🧵', title: 'Threads Services', desc: 'Indonesia & Reshare', type: 'svc_menu', target: 'threads' },
+                    { icon: '✂️', title: 'CapCut Services', desc: 'Template & Video boost', type: 'svc_menu', target: 'capcut' },
+                    { icon: '🎮', title: 'Roblox Services', desc: 'Indonesian Members', type: 'svc_menu', target: 'roblox' },
+                    { icon: '🛍️', title: 'Shopee Services', desc: 'Followers & Likes', type: 'svc_menu', target: 'shopee' },
+                    { icon: '🛒', title: 'Lazada Services', desc: 'Followers & Views', type: 'svc_menu', target: 'lazada' },
+                    { icon: '🎨', title: 'Dribbble Services', desc: 'Likes & Followers', type: 'svc_menu', target: 'dribble' }
+                ]
+            },
+            'subscriptions': {
+                items: [
+                    { icon: '🎨', title: 'Canva Pro (1 Year)', desc: 'Full premium access', price: 12.00, type: 'acc', year: 'Canva' },
+                    { icon: '✂️', title: 'CapCut Pro (1 Month)', desc: 'Premium subscription', price: 5.00, type: 'acc', year: 'CapCut' }
+                ]
+            }
         };
 
         const svcPrices = {
-            "followers": {"reg": 0.13, "fast": 0.18, "ultra": 0.23},
+            "followers": {"reg": 0.15, "fast": 0.20, "ultra": 0.25},
             "forks":     {"reg": 0.10, "fast": 0.15, "ultra": 0.20},
             "stars":     {"reg": 0.09, "fast": 0.14, "ultra": 0.19},
-            "watch":     {"reg": 0.08, "fast": 0.13, "ultra": 0.18}
+            "watch":     {"reg": 0.08, "fast": 0.13, "ultra": 0.18},
+            "threads":   {"reg": 0.10},
+            "twitch":    {"reg": 0.15},
+            "snapchat":  {"reg": 0.20},
+            "kick":      {"reg": 0.12},
+            "bigo":      {"reg": 0.25},
+            "tumblr":    {"reg": 0.10},
+            "quora":     {"reg": 0.30},
+            "mixcloud":  {"reg": 0.08},
+            "shazam":    {"reg": 0.05},
+            "vk":        {"reg": 0.10},
+            "clubhouse": {"reg": 0.15},
+            "likee":     {"reg": 0.10},
+            "reverbnation": {"reg": 0.05},
+            "tidal":     {"reg": 0.20},
+            "dribble":   {"reg": 0.15},
+            "kwai":      {"reg": 0.10},
+            "vimeo":     {"reg": 0.10},
+            "audiomack": {"reg": 0.05},
+            "coub":      {"reg": 0.05},
+            "boomplay":  {"reg": 0.05},
+            "podcast":   {"reg": 0.30},
+            "traffic":   {"reg": 0.02},
+            "traffic_id":{"reg": 0.05},
+            "yandex":    {"reg": 0.05},
+            "lazada":    {"reg": 0.15},
+            "shopee":    {"reg": 0.15},
+            "roblox":    {"reg": 0.10},
+            "capcut":    {"reg": 0.10},
+            "ig_svc":    {"reg": 0.15},
+            "tiktok_svc":{"reg": 0.15},
+            "fb_svc":    {"reg": 0.15},
+            "tg_svc":    {"reg": 0.15},
+            "discord_svc":{"reg": 0.15},
+            "reddit_svc":{"reg": 0.15}
         };
 
         function openSubMenu(title, category) {
@@ -1554,20 +1773,91 @@
             detailContent.innerHTML = '';
             
             const p = svcPrices[svcType];
-            const tracks = [
-                { icon: '🐌', name: 'Regular Track', desc: 'Natural organic speed (1 Node)', speed: 'reg', base: p.reg },
-                { icon: '🚀', name: 'Fast Track', desc: 'Load Balancing (2 Nodes)', speed: 'fast', base: p.fast },
-                { icon: '⚡', name: 'Ultra Track', desc: 'Swarm Mode Instant (3 Nodes)', speed: 'ultra', base: p.ultra }
-            ];
+            const isGithubService = ["followers", "forks", "stars", "watch"].includes(svcType);
 
-            tracks.forEach(t => {
+            if (isGithubService) {
+                const tracks = [
+                    { icon: '🐌', name: 'Regular Track', desc: 'Natural organic speed (1 Node)', speed: 'reg', base: p.reg },
+                    { icon: '🚀', name: 'Fast Track', desc: 'Load Balancing (2 Nodes)', speed: 'fast', base: p.fast },
+                    { icon: '⚡', name: 'Ultra Track', desc: 'Swarm Mode Instant (3 Nodes)', speed: 'ultra', base: p.ultra }
+                ];
+
+                tracks.forEach(t => {
+                    const block = document.createElement('div');
+                    block.style.marginBottom = '20px';
+                    
+                    const hdr = document.createElement('div');
+                    hdr.className = 'menu-category'; 
+                    hdr.innerHTML = `${t.icon} ${t.name} ($${t.base.toFixed(2)}/u)`; 
+                    block.appendChild(hdr);
+
+                    const grid = document.createElement('div'); 
+                    grid.className = 'home-menu-grid';
+                    
+                    const qtys = [ 
+                        { q: 100, mult: 1.0 }, 
+                        { q: 200, mult: 0.95 }, 
+                        { q: 300, mult: 0.90 }, 
+                        { q: 400, mult: 0.85 } 
+                    ];
+
+                    qtys.forEach(qItem => {
+                        const price = qItem.q * (t.base * qItem.mult);
+                        const btn = document.createElement('button'); 
+                        btn.className = 'menu-btn'; 
+                        btn.style.marginBottom = '0';
+                        btn.innerHTML = `
+                            <div class="btn-content">
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title">${qItem.q} Units</span>
+                                    <span class="btn-desc" style="color:var(--success); font-weight:700;">$${price.toFixed(2)}</span>
+                                </div>
+                            </div>
+                        `;
+                        btn.onclick = () => openOrderModal(`${title} (${t.name})`, price, svcType, qItem.q, t.speed);
+                        grid.appendChild(btn);
+                    });
+                    
+                    const btnCustom = document.createElement('button'); 
+                    btnCustom.className = 'menu-btn'; 
+                    btnCustom.style.marginBottom = '0'; 
+                    btnCustom.style.gridColumn = '1 / -1'; 
+                    btnCustom.innerHTML = `
+                        <div class="btn-content">
+                            <div class="btn-text-wrapper">
+                                <span class="btn-title">✍️ Custom Quantity</span>
+                                <span class="btn-desc">Enter your own amount</span>
+                            </div>
+                        </div>
+                    `;
+                    btnCustom.onclick = () => openOrderModalCustom(`${title} (${t.name})`, svcType, t.speed, t.base);
+                    
+                    grid.appendChild(btnCustom);
+                    block.appendChild(grid); 
+                    detailContent.appendChild(block);
+                });
+            } else {
+                const basePrice = p.reg; 
+                
                 const block = document.createElement('div');
                 block.style.marginBottom = '20px';
                 
                 const hdr = document.createElement('div');
                 hdr.className = 'menu-category'; 
-                hdr.innerHTML = `${t.icon} ${t.name} ($${t.base.toFixed(2)}/u)`; 
+                hdr.innerHTML = `⭐ STANDARD PACKAGE ($${basePrice.toFixed(2)}/u)`; 
                 block.appendChild(hdr);
+
+                const infoBox = document.createElement('div');
+                infoBox.style.background = 'rgba(245, 158, 11, 0.1)';
+                infoBox.style.border = '1px solid rgba(245, 158, 11, 0.3)';
+                infoBox.style.padding = '12px';
+                infoBox.style.borderRadius = '12px';
+                infoBox.style.marginBottom = '15px';
+                infoBox.style.color = '#f59e0b';
+                infoBox.style.fontSize = '0.8rem';
+                infoBox.style.fontWeight = '600';
+                infoBox.innerHTML = '⏳ <b>ESTIMATED DELIVERY:</b> Maximum 72 Hours processing time.';
+                block.appendChild(infoBox);
 
                 const grid = document.createElement('div'); 
                 grid.className = 'home-menu-grid';
@@ -1580,7 +1870,7 @@
                 ];
 
                 qtys.forEach(qItem => {
-                    const price = qItem.q * (t.base * qItem.mult);
+                    const price = qItem.q * (basePrice * qItem.mult);
                     const btn = document.createElement('button'); 
                     btn.className = 'menu-btn'; 
                     btn.style.marginBottom = '0';
@@ -1592,7 +1882,7 @@
                             </div>
                         </div>
                     `;
-                    btn.onclick = () => openOrderModal(`${title} (${t.name})`, price, svcType, qItem.q, t.speed);
+                    btn.onclick = () => openOrderModal(`${title} (Standard)`, price, svcType, qItem.q, "standard");
                     grid.appendChild(btn);
                 });
                 
@@ -1608,12 +1898,12 @@
                         </div>
                     </div>
                 `;
-                btnCustom.onclick = () => openOrderModalCustom(`${title} (${t.name})`, svcType, t.speed, t.base);
+                btnCustom.onclick = () => openOrderModalCustom(`${title} (Standard)`, svcType, "standard", basePrice);
                 
                 grid.appendChild(btnCustom);
                 block.appendChild(grid); 
                 detailContent.appendChild(block);
-            });
+            }
 
             slider.style.transform = 'translateX(-60%)'; 
             triggerHaptic('medium');
