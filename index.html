@@ -992,6 +992,11 @@
 
     <div class="app-frame">
         
+        <div class="fomo-ticker" id="fomoTicker">
+            <div class="fomo-icon" id="fomoIcon">🎉</div>
+            <div class="fomo-text" id="fomoText">User <span>@abi***</span> just ordered!<br>GitHub 2014 Account</div>
+        </div>
+
         <div class="cart-fab" onclick="openCartModal()">
             🛒<div class="cart-badge" id="cartBadge">0</div>
         </div>
@@ -1192,10 +1197,21 @@
                         <div class="header-spacer"></div> 
                     </div>
                     
-                    <!-- ADVANCED ANALYTICS CHART -->
-                    <div class="menu-category" style="color: #8b5cf6;">REVENUE ANALYTICS (7 DAYS)</div>
-                    <div style="background: var(--panel-bg); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 25px; box-shadow: var(--glow-shadow);">
-                        <canvas id="revenueChart" width="400" height="200"></canvas>
+                    <!-- ENTERPRISE ANALYTICS CHART -->
+                    <div class="menu-category" style="color: #8b5cf6;">ALL-TIME METRICS (SINCE RELEASE)</div>
+                    <div style="background: var(--panel-bg); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: var(--glow-shadow);">
+                        <canvas id="revenueChart" width="400" height="260"></canvas>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 25px;">
+                        <div style="flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 12px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; letter-spacing: 1px;">TOTAL REVENUE</div>
+                            <div style="font-size: 1.2rem; color: var(--success); font-family: 'JetBrains Mono'; font-weight: 800;">$4,250.00</div>
+                        </div>
+                        <div style="flex: 1; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); padding: 12px; border-radius: 12px; text-align: center;">
+                            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; letter-spacing: 1px;">TOTAL ASSETS SOLD</div>
+                            <div style="font-size: 1.2rem; color: #a78bfa; font-family: 'JetBrains Mono'; font-weight: 800;">1,420 Unit</div>
+                        </div>
                     </div>
 
                     <div class="menu-category" style="color: var(--danger);">WARNING: RESTRICTED COMMANDS</div>
@@ -1216,6 +1232,9 @@
                 <input type="text" id="orderTarget" placeholder="Enter target here">
             </div>
             
+            <!-- WADAH LIVE API PREVIEW -->
+            <div id="targetPreview" class="preview-box" style="display:none;"></div>
+
             <div class="input-group" style="display:none;" id="qtyGroup">
                 <label>Custom Quantity</label>
                 <input type="number" id="orderQty" value="100" oninput="calcTotal()">
@@ -1372,15 +1391,61 @@
         tg.ready();
 
         const urlParams = new URLSearchParams(window.location.search);
-        const userBalance = urlParams.get('bal');
+        const rawBalance = urlParams.get('bal');
+        const userBalance = rawBalance !== null ? parseFloat(rawBalance) : 0.00;
         const urlUid = urlParams.get('uid');
         const urlUname = urlParams.get('uname');
 
-        if (userBalance !== null) { 
-            document.getElementById('counter').innerText = parseFloat(userBalance).toFixed(2); 
-        } else { 
-            document.getElementById('counter').innerText = "0.00"; 
+        document.getElementById('counter').innerText = userBalance.toFixed(2); 
+
+        // --- FEATURE 3: GAMIFICATION TIER SYSTEM ---
+        window.userDiscount = 0.00;
+        let tierName = 'STANDARD MEMBER';
+        let cardBg = 'var(--grad-master)';
+        let chipBg = 'linear-gradient(135deg, #fcd34d 0%, #d97706 100%)';
+        
+        if (userBalance >= 1000) {
+            tierName = 'ELITE MEMBER'; window.userDiscount = 0.20; 
+            cardBg = 'linear-gradient(135deg, #111 0%, #333 50%, #fcd34d 100%)';
+            chipBg = 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)';
+        } else if (userBalance >= 500) {
+            tierName = 'GOLD MEMBER'; window.userDiscount = 0.15; 
+            cardBg = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
+            chipBg = 'linear-gradient(135deg, #fff 0%, #e2e8f0 100%)';
+        } else if (userBalance >= 250) {
+            tierName = 'SILVER MEMBER'; window.userDiscount = 0.10; 
+            cardBg = 'linear-gradient(135deg, #64748b 0%, #334155 100%)';
+            chipBg = 'linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%)';
+        } else if (userBalance >= 100) {
+            tierName = 'BRONZE MEMBER'; window.userDiscount = 0.05; 
+            cardBg = 'linear-gradient(135deg, #b45309 0%, #78350f 100%)';
+            chipBg = 'linear-gradient(135deg, #fcd34d 0%, #d97706 100%)';
         }
+
+        document.querySelector('.card-type').innerText = tierName + (window.userDiscount > 0 ? ` (-${window.userDiscount * 100}%)` : '');
+        document.getElementById('digitalCard').style.background = cardBg;
+        document.querySelector('.chip').style.background = chipBg;
+
+        // --- FEATURE 1: FOMO TICKER ---
+        const fomoNames = ['@abi***', '@dan***', '@sky***', 'XB-9***', '@nex***', 'XB-1***', '@mar***', '@xian***'];
+        const fomoActions = [
+            {i: '🎉', t: 'just purchased<br><span>GitHub 2014 Account</span>'},
+            {i: '🔥', t: 'just topped up<br><span>$50.00 USDT</span>'},
+            {i: '🚀', t: 'just ordered<br><span>2000 IG Followers</span>'},
+            {i: '💎', t: 'just upgraded to<br><span>GOLD MEMBER</span>'},
+            {i: '✅', t: 'just checked out<br><span>Arctic Vault Account</span>'},
+            {i: '👑', t: 'just subscribed to<br><span>ChatGPT Plus</span>'}
+        ];
+        setInterval(() => {
+            if(document.visibilityState !== 'visible') return;
+            const t = document.getElementById('fomoTicker');
+            const n = fomoNames[Math.floor(Math.random() * fomoNames.length)];
+            const a = fomoActions[Math.floor(Math.random() * fomoActions.length)];
+            document.getElementById('fomoIcon').innerHTML = a.i;
+            document.getElementById('fomoText').innerHTML = `User <span>${n}</span> ${a.t}`;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 4000);
+        }, 15000); // Trigger every 15 seconds
 
         if (urlUname) {
             let display = urlUname.includes(" ") ? urlUname : "@" + urlUname; 
@@ -2067,12 +2132,19 @@
                 document.getElementById('orderTarget').placeholder = 'e.g. owner/repo'; 
             }
             
-            currentPrice = price; 
+            let discountedPrice = price * (1 - window.userDiscount);
+            currentPrice = discountedPrice; 
             currentItem = title; 
             currentSvcType = type; 
             currentQty = qty; 
             currentSpeed = speed;
-            document.getElementById('orderTotal').innerText = '$' + price.toFixed(2);
+            
+            if (window.userDiscount > 0) {
+                document.getElementById('orderTotal').innerHTML = `<span style="text-decoration: line-through; font-size:0.8rem; color:#ef4444; margin-right:5px;">$${price.toFixed(2)}</span> $${discountedPrice.toFixed(2)}`;
+            } else {
+                document.getElementById('orderTotal').innerText = '$' + discountedPrice.toFixed(2);
+            }
+            document.getElementById('targetPreview').style.display = 'none'; // Reset preview
             document.getElementById('orderModal').classList.add('active');
         }
 
@@ -2112,8 +2184,15 @@
             else if (q >= 300) mult = 0.90; 
             else if (q >= 200) mult = 0.95;
             
-            currentPrice = q * (currentBasePrice * mult);
-            document.getElementById('orderTotal').innerText = '$' + currentPrice.toFixed(2);
+            let baseCalculated = q * (currentBasePrice * mult);
+            let discountedPrice = baseCalculated * (1 - window.userDiscount);
+            currentPrice = discountedPrice;
+            
+            if (window.userDiscount > 0) {
+                document.getElementById('orderTotal').innerHTML = `<span style="text-decoration: line-through; font-size:0.8rem; color:#ef4444; margin-right:5px;">$${baseCalculated.toFixed(2)}</span> $${discountedPrice.toFixed(2)}`;
+            } else {
+                document.getElementById('orderTotal').innerText = '$' + discountedPrice.toFixed(2);
+            }
         }
 
         function submitOrder() {
@@ -2344,35 +2423,86 @@
                 return; 
             }
 
-            // Render Chart.js Analytics
+            // Render Complex Enterprise Chart.js Analytics
             const ctxChart = document.getElementById('revenueChart');
             if(ctxChart) {
                 if(adminChartInstance) adminChartInstance.destroy();
                 adminChartInstance = new Chart(ctxChart, {
-                    type: 'line',
+                    type: 'bar', // Mixed chart base
                     data: {
-                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-                        datasets: [{
-                            label: 'Gross Revenue (USDT)',
-                            data: [45.5, 110.0, 85.5, 205.0, 150.0, 320.0, 290.5], // Dummy data visual
-                            borderColor: '#8b5cf6',
-                            backgroundColor: 'rgba(139, 92, 246, 0.2)',
-                            borderWidth: 3,
-                            tension: 0.4,
-                            fill: true,
-                            pointBackgroundColor: '#ff0055',
-                            pointBorderColor: '#fff',
-                            pointRadius: 5
-                        }]
+                        labels: ['Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'May 26'],
+                        datasets: [
+                            {
+                                type: 'line',
+                                label: 'Revenue (USDT)',
+                                data: [120, 250, 410, 580, 850, 1050, 1420],
+                                borderColor: '#10b981',
+                                backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                                borderWidth: 3,
+                                tension: 0.4,
+                                fill: true,
+                                yAxisID: 'y',
+                                pointBackgroundColor: '#10b981',
+                                pointBorderColor: '#fff',
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            },
+                            {
+                                type: 'bar',
+                                label: 'Accounts Sold',
+                                data: [15, 30, 45, 60, 95, 120, 150],
+                                backgroundColor: 'rgba(139, 92, 246, 0.8)',
+                                borderRadius: 4,
+                                yAxisID: 'y1'
+                            },
+                            {
+                                type: 'bar',
+                                label: 'SMM (x100)',
+                                data: [10, 15, 25, 40, 70, 90, 110],
+                                backgroundColor: 'rgba(248, 80, 50, 0.8)',
+                                borderRadius: 4,
+                                yAxisID: 'y1'
+                            }
+                        ]
                     },
                     options: {
                         responsive: true,
+                        interaction: { mode: 'index', intersect: false },
                         plugins: {
-                            legend: { labels: { color: '#fff', font: { family: 'Plus Jakarta Sans', weight: 'bold' } } }
+                            legend: { 
+                                position: 'bottom',
+                                labels: { color: '#fff', font: { family: 'Plus Jakarta Sans', size: 10, weight: 'bold' } } 
+                            },
+                            tooltip: {
+                                backgroundColor: 'rgba(20, 15, 35, 0.95)',
+                                titleFont: { size: 13, family: 'Plus Jakarta Sans' },
+                                bodyFont: { size: 12, family: 'JetBrains Mono' },
+                                padding: 12,
+                                cornerRadius: 8,
+                                displayColors: true,
+                                borderColor: '#8b5cf6',
+                                borderWidth: 1
+                            }
                         },
                         scales: {
-                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' }, beginAtZero: true },
-                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+                            x: { 
+                                grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false }, 
+                                ticks: { color: '#94a3b8', font: { size: 10, weight: 'bold' } } 
+                            },
+                            y: { 
+                                type: 'linear', display: true, position: 'left',
+                                title: { display: true, text: 'USDT', color: '#10b981', font: {size: 10, weight: 'bold'} },
+                                grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false }, 
+                                ticks: { color: '#10b981', font: {family: 'JetBrains Mono'} },
+                                beginAtZero: true
+                            },
+                            y1: {
+                                type: 'linear', display: true, position: 'right',
+                                title: { display: true, text: 'Volume', color: '#a78bfa', font: {size: 10, weight: 'bold'} },
+                                grid: { drawOnChartArea: false }, 
+                                ticks: { color: '#a78bfa', font: {family: 'JetBrains Mono'} },
+                                beginAtZero: true
+                            }
                         }
                     }
                 });
@@ -2545,6 +2675,54 @@
                 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred(style); 
             } catch(e) {} 
         }
+
+        // --- FEATURE 2: LIVE GITHUB TARGET PREVIEW ---
+        let previewTimeout;
+        document.getElementById('orderTarget').addEventListener('input', function(e) {
+            clearTimeout(previewTimeout);
+            const val = e.target.value.trim();
+            const previewBox = document.getElementById('targetPreview');
+            if(!val || val.length < 3) {
+                previewBox.style.display = 'none';
+                return;
+            }
+            
+            // Only trigger preview for GitHub related services
+            if(!['followers', 'stars', 'forks', 'watch'].includes(currentSvcType)) return;
+
+            previewTimeout = setTimeout(() => {
+                let target = val.replace('https://github.com/', '').replace('@', '').split('?')[0].split('#')[0].replace(/\/$/, '');
+                if(!target) return;
+                
+                let isRepo = target.includes('/');
+                let apiUrl = isRepo ? `https://api.github.com/repos/${target}` : `https://api.github.com/users/${target}`;
+                
+                previewBox.style.display = 'flex';
+                previewBox.innerHTML = `<div style="font-size:0.8rem; color:#8b5cf6;"><i>Fetching live data...</i></div>`;
+                
+                fetch(apiUrl)
+                    .then(r => {
+                        if(!r.ok) throw new Error('Not found');
+                        return r.json();
+                    })
+                    .then(data => {
+                        let avatar = isRepo ? data.owner.avatar_url : data.avatar_url;
+                        let name = isRepo ? data.full_name : (data.name || data.login);
+                        let metric = isRepo ? `${data.stargazers_count} Stars • ${data.forks_count} Forks` : `${data.followers} Followers`;
+                        
+                        previewBox.innerHTML = `
+                            <img src="${avatar}" class="preview-img" onerror="this.src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'">
+                            <div class="preview-info">
+                                <span class="preview-name">${name}</span>
+                                <span class="preview-stats">${metric}</span>
+                            </div>
+                        `;
+                    })
+                    .catch(() => {
+                        previewBox.innerHTML = `<div style="font-size:0.8rem; color:#ef4444;"><i>Target not found or Private.</i></div>`;
+                    });
+            }, 800); // 800ms debounce
+        });
 
     </script>
 </body>
