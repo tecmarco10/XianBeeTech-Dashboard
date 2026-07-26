@@ -1882,7 +1882,8 @@
                                 </div>
                             </div>
                         `;
-                        btn.onclick = () => openOrderModal(`${title} (${t.name})`, price, svcType, qItem.q, t.speed);
+                        // Perbaikan pengiriman data title & speed ke modal
+                        btn.onclick = () => openOrderModal(`${title} | ${t.name}`, price, svcType, qItem.q, t.speed);
                         grid.appendChild(btn);
                     });
                     
@@ -2001,9 +2002,9 @@
             
             try { 
                 tg.sendData(JSON.stringify(payload)); 
-                // tg.close();   // ← Baris ini kita matiin dulu biar nggak langsung tutup
             } catch(e) { 
-                console.log("Payload:", payload); 
+                console.log("Error sending data to bot:", e); 
+                console.log("Payload intended:", payload);
             }
         }
 
@@ -2160,7 +2161,7 @@
         function addToCart(itemId, title, price, yearStr) {
             triggerHaptic('medium'); 
             const expireAt = Date.now() + (3 * 60 * 1000); 
-            let finalItemId = `akun_${yearStr.toLowerCase()}`;
+            let finalItemId = `akun_${yearStr ? yearStr.toLowerCase() : 'unknown'}`;
             
             cart.push({ 
                 id: itemId, 
