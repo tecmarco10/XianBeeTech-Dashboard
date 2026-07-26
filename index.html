@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>XianBee-Tech Enterprise</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
@@ -1191,6 +1192,12 @@
                         <div class="header-spacer"></div> 
                     </div>
                     
+                    <!-- ADVANCED ANALYTICS CHART -->
+                    <div class="menu-category" style="color: #8b5cf6;">REVENUE ANALYTICS (7 DAYS)</div>
+                    <div style="background: var(--panel-bg); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 25px; box-shadow: var(--glow-shadow);">
+                        <canvas id="revenueChart" width="400" height="200"></canvas>
+                    </div>
+
                     <div class="menu-category" style="color: var(--danger);">WARNING: RESTRICTED COMMANDS</div>
                     <div id="admin-content"></div>
                 </div>
@@ -2328,12 +2335,47 @@
             { icon: '📋', title: 'List Engines', cmd: 'admin_list_engines', type: 'action' }
         ];
 
+        let adminChartInstance = null;
         function openAdminPanel() {
             let userId = urlUid;
             
             if (!userId || !ADMIN_IDS.includes(userId)) { 
                 showGlitchAlert(); 
                 return; 
+            }
+
+            // Render Chart.js Analytics
+            const ctxChart = document.getElementById('revenueChart');
+            if(ctxChart) {
+                if(adminChartInstance) adminChartInstance.destroy();
+                adminChartInstance = new Chart(ctxChart, {
+                    type: 'line',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Gross Revenue (USDT)',
+                            data: [45.5, 110.0, 85.5, 205.0, 150.0, 320.0, 290.5], // Dummy data visual
+                            borderColor: '#8b5cf6',
+                            backgroundColor: 'rgba(139, 92, 246, 0.2)',
+                            borderWidth: 3,
+                            tension: 0.4,
+                            fill: true,
+                            pointBackgroundColor: '#ff0055',
+                            pointBorderColor: '#fff',
+                            pointRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { labels: { color: '#fff', font: { family: 'Plus Jakarta Sans', weight: 'bold' } } }
+                        },
+                        scales: {
+                            y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' }, beginAtZero: true },
+                            x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
+                        }
+                    }
+                });
             }
             
             const adminContent = document.getElementById('admin-content'); 
