@@ -232,11 +232,6 @@
     </div>
 
     <div class="app-frame">
-        
-        <div class="fomo-ticker" id="fomoTicker">
-            <div class="fomo-icon" id="fomoIcon">🎉</div>
-            <div class="fomo-text" id="fomoText">User <span>@abi***</span> just ordered!<br>GitHub 2014 Account</div>
-        </div>
 
         <div class="cart-fab" onclick="openCartModal()">
             🛒<div class="cart-badge" id="cartBadge">0</div>
@@ -695,25 +690,41 @@
         function renderMainMenu() {
             const container = document.getElementById('dynamic-main-menu');
             container.innerHTML = '';
-            mainMenu.forEach(m => {
-                const btn = document.createElement('button');
-                btn.className = 'btn-master';
-                btn.style.marginBottom = '25px';
-                if(m.id !== 'github_main') {
-                    btn.style.background = 'var(--panel-bg)';
-                    btn.style.border = '1px solid var(--border)';
-                    btn.style.color = 'var(--text-main)';
-                    btn.style.boxShadow = 'none';
-                }
-                btn.innerHTML = `
+            
+            // 1. Menu Utama (Highlight Khusus GitHub)
+            const m1 = mainMenu.find(m => m.id === 'github_main');
+            if (m1) {
+                const btn1 = document.createElement('button');
+                btn1.className = 'btn-master';
+                btn1.style.marginBottom = '20px';
+                btn1.innerHTML = `
                     <div class="btn-content">
-                        <div class="btn-icon" style="${m.id !== 'github_main' ? 'background:var(--grad-master); color:#fff;' : ''}">${m.icon}</div>
+                        <div class="btn-icon">${m1.icon}</div>
                         <div class="btn-text-wrapper">
-                            <span class="btn-title">${t(m.title)}</span>
-                            <span class="btn-desc" style="${m.id === 'github_main' ? 'color:rgba(255,255,255,0.9);' : ''}">${t(m.desc)}</span>
+                            <span class="btn-title" style="color:#fff;">${t(m1.title)}</span>
+                            <span class="btn-desc" style="color:rgba(255,255,255,0.9);">${t(m1.desc)}</span>
                         </div>
                     </div>
-                    <span class="arrow-icon" style="${m.id === 'github_main' ? 'color:#fff;' : ''}">▶</span>
+                    <span class="arrow-icon" style="color:#fff;">▶</span>
+                `;
+                btn1.onclick = () => openSubMenu(t(m1.title), m1.id);
+                container.appendChild(btn1);
+            }
+            
+            // 2. Sub-Menu Lainnya (Disusun Rapi Ke Bawah)
+            mainMenu.filter(m => m.id !== 'github_main').forEach(m => {
+                const btn = document.createElement('button');
+                btn.className = 'menu-btn';
+                btn.style.marginBottom = '12px';
+                btn.innerHTML = `
+                    <div class="btn-content">
+                        <div class="btn-icon">${m.icon}</div>
+                        <div class="btn-text-wrapper">
+                            <span class="btn-title" style="color:var(--text-main);">${t(m.title)}</span>
+                            <span class="btn-desc" style="color:var(--text-muted);">${t(m.desc)}</span>
+                        </div>
+                    </div>
+                    <span class="arrow-icon">▶</span>
                 `;
                 btn.onclick = () => openSubMenu(t(m.title), m.id);
                 container.appendChild(btn);
@@ -756,27 +767,6 @@
         document.querySelector('.card-type').innerText = tierName + (window.userDiscount > 0 ? ` (-${window.userDiscount * 100}%)` : '');
         document.getElementById('digitalCard').style.background = cardBg;
         document.querySelector('.chip').style.background = chipBg;
-
-        // --- FEATURE 1: FOMO TICKER ---
-        const fomoNames = ['@abi***', '@dan***', '@sky***', 'XB-9***', '@nex***', 'XB-1***', '@mar***', '@xian***'];
-        const fomoActions = [
-            {i: '🎉', t: 'just purchased<br><span>GitHub 2014 Account</span>'},
-            {i: '🔥', t: 'just topped up<br><span>$50.00 USDT</span>'},
-            {i: '🚀', t: 'just ordered<br><span>2000 IG Followers</span>'},
-            {i: '💎', t: 'just upgraded to<br><span>GOLD MEMBER</span>'},
-            {i: '✅', t: 'just checked out<br><span>Arctic Vault Account</span>'},
-            {i: '👑', t: 'just subscribed to<br><span>ChatGPT Plus</span>'}
-        ];
-        setInterval(() => {
-            if(document.visibilityState !== 'visible') return;
-            const t = document.getElementById('fomoTicker');
-            const n = fomoNames[Math.floor(Math.random() * fomoNames.length)];
-            const a = fomoActions[Math.floor(Math.random() * fomoActions.length)];
-            document.getElementById('fomoIcon').innerHTML = a.i;
-            document.getElementById('fomoText').innerHTML = `User <span>${n}</span> ${a.t}`;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 4000);
-        }, 15000); 
 
         if (urlUname) {
             let display = urlUname.includes(" ") ? urlUname : "@" + urlUname; 
@@ -1524,10 +1514,31 @@
                 });
             }
             
-            const adminContent = document.getElementById('admin-content'); adminContent.innerHTML = '';
+            const adminContent = document.getElementById('admin-content'); 
+            adminContent.innerHTML = '';
+            
+            // 🛡️ UPDATE: Layout Grid Responsif (Otomatis muat 2 atau 3 tergantung lebar layar)
+            adminContent.style.display = 'grid';
+            adminContent.style.gridTemplateColumns = 'repeat(auto-fit, minmax(130px, 1fr))';
+            adminContent.style.gap = '12px';
+
             adminTools.forEach(tool => {
-                const btn = document.createElement('button'); btn.className = 'menu-btn'; btn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                btn.innerHTML = `<div class="btn-content"><div class="btn-icon" style="background:var(--panel-bg); border:1px solid rgba(255,255,255,0.2);">${tool.icon}</div><div class="btn-text-wrapper"><span class="btn-title">${tool.title}</span><span class="btn-desc" style="font-family:monospace;">${tool.cmd}</span></div></div>`;
+                const btn = document.createElement('button'); 
+                btn.className = 'menu-btn'; 
+                btn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+                btn.style.margin = '0'; // Timpa margin bawaan
+                btn.style.padding = '15px 10px';
+                btn.style.height = '100%'; // Biar tinggi semua kotak rata
+                
+                btn.innerHTML = `
+                    <div class="btn-content" style="flex-direction: column; width: 100%; text-align: center; gap: 8px;">
+                        <div class="btn-icon" style="background:var(--panel-bg); border:1px solid rgba(255,255,255,0.2); margin: 0 auto;">${tool.icon}</div>
+                        <div class="btn-text-wrapper" style="align-items: center; width: 100%;">
+                            <span class="btn-title" style="font-size: 0.85rem; line-height: 1.2; text-wrap: wrap;">${tool.title}</span>
+                            <span class="btn-desc" style="font-family:monospace; font-size: 0.65rem; margin-top: 4px; word-break: break-all;">${tool.cmd}</span>
+                        </div>
+                    </div>
+                `;
                 btn.onclick = () => handleAdminAction(tool);
                 adminContent.appendChild(btn);
             });
