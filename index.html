@@ -387,7 +387,7 @@
                             </div>
                         </button>
 
-                        <button class="menu-btn" style="margin-bottom:0;" onclick="showOfflineModal('Crypto Center')">
+                        <button class="menu-btn" style="margin-bottom:0;" onclick="openSubMenu('Crypto Center', 'crypto_center')">
                             <div class="btn-content" style="gap:10px;">
                                 <div class="btn-icon" style="font-size:1.1rem; width:36px; height:36px; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">🏦</div>
                                 <div class="btn-text-wrapper">
@@ -397,7 +397,7 @@
                             </div>
                         </button>
 
-                        <button class="menu-btn" style="margin-bottom:0;" onclick="showOfflineModal('Bills & Top-Up')">
+                        <button class="menu-btn" style="margin-bottom:0;" onclick="openSubMenu('Bills & Top-Up', 'ppob_center')">
                             <div class="btn-content" style="gap:10px;">
                                 <div class="btn-icon" style="font-size:1.1rem; width:36px; height:36px; background:linear-gradient(135deg, #10b981 0%, #059669 100%);">⚡</div>
                                 <div class="btn-text-wrapper">
@@ -407,7 +407,7 @@
                             </div>
                         </button>
 
-                        <button class="menu-btn" style="margin-bottom:0;" onclick="showOfflineModal('Flash Sale')">
+                        <button class="menu-btn" style="margin-bottom:0;" onclick="sendActionToBot('VIEW_FLASH_SALE')">
                             <div class="btn-content" style="gap:10px;">
                                 <div class="btn-icon" style="font-size:1.1rem; width:36px; height:36px; background:linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">🔥</div>
                                 <div class="btn-text-wrapper">
@@ -864,6 +864,17 @@
         const subContent = document.getElementById('sub-menu-content');
         
         const dbMenu = {
+            'crypto_center': { items: [
+                { icon: '⛽', title: 'Crypto Gas Station', desc: 'Deploy & Network Gas Refill', type: 'bot_action', action: 'CRYPTO_GAS', target: 'gas_station' },
+                { icon: '🔄', title: 'P2P USDT Convert', desc: 'Convert USDT to ETH, SOL, BNB', type: 'bot_action', action: 'CONVERT_CRYPTO', target: 'convert' },
+                { icon: '📜', title: 'Wallet History / Mutasi', desc: 'Check transaction statements', type: 'bot_action', action: 'WALLET_HISTORY', target: 'history' }
+            ]},
+            'ppob_center': { items: [
+                { icon: '⚡', title: 'PLN Electricity & Token', desc: 'Prepaid & Postpaid Bills', type: 'bot_action', action: 'PPOB_ORDER', target: 'pln' },
+                { icon: '📱', title: 'Pulsa & Data Packages', desc: 'Telkomsel, Indosat, XL, etc.', type: 'bot_action', action: 'PPOB_ORDER', target: 'pulsa' },
+                { icon: '🎮', title: 'Game Top-Up (UID)', desc: 'Mobile Legends, Free Fire, etc.', type: 'bot_action', action: 'PPOB_ORDER', target: 'game' },
+                { icon: '💳', title: 'E-Wallet Balance', desc: 'DANA, OVO, Gopay, ShopeePay', type: 'bot_action', action: 'PPOB_ORDER', target: 'ewallet' }
+            ]},
             'github_main': { items: [
                 { icon: '🛒', title: 'Buy GitHub Accounts', desc: 'Arctic, Badges, Aged', type: 'nav', target: 'assets' },
                 { icon: '🚀', title: 'GitHub Cloud Services', desc: 'Followers, Forks, Stars', type: 'nav', target: 'services' }
@@ -1102,6 +1113,8 @@
             const backBtn = document.getElementById('subBackBtn');
             if(category === 'assets' || category === 'services') { 
                 backBtn.onclick = () => openSubMenu(t('GitHub Enterprise Hub'), 'github_main'); 
+            } else if (category === 'crypto_center' || category === 'ppob_center') {
+                backBtn.onclick = () => goToHome();
             } else if (category.startsWith('acc_')) {
                 backBtn.onclick = () => openSubMenu(t('Digital Asset Accounts'), 'socmed_acc');
             } else if (category.startsWith('dm_')) {
