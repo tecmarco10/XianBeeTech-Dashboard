@@ -1,1638 +1,297 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>XianBee-Tech Enterprise</title>
+    <!-- Tailwind CSS untuk Styling Cepat & Modern -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome untuk Ikon Profesional -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Telegram WebApp API -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        xbDark: '#0f111a',
+                        xbCard: 'rgba(30, 41, 59, 0.7)',
+                        xbPrimary: '#6366f1',
+                        xbAccent: '#8b5cf6'
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
-
-        /* 🌌 MASTER VARIABLES (DUAL-TONE SYSTEM) */
-        :root {
-            --bg-base: #07050f;
-            --panel-bg: rgba(20, 15, 35, 0.85);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --border: rgba(139, 92, 246, 0.3);
-            --modal-bg: #130f24;
-            --grad-master: linear-gradient(135deg, #0072ff 0%, #8b5cf6 50%, #f85032 100%);
-            --grad-hover: linear-gradient(135deg, #009dff 0%, #a78bfa 50%, #ff6b55 100%);
-            --grad-admin: linear-gradient(135deg, #ff0055 0%, #ff1493 50%, #9400d3 100%);
-            --glow-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #0f111a; color: #fff; }
+        .glass-card {
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 1rem;
         }
-
-        [data-theme="light"] {
-            --bg-base: #f4f6f9;
-            --panel-bg: rgba(255, 255, 255, 0.85);
-            --text-main: #1e293b;
-            --text-muted: #64748b;
-            --border: rgba(14, 165, 233, 0.3);
-            --modal-bg: #ffffff;
-            --grad-master: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
-            --grad-hover: linear-gradient(135deg, #38bdf8 0%, #34d399 100%);
-            --grad-admin: linear-gradient(135deg, #ef4444 0%, #f43f5e 50%, #d946ef 100%);
-            --glow-shadow: 0 8px 25px rgba(14, 165, 233, 0.25);
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            margin: 0; padding: 0;
-            background-color: var(--bg-base); 
-            color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; overflow: hidden;
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-
-        #canvas-bg { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            z-index: 0; opacity: 0.6; pointer-events: none; 
-        }
-
-        /* 🎛️ SMART TOGGLE CONTROLS */
-        .top-controls {
-            position: absolute; top: 20px; right: 20px;
-            display: flex; gap: 10px; z-index: 100;
-        }
-        .control-btn {
-            background: var(--panel-bg); border: 1px solid var(--border);
-            color: var(--text-main); border-radius: 12px;
-            width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;
-            font-weight: 800; cursor: pointer; backdrop-filter: blur(5px); transition: all 0.2s;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .control-btn:active { transform: scale(0.9); background: var(--grad-master); color: #fff; }
-
-        .app-frame {
-            width: 100%; max-width: 420px; height: 100vh; max-height: 850px;
-            background: var(--bg-base); border: 1px solid rgba(255,255,255,0.05);
-            position: relative; overflow: hidden; backdrop-filter: blur(10px);
-            box-shadow: 0 0 50px rgba(0, 0, 0, 0.3); display: flex; flex-direction: column; z-index: 1;
-            transition: background 0.4s ease;
-        }
-
-        @media (min-width: 450px) { 
-            .app-frame { height: 85vh; border-radius: 28px; border: 1px solid var(--border); } 
-        }
-
-        .slider-viewport { flex-grow: 1; position: relative; width: 100%; overflow: hidden; }
-        .slider-track { display: flex; width: 500%; height: 100%; transform: translateX(-20%); transition: transform 0.4s cubic-bezier(0.25, 1, 0.4, 1); }
-        .slide-page { width: 20%; height: 100%; padding: 25px 20px; box-sizing: border-box; display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; padding-bottom: 90px; }
-        ::-webkit-scrollbar { width: 0px; background: transparent; } 
-
-        .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 25px; width: 100%; gap: 10px; }
-        .header-title { font-weight: 800; font-size: 1.15rem; margin: 0; text-transform: uppercase; letter-spacing: 1px; text-align: center; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: var(--text-main); max-width: calc(100% - 100px); }
-        .btn-back { background: var(--panel-bg); border: 1px solid var(--border); color: var(--text-main); width: 40px; height: 40px; border-radius: 12px; display: flex; justify-content: center; align-items: center; cursor: pointer; transition: 0.2s; flex-shrink: 0; }
-        .btn-back:active { transform: scale(0.9); background: var(--grad-master); border-color: transparent; color: #fff; }
-        .header-spacer { width: 40px; height: 40px; flex-shrink: 0; }
-
-        .home-logo-container { text-align: center; margin-bottom: 25px; margin-top: 10px; position: relative; }
-        .home-logo-title { font-weight: 800; font-size: 2.2rem; color: var(--text-main); margin: 0; letter-spacing: -0.5px; }
-        .home-logo-sub { font-weight: 700; font-size: 0.8rem; color: #fff; letter-spacing: 2px; background: var(--grad-master); padding: 3px 12px; border-radius: 12px; display: inline-block; margin-top: 5px; box-shadow: var(--glow-shadow); }
-        
-        .menu-category { font-weight: 800; font-size: 0.8rem; color: var(--text-muted); margin: 20px 0 10px 5px; text-transform: uppercase; letter-spacing: 1.5px; display: flex; align-items: center; gap: 8px; }
-        .menu-category::before { content: ''; display: block; width: 6px; height: 6px; background: var(--border); border-radius: 50%; box-shadow: 0 0 8px var(--border); }
-        
-        .btn-master { width: 100%; padding: 16px; margin-bottom: 15px; background: var(--grad-master); border: none; border-radius: 16px; cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; align-items: center; justify-content: space-between; position: relative; box-shadow: var(--glow-shadow); color: #fff; }
-        .btn-master:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .btn-master .btn-icon { background: rgba(0,0,0,0.2); font-size: 1.5rem; width: 46px; height: 46px; border-radius: 12px; display: flex; justify-content: center; align-items: center; }
-        .btn-master .btn-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 2px; color: #fff; text-align: left; }
-        .btn-master .btn-desc { font-size: 0.8rem; color: rgba(255,255,255,0.9); font-weight: 600; text-align: left; }
-
-        .menu-btn { width: 100%; padding: 14px; margin-bottom: 12px; background: var(--panel-bg); border: 1px solid var(--border); border-radius: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between; color: var(--text-main); }
-        .menu-btn:active { transform: scale(0.97); border-color: var(--text-main); background: var(--border); }
-        .btn-content { display: flex; align-items: center; gap: 14px; text-align: left; }
-        .menu-btn .btn-icon { font-size: 1.4rem; width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; background: var(--grad-master); border-radius: 10px; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .btn-text-wrapper { display: flex; flex-direction: column; }
-        .btn-title { font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-bottom: 2px; }
-        .btn-desc { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
-        .arrow-icon { color: var(--text-muted); font-size: 1.2rem; font-weight: 800; }
-
-        .btn-offline { opacity: 0.6; filter: grayscale(1); }
-        .btn-offline:active { transform: scale(0.96); opacity: 1; filter: grayscale(0); }
-        .badge-status { font-size: 0.65rem; font-weight: 800; padding: 4px 10px; border-radius: 10px; }
-        .bg-sync { color: #fff; background: var(--grad-master); box-shadow: 0 0 10px rgba(0,0,0,0.2); border: none; }
-        .bg-off { color: var(--text-muted); background: rgba(255,255,255,0.1); border: none; }
-
-        .wallet-desktop-layout { display: flex; flex-direction: column; gap: 0; }
-        .wallet-desktop-left, .wallet-desktop-right { width: 100%; }
-        .card-wrapper { perspective: 1000px; margin-bottom: 25px; }
-        .digital-card { width: 100%; height: 215px; box-sizing: border-box; background: var(--grad-master); border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 20px; padding: 25px; position: relative; transform-style: preserve-3d; box-shadow: var(--glow-shadow); overflow: hidden; transition: transform 0.1s; }
-        .digital-card::before { content: ''; position: absolute; top: 0; left: -150%; width: 50%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent); transform: skewX(-20deg); animation: shine 5s infinite; pointer-events: none; }
-        @keyframes shine { 0%, 15% { left: -150%; } 25%, 100% { left: 200%; } }
-        .card-bg-shape { position: absolute; right: -20px; bottom: -40px; width: 160px; height: 160px; background: rgba(0,0,0,0.2); border-radius: 50%; filter: blur(20px); z-index: 1; }
-        .card-content { position: relative; z-index: 5; height: 100%; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-top { display: flex; justify-content: space-between; align-items: center; }
-        .chip { width: 40px; height: 30px; background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%); border-radius: 6px; position: relative; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.3); }
-        .chip::after { content: ''; position: absolute; width: 100%; height: 1px; background: rgba(0,0,0,0.3); top: 50%; }
-        .chip::before { content: ''; position: absolute; height: 100%; width: 1px; background: rgba(0,0,0,0.3); left: 50%; }
-        .card-type { font-weight: 800; font-size: 0.85rem; letter-spacing: 2px; color: #fff; text-shadow: 0 2px 4px rgba(0,0,0,0.3); }
-        .balance-label { font-size: 0.8rem; color: rgba(255,255,255,0.9); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
-        .balance-amount { font-family: 'JetBrains Mono', monospace; font-size: 2.6rem; font-weight: 800; text-shadow: 0 4px 10px rgba(0,0,0,0.3); color: #fff; }
-        .card-bottom { display: flex; justify-content: space-between; align-items: flex-end; }
-        .user-id { font-family: 'JetBrains Mono', monospace; font-size: 0.95rem; letter-spacing: 2px; color: #fff; font-weight: 600; }
-        .btn-refresh { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); padding: 6px 12px; border-radius: 8px; color: #fff; font-weight: bold; cursor: pointer; backdrop-filter: blur(5px); font-size: 0.75rem; transition: 0.2s; }
-        .btn-refresh:active { transform: scale(0.9); background: rgba(255,255,255,0.4); }
-
-        .topup-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
-        .topup-btn { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 16px; padding: 14px 5px; text-align: center; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; color: var(--text-main); }
-        .topup-btn:active { transform: scale(0.95); background: var(--border); border-color: var(--text-main); }
-        .topup-icon { width: 42px; height: 42px; border-radius: 12px; display: flex; justify-content: center; align-items: center; font-size: 1.4rem; background: var(--border); color: var(--text-main); }
-        .topup-text { font-size: 0.75rem; font-weight: 700; color: var(--text-main); }
-
-        .tools-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 25px; }
-        .tool-btn { background: var(--panel-bg); border: 1px solid var(--border); border-radius: 14px; padding: 12px; display: flex; align-items: center; gap: 10px; cursor: pointer; transition: 0.2s; color: var(--text-main); }
-        .tool-btn:active { transform: scale(0.95); background: var(--border); }
-        .tool-icon { font-size: 1.2rem; }
-        .tool-text { font-size: 0.8rem; font-weight: 700; text-align: left; }
-
-        #sub-menu-content, #service-detail-content, #admin-content { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
-
-        .cart-fab { position: absolute; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--grad-master); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.6rem; color: #fff; cursor: pointer; z-index: 100; box-shadow: var(--glow-shadow); transition: 0.3s; }
-        .cart-fab:active { transform: scale(0.9); }
-        .cart-badge { position: absolute; top: -2px; right: -2px; background: #fff; color: #000; font-size: 0.75rem; font-weight: 800; width: 24px; height: 24px; border-radius: 50%; display: flex; justify-content: center; align-items: center; border: 2px solid #000; opacity: 0; transition: 0.3s; }
-        .cart-badge.show { opacity: 1; transform: scale(1); }
-        .cart-item-row { background: var(--bg-base); border: 1px solid var(--border); padding: 14px; border-radius: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .cart-item-info h4 { margin: 0 0 6px 0; font-size: 0.9rem; color: var(--text-main); font-weight: 700; }
-        .cart-item-info p { margin: 0; font-size: 0.75rem; color: var(--text-muted); font-weight: 600; display: flex; align-items: center; gap: 5px; }
-        .cart-item-price { font-family: 'JetBrains Mono', monospace; font-size: 1.1rem; font-weight: bold; color: var(--success); }
-        .stock-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; padding-right: 5px; }
-        .stock-item { background: var(--panel-bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .stock-id { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-main); font-weight: bold; }
-        .btn-add-cart { background: var(--grad-master); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-family: 'Plus Jakarta Sans'; cursor: pointer; transition: 0.2s; }
-        .btn-add-cart:disabled { background: var(--bg-base); border: 1px solid var(--border); color: var(--text-muted); cursor: not-allowed; }
-
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
-        .modal-overlay.active { opacity: 1; pointer-events: auto; }
-        .modal-box { background: var(--modal-bg); border: 1px solid var(--border); border-radius: 24px; width: 90%; max-width: 360px; max-height: 80vh; overflow-y: auto; padding: 25px; transform: translateY(30px) scale(0.95); transition: 0.3s; box-shadow: var(--glow-shadow); position: relative; }
-        .modal-overlay.active .modal-box { transform: translateY(0) scale(1); }
-        
-        .modal-title { font-weight: 800; color: var(--text-main); font-size: 1.25rem; margin: 0 0 5px 0; text-align: center; }
-        .modal-desc { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 20px; font-weight: 500; line-height: 1.4; text-align: center; }
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 6px; font-weight: 700; text-transform: uppercase; }
-        .input-group input, .input-group textarea, .input-group select { width: 100%; background: var(--bg-base); border: 1px solid var(--border); color: var(--text-main); padding: 14px 16px; border-radius: 12px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 600; font-size: 0.95rem; outline: none; transition: 0.2s; box-sizing: border-box; }
-        .input-group textarea { resize: vertical; min-height: 100px; }
-        .input-group input:focus, .input-group textarea:focus, .input-group select:focus { box-shadow: 0 0 10px var(--border); }
-        
-        .price-display { background: var(--panel-bg); border: 1px solid var(--border); padding: 14px 16px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .price-label { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
-        .price-value { font-family: 'JetBrains Mono', monospace; font-size: 1.4rem; font-weight: 800; color: var(--success); }
-        
-        .modal-actions { display: flex; gap: 10px; }
-        .btn-modal { flex: 1; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: 0.2s; border: none; }
-        .btn-cancel { background: var(--bg-base); border: 1px solid var(--border); color: var(--text-main); }
-        .btn-cancel:active { background: var(--border); }
-        .btn-confirm { background: var(--grad-master); color: #fff; box-shadow: var(--glow-shadow); }
-        .btn-confirm:active { transform: scale(0.95); }
-
-        .toast-ui { position: fixed; top: 20px; left: 50%; transform: translateX(-50%) translateY(-100px); background: var(--text-main); color: var(--bg-base); padding: 14px 24px; border-radius: 30px; font-size: 0.9rem; font-weight: 800; display: flex; align-items: center; gap: 12px; box-shadow: 0 15px 30px rgba(0,0,0,0.3); z-index: 9999; opacity: 0; transition: 0.4s; }
-        .toast-ui.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-        .fomo-ticker { position: absolute; top: 20px; left: 20px; background: var(--panel-bg); border: 1px solid var(--border); padding: 10px 15px; border-radius: 16px; display: flex; align-items: center; gap: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.3); z-index: 100; backdrop-filter: blur(8px); transform: translateX(-150%); transition: 0.5s cubic-bezier(0.25, 1, 0.4, 1); max-width: 280px; }
-        .fomo-ticker.show { transform: translateX(0); }
-        .fomo-icon { font-size: 1.5rem; background: var(--grad-master); width: 36px; height: 36px; border-radius: 10px; display: flex; justify-content: center; align-items: center; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .fomo-text { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; line-height: 1.3; }
-        .fomo-text span { color: var(--text-main); font-weight: 800; }
-
-        @media (min-width: 768px) {
-            .app-frame { max-width: 850px; height: 85vh; border-radius: 28px; }
-            .wallet-desktop-layout { flex-direction: row; gap: 30px; align-items: stretch; }
-            .wallet-desktop-left { flex: 1; width: 50%; }
-            .wallet-desktop-right { flex: 1; width: 50%; display: flex; flex-direction: column; }
-            .topup-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-            .home-menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-            .btn-master, .menu-btn { margin-bottom: 0; } 
-            #sub-menu-content, #service-detail-content, #admin-content { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-            .home-logo-title { font-size: 3rem; }
-            .digital-card { height: 230px; }
-            .balance-amount { font-size: 3rem; }
-        }
-
+        .btn-hover { transition: all 0.2s ease-in-out; }
+        .btn-hover:active { transform: scale(0.95); }
+        /* Sembunyikan scrollbar tapi tetap bisa scroll */
+        ::-webkit-scrollbar { width: 0px; background: transparent; }
     </style>
 </head>
-<body>
-    
-    <div class="top-controls">
-        <button class="control-btn" onclick="toggleTheme()" id="themeBtn">☀️</button>
-        <button class="control-btn" onclick="toggleLang()" id="langBtn">ID</button>
-    </div>
+<body class="pb-24 overflow-x-hidden">
 
-    <canvas id="canvas-bg"></canvas>
-
-    <div class="toast-ui" id="sysToast">
-        <span style="font-size:1.2rem;">✅</span> <span id="toastMsg">Action Successful!</span>
-    </div>
-
-    <div class="app-frame">
-
-        <div class="cart-fab" onclick="openCartModal()">
-            🛒<div class="cart-badge" id="cartBadge">0</div>
-        </div>
-
-        <div class="slider-viewport">
-            <div class="slider-track" id="slider">
-                <!-- WALLET PAGE -->
-                <div class="slide-page" id="page-wallet">
-                    <div class="page-header">
-                        <button class="btn-back" onclick="goToHome()">
-                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                        </button>
-                        <h1 class="header-title" id="txt_my_wallet">MY WALLET</h1>
-                        <div class="header-spacer"></div> 
-                    </div>
-
-                    <div class="wallet-desktop-layout">
-                        <div class="wallet-desktop-left">
-                            <div class="card-wrapper" id="cardWrapper">
-                                <div class="digital-card" id="digitalCard">
-                                    <div class="card-bg-shape"></div>
-                                    <div class="card-content">
-                                        <div class="card-top">
-                                            <div class="chip"></div>
-                                            <div class="card-type">VIP MEMBER</div>
-                                        </div>
-                                        <div style="display: flex; justify-content: space-between; align-items: flex-end;">
-                                            <div>
-                                                <div class="balance-label" id="txt_balance">USDT Balance</div>
-                                                <div class="balance-amount">$<span id="counter">---</span></div>
-                                            </div>
-                                            <button class="btn-refresh" onclick="requestBalanceSync()" id="txt_refresh">
-                                                🔄 Refresh
-                                            </button>
-                                        </div>
-                                        <div class="card-bottom" style="margin-top: 15px;">
-                                            <div class="user-id" id="displayUserId">XB-USER</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="wallet-desktop-right">
-                            <div class="menu-category" style="margin-top:0;" id="txt_quick">QUICK ACTIONS</div>
-                            <div class="tools-grid">
-                                <button class="tool-btn" onclick="openCheckStatusModal()">
-                                    <span class="tool-icon">🔍</span>
-                                    <span class="tool-text" id="txt_scan">Check Account Status</span>
-                                </button>
-                                <button class="tool-btn" onclick="sendActionToBot('REFERRAL')">
-                                    <span class="tool-icon">🤝</span>
-                                    <span class="tool-text" id="txt_ref">Referral & Affiliate</span>
-                                </button>
-                                <button class="tool-btn" onclick="sendActionToBot('LEADERBOARD')">
-                                    <span class="tool-icon">🏆</span>
-                                    <span class="tool-text" id="txt_lead">Top 10 Rich List</span>
-                                </button>
-                                <button class="tool-btn" onclick="openPromoModal()">
-                                    <span class="tool-icon">🎟️</span>
-                                    <span class="tool-text" id="txt_promo">Redeem Promo</span>
-                                </button>
-                                <button class="tool-btn" onclick="sendActionToBot('FAQ')">
-                                    <span class="tool-icon">📜</span>
-                                    <span class="tool-text" id="txt_faq">FAQ & Terms</span>
-                                </button>
-                                <button class="tool-btn" onclick="sendActionToBot('SYS_STATUS')">
-                                    <span class="tool-icon">📈</span>
-                                    <span class="tool-text" id="txt_infra">Infra Status</span>
-                                </button>
-                            </div>
-
-                            <div class="menu-category" id="txt_deposit">DEPOSIT FUNDS</div>
-                            <div class="topup-grid">
-                                <div class="topup-btn" onclick="openTopupSelection(10)">
-                                    <div class="topup-icon">💵</div>
-                                    <div class="topup-text">$10 USDT</div>
-                                </div>
-                                <div class="topup-btn" onclick="openTopupSelection(25)">
-                                    <div class="topup-icon">💸</div>
-                                    <div class="topup-text">$25 USDT</div>
-                                </div>
-                                <div class="topup-btn" onclick="openTopupSelection(50)">
-                                    <div class="topup-icon">💰</div>
-                                    <div class="topup-text">$50 USDT</div>
-                                </div>
-                                <div class="topup-btn" onclick="openCustomTopup()">
-                                    <div class="topup-icon">✍️</div>
-                                    <div class="topup-text" id="txt_custom">Custom</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- MAIN PAGE -->
-                <div class="slide-page" id="page-main">
-                    <div class="home-logo-container">
-                        <h1 class="home-logo-title">XianBee-Tech</h1>
-                        <span class="home-logo-sub">ENTERPRISE</span>
-                    </div>
-
-                    <button class="btn-master" style="margin-bottom: 25px;" onclick="goToWallet()">
-                        <div class="btn-content">
-                            <div class="btn-icon">💳</div>
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title" id="txt_wallet_btn">My Wallet & Profile</span>
-                                <span class="btn-desc" id="txt_wallet_desc">Check Balance & Deposit</span>
-                            </div>
-                        </div>
-                        <span class="arrow-icon">◀</span>
-                    </button>
-
-                    <div class="menu-category" id="txt_avail">AVAILABLE SERVICES</div>
-                    <div id="dynamic-main-menu"></div>
-                    
-                    <div class="menu-category" style="margin-top: 20px;" id="txt_admin">SYSTEM ADMIN</div>
-                    <div class="home-menu-grid">
-                        <button class="menu-btn" style="border-color: rgba(239, 68, 68, 0.5);" onclick="openAdminPanel()">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="color: #fff; background: var(--danger);">⚡</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title" style="color: var(--danger);" id="txt_exec">Executive Dashboard</span>
-                                    <span class="btn-desc" id="txt_rest">Restricted Access</span>
-                                </div>
-                            </div>
-                            <span class="arrow-icon" style="color: var(--danger);">🔒</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- SUB PAGE -->
-                <div class="slide-page" id="page-sub">
-                    <div class="page-header">
-                        <button class="btn-back" id="subBackBtn" onclick="goToHome()">
-                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                        </button>
-                        <h1 class="header-title" id="sub-title">CHOOSE CATEGORY</h1>
-                        <div class="header-spacer"></div> 
-                    </div>
-                    
-                    <div id="sub-menu-content"></div>
-                </div>
-
-                <!-- SERVICE DETAIL PAGE -->
-                <div class="slide-page" id="page-service-detail">
-                    <div class="page-header">
-                        <button class="btn-back" onclick="openSubMenu('GitHub Services', 'services')">
-                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                        </button>
-                        <h1 class="header-title" id="detail-title">SELECT PACKAGES</h1>
-                        <div class="header-spacer"></div> 
-                    </div>
-                    
-                    <div id="service-detail-content"></div>
-                </div>
-
-                <!-- ADMIN PAGE -->
-                <div class="slide-page" id="page-admin">
-                    <div class="page-header">
-                        <button class="btn-back" onclick="goToHome()">
-                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
-                        </button>
-                        <h1 class="header-title" style="color: var(--danger);">EXECUTIVE DASHBOARD</h1>
-                        <div class="header-spacer"></div> 
-                    </div>
-                    
-                    <div class="menu-category" style="color: #8b5cf6;">ALL-TIME METRICS (SINCE RELEASE)</div>
-                    <div style="background: var(--panel-bg); border: 1px solid var(--border); border-radius: 16px; padding: 15px; margin-bottom: 15px; box-shadow: var(--glow-shadow);">
-                        <canvas id="revenueChart" width="400" height="260"></canvas>
-                    </div>
-                    
-                    <div style="display: flex; gap: 10px; margin-bottom: 25px;">
-                        <div style="flex: 1; background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); padding: 12px; border-radius: 12px; text-align: center;">
-                            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; letter-spacing: 1px;">TOTAL REVENUE</div>
-                            <div style="font-size: 1.2rem; color: var(--success); font-family: 'JetBrains Mono'; font-weight: 800;">$4,250.00</div>
-                        </div>
-                        <div style="flex: 1; background: rgba(139, 92, 246, 0.1); border: 1px solid rgba(139, 92, 246, 0.3); padding: 12px; border-radius: 12px; text-align: center;">
-                            <div style="font-size: 0.7rem; color: var(--text-muted); font-weight: 800; letter-spacing: 1px;">TOTAL ASSETS SOLD</div>
-                            <div style="font-size: 1.2rem; color: #a78bfa; font-family: 'JetBrains Mono'; font-weight: 800;">1,420 Unit</div>
-                        </div>
-                    </div>
-
-                    <div class="menu-category" style="color: var(--danger);">WARNING: RESTRICTED COMMANDS</div>
-                    <div id="admin-content"></div>
-                </div>
-
+    <!-- HEADER -->
+    <header class="sticky top-0 z-50 glass-card mx-4 mt-4 px-5 py-3 flex justify-between items-center shadow-lg">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-xbPrimary to-xbAccent flex items-center justify-center font-bold text-lg shadow-lg">
+                XB
+            </div>
+            <div>
+                <h1 class="text-sm font-bold leading-tight">XianBee-Tech</h1>
+                <p class="text-xs text-green-400 font-semibold"><i class="fa-solid fa-circle text-[8px] animate-pulse"></i> System Online</p>
             </div>
         </div>
-    </div>
+        <div class="flex gap-3 text-gray-300">
+            <button onclick="sendAction({action: 'SYS_STATUS'})" class="btn-hover text-lg"><i class="fa-solid fa-server"></i></button>
+            <button onclick="sendAction({action: 'FAQ'})" class="btn-hover text-lg"><i class="fa-solid fa-circle-question"></i></button>
+        </div>
+    </header>
 
-    <!-- ALL MODALS -->
-    <div class="modal-overlay" id="orderModal">
-        <div class="modal-box">
-            <h2 class="modal-title" id="orderTitle" style="text-align: center;">Order Details</h2>
-            <p class="modal-desc" style="text-align: center;" id="txt_order_desc">Enter your target URL below.</p>
+    <main class="px-4 mt-6">
+        
+        <!-- WALLET HERO SECTION -->
+        <section class="glass-card p-6 mb-6 bg-gradient-to-br from-gray-800/80 to-xbPrimary/20 relative overflow-hidden shadow-2xl">
+            <div class="absolute top-0 right-0 w-32 h-32 bg-xbAccent rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"></div>
             
-            <div class="input-group">
-                <label id="orderLabel">Target URL</label>
-                <input type="text" id="orderTarget" placeholder="Enter target here">
+            <p class="text-gray-400 text-sm mb-1 font-medium tracking-wide uppercase">Total Asset Value</p>
+            <div class="flex items-baseline gap-2 mb-1">
+                <h2 class="text-4xl font-extrabold tracking-tight text-white" id="user-balance">$0.00</h2>
+                <span class="text-sm text-gray-400">USDT</span>
+            </div>
+            <p class="text-xs text-gray-400 mb-5 border-b border-gray-700/50 pb-4">Welcome back, <span id="user-name" class="font-bold text-white">Client</span>!</p>
+
+            <div class="grid grid-cols-2 gap-3">
+                <button onclick="openModal('topupModal')" class="btn-hover bg-xbPrimary hover:bg-indigo-600 text-white py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/30">
+                    <i class="fa-solid fa-wallet"></i> Deposit
+                </button>
+                <button onclick="sendAction({action: 'GET_BALANCE'})" class="btn-hover bg-gray-700 hover:bg-gray-600 text-white py-2.5 rounded-lg font-semibold text-sm flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-rotate"></i> Refresh
+                </button>
+            </div>
+        </section>
+
+        <!-- MAIN CATALOG (GRID LAYOUT) -->
+        <h3 class="text-sm font-bold text-gray-400 mb-3 px-1 tracking-wider">ENTERPRISE CATALOG</h3>
+        <div class="grid grid-cols-2 gap-3 mb-8">
+            
+            <!-- Item 1: GitHub -->
+            <div onclick="sendAction({action: 'VIEW_CATALOG', year: 'ALL'})" class="btn-hover glass-card p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-800 transition">
+                <div class="w-12 h-12 rounded-full bg-gray-800 flex items-center justify-center text-2xl mb-2 text-white shadow-inner">
+                    <i class="fa-brands fa-github"></i>
+                </div>
+                <h4 class="text-sm font-bold mb-1">GitHub Hub</h4>
+                <p class="text-[10px] text-gray-400 leading-tight">Aged Accounts & Metrics</p>
+            </div>
+
+            <!-- Item 2: SMM -->
+            <div onclick="sendAction({action: 'VIEW_CATALOG', year: 'smm_boost'})" class="btn-hover glass-card p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-800 transition">
+                <div class="w-12 h-12 rounded-full bg-blue-900/30 flex items-center justify-center text-2xl mb-2 text-blue-400 shadow-inner">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+                <h4 class="text-sm font-bold mb-1">SMM Center</h4>
+                <p class="text-[10px] text-gray-400 leading-tight">Traffic & Social Boost</p>
+            </div>
+
+            <!-- Item 3: Premium Apps -->
+            <div onclick="sendAction({action: 'VIEW_CATALOG', year: 'premium'})" class="btn-hover glass-card p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-800 transition">
+                <div class="w-12 h-12 rounded-full bg-purple-900/30 flex items-center justify-center text-2xl mb-2 text-purple-400 shadow-inner">
+                    <i class="fa-solid fa-crown"></i>
+                </div>
+                <h4 class="text-sm font-bold mb-1">Pro Apps</h4>
+                <p class="text-[10px] text-gray-400 leading-tight">Canva, CapCut, AI</p>
+            </div>
+
+            <!-- Item 4: Crypto -->
+            <div onclick="sendAction({action: 'VIEW_CATALOG', year: 'crypto'})" class="btn-hover glass-card p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-800 transition">
+                <div class="w-12 h-12 rounded-full bg-yellow-900/30 flex items-center justify-center text-2xl mb-2 text-yellow-500 shadow-inner">
+                    <i class="fa-brands fa-bitcoin"></i>
+                </div>
+                <h4 class="text-sm font-bold mb-1">Crypto Gas</h4>
+                <p class="text-[10px] text-gray-400 leading-tight">Retail Coins & Convert</p>
+            </div>
+
+            <!-- Item 5: PPOB -->
+            <div onclick="sendAction({action: 'VIEW_CATALOG', year: 'ppob'})" class="btn-hover glass-card p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-800 transition">
+                <div class="w-12 h-12 rounded-full bg-green-900/30 flex items-center justify-center text-2xl mb-2 text-green-400 shadow-inner">
+                    <i class="fa-solid fa-bolt"></i>
+                </div>
+                <h4 class="text-sm font-bold mb-1">Digital Bills</h4>
+                <p class="text-[10px] text-gray-400 leading-tight">Pulsa, E-Wallet & PLN</p>
+            </div>
+
+            <!-- Item 6: Affiliate -->
+            <div onclick="sendAction({action: 'REFERRAL'})" class="btn-hover glass-card p-4 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-gray-800 transition">
+                <div class="w-12 h-12 rounded-full bg-red-900/30 flex items-center justify-center text-2xl mb-2 text-red-400 shadow-inner">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <h4 class="text-sm font-bold mb-1">Affiliate</h4>
+                <p class="text-[10px] text-gray-400 leading-tight">Earn 5% Commission</p>
+            </div>
+        </div>
+
+        <!-- COMMAND CENTER (HANYA MUNCUL JIKA ADMIN) -->
+        <div id="admin-section" class="hidden">
+            <div class="flex items-center justify-between mb-3 px-1">
+                <h3 class="text-sm font-bold text-red-400 tracking-wider"><i class="fa-solid fa-lock text-xs"></i> COMMAND CENTER</h3>
+                <span class="bg-red-500/20 text-red-400 text-[10px] px-2 py-0.5 rounded border border-red-500/30">ADMIN ONLY</span>
             </div>
             
-            <div id="targetPreview" class="preview-box" style="display:none;"></div>
+            <div class="grid grid-cols-3 gap-2 mb-8">
+                <!-- Admin Buttons (Compact 3 Columns) -->
+                <button onclick="sendAdminCmd('admin_view_history')" class="btn-hover glass-card py-3 px-2 text-center border-red-900/30 hover:bg-red-900/20">
+                    <i class="fa-solid fa-clock-rotate-left text-red-400 mb-1"></i>
+                    <p class="text-[10px] font-semibold">Service Log</p>
+                </button>
+                <button onclick="sendAdminCmd('admin_view_sold')" class="btn-hover glass-card py-3 px-2 text-center border-red-900/30 hover:bg-red-900/20">
+                    <i class="fa-solid fa-box-open text-red-400 mb-1"></i>
+                    <p class="text-[10px] font-semibold">Sold Assets</p>
+                </button>
+                <button onclick="sendAdminCmd('admin_list_engines')" class="btn-hover glass-card py-3 px-2 text-center border-red-900/30 hover:bg-red-900/20">
+                    <i class="fa-solid fa-server text-red-400 mb-1"></i>
+                    <p class="text-[10px] font-semibold">Node Status</p>
+                </button>
+                <button onclick="sendAdminCmd('admin_view_suspend')" class="btn-hover glass-card py-3 px-2 text-center border-red-900/30 hover:bg-red-900/20">
+                    <i class="fa-solid fa-skull-crossbones text-red-400 mb-1"></i>
+                    <p class="text-[10px] font-semibold">404 Logs</p>
+                </button>
+                <button onclick="sendAdminData('admin_check_links')" class="btn-hover glass-card py-3 px-2 text-center border-red-900/30 hover:bg-red-900/20">
+                    <i class="fa-solid fa-link text-red-400 mb-1"></i>
+                    <p class="text-[10px] font-semibold">Link Checker</p>
+                </button>
+                <button onclick="sendAdminData('admin_broadcast')" class="btn-hover glass-card py-3 px-2 text-center border-red-900/30 hover:bg-red-900/20">
+                    <i class="fa-solid fa-bullhorn text-red-400 mb-1"></i>
+                    <p class="text-[10px] font-semibold">Broadcast</p>
+                </button>
+            </div>
+        </div>
 
-            <div class="input-group" style="display:none;" id="qtyGroup">
-                <label>Custom Quantity</label>
-                <input type="number" id="orderQty" value="100" oninput="calcTotal()">
+    </main>
+
+    <!-- MODAL TOPUP (Muncul di atas layar, bukan redirect halaman) -->
+    <div id="topupModal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60] hidden flex items-end sm:items-center justify-center transition-opacity">
+        <div class="bg-gray-900 w-full sm:w-96 rounded-t-2xl sm:rounded-2xl border border-gray-700 p-5 transform transition-transform translate-y-full" id="topupModalContent">
+            <div class="flex justify-between items-center mb-4 border-b border-gray-800 pb-3">
+                <h3 class="font-bold text-lg"><i class="fa-solid fa-wallet text-xbPrimary mr-2"></i> Deposit Balance</h3>
+                <button onclick="closeModal('topupModal')" class="text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="price-display">
-                <span class="price-label">Total Cost:</span>
-                <span class="price-value" id="orderTotal">$0.00</span>
+            <label class="block text-xs font-semibold text-gray-400 mb-2">Amount (USDT)</label>
+            <div class="grid grid-cols-4 gap-2 mb-4">
+                <button onclick="setAmount(10)" class="bg-gray-800 py-2 rounded border border-gray-700 hover:border-xbPrimary hover:text-xbPrimary text-sm font-bold transition">$10</button>
+                <button onclick="setAmount(25)" class="bg-gray-800 py-2 rounded border border-gray-700 hover:border-xbPrimary hover:text-xbPrimary text-sm font-bold transition">$25</button>
+                <button onclick="setAmount(50)" class="bg-gray-800 py-2 rounded border border-gray-700 hover:border-xbPrimary hover:text-xbPrimary text-sm font-bold transition">$50</button>
+                <button onclick="setAmount(100)" class="bg-gray-800 py-2 rounded border border-gray-700 hover:border-xbPrimary hover:text-xbPrimary text-sm font-bold transition">$100</button>
             </div>
-            
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('orderModal')" id="txt_cancel1">Cancel</button>
-                <button class="btn-modal btn-confirm" onclick="submitOrder()" id="txt_order1">Place Order</button>
+
+            <div class="relative mb-5">
+                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400 font-bold">$</span>
+                <input type="number" id="customAmount" placeholder="Custom Amount" class="w-full bg-gray-900 border border-gray-700 rounded-lg py-3 pl-8 pr-4 text-white focus:outline-none focus:border-xbPrimary transition">
             </div>
+
+            <label class="block text-xs font-semibold text-gray-400 mb-2">Payment Gateway</label>
+            <select id="payMethod" class="w-full bg-gray-900 border border-gray-700 rounded-lg py-3 px-4 mb-6 text-white focus:outline-none focus:border-xbPrimary transition appearance-none">
+                <option value="qris">🇮🇩 QRIS (Paywuz Instant)</option>
+                <option value="crypto">⚡ Auto-Crypto (Worldwide)</option>
+                <option value="binance">🔶 Binance Pay</option>
+                <option value="ewallet">📱 E-Wallet (Manual)</option>
+            </select>
+
+            <button onclick="submitTopup()" class="w-full bg-xbPrimary hover:bg-indigo-600 text-white font-bold py-3.5 rounded-lg shadow-lg shadow-indigo-500/30 transition">
+                Proses Pembayaran <i class="fa-solid fa-arrow-right ml-1"></i>
+            </button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="checkStatusModal">
-        <div class="modal-box" style="border-color: #0072ff; box-shadow: 0 10px 30px rgba(0, 114, 255, 0.2);">
-            <h2 class="modal-title" style="margin-bottom: 10px; text-align: center;" id="txt_scan_title">ACCOUNT SCANNER</h2>
-            <p class="modal-desc" style="text-align: center;" id="txt_scan_desc">Enter GitHub username to check if it's shadowbanned or safe.</p>
-            <div class="input-group">
-                <input type="text" id="checkStatusTarget" placeholder="e.g. abieharyatmo">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('checkStatusModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" style="background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);" onclick="submitCheckStatus()">Check Now</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="stockModal">
-        <div class="modal-box">
-            <h2 class="modal-title" id="stockTitle" style="text-align: center;">Available Stock</h2>
-            <p class="modal-desc" style="text-align: center;">Select an account to add to cart. Reserved for 3 mins.</p>
-            <div class="stock-list" id="stockListContent"></div>
-            <button class="btn-modal btn-cancel" style="width: 100%; margin-top: 10px;" onclick="closeModal('stockModal')">Close</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="cartModal">
-        <div class="modal-box">
-            <h2 class="modal-title" style="text-align: center;" id="txt_cart_title">Shopping Cart</h2>
-            <p class="modal-desc" style="text-align: center;" id="txt_cart_desc">Items are reserved for 3 minutes.</p>
-            <div id="cartContent" style="margin-bottom: 20px; max-height: 250px; overflow-y: auto;"></div>
-            <div class="price-display">
-                <span class="price-label">Total Payable:</span>
-                <span class="price-value" id="cartTotal">$0.00</span>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('cartModal')">Close</button>
-                <button class="btn-modal btn-confirm" id="btnCheckout" onclick="checkoutCart()">Pay with Balance</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="promoModal">
-        <div class="modal-box" style="border-color: #f59e0b; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);">
-            <h2 class="modal-title" style="color: #f59e0b;">REDEEM PROMO</h2>
-            <p class="modal-desc">Enter your voucher code to claim balance.</p>
-            <div class="input-group">
-                <input type="text" id="promoInput" placeholder="e.g. XB-WINNER-123">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('promoModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);" onclick="submitPromo()">Claim</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- UPDATE MODAL TOPUP HANYA PAYWUZ & OXAPAY -->
-    <div class="modal-overlay" id="topupSelectModal">
-        <div class="modal-box" style="padding-bottom: 20px;">
-            <h2 class="modal-title" style="margin-bottom: 20px; text-align: center;" id="txt_sel_gate">Select Gateway</h2>
-            <p class="modal-desc" style="text-align: center;" id="txt_sel_desc">Select your preferred payment method.</p>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
-                <div class="topup-btn" style="margin:0;" onclick="submitTopup('qris')">
-                    <div class="topup-icon" style="background:var(--grad-master); color:#fff;">🟢</div>
-                    <div class="topup-text">Paywuz (QRIS)</div>
-                </div>
-                <div class="topup-btn" style="margin:0;" onclick="submitTopup('crypto')">
-                    <div class="topup-icon" style="background:var(--grad-master); color:#fff;">🪙</div>
-                    <div class="topup-text">OxaPay (Crypto)</div>
-                </div>
-            </div>
-            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('topupSelectModal')" id="txt_cancel2">Cancel</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="adminInputModal">
-        <div class="modal-box" style="border-color: var(--danger); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);">
-            <h2 class="modal-title" id="adminInputTitle" style="color: var(--danger);">Admin Action</h2>
-            <p class="modal-desc" id="adminInputDesc">Please enter data below.</p>
-            <div class="input-group">
-                <textarea id="adminInputArea" placeholder="Enter data here..." style="display:none;"></textarea>
-                <input type="text" id="adminInputText" placeholder="Enter data here..." style="display:none;">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('adminInputModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" style="background: var(--danger);" onclick="submitAdminInput()">Execute</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="adminDeployModal">
-        <div class="modal-box" style="border-color: var(--danger); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);">
-            <h2 class="modal-title" style="color: var(--danger);">Manual Deploy</h2>
-            <p class="modal-desc" id="deployDesc">Step 1: Enter Target (URL/Username)</p>
-            <div class="input-group" id="deployGroupTarget">
-                <input type="text" id="deployTarget" placeholder="e.g. owner/repo">
-            </div>
-            <div class="input-group" id="deployGroupSvc" style="display:none;">
-                <select id="deploySvc" style="background: var(--bg-base); color: var(--text-main); padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); width: 100%; outline: none; margin-bottom: 10px;">
-                    <option value="followers">Followers</option>
-                    <option value="stars">Stars</option>
-                    <option value="forks">Forks</option>
-                    <option value="watch">Watch</option>
-                </select>
-                <input type="number" id="deployQty" placeholder="Quantity (Max 100)" value="100">
-            </div>
-            <div class="input-group" id="deployGroupEngine" style="display:none;">
-                <input type="text" id="deployEngine" placeholder="Engine ID (e.g. 1)">
-                <input type="text" id="deployDur" placeholder="Duration in Hours (e.g. 1.5)" style="margin-top:10px;">
-                <input type="text" id="deployIdx" placeholder="Start Index (or 'auto')" value="auto" style="margin-top:10px;">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('adminDeployModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" style="background: var(--danger);" id="btnDeployNext" onclick="nextDeployStep()">Next</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="offlineModal">
-        <div class="modal-box" style="border-color: #8b5cf6; box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);">
-            <h2 class="modal-title" style="margin-bottom: 10px; color: var(--text-main); text-align: center;">SERVICE UNAVAILABLE</h2>
-            <p class="modal-desc" style="color: var(--text-main); text-align: center;">The <span id="offlineTarget" style="font-weight:800; color:#8b5cf6;"></span> service is currently under maintenance. Please check back later.</p>
-            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('offlineModal')">Understood</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="glitchModal">
-        <div class="modal-box" style="border-color: var(--danger); box-shadow: 0 10px 30px rgba(239, 68, 68, 0.2);">
-            <h2 class="modal-title" style="margin-bottom: 10px; color: var(--danger); text-align: center;">ACCESS DENIED</h2>
-            <p class="modal-desc" style="color: var(--text-main); text-align: center;">You do not have permission to access the Admin Panel. This area is restricted.</p>
-            <button class="btn-modal btn-cancel" style="width: 100%;" onclick="closeModal('glitchModal')">Go Back</button>
-        </div>
-    </div>
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        const tg = window.Telegram.WebApp; 
-        tg.expand(); 
+        const tg = window.Telegram.WebApp;
+        tg.expand(); // Bikin WebApp Full Screen di HP
         tg.ready();
 
-        let currentTheme = 'dark';
-        let currentLang = 'en';
-
-        // --- BILINGUAL DICTIONARY ---
-        const dict = {
-            'MY WALLET': 'DOMPET SAYA',
-            'USDT Balance': 'Saldo USDT',
-            'QUICK ACTIONS': 'AKSI CEPAT',
-            'Check Account Status': 'Cek Status Akun',
-            'Referral & Affiliate': 'Referral & Afiliasi',
-            'Top 10 Rich List': 'Top 10 Sultan',
-            'Redeem Promo': 'Tukar Kode Promo',
-            'FAQ & Terms': 'FAQ & Ketentuan',
-            'Infra Status': 'Status Server',
-            'DEPOSIT FUNDS': 'ISI SALDO (DEPOSIT)',
-            'Custom': 'Kustom',
-            'My Wallet & Profile': 'Dompet & Profil Saya',
-            'Check Balance & Deposit': 'Cek Saldo & Isi Ulang',
-            'AVAILABLE SERVICES': 'LAYANAN TERSEDIA',
-            'GitHub Infrastructure': 'Infrastruktur GitHub',
-            'Accounts, Services & Bots': 'Akun, Layanan & Bot',
-            'Digital Asset Accounts': 'Akun Aset Digital',
-            'Twitter, TikTok, IG, Discord, etc.': 'Twitter, TikTok, IG, dll.',
-            'Digital Marketing Services': 'Layanan Pemasaran Digital',
-            'Boost, Traffic, Streams, etc.': 'Lalu Lintas, Streaming, dll.',
-            'Premium Subscriptions': 'Langganan Premium',
-            'Canva 1 Year, CapCut Pro': 'Canva 1 Tahun, CapCut Pro',
-            'SYSTEM ADMIN': 'ADMIN SISTEM',
-            'Executive Dashboard': 'Dashboard Eksekutif',
-            'Restricted Access': 'Akses Dibatasi',
-            'Select Gateway': 'Pilih Pembayaran',
-            'Select your preferred payment method.': 'Pilih metode pembayaran yang diinginkan.',
-            'Cancel': 'Batal',
-            'Place Order': 'Buat Pesanan',
-            'Order Details': 'Detail Pesanan',
-            'Enter your target URL below.': 'Masukkan URL target di bawah.',
-            'ACCOUNT SCANNER': 'PEMINDAI AKUN',
-            'Enter GitHub username to check if it\'s shadowbanned or safe.': 'Masukkan username GitHub untuk cek status.',
-            'Shopping Cart': 'Keranjang Belanja',
-            'Items are reserved for 3 minutes.': 'Item disimpan selama 3 menit.'
-        };
-
-        function t(str) { return (currentLang === 'id' && dict[str]) ? dict[str] : str; }
-
-        function toggleTheme() {
-            currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            document.getElementById('themeBtn').innerText = currentTheme === 'dark' ? '☀️' : '🌙';
-            triggerHaptic('light');
-        }
-
-        function toggleLang() {
-            currentLang = currentLang === 'en' ? 'id' : 'en';
-            document.getElementById('langBtn').innerText = currentLang === 'en' ? 'ID' : 'EN';
-            
-            // Translate Static Elements
-            document.getElementById('txt_my_wallet').innerText = t('MY WALLET');
-            document.getElementById('txt_balance').innerText = t('USDT Balance');
-            document.getElementById('txt_quick').innerText = t('QUICK ACTIONS');
-            document.getElementById('txt_scan').innerText = t('Check Account Status');
-            document.getElementById('txt_ref').innerText = t('Referral & Affiliate');
-            document.getElementById('txt_lead').innerText = t('Top 10 Rich List');
-            document.getElementById('txt_promo').innerText = t('Redeem Promo');
-            document.getElementById('txt_faq').innerText = t('FAQ & Terms');
-            document.getElementById('txt_infra').innerText = t('Infra Status');
-            document.getElementById('txt_deposit').innerText = t('DEPOSIT FUNDS');
-            document.getElementById('txt_custom').innerText = t('Custom');
-            document.getElementById('txt_wallet_btn').innerText = t('My Wallet & Profile');
-            document.getElementById('txt_wallet_desc').innerText = t('Check Balance & Deposit');
-            document.getElementById('txt_avail').innerText = t('AVAILABLE SERVICES');
-            document.getElementById('txt_admin').innerText = t('SYSTEM ADMIN');
-            document.getElementById('txt_exec').innerText = t('Executive Dashboard');
-            document.getElementById('txt_rest').innerText = t('Restricted Access');
-            document.getElementById('txt_sel_gate').innerText = t('Select Gateway');
-            document.getElementById('txt_sel_desc').innerText = t('Select your preferred payment method.');
-            document.getElementById('txt_cancel1').innerText = t('Cancel');
-            document.getElementById('txt_order1').innerText = t('Place Order');
-            document.getElementById('txt_cancel2').innerText = t('Cancel');
-            document.getElementById('orderTitle').innerText = t('Order Details');
-            document.getElementById('txt_order_desc').innerText = t('Enter your target URL below.');
-            document.getElementById('txt_scan_title').innerText = t('ACCOUNT SCANNER');
-            document.getElementById('txt_scan_desc').innerText = t('Enter GitHub username to check if it\'s shadowbanned or safe.');
-            document.getElementById('txt_cart_title').innerText = t('Shopping Cart');
-            document.getElementById('txt_cart_desc').innerText = t('Items are reserved for 3 minutes.');
-            
-            renderMainMenu();
-            triggerHaptic('light');
-        }
-
-        // --- Core Menu Data ---
-        const mainMenu = [
-            { id: 'github_main', icon: '🐙', title: 'GitHub Infrastructure', desc: 'Accounts, Services & Bots' },
-            { id: 'socmed_acc', icon: '📦', title: 'Digital Asset Accounts', desc: 'Twitter, TikTok, IG, Discord, etc.' },
-            { id: 'digital_marketing', icon: '🔥', title: 'Digital Marketing Services', desc: 'Boost, Traffic, Streams, etc.' },
-            { id: 'subscriptions', icon: '👑', title: 'Premium Subscriptions', desc: 'Canva 1 Year, CapCut Pro' }
-        ];
-
-        function renderMainMenu() {
-            const container = document.getElementById('dynamic-main-menu');
-            container.innerHTML = '';
-            
-            // 1. Menu Utama (Highlight Khusus GitHub)
-            const m1 = mainMenu.find(m => m.id === 'github_main');
-            if (m1) {
-                const btn1 = document.createElement('button');
-                btn1.className = 'btn-master';
-                btn1.style.marginBottom = '20px';
-                btn1.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon">${m1.icon}</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title" style="color:#fff;">${t(m1.title)}</span>
-                            <span class="btn-desc" style="color:rgba(255,255,255,0.9);">${t(m1.desc)}</span>
-                        </div>
-                    </div>
-                    <span class="arrow-icon" style="color:#fff;">▶</span>
-                `;
-                btn1.onclick = () => openSubMenu(t(m1.title), m1.id);
-                container.appendChild(btn1);
-            }
-            
-            // 2. Sub-Menu Lainnya (Disusun Rapi Ke Bawah)
-            mainMenu.filter(m => m.id !== 'github_main').forEach(m => {
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.style.marginBottom = '12px';
-                btn.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon">${m.icon}</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title" style="color:var(--text-main);">${t(m.title)}</span>
-                            <span class="btn-desc" style="color:var(--text-muted);">${t(m.desc)}</span>
-                        </div>
-                    </div>
-                    <span class="arrow-icon">▶</span>
-                `;
-                btn.onclick = () => openSubMenu(t(m.title), m.id);
-                container.appendChild(btn);
-            });
-        }
-        renderMainMenu();
-
+        // 1. Ambil Parameter dari URL Bot Lu
         const urlParams = new URLSearchParams(window.location.search);
-        const rawBalance = urlParams.get('bal');
-        const userBalance = rawBalance !== null ? parseFloat(rawBalance) : 0.00;
-        const urlUid = urlParams.get('uid');
-        const urlUname = urlParams.get('uname');
+        const balance = urlParams.get('bal') || '0.00';
+        const uid = urlParams.get('uid') || '0';
+        const uname = urlParams.get('uname') || 'Client';
 
-        document.getElementById('counter').innerText = userBalance.toFixed(2); 
+        // 2. Tampilkan Info User
+        document.getElementById('user-name').innerText = uname;
+        document.getElementById('user-balance').innerText = `$${parseFloat(balance).toFixed(2)}`;
 
-        // --- FEATURE 3: GAMIFICATION TIER SYSTEM ---
-        window.userDiscount = 0.00;
-        let tierName = 'STANDARD MEMBER';
-        let cardBg = 'var(--grad-master)';
-        let chipBg = 'linear-gradient(135deg, #fcd34d 0%, #d97706 100%)';
-        
-        if (userBalance >= 1000) {
-            tierName = 'ELITE MEMBER'; window.userDiscount = 0.20; 
-            cardBg = 'linear-gradient(135deg, #111 0%, #333 50%, #fcd34d 100%)';
-            chipBg = 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)';
-        } else if (userBalance >= 500) {
-            tierName = 'GOLD MEMBER'; window.userDiscount = 0.15; 
-            cardBg = 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)';
-            chipBg = 'linear-gradient(135deg, #fff 0%, #e2e8f0 100%)';
-        } else if (userBalance >= 250) {
-            tierName = 'SILVER MEMBER'; window.userDiscount = 0.10; 
-            cardBg = 'linear-gradient(135deg, #64748b 0%, #334155 100%)';
-            chipBg = 'linear-gradient(135deg, #e2e8f0 0%, #94a3b8 100%)';
-        } else if (userBalance >= 100) {
-            tierName = 'BRONZE MEMBER'; window.userDiscount = 0.05; 
-            cardBg = 'linear-gradient(135deg, #b45309 0%, #78350f 100%)';
-            chipBg = 'linear-gradient(135deg, #fcd34d 0%, #d97706 100%)';
+        // 3. Logic Admin Tersembunyi (Sesuai ID Admin di Bot Lu)
+        const adminIds = ["6740043923", "7095661271"]; // Sesuai ADMIN_IDS di script bot
+        if(adminIds.includes(uid.toString())) {
+            document.getElementById('admin-section').classList.remove('hidden');
         }
 
-        document.querySelector('.card-type').innerText = tierName + (window.userDiscount > 0 ? ` (-${window.userDiscount * 100}%)` : '');
-        document.getElementById('digitalCard').style.background = cardBg;
-        document.querySelector('.chip').style.background = chipBg;
-
-        if (urlUname) {
-            let display = urlUname.includes(" ") ? urlUname : "@" + urlUname; 
-            document.getElementById('displayUserId').innerText = display;
-        } else { 
-            document.getElementById('displayUserId').innerText = "XB-USER"; 
+        // 4. Core Function: Kirim Data ke Bot (Auto-Close)
+        function sendAction(dataObj) {
+            tg.sendData(JSON.stringify(dataObj));
+            tg.close(); // Tutup webapp, kembali ke chat bot buat lanjut proses
         }
 
-        const canvas = document.getElementById("canvas-bg"); 
-        const ctx = canvas.getContext("2d");
-        let width, height, particles;
-
-        function initCanvas() { 
-            width = canvas.width = window.innerWidth; 
-            height = canvas.height = window.innerHeight; 
-            particles = []; 
-            for (let i=0; i<30; i++) {
-                particles.push({ 
-                    x: Math.random()*width, 
-                    y: Math.random()*height, 
-                    vx: (Math.random()-0.5)*0.2, 
-                    vy: Math.random()*-0.5-0.1, 
-                    size: Math.random()*2 + 1, 
-                    alpha: Math.random()*0.3 
-                });
-            }
+        function sendAdminCmd(cmd) {
+            sendAction({ action: 'ADMIN_CMD', command: cmd });
         }
 
-        function drawParticles() { 
-            ctx.clearRect(0,0,width,height); 
-            ctx.fillStyle = currentTheme === 'dark' ? 'rgba(139, 92, 246, 0.3)' : 'rgba(14, 165, 233, 0.4)';
-            for (let i=0; i<particles.length; i++) { 
-                let p = particles[i]; 
-                p.x += p.vx; 
-                p.y += p.vy; 
-                if (p.y < 0) { 
-                    p.y = height; 
-                    p.x = Math.random()*width; 
-                } 
-                if (p.x < 0) p.x = width; 
-                if (p.x > width) p.x = 0; 
-                ctx.beginPath(); 
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); 
-                ctx.fill(); 
-            } 
-            requestAnimationFrame(drawParticles); 
+        function sendAdminData(cmd) {
+            // Ini untuk perintah admin yang butuh data tambahan, nanti dilanjut di chat bot
+            sendAction({ action: 'ADMIN_CMD_DATA', command: cmd, data: 'Triggered from WebApp' });
         }
 
-        window.addEventListener("resize", initCanvas); 
-        initCanvas(); 
-        drawParticles();
+        // 5. Modal Logic (Animasi Buka Tutup Mulus)
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(id + 'Content');
+            modal.classList.remove('hidden');
+            // Sedikit delay buat animasi slide up
+            setTimeout(() => {
+                content.classList.remove('translate-y-full');
+            }, 10);
+        }
 
-        const slider = document.getElementById('slider'); 
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            const content = document.getElementById(id + 'Content');
+            content.classList.add('translate-y-full');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300); // Waktu sesuai transisi CSS
+        }
 
-        function goToWallet() { slider.style.transform = 'translateX(0%)'; triggerHaptic('medium'); } 
-        function goToHome() { slider.style.transform = 'translateX(-20%)'; triggerHaptic('light'); } 
-        setTimeout(() => goToHome(), 100);
+        function setAmount(val) {
+            document.getElementById('customAmount').value = val;
+        }
 
-        const subTitle = document.getElementById('sub-title'); 
-        const subContent = document.getElementById('sub-menu-content');
-        
-        const dbMenu = {
-            'github_main': { items: [
-                { icon: '🛒', title: 'Buy GitHub Accounts', desc: 'Arctic, Badges, Aged', type: 'nav', target: 'assets' },
-                { icon: '🚀', title: 'GitHub Cloud Services', desc: 'Followers, Forks, Stars', type: 'nav', target: 'services' }
-            ]},
-            'assets': { items: [
-                { icon: '🎒', title: 'GitHub Student Developer Pack', desc: 'Approved with Free Credits & Benefits', price: 5.00, type: 'acc', year: 'StudentPack' },
-                { icon: '📈', title: 'GitHub High Contributions', desc: 'Massive green commit history', price: 0.00, type: 'acc', year: 'Contrib' },
-                { icon: '🏅', title: 'GitHub 6 Premium Badges', desc: 'Pull Shark, YOLO, Starstruck & more', price: 10.00, type: 'acc', year: '6Badge' },
-                { icon: '📁', title: 'GitHub with Old Repository', desc: 'Aged repository included', price: 0.00, type: 'acc', year: 'OldRepo' },
-                { icon: '👥', title: 'GitHub with Followers', desc: 'Pre-warmed profile with organic followers', price: 0.00, type: 'acc', year: 'Followers' },
-                { icon: '💎', title: 'GitHub Arctic Vault', desc: 'Rare 2020 Badge Contributor', price: 10.00, type: 'acc', year: 'Arctic' },
-                { icon: '🏛️', title: 'Aged Account (2011)', desc: 'Vintage Tier - Extreme Trust', price: 20.00, type: 'acc', year: '2011' },
-                { icon: '📁', title: 'Standard Account (2021)', desc: 'Standard Tier - Warmed up', price: 8.00, type: 'acc', year: '2021' },
-                { icon: '✨', title: 'Fresh Account (2025)', desc: 'Verified - Ready to use', price: 4.00, type: 'acc', year: '2025' }
-            ]},
-            'services': { items: [
-                { icon: '👥', title: 'Buy Followers', desc: 'Select execution speed', type: 'svc_menu', target: 'followers' },
-                { icon: '⎇', title: 'Buy Repository Forks', desc: 'Select execution speed', type: 'svc_menu', target: 'forks' },
-                { icon: '⭐', title: 'Buy Repository Stars', desc: 'Select execution speed', type: 'svc_menu', target: 'stars' },
-                { icon: '👁️', title: 'Buy Repository Watchers', desc: 'Select execution speed', type: 'svc_menu', target: 'watch' }
-            ]},
-            'other_main': { items: [
-                { icon: '𝕏', title: 'X (Twitter)', desc: 'Accounts & Services', type: 'nav', target: 'smm_x_hub' },
-                { icon: '📸', title: 'Instagram', desc: 'Accounts & Services', type: 'nav', target: 'smm_ig_hub' },
-                { icon: '🎵', title: 'TikTok', desc: 'Accounts & Services', type: 'nav', target: 'smm_tt_hub' },
-                { icon: '📘', title: 'Facebook', desc: 'Accounts & Services', type: 'nav', target: 'smm_fb_hub' },
-                { icon: '🎮', title: 'Discord', desc: 'Accounts & Services', type: 'nav', target: 'smm_dc_hub' },
-                { icon: '✈️', title: 'Telegram', desc: 'Accounts & Services', type: 'nav', target: 'smm_tg_hub' }
-            ]},
-            'x_svc': { items: [
-                { icon: '🔁', title: 'Buy Retweets', desc: 'High Quality Accounts', type: 'svc_menu', target: 'x_rt' },
-                { icon: '❤️', title: 'Buy Likes', desc: 'Organic drop', type: 'svc_menu', target: 'x_like' },
-                { icon: '👥', title: 'Buy Followers', desc: 'Safe & Guaranteed', type: 'svc_menu', target: 'x_foll' }
-            ]},
-            'ig_svc': { items: [
-                { icon: '❤️', title: 'Buy IG Likes', desc: 'Real Looking', type: 'svc_menu', target: 'ig_like' },
-                { icon: '👥', title: 'Buy IG Followers', desc: 'High Quality', type: 'svc_menu', target: 'ig_foll' },
-                { icon: '👁️', title: 'Buy IG Reels Views', desc: 'Viral Booster', type: 'svc_menu', target: 'ig_view' }
-            ]},
-            'tt_svc': { items: [
-                { icon: '👥', title: 'Buy TikTok Followers', desc: 'Real Users', type: 'svc_menu', target: 'tt_foll' },
-                { icon: '👁️', title: 'Buy TikTok Views', desc: 'FYP Booster', type: 'svc_menu', target: 'tt_view' }
-            ]},
-            'fb_svc': { items: [
-                { icon: '👥', title: 'Buy FB Page Likes', desc: 'High Quality', type: 'svc_menu', target: 'fb_like' }
-            ]},
-            'dc_svc': { items: [
-                { icon: '👥', title: 'Buy Server Members', desc: 'Offline/Online Users', type: 'svc_menu', target: 'dc_mem' }
-            ]},
-            'tg_svc': { items: [
-                { icon: '👥', title: 'Buy Telegram Members', desc: 'Group & Channel', type: 'svc_menu', target: 'tg_mem' },
-                { icon: '👁️', title: 'Buy Post Views', desc: 'Last 5 Posts', type: 'svc_menu', target: 'tg_view' }
-            ]}
-        };
-
-        const platforms = [
-            { id: 'x', name: 'X (Twitter)' }, { id: 'ig', name: 'Instagram' }, { id: 'tt', name: 'TikTok' }, 
-            { id: 'fb', name: 'Facebook' }, { id: 'dc', name: 'Discord' }, { id: 'tg', name: 'Telegram' }
-        ];
-
-        platforms.forEach(p => {
-            dbMenu[`smm_${p.id}_hub`] = { items: [
-                { icon: '🛒', title: `Buy Aged ${p.name} Accounts`, desc: 'Years 2009 - 2026', type: 'nav', target: `${p.id}_acc_years` },
-                { icon: '🚀', title: `${p.name} Services`, desc: 'Boost your metrics', type: 'nav', target: `${p.id}_svc` }
-            ]};
-            let yearItems = [];
-            for(let y=2009; y<=2026; y++) { yearItems.push({ icon: '📅', title: `${p.name} (${y})`, desc: 'Aged & Verified', price: 0.00, type: 'acc', year: `${p.id.toUpperCase()}_${y}` }); }
-            dbMenu[`${p.id}_acc_years`] = { items: yearItems };
-        });
-
-        dbMenu['subscriptions'] = { items: [
-            { icon: '🎨', title: 'Canva Pro (1 Year)', desc: 'Premium Account Access', type: 'bot_action', action: 'PREMIUM_SUB', target: 'canva' },
-            { icon: '✂️', title: 'CapCut Pro (1 Month)', desc: 'Private Full Access', type: 'bot_action', action: 'PREMIUM_SUB', target: 'capcut' }
-        ]};
-
-        dbMenu['socmed_acc'] = { items: [
-            { icon: '🐦', title: 'Twitter (X) Accounts', desc: 'Aged, Crypto, Verified', type: 'nav', target: 'acc_tw' },
-            { icon: '📸', title: 'Instagram Accounts', desc: 'Aged, High Followers', type: 'nav', target: 'acc_ig' },
-            { icon: '🎵', title: 'TikTok Accounts', desc: 'Aged, Creator Ready', type: 'nav', target: 'acc_tt' },
-            { icon: '📘', title: 'Facebook Accounts', desc: 'Aged, Marketplace', type: 'nav', target: 'acc_fb' },
-            { icon: '✈️', title: 'Telegram Accounts', desc: 'Aged, Premium, Fresh', type: 'nav', target: 'acc_tg' },
-            { icon: '🎮', title: 'Discord Accounts', desc: 'Aged, Nitro Ready', type: 'nav', target: 'acc_dc' },
-            { icon: '👽', title: 'Reddit Accounts', desc: 'Aged, High Karma', type: 'nav', target: 'acc_rd' },
-            { icon: '📧', title: 'Mail Accounts', desc: 'Gmail & Outlook', type: 'nav', target: 'acc_mail' },
-            { icon: '🏦', title: 'Crypto Exchanges', desc: 'Binance, OKX, MEXC', type: 'nav', target: 'acc_exc' }
-        ]};
-
-        const accTypes = [
-            { id: 'tw', n: 'Twitter' }, { id: 'ig', n: 'Instagram' }, { id: 'tt', n: 'TikTok' }, 
-            { id: 'fb', n: 'Facebook' }, { id: 'tg', n: 'Telegram' }, { id: 'dc', n: 'Discord' }, 
-            { id: 'rd', n: 'Reddit' }, { id: 'mail', n: 'Mail' }
-        ];
-        accTypes.forEach(a => {
-            dbMenu[`acc_${a.id}`] = { items: [
-                { icon: '🏛️', title: `Aged 2009-2015 ${a.n}`, desc: 'High Trust Score', type: 'bot_action', action: 'ACC_ORDER', target: `${a.id}_aged` },
-                { icon: '📈', title: `High Followers ${a.n}`, desc: 'Pre-warmed account', type: 'bot_action', action: 'ACC_ORDER', target: `${a.id}_foll` },
-                { icon: '🪙', title: `Crypto Ready ${a.n}`, desc: 'Optimized for Web3', type: 'bot_action', action: 'ACC_ORDER', target: `${a.id}_crypto` },
-                { icon: '✨', title: `Fresh Verified ${a.n}`, desc: 'Clean history', type: 'bot_action', action: 'ACC_ORDER', target: `${a.id}_fresh` }
-            ]};
-        });
-
-        dbMenu['acc_exc'] = { items: [
-            { icon: '🔶', title: 'Binance Accounts', desc: 'KYC Verified / Aged', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_binance' },
-            { icon: '⚫', title: 'OKX Accounts', desc: 'KYC Verified / Aged', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_okx' },
-            { icon: '🟢', title: 'MEXC (No KYC)', desc: 'Anonymous Trading', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_mexc_nokyc' },
-            { icon: '🏛️', title: 'MEXC (Aged/Old)', desc: 'High Trust Score', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_mexc_old' }
-        ]};
-
-        dbMenu['digital_marketing'] = { items: [
-            { icon: '🎥', title: 'Streaming & Gaming', desc: 'Twitch, Kick, YouTube...', type: 'nav', target: 'dm_streaming' },
-            { icon: '🎵', title: 'Music & Audio', desc: 'SoundCloud, Spotify, Podcast...', type: 'nav', target: 'dm_music' },
-            { icon: '🌐', title: 'Web Traffic & SEO', desc: 'Global, Indo, Maps...', type: 'nav', target: 'dm_web' },
-            { icon: '💼', title: 'Professional & Web3', desc: 'LinkedIn, CoinMarketCap...', type: 'nav', target: 'dm_prof' },
-            { icon: '📱', title: 'Short Video & Visuals', desc: 'CapCut, SnackVideo, Pinterest...', type: 'nav', target: 'dm_short' },
-            { icon: '🗣️', title: 'Forums & Communication', desc: 'WhatsApp, Telegram, Threads...', type: 'nav', target: 'dm_forums' }
-        ]};
-
-        dbMenu['dm_streaming'] = { items: [
-            { icon: '📺', title: 'YouTube Services', desc: 'Views, Subs, Likes', type: 'nav', target: 'svc_youtube' },
-            { icon: '🟪', title: 'Twitch Services', desc: 'Live Views, Followers', type: 'nav', target: 'svc_twitch' },
-            { icon: '🟩', title: 'Kick.com Services', desc: 'Live Viewers, Followers', type: 'nav', target: 'svc_kick' },
-            { icon: '🦖', title: 'Bigo Live', desc: 'Stream Viewers', type: 'nav', target: 'svc_bigo' },
-            { icon: '🟥', title: 'Roblox [Indonesia]', desc: 'Players, Favorites', type: 'nav', target: 'svc_roblox' },
-            { icon: '🎮', title: 'Discord Services', desc: 'Server Members', type: 'nav', target: 'svc_discord' }
-        ]};
-
-        dbMenu['dm_music'] = { items: [
-            { icon: '☁️', title: 'SoundCloud Services', desc: 'Followers, Plays, Likes', type: 'nav', target: 'svc_sc' },
-            { icon: '🎙️', title: 'Podcast [iTunes]', desc: 'Downloads, Reviews', type: 'nav', target: 'svc_pod' },
-            { icon: '🎧', title: 'Mixcloud', desc: 'Plays, Followers', type: 'nav', target: 'svc_mix' },
-            { icon: '🎶', title: 'Shazam', desc: 'Plays', type: 'nav', target: 'svc_shazam' },
-            { icon: '🌊', title: 'Tidal', desc: 'Streams, Followers', type: 'nav', target: 'svc_tidal' },
-            { icon: '💿', title: 'Audiomack', desc: 'Plays, Followers', type: 'nav', target: 'svc_audio' },
-            { icon: '📻', title: 'Boomplay', desc: 'Streams', type: 'nav', target: 'svc_boom' },
-            { icon: '🎸', title: 'Reverbnation', desc: 'Plays, Fans', type: 'nav', target: 'svc_reverb' },
-            { icon: '🗣️', title: 'Clubhouse', desc: 'Room Visitors, Followers', type: 'nav', target: 'svc_club' }
-        ]};
-
-        dbMenu['dm_web'] = { items: [
-            { icon: '🌍', title: 'Website Traffic (Global)', desc: 'Organic Visitors', type: 'nav', target: 'svc_web_gl' },
-            { icon: '🇮🇩', title: 'Website Traffic [Indo]', desc: 'Targeted ID Visitors', type: 'nav', target: 'svc_web_id' },
-            { icon: '📱', title: 'Mobile Web Traffic', desc: 'Smartphone Visitors', type: 'nav', target: 'svc_web_mo' },
-            { icon: '🔗', title: 'Traffic by Referrer', desc: 'Custom Sources', type: 'nav', target: 'svc_web_ref' },
-            { icon: '📍', title: 'Google Maps [Indo]', desc: 'Reviews, Ratings', type: 'nav', target: 'svc_gmaps' },
-            { icon: '🔎', title: 'Yandex', desc: 'Search Traffic', type: 'nav', target: 'svc_yandex' }
-        ]};
-
-        dbMenu['dm_prof'] = { items: [
-            { icon: '👔', title: 'LinkedIn Services', desc: 'Followers, Connections', type: 'nav', target: 'svc_in' },
-            { icon: '🪙', title: 'CoinMarketCap', desc: 'Watchlist, Upvotes', type: 'nav', target: 'svc_cmc' }
-        ]};
-
-        dbMenu['dm_short'] = { items: [
-            { icon: '✂️', title: 'CapCut Services', desc: 'Views, Likes', type: 'nav', target: 'svc_capcut' },
-            { icon: '🍿', title: 'Snack Video Services', desc: 'Views, Shares', type: 'nav', target: 'svc_snack' },
-            { icon: '📌', title: 'Pinterest Services', desc: 'Followers, Repins', type: 'nav', target: 'svc_pin' },
-            { icon: '👻', title: 'Snapchat', desc: 'Story Views, Followers', type: 'nav', target: 'svc_snap' },
-            { icon: '💖', title: 'Likee', desc: 'Views, Likes', type: 'nav', target: 'svc_likee' },
-            { icon: '🎬', title: 'Kwai', desc: 'Views, Followers', type: 'nav', target: 'svc_kwai' },
-            { icon: '📹', title: 'Vimeo', desc: 'Views, Likes', type: 'nav', target: 'svc_vimeo' },
-            { icon: '🏀', title: 'Dribble', desc: 'Views, Likes', type: 'nav', target: 'svc_dribble' },
-            { icon: '📼', title: 'Coub', desc: 'Views, Likes', type: 'nav', target: 'svc_coub' }
-        ]};
-
-        dbMenu['dm_forums'] = { items: [
-            { icon: '💬', title: 'WhatsApp Services', desc: 'Channel Followers', type: 'nav', target: 'svc_wa' },
-            { icon: '✈️', title: 'Telegram Services', desc: 'Members, Views', type: 'nav', target: 'svc_telegram' },
-            { icon: '🧵', title: 'Threads Services', desc: 'Followers, Reshares', type: 'nav', target: 'svc_threads' },
-            { icon: '❓', title: 'Quora Services', desc: 'Upvotes, Answers', type: 'nav', target: 'svc_quora' },
-            { icon: '👽', title: 'Reddit', desc: 'Upvotes, Subscribers', type: 'nav', target: 'svc_reddit' },
-            { icon: '🛒', title: 'Lazada', desc: 'Store Followers, Likes', type: 'nav', target: 'svc_lazada' },
-            { icon: '📝', title: 'Medium', desc: 'Claps, Followers', type: 'nav', target: 'svc_medium' },
-            { icon: '🌊', title: 'Waveful', desc: 'Views, Likes', type: 'nav', target: 'svc_waveful' },
-            { icon: '☕', title: 'Tumblr', desc: 'Reblogs, Followers', type: 'nav', target: 'svc_tumblr' },
-            { icon: '🌐', title: 'VK.com', desc: 'Members, Likes', type: 'nav', target: 'svc_vk' }
-        ]};
-
-        const buildSvc = (name, c1, t1, c2, t2, c3, t3, key) => {
-            dbMenu[key] = { items: [
-                { icon: c1, title: t1, desc: `High Quality ${name}`, type: 'svc_menu', target: `${key}_1` },
-                { icon: c2, title: t2, desc: `Organic ${name}`, type: 'svc_menu', target: `${key}_2` },
-                { icon: c3, title: t3, desc: `Fast Drop ${name}`, type: 'svc_menu', target: `${key}_3` },
-                { icon: '📞', title: `More ${name} Services?`, desc: 'Contact Admin via Chat', type: 'admin_contact', target: '' }
-            ]};
-        };
-
-        buildSvc('YouTube', '👁️', 'Buy Views', '👥', 'Buy Subscribers', '❤️', 'Buy Likes', 'svc_youtube');
-        buildSvc('Twitch', '👁️', 'Buy Live Views', '👥', 'Buy Followers', '💬', 'Buy Chat Bots', 'svc_twitch');
-        buildSvc('Kick.com', '👁️', 'Buy Live Views', '👥', 'Buy Followers', '❤️', 'Buy Likes', 'svc_kick');
-        buildSvc('Bigo Live', '👁️', 'Buy Stream Viewers', '👥', 'Buy Followers', '❤️', 'Buy Likes', 'svc_bigo');
-        buildSvc('Roblox', '🎮', 'Buy Players', '⭐', 'Buy Favorites', '👥', 'Buy Group Members', 'svc_roblox');
-        buildSvc('Discord', '👥', 'Buy Server Members', '💬', 'Buy Mass DM', '❤️', 'Buy Reactions', 'svc_discord');
-        buildSvc('SoundCloud', '👁️', 'Buy Plays', '👥', 'Buy Followers', '❤️', 'Buy Likes', 'svc_sc');
-        buildSvc('Podcast', '📥', 'Buy Downloads', '⭐', 'Buy Reviews', '👥', 'Buy Subscribers', 'svc_pod');
-        buildSvc('Mixcloud', '👁️', 'Buy Plays', '👥', 'Buy Followers', '❤️', 'Buy Favorites', 'svc_mix');
-        
-        buildSvc('Web Traffic', '🌍', 'Global Traffic', '⏱️', 'Long Duration Traffic', '🖱️', 'Click Traffic', 'svc_web_gl');
-        buildSvc('Web Indo', '🇮🇩', 'Indo Traffic', '⏱️', 'Long Duration Indo', '🖱️', 'Click Traffic Indo', 'svc_web_id');
-        buildSvc('LinkedIn', '👔', 'Buy Followers', '🤝', 'Buy Connections', '❤️', 'Buy Post Likes', 'svc_in');
-        buildSvc('CoinMarketCap', '🪙', 'Buy Watchlist', '👍', 'Buy Upvotes', '👁️', 'Buy Views', 'svc_cmc');
-        buildSvc('CapCut', '✂️', 'Buy Template Views', '❤️', 'Buy Likes', '👥', 'Buy Followers', 'svc_capcut');
-        buildSvc('Snack Video', '🍿', 'Buy Views', '❤️', 'Buy Likes', '🔄', 'Buy Shares', 'svc_snack');
-        buildSvc('WhatsApp', '💬', 'Buy Channel Followers', '👥', 'Buy Group Members', '❤️', 'Buy Reactions', 'svc_wa');
-        buildSvc('Telegram', '✈️', 'Buy Channel Members', '👁️', 'Buy Post Views', '❤️', 'Buy Reactions', 'svc_telegram');
-
-        const svcPrices = {
-            "followers": {"reg": 0.15, "fast": 0.20, "ultra": 0.25},
-            "forks":     {"reg": 0.13, "fast": 0.18, "ultra": 0.23},
-            "stars":     {"reg": 0.11, "fast": 0.16, "ultra": 0.21},
-            "watch":     {"reg": 0.10, "fast": 0.15, "ultra": 0.20},
-            "x_rt":      {"reg": 0.05, "fast": 0.08, "ultra": 0.12},
-            "x_like":    {"reg": 0.04, "fast": 0.07, "ultra": 0.10},
-            "x_foll":    {"reg": 0.10, "fast": 0.15, "ultra": 0.20},
-            "ig_like":   {"reg": 0.03, "fast": 0.06, "ultra": 0.09},
-            "ig_foll":   {"reg": 0.12, "fast": 0.17, "ultra": 0.22},
-            "ig_view":   {"reg": 0.01, "fast": 0.02, "ultra": 0.04},
-            "tt_foll":   {"reg": 0.05, "fast": 0.08, "ultra": 0.10},
-            "tt_view":   {"reg": 0.01, "fast": 0.02, "ultra": 0.03},
-            "fb_like":   {"reg": 0.06, "fast": 0.09, "ultra": 0.12},
-            "dc_mem":    {"reg": 0.08, "fast": 0.12, "ultra": 0.15},
-            "tg_mem":    {"reg": 0.08, "fast": 0.12, "ultra": 0.15},
-            "tg_view":   {"reg": 0.02, "fast": 0.04, "ultra": 0.06}
-        };
-
-        const allNewTargets = [];
-        Object.keys(dbMenu).forEach(k => {
-            dbMenu[k].items.forEach(i => { if (i.type === 'svc_menu') allNewTargets.push(i.target); });
-        });
-        allNewTargets.forEach(t => { if (!svcPrices[t]) svcPrices[t] = { reg: 0.10, fast: 0.15, ultra: 0.20 }; });
-
-        function openSubMenu(title, category) {
-            document.getElementById('sub-title').innerText = title; 
-            const subContent = document.getElementById('sub-menu-content');
-            subContent.innerHTML = '';
+        function submitTopup() {
+            const amt = document.getElementById('customAmount').value;
+            const method = document.getElementById('payMethod').value;
             
-            const backBtn = document.getElementById('subBackBtn');
-            if(category === 'assets' || category === 'services') { 
-                backBtn.onclick = () => openSubMenu(t('GitHub Infrastructure'), 'github_main'); 
-            } else if (category.startsWith('acc_')) {
-                backBtn.onclick = () => openSubMenu(t('Digital Asset Accounts'), 'socmed_acc');
-            } else if (category.startsWith('dm_')) {
-                backBtn.onclick = () => openSubMenu(t('Digital Marketing Services'), 'digital_marketing');
-            } else if (category.startsWith('svc_')) {
-                let parentDm = 'digital_marketing';
-                if (['svc_youtube','svc_twitch','svc_kick','svc_bigo','svc_roblox','svc_discord'].includes(category)) parentDm = 'dm_streaming';
-                if (['svc_sc','svc_pod','svc_mix'].includes(category)) parentDm = 'dm_music';
-                if (['svc_web_gl','svc_web_id'].includes(category)) parentDm = 'dm_web';
-                if (['svc_in','svc_cmc'].includes(category)) parentDm = 'dm_prof';
-                if (['svc_capcut','svc_snack'].includes(category)) parentDm = 'dm_short';
-                if (['svc_wa','svc_telegram'].includes(category)) parentDm = 'dm_forums';
-                
-                const parentTitles = {
-                    'dm_streaming': 'Streaming & Gaming', 'dm_music': 'Music & Audio', 'dm_web': 'Web Traffic & SEO',
-                    'dm_prof': 'Professional & Web3', 'dm_short': 'Short Video & Visuals', 'dm_forums': 'Forums & Communication',
-                    'digital_marketing': 'Digital Marketing Services'
-                };
-                backBtn.onclick = () => openSubMenu(t(parentTitles[parentDm] || 'Digital Marketing Services'), parentDm);
-            } else { 
-                backBtn.onclick = () => goToHome(); 
+            if(!amt || amt < 5) {
+                tg.showAlert("Minimal Top-Up adalah $5.00 USDT");
+                return;
             }
 
-            dbMenu[category].items.forEach((item) => {
-                const btn = document.createElement('button'); 
-                
-                if (item.type === 'offline') {
-                    btn.className = 'menu-btn btn-offline';
-                    btn.innerHTML = `
-                        <div class="btn-content">
-                            <div class="btn-icon" style="background:rgba(255,255,255,0.1); border:none;">${item.icon}</div>
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title">${item.title}</span>
-                                <span class="btn-desc">${item.desc}</span>
-                            </div>
-                        </div>
-                        <span class="badge-status bg-sync">SOON</span>
-                    `;
-                    btn.onclick = () => showOfflineModal(item.title);
-                } else if(category === 'github_main') {
-                    btn.className = 'btn-master';
-                    btn.innerHTML = `
-                        <div class="btn-content">
-                            <div class="btn-icon">${item.icon}</div>
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title">${item.title}</span>
-                                <span class="btn-desc" style="color:rgba(255,255,255,0.8);">${item.desc}</span>
-                            </div>
-                        </div>
-                        <span class="arrow-icon" style="color:#fff;">▶</span>
-                    `;
-                } else {
-                    btn.className = 'menu-btn';
-                    btn.innerHTML = `
-                        <div class="btn-content">
-                            <div class="btn-icon">${item.icon}</div>
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title">${item.title}</span>
-                                <span class="btn-desc">${item.desc}</span>
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                if(window.innerWidth >= 768) btn.style.marginBottom = '0';
-                
-                if(item.type === 'nav') { 
-                    btn.onclick = () => openSubMenu(item.title, item.target); 
-                } else if(item.type === 'acc') { 
-                    btn.onclick = () => sendActionToBot("VIEW_CATALOG", { year: item.year }); 
-                } else if(item.type === 'svc_menu') { 
-                    btn.onclick = () => openServiceDetail(item.title, item.target); 
-                } else if (item.type === 'bot_action') {
-                    btn.onclick = () => {
-                        showToast("Request sent! Check your Bot Chat.");
-                        sendActionToBot(item.action, { item_id: item.target, title: item.title });
-                    };
-                } else if (item.type === 'admin_contact') {
-                    btn.onclick = () => {
-                        try { tg.openTelegramLink('https://t.me/XianBeeTechStore'); } 
-                        catch(e) { window.open('https://t.me/XianBeeTechStore', '_blank'); }
-                    };
-                }
-                subContent.appendChild(btn);
+            // Kirim payload ke handler "TOPUP" di XianBee-TechStore_4.py
+            sendAction({
+                action: 'TOPUP',
+                amount: amt,
+                method: method
             });
-            
-            slider.style.transform = 'translateX(-40%)'; 
-            triggerHaptic('medium');
         }
-
-        function openServiceDetail(title, svcType) {
-            document.getElementById('detail-title').innerText = title;
-            const detailContent = document.getElementById('service-detail-content');
-            detailContent.innerHTML = '';
-            
-            const p = svcPrices[svcType] || { reg: 0.10, fast: 0.15, ultra: 0.20 };
-            const isGithubService = ["followers", "forks", "stars", "watch"].includes(svcType);
-
-            if (isGithubService) {
-                const tracks = [
-                    { icon: '🐌', name: 'Regular Track', desc: 'Natural organic speed (1 Node)', speed: 'reg', base: p.reg },
-                    { icon: '🚀', name: 'Fast Track', desc: 'Load Balancing (2 Nodes)', speed: 'fast', base: p.fast },
-                    { icon: '⚡', name: 'Ultra Track', desc: 'Swarm Mode Instant (3 Nodes)', speed: 'ultra', base: p.ultra }
-                ];
-
-                tracks.forEach(t => {
-                    const block = document.createElement('div');
-                    block.style.marginBottom = '20px';
-                    
-                    const hdr = document.createElement('div');
-                    hdr.className = 'menu-category'; 
-                    hdr.innerHTML = `${t.icon} ${t.name} ($${t.base.toFixed(2)}/u)`; 
-                    block.appendChild(hdr);
-
-                    const grid = document.createElement('div'); 
-                    grid.className = 'home-menu-grid';
-                    
-                    const qtys = [ { q: 50, mult: 1.0 }, { q: 100, mult: 1.0 }, { q: 150, mult: 1.0 }, { q: 200, mult: 0.95 } ];
-
-                    qtys.forEach(qItem => {
-                        const price = qItem.q * (t.base * qItem.mult);
-                        const btn = document.createElement('button'); 
-                        btn.className = 'menu-btn'; btn.style.marginBottom = '0';
-                        btn.innerHTML = `
-                            <div class="btn-content">
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">${qItem.q} Units</span>
-                                    <span class="btn-desc" style="color:var(--success); font-weight:700;">$${price.toFixed(2)}</span>
-                                </div>
-                            </div>
-                        `;
-                        btn.onclick = () => openOrderModal(`${title} | ${t.name}`, price, svcType, qItem.q, t.speed);
-                        grid.appendChild(btn);
-                    });
-                    
-                    const btnCustom = document.createElement('button'); 
-                    btnCustom.className = 'menu-btn'; 
-                    btnCustom.style.marginBottom = '0'; btnCustom.style.gridColumn = '1 / -1'; 
-                    btnCustom.innerHTML = `
-                        <div class="btn-content">
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title">✍️ Custom Quantity</span>
-                                <span class="btn-desc">Enter your own amount</span>
-                            </div>
-                        </div>
-                    `;
-                    btnCustom.onclick = () => openOrderModalCustom(`${title} (${t.name})`, svcType, t.speed, t.base);
-                    
-                    grid.appendChild(btnCustom); block.appendChild(grid); detailContent.appendChild(block);
-                });
-            } else {
-                const basePrice = p.reg; 
-                const block = document.createElement('div'); block.style.marginBottom = '20px';
-                
-                const hdr = document.createElement('div');
-                hdr.className = 'menu-category'; hdr.innerHTML = `⭐ STANDARD PACKAGE ($${basePrice.toFixed(2)}/u)`; 
-                block.appendChild(hdr);
-
-                const infoBox = document.createElement('div');
-                infoBox.style.background = 'rgba(245, 158, 11, 0.1)'; infoBox.style.border = '1px solid rgba(245, 158, 11, 0.3)';
-                infoBox.style.padding = '12px'; infoBox.style.borderRadius = '12px'; infoBox.style.marginBottom = '15px';
-                infoBox.style.color = '#f59e0b'; infoBox.style.fontSize = '0.8rem'; infoBox.style.fontWeight = '600';
-                infoBox.innerHTML = '⏳ <b>ESTIMATED DELIVERY:</b> Maximum 72 Hours processing time.';
-                block.appendChild(infoBox);
-
-                const grid = document.createElement('div'); grid.className = 'home-menu-grid';
-                const qtys = [ { q: 50, mult: 1.0 }, { q: 100, mult: 1.0 }, { q: 150, mult: 1.0 }, { q: 200, mult: 0.95 } ];
-
-                qtys.forEach(qItem => {
-                    const price = qItem.q * (basePrice * qItem.mult);
-                    const btn = document.createElement('button'); 
-                    btn.className = 'menu-btn'; btn.style.marginBottom = '0';
-                    btn.innerHTML = `
-                        <div class="btn-content">
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title">${qItem.q} Units</span>
-                                <span class="btn-desc" style="color:var(--success); font-weight:700;">$${price.toFixed(2)}</span>
-                            </div>
-                        </div>
-                    `;
-                    btn.onclick = () => openOrderModal(`${title} (Standard)`, price, svcType, qItem.q, "standard");
-                    grid.appendChild(btn);
-                });
-                
-                const btnCustom = document.createElement('button'); 
-                btnCustom.className = 'menu-btn'; btnCustom.style.marginBottom = '0'; btnCustom.style.gridColumn = '1 / -1'; 
-                btnCustom.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">✍️ Custom Quantity</span>
-                            <span class="btn-desc">Enter your own amount</span>
-                        </div>
-                    </div>
-                `;
-                btnCustom.onclick = () => openOrderModalCustom(`${title} (Standard)`, svcType, "standard", basePrice);
-                
-                grid.appendChild(btnCustom); block.appendChild(grid); detailContent.appendChild(block);
-            }
-            slider.style.transform = 'translateX(-60%)'; triggerHaptic('medium');
-        }
-
-        const cardWrapper = document.getElementById('cardWrapper'); 
-        const card = document.getElementById('digitalCard');
-
-        cardWrapper.addEventListener('mousemove', (e) => { 
-            const rect = cardWrapper.getBoundingClientRect(); 
-            const rotateX = (((e.clientY - rect.top) - (rect.height/2)) / (rect.height/2)) * -10; 
-            const rotateY = (((e.clientX - rect.left) - (rect.width/2)) / (rect.width/2)) * 10; 
-            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`; 
-        });
-        cardWrapper.addEventListener('mouseleave', () => { card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`; });
-        cardWrapper.addEventListener('touchend', () => { card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)`; });
-        
-        function sendActionToBot(actionType, extraData = {}) {
-            triggerHaptic('medium');
-            const payload = { action: actionType, ...extraData };
-            try { tg.sendData(JSON.stringify(payload)); } catch(e) {}
-        }
-
-        function requestBalanceSync() {
-            document.getElementById('counter').innerText = "...";
-            showToast('Syncing balance with server...');
-            setTimeout(() => { sendActionToBot("REFRESH_BALANCE"); }, 1000);
-        }
-
-        function openCheckStatusModal() { 
-            triggerHaptic('light'); document.getElementById('checkStatusTarget').value = ''; 
-            document.getElementById('checkStatusModal').classList.add('active'); 
-        }
-
-        function submitCheckStatus() {
-            const target = document.getElementById('checkStatusTarget').value.trim();
-            if(!target) { showToast('Please enter a username!', true); triggerHaptic('error'); return; }
-            closeModal('checkStatusModal'); showToast('Scanning account...');
-            setTimeout(() => { sendActionToBot('CHECK_STATUS_WEB', { target: target }); }, 1000);
-        }
-
-        let currentPrice = 0, currentItem = "", currentSvcType = "", currentQty = 100, currentSpeed = "reg", currentBasePrice = 0, isCustomQty = false;
-
-        function openOrderModal(title, price, type, qty, speed) {
-            triggerHaptic('light'); isCustomQty = false;
-            document.getElementById('orderTitle').innerText = title; 
-            document.getElementById('orderTarget').value = ''; 
-            document.getElementById('qtyGroup').style.display = 'none';
-            
-            const label = document.getElementById('orderLabel');
-            if(type === 'followers') { label.innerText = 'Target (Username)'; document.getElementById('orderTarget').placeholder = 'e.g. abieharyatmo'; } 
-            else { label.innerText = 'Target (Repository URL)'; document.getElementById('orderTarget').placeholder = 'e.g. owner/repo'; }
-            
-            let discountedPrice = price * (1 - window.userDiscount);
-            currentPrice = discountedPrice; currentItem = title; currentSvcType = type; currentQty = qty; currentSpeed = speed;
-            
-            if (window.userDiscount > 0) {
-                document.getElementById('orderTotal').innerHTML = `<span style="text-decoration: line-through; font-size:0.8rem; color:#ef4444; margin-right:5px;">$${price.toFixed(2)}</span> $${discountedPrice.toFixed(2)}`;
-            } else {
-                document.getElementById('orderTotal').innerText = '$' + discountedPrice.toFixed(2);
-            }
-            document.getElementById('targetPreview').style.display = 'none';
-            document.getElementById('orderModal').classList.add('active');
-        }
-
-        function openOrderModalCustom(title, type, speed, basePrice) {
-            triggerHaptic('light'); isCustomQty = true;
-            document.getElementById('orderTitle').innerText = title + " (Custom)"; 
-            document.getElementById('orderTarget').value = ''; 
-            document.getElementById('orderQty').value = '100'; 
-            document.getElementById('qtyGroup').style.display = 'block';
-            
-            const label = document.getElementById('orderLabel');
-            if(type === 'followers') { label.innerText = 'Target (Username)'; document.getElementById('orderTarget').placeholder = 'e.g. abieharyatmo'; } 
-            else { label.innerText = 'Target (Repository URL)'; document.getElementById('orderTarget').placeholder = 'e.g. owner/repo'; }
-            
-            currentItem = title; currentSvcType = type; currentSpeed = speed; currentBasePrice = basePrice;
-            calcTotal(); 
-            document.getElementById('orderModal').classList.add('active');
-        }
-
-        function calcTotal() {
-            if(!isCustomQty) return;
-            let q = parseInt(document.getElementById('orderQty').value) || 0;
-            if(q < 0) q = 0; currentQty = q;
-            
-            let mult = 1.0;
-            if (q >= 400) mult = 0.85; else if (q >= 300) mult = 0.90; else if (q >= 200) mult = 0.95;
-            
-            let baseCalculated = q * (currentBasePrice * mult);
-            let discountedPrice = baseCalculated * (1 - window.userDiscount);
-            currentPrice = discountedPrice;
-            
-            if (window.userDiscount > 0) {
-                document.getElementById('orderTotal').innerHTML = `<span style="text-decoration: line-through; font-size:0.8rem; color:#ef4444; margin-right:5px;">$${baseCalculated.toFixed(2)}</span> $${discountedPrice.toFixed(2)}`;
-            } else {
-                document.getElementById('orderTotal').innerText = '$' + discountedPrice.toFixed(2);
-            }
-        }
-
-        function submitOrder() {
-            const target = document.getElementById('orderTarget').value.trim();
-            if(!target) { showToast('Please enter target URL!', true); triggerHaptic('error'); return; }
-            if(isCustomQty && currentQty < 10) { showToast('Minimum order is 10 units!', true); triggerHaptic('error'); return; }
-            
-            sendActionToBot("ORDER_SERVICE", { item_name: currentItem, service_type: currentSvcType, speed: currentSpeed, quantity: currentQty, total_price: currentPrice.toFixed(2), target: target });
-        }
-
-        let cart = []; let cartTimerInterval;
-
-        function openStockModal(title, price, yearStr) {
-            triggerHaptic('light'); document.getElementById('stockTitle').innerText = title;
-            const stockBox = document.getElementById('stockListContent'); stockBox.innerHTML = '';
-            
-            for(let i=0; i<3; i++) {
-                const fakeId = yearStr + "-" + Math.random().toString(36).substring(2,8);
-                const isReserved = cart.find(c => c.id === fakeId); 
-                
-                const itemDiv = document.createElement('div'); itemDiv.className = 'stock-item';
-                itemDiv.innerHTML = `
-                    <span class="stock-id">${fakeId}</span>
-                    <button class="btn-add-cart" id="btn-${fakeId}" ${isReserved ? 'disabled style="opacity:0.5;"' : `onclick="addToCart('${fakeId}', '${title}', ${price}, '${yearStr}')"`}>
-                        ${isReserved ? 'Reserved' : '+ Cart'}
-                    </button>
-                `;
-                stockBox.appendChild(itemDiv);
-            }
-            document.getElementById('stockModal').classList.add('active');
-        }
-
-        function addToCart(itemId, title, price, yearStr) {
-            triggerHaptic('medium'); 
-            const expireAt = Date.now() + (3 * 60 * 1000); 
-            let finalItemId = `akun_${yearStr ? yearStr.toLowerCase() : 'unknown'}`;
-            
-            cart.push({ id: itemId, item_id: finalItemId, title: title, price: price, expireAt: expireAt });
-            const btn = document.getElementById('btn-'+itemId);
-            if(btn) { btn.innerText = 'Reserved'; btn.disabled = true; btn.style.opacity = '0.5'; }
-            
-            updateCartBadge(); showToast(`Added to Cart! Reserved for 3 mins.`);
-            if(!cartTimerInterval) cartTimerInterval = setInterval(tickCartTimers, 1000);
-        }
-
-        function tickCartTimers() {
-            const now = Date.now(); let changed = false;
-            cart = cart.filter(item => {
-                if(now >= item.expireAt) {
-                    showToast(`Timer expired! ${item.id} returned to stock.`, true); changed = true;
-                    const btn = document.getElementById('btn-'+item.id);
-                    if(btn) { btn.innerText = '+ Cart'; btn.disabled = false; btn.style.opacity = '1'; }
-                    return false;
-                } return true;
-            });
-            if(changed) { updateCartBadge(); if(document.getElementById('cartModal').classList.contains('active')) renderCartModal(); }
-            cart.forEach(item => {
-                const timeEl = document.getElementById('time-'+item.id);
-                if(timeEl) {
-                    const diff = Math.floor((item.expireAt - now)/1000);
-                    timeEl.innerText = `${Math.floor(diff/60).toString().padStart(2,'0')}:${(diff%60).toString().padStart(2,'0')}`;
-                }
-            });
-            if(cart.length === 0 && cartTimerInterval) { clearInterval(cartTimerInterval); cartTimerInterval = null; }
-        }
-
-        function updateCartBadge() { 
-            const badge = document.getElementById('cartBadge'); badge.innerText = cart.length; 
-            if(cart.length > 0) badge.classList.add('show'); else badge.classList.remove('show'); 
-        }
-
-        function openCartModal() { triggerHaptic('light'); renderCartModal(); document.getElementById('cartModal').classList.add('active'); }
-
-        function renderCartModal() {
-            const content = document.getElementById('cartContent'); 
-            const totalEl = document.getElementById('cartTotal'); const btnCheck = document.getElementById('btnCheckout');
-            content.innerHTML = '';
-            
-            if(cart.length === 0) { 
-                content.innerHTML = '<p style="text-align:center; color:var(--text-muted); font-weight:600; margin-top:20px;">Your cart is empty.</p>'; 
-                totalEl.innerText = '$0.00'; btnCheck.disabled = true; btnCheck.style.opacity = '0.5'; return; 
-            }
-            
-            let total = 0;
-            cart.forEach(item => {
-                total += item.price; const div = document.createElement('div'); div.className = 'cart-item-row';
-                div.innerHTML = `<div class="cart-item-info"><h4>${item.title} <span style="font-size:0.75rem; color:#8b5cf6;">[${item.id}]</span></h4><p>⏳ Expires in: <span id="time-${item.id}" style="color:var(--danger);">03:00</span></p></div><div class="cart-item-price">$${item.price.toFixed(2)}</div>`;
-                content.appendChild(div);
-            });
-            totalEl.innerText = '$' + total.toFixed(2); btnCheck.disabled = false; btnCheck.style.opacity = '1';
-        }
-
-        function checkoutCart() { if(cart.length === 0) return; sendActionToBot("CHECKOUT_CART", { items: cart }); cart = []; updateCartBadge(); closeModal('cartModal'); }
-
-        let currentTopupAmount = 0;
-        function openTopupSelection(amount) { currentTopupAmount = amount; triggerHaptic('light'); document.getElementById('topupSelectModal').classList.add('active'); }
-        function openCustomTopup() { 
-            let val = prompt("Enter amount to deposit (USDT):", "100"); 
-            if(val && parseFloat(val) >= 5) { currentTopupAmount = parseFloat(val); triggerHaptic('light'); document.getElementById('topupSelectModal').classList.add('active'); } else { alert("Minimum deposit is $5."); } 
-        }
-        function submitTopup(method) { closeModal('topupSelectModal'); sendActionToBot("TOPUP", { amount: currentTopupAmount, method: method }); }
-
-        // --- FULL ADMIN PANEL LOGIC ---
-        const ADMIN_IDS = ["6740043923", "7095661271"];
-        const adminTools = [
-            { icon: '📢', title: 'Broadcast Message', cmd: 'admin_broadcast', type: 'text', placeholder: 'Enter broadcast message (Supports HTML)...' },
-            { icon: '💰', title: 'Update Prices', cmd: 'admin_update_price', type: 'text', placeholder: 'Format: username price (e.g. juna 25.5)\nOne per line...' },
-            { icon: '💸', title: 'Update Service Prices', cmd: 'admin_svc_price', type: 'text', placeholder: 'Format: service speed price (e.g. followers reg 0.15)\nOne per line...' },
-            { icon: '📦', title: 'Add Account Stock', cmd: 'admin_addstock', type: 'text', placeholder: 'Enter Year/Category and GitHub URLs...\nOne per line...' },
-            { icon: '🗑️', title: 'Delete Account', cmd: 'admin_delstock', type: 'input', placeholder: 'Enter exact GitHub username to delete...' },
-            { icon: '🧹', title: 'System Cleanup', cmd: 'admin_cleanup', type: 'input', placeholder: 'Enter Year to clean (or type "all")...' },
-            { icon: '🔍', title: 'Check Links', cmd: 'admin_check_links', type: 'text', placeholder: 'Enter multiple GitHub URLs to scan...' },
-            { icon: '⚙️', title: 'Add Engine', cmd: 'admin_add_engine', type: 'input', placeholder: 'Format: Name | Token | Repo_Path | Max_Node' },
-            { icon: '🗑️', title: 'Delete Engine', cmd: 'admin_del_engine', type: 'input', placeholder: 'Enter Engine ID to delete...' },
-            { icon: '🚀', title: 'Manual Deploy', cmd: 'admin_manual_deploy', type: 'deploy' },
-            { icon: '📁', title: 'Sold/History/Suspended', cmd: 'admin_view_history', type: 'action' },
-            { icon: '📋', title: 'List Engines', cmd: 'admin_list_engines', type: 'action' },
-            { icon: '🎁', title: 'Draw Monthly Raffle', cmd: 'admin_draw_raffle', type: 'action' }
-        ];
-
-        let adminChartInstance = null;
-        function openAdminPanel() {
-            let userId = urlUid;
-            if (!userId || !ADMIN_IDS.includes(userId)) { showGlitchAlert(); return; }
-
-            const ctxChart = document.getElementById('revenueChart');
-            if(ctxChart) {
-                if(adminChartInstance) adminChartInstance.destroy();
-                adminChartInstance = new Chart(ctxChart, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Nov 25', 'Dec 25', 'Jan 26', 'Feb 26', 'Mar 26', 'Apr 26', 'May 26'],
-                        datasets: [
-                            { type: 'line', label: 'Revenue (USDT)', data: [120, 250, 410, 580, 850, 1050, 1420], borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.15)', borderWidth: 3, tension: 0.4, fill: true, yAxisID: 'y', pointBackgroundColor: '#10b981', pointBorderColor: '#fff', pointRadius: 4, pointHoverRadius: 6 },
-                            { type: 'bar', label: 'Accounts Sold', data: [15, 30, 45, 60, 95, 120, 150], backgroundColor: 'rgba(139, 92, 246, 0.8)', borderRadius: 4, yAxisID: 'y1' },
-                            { type: 'bar', label: 'SMM (x100)', data: [10, 15, 25, 40, 70, 90, 110], backgroundColor: 'rgba(248, 80, 50, 0.8)', borderRadius: 4, yAxisID: 'y1' }
-                        ]
-                    },
-                    options: {
-                        responsive: true, interaction: { mode: 'index', intersect: false },
-                        plugins: {
-                            legend: { position: 'bottom', labels: { color: '#fff', font: { family: 'Plus Jakarta Sans', size: 10, weight: 'bold' } } },
-                            tooltip: { backgroundColor: 'rgba(20, 15, 35, 0.95)', titleFont: { size: 13, family: 'Plus Jakarta Sans' }, bodyFont: { size: 12, family: 'JetBrains Mono' }, padding: 12, cornerRadius: 8, displayColors: true, borderColor: '#8b5cf6', borderWidth: 1 }
-                        },
-                        scales: {
-                            x: { grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false }, ticks: { color: '#94a3b8', font: { size: 10, weight: 'bold' } } },
-                            y: { type: 'linear', display: true, position: 'left', title: { display: true, text: 'USDT', color: '#10b981', font: {size: 10, weight: 'bold'} }, grid: { color: 'rgba(255,255,255,0.05)', drawBorder: false }, ticks: { color: '#10b981', font: {family: 'JetBrains Mono'} }, beginAtZero: true },
-                            y1: { type: 'linear', display: true, position: 'right', title: { display: true, text: 'Volume', color: '#a78bfa', font: {size: 10, weight: 'bold'} }, grid: { drawOnChartArea: false }, ticks: { color: '#a78bfa', font: {family: 'JetBrains Mono'} }, beginAtZero: true }
-                        }
-                    }
-                });
-            }
-            
-            const adminContent = document.getElementById('admin-content'); 
-            adminContent.innerHTML = '';
-            
-            // 🛡️ UPDATE: Layout Grid Responsif (Otomatis muat 2 atau 3 tergantung lebar layar)
-            adminContent.style.display = 'grid';
-            adminContent.style.gridTemplateColumns = 'repeat(auto-fit, minmax(130px, 1fr))';
-            adminContent.style.gap = '12px';
-
-            adminTools.forEach(tool => {
-                const btn = document.createElement('button'); 
-                btn.className = 'menu-btn'; 
-                btn.style.borderColor = 'rgba(255, 255, 255, 0.1)';
-                btn.style.margin = '0'; // Timpa margin bawaan
-                btn.style.padding = '15px 10px';
-                btn.style.height = '100%'; // Biar tinggi semua kotak rata
-                
-                btn.innerHTML = `
-                    <div class="btn-content" style="flex-direction: column; width: 100%; text-align: center; gap: 8px;">
-                        <div class="btn-icon" style="background:var(--panel-bg); border:1px solid rgba(255,255,255,0.2); margin: 0 auto;">${tool.icon}</div>
-                        <div class="btn-text-wrapper" style="align-items: center; width: 100%;">
-                            <span class="btn-title" style="font-size: 0.85rem; line-height: 1.2; text-wrap: wrap;">${tool.title}</span>
-                            <span class="btn-desc" style="font-family:monospace; font-size: 0.65rem; margin-top: 4px; word-break: break-all;">${tool.cmd}</span>
-                        </div>
-                    </div>
-                `;
-                btn.onclick = () => handleAdminAction(tool);
-                adminContent.appendChild(btn);
-            });
-            slider.style.transform = 'translateX(-80%)'; triggerHaptic('medium');
-        }
-
-        let pendingAdminCmd = "";
-        function handleAdminAction(tool) {
-            triggerHaptic('light');
-            if(tool.type === 'action') { sendActionToBot("ADMIN_CMD", { command: tool.cmd }); } 
-            else if(tool.type === 'deploy') { startManualDeploy(); } 
-            else {
-                pendingAdminCmd = tool.cmd; document.getElementById('adminInputTitle').innerText = tool.title; document.getElementById('adminInputDesc').innerText = "Enter required data below:";
-                const area = document.getElementById('adminInputArea'); const inp = document.getElementById('adminInputText');
-                if(tool.type === 'text') { area.style.display = 'block'; inp.style.display = 'none'; area.value = ''; area.placeholder = tool.placeholder; } 
-                else { area.style.display = 'none'; inp.style.display = 'block'; inp.value = ''; inp.placeholder = tool.placeholder; }
-                document.getElementById('adminInputModal').classList.add('active');
-            }
-        }
-
-        function submitAdminInput() {
-            const area = document.getElementById('adminInputArea'); const inp = document.getElementById('adminInputText');
-            const val = area.style.display === 'block' ? area.value.trim() : inp.value.trim();
-            if(!val) { showToast('Input cannot be empty!', true); triggerHaptic('error'); return; }
-            closeModal('adminInputModal'); showToast('Sending command to server...');
-            setTimeout(() => { sendActionToBot("ADMIN_CMD_DATA", { command: pendingAdminCmd, data: val }); }, 1000);
-        }
-
-        let deployStep = 1;
-        function startManualDeploy() {
-            deployStep = 1; document.getElementById('deployDesc').innerText = "Step 1: Enter Target (URL/Username)";
-            document.getElementById('deployGroupTarget').style.display = 'block'; document.getElementById('deployGroupSvc').style.display = 'none'; document.getElementById('deployGroupEngine').style.display = 'none';
-            document.getElementById('deployTarget').value = ''; document.getElementById('btnDeployNext').innerText = 'Next';
-            document.getElementById('adminDeployModal').classList.add('active');
-        }
-
-        function nextDeployStep() {
-            if(deployStep === 1) {
-                const target = document.getElementById('deployTarget').value.trim();
-                if(!target) { showToast('Target cannot be empty!', true); return; }
-                deployStep = 2; document.getElementById('deployDesc').innerText = "Step 2: Select Service & Quantity";
-                document.getElementById('deployGroupTarget').style.display = 'none'; document.getElementById('deployGroupSvc').style.display = 'block';
-            } else if(deployStep === 2) {
-                const qty = document.getElementById('deployQty').value;
-                if(!qty || qty <= 0) { showToast('Quantity must be > 0', true); return; }
-                deployStep = 3; document.getElementById('deployDesc').innerText = "Step 3: Engine, Duration, & Index";
-                document.getElementById('deployGroupSvc').style.display = 'none'; document.getElementById('deployGroupEngine').style.display = 'block'; document.getElementById('btnDeployNext').innerText = 'Deploy Now!';
-            } else if(deployStep === 3) {
-                const target = document.getElementById('deployTarget').value.trim(); const svc = document.getElementById('deploySvc').value; const qty = document.getElementById('deployQty').value;
-                const engine = document.getElementById('deployEngine').value.trim(); const dur = document.getElementById('deployDur').value.trim(); const idx = document.getElementById('deployIdx').value.trim();
-                if(!engine || !dur || !idx) { showToast('All fields required!', true); return; }
-                closeModal('adminDeployModal'); showToast('Deploying to backend...');
-                const payload = `${target} | ${svc} | ${qty} | ${engine} | ${dur} | ${idx}`;
-                setTimeout(() => { sendActionToBot("ADMIN_CMD_DATA", { command: "admin_manual_deploy_full", data: payload }); }, 1000);
-            }
-        }
-
-        function showOfflineModal(platformName) { triggerHaptic('error'); document.getElementById('offlineTarget').innerText = platformName; document.getElementById('offlineModal').classList.add('active'); }
-        function showGlitchAlert() { triggerHaptic('error'); document.getElementById('glitchModal').classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        let tstTm;
-        function showToast(msg, isError=false) { 
-            const t = document.getElementById('sysToast'); 
-            t.innerHTML = `<span style="font-size:1.4rem;">${isError ? '❌' : '✅'}</span> <span style="font-weight:700;">${msg}</span>`; 
-            t.classList.add('show'); clearTimeout(tstTm); tstTm = setTimeout(() => t.classList.remove('show'), 3000); 
-        }
-        function triggerHaptic(style) { try { if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred(style); } catch(e) {} }
-
-        let previewTimeout;
-        document.getElementById('orderTarget').addEventListener('input', function(e) {
-            clearTimeout(previewTimeout);
-            const val = e.target.value.trim();
-            const previewBox = document.getElementById('targetPreview');
-            if(!val || val.length < 3) { previewBox.style.display = 'none'; return; }
-            if(!['followers', 'stars', 'forks', 'watch'].includes(currentSvcType)) return;
-
-            previewTimeout = setTimeout(() => {
-                let target = val.replace('https://github.com/', '').replace('@', '').split('?')[0].split('#')[0].replace(/\/$/, '');
-                if(!target) return;
-                let isRepo = target.includes('/');
-                let apiUrl = isRepo ? `https://api.github.com/repos/${target}` : `https://api.github.com/users/${target}`;
-                
-                previewBox.style.display = 'flex'; previewBox.innerHTML = `<div style="font-size:0.8rem; color:#8b5cf6;"><i>Fetching live data...</i></div>`;
-                
-                fetch(apiUrl).then(r => { if(!r.ok) throw new Error('Not found'); return r.json(); })
-                .then(data => {
-                    let avatar = isRepo ? data.owner.avatar_url : data.avatar_url;
-                    let name = isRepo ? data.full_name : (data.name || data.login);
-                    let metric = isRepo ? `${data.stargazers_count} Stars • ${data.forks_count} Forks` : `${data.followers} Followers`;
-                    previewBox.innerHTML = `<img src="${avatar}" class="preview-img" style="width:40px; border-radius:50%; margin-right:10px;" onerror="this.src='https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png'"><div class="preview-info"><span class="preview-name" style="color:var(--text-main); font-weight:700;">${name}</span><br><span class="preview-stats" style="color:var(--text-muted); font-size:0.8rem;">${metric}</span></div>`;
-                }).catch(() => { previewBox.innerHTML = `<div style="font-size:0.8rem; color:#ef4444;"><i>Target not found or Private.</i></div>`; });
-            }, 800);
-        });
     </script>
 </body>
 </html>
