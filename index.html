@@ -157,7 +157,7 @@
         .tool-icon { font-size: 1.2rem; }
         .tool-text { font-size: 0.8rem; font-weight: 700; text-align: left; }
 
-        #sub-menu-content, #service-detail-content, #admin-content { display: flex; flex-direction: column; gap: 10px; padding-bottom: 20px; }
+        #sub-menu-content, #service-detail-content, #admin-content { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; padding-bottom: 20px; }
 
         .cart-fab { position: absolute; bottom: 25px; right: 25px; width: 65px; height: 65px; background: var(--grad-master); border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 1.6rem; color: #fff; cursor: pointer; z-index: 100; box-shadow: var(--glow-shadow); transition: 0.3s; }
         .cart-fab:active { transform: scale(0.9); }
@@ -340,16 +340,27 @@
                         <span class="home-logo-sub">ENTERPRISE</span>
                     </div>
 
-                    <button class="btn-master" style="margin-bottom: 18px;" onclick="goToWallet()">
-                        <div class="btn-content">
-                            <div class="btn-icon">💳</div>
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title" id="txt_wallet_btn">My Wallet & Profile</span>
-                                <span class="btn-desc" id="txt_wallet_desc">Check Balance & Deposit</span>
+                    <!-- GRID PROFIL & WALLET (SESUAI BOT) -->
+                    <div class="home-menu-grid" style="margin-bottom: 12px;">
+                        <button class="menu-btn" style="margin-bottom:0;" onclick="goToWallet()">
+                            <div class="btn-content" style="gap:10px;">
+                                <div class="btn-icon" style="font-size:1.1rem; width:36px; height:36px; background:linear-gradient(135deg, #10b981 0%, #059669 100%);">👤</div>
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title" style="font-size:0.8rem;">My Profile</span>
+                                    <span class="btn-desc" style="font-size:0.6rem;">Account Info</span>
+                                </div>
                             </div>
-                        </div>
-                        <span class="arrow-icon">◀</span>
-                    </button>
+                        </button>
+                        <button class="menu-btn" style="margin-bottom:0;" onclick="goToWallet()">
+                            <div class="btn-content" style="gap:10px;">
+                                <div class="btn-icon" style="font-size:1.1rem; width:36px; height:36px; background:linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">💳</div>
+                                <div class="btn-text-wrapper">
+                                    <span class="btn-title" style="font-size:0.8rem;">Wallet & Top-Up</span>
+                                    <span class="btn-desc" style="font-size:0.6rem;">Balance & Deposit</span>
+                                </div>
+                            </div>
+                        </button>
+                    </div>
 
                     <!-- 1. GITHUB ENTERPRISE HUB (FULL WIDTH) -->
                     <button class="btn-master" style="margin-bottom: 12px; background: linear-gradient(135deg, #7c3aed 0%, #4f46e5 100%);" onclick="openSubMenu('GitHub Enterprise Hub', 'github_main')">
@@ -413,7 +424,7 @@
                         </button>
 
                         <!-- 6. FLASH SALE & PROMOS -->
-                        <button class="menu-btn" style="margin-bottom:0;" onclick="sendActionToBot('VIEW_FLASH_SALE')">
+                        <button class="menu-btn" style="margin-bottom:0;" onclick="openSubMenu('Flash Sale & Promos', 'flash_sale_menu')">
                             <div class="btn-content" style="gap:10px;">
                                 <div class="btn-icon" style="font-size:1.1rem; width:36px; height:36px; background:linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);">🔥</div>
                                 <div class="btn-text-wrapper">
@@ -882,93 +893,130 @@
         
         const dbMenu = {
             'github_main': { items: [
-                { icon: '🎒', title: 'Premium Aged GitHub Accounts', desc: 'Browse full year inventory', type: 'nav', target: 'assets' },
-                { icon: '🚀', title: 'GitHub Boost Services', desc: 'Followers, Forks, Stars, Watch', type: 'nav', target: 'services' },
-                { icon: '🛠️', title: 'GitHub Enterprise Tools', desc: 'Account Value, Direct Repo, Hidden Info', type: 'nav', target: 'github_tools' },
-                { icon: '📞', title: 'Request Custom to Admin', desc: 'Direct contact via chat', type: 'admin_contact', target: '' }
-            ]},
-            'github_tools': { items: [
-                { icon: '🔍', title: 'Check Account Status', desc: 'Verify shadowban or safety', type: 'bot_action', action: 'CHECK_STATUS', target: '' },
-                { icon: '💰', title: 'Account Value Estimator', desc: 'Calculate repo & metrics value', type: 'bot_action', action: 'ESTIMATE_ACC', target: '' },
-                { icon: '📦', title: 'Direct Repo Download', desc: 'Secure direct source downloader', type: 'bot_action', action: 'REPO_DOWNLOAD', target: '' },
-                { icon: '🕵️‍♂️', title: 'Hidden Info Extractor', desc: 'Extract hidden profile metadata', type: 'bot_action', action: 'EXTRACT_INFO', target: '' }
+                { fullWidth: true, icon: '🎒', title: 'Premium Aged GitHub Accounts', desc: 'Browse full year inventory', type: 'nav', target: 'assets' },
+                { icon: '🚀', title: 'GitHub Boost Services', desc: 'Followers, Forks, Stars', type: 'nav', target: 'services' },
+                { icon: '🛠️', title: 'GitHub Enterprise Tools', desc: 'Extractors & Estimators', type: 'nav', target: 'github_tools' },
+                { fullWidth: true, icon: '📞', title: 'Request Custom to Admin', desc: 'Direct contact via chat', type: 'admin_contact', target: '' }
             ]},
             'assets': { items: [
-                { icon: '📅', title: '2011 to 2026 Aged Accounts', desc: 'Vintage & Fresh inventory', type: 'bot_action', action: 'VIEW_CATALOG', year: 'ALL' },
-                { icon: '❄️', title: 'Arctic Vault Badge (1)', desc: 'Rare 2020 badge contributor', price: 10.00, type: 'acc', year: 'Arctic' },
-                { icon: '🏅', title: '6 Badges (Normal)', desc: 'Pull Shark, YOLO, Starstruck', price: 10.00, type: 'acc', year: '6Badge' },
-                { icon: '👥', title: 'GitHub with Followers (37)', desc: 'Pre-warmed organic followers', price: 0.00, type: 'acc', year: 'Followers' },
-                { icon: '🎒', title: 'Student Dev Pack', desc: 'Approved free credits & benefits', price: 5.00, type: 'acc', year: 'StudentPack' },
-                { icon: '📈', title: 'High Contributions (1)', desc: 'Massive green commit history', price: 0.00, type: 'acc', year: 'Contrib' },
-                { icon: '📋', title: 'View ALL Stock (224 Accounts)', desc: 'Complete verified database', type: 'bot_action', action: 'VIEW_CATALOG', year: 'ALL' }
+                { icon: '📅', title: '2011 (1)', desc: 'Aged Tier', price: 20, type: 'acc', year: '2011' },
+                { icon: '📅', title: '2012 (4)', desc: 'Aged Tier', price: 18, type: 'acc', year: '2012' },
+                { icon: '📅', title: '2013 (13)', desc: 'Aged Tier', price: 15, type: 'acc', year: '2013' },
+                { icon: '📅', title: '2014 (2)', desc: 'Aged Tier', price: 12, type: 'acc', year: '2014' },
+                { icon: '📅', title: '2015 (4)', desc: 'Aged Tier', price: 10, type: 'acc', year: '2015' },
+                { icon: '📅', title: '2016 (14)', desc: 'Aged Tier', price: 9, type: 'acc', year: '2016' },
+                { icon: '📅', title: '2017 (16)', desc: 'Aged Tier', price: 8, type: 'acc', year: '2017' },
+                { icon: '📅', title: '2018 (15)', desc: 'Aged Tier', price: 7, type: 'acc', year: '2018' },
+                { icon: '📅', title: '2019 (12)', desc: 'Aged Tier', price: 6, type: 'acc', year: '2019' },
+                { icon: '📅', title: '2020 (2)', desc: 'Aged Tier', price: 5, type: 'acc', year: '2020' },
+                { icon: '📅', title: '2021 (1)', desc: 'Aged Tier', price: 4, type: 'acc', year: '2021' },
+                { icon: '📅', title: '2022 (2)', desc: 'Aged Tier', price: 3, type: 'acc', year: '2022' },
+                { icon: '📅', title: '2023 (9)', desc: 'Aged Tier', price: 2, type: 'acc', year: '2023' },
+                { icon: '📅', title: '2024 (6)', desc: 'Aged Tier', price: 1, type: 'acc', year: '2024' },
+                { icon: '📅', title: '2025 (13)', desc: 'Aged Tier', price: 0.5, type: 'acc', year: '2025' },
+                { fullWidth: true, icon: '📅', title: '2026 (108)', desc: 'Fresh Tier', price: 0.2, type: 'acc', year: '2026' },
+                { icon: '❄️', title: 'Arctic Vault Badge (1)', desc: 'Rare Contributor', price: 10.00, type: 'acc', year: 'Arctic' },
+                { icon: '🏅', title: '6 Badges (Normal)', desc: 'Pull Shark, YOLO', price: 10.00, type: 'acc', year: '6Badge' },
+                { fullWidth: true, icon: '👥', title: 'GitHub with Followers (37)', desc: 'Pre-warmed organic followers', price: 0.00, type: 'acc', year: 'Followers' },
+                { icon: '🎒', title: 'Student Dev Pack', desc: 'Approved free credits', price: 5.00, type: 'acc', year: 'StudentPack' },
+                { icon: '📈', title: 'High Contributions (1)', desc: 'Massive commit history', price: 0.00, type: 'acc', year: 'Contrib' },
+                { fullWidth: true, icon: '📋', title: 'View ALL Stock (224 Accounts)', desc: 'Complete verified database', type: 'bot_action', action: 'VIEW_CATALOG', year: 'ALL' }
             ]},
             'services': { items: [
                 { icon: '👥', title: 'Followers Service', desc: 'Organic target boost', type: 'svc_menu', target: 'followers' },
-                { icon: '⎇', title: 'Forks Service', desc: 'Repository forks distribution', type: 'svc_menu', target: 'forks' },
-                { icon: '⭐', title: 'Stars Service', desc: 'Repository stars booster', type: 'svc_menu', target: 'stars' },
-                { icon: '👁️', title: 'Watch Service', desc: 'Repository watchers increase', type: 'svc_menu', target: 'watch' }
+                { icon: '⎇', title: 'Forks Service', desc: 'Repo forks distribution', type: 'svc_menu', target: 'forks' },
+                { icon: '⭐', title: 'Stars Service', desc: 'Repo stars booster', type: 'svc_menu', target: 'stars' },
+                { icon: '👁️', title: 'Watch Service', desc: 'Repo watchers increase', type: 'svc_menu', target: 'watch' }
+            ]},
+            'github_tools': { items: [
+                { icon: '🔍', title: 'Check Account Status', desc: 'Verify shadowban', type: 'bot_action', action: 'CHECK_STATUS', target: '' },
+                { icon: '💰', title: 'Account Value Estimator', desc: 'Calculate repo value', type: 'bot_action', action: 'ESTIMATE_ACC', target: '' },
+                { icon: '📦', title: 'Direct Repo Download', desc: 'Secure downloader', type: 'bot_action', action: 'REPO_DOWNLOAD', target: '' },
+                { icon: '🕵️‍♂️', title: 'Hidden Info Extractor', desc: 'Extract metadata', type: 'bot_action', action: 'EXTRACT_INFO', target: '' }
             ]},
             'other_main': { items: [
-                { icon: '📦', title: 'Aged Social Accounts', desc: 'Twitter, IG, TikTok, FB, etc.', type: 'nav', target: 'socmed_acc' },
-                { icon: '🚀', title: 'SMM Boost Services', desc: 'Real-time server infrastructure', type: 'nav', target: 'smm_boost_hub' },
-                { icon: '🛠️', title: 'SMM Validator Tools', desc: 'Validate targets & check links', type: 'bot_action', action: 'SMM_VALIDATOR', target: '' },
-                { icon: '📊', title: 'Check Order Status (Real-Time)', desc: 'Track via Transaction ID (TrxID)', type: 'bot_action', action: 'CHECK_ORDER_STATUS', target: '' },
-                { icon: '📞', title: 'Request Custom to Admin', desc: 'Custom package requests', type: 'admin_contact', target: '' }
+                { fullWidth: true, icon: '📦', title: 'Aged Social Accounts', desc: 'Twitter, IG, TikTok, FB, etc.', type: 'nav', target: 'socmed_acc' },
+                { icon: '🚀', title: 'SMM Boost Services', desc: 'Real-time servers', type: 'nav', target: 'smm_boost_hub' },
+                { icon: '🛠️', title: 'SMM Validator Tools', desc: 'Validate targets', type: 'bot_action', action: 'SMM_VALIDATOR', target: '' },
+                { fullWidth: true, icon: '📊', title: 'Check Order Status (Real-Time)', desc: 'Track via Transaction ID (TrxID)', type: 'bot_action', action: 'CHECK_ORDER_STATUS', target: '' },
+                { fullWidth: true, icon: '📞', title: 'Request Custom to Admin', desc: 'Custom package requests', type: 'admin_contact', target: '' }
+            ]},
+            'socmed_acc': { items: [
+                { icon: '🐦', title: 'Twitter (X)', desc: 'Aged, Crypto, Verified', type: 'nav', target: 'smm_x_hub' },
+                { icon: '📸', title: 'Instagram', desc: 'Aged, High Followers', type: 'nav', target: 'smm_ig_hub' },
+                { icon: '🎵', title: 'TikTok', desc: 'Aged, Creator Ready', type: 'nav', target: 'smm_tt_hub' },
+                { icon: '📘', title: 'Facebook', desc: 'Aged, Marketplace', type: 'nav', target: 'smm_fb_hub' },
+                { icon: '✈️', title: 'Telegram', desc: 'Aged, Premium, Fresh', type: 'nav', target: 'smm_tg_hub' },
+                { icon: '🎮', title: 'Discord', desc: 'Aged, Nitro Ready', type: 'nav', target: 'smm_dc_hub' },
+                { icon: '👽', title: 'Reddit', desc: 'Aged, High Karma', type: 'nav', target: 'acc_rd' },
+                { icon: '📧', title: 'Email Accounts', desc: 'Gmail & Outlook', type: 'nav', target: 'acc_mail' }
             ]},
             'smm_boost_hub': { items: [
-                { icon: '🌐', title: 'Social Media SMM', desc: 'Multi-platform standard boost', type: 'admin_contact', target: '' },
-                { icon: '🛒', title: 'Online Shop (E-Commerce)', desc: 'Marketplace traffic & metrics', type: 'admin_contact', target: '' },
-                { icon: '🎥', title: 'Streaming & Gaming', desc: 'Twitch, Kick, YouTube live views', type: 'admin_contact', target: '' },
-                { icon: '🌍', title: 'Web Traffic SMM', desc: 'Global & Indo organic visitors', type: 'admin_contact', target: '' },
-                { icon: '💼', title: 'Professional & Others', desc: 'LinkedIn, CoinMarketCap, etc.', type: 'admin_contact', target: '' }
-            ]},
-            'crypto_center': { items: [
-                { icon: '⛽', title: 'Crypto Gas Station', desc: 'ETH, SOL, BNB, Polygon & L2s', type: 'nav', target: 'crypto_gas_menu' },
-                { icon: '🔄', title: 'Crypto Convert & P2P', desc: 'Binance Pay, Global Exchange, Personal', type: 'nav', target: 'crypto_convert_menu' },
-                { icon: '🏦', title: 'Aged Exchange Accounts', desc: 'Binance, OKX, MEXC, Bitget, etc.', type: 'nav', target: 'acc_exc' },
-                { icon: '📞', title: 'Request Custom to Admin', desc: 'Direct chat', type: 'admin_contact', target: '' }
-            ]},
-            'crypto_gas_menu': { items: [
-                { icon: '🔷', title: 'Ethereum & L2s', desc: 'Arbitrum, Optimism, Base gas', type: 'bot_action', action: 'CRYPTO_GAS', target: 'eth' },
-                { icon: '🟡', title: 'Binance (BSC)', desc: 'BEP20 network gas refill', type: 'bot_action', action: 'CRYPTO_GAS', target: 'bsc' },
-                { icon: '🟣', title: 'Solana Ecos', desc: 'SOL network transaction gas', type: 'bot_action', action: 'CRYPTO_GAS', target: 'sol' },
-                { icon: '💎', title: 'TON Network', desc: 'Telegram Open Network gas', type: 'bot_action', action: 'CRYPTO_GAS', target: 'ton' },
-                { icon: '🟢', title: 'Polygon Ecos', desc: 'MATIC / POL gas refill', type: 'bot_action', action: 'CRYPTO_GAS', target: 'polygon' },
-                { icon: '🪐', title: 'Cosmos & God', desc: 'Cosmos ecosystem assets', type: 'bot_action', action: 'CRYPTO_GAS', target: 'cosmos' },
-                { icon: '💵', title: 'Stablecoins', desc: 'USDT / USDC gas handling', type: 'bot_action', action: 'CRYPTO_GAS', target: 'stable' },
-                { icon: '⚡', title: 'Alt L1s (SUI / APT / etc)', desc: 'Alternative Layer 1 networks', type: 'bot_action', action: 'CRYPTO_GAS', target: 'altl1' }
-            ]},
-            'crypto_convert_menu': { items: [
-                { icon: '🔶', title: 'Binance Pay', desc: 'Direct pay transfer swap', type: 'bot_action', action: 'CONVERT_CRYPTO', target: 'binancepay' },
-                { icon: '🌐', title: 'Global Exchange', desc: 'Cross-exchange conversion', type: 'bot_action', action: 'CONVERT_CRYPTO', target: 'global' },
-                { icon: '👛', title: 'Personal Wallet', desc: 'Metamask / Trustwallet swap', type: 'bot_action', action: 'CONVERT_CRYPTO', target: 'personal' }
-            ]},
-            'ppob_center': { items: [
-                { icon: '📱', title: 'Cellular & Network Data', desc: 'Pulsa & Internet packages', type: 'bot_action', action: 'PPOB_ORDER', target: 'pulsa' },
-                { icon: '⚡', title: 'PLN Electricity & Token', desc: 'Prepaid token & postpaid bill', type: 'bot_action', action: 'PPOB_ORDER', target: 'pln' },
-                { icon: '🎟️', title: 'Vouchers & Retail', desc: 'Digital vouchers & shopping', type: 'bot_action', action: 'PPOB_ORDER', target: 'voucher' },
-                { icon: '🎮', title: 'Games & Entertainment', desc: 'Mobile Legends, Free Fire, PubG', type: 'bot_action', action: 'PPOB_ORDER', target: 'game' },
-                { icon: '🚗', title: 'Transport & Food', desc: 'E-Wallet & ride-hailing balance', type: 'bot_action', action: 'PPOB_ORDER', target: 'transport' },
-                { icon: '📺', title: 'Pay TV & Satellite', desc: 'Cable television subscription', type: 'bot_action', action: 'PPOB_ORDER', target: 'tv' },
-                { icon: '🌍', title: 'International Top-Up', desc: 'Global mobile top-up service', type: 'bot_action', action: 'PPOB_ORDER', target: 'intl' }
+                { fullWidth: true, icon: '🌐', title: 'Social Media SMM', desc: 'Multi-platform standard boost', type: 'nav', target: 'digital_marketing' },
+                { fullWidth: true, icon: '🛒', title: 'Online Shop (E-Commerce)', desc: 'Marketplace traffic & metrics', type: 'nav', target: 'dm_forums' },
+                { fullWidth: true, icon: '🎥', title: 'Streaming & Gaming', desc: 'Twitch, Kick, YouTube live', type: 'nav', target: 'dm_streaming' },
+                { icon: '🌍', title: 'Web Traffic SMM', desc: 'Global visitors', type: 'nav', target: 'dm_web' },
+                { icon: '💼', title: 'Professional & Others', desc: 'LinkedIn, CoinMarketCap', type: 'nav', target: 'dm_prof' }
             ]},
             'subscriptions': { items: [
-                { icon: '🎨', title: 'Premium Apps', desc: 'Canva Pro, CapCut Pro, ChatGPT Plus', type: 'bot_action', action: 'PREMIUM_SUB', target: 'apps' },
-                { icon: '🎬', title: 'VIP Streaming', desc: 'Netflix, Spotify, Disney+ Hotstar', type: 'bot_action', action: 'PREMIUM_SUB', target: 'streaming' },
-                { icon: '📞', title: 'Request Custom to Admin', desc: 'Direct contact', type: 'admin_contact', target: '' }
+                { icon: '🎨', title: 'Premium Apps', desc: 'Canva Pro, CapCut', type: 'bot_action', action: 'PREMIUM_SUB', target: 'apps' },
+                { icon: '🎬', title: 'VIP Streaming', desc: 'Netflix, Spotify', type: 'bot_action', action: 'PREMIUM_SUB', target: 'streaming' },
+                { fullWidth: true, icon: '📞', title: 'Request Custom to Admin', desc: 'Direct contact', type: 'admin_contact', target: '' }
+            ]},
+            'crypto_center': { items: [
+                { icon: '⛽', title: 'Crypto Gas Station', desc: 'ETH, SOL, BNB, Polygon', type: 'nav', target: 'crypto_gas_menu' },
+                { icon: '🔄', title: 'Crypto Convert & P2P', desc: 'Binance, Exchange, Personal', type: 'nav', target: 'crypto_convert_menu' },
+                { fullWidth: true, icon: '🏦', title: 'Aged Exchange Accounts', desc: 'Binance, OKX, MEXC, Bitget', type: 'nav', target: 'acc_exc' },
+                { fullWidth: true, icon: '📞', title: 'Request Custom to Admin', desc: 'Direct chat', type: 'admin_contact', target: '' }
+            ]},
+            'crypto_gas_menu': { items: [
+                { icon: '🔷', title: 'Ethereum & L2s', desc: 'Arbitrum, Optimism', type: 'bot_action', action: 'CRYPTO_GAS', target: 'eth' },
+                { icon: '🟡', title: 'Binance (BSC)', desc: 'BEP20 network', type: 'bot_action', action: 'CRYPTO_GAS', target: 'bsc' },
+                { icon: '🟣', title: 'Solana Ecos', desc: 'SOL network gas', type: 'bot_action', action: 'CRYPTO_GAS', target: 'sol' },
+                { icon: '💎', title: 'TON Network', desc: 'Telegram Open Network', type: 'bot_action', action: 'CRYPTO_GAS', target: 'ton' },
+                { icon: '🟢', title: 'Polygon Ecos', desc: 'MATIC / POL gas', type: 'bot_action', action: 'CRYPTO_GAS', target: 'polygon' },
+                { icon: '🪐', title: 'Cosmos & God', desc: 'Cosmos assets', type: 'bot_action', action: 'CRYPTO_GAS', target: 'cosmos' },
+                { icon: '💵', title: 'Stablecoins', desc: 'USDT / USDC', type: 'bot_action', action: 'CRYPTO_GAS', target: 'stable' },
+                { icon: '⚡', title: 'Alt L1s (SUI/APT/etc)', desc: 'Alternative Layer 1s', type: 'bot_action', action: 'CRYPTO_GAS', target: 'altl1' }
+            ]},
+            'crypto_convert_menu': { items: [
+                { icon: '🔶', title: 'Binance Pay', desc: 'Direct pay transfer', type: 'bot_action', action: 'CONVERT_CRYPTO', target: 'binancepay' },
+                { icon: '🌐', title: 'Global Exchange', desc: 'Cross-exchange', type: 'bot_action', action: 'CONVERT_CRYPTO', target: 'global' },
+                { fullWidth: true, icon: '👛', title: 'Personal Wallet', desc: 'Metamask / Trustwallet', type: 'bot_action', action: 'CONVERT_CRYPTO', target: 'personal' }
+            ]},
+            'acc_exc': { items: [
+                { icon: '🔶', title: 'Binance', desc: 'KYC Verified / Aged', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_binance' },
+                { icon: '⚫', title: 'OKX', desc: 'KYC Verified / Aged', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_okx' },
+                { icon: '🟢', title: 'MEXC', desc: 'Anonymous Trading', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_mexc_nokyc' },
+                { icon: '🟡', title: 'Bybit', desc: 'KYC Verified', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_bybit' },
+                { icon: '💎', title: 'Bitget', desc: 'KYC Verified', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_bitget' },
+                { icon: '🪐', title: 'Gate.io', desc: 'KYC Verified', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_gate' },
+                { fullWidth: true, icon: '⚡', title: 'LBank', desc: 'KYC Verified', type: 'bot_action', action: 'ACC_ORDER', target: 'exc_lbank' }
+            ]},
+            'ppob_center': { items: [
+                { fullWidth: true, icon: '📱', title: 'Cellular & Network Data', desc: 'Pulsa & Internet packages', type: 'bot_action', action: 'PPOB_ORDER', target: 'pulsa' },
+                { icon: '💳', title: 'E-Wallet Top-Up', desc: 'DANA, OVO, Gopay', type: 'bot_action', action: 'PPOB_ORDER', target: 'ewallet' },
+                { icon: '⚡', title: 'PLN & Electricity', desc: 'Prepaid & Postpaid', type: 'bot_action', action: 'PPOB_ORDER', target: 'pln' },
+                { icon: '🎟️', title: 'Vouchers & Retail', desc: 'Digital vouchers', type: 'bot_action', action: 'PPOB_ORDER', target: 'voucher' },
+                { icon: '🎮', title: 'Games & Entertainment', desc: 'MLBB, Free Fire, PubG', type: 'bot_action', action: 'PPOB_ORDER', target: 'game' },
+                { icon: '🚗', title: 'Transport & Food', desc: 'Ride-hailing balance', type: 'bot_action', action: 'PPOB_ORDER', target: 'transport' },
+                { icon: '📺', title: 'Pay TV & Satellite', desc: 'Cable subscriptions', type: 'bot_action', action: 'PPOB_ORDER', target: 'tv' },
+                { fullWidth: true, icon: '🌍', title: 'International Top-Up', desc: 'Global mobile top-up', type: 'bot_action', action: 'PPOB_ORDER', target: 'intl' }
+            ]},
+            'flash_sale_menu': { items: [
+                { fullWidth: true, icon: '🛒', title: 'Check Flash Sale', desc: 'View today\'s promo', type: 'bot_action', action: 'VIEW_FLASH_SALE', target: '' }
             ]},
             'b2b_center': { items: [
-                { icon: '🔑', title: 'Generate API Key', desc: 'Create secure developer credentials', type: 'bot_action', action: 'GENERATE_API_KEY', target: '' },
-                { icon: '📖', title: 'Read API Documentation', desc: 'Integration endpoints & guides', type: 'admin_contact', target: '' }
+                { fullWidth: true, icon: '🔑', title: 'Generate API Key', desc: 'Create secure developer credentials', type: 'bot_action', action: 'GENERATE_API_KEY', target: '' },
+                { fullWidth: true, icon: '📖', title: 'Read API Documentation', desc: 'Integration endpoints & guides', type: 'admin_contact', target: '' }
             ]},
             'support_center': { items: [
-                { icon: '🤝', title: 'Affiliate Program', desc: 'Earn commission on referrals', type: 'bot_action', action: 'REFERRAL', target: '' },
-                { icon: '📈', title: 'Infra Status', desc: 'Server health & node uptime', type: 'bot_action', action: 'SYS_STATUS', target: '' },
+                { icon: '🤝', title: 'Affiliate', desc: 'Earn commission', type: 'bot_action', action: 'REFERRAL', target: '' },
+                { icon: '📈', title: 'Infra Status', desc: 'Server health', type: 'bot_action', action: 'SYS_STATUS', target: '' },
                 { icon: '❓', title: 'FAQ & Guide', desc: 'Frequently asked questions', type: 'bot_action', action: 'FAQ', target: '' },
-                { icon: '🎧', title: 'Live Support', desc: 'Chat directly with administrator', type: 'admin_contact', target: '' }
+                { icon: '🎧', title: 'Live Support', desc: 'Chat with administrator', type: 'admin_contact', target: '' }
             ]}
         };
-
         const platforms = [
             { id: 'x', name: 'X (Twitter)' }, { id: 'ig', name: 'Instagram' }, { id: 'tt', name: 'TikTok' }, 
             { id: 'fb', name: 'Facebook' }, { id: 'dc', name: 'Discord' }, { id: 'tg', name: 'Telegram' }
@@ -1150,18 +1198,18 @@
             subContent.innerHTML = '';
             
             const backBtn = document.getElementById('subBackBtn');
-            if(category === 'assets' || category === 'services' || category === 'github_tools') { 
+            
+            // Logika Back Button Komplit
+            if (category === 'assets' || category === 'services' || category === 'github_tools') { 
                 backBtn.onclick = () => openSubMenu(t('GitHub Enterprise Hub'), 'github_main'); 
-            } else if(category === 'crypto_gas_menu' || category === 'crypto_convert_menu') {
+            } else if (category === 'crypto_gas_menu' || category === 'crypto_convert_menu' || category === 'acc_exc') {
                 backBtn.onclick = () => openSubMenu(t('Crypto Center & Convert'), 'crypto_center');
-            } else if(category === 'smm_boost_hub') {
+            } else if (category === 'socmed_acc' || category === 'smm_boost_hub') {
                 backBtn.onclick = () => openSubMenu(t('Social Media Center'), 'other_main');
-            } else if (['crypto_center', 'ppob_center', 'b2b_center', 'support_center', 'other_main', 'subscriptions'].includes(category)) {
-                backBtn.onclick = () => goToHome();
-            } else if (category.startsWith('acc_')) {
-                backBtn.onclick = () => openSubMenu(t('Digital Asset Accounts'), 'socmed_acc');
-            } else if (category.startsWith('dm_')) {
-                backBtn.onclick = () => openSubMenu(t('Digital Marketing Services'), 'digital_marketing');
+            } else if (['digital_marketing', 'dm_forums', 'dm_streaming', 'dm_web', 'dm_prof'].includes(category)) {
+                backBtn.onclick = () => openSubMenu(t('SMM Boost Services'), 'smm_boost_hub');
+            } else if (category.startsWith('smm_')) {
+                backBtn.onclick = () => openSubMenu(t('Aged Social Accounts'), 'socmed_acc');
             } else if (category.startsWith('svc_')) {
                 let parentDm = 'digital_marketing';
                 if (['svc_youtube','svc_twitch','svc_kick','svc_bigo','svc_roblox','svc_discord'].includes(category)) parentDm = 'dm_streaming';
@@ -1223,8 +1271,9 @@
                 }
                 
                 if(window.innerWidth >= 768) btn.style.marginBottom = '0';
+                if(item.fullWidth) btn.style.gridColumn = '1 / -1';
                 
-                if(item.type === 'nav') { 
+                if(item.type === 'nav') {
                     btn.onclick = () => openSubMenu(item.title, item.target); 
                 } else if(item.type === 'acc') { 
                     btn.onclick = () => sendActionToBot("VIEW_CATALOG", { year: item.year }); 
