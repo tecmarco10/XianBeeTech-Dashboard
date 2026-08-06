@@ -1192,10 +1192,64 @@
         });
         allNewTargets.forEach(t => { if (!svcPrices[t]) svcPrices[t] = { reg: 0.10, fast: 0.15, ultra: 0.20 }; });
 
+        // --- FETCH LIVE STOCK DARI GITHUB API (ANTI-CACHE) ---
+        async function fetchLiveStock() {
+            try {
+                const response = await fetch('https://api.github.com/repos/tecmarco10/XianBeeTech-Dashboard/contents/stock.json', {
+                    headers: { 'Accept': 'application/vnd.github.v3+json' },
+                    cache: 'no-store'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    const jsonString = decodeURIComponent(escape(atob(data.content)));
+                    const liveStock = JSON.parse(jsonString);
+                    let isChanged = false;
+                    
+                    // Map Nama Asli Biar Gak Berubah Jadi Angka Doang
+                    const baseNames = {
+                        'Arctic': 'Arctic Vault Badge', '6Badge': '6 Badges (Normal)',
+                        'Followers': 'GitHub with Followers', 'StudentPack': 'Student Dev Pack',
+                        'Contrib': 'High Contributions', 'ALL': 'View ALL Stock'
+                    };
+                    
+                    dbMenu['assets'].items.forEach(item => {
+                        // Kalau di JSON nggak ada, langsung set jadi 0
+                        let count = liveStock[item.year] !== undefined ? liveStock[item.year] : 0;
+                        let baseName = baseNames[item.year] || item.year;
+                        let newTitle = "";
+                        
+                        if (item.year === "ALL") {
+                            newTitle = count > 0 ? `${baseName} (${count} Accounts)` : baseName;
+                        } else {
+                            newTitle = count > 0 ? `${baseName} (${count})` : baseName;
+                        }
+                        
+                        if (item.title !== newTitle) {
+                            item.title = newTitle;
+                            isChanged = true;
+                        }
+                    });
+
+                    const subTitle = document.getElementById('sub-title');
+                    if (isChanged && subTitle && subTitle.innerText.includes('Premium Aged GitHub Accounts')) {
+                        openSubMenu(subTitle.innerText, 'assets');
+                    }
+                }
+            } catch (error) {
+                console.error("Gagal menarik live stock:", error);
+            }
+        }
+
+        fetchLiveStock();
+        setInterval(fetchLiveStock, 3000);
+        // ------------------------------------
+
         // --- FETCH LIVE STOCK DARI GITHUB ---
         async function fetchLiveStock() {
             try {
-                const response = await fetch('https://raw.githubusercontent.com/tecmarco10/XianBeeTech-Dashboard/main/stock.json');
+                // Tambahin parameter ?t= waktu sekarang biar tembus cache
+const response = await fetch('https://raw.githubusercontent.com/tecmarco10/XianBeeTech-Dashboard/main/stock.json?t=' + new Date().getTime());
                 if (response.ok) {
                     const liveStock = await response.json();
                     dbMenu['assets'].items.forEach(item => {
