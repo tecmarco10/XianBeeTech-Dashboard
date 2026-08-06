@@ -284,7 +284,7 @@
                         <div class="wallet-desktop-right">
                             <div class="menu-category" style="margin-top:0;" id="txt_quick">QUICK ACTIONS</div>
                             <div class="tools-grid">
-                                <button class="tool-btn" onclick="openCheckStatusModal()">
+                                <button class="tool-btn" onclick="openToolModal('CHECK_STATUS', 'ACCOUNT SCANNER', 'Enter GitHub username to check shadowban status.', 'e.g. abieharyatmo')">
                                     <span class="tool-icon">🔍</span>
                                     <span class="tool-text" id="txt_scan">Check Account Status</span>
                                 </button>
@@ -561,16 +561,16 @@
         </div>
     </div>
 
-    <div class="modal-overlay" id="checkStatusModal">
-        <div class="modal-box" style="border-color: #0072ff; box-shadow: 0 10px 30px rgba(0, 114, 255, 0.2);">
-            <h2 class="modal-title" style="margin-bottom: 10px; text-align: center;" id="txt_scan_title">ACCOUNT SCANNER</h2>
-            <p class="modal-desc" style="text-align: center;" id="txt_scan_desc">Enter GitHub username to check if it's shadowbanned or safe.</p>
+    <div class="modal-overlay" id="toolInputModal">
+        <div class="modal-box" style="border-color: #0ea5e9; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.2);">
+            <h2 class="modal-title" style="margin-bottom: 10px; text-align: center;" id="toolInputTitle">INPUT REQUIRED</h2>
+            <p class="modal-desc" style="text-align: center; color: var(--text-muted);" id="toolInputDesc">Please enter the target below.</p>
             <div class="input-group">
-                <input type="text" id="checkStatusTarget" placeholder="e.g. abieharyatmo">
+                <input type="text" id="toolInputTarget" placeholder="Enter target..." style="border-color: rgba(14, 165, 233, 0.5);">
             </div>
             <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('checkStatusModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" style="background: linear-gradient(135deg, #0072ff 0%, #00c6ff 100%);" onclick="submitCheckStatus()">Check Now</button>
+                <button class="btn-modal btn-cancel" onclick="closeModal('toolInputModal')">Cancel</button>
+                <button class="btn-modal btn-confirm" style="background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);" onclick="submitToolInput()">Process Request</button>
             </div>
         </div>
     </div>
@@ -1281,8 +1281,17 @@
                     btn.onclick = () => openServiceDetail(item.title, item.target); 
                 } else if (item.type === 'bot_action') {
                     btn.onclick = () => {
-                        showToast("Request sent! Check your Bot Chat.");
-                        sendActionToBot(item.action, { item_id: item.target, title: item.title });
+                        // Fitur yang butuh input popup di WebApp
+                        const needsInput = ['CHECK_STATUS', 'ESTIMATE_ACC', 'REPO_DOWNLOAD', 'EXTRACT_INFO', 'SMM_VALIDATOR', 'CHECK_ORDER_STATUS'];
+                        
+                        if(needsInput.includes(item.action)) {
+                            let ph = "Enter Target URL or Username...";
+                            if(item.action === 'CHECK_ORDER_STATUS') ph = "Enter TrxID (e.g. TRX-12345)...";
+                            openToolModal(item.action, item.title, item.desc, ph);
+                        } else {
+                            showToast("Request sent! Check your Bot Chat.");
+                            sendActionToBot(item.action, { item_id: item.target, title: item.title });
+                        }
                     };
                 } else if (item.type === 'admin_contact') {
                     btn.onclick = () => {
@@ -1432,16 +1441,23 @@
             setTimeout(() => { sendActionToBot("REFRESH_BALANCE"); }, 1000);
         }
 
-        function openCheckStatusModal() { 
-            triggerHaptic('light'); document.getElementById('checkStatusTarget').value = ''; 
-            document.getElementById('checkStatusModal').classList.add('active'); 
+        let currentToolAction = "";
+        function openToolModal(action, title, desc, placeholder) { 
+            triggerHaptic('light'); 
+            currentToolAction = action;
+            document.getElementById('toolInputTitle').innerText = title;
+            document.getElementById('toolInputDesc').innerText = desc;
+            const inputEl = document.getElementById('toolInputTarget');
+            inputEl.value = ''; 
+            inputEl.placeholder = placeholder;
+            document.getElementById('toolInputModal').classList.add('active'); 
         }
 
-        function submitCheckStatus() {
-            const target = document.getElementById('checkStatusTarget').value.trim();
-            if(!target) { showToast('Please enter a username!', true); triggerHaptic('error'); return; }
-            closeModal('checkStatusModal'); showToast('Scanning account...');
-            setTimeout(() => { sendActionToBot('CHECK_STATUS_WEB', { target: target }); }, 1000);
+        function submitToolInput() {
+            const target = document.getElementById('toolInputTarget').value.trim();
+            if(!target) { showToast('Input cannot be empty!', true); triggerHaptic('error'); return; }
+            closeModal('toolInputModal'); showToast('Sending data to server...');
+            setTimeout(() => { sendActionToBot(currentToolAction, { target: target }); }, 1000);
         }
 
         let currentPrice = 0, currentItem = "", currentSvcType = "", currentQty = 100, currentSpeed = "reg", currentBasePrice = 0, isCustomQty = false;
