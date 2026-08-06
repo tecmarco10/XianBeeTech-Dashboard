@@ -920,7 +920,7 @@
                 { fullWidth: true, icon: '👥', title: 'GitHub with Followers (37)', desc: 'Pre-warmed organic followers', price: 0.00, type: 'acc', year: 'Followers' },
                 { icon: '🎒', title: 'Student Dev Pack', desc: 'Approved free credits', price: 5.00, type: 'acc', year: 'StudentPack' },
                 { icon: '📈', title: 'High Contributions (1)', desc: 'Massive commit history', price: 0.00, type: 'acc', year: 'Contrib' },
-                { fullWidth: true, icon: '📋', title: 'View ALL Stock (224 Accounts)', desc: 'Complete verified database', type: 'bot_action', action: 'VIEW_CATALOG', year: 'ALL' }
+                { fullWidth: true, icon: '📋', title: 'View ALL Stock (224 Accounts)', desc: 'Complete verified database', type: 'acc', year: 'ALL' }
             ]},
             'services': { items: [
                 { icon: '👥', title: 'Followers Service', desc: 'Organic target boost', type: 'svc_menu', target: 'followers' },
@@ -1280,7 +1280,8 @@
                 if(item.type === 'nav') {
                     btn.onclick = () => openSubMenu(item.title, item.target); 
                 } else if(item.type === 'acc') { 
-                    btn.onclick = () => sendActionToBot("VIEW_CATALOG", { year: item.year }); 
+                    // MENGAKTIFKAN MODAL STOCK DI DALAM WEBAPP
+                    btn.onclick = () => openStockModal(item.title, item.price || 0, item.year); 
                 } else if(item.type === 'svc_menu') { 
                     btn.onclick = () => openServiceDetail(item.title, item.target); 
                 } else if (item.type === 'bot_action') {
