@@ -107,14 +107,14 @@
         .btn-master { width: 100%; padding: 16px; margin-bottom: 15px; background: var(--grad-master); border: none; border-radius: 16px; cursor: pointer; transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1); display: flex; align-items: center; justify-content: space-between; position: relative; box-shadow: var(--glow-shadow); color: #fff; }
         .btn-master:active { transform: scale(0.96); box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
         .btn-master .btn-icon { background: rgba(0,0,0,0.2); font-size: 1.5rem; width: 46px; height: 46px; border-radius: 12px; display: flex; justify-content: center; align-items: center; }
-        .btn-master .btn-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 2px; color: #fff; text-align: left; }
-        .btn-master .btn-desc { font-size: 0.8rem; color: rgba(255,255,255,0.9); font-weight: 600; text-align: left; }
+        .btn-master .btn-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 2px; color: #fff; text-align: center; }
+        .btn-master .btn-desc { font-size: 0.8rem; color: rgba(255,255,255,0.9); font-weight: 600; text-align: center; }
 
-        .menu-btn { width: 100%; padding: 14px; margin-bottom: 12px; background: var(--panel-bg); border: 1px solid var(--border); border-radius: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: space-between; color: var(--text-main); }
+        .menu-btn { width: 100%; padding: 14px; margin-bottom: 12px; background: var(--panel-bg); border: 1px solid var(--border); border-radius: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; color: var(--text-main); }
         .menu-btn:active { transform: scale(0.97); border-color: var(--text-main); background: var(--border); }
-        .btn-content { display: flex; align-items: center; gap: 14px; text-align: left; }
-        .menu-btn .btn-icon { font-size: 1.4rem; width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; background: var(--grad-master); border-radius: 10px; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-        .btn-text-wrapper { display: flex; flex-direction: column; }
+        .btn-content { display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; flex: 1; }
+        .menu-btn .btn-icon { font-size: 1.4rem; width: 42px; height: 42px; display: flex; justify-content: center; align-items: center; background: var(--grad-master); border-radius: 10px; color: #fff; box-shadow: 0 4px 10px rgba(0,0,0,0.2); flex-shrink: 0; }
+        .btn-text-wrapper { display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .btn-title { font-weight: 700; font-size: 0.95rem; color: var(--text-main); margin-bottom: 2px; }
         .btn-desc { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
         .arrow-icon { color: var(--text-muted); font-size: 1.2rem; font-weight: 800; }
@@ -913,7 +913,7 @@
                 { icon: '📅', title: '2022 (2)', desc: 'Aged Tier', price: 3, type: 'acc', year: '2022' },
                 { icon: '📅', title: '2023 (9)', desc: 'Aged Tier', price: 2, type: 'acc', year: '2023' },
                 { icon: '📅', title: '2024 (6)', desc: 'Aged Tier', price: 1, type: 'acc', year: '2024' },
-                { icon: '📅', title: '2025 (13)', desc: 'Aged Tier', price: 0.5, type: 'acc', year: '2025' },
+                { fullWidth: true, icon: '📅', title: '2025 (13)', desc: 'Aged Tier', price: 0.5, type: 'acc', year: '2025' },
                 { fullWidth: true, icon: '📅', title: '2026 (108)', desc: 'Fresh Tier', price: 0.2, type: 'acc', year: '2026' },
                 { icon: '❄️', title: 'Arctic Vault Badge (1)', desc: 'Rare Contributor', price: 10.00, type: 'acc', year: 'Arctic' },
                 { icon: '🏅', title: '6 Badges (Normal)', desc: 'Pull Shark, YOLO', price: 10.00, type: 'acc', year: '6Badge' },
@@ -1259,10 +1259,14 @@
                     `;
                 } else {
                     btn.className = 'menu-btn';
+                    // Suntikan CSS dinamis: kalau fullWidth, posisinya di-center!
+                    let flexCenter = item.fullWidth ? 'width: 100%; justify-content: center;' : '';
+                    let textCenter = item.fullWidth ? 'align-items: center; text-align: center;' : '';
+                    
                     btn.innerHTML = `
-                        <div class="btn-content">
+                        <div class="btn-content" style="${flexCenter}">
                             <div class="btn-icon">${item.icon}</div>
-                            <div class="btn-text-wrapper">
+                            <div class="btn-text-wrapper" style="${textCenter}">
                                 <span class="btn-title">${item.title}</span>
                                 <span class="btn-desc">${item.desc}</span>
                             </div>
