@@ -1286,15 +1286,16 @@
                     btn.onclick = () => openServiceDetail(item.title, item.target); 
                 } else if (item.type === 'bot_action') {
                     btn.onclick = () => {
-                        // Fitur yang butuh input popup di WebApp
-                        const needsInput = ['CHECK_STATUS', 'ESTIMATE_ACC', 'REPO_DOWNLOAD', 'EXTRACT_INFO', 'SMM_VALIDATOR', 'CHECK_ORDER_STATUS'];
+                        const needsInput = ['CHECK_STATUS', 'ESTIMATE_ACC', 'REPO_DOWNLOAD', 'EXTRACT_INFO', 'SMM_VALIDATOR', 'CHECK_ORDER_STATUS', 'CRYPTO_GAS', 'CONVERT_CRYPTO', 'PPOB_ORDER', 'PREMIUM_SUB', 'ACC_ORDER'];
                         
                         if(needsInput.includes(item.action)) {
-                            let ph = "Enter Target URL or Username...";
-                            if(item.action === 'CHECK_ORDER_STATUS') ph = "Enter TrxID (e.g. TRX-12345)...";
-                            openToolModal(item.action, item.title, item.desc, ph);
+                            let ph = "Enter Target / Wallet / UID...";
+                            if(item.action === 'CHECK_ORDER_STATUS') ph = "Enter TrxID (e.g. TRX-123)...";
+                            if(item.action === 'PPOB_ORDER') ph = "Enter Phone No / UID...";
+                            if(item.action === 'CRYPTO_GAS') ph = "Enter Dest Wallet Address...";
+                            openToolModal(item.action, item.title, "Please enter the target destination below.", ph, item.target);
                         } else {
-                            showToast("Request sent! Check your Bot Chat.");
+                            showToast("Processing request...");
                             sendActionToBot(item.action, { item_id: item.target, title: item.title });
                         }
                     };
@@ -1447,9 +1448,12 @@
         }
 
         let currentToolAction = "";
-        function openToolModal(action, title, desc, placeholder) { 
+        let currentToolItemTarget = "";
+        
+        function openToolModal(action, title, desc, placeholder, itemTarget = "") { 
             triggerHaptic('light'); 
             currentToolAction = action;
+            currentToolItemTarget = itemTarget;
             document.getElementById('toolInputTitle').innerText = title;
             document.getElementById('toolInputDesc').innerText = desc;
             const inputEl = document.getElementById('toolInputTarget');
@@ -1461,8 +1465,9 @@
         function submitToolInput() {
             const target = document.getElementById('toolInputTarget').value.trim();
             if(!target) { showToast('Input cannot be empty!', true); triggerHaptic('error'); return; }
-            closeModal('toolInputModal'); showToast('Sending data to server...');
-            setTimeout(() => { sendActionToBot(currentToolAction, { target: target }); }, 1000);
+            closeModal('toolInputModal'); 
+            showToast('Processing request...');
+            setTimeout(() => { sendActionToBot(currentToolAction, { item_id: currentToolItemTarget, target: target }); }, 1000);
         }
 
         let currentPrice = 0, currentItem = "", currentSvcType = "", currentQty = 100, currentSpeed = "reg", currentBasePrice = 0, isCustomQty = false;
