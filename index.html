@@ -1192,6 +1192,64 @@
         });
         allNewTargets.forEach(t => { if (!svcPrices[t]) svcPrices[t] = { reg: 0.10, fast: 0.15, ultra: 0.20 }; });
 
+        // --- FETCH LIVE STOCK DARI GITHUB ---
+        async function fetchLiveStock() {
+            try {
+                const response = await fetch('https://raw.githubusercontent.com/tecmarco10/XianBeeTech-Dashboard/main/stock.json');
+                if (response.ok) {
+                    const liveStock = await response.json();
+                    dbMenu['assets'].items.forEach(item => {
+                        if (liveStock[item.year] !== undefined) {
+                            if (item.year === "ALL") {
+                                item.title = `View ALL Stock (${liveStock[item.year]} Accounts)`;
+                            } else if (item.year === "Followers") {
+                                item.title = `GitHub with Followers (${liveStock[item.year]})`;
+                            } else {
+                                item.title = `${item.year} (${liveStock[item.year]})`;
+                            }
+                        }
+                    });
+                }
+            } catch (error) {
+                console.error("Gagal menarik live stock:", error);
+            }
+        }
+        fetchLiveStock();
+        // ------------------------------------
+
+        // --- SISTEM AUTO-UPDATE STOK DARI GITHUB ---
+        async function fetchLiveStock() {
+            try {
+                // Narik data dari file stock.json di repo yg sama
+                const res = await fetch('stock.json?t=' + new Date().getTime()); 
+                if (!res.ok) return;
+                const liveData = await res.json();
+                
+                // Update otomatis dbMenu Assets dengan stok terbaru
+                dbMenu['assets'].items.forEach(item => {
+                    if (item.year && liveData[item.year] !== undefined) {
+                        let stock = liveData[item.year];
+                        if (stock <= 0) {
+                            item.title = `${item.year} (Sold Out)`;
+                            item.desc = 'Stok Kosong / Habis';
+                            item.type = 'offline'; // Ubah tombol jadi abu-abu (SOON)
+                        } else {
+                            if (item.year === 'ALL') {
+                                item.title = `View ALL Stock (${stock} Accounts)`;
+                            } else {
+                                item.title = `${item.year} (${stock})`;
+                            }
+                        }
+                    }
+                });
+            } catch (err) {
+                console.log('Gagal narik stok live:', err);
+            }
+        }
+        
+        // Panggil fungsinya segera setelah dbMenu disiapkan
+        fetchLiveStock();
+
         function openSubMenu(title, category) {
             document.getElementById('sub-title').innerText = title; 
             const subContent = document.getElementById('sub-menu-content');
