@@ -11,32 +11,44 @@
 
         /* 🌌 MASTER VARIABLES (DUAL-TONE SYSTEM) */
         :root {
-            --bg-base: #07050f;
-            --panel-bg: rgba(20, 15, 35, 0.85);
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --border: rgba(139, 92, 246, 0.3);
-            --modal-bg: #130f24;
-            --grad-master: linear-gradient(135deg, #0072ff 0%, #8b5cf6 50%, #f85032 100%);
-            --grad-hover: linear-gradient(135deg, #009dff 0%, #a78bfa 50%, #ff6b55 100%);
-            --grad-admin: linear-gradient(135deg, #ff0055 0%, #ff1493 50%, #9400d3 100%);
-            --glow-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+            --bg-base: #261806; 
+            --panel-bg: #1c1104;
+            --text-main: #fbe311;
+            --text-muted: #c4ae12;
+            --border: #fbe311;
+            --modal-bg: #261806;
+            --grad-master: linear-gradient(135deg, #fbe311 0%, #cca300 100%);
+            --grad-hover: linear-gradient(135deg, #fff04d 0%, #fbe311 100%);
+            --grad-admin: linear-gradient(135deg, #ef4444 0%, #b91c1c 100%);
+            --glow-shadow: 0 8px 25px rgba(251, 227, 17, 0.5);
+            --btn-text: #261806; 
             --danger: #ef4444;
             --success: #10b981;
             --warning: #f59e0b;
+            
+            /* 🔥 TEMA KOTAK NEON / OUTLINE (GELAP) 🔥 */
+            --box-bg: #1c1104;      /* Background dalam kotak hitam/gelap */
+            --box-text: #fbe311;    /* Teks dalam kotak warna kuning Aureolin */
+            --box-border: #fbe311;  /* Garis lapisan luar kotak warna kuning Aureolin */
         }
 
         [data-theme="light"] {
-            --bg-base: #f4f6f9;
-            --panel-bg: rgba(255, 255, 255, 0.85);
-            --text-main: #1e293b;
+            --bg-base: #f8fafc; 
+            --panel-bg: #ffffff;
+            --text-main: #0f172a;
             --text-muted: #64748b;
-            --border: rgba(14, 165, 233, 0.3);
+            --border: #96a800;
             --modal-bg: #ffffff;
-            --grad-master: linear-gradient(135deg, #0ea5e9 0%, #10b981 100%);
-            --grad-hover: linear-gradient(135deg, #38bdf8 0%, #34d399 100%);
-            --grad-admin: linear-gradient(135deg, #ef4444 0%, #f43f5e 50%, #d946ef 100%);
-            --glow-shadow: 0 8px 25px rgba(14, 165, 233, 0.25);
+            --grad-master: linear-gradient(135deg, #d3f00a 0%, #a3b800 100%);
+            --grad-hover: linear-gradient(135deg, #e4ff1a 0%, #d3f00a 100%);
+            --grad-admin: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            --glow-shadow: 0 8px 25px rgba(150, 168, 0, 0.4);
+            --btn-text: #0f172a; 
+            
+            /* 🔥 TEMA KOTAK NEON / OUTLINE (TERANG) 🔥 */
+            --box-bg: #ffffff;      /* Background dalam kotak putih */
+            --box-text: #7a8a00;    /* Teks warna Lime Green (sedikit gelap biar kebaca) */
+            --box-border: #96a800;  /* Garis lapisan luar kotak warna Lime Green */
         }
 
         * { box-sizing: border-box; }
@@ -170,8 +182,23 @@
         .stock-list { max-height: 250px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; padding-right: 5px; }
         .stock-item { background: var(--panel-bg); border: 1px solid var(--border); padding: 14px; border-radius: 12px; display: flex; justify-content: space-between; align-items: center; }
         .stock-id { font-family: 'JetBrains Mono', monospace; font-size: 0.9rem; color: var(--text-main); font-weight: bold; }
-        .btn-add-cart { background: var(--grad-master); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-family: 'Plus Jakarta Sans'; cursor: pointer; transition: 0.2s; }
-        .btn-add-cart:disabled { background: var(--bg-base); border: 1px solid var(--border); color: var(--text-muted); cursor: not-allowed; }
+        
+        /* 🔥 ANIMATED ADD TO CART BUTTON (DARI VIDEO) */
+        .btn-add-cart { 
+            background: var(--grad-master); color: #fff; border: none; padding: 8px 14px; border-radius: 8px; font-weight: 700; font-family: 'Plus Jakarta Sans'; cursor: pointer; transition: all 0.3s ease; 
+            position: relative; overflow: hidden; display: flex; justify-content: center; align-items: center; min-width: 95px; height: 35px;
+        }
+        .btn-add-cart .btn-text { transition: transform 0.4s ease, opacity 0.4s ease; display: inline-block; width: 100%; text-align: center; }
+        .btn-add-cart .btn-success-text { 
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; 
+            transform: translateY(20px); opacity: 0; transition: transform 0.4s cubic-bezier(0.55, 0.085, 0.68, 0.53), opacity 0.4s ease; 
+            background: var(--success); border-radius: 8px; 
+        }
+        .btn-add-cart.is-added { background: var(--success); pointer-events: none; border-color: var(--success); box-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
+        .btn-add-cart.is-added .btn-text { opacity: 0; transform: translateY(-20px); }
+        .btn-add-cart.is-added .btn-success-text { opacity: 1; transform: translateY(0); }
+        
+        .btn-add-cart:disabled { background: var(--bg-base); border: 1px solid var(--border); color: var(--text-muted); cursor: not-allowed; box-shadow: none; }
 
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; pointer-events: none; transition: 0.3s; }
         .modal-overlay.active { opacity: 1; pointer-events: auto; }
@@ -221,6 +248,64 @@
             .balance-amount { font-size: 3rem; }
         }
 
+        /* 🔥 FIX MUTLAK: OVERRIDE SEMUA WARNA HARDCODE BAWAAN HTML & CSS LAMA 🔥 */
+        body, .app-frame, .modal-box, .slide-page, .slider-viewport { 
+            background-color: var(--bg-base) !important; 
+        }
+        
+        h1, h2, p, .header-title, .home-logo-title, .menu-category, .modal-title, .price-value, .balance-amount, .stock-id, .tool-text, .topup-text {
+            color: var(--text-main) !important;
+        }
+        
+        /* 🔥 SEMUA KOTAK/MENU SEKARANG SERAGAM! 🔥 */
+        .btn-master, .menu-btn, .topup-btn, .tool-btn {
+            background: var(--box-bg) !important;
+            border: 1px solid var(--box-border) !important;
+            color: var(--box-text) !important;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1) !important;
+        }
+        
+        .btn-master *, .menu-btn *, .topup-btn *, .tool-btn * {
+            color: var(--box-text) !important;
+        }
+        
+        /* Matikan background bawaan ikon agar nyatu sama kotak */
+        .btn-icon, .topup-icon {
+            background: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        .home-logo-sub, .modal-desc, .text-muted, .fomo-text {
+            color: var(--text-muted) !important;
+            background: transparent !important;
+            box-shadow: none !important;
+        }
+        
+        .btn-desc {
+            opacity: 0.75 !important; /* Biar tulisan sub-menu sedikit pudar (nggak nabrak judul) */
+        }
+
+        .digital-card, .btn-add-cart, .btn-confirm, .cart-fab, .bg-sync, .fomo-icon, .chip {
+            background: var(--grad-master) !important;
+            color: var(--btn-text) !important;
+        }
+        .digital-card *, .btn-add-cart *, .btn-confirm *, .cart-fab * {
+            color: var(--btn-text) !important;
+        }
+
+        .btn-back, .control-btn, .btn-refresh, .input-group input, .input-group select, .stock-item, .cart-item-row, .price-display {
+            background: var(--panel-bg) !important;
+            border: 1px solid var(--border) !important;
+            color: var(--text-main) !important;
+        }
+
+        svg { stroke: var(--text-main) !important; }
+
+        /* Matikan paksa warna inline HTML yang menghalangi tema */
+        [style*="color: #fff"], [style*="color:#fff"], [style*="color: rgba(255"], [style*="color:rgba(255"] {
+            color: inherit !important;
+        }
     </style>
 </head>
 <body>
@@ -860,7 +945,8 @@
 
         function drawParticles() { 
             ctx.clearRect(0,0,width,height); 
-            ctx.fillStyle = currentTheme === 'dark' ? 'rgba(139, 92, 246, 0.3)' : 'rgba(14, 165, 233, 0.4)';
+            /* 🔥 ROMBAK PARTIKEL: AUREOLIN & VIBRANT RED 🔥 */
+            ctx.fillStyle = currentTheme === 'dark' ? 'rgba(251, 227, 17, 0.4)' : 'rgba(249, 16, 12, 0.5)';
             for (let i=0; i<particles.length; i++) { 
                 let p = particles[i]; 
                 p.x += p.vx; 
@@ -1660,11 +1746,18 @@ const response = await fetch('https://raw.githubusercontent.com/tecmarco10/XianB
                 const isReserved = cart.find(c => c.id === fakeId); 
                 
                 const itemDiv = document.createElement('div'); itemDiv.className = 'stock-item';
+                let btnHtml = '';
+                if(isReserved) {
+                    btnHtml = `<button class="btn-add-cart" id="btn-${fakeId}" disabled style="opacity:0.5;">Reserved</button>`;
+                } else {
+                    btnHtml = `<button class="btn-add-cart" id="btn-${fakeId}" onclick="addToCart('${fakeId}', '${title}', ${price}, '${yearStr}')">
+                        <span class="btn-text">🛒 + Cart</span>
+                        <span class="btn-success-text">✔️ Added!</span>
+                    </button>`;
+                }
                 itemDiv.innerHTML = `
                     <span class="stock-id">${fakeId}</span>
-                    <button class="btn-add-cart" id="btn-${fakeId}" ${isReserved ? 'disabled style="opacity:0.5;"' : `onclick="addToCart('${fakeId}', '${title}', ${price}, '${yearStr}')"`}>
-                        ${isReserved ? 'Reserved' : '+ Cart'}
-                    </button>
+                    ${btnHtml}
                 `;
                 stockBox.appendChild(itemDiv);
             }
@@ -1677,8 +1770,20 @@ const response = await fetch('https://raw.githubusercontent.com/tecmarco10/XianB
             let finalItemId = `akun_${yearStr ? yearStr.toLowerCase() : 'unknown'}`;
             
             cart.push({ id: itemId, item_id: finalItemId, title: title, price: price, expireAt: expireAt });
+            
             const btn = document.getElementById('btn-'+itemId);
-            if(btn) { btn.innerText = 'Reserved'; btn.disabled = true; btn.style.opacity = '0.5'; }
+            if(btn) { 
+                // 🔥 Eksekusi Animasi dari Video
+                btn.classList.add('is-added'); 
+                
+                // Setelah 1.5 detik, ubah tampilannya jadi Reserved mati
+                setTimeout(() => {
+                    btn.classList.remove('is-added');
+                    btn.innerHTML = 'Reserved'; 
+                    btn.disabled = true; 
+                    btn.style.opacity = '0.5';
+                }, 1500); 
+            }
             
             updateCartBadge(); showToast(`Added to Cart! Reserved for 3 mins.`);
             if(!cartTimerInterval) cartTimerInterval = setInterval(tickCartTimers, 1000);
