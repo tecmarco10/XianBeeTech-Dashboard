@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="nebula">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -9,28 +9,66 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
 
-        :root {
+        /* =========================================================
+           🎨 DUAL THEME ENGINE (1: CYBER NEBULA | 2: PLATINUM LIGHT)
+           ========================================================= */
+        :root,
+        [data-theme="nebula"] {
             --bg-base: #06040d;
-            --bg-elevated: rgba(16, 12, 28, 0.88);
-            --panel-bg: rgba(24, 18, 43, 0.78);
-            --panel-hover: rgba(38, 28, 68, 0.92);
+            --bg-elevated: rgba(15, 11, 28, 0.90);
+            --topbar-bg: rgba(12, 9, 23, 0.86);
+            --panel-bg: rgba(24, 18, 44, 0.78);
+            --panel-hover: rgba(38, 28, 68, 0.95);
+            --modal-bg: #120e24;
+            --input-bg: rgba(0, 0, 0, 0.52);
+            --soft-surface: rgba(255, 255, 255, 0.05);
+
             --grad-master: linear-gradient(135deg, #0072ff 0%, #8b5cf6 52%, #f85032 100%);
-            --grad-subtle: linear-gradient(135deg, rgba(0, 114, 255, 0.16) 0%, rgba(139, 92, 246, 0.16) 52%, rgba(248, 80, 50, 0.16) 100%);
-            --grad-emerald: linear-gradient(135deg, #059669 0%, #10b981 100%);
             --grad-danger: linear-gradient(135deg, #dc2626 0%, #f43f5e 100%);
-            --grad-gold: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --accent-color: #a78bfa;
             --border: rgba(139, 92, 246, 0.26);
-            --border-bright: rgba(167, 139, 250, 0.55);
-            --glow-shadow: 0 10px 30px rgba(139, 92, 246, 0.32);
+            --border-bright: rgba(167, 139, 250, 0.58);
+            --glow-shadow: 0 10px 28px rgba(139, 92, 246, 0.30);
+            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+
             --danger: #ef4444;
             --success: #10b981;
             --warning: #f59e0b;
-            --info: #3b82f6;
-            --radius-xl: 22px;
-            --radius-lg: 16px;
-            --radius-md: 12px;
+            --particle-rgb: 139, 92, 246;
+            --bg-radial-1: rgba(0, 114, 255, 0.14);
+            --bg-radial-2: rgba(139, 92, 246, 0.16);
+        }
+
+        [data-theme="platinum"] {
+            --bg-base: #f1f5f9;
+            --bg-elevated: rgba(255, 255, 255, 0.94);
+            --topbar-bg: rgba(255, 255, 255, 0.88);
+            --panel-bg: #ffffff;
+            --panel-hover: #f8fafc;
+            --modal-bg: #ffffff;
+            --input-bg: #f1f5f9;
+            --soft-surface: rgba(15, 23, 42, 0.05);
+
+            --grad-master: linear-gradient(135deg, #2563eb 0%, #7c3aed 55%, #db2777 100%);
+            --grad-danger: linear-gradient(135deg, #dc2626 0%, #e11d48 100%);
+
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #6d28d9;
+            --border: rgba(148, 163, 184, 0.32);
+            --border-bright: rgba(124, 58, 237, 0.55);
+            --glow-shadow: 0 10px 25px rgba(99, 102, 241, 0.22);
+            --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+
+            --danger: #dc2626;
+            --success: #059669;
+            --warning: #d97706;
+            --particle-rgb: 99, 102, 241;
+            --bg-radial-1: rgba(37, 99, 235, 0.08);
+            --bg-radial-2: rgba(124, 58, 237, 0.08);
         }
 
         * {
@@ -47,10 +85,10 @@
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
             overflow: hidden;
+            transition: background-color 0.3s ease, color 0.3s ease;
             background-image:
-                radial-gradient(circle at 15% 15%, rgba(0, 114, 255, 0.14) 0%, transparent 45%),
-                radial-gradient(circle at 85% 80%, rgba(139, 92, 246, 0.16) 0%, transparent 50%),
-                radial-gradient(circle at 50% 50%, rgba(248, 80, 50, 0.07) 0%, transparent 60%);
+                radial-gradient(circle at 15% 15%, var(--bg-radial-1) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, var(--bg-radial-2) 0%, transparent 50%);
         }
 
         #canvas-bg {
@@ -68,7 +106,7 @@
             height: 5px;
         }
         ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.02);
+            background: transparent;
         }
         ::-webkit-scrollbar-thumb {
             background: rgba(139, 92, 246, 0.35);
@@ -76,7 +114,7 @@
         }
 
         /* =========================================================
-           🖥️ ADAPTIVE SHELL ARCHITECTURE (HP / TABLET / PC)
+           📐 AUTO-RESPONSIVE SHELL (MOBILE -> TABLET -> DESKTOP)
            ========================================================= */
         .app-shell {
             position: relative;
@@ -86,10 +124,9 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
-            transition: all 0.3s ease;
         }
 
-        /* SIDEBAR (Hidden on Mobile, Rail on Tablet, Full on PC) */
+        /* SIDEBAR (Auto-shows on Tablet & PC/Laptop) */
         .app-sidebar {
             display: none;
             flex-direction: column;
@@ -98,6 +135,7 @@
             backdrop-filter: blur(18px);
             z-index: 20;
             flex-shrink: 0;
+            transition: width 0.25s ease, background 0.3s ease;
         }
 
         .sidebar-brand {
@@ -105,7 +143,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            border-bottom: 1px solid var(--border);
         }
 
         .brand-orb {
@@ -113,6 +151,7 @@
             height: 42px;
             border-radius: 12px;
             background: var(--grad-master);
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -126,13 +165,14 @@
             font-size: 1.15rem;
             font-weight: 800;
             letter-spacing: -0.3px;
+            color: var(--text-main);
         }
 
         .brand-text span {
             font-size: 0.68rem;
             font-weight: 800;
             letter-spacing: 1.8px;
-            color: #a78bfa;
+            color: var(--accent-color);
             display: block;
         }
 
@@ -160,16 +200,17 @@
             transition: all 0.2s ease;
             text-align: left;
             width: 100%;
+            font-family: inherit;
         }
 
         .side-link:hover {
-            color: #fff;
-            background: rgba(139, 92, 246, 0.12);
-            border-color: rgba(139, 92, 246, 0.25);
+            color: var(--text-main);
+            background: var(--soft-surface);
+            border-color: var(--border);
         }
 
         .side-link.active {
-            color: #fff;
+            color: #ffffff;
             background: var(--grad-master);
             box-shadow: var(--glow-shadow);
         }
@@ -183,31 +224,30 @@
 
         .sidebar-footer {
             padding: 16px;
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            font-size: 0.75rem;
-            color: var(--text-muted);
+            border-top: 1px solid var(--border);
         }
 
         .telemetry-pill {
             display: flex;
             align-items: center;
             gap: 8px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 8px 12px;
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.32);
+            padding: 9px 12px;
             border-radius: 10px;
-            color: #10b981;
-            font-weight: 700;
-            font-size: 0.75rem;
+            color: var(--success);
+            font-weight: 800;
+            font-size: 0.74rem;
         }
 
         .pulse-dot {
             width: 8px;
             height: 8px;
-            background: #10b981;
+            background: var(--success);
             border-radius: 50%;
-            box-shadow: 0 0 8px #10b981;
+            box-shadow: 0 0 8px var(--success);
             animation: pulseAnim 1.8s infinite;
+            flex-shrink: 0;
         }
 
         @keyframes pulseAnim {
@@ -227,17 +267,18 @@
 
         /* TOPBAR */
         .topbar {
-            height: 68px;
+            height: 66px;
             padding: 0 18px;
-            background: rgba(12, 9, 22, 0.85);
+            background: var(--topbar-bg);
             border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(14px);
+            backdrop-filter: blur(16px);
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 12px;
             flex-shrink: 0;
             z-index: 15;
+            transition: background 0.3s ease;
         }
 
         .topbar-left {
@@ -253,17 +294,19 @@
             border-radius: 11px;
             background: var(--panel-bg);
             border: 1px solid var(--border);
-            color: #fff;
+            color: var(--text-main);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: 0.2s;
             flex-shrink: 0;
+            box-shadow: var(--card-shadow);
         }
 
-        .btn-icon-top:active, .btn-icon-top:hover {
+        .btn-icon-top:hover, .btn-icon-top:active {
             background: var(--grad-master);
+            color: #ffffff;
             border-color: transparent;
         }
 
@@ -273,12 +316,13 @@
 
         .topbar-title {
             margin: 0;
-            font-size: 1rem;
+            font-size: 0.98rem;
             font-weight: 800;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             letter-spacing: 0.4px;
+            color: var(--text-main);
         }
 
         .topbar-sub {
@@ -297,38 +341,33 @@
             flex-shrink: 0;
         }
 
-        /* DEVICE SWITCHER (AUTO / HP / TAB / PC) */
-        .device-switcher {
-            display: flex;
-            background: rgba(255, 255, 255, 0.05);
+        /* THEME SWITCHER PILL */
+        .theme-toggle-btn {
+            background: var(--panel-bg);
             border: 1px solid var(--border);
-            border-radius: 10px;
-            padding: 3px;
-            gap: 2px;
-        }
-
-        .dev-btn {
-            border: none;
-            background: transparent;
-            color: var(--text-muted);
-            font-size: 0.68rem;
+            color: var(--text-main);
+            padding: 7px 12px;
+            border-radius: 11px;
+            font-size: 0.75rem;
             font-weight: 800;
-            padding: 5px 8px;
-            border-radius: 7px;
             cursor: pointer;
-            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
             font-family: inherit;
+            box-shadow: var(--card-shadow);
+            transition: all 0.2s ease;
         }
 
-        .dev-btn.active {
-            background: var(--grad-master);
-            color: #fff;
+        .theme-toggle-btn:hover {
+            border-color: var(--border-bright);
+            transform: translateY(-1px);
         }
 
         .wallet-pill {
             background: rgba(16, 185, 129, 0.12);
             border: 1px solid rgba(16, 185, 129, 0.35);
-            color: #10b981;
+            color: var(--success);
             padding: 7px 12px;
             border-radius: 11px;
             font-family: 'JetBrains Mono', monospace;
@@ -337,23 +376,23 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 5px;
             transition: 0.2s;
         }
 
         .wallet-pill:hover {
-            background: rgba(16, 185, 129, 0.22);
+            background: rgba(16, 185, 129, 0.2);
         }
 
         .cart-top-btn {
             position: relative;
-            width: 40px;
-            height: 40px;
+            width: 38px;
+            height: 38px;
             border-radius: 11px;
             background: var(--grad-master);
             border: none;
-            color: #fff;
-            font-size: 1.1rem;
+            color: #ffffff;
+            font-size: 1.05rem;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -365,8 +404,8 @@
             position: absolute;
             top: -5px;
             right: -5px;
-            background: #fff;
-            color: #000;
+            background: #ffffff;
+            color: #090514;
             font-size: 0.68rem;
             font-weight: 800;
             width: 20px;
@@ -375,7 +414,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border: 2px solid var(--bg-base);
+            border: 2px solid #7c3aed;
             opacity: 0;
             transform: scale(0.5);
             transition: 0.25s;
@@ -391,13 +430,13 @@
             flex: 1;
             overflow-y: auto;
             overflow-x: hidden;
-            padding: 20px 18px 100px 18px;
+            padding: 18px 16px 96px 16px;
         }
 
         .view-section {
             display: none;
-            animation: fadeInView 0.28s ease;
-            max-width: 1360px;
+            animation: fadeInView 0.26s ease;
+            max-width: 1320px;
             margin: 0 auto;
         }
 
@@ -410,14 +449,14 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* BOTTOM NAVIGATION BAR (Mobile Default) */
+        /* BOTTOM NAVIGATION BAR (Mobile Only) */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 68px;
-            background: rgba(12, 9, 24, 0.94);
+            height: 66px;
+            background: var(--bg-elevated);
             border-top: 1px solid var(--border);
             backdrop-filter: blur(18px);
             display: flex;
@@ -451,132 +490,14 @@
         .bnav-item .b-tx {
             font-size: 0.66rem;
             font-weight: 700;
-            letter-spacing: 0.3px;
         }
 
         .bnav-item.active {
-            color: #fff;
+            color: var(--accent-color);
         }
 
         .bnav-item.active .b-ic {
             transform: translateY(-2px) scale(1.12);
-            filter: drop-shadow(0 0 8px rgba(139, 92, 246, 0.8));
-        }
-
-        /* =========================================================
-           📐 RESPONSIVE & MANUAL MODE RULES (HP / TAB / PC)
-           ========================================================= */
-        /* Mode HP Forced on Big Screen */
-        body.mode-hp {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background-color: #030207;
-        }
-        body.mode-hp .app-shell {
-            max-width: 430px;
-            max-height: 880px;
-            height: 94vh;
-            border: 1px solid var(--border-bright);
-            border-radius: 28px;
-            box-shadow: 0 0 60px rgba(0, 0, 0, 0.95);
-        }
-        body.mode-hp .bottom-nav {
-            position: absolute;
-        }
-
-        /* Mode Tablet Forced or Auto (768px - 1099px) */
-        body.mode-tab {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-        body.mode-tab .app-shell {
-            flex-direction: row;
-            max-width: 960px;
-            height: 94vh;
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            box-shadow: 0 0 50px rgba(0,0,0,0.9);
-        }
-        body.mode-tab .app-sidebar {
-            display: flex;
-            width: 84px;
-        }
-        body.mode-tab .sidebar-brand .brand-text,
-        body.mode-tab .side-link .nav-tx,
-        body.mode-tab .sidebar-footer .telemetry-text {
-            display: none;
-        }
-        body.mode-tab .sidebar-brand,
-        body.mode-tab .side-link {
-            justify-content: center;
-        }
-        body.mode-tab .bottom-nav {
-            display: none;
-        }
-        body.mode-tab .content-scroll {
-            padding: 24px 24px 40px 24px;
-        }
-
-        /* Mode PC Forced or Auto (>= 1100px) */
-        body.mode-pc .app-shell {
-            flex-direction: row;
-            max-width: 100%;
-            height: 100vh;
-            border-radius: 0;
-        }
-        body.mode-pc .app-sidebar {
-            display: flex;
-            width: 265px;
-        }
-        body.mode-pc .bottom-nav {
-            display: none;
-        }
-        body.mode-pc .content-scroll {
-            padding: 28px 34px 50px 34px;
-        }
-
-        /* Auto Media Queries when body has .mode-auto */
-        @media (min-width: 768px) and (max-width: 1099px) {
-            body.mode-auto .app-shell {
-                flex-direction: row;
-            }
-            body.mode-auto .app-sidebar {
-                display: flex;
-                width: 84px;
-            }
-            body.mode-auto .sidebar-brand .brand-text,
-            body.mode-auto .side-link .nav-tx,
-            body.mode-auto .sidebar-footer .telemetry-text {
-                display: none;
-            }
-            body.mode-auto .sidebar-brand,
-            body.mode-auto .side-link {
-                justify-content: center;
-            }
-            body.mode-auto .bottom-nav {
-                display: none;
-            }
-            body.mode-auto .content-scroll {
-                padding: 24px 24px 40px 24px;
-            }
-        }
-
-        @media (min-width: 1100px) {
-            body.mode-auto .app-shell {
-                flex-direction: row;
-            }
-            body.mode-auto .app-sidebar {
-                display: flex;
-                width: 265px;
-            }
-            body.mode-auto .bottom-nav {
-                display: none;
-            }
-            body.mode-auto .content-scroll {
-                padding: 28px 34px 50px 34px;
-            }
         }
 
         /* =========================================================
@@ -584,12 +505,13 @@
            ========================================================= */
         .hero-banner {
             background: var(--grad-master);
-            border-radius: var(--radius-xl);
+            color: #ffffff;
+            border-radius: 22px;
             padding: 24px;
             position: relative;
             overflow: hidden;
             box-shadow: var(--glow-shadow);
-            margin-bottom: 24px;
+            margin-bottom: 22px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -603,7 +525,7 @@
             top: -30px;
             width: 180px;
             height: 180px;
-            background: rgba(255,255,255,0.12);
+            background: rgba(255,255,255,0.14);
             border-radius: 50%;
             filter: blur(22px);
             pointer-events: none;
@@ -613,10 +535,11 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
-            background: rgba(0,0,0,0.3);
+            background: rgba(0, 0, 0, 0.28);
+            color: #ffffff;
             padding: 5px 12px;
             border-radius: 20px;
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 800;
             letter-spacing: 1px;
             width: fit-content;
@@ -624,16 +547,17 @@
 
         .hero-title {
             margin: 6px 0 4px 0;
-            font-size: 1.55rem;
+            font-size: 1.5rem;
             font-weight: 800;
-            line-height: 1.2;
+            line-height: 1.22;
+            color: #ffffff;
         }
 
         .hero-sub {
             margin: 0;
-            font-size: 0.85rem;
-            color: rgba(255,255,255,0.88);
-            max-width: 620px;
+            font-size: 0.84rem;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 650px;
             line-height: 1.45;
         }
 
@@ -644,24 +568,25 @@
         }
 
         .btn-hero {
-            background: #fff;
-            color: #090514;
+            background: #ffffff;
+            color: #0f172a;
             border: none;
             padding: 10px 16px;
             border-radius: 12px;
             font-weight: 800;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            font-family: inherit;
             transition: 0.2s;
         }
 
         .btn-hero.secondary {
-            background: rgba(0,0,0,0.35);
-            color: #fff;
-            border: 1px solid rgba(255,255,255,0.3);
+            background: rgba(0, 0, 0, 0.32);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.35);
         }
 
         .btn-hero:active {
@@ -672,15 +597,17 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin: 22px 0 12px 2px;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 20px 0 12px 2px;
         }
 
         .menu-category {
             font-weight: 800;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 1.4px;
             display: flex;
             align-items: center;
             gap: 8px;
@@ -692,62 +619,38 @@
             display: block;
             width: 7px;
             height: 7px;
-            background: #8b5cf6;
+            background: var(--accent-color);
             border-radius: 50%;
-            box-shadow: 0 0 8px #8b5cf6;
+            box-shadow: 0 0 8px var(--accent-color);
         }
 
-        /* ADAPTIVE BENTO GRIDS */
         .bento-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 12px;
         }
 
-        body.mode-tab .bento-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-        }
-
-        body.mode-pc .bento-grid {
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-        }
-
-        @media (min-width: 768px) and (max-width: 1099px) {
-            body.mode-auto .bento-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 14px;
-            }
-        }
-
-        @media (min-width: 1100px) {
-            body.mode-auto .bento-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 16px;
-            }
-        }
-
-        /* CARDS & BUTTONS */
         .menu-btn, .btn-master {
             width: 100%;
             padding: 15px 16px;
             background: var(--panel-bg);
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
+            border-radius: 16px;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
-            color: #fff;
+            color: var(--text-main);
             text-align: left;
             font-family: inherit;
+            box-shadow: var(--card-shadow);
         }
 
         .btn-master {
             background: var(--grad-master);
+            color: #ffffff;
             border: none;
             box-shadow: var(--glow-shadow);
         }
@@ -771,17 +674,17 @@
         }
 
         .btn-icon {
-            font-size: 1.4rem;
-            width: 46px;
-            height: 46px;
+            font-size: 1.35rem;
+            width: 44px;
+            height: 44px;
             border-radius: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
             background: var(--grad-master);
-            color: #fff;
+            color: #ffffff;
             flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.28);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
         }
 
         .btn-master .btn-icon {
@@ -797,28 +700,32 @@
 
         .btn-title {
             font-weight: 800;
-            font-size: 0.95rem;
-            color: #fff;
+            font-size: 0.94rem;
+            color: var(--text-main);
             margin-bottom: 3px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
         }
 
+        .btn-master .btn-title {
+            color: #ffffff;
+        }
+
         .btn-desc {
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             font-weight: 600;
             line-height: 1.3;
         }
 
         .btn-master .btn-desc {
-            color: rgba(255, 255, 255, 0.85);
+            color: rgba(255, 255, 255, 0.86);
         }
 
         .price-tag {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 800;
             color: var(--success);
             background: rgba(16, 185, 129, 0.12);
@@ -829,8 +736,8 @@
         }
 
         .arrow-icon {
-            color: #a78bfa;
-            font-size: 1.15rem;
+            color: var(--accent-color);
+            font-size: 1.1rem;
             font-weight: 800;
             flex-shrink: 0;
         }
@@ -839,12 +746,13 @@
         .acc-card {
             background: var(--panel-bg);
             border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
+            border-radius: 16px;
             padding: 16px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             gap: 14px;
+            box-shadow: var(--card-shadow);
             transition: 0.2s;
         }
 
@@ -869,7 +777,7 @@
             flex: 1;
             padding: 10px 12px;
             border-radius: 10px;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 800;
             cursor: pointer;
             border: none;
@@ -883,12 +791,12 @@
 
         .btn-card-action.primary {
             background: var(--grad-master);
-            color: #fff;
+            color: #ffffff;
         }
 
         .btn-card-action.secondary {
-            background: rgba(255, 255, 255, 0.08);
-            color: #fff;
+            background: var(--soft-surface);
+            color: var(--text-main);
             border: 1px solid var(--border);
         }
 
@@ -896,22 +804,11 @@
             transform: scale(0.95);
         }
 
-        /* WALLET SPLIT LAYOUT */
+        /* WALLET LAYOUT */
         .wallet-layout {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 22px;
-        }
-
-        body.mode-tab .wallet-layout,
-        body.mode-pc .wallet-layout {
-            grid-template-columns: 1fr 1.15fr;
-        }
-
-        @media (min-width: 768px) {
-            body.mode-auto .wallet-layout {
-                grid-template-columns: 1fr 1.15fr;
-            }
+            gap: 20px;
         }
 
         .card-wrapper {
@@ -920,9 +817,9 @@
 
         .digital-card {
             width: 100%;
-            height: 225px;
+            height: 220px;
             background: var(--grad-master);
-            border: 1px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.35);
             border-radius: 22px;
             padding: 24px;
             position: relative;
@@ -933,6 +830,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            color: #ffffff;
         }
 
         .digital-card::before {
@@ -942,7 +840,7 @@
             left: -150%;
             width: 55%;
             height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
             transform: skewX(-20deg);
             animation: shine 5s infinite;
             pointer-events: none;
@@ -958,22 +856,21 @@
             height: 30px;
             background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%);
             border-radius: 6px;
-            position: relative;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.35);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
 
         .card-type {
             font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.76rem;
             letter-spacing: 1.5px;
-            color: #fff;
+            color: #ffffff;
             background: rgba(0,0,0,0.28);
             padding: 4px 10px;
             border-radius: 8px;
         }
 
         .balance-label {
-            font-size: 0.76rem;
+            font-size: 0.74rem;
             color: rgba(255,255,255,0.88);
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -982,21 +879,21 @@
 
         .balance-amount {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 2.45rem;
+            font-size: 2.35rem;
             font-weight: 800;
-            color: #fff;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.35);
+            color: #ffffff;
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
 
         .btn-refresh {
-            background: rgba(0,0,0,0.3);
+            background: rgba(0,0,0,0.28);
             border: 1px solid rgba(255,255,255,0.4);
             padding: 7px 13px;
             border-radius: 10px;
-            color: #fff;
+            color: #ffffff;
             font-weight: 700;
             cursor: pointer;
-            font-size: 0.76rem;
+            font-size: 0.75rem;
             font-family: inherit;
         }
 
@@ -1016,8 +913,9 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            color: #fff;
+            color: var(--text-main);
             font-family: inherit;
+            box-shadow: var(--card-shadow);
             transition: 0.2s;
         }
 
@@ -1032,13 +930,13 @@
             background: var(--panel-hover);
         }
 
-        /* FILTER TABS */
+        /* FILTER PILLS */
         .filter-pills {
             display: flex;
             gap: 8px;
             overflow-x: auto;
             padding-bottom: 8px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .pill-btn {
@@ -1047,17 +945,18 @@
             color: var(--text-muted);
             padding: 8px 14px;
             border-radius: 20px;
-            font-size: 0.78rem;
+            font-size: 0.76rem;
             font-weight: 700;
             white-space: nowrap;
             cursor: pointer;
             font-family: inherit;
+            box-shadow: var(--card-shadow);
             transition: 0.2s;
         }
 
         .pill-btn.active {
             background: var(--grad-master);
-            color: #fff;
+            color: #ffffff;
             border-color: transparent;
             box-shadow: var(--glow-shadow);
         }
@@ -1065,7 +964,7 @@
         /* LIVE TARGET PREVIEW BOX */
         .preview-box {
             background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.35);
+            border: 1px solid var(--border-bright);
             border-radius: 12px;
             padding: 10px 12px;
             margin-bottom: 14px;
@@ -1079,7 +978,7 @@
             height: 40px;
             border-radius: 50%;
             object-fit: cover;
-            border: 2px solid #8b5cf6;
+            border: 2px solid var(--accent-color);
         }
 
         .preview-info {
@@ -1089,29 +988,30 @@
 
         .preview-name {
             font-weight: 800;
-            font-size: 0.88rem;
-            color: #fff;
+            font-size: 0.86rem;
+            color: var(--text-main);
         }
 
         .preview-stats {
-            font-size: 0.74rem;
-            color: #10b981;
+            font-size: 0.73rem;
+            color: var(--success);
             font-family: 'JetBrains Mono', monospace;
         }
 
         /* FOMO TICKER */
         .fomo-ticker {
             position: fixed;
-            bottom: 80px;
+            bottom: 78px;
             left: 16px;
-            background: rgba(19, 15, 36, 0.95);
+            background: var(--bg-elevated);
+            color: var(--text-main);
             border: 1px solid var(--border-bright);
             border-radius: 14px;
             padding: 10px 14px;
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.7);
+            box-shadow: var(--card-shadow);
             z-index: 90;
             font-size: 0.75rem;
             transform: translateY(120px);
@@ -1126,7 +1026,7 @@
         }
 
         .fomo-ticker span {
-            color: #a78bfa;
+            color: var(--accent-color);
             font-weight: 800;
         }
 
@@ -1134,7 +1034,7 @@
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.82);
+            background: rgba(0, 0, 0, 0.75);
             backdrop-filter: blur(8px);
             display: flex;
             justify-content: center;
@@ -1152,8 +1052,9 @@
         }
 
         .modal-box {
-            background: #120e22;
-            border: 1px solid #8b5cf6;
+            background: var(--modal-bg);
+            color: var(--text-main);
+            border: 1px solid var(--border-bright);
             border-radius: 22px;
             width: 100%;
             max-width: 420px;
@@ -1162,7 +1063,7 @@
             padding: 24px;
             transform: translateY(20px) scale(0.96);
             transition: 0.25s;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.95);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.55);
         }
 
         .modal-overlay.active .modal-box {
@@ -1171,15 +1072,15 @@
 
         .modal-title {
             font-weight: 800;
-            color: #fff;
-            font-size: 1.2rem;
+            color: var(--text-main);
+            font-size: 1.18rem;
             margin: 0 0 6px 0;
             text-align: center;
         }
 
         .modal-desc {
             color: var(--text-muted);
-            font-size: 0.82rem;
+            font-size: 0.81rem;
             margin-bottom: 18px;
             text-align: center;
             line-height: 1.4;
@@ -1191,7 +1092,7 @@
 
         .input-group label {
             display: block;
-            font-size: 0.75rem;
+            font-size: 0.74rem;
             color: var(--text-muted);
             margin-bottom: 6px;
             font-weight: 700;
@@ -1202,9 +1103,9 @@
         .input-group textarea,
         .input-group select {
             width: 100%;
-            background: rgba(0,0,0,0.55);
-            border: 1px solid rgba(255,255,255,0.16);
-            color: #fff;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text-main);
             padding: 13px 14px;
             border-radius: 12px;
             font-family: inherit;
@@ -1219,8 +1120,8 @@
         }
 
         .price-display {
-            background: rgba(139, 92, 246, 0.12);
-            border: 1px solid rgba(139, 92, 246, 0.35);
+            background: rgba(139, 92, 246, 0.10);
+            border: 1px solid var(--border-bright);
             padding: 13px 16px;
             border-radius: 12px;
             display: flex;
@@ -1231,7 +1132,7 @@
 
         .price-value {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.3rem;
+            font-size: 1.28rem;
             font-weight: 800;
             color: var(--success);
         }
@@ -1246,25 +1147,26 @@
             padding: 13px;
             border-radius: 12px;
             font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             cursor: pointer;
             border: none;
             font-family: inherit;
         }
 
         .btn-cancel {
-            background: rgba(255,255,255,0.1);
-            color: #fff;
+            background: var(--soft-surface);
+            color: var(--text-main);
+            border: 1px solid var(--border);
         }
 
         .btn-confirm {
             background: var(--grad-master);
-            color: #fff;
+            color: #ffffff;
             box-shadow: var(--glow-shadow);
         }
 
         .cart-item-row {
-            background: rgba(255,255,255,0.04);
+            background: var(--soft-surface);
             border: 1px solid var(--border);
             padding: 12px 14px;
             border-radius: 12px;
@@ -1280,16 +1182,16 @@
             top: 18px;
             left: 50%;
             transform: translateX(-50%) translateY(-100px);
-            background: #ffffff;
-            color: #090514;
+            background: var(--text-main);
+            color: var(--bg-base);
             padding: 12px 22px;
             border-radius: 30px;
-            font-size: 0.85rem;
+            font-size: 0.84rem;
             font-weight: 800;
             display: flex;
             align-items: center;
             gap: 10px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.45);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.35);
             z-index: 9999;
             opacity: 0;
             transition: 0.35s;
@@ -1299,9 +1201,78 @@
             transform: translateX(-50%) translateY(0);
             opacity: 1;
         }
+
+        /* =========================================================
+           🖥️ AUTOMATIC RESPONSIVE BREAKPOINTS (TABLET & DESKTOP)
+           ========================================================= */
+        /* Tablet (768px - 1099px): Icon Sidebar Rail + 2-Column Grid */
+        @media (min-width: 768px) and (max-width: 1099px) {
+            .app-shell {
+                flex-direction: row;
+            }
+            .app-sidebar {
+                display: flex;
+                width: 84px;
+            }
+            .sidebar-brand .brand-text,
+            .side-link .nav-tx,
+            .sidebar-footer .telemetry-text {
+                display: none;
+            }
+            .sidebar-brand,
+            .side-link,
+            .telemetry-pill {
+                justify-content: center;
+            }
+            .bottom-nav {
+                display: none;
+            }
+            .content-scroll {
+                padding: 24px 24px 40px 24px;
+            }
+            .bento-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 14px;
+            }
+            .wallet-layout {
+                grid-template-columns: 1fr 1.15fr;
+            }
+            .fomo-ticker {
+                bottom: 24px;
+                left: 104px;
+            }
+        }
+
+        /* Desktop / Laptop (>= 1100px): Full Executive Sidebar + 3-Column Grid */
+        @media (min-width: 1100px) {
+            .app-shell {
+                flex-direction: row;
+            }
+            .app-sidebar {
+                display: flex;
+                width: 260px;
+            }
+            .bottom-nav {
+                display: none;
+            }
+            .content-scroll {
+                padding: 28px 34px 50px 34px;
+            }
+            .bento-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 16px;
+            }
+            .wallet-layout {
+                grid-template-columns: 1fr 1.2fr;
+            }
+            .fomo-ticker {
+                bottom: 24px;
+                left: 280px;
+            }
+        }
     </style>
 </head>
-<body class="mode-auto">
+<body>
     <canvas id="canvas-bg"></canvas>
 
     <!-- TOAST & FOMO TICKER -->
@@ -1310,12 +1281,12 @@
     </div>
 
     <div class="fomo-ticker" id="fomoTicker">
-        <div id="fomoIcon" style="font-size:1.3rem;">🔥</div>
-        <div id="fomoText">User <span>@abi***</span> just purchased</div>
+        <div id="fomoIcon" style="font-size:1.25rem;">🔥</div>
+        <div id="fomoText">Client <span>@abi***</span> just purchased</div>
     </div>
 
     <div class="app-shell">
-        <!-- 🖥️ SIDEBAR NAVIGATION (TABLET & PC/LAPTOP) -->
+        <!-- 🖥️ SIDEBAR NAVIGATION (OTOMATIS MUNCUL DI TABLET & PC/LAPTOP) -->
         <aside class="app-sidebar">
             <div class="sidebar-brand">
                 <div class="brand-orb">🐝</div>
@@ -1339,7 +1310,7 @@
                     <span class="nav-tx">SMM & Marketing</span>
                 </button>
                 <button class="side-link" data-nav="accounts" onclick="switchMainTab('accounts')">
-                    <span class="nav-ic">📦</span>
+                    <span class="nav-ic">🔑</span>
                     <span class="nav-tx">Aged Social & Apps</span>
                 </button>
                 <button class="side-link" data-nav="wallet" onclick="switchMainTab('wallet')">
@@ -1348,7 +1319,7 @@
                 </button>
                 <button class="side-link" data-nav="admin" onclick="openAdminPanel()">
                     <span class="nav-ic">👑</span>
-                    <span class="nav-tx" style="color:#f87171;">Command Center</span>
+                    <span class="nav-tx" style="color:var(--danger);">Command Center</span>
                 </button>
             </nav>
 
@@ -1372,19 +1343,17 @@
                         <h1 class="topbar-title" id="topbarTitle">XIANBEE ENTERPRISE</h1>
                         <div class="topbar-sub">
                             <span class="pulse-dot" style="width:6px;height:6px;"></span>
-                            <span id="activeDeviceLabel">Auto Responsive</span>
+                            <span>100% Auto-Pilot System</span>
                         </div>
                     </div>
                 </div>
 
                 <div class="topbar-right">
-                    <!-- TOMBOL PEMILIH MODE (AUTO / HP / TAB / PC) -->
-                    <div class="device-switcher" title="Switch View Mode">
-                        <button class="dev-btn active" id="dev-auto" onclick="setLayoutMode('auto')">AUTO</button>
-                        <button class="dev-btn" id="dev-hp" onclick="setLayoutMode('hp')">📱 HP</button>
-                        <button class="dev-btn" id="dev-tab" onclick="setLayoutMode('tab')">📟 TAB</button>
-                        <button class="dev-btn" id="dev-pc" onclick="setLayoutMode('pc')">💻 PC</button>
-                    </div>
+                    <!-- TOMBOL SWITCHER 2 TEMA (NEBULA DARK / PLATINUM LIGHT) -->
+                    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">
+                        <span id="themeIcon">☀️</span>
+                        <span id="themeLabel">Light</span>
+                    </button>
 
                     <div class="wallet-pill" onclick="switchMainTab('wallet')">
                         <span>💰</span>
@@ -1404,7 +1373,7 @@
                 <section class="view-section active" id="view-home">
                     <div class="hero-banner">
                         <div>
-                            <div class="hero-badge">⚡ 100% AUTO-PILOT INFRASTRUCTURE</div>
+                            <div class="hero-badge">⚡ ENTERPRISE DIGITAL INFRASTRUCTURE</div>
                             <h2 class="hero-title">The Ultimate Digital Asset & GitHub Ecosystem</h2>
                             <p class="hero-sub">Aged GitHub Accounts (2011–2026), Repository Metric Automation, Social Media Accounts, Pro Apps, & Instant Crypto Top-Up.</p>
                         </div>
@@ -1479,11 +1448,11 @@
                             <div class="btn-content">
                                 <div class="btn-icon" style="background:var(--grad-danger);">👑</div>
                                 <div class="btn-text-wrapper">
-                                    <span class="btn-title" style="color:#f87171;">Executive Command Center</span>
+                                    <span class="btn-title" style="color:var(--danger);">Executive Command Center</span>
                                     <span class="btn-desc">Admin Inventory, Engine Deploy & Analytics</span>
                                 </div>
                             </div>
-                            <span class="arrow-icon" style="color:#f87171;">🔒</span>
+                            <span class="arrow-icon" style="color:var(--danger);">🔒</span>
                         </button>
                     </div>
                 </section>
@@ -1499,7 +1468,7 @@
                     <div id="ghAccountsSection">
                         <div class="section-header">
                             <div class="menu-category">SPECIAL EDITION & BADGE ACCOUNTS</div>
-                            <button class="pill-btn" onclick="sendActionToBot('VIEW_CATALOG', { year: 'ALL' })">📦 View ALL Stock in Bot</button>
+                            <button class="pill-btn active" onclick="sendActionToBot('VIEW_CATALOG', { year: 'ALL' })">📦 View ALL Stock in Bot</button>
                         </div>
                         <div class="bento-grid" id="ghSpecialGrid"></div>
 
@@ -1558,7 +1527,7 @@
                                 <div class="digital-card" id="digitalCard">
                                     <div style="display:flex;justify-content:space-between;align-items:center;">
                                         <div class="chip"></div>
-                                        <div class="card-type" id="cardTierText">VIP MEMBER</div>
+                                        <div class="card-type">VIP MEMBER</div>
                                     </div>
                                     <div style="display:flex;justify-content:space-between;align-items:flex-end;">
                                         <div>
@@ -1568,8 +1537,8 @@
                                         <button class="btn-refresh" onclick="requestBalanceSync()">🔄 Sync Bot</button>
                                     </div>
                                     <div style="display:flex;justify-content:space-between;align-items:center;">
-                                        <div class="user-id" id="displayUserId" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:700;">XB-USER</div>
-                                        <span style="font-size:0.72rem;color:rgba(255,255,255,0.8);font-weight:700;">XIANBEE VAULT</span>
+                                        <div id="displayUserId" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:700;">XB-USER</div>
+                                        <span style="font-size:0.72rem;color:rgba(255,255,255,0.85);font-weight:700;">XIANBEE VAULT</span>
                                     </div>
                                 </div>
                             </div>
@@ -1615,15 +1584,15 @@
                                 <div class="topup-btn" onclick="openTopupSelection(50)">
                                     <div style="font-size:1.5rem;">💰</div>
                                     <div style="font-weight:800;font-size:0.9rem;">$50 USDT</div>
-                                    <div style="font-size:0.7rem;color:#10b981;font-weight:700;">+5% Bonus!</div>
+                                    <div style="font-size:0.7rem;color:var(--success);font-weight:700;">+5% Bonus!</div>
                                 </div>
                                 <div class="topup-btn" onclick="openTopupSelection(100)">
                                     <div style="font-size:1.5rem;">💎</div>
                                     <div style="font-weight:800;font-size:0.9rem;">$100 USDT</div>
-                                    <div style="font-size:0.7rem;color:#10b981;font-weight:700;">+10% Bonus!</div>
+                                    <div style="font-size:0.7rem;color:var(--success);font-weight:700;">+10% Bonus!</div>
                                 </div>
                                 <div class="topup-btn" style="grid-column: 1 / -1;" onclick="openCustomTopup()">
-                                    <div style="font-size:1.3rem;">✍️ Enter Custom Deposit Amount (Min $5)</div>
+                                    <div style="font-size:0.9rem;font-weight:800;">✍️ Enter Custom Deposit Amount (Min $5)</div>
                                 </div>
                             </div>
                         </div>
@@ -1633,18 +1602,18 @@
                 <!-- 7. ADMIN COMMAND CENTER VIEW -->
                 <section class="view-section" id="view-admin">
                     <div class="wallet-layout" style="margin-bottom:22px;">
-                        <div style="background:var(--panel-bg);border:1px solid var(--border);border-radius:18px;padding:18px;">
+                        <div style="background:var(--panel-bg);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--card-shadow);">
                             <div class="menu-category" style="margin-bottom:12px;">📊 ENTERPRISE PERFORMANCE</div>
                             <canvas id="revenueChart" height="200"></canvas>
                         </div>
                         <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
                             <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);padding:18px;border-radius:16px;">
                                 <div style="font-size:0.75rem;color:var(--text-muted);font-weight:800;">CLOUD AUTOMATION NODES</div>
-                                <div style="font-size:1.6rem;color:var(--success);font-family:'JetBrains Mono';font-weight:800;margin-top:4px;">10 ENGINES READY</div>
+                                <div style="font-size:1.5rem;color:var(--success);font-family:'JetBrains Mono';font-weight:800;margin-top:4px;">10 ENGINES READY</div>
                             </div>
                             <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);padding:18px;border-radius:16px;">
                                 <div style="font-size:0.75rem;color:var(--text-muted);font-weight:800;">GSHEET & GITHUB VAULT SYNC</div>
-                                <div style="font-size:1.3rem;color:#a78bfa;font-family:'JetBrains Mono';font-weight:800;margin-top:4px;">60s AUTO-DAEMON ACTIVE</div>
+                                <div style="font-size:1.25rem;color:var(--accent-color);font-family:'JetBrains Mono';font-weight:800;margin-top:4px;">60s AUTO-DAEMON ACTIVE</div>
                             </div>
                         </div>
                     </div>
@@ -1777,7 +1746,7 @@
                 <div class="topup-btn" onclick="submitTopup('crypto')">
                     <div style="font-size:1.5rem;">🪙</div>
                     <div style="font-weight:800;font-size:0.82rem;">OxaPay Crypto</div>
-                    <div style="font-size:0.68rem;color:#10b981;">Instant Auto-Pilot</div>
+                    <div style="font-size:0.68rem;color:var(--success);font-weight:700;">Instant Auto-Pilot</div>
                 </div>
                 <div class="topup-btn" onclick="submitTopup('binance')">
                     <div style="font-size:1.5rem;">🔶</div>
@@ -1870,7 +1839,35 @@
         tg.expand();
         tg.ready();
 
-        // 1. PARSE URL PARAMETERS &TELEGRAM INITDATA FALLBACK
+        // 1. DUAL THEME CONTROLLER (CYBER NEBULA DARK <-> PLATINUM LIGHT)
+        let currentTheme = localStorage.getItem('xb_theme') || 'nebula';
+
+        function applyTheme(themeName) {
+            currentTheme = themeName;
+            document.documentElement.setAttribute('data-theme', themeName);
+            localStorage.setItem('xb_theme', themeName);
+
+            const iconEl = document.getElementById('themeIcon');
+            const labelEl = document.getElementById('themeLabel');
+            if (themeName === 'platinum') {
+                iconEl.innerText = '🌌';
+                labelEl.innerText = 'Nebula';
+            } else {
+                iconEl.innerText = '☀️';
+                labelEl.innerText = 'Platinum';
+            }
+        }
+
+        function toggleTheme() {
+            triggerHaptic('light');
+            const nextTheme = currentTheme === 'nebula' ? 'platinum' : 'nebula';
+            applyTheme(nextTheme);
+            showToast(nextTheme === 'platinum' ? '☀️ Platinum Light Theme Active' : '🌌 Cyber Nebula Theme Active');
+        }
+
+        applyTheme(currentTheme);
+
+        // 2. PARSE URL PARAMETERS & TELEGRAM INITDATA FALLBACK
         const urlParams = new URLSearchParams(window.location.search);
         const rawBalance = urlParams.get('bal');
         const userBalance = rawBalance !== null && !isNaN(parseFloat(rawBalance)) ? parseFloat(rawBalance) : 0.00;
@@ -1881,35 +1878,6 @@
         document.getElementById('counter').innerText = userBalance.toFixed(2);
         document.getElementById('topBalance').innerText = userBalance.toFixed(2);
         document.getElementById('displayUserId').innerText = urlUname.startsWith('@') ? urlUname : `@${urlUname}`;
-
-        // 2. RESPONSIVE DEVICE MODE CONTROLLER (AUTO / HP / TAB / PC)
-        function setLayoutMode(mode) {
-            document.body.classList.remove('mode-auto', 'mode-hp', 'mode-tab', 'mode-pc');
-            document.body.classList.add('mode-' + mode);
-            ['auto', 'hp', 'tab', 'pc'].forEach(m => {
-                const btn = document.getElementById('dev-' + m);
-                if (btn) btn.classList.toggle('active', m === mode);
-            });
-            updateDeviceLabel(mode);
-            triggerHaptic('light');
-        }
-
-        function updateDeviceLabel(mode) {
-            const lbl = document.getElementById('activeDeviceLabel');
-            if (mode === 'hp') lbl.innerText = '📱 Mobile View';
-            else if (mode === 'tab') lbl.innerText = '📟 Tablet View';
-            else if (mode === 'pc') lbl.innerText = '💻 Desktop PC View';
-            else {
-                const w = window.innerWidth;
-                if (w >= 1100) lbl.innerText = '💻 Auto (PC/Laptop)';
-                else if (w >= 768) lbl.innerText = '📟 Auto (Tablet)';
-                else lbl.innerText = '📱 Auto (Smartphone)';
-            }
-        }
-        window.addEventListener('resize', () => {
-            if (document.body.classList.contains('mode-auto')) updateDeviceLabel('auto');
-        });
-        updateDeviceLabel('auto');
 
         // 3. EXACT PRICE SYNCHRONIZATION WITH XianBee-TechStore.py
         const PRICES = {
@@ -2007,7 +1975,7 @@
                 card.innerHTML = `
                     <div class="acc-card-top">
                         <div class="btn-content">
-                            <div class="btn-icon" style="font-family:'JetBrains Mono';font-size:1rem;font-weight:800;">${yr}</div>
+                            <div class="btn-icon" style="font-family:'JetBrains Mono';font-size:0.95rem;font-weight:800;">${yr}</div>
                             <div class="btn-text-wrapper">
                                 <span class="btn-title">GitHub Account ${yr}</span>
                                 <span class="btn-desc">${tier} • Full 2FA & Creds</span>
@@ -2334,7 +2302,7 @@
                         <div class="btn-content">
                             <div class="btn-icon">${t.icon}</div>
                             <div class="btn-text-wrapper">
-                                <span class="btn-title">${qItem.q} Units ${qItem.badge ? `<span style="color:#f59e0b;font-size:0.7rem;">(${qItem.badge})</span>` : ''}</span>
+                                <span class="btn-title">${qItem.q} Units ${qItem.badge ? `<span style="color:var(--warning);font-size:0.7rem;">(${qItem.badge})</span>` : ''}</span>
                                 <span class="btn-desc">Auto-Pilot Dispatch</span>
                             </div>
                         </div>
@@ -2452,7 +2420,7 @@
                 const isRepo = currentSvcType !== 'followers' && target.includes('/');
                 const apiUrl = isRepo ? `https://api.github.com/repos/${target}` : `https://api.github.com/users/${target.split('/')[0]}`;
                 previewBox.style.display = 'flex';
-                previewBox.innerHTML = `<span style="font-size:0.78rem;color:#a78bfa;">🔄 Verifying target on GitHub...</span>`;
+                previewBox.innerHTML = `<span style="font-size:0.78rem;color:var(--accent-color);">🔄 Verifying target on GitHub...</span>`;
 
                 fetch(apiUrl)
                     .then(r => { if (!r.ok) throw new Error('404'); return r.json(); })
@@ -2469,12 +2437,12 @@
                         `;
                     })
                     .catch(() => {
-                        previewBox.innerHTML = `<span style="font-size:0.78rem;color:#ef4444;">❌ Target not found (404) or Private!</span>`;
+                        previewBox.innerHTML = `<span style="font-size:0.78rem;color:var(--danger);">❌ Target not found (404) or Private!</span>`;
                     });
             }, 600);
         });
 
-        // 10. SHOPPING CART (FIXED: INCLUDES `year` FOR XianBee-TechStore.py)
+        // 10. SHOPPING CART (TERKONEKSI PENUH DENGAN CHECKOUT_CART DI XianBee-TechStore.py)
         let cart = [];
 
         function addToCart(itemId, title, price, yearStr) {
@@ -2483,7 +2451,7 @@
             cart.push({
                 id: uniqueCartId,
                 item_id: `akun_${String(yearStr)}`,
-                year: String(yearStr), // WAJIB ADA AGAR XianBee-TechStore.py BISA AMBIL AKUN DARI STOK!
+                year: String(yearStr),
                 title: title,
                 price: parseFloat(price)
             });
@@ -2530,12 +2498,12 @@
                 div.className = 'cart-item-row';
                 div.innerHTML = `
                     <div>
-                        <div style="font-weight:800;font-size:0.88rem;color:#fff;">${item.title}</div>
-                        <div style="font-size:0.72rem;color:#a78bfa;font-family:'JetBrains Mono';">Category: ${item.year}</div>
+                        <div style="font-weight:800;font-size:0.88rem;color:var(--text-main);">${item.title}</div>
+                        <div style="font-size:0.72rem;color:var(--accent-color);font-family:'JetBrains Mono';">Category: ${item.year}</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:10px;">
                         <span style="font-family:'JetBrains Mono';font-weight:800;color:var(--success);">$${item.price.toFixed(2)}</span>
-                        <button onclick="removeFromCart(${idx})" style="background:rgba(239,68,68,0.2);border:1px solid #ef4444;color:#fff;border-radius:8px;padding:4px 8px;cursor:pointer;">🗑️</button>
+                        <button onclick="removeFromCart(${idx})" style="background:rgba(239,68,68,0.18);border:1px solid var(--danger);color:var(--text-main);border-radius:8px;padding:4px 8px;cursor:pointer;">🗑️</button>
                     </div>
                 `;
                 content.appendChild(div);
@@ -2643,6 +2611,8 @@
             const ctxChart = document.getElementById('revenueChart');
             if (ctxChart) {
                 if (adminChartInstance) adminChartInstance.destroy();
+                const isLight = currentTheme === 'platinum';
+                const tickColor = isLight ? '#475569' : '#94a3b8';
                 adminChartInstance = new Chart(ctxChart, {
                     type: 'bar',
                     data: {
@@ -2662,17 +2632,17 @@
                                 type: 'bar',
                                 label: 'Demand Index',
                                 data: [95, 88, 82, 78, 85, 92, 98],
-                                backgroundColor: 'rgba(139, 92, 246, 0.7)',
+                                backgroundColor: 'rgba(139, 92, 246, 0.72)',
                                 borderRadius: 6
                             }
                         ]
                     },
                     options: {
                         responsive: true,
-                        plugins: { legend: { labels: { color: '#f8fafc', font: { size: 11 } } } },
+                        plugins: { legend: { labels: { color: tickColor, font: { size: 11 } } } },
                         scales: {
-                            x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-                            y: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(255,255,255,0.05)' } }
+                            x: { ticks: { color: tickColor }, grid: { color: 'rgba(148,163,184,0.1)' } },
+                            y: { ticks: { color: tickColor }, grid: { color: 'rgba(148,163,184,0.1)' } }
                         }
                     }
                 });
@@ -2685,13 +2655,13 @@
                 btn.className = 'menu-btn';
                 btn.innerHTML = `
                     <div class="btn-content">
-                        <div class="btn-icon" style="background:rgba(239,68,68,0.18);border:1px solid rgba(239,68,68,0.4);">${tool.icon}</div>
+                        <div class="btn-icon" style="background:var(--grad-danger);">${tool.icon}</div>
                         <div class="btn-text-wrapper">
                             <span class="btn-title">${tool.title}</span>
                             <span class="btn-desc" style="font-family:'JetBrains Mono';">${tool.cmd}</span>
                         </div>
                     </div>
-                    <span class="arrow-icon" style="color:#f87171;">▶</span>
+                    <span class="arrow-icon" style="color:var(--danger);">▶</span>
                 `;
                 btn.onclick = () => handleAdminAction(tool);
                 adminContent.appendChild(btn);
@@ -2816,7 +2786,7 @@
             setTimeout(() => t.classList.remove('show'), 3800);
         }, 16000);
 
-        // Background Particles
+        // Background Particles (Adapts to Active Theme)
         const canvas = document.getElementById("canvas-bg");
         const ctx = canvas.getContext("2d");
         let width, height, particles;
@@ -2834,6 +2804,7 @@
         }
         function drawParticles() {
             ctx.clearRect(0, 0, width, height);
+            const rgb = getComputedStyle(document.documentElement).getPropertyValue('--particle-rgb').trim() || '139, 92, 246';
             particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -2842,7 +2813,7 @@
                 if (p.x > width) p.x = 0;
                 ctx.beginPath();
                 ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(139, 92, 246, ${p.alpha})`;
+                ctx.fillStyle = `rgba(${rgb}, ${p.alpha})`;
                 ctx.fill();
             });
             requestAnimationFrame(drawParticles);
