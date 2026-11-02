@@ -1538,7 +1538,6 @@
             });
             updateCartUI();
             showToast(`@${acc.username} added to Cart!`);
-            sendPayloadToBot('ADD_TO_CART', { item_name: `GitHub ${yrKey} (@${acc.username})`, price: prc }, false);
         }
 
         function buySpecificAccountNow(acc, yrKey) {
@@ -2218,20 +2217,6 @@
 
                 if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
 
-                // Notify Bot if inside Telegram WebApp
-                if (itemsList.length === 1 && itemsList[0].isUnit) {
-                    sendPayloadToBot('ORDER_SERVICE', {
-                        service_type: itemsList[0].ghType,
-                        speed: itemsList[0].speed || 'reg',
-                        quantity: itemsList[0].qty,
-                        target: itemsList[0].target
-                    }, false);
-                } else {
-                    sendPayloadToBot('CHECKOUT_CART', {
-                        items: itemsList.map(x => ({ year: x.yearKey || '2026', price: x.usdt, title: x.title }))
-                    }, false);
-                }
-
                 renderViewport();
                 showInstantReceiptModal(invId, summaryTitle, targetStr, totalUsdt, 'Wallet Balance (Instant Settled)', unlockedAccounts);
                 return;
@@ -2633,11 +2618,8 @@
         }
 
         function sendPayloadToBot(action, extra = {}) {
-            try {
-                if (tg && tg.sendData) {
-                    tg.sendData(JSON.stringify({ action: action, ...extra }));
-                }
-            } catch (e) {}
+            // Disabled tg.sendData() so the website NEVER closes or redirects to the Telegram Bot
+            console.log("[STANDALONE WEB MODE]", action, extra);
         }
 
         function closeModal(id) {
