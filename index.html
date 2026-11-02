@@ -15,10 +15,10 @@
         [data-theme="obsidian"] {
             --bg-base: #07080d;
             --bg-surface: #0f111a;
-            --bg-elevated: rgba(17, 20, 31, 0.90);
-            --bg-card: rgba(22, 26, 40, 0.78);
+            --bg-elevated: rgba(17, 20, 31, 0.92);
+            --bg-card: rgba(22, 26, 40, 0.80);
             --bg-card-hover: rgba(31, 36, 56, 0.96);
-            --bg-subtab: rgba(13, 15, 24, 0.92);
+            --bg-subtab: rgba(13, 15, 24, 0.94);
             --bg-input: #0b0d14;
             --bg-soft: rgba(255, 255, 255, 0.045);
 
@@ -324,7 +324,7 @@
         }
 
         /* =========================================================
-           🗂️ NESTED SUB-TABS & IN-PAGE DRAWERS
+           🗂️ NESTED SUB-TABS & IN-PAGE VAULT INSPECTOR
            ========================================================= */
         .subtabs-wrap {
             background: var(--bg-subtab);
@@ -359,12 +359,12 @@
 
         .inpage-drawer {
             background: var(--bg-surface);
-            border: 1px solid var(--border-focus);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 22px;
+            border: 1.5px solid var(--border-focus);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 24px;
             box-shadow: var(--shadow-glow);
-            animation: fadeIn 0.2s ease;
+            animation: fadeIn 0.22s ease;
         }
 
         @keyframes fadeIn {
@@ -453,7 +453,7 @@
 
         .price-chip {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
+            font-size: 0.82rem;
             font-weight: 800;
             color: var(--success);
             background: rgba(16, 185, 129, 0.12);
@@ -475,7 +475,7 @@
         .btn-ui {
             flex: 1;
             min-width: 90px;
-            padding: 9px 11px;
+            padding: 10px 12px;
             border-radius: 10px;
             font-family: inherit;
             font-size: 0.76rem;
@@ -485,7 +485,7 @@
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 5px;
+            gap: 6px;
             transition: 0.18s;
             text-decoration: none;
         }
@@ -514,6 +514,35 @@
         }
 
         .btn-ui.secondary:hover { border-color: var(--border-focus); }
+
+        /* CREDENTIAL VAULT ROW */
+        .cred-field-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            padding: 9px 12px;
+            border-radius: 9px;
+            margin-bottom: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.78rem;
+        }
+
+        .cred-field-row .lbl {
+            color: var(--text-muted);
+            font-size: 0.7rem;
+            font-weight: 700;
+            min-width: 78px;
+        }
+
+        .cred-field-row .val {
+            flex: 1;
+            color: var(--text-primary);
+            font-weight: 700;
+            word-break: break-all;
+        }
 
         /* 3D VIP WALLET CARD */
         .vip-card {
@@ -583,7 +612,7 @@
             border: 1px solid var(--border-focus);
             border-radius: 20px;
             width: 100%;
-            max-width: 480px;
+            max-width: 500px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 22px;
@@ -616,7 +645,7 @@
 
         .form-input:focus { border-color: var(--border-focus); }
 
-        /* BOTTOM NAVIGATION BAR (5 PILLARS ALIGNED WITH BOT) */
+        /* BOTTOM NAVIGATION BAR */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -686,7 +715,7 @@
     <div class="toast-msg" id="toastBanner">✅ Action completed</div>
 
     <div class="app-shell">
-        <!-- 🖥️ DESKTOP SIDEBAR (MIRRORS BOT MAIN MENU PILLARS) -->
+        <!-- 🖥️ DESKTOP SIDEBAR -->
         <aside class="sidebar">
             <div class="brand-box" onclick="switchTab('home')">
                 <div class="brand-orb">🐝</div>
@@ -701,7 +730,7 @@
                 <button class="side-btn" data-tab="github" onclick="switchTab('github')">🐙 GitHub Enterprise Hub</button>
                 <button class="side-btn" data-tab="catalog" onclick="switchTab('catalog')">🌐 All Store Catalogs</button>
                 <button class="side-btn" data-tab="wallet" onclick="switchTab('wallet')">💳 Wallet & Deposit</button>
-                <button class="side-btn" data-tab="profile" onclick="switchTab('profile')">👤 My Profile & Orders</button>
+                <button class="side-btn" data-tab="profile" onclick="switchTab('profile')">👤 Profile & Purchased Vault</button>
                 <button class="side-btn" data-tab="admin" onclick="switchTab('admin')" style="color:var(--warning);">👑 Command Center</button>
             </nav>
 
@@ -718,7 +747,7 @@
             <header class="topbar">
                 <div class="search-bar">
                     <span class="s-ic">🔍</span>
-                    <input type="text" id="globalSearch" placeholder="Search GitHub 2012, Stars, Canva Pro, Binance, MLBB..." oninput="handleSearch(this.value)">
+                    <input type="text" id="globalSearch" placeholder="Search GitHub 2012, @username, Stars, Canva Pro..." oninput="handleSearch(this.value)">
                 </div>
 
                 <div class="topbar-right">
@@ -754,7 +783,7 @@
                 <!-- NESTED SUB-TABS BAR (LEVEL 2) -->
                 <div class="subtabs-wrap" id="subTabsContainer"></div>
 
-                <!-- IN-PAGE VAULT DRAWER (LEVEL 3 — FOR SPECIFIC GITHUB YEAR ACCOUNTS) -->
+                <!-- IN-PAGE VAULT DRAWER (LEVEL 3 — FOR INSPECTING SPECIFIC GITHUB ACCOUNTS) -->
                 <div id="inPageVaultDrawer" style="display:none;"></div>
 
                 <!-- MAIN DYNAMIC VIEWPORT -->
@@ -762,7 +791,7 @@
             </div>
         </div>
 
-        <!-- 📱 MOBILE BOTTOM NAVIGATION (5 CORE PILLARS) -->
+        <!-- 📱 MOBILE BOTTOM NAVIGATION -->
         <nav class="bottom-nav">
             <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')">
                 <span style="font-size:1.18rem;">🏠</span>
@@ -830,7 +859,7 @@
                 </div>
             </div>
 
-            <!-- 3 INSTANT ACTIONS: ADD CART, PAY WITH BALANCE, PAY WITH CRYPTO -->
+            <!-- 3 INSTANT ACTIONS: PAY WITH BALANCE, PAY WITH CRYPTO, OR ADD CART -->
             <div style="display:flex;flex-direction:column;gap:8px;">
                 <div style="display:flex;gap:8px;">
                     <button class="btn-ui buy-now" style="flex:1;padding:12px;" onclick="executeDirectPayment('balance')">
@@ -890,7 +919,7 @@
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 3: OXAPAY CRYPTO INSTANT GATEWAY / RECEIPT MODAL
+         🪟 MODAL 3: OXAPAY CRYPTO GATEWAY / UNLOCKED CREDENTIALS VAULT MODAL
          ========================================================= -->
     <div class="modal-overlay" id="paymentGatewayModal">
         <div class="modal-box" id="paymentGatewayBody"></div>
@@ -907,7 +936,6 @@
         const OXAPAY_MERCHANT_KEY = "Y91KE8-V6HAJV-464FIB-Y4PQTL";
         const ADMIN_IDS = ["6740043923", "7095661271"];
 
-        // Parse user data from URL or Telegram WebApp initData
         const urlParams = new URLSearchParams(window.location.search);
         const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
         let currentUserId = urlParams.get('uid') || (tgUser ? String(tgUser.id) : (localStorage.getItem('xb_uid') || '6740043923'));
@@ -920,14 +948,12 @@
         localStorage.setItem('xb_uname', currentUsername);
         localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
 
-        // Real-Time USDT to IDR Rate (Fetched live from CoinGecko & ExchangeRate API)
         let liveUsdtIdrRate = parseFloat(localStorage.getItem('xb_live_idr_rate')) || 16250;
-        let currentCurrency = localStorage.getItem('xb_curr_mode') || 'USDT'; // Strictly 'USDT' or 'IDR'
+        let currentCurrency = localStorage.getItem('xb_curr_mode') || 'USDT';
         let currentTheme = localStorage.getItem('xb_theme_mode') || 'obsidian';
 
         async function fetchRealTimeUsdtIdrRate() {
             try {
-                // Primary: CoinGecko Real-Time Tether (USDT) to IDR market price
                 const r1 = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=idr');
                 if (r1.ok) {
                     const d1 = await r1.json();
@@ -941,7 +967,6 @@
             } catch (e) {}
 
             try {
-                // Fallback: Open Exchange Rates (same API used in XianBee-TechStore_4.py)
                 const r2 = await fetch('https://open.er-api.com/v6/latest/USD');
                 if (r2.ok) {
                     const d2 = await r2.json();
@@ -978,7 +1003,7 @@
             localStorage.setItem('xb_curr_mode', currentCurrency);
             updateTopBalance();
             renderViewport();
-            showToast(`Switched display currency to ${currentCurrency} (1 USDT = Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')})`);
+            showToast(`Display currency: ${currentCurrency} (1 USDT = Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')})`);
         }
 
         function applyTheme(t) {
@@ -996,12 +1021,19 @@
         fetchRealTimeUsdtIdrRate();
 
         // =========================================================
-        // 📦 2. COMPLETE STORE CATALOG (MATCHING BOT MENUS 100%)
+        // 📦 2. COMPLETE STORE CATALOG (GITHUB CATEGORIES = INSPECT ONLY!)
         // =========================================================
+        const BASE_YEAR_PRICES = {
+            'Arctic': 25.0, '6Badge': 10.0, 'Followers': 10.0, 'StudentPack': 5.0, 'Contrib': 10.0,
+            '2011': 30.0, '2012': 28.0, '2013': 26.0, '2014': 24.0, '2015': 22.0,
+            '2016': 20.0, '2017': 18.0, '2018': 16.0, '2019': 15.0, '2020': 12.0,
+            '2021': 10.0, '2022': 8.5, '2023': 7.5, '2024': 6.5, '2025': 5.5, '2026': 4.5
+        };
+
         const GITHUB_VAULT_CATEGORIES = [
             { yr: 'Arctic', icon: '❄️', tag: 'RARE VAULT', title: 'GitHub Arctic Code Vault Badge', desc: 'Authentic 2020 Arctic Vault Contributor + 6 Achievements • Full 2FA', usdt: 25.00 },
             { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges Account', desc: 'Unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usdt: 10.00 },
-            { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Account', desc: 'Aged GitHub profile pre-warmed with 50+ organic followers', usdt: 10.00 },
+            { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Account', desc: 'Aged GitHub profiles pre-warmed with 50+ organic followers', usdt: 10.00 },
             { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Developer Pack', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
             { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub High Green Contributions', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 },
             { yr: '2011', icon: '11', tag: 'VINTAGE 2011', title: 'Aged GitHub Account (Year 2011)', desc: '15-Year-Old Vintage Account • Maximum Trust Score + Full 2FA', usdt: 30.00 },
@@ -1029,7 +1061,7 @@
             { id: 'jasa_forks', hub: 'github_boost', sub: 'GitHub Boost', hot: true, isUnit: true, ghType: 'forks', icon: '⎇', tag: 'REPO FORKS', title: 'GitHub Repository Forks Service', desc: 'Authentic repository forks from aged developer accounts.', usdt: 0.40, tiers: [{ name: 'Regular Track', p: 0.40, spd: 'reg' }, { name: 'Fast Track', p: 0.45, spd: 'fast' }, { name: 'Ultra Track', p: 0.50, spd: 'ultra' }], prompt: 'Target Repository (owner/repo or URL):' },
             { id: 'jasa_watch', hub: 'github_boost', sub: 'GitHub Boost', hot: false, isUnit: true, ghType: 'watch', icon: '👁️', tag: 'WATCHERS', title: 'GitHub Repository Watchers Service', desc: 'Active repository subscribers and watchers injection.', usdt: 0.30, tiers: [{ name: 'Regular Track', p: 0.30, spd: 'reg' }, { name: 'Fast Track', p: 0.35, spd: 'fast' }, { name: 'Ultra Track', p: 0.40, spd: 'ultra' }], prompt: 'Target Repository (owner/repo or URL):' },
 
-            // --- PRO APPS & VIP STREAMING (MATCHING BOT hub_digital_asset) ---
+            // --- PRO APPS & VIP STREAMING ---
             { id: 'canva', hub: 'pro_apps', sub: 'Pro Apps & AI', hot: true, icon: '🎨', tag: '1 YEAR PRO', title: 'Canva Pro (1 Year Access)', desc: 'Official team invite to your registered Canva email.', usdt: 5.00, prompt: 'Your Registered Canva Email:' },
             { id: 'capcut', hub: 'pro_apps', sub: 'Pro Apps & AI', hot: true, icon: '✂️', tag: 'PRIVATE PRO', title: 'CapCut Pro (1 Month Private)', desc: 'Private full pro account with cloud storage & 4K export.', usdt: 3.00, prompt: 'Your Active Email Address:' },
             { id: 'ChatGPT', hub: 'pro_apps', sub: 'Pro Apps & AI', hot: true, icon: '🤖', tag: 'OPENAI PLUS', title: 'ChatGPT Plus (1 Month Access)', desc: 'Full GPT-4o, DALL-E 3, and advanced voice/data analysis.', usdt: 15.00, prompt: 'Your Email Address:' },
@@ -1037,7 +1069,7 @@
             { id: 'app_alight', hub: 'pro_apps', sub: 'Pro Apps & AI', hot: false, icon: '🎞️', tag: 'CREATIVE PRO', title: 'Alight Motion Pro & Getcontact Premium', desc: 'Private premium mobile subscription activation.', usdt: 4.50, tiers: [{ name: 'Alight Motion Pro', p: 4.50 }, { name: 'Getcontact Premium', p: 4.50 }], prompt: 'Your Email / Phone Number:' },
             { id: 'vip_stream', hub: 'pro_apps', sub: 'Pro Apps & AI', hot: false, icon: '🍿', tag: 'VIP STREAMING', title: 'VIP Streaming (Prime / Bstation / iQIYI / Vidio / Viu / WeTV)', desc: 'Official 1-Month Ad-Free 4K Ultra HD Streaming Account.', usdt: 3.50, tiers: [{ name: 'Amazon Prime Video', p: 3.50 }, { name: 'Bstation Premium', p: 3.50 }, { name: 'iQIYI / WeTV / Viu', p: 3.50 }, { name: 'Vidio / Vision+', p: 4.50 }], prompt: 'Your Email / WhatsApp for Delivery:' },
 
-            // --- AGED SOCIAL MEDIA & EMAIL ACCOUNTS (MATCHING hub_aged_socmed) ---
+            // --- AGED SOCIAL MEDIA & EMAIL ACCOUNTS ---
             { id: 'tw_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: true, icon: '🐦', tag: 'AGED X', title: 'Twitter (X) Aged / Crypto Account', desc: 'Aged X account with 2FA secret key & recovery email.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }, { name: 'Crypto Ready ($35)', p: 35.00 }], prompt: 'Order Notes / Delivery Email:' },
             { id: 'ig_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '📸', tag: 'INSTAGRAM', title: 'Instagram Aged / High Followers Account', desc: 'High-trust aged Instagram profile with full credentials.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }, { name: 'Crypto Ready ($35)', p: 35.00 }], prompt: 'Order Notes:' },
             { id: 'tt_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '🎵', tag: 'TIKTOK', title: 'TikTok Aged / High Followers Account', desc: 'Pre-warmed TikTok account ready for live & affiliate.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }], prompt: 'Order Notes:' },
@@ -1047,16 +1079,16 @@
             { id: 'rd_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '👽', tag: 'REDDIT', title: 'Reddit Aged / High Karma Account', desc: 'Aged Reddit profile ready for crypto & tech subreddits.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Karma ($25)', p: 25.00 }], prompt: 'Order Notes:' },
             { id: 'mail_gmail', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '📧', tag: 'EMAIL VAULT', title: 'Aged Email Accounts (Gmail / Outlook / Proton / MailRU)', desc: 'Verified aged email accounts for secure bindings.', usdt: 5.00, tiers: [{ name: 'Gmail ($5)', p: 5.00 }, { name: 'Outlook ($5)', p: 5.00 }, { name: 'ProtonMail ($5)', p: 5.00 }, { name: 'MailRU ($5)', p: 5.00 }], prompt: 'Preferred Email Provider:' },
 
-            // --- XIANBEE CRYPTO EXCHANGE & RETAIL GAS (MATCHING hub_crypto_gas) ---
+            // --- XIANBEE CRYPTO EXCHANGE & RETAIL GAS ---
             { id: 'exc_binance_kyc', hub: 'crypto_hub', sub: 'Crypto & Exchange', hot: true, icon: '🔶', tag: 'EXCHANGE KYC', title: 'Binance / OKX / Bybit / Bitget / Gate.io / MEXC Account', desc: 'Aged crypto exchange accounts (With KYC $35 / No KYC $25).', usdt: 35.00, tiers: [{ name: 'Binance KYC ($35)', p: 35.00 }, { name: 'OKX KYC ($35)', p: 35.00 }, { name: 'Bybit / Bitget KYC ($35)', p: 35.00 }, { name: 'MEXC No-KYC ($25)', p: 25.00 }], prompt: 'Preferred Exchange & Delivery Email:' },
             { id: 'gas_eth', hub: 'crypto_hub', sub: 'Crypto & Exchange', hot: true, icon: '⛽', tag: 'INSTANT GAS', title: 'Instant Retail Crypto & L2 Gas (ETH / BNB / SOL / TON / SUI)', desc: 'Instant retail gas delivery to your personal wallet via OxaPay.', usdt: 2.00, tiers: [{ name: 'Starter Gas (2 USDT)', p: 2.00 }, { name: 'Standard Gas (5 USDT)', p: 5.00 }, { name: 'Whale Gas (15 USDT)', p: 15.00 }], prompt: 'Network (e.g. Base/Arb/BSC/SOL/TON) + Wallet Address:' },
 
-            // --- SMM BOOST SERVICES (MATCHING hub_smm_cats) ---
+            // --- SMM BOOST SERVICES ---
             { id: 'ig_svc', hub: 'smm_hub', sub: 'SMM Traffic Boost', hot: false, isUnit: true, icon: '📸', tag: 'SMM BOOST', title: 'Instagram / TikTok / YouTube / X Followers & Views', desc: 'High-speed social media engagement boost.', usdt: 0.15, prompt: 'Target Profile or Post Link:' },
             { id: 'tg_svc', hub: 'smm_hub', sub: 'SMM Traffic Boost', hot: false, isUnit: true, icon: '✈️', tag: 'COMMUNITY SMM', title: 'Telegram Members / Discord Members / Reddit Upvotes', desc: 'Grow your Web3 community server and channel metrics.', usdt: 0.15, prompt: 'Target Channel or Invite Link:' },
             { id: 'cmc', hub: 'smm_hub', sub: 'SMM Traffic Boost', hot: false, isUnit: true, icon: '🪙', tag: 'WEB3 & SEO', title: 'CoinMarketCap Watchlist, Shopee/Tokopedia & Web Traffic', desc: 'Organic website traffic and e-commerce store metrics.', usdt: 0.25, prompt: 'Target Website or Store Link:' },
 
-            // --- PPOB BILLS, E-WALLET & GAMES (MATCHING hub_ppob) ---
+            // --- PPOB BILLS, E-WALLET & GAMES ---
             { id: 'ppob_games', hub: 'ppob_hub', sub: 'PPOB & Top-Up Games', hot: true, icon: '🎮', tag: 'INSTANT GAME', title: 'Top-Up Games (Mobile Legends / Free Fire / Valorant / Genshin / Steam)', desc: 'Real-time game diamond & voucher top-up via main server.', usdt: 2.00, tiers: [{ name: 'Small Pack (2 USDT)', p: 2.00 }, { name: 'Medium Pack (5 USDT)', p: 5.00 }, { name: 'Large Pack (12 USDT)', p: 12.00 }, { name: 'Sultan Pack (25 USDT)', p: 25.00 }], prompt: 'Game Name + User ID (and Server ID):' },
             { id: 'ppob_ewallet', hub: 'ppob_hub', sub: 'PPOB & Top-Up Games', hot: false, icon: '📱', tag: 'E-WALLET & PLN', title: 'E-Wallet Top-Up (DANA / OVO / GoPay / ShopeePay) & PLN Token', desc: 'Instant Indonesian E-Wallet balance & electricity token.', usdt: 2.00, tiers: [{ name: 'Rp 25.000 (~1.65 USDT)', p: 1.65 }, { name: 'Rp 50.000 (~3.25 USDT)', p: 3.25 }, { name: 'Rp 100.000 (~6.40 USDT)', p: 6.40 }, { name: 'Rp 250.000 (~15.80 USDT)', p: 15.80 }], prompt: 'Provider (DANA/OVO/GoPay/PLN/Pulsa) + Phone/Meter No:' }
         ];
@@ -1065,32 +1097,69 @@
         // 🔄 3. LIVE INVENTORY FETCH FROM GOOGLE SHEETS (SHEET1)
         // =========================================================
         let liveGithubStock = {};
+        let allLiveAccountsFlat = [];
         let totalLiveAccounts = 0;
+
+        function computeAccountPrice(acc, catKey) {
+            if (acc.price_usd && parseFloat(acc.price_usd) > 0) {
+                return parseFloat(acc.price_usd);
+            }
+            const yrStr = String(acc.year || catKey || '2026');
+            const baseYr = BASE_YEAR_PRICES[yrStr] || 4.5;
+            const catExtra = (catKey === 'Arctic') ? 25.0 : 0.0;
+            const follExtra = (parseInt(acc.followers || 0) || 0) * 0.15;
+            return baseYr + catExtra + follExtra;
+        }
 
         async function syncGoogleSheetInventory(notify = false) {
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({ action: 'pull_stock' })
                 });
                 const json = await res.json();
                 if (json && json.result && Array.isArray(json.data)) {
                     const grouped = {};
+                    const flat = [];
                     json.data.forEach(acc => {
                         const cat = String(acc.category || acc.year || '2026');
+                        acc._computed_usdt = computeAccountPrice(acc, cat);
+                        acc._cat_key = cat;
                         if (!grouped[cat]) grouped[cat] = [];
                         grouped[cat].push(acc);
+                        flat.push(acc);
                     });
+                    // Populate special "Followers" virtual category (accounts with >= 50 followers)
+                    grouped['Followers'] = flat.filter(a => (parseInt(a.followers || 0) || 0) >= 50);
+
                     liveGithubStock = grouped;
-                    totalLiveAccounts = json.data.length;
+                    allLiveAccountsFlat = flat;
+                    totalLiveAccounts = flat.length;
                     if (activeTab === 'home' || activeTab === 'github') renderViewport();
                     if (notify) showToast(`Synced ${totalLiveAccounts} live accounts from Google Sheet!`);
                 }
             } catch (e) {
-                console.log("GSheet live sync fallback.");
+                console.log("GSheet live sync fallback:", e);
             }
         }
         syncGoogleSheetInventory(false);
+
+        async function markAccountSoldInGSheet(username, priceUsdt, invoiceId) {
+            if (!username) return;
+            try {
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'update_status',
+                        username: username,
+                        status: 'SOLD OUT',
+                        date: `${new Date().toLocaleString('en-GB')} | $${parseFloat(priceUsdt).toFixed(2)} | ${invoiceId}`
+                    })
+                });
+            } catch (e) {}
+        }
 
         // =========================================================
         // 🧭 4. NAVIGATION & MULTI-LEVEL SUB-TABS ENGINE
@@ -1122,11 +1191,17 @@
             subContainer.innerHTML = '';
             vp.innerHTML = '';
 
-            // Global Search Filter
+            // Global Search Filter (Searches Categories, Individual Usernames, and Services)
             if (searchQuery) {
                 subContainer.style.display = 'none';
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
+
+                // Search individual live GitHub usernames first!
+                allLiveAccountsFlat.filter(a => String(a.username || '').toLowerCase().includes(searchQuery) || String(a._cat_key || '').toLowerCase().includes(searchQuery))
+                    .slice(0, 18)
+                    .forEach(acc => grid.appendChild(createSpecificAccountCard(acc, acc._cat_key)));
+
                 GITHUB_VAULT_CATEGORIES.filter(y => y.title.toLowerCase().includes(searchQuery) || y.yr.toLowerCase().includes(searchQuery))
                     .forEach(y => grid.appendChild(createGithubYearCard(y)));
                 CATALOG_ITEMS.filter(i => i.title.toLowerCase().includes(searchQuery) || i.desc.toLowerCase().includes(searchQuery))
@@ -1135,7 +1210,7 @@
                 return;
             }
 
-            // 1. HOME TAB (EXECUTIVE OVERVIEW + FLASH SALE + ALL HUB PILLARS)
+            // 1. HOME TAB
             if (activeTab === 'home') {
                 const homeSubs = ['🔥 Featured & Bestsellers', '🐙 Aged GitHub (2011–2026)', '🚀 GitHub Boost', '👑 Pro Apps & AI', '🪙 Crypto & PPOB'];
                 if (activeSub === 'ALL') activeSub = homeSubs[0];
@@ -1144,7 +1219,11 @@
                     const b = document.createElement('button');
                     b.className = 'subtab-pill' + (activeSub === hs ? ' active' : '');
                     b.innerText = hs;
-                    b.onclick = () => { activeSub = hs; renderViewport(); };
+                    b.onclick = () => {
+                        activeSub = hs;
+                        document.getElementById('inPageVaultDrawer').style.display = 'none';
+                        renderViewport();
+                    };
                     subContainer.appendChild(b);
                 });
 
@@ -1155,13 +1234,13 @@
                         <div>
                             <span class="item-tag">⚡ 100% STANDALONE WEB STORE • LIVE USDT/IDR</span>
                             <h2 style="margin:4px 0 6px 0;font-size:1.45rem;font-weight:800;">Welcome, @${currentUsername}</h2>
-                            <p style="margin:0;font-size:0.82rem;color:var(--text-secondary);max-width:620px;">
-                                Order aged GitHub accounts, repository boosts, Pro Apps, and PPOB top-ups directly on the web using <b>Instant Balance</b> or <b>OxaPay Crypto</b>.
+                            <p style="margin:0;font-size:0.82rem;color:var(--text-secondary);max-width:640px;">
+                                Click <b>📂 Inspect Vault</b> on any GitHub year to pick your exact <code>@username</code>, pay with <b>Instant Balance</b> or <b>OxaPay Crypto</b>, and save your Email, Password & 2FA directly on the web!
                             </p>
                         </div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button class="btn-ui primary" onclick="switchTab('github')">🐙 Open GitHub Hub</button>
-                            <button class="btn-ui buy-now" onclick="switchTab('wallet')">💳 Top-Up Balance</button>
+                            <button class="btn-ui primary" onclick="switchTab('github')">🐙 Inspect GitHub Vault (${totalLiveAccounts || 'Live'})</button>
+                            <button class="btn-ui buy-now" onclick="switchTab('profile'); activeSub='🔐 Purchased Accounts Vault'; renderViewport();">🔐 My Purchased Vault</button>
                         </div>
                     </div>
                 `;
@@ -1189,10 +1268,11 @@
                 return;
             }
 
-            // 2. GITHUB ENTERPRISE HUB (ACCOUNTS + BOOST + 6 ENTERPRISE TOOLS)
+            // 2. GITHUB ENTERPRISE HUB
             if (activeTab === 'github') {
                 const ghSubs = [
-                    '🛒 All Aged Accounts (2011–2026)',
+                    '🛒 All Aged Vaults (2011–2026)',
+                    '📦 View All Individual Accounts',
                     '❄️ Special Badges',
                     '🏛️ Vintage (2011–2016)',
                     '🛡️ Warmed (2017–2026)',
@@ -1225,6 +1305,17 @@
 
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
+
+                if (activeSub.includes('View All Individual Accounts')) {
+                    if (allLiveAccountsFlat.length === 0) {
+                        vp.innerHTML = `<div class="inpage-drawer" style="text-align:center;">⏳ Syncing live accounts from Google Sheet...</div>`;
+                    } else {
+                        allLiveAccountsFlat.forEach(acc => grid.appendChild(createSpecificAccountCard(acc, acc._cat_key)));
+                        vp.appendChild(grid);
+                    }
+                    return;
+                }
+
                 if (activeSub.includes('Boost Services')) {
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else {
@@ -1240,7 +1331,7 @@
                 return;
             }
 
-            // 3. ALL STORE CATALOGS (PRO APPS, AGED SOCIALS, CRYPTO EXCHANGE, SMM, PPOB)
+            // 3. ALL STORE CATALOGS
             if (activeTab === 'catalog') {
                 const catSubs = ['All Products', 'Pro Apps & AI', 'Aged Social & Emails', 'Crypto & Exchange', 'SMM Traffic Boost', 'PPOB & Top-Up Games'];
                 if (activeSub === 'ALL') activeSub = catSubs[0];
@@ -1271,14 +1362,21 @@
                 return;
             }
 
-            // 5. MY PROFILE, LOYALTY MILESTONES, HISTORY & LIVE BOOST TRACKER
+            // 5. MY PROFILE, PURCHASED CREDENTIALS VAULT, HISTORY & TRACKER
             if (activeTab === 'profile') {
-                const profSubs = ['👤 Profile & Loyalty CRM', '🧾 Transaction History', '📡 Live Boost Tracker', '🤝 5% Affiliate & Support'];
+                const vaultCount = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]').length;
+                const profSubs = [
+                    `🔐 Purchased Accounts Vault (${vaultCount})`,
+                    '👤 Profile & Loyalty CRM',
+                    '🧾 Transaction History',
+                    '📡 Live Boost Tracker',
+                    '🤝 5% Affiliate & Support'
+                ];
                 if (activeSub === 'ALL') activeSub = profSubs[0];
                 subContainer.style.display = 'flex';
                 profSubs.forEach(ps => {
                     const b = document.createElement('button');
-                    b.className = 'subtab-pill' + (activeSub === ps ? ' active' : '');
+                    b.className = 'subtab-pill' + (activeSub.split(' (')[0] === ps.split(' (')[0] ? ' active' : '');
                     b.innerText = ps;
                     b.onclick = () => { activeSub = ps; renderViewport(); };
                     subContainer.appendChild(b);
@@ -1296,11 +1394,14 @@
         }
 
         // =========================================================
-        // 🃏 5. CARD BUILDERS WITH DIRECT "⚡ BUY NOW" + "🛒 +CART"
+        // 🃏 5. GITHUB CATEGORY CARD (ONLY "📂 INSPECT") vs SPECIFIC ACCOUNT CARD ("🛒 +CART" & "⚡ BUY NOW")
         // =========================================================
         function createGithubYearCard(yObj) {
             const list = liveGithubStock[yObj.yr] || [];
-            const stockTag = list.length > 0 ? `🟢 ${list.length} IN STOCK` : yObj.tag;
+            const hasStock = list.length > 0;
+            const stockTag = hasStock ? `🟢 ${list.length} IN STOCK` : `🔴 0 IN STOCK`;
+            const minPrice = hasStock ? Math.min(...list.map(a => a._computed_usdt || yObj.usdt)) : yObj.usdt;
+
             const card = document.createElement('div');
             card.className = 'item-card';
             card.innerHTML = `
@@ -1308,17 +1409,45 @@
                     <div style="display:flex;gap:12px;min-width:0;flex:1;">
                         <div class="item-icon" style="font-family:'JetBrains Mono',monospace;">${yObj.icon}</div>
                         <div style="min-width:0;flex:1;">
-                            <span class="item-tag">${stockTag}</span>
+                            <span class="item-tag" style="${!hasStock ? 'color:var(--text-muted);border-color:var(--border-subtle);background:var(--bg-soft);' : ''}">${stockTag}</span>
                             <h3 class="item-title">${yObj.title}</h3>
                             <p class="item-desc">${yObj.desc}</p>
                         </div>
                     </div>
-                    <div class="price-chip">${fmtPrice(yObj.usdt)}</div>
+                    <div class="price-chip" title="Starting base price for this category">From ${fmtPrice(minPrice)}</div>
                 </div>
                 <div class="item-actions">
-                    <button class="btn-ui secondary" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usdt})">📂 Inspect</button>
-                    <button class="btn-ui secondary" onclick="addAccountToCart('${yObj.yr}-AUTO', '${yObj.title}', ${yObj.usdt}, '${yObj.yr}')">🛒 +Cart</button>
-                    <button class="btn-ui buy-now" onclick="buyGithubAccountNow('${yObj.yr}-AUTO', '${yObj.title}', ${yObj.usdt}, '${yObj.yr}')">⚡ Buy Now</button>
+                    <button class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usdt})">
+                        📂 Inspect Vault (${list.length} Available Accounts)
+                    </button>
+                </div>
+            `;
+            return card;
+        }
+
+        function createSpecificAccountCard(acc, yrKey) {
+            const prc = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+            const uname = acc.username;
+            const url = acc.url || `https://github.com/${uname}`;
+            const accId = `${yrKey}-${uname}`;
+            const accTitle = `GitHub ${yrKey} (@${uname})`;
+
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.style.background = 'var(--bg-soft)';
+            card.innerHTML = `
+                <div class="item-top">
+                    <div>
+                        <span class="item-tag">ID: ${accId} • YEAR ${acc.year || yrKey}</span>
+                        <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:1rem;">@${uname}</h4>
+                        <p class="item-desc">👥 Followers: <b>${acc.followers || 0}</b> &nbsp;•&nbsp; 📁 Public Repos: <b>${acc.repos || 0}</b> &nbsp;•&nbsp; 🔐 Full Email & 2FA</p>
+                    </div>
+                    <div class="price-chip">${fmtPrice(prc)}</div>
+                </div>
+                <div class="item-actions">
+                    <a href="${url}" target="_blank" class="btn-ui secondary">🌐 View GitHub</a>
+                    <button class="btn-ui secondary" onclick='addSpecificAccountToCart(${JSON.stringify(acc)}, "${yrKey}")'>🛒 +Cart</button>
+                    <button class="btn-ui buy-now" onclick='buySpecificAccountNow(${JSON.stringify(acc)}, "${yrKey}")'>⚡ Buy Now</button>
                 </div>
             `;
             return card;
@@ -1347,83 +1476,252 @@
             return card;
         }
 
-        // LEVEL-3 IN-PAGE VAULT INSPECTOR (EACH ACCOUNT HAS "🌐 PROFILE", "🛒 +CART", AND "⚡ BUY NOW")
+        // LEVEL-3 IN-PAGE VAULT INSPECTOR (SHOWS ALL INDIVIDUAL ACCOUNTS WITH +CART & BUY NOW)
         function openInPageYearVault(yrKey, title, defaultUsdt) {
             const drawer = document.getElementById('inPageVaultDrawer');
             const accounts = liveGithubStock[yrKey] || [];
             drawer.style.display = 'block';
+            drawer.innerHTML = '';
 
-            let inner = '';
+            const wrapper = document.createElement('div');
+            wrapper.className = 'inpage-drawer';
+
+            const header = document.createElement('div');
+            header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border-subtle);';
+            header.innerHTML = `
+                <div>
+                    <span class="item-tag">SELECT YOUR SPECIFIC GITHUB ACCOUNT</span>
+                    <h3 style="margin:2px 0 0 0;font-size:1.1rem;">📂 ${title} — ${accounts.length} Available Accounts</h3>
+                </div>
+                <button class="top-pill" onclick="document.getElementById('inPageVaultDrawer').style.display='none'">✕ Close Inspector</button>
+            `;
+            wrapper.appendChild(header);
+
             if (accounts.length > 0) {
-                inner = `<div class="grid-cards">` + accounts.map((acc, i) => {
-                    const prc = (acc.price_usd && acc.price_usd > 0) ? parseFloat(acc.price_usd) : (defaultUsdt + (parseInt(acc.followers || 0) * 0.15));
-                    const uname = acc.username || `Node-${i + 1}`;
-                    const url = acc.url || `https://github.com/${uname}`;
-                    const accId = `${yrKey}-${uname}`;
-                    const accTitle = `GitHub ${yrKey} (@${uname})`;
-                    return `
-                        <div class="item-card" style="background:var(--bg-soft);">
-                            <div class="item-top">
-                                <div>
-                                    <span class="item-tag">ID: ${accId}</span>
-                                    <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;">@${uname}</h4>
-                                    <p class="item-desc">👥 Followers: <b>${acc.followers || 0}</b> &nbsp;•&nbsp; 📁 Repos: <b>${acc.repos || 0}</b></p>
-                                </div>
-                                <div class="price-chip">${fmtPrice(prc)}</div>
-                            </div>
-                            <div class="item-actions">
-                                <a href="${url}" target="_blank" class="btn-ui secondary">🌐 Profile</a>
-                                <button class="btn-ui secondary" onclick="addAccountToCart('${accId}', '${accTitle}', ${prc}, '${yrKey}')">🛒 +Cart</button>
-                                <button class="btn-ui buy-now" onclick="buyGithubAccountNow('${accId}', '${accTitle}', ${prc}, '${yrKey}')">⚡ Buy Now</button>
-                            </div>
-                        </div>
-                    `;
-                }).join('') + `</div>`;
+                const grid = document.createElement('div');
+                grid.className = 'grid-cards';
+                accounts.forEach(acc => {
+                    grid.appendChild(createSpecificAccountCard(acc, yrKey));
+                });
+                wrapper.appendChild(grid);
             } else {
-                inner = `
-                    <div style="text-align:center;padding:18px;background:var(--bg-soft);border-radius:12px;border:1px dashed var(--border-subtle);">
-                        <div style="font-weight:800;margin-bottom:6px;">⚡ Instant Vault Delivery (${title})</div>
-                        <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">Click below to purchase directly using your Balance or Instant Crypto.</p>
-                        <div style="display:flex;gap:8px;justify-content:center;max-width:340px;margin:0 auto;">
-                            <button class="btn-ui secondary" onclick="addAccountToCart('${yrKey}-VAULT', '${title}', ${defaultUsdt}, '${yrKey}')">🛒 +Cart</button>
-                            <button class="btn-ui buy-now" onclick="buyGithubAccountNow('${yrKey}-VAULT', '${title}', ${defaultUsdt}, '${yrKey}')">⚡ Buy Now</button>
-                        </div>
-                    </div>
+                const emptyBox = document.createElement('div');
+                emptyBox.style.cssText = 'text-align:center;padding:22px;background:var(--bg-soft);border-radius:12px;border:1px dashed var(--border-subtle);';
+                emptyBox.innerHTML = `
+                    <div style="font-size:1.4rem;margin-bottom:6px;">📭</div>
+                    <div style="font-weight:800;margin-bottom:4px;">No Accounts Currently Listed in ${title}</div>
+                    <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">This year/badge category is currently out of stock (0 available). Please inspect another year (such as 2012, 2013, 2016, 2017, 2018, 2019, 2023–2026) or request a custom restock from Admin.</p>
+                    <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Hello Admin, please notify me when GitHub ${title} (${yrKey}) is restocked!`)}" target="_blank" class="btn-ui primary" style="max-width:260px;">🔔 Request Restock Alert</a>
                 `;
+                wrapper.appendChild(emptyBox);
             }
 
-            drawer.innerHTML = `
-                <div class="inpage-drawer">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--border-subtle);">
-                        <div>
-                            <span class="item-tag">IN-PAGE VAULT EXPLORER</span>
-                            <h3 style="margin:2px 0 0 0;font-size:1.05rem;">📂 ${title} (${accounts.length} Live Accounts)</h3>
-                        </div>
-                        <button class="top-pill" onclick="document.getElementById('inPageVaultDrawer').style.display='none'">✕ Close</button>
-                    </div>
-                    ${inner}
-                </div>
-            `;
+            drawer.appendChild(wrapper);
             drawer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        // Direct Buy Now handler for GitHub Accounts
-        function buyGithubAccountNow(accId, title, usdtPrice, yrKey) {
+        function addSpecificAccountToCart(acc, yrKey) {
+            const prc = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+            const accId = `${yrKey}-${acc.username}`;
+            if (cart.some(c => c.id === accId)) {
+                return showToast(`@${acc.username} is already in your Cart!`);
+            }
+            cart.push({
+                id: accId,
+                yearKey: yrKey,
+                isAccount: true,
+                qty: 1,
+                title: `GitHub ${yrKey} (@${acc.username})`,
+                target: `@${acc.username} (https://github.com/${acc.username})`,
+                usdt: prc,
+                accountData: acc
+            });
+            updateCartUI();
+            showToast(`@${acc.username} added to Cart!`);
+            sendPayloadToBot('ADD_TO_CART', { item_name: `GitHub ${yrKey} (@${acc.username})`, price: prc }, false);
+        }
+
+        function buySpecificAccountNow(acc, yrKey) {
+            const prc = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+            const accId = `${yrKey}-${acc.username}`;
             openDirectOrderModal({
                 id: accId,
                 yearKey: yrKey,
                 isAccount: true,
-                tag: 'INSTANT ACCOUNT DISPATCH',
-                title: title,
-                desc: 'Full credentials (Username, Password, Recovery Email & 2FA Secret Key) will be dispatched immediately upon payment.',
-                usdt: parseFloat(usdtPrice),
-                prompt: 'Delivery Note / Your Telegram @Username (Optional):'
+                accountData: acc,
+                tag: `LIVE ACCOUNT • ${acc.followers || 0} FLW • ${acc.repos || 0} REPOS`,
+                title: `GitHub ${yrKey} — @${acc.username}`,
+                desc: `Instant Web Delivery: Full Username, Password, Recovery Email (${acc.email || 'Included'}) & 2FA Secret Key will be unlocked and saved right in your Web Vault immediately after payment.`,
+                usdt: prc,
+                prompt: 'Selected GitHub Account (Locked for Your Order):'
             });
-            document.getElementById('ordTargetInput').value = `@${currentUsername} (Account ID: ${accId})`;
+            const inp = document.getElementById('ordTargetInput');
+            inp.value = `@${acc.username} (https://github.com/${acc.username})`;
+            inp.readOnly = true;
         }
 
         // =========================================================
-        // 💳 6. WALLET & DEPOSIT TAB (3D VIP CARD + INSTANT OXAPAY DEPOSIT)
+        // 🔐 6. IN-WEB CREDENTIAL VAULT SAVER, DOWNLOAD .TXT & LIVE 2FA
+        // =========================================================
+        function savePurchasedAccountsToWebVault(itemsList, invId) {
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            const unlockedAccounts = [];
+
+            itemsList.forEach(item => {
+                if (item.isAccount && item.accountData) {
+                    const acc = item.accountData;
+                    const entry = {
+                        invoice: invId,
+                        date: new Date().toLocaleString('en-US', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' }),
+                        category: item.yearKey || acc.category || acc.year || 'GitHub',
+                        username: acc.username || '-',
+                        password: acc.password || '-',
+                        twofa: acc.twofa || '-',
+                        email: acc.email || '-',
+                        url: acc.url || `https://github.com/${acc.username}`,
+                        followers: acc.followers || 0,
+                        repos: acc.repos || 0,
+                        priceUsdt: parseFloat(item.usdt || 0).toFixed(2)
+                    };
+                    vault.unshift(entry);
+                    unlockedAccounts.push(entry);
+
+                    // Mark SOLD OUT in Google Sheet immediately & remove from local available pool
+                    markAccountSoldInGSheet(acc.username, item.usdt, invId);
+                    allLiveAccountsFlat = allLiveAccountsFlat.filter(a => a.username.toLowerCase() !== acc.username.toLowerCase());
+                    Object.keys(liveGithubStock).forEach(k => {
+                        liveGithubStock[k] = (liveGithubStock[k] || []).filter(a => a.username.toLowerCase() !== acc.username.toLowerCase());
+                    });
+                }
+            });
+
+            localStorage.setItem('xb_purchased_vault', JSON.stringify(vault.slice(0, 100)));
+            return unlockedAccounts;
+        }
+
+        function formatAccountTxtContent(entry) {
+            return [
+                "====================================================",
+                "   XIANBEE-TECH — OFFICIAL GITHUB ACCOUNT VAULT",
+                "====================================================",
+                `Invoice ID     : ${entry.invoice}`,
+                `Purchase Date  : ${entry.date}`,
+                `Category / Year: GitHub ${entry.category}`,
+                `Price Paid     : ${entry.priceUsdt} USDT`,
+                "----------------------------------------------------",
+                `GitHub URL     : ${entry.url}`,
+                `Username       : ${entry.username}`,
+                `Password       : ${entry.password}`,
+                `Recovery Email : ${entry.email}`,
+                `2FA Secret Key : ${entry.twofa}`,
+                "----------------------------------------------------",
+                "SECURITY POLICY:",
+                "Please wait 24 hours after your initial login before",
+                "changing the password or recovery email.",
+                "===================================================="
+            ].join("\r\n");
+        }
+
+        function downloadCredentialTxt(idx) {
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            const entry = vault[idx];
+            if (!entry) return;
+            const blob = new Blob([formatAccountTxtContent(entry)], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `XianBee_${entry.invoice}_${entry.username}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`Saved ${entry.username}.txt to your device!`);
+        }
+
+        function downloadBatchCredentialsTxt(entries, invId) {
+            if (!entries || !entries.length) return;
+            const content = entries.map(e => formatAccountTxtContent(e)).join("\r\n\r\n");
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `XianBee_${invId}_Credentials.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast(`Downloaded ${entries.length} account credentials (.TXT)!`);
+        }
+
+        function copyFullCredentialBlock(idx) {
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            const e = vault[idx];
+            if (!e) return;
+            const str = `Username: ${e.username}\nPassword: ${e.password}\nEmail: ${e.email}\n2FA Secret: ${e.twofa}\nURL: ${e.url}`;
+            navigator.clipboard.writeText(str);
+            showToast(`Copied all credentials for @${e.username}!`);
+        }
+
+        async function showInline2faOtp(secret, targetDomId) {
+            const el = document.getElementById(targetDomId);
+            if (!el) return;
+            try {
+                const otp = await generateTotpCode(secret);
+                const rem = 30 - (Math.floor(Date.now() / 1000) % 30);
+                el.innerHTML = `<span style="color:var(--success);font-weight:800;font-size:0.9rem;cursor:pointer;" onclick="navigator.clipboard.writeText('${otp}'); showToast('OTP ${otp} copied!');">🔑 OTP: ${otp} (${rem}s) 📋</span>`;
+            } catch (err) {
+                el.innerText = 'Invalid 2FA Base32';
+            }
+        }
+
+        function renderCredentialCardHtml(entry, idx) {
+            const safeSecret = String(entry.twofa || '').replace(/[^A-Za-z2-7]/g, '');
+            const otpDomId = `inline_otp_${idx}_${Math.floor(Math.random()*9999)}`;
+            return `
+                <div class="item-card" style="border-color:var(--success);margin-bottom:14px;">
+                    <div class="item-top">
+                        <div>
+                            <span class="item-tag" style="color:var(--success);border-color:var(--success);">🔓 UNLOCKED • ${entry.invoice} • ${entry.date}</span>
+                            <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:1.05rem;">@${entry.username} (GitHub ${entry.category})</h4>
+                        </div>
+                        <div class="price-chip">${entry.priceUsdt} USDT</div>
+                    </div>
+
+                    <div>
+                        <div class="cred-field-row">
+                            <span class="lbl">USERNAME</span>
+                            <span class="val">${entry.username}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.username}'); showToast('Username copied!');">📋 Copy</button>
+                        </div>
+                        <div class="cred-field-row">
+                            <span class="lbl">PASSWORD</span>
+                            <span class="val">${entry.password}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋 Copy</button>
+                        </div>
+                        <div class="cred-field-row">
+                            <span class="lbl">EMAIL</span>
+                            <span class="val">${entry.email}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.email}'); showToast('Email copied!');">📋 Copy</button>
+                        </div>
+                        <div class="cred-field-row">
+                            <span class="lbl">2FA KEY</span>
+                            <span class="val">${entry.twofa}</span>
+                            ${safeSecret.length >= 8 ? `<button class="top-pill" id="${otpDomId}" onclick="showInline2faOtp('${safeSecret}', '${otpDomId}')">🔑 Get 6-Digit OTP</button>` : ''}
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.twofa}'); showToast('2FA Secret copied!');">📋 Copy</button>
+                        </div>
+                    </div>
+
+                    <div class="item-actions">
+                        <button class="btn-ui buy-now" onclick="downloadCredentialTxt(${idx})">💾 Save / Download (.TXT)</button>
+                        <button class="btn-ui secondary" onclick="copyFullCredentialBlock(${idx})">📋 Copy All Data</button>
+                        <a href="${entry.url}" target="_blank" class="btn-ui secondary">🌐 Open GitHub</a>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================
+        // 💳 7. WALLET & DEPOSIT TAB
         // =========================================================
         function renderWalletTab(container) {
             container.innerHTML = `
@@ -1494,13 +1792,34 @@
         }
 
         // =========================================================
-        // 👤 7. MY PROFILE, LOYALTY MILESTONE CRM & TRANSACTION HISTORY
+        // 👤 8. PROFILE, PURCHASED ACCOUNTS VAULT & HISTORY TAB
         // =========================================================
         function renderProfileTab(container, subSection) {
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
             const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
             const totalSpent = history.filter(x => x.type === 'OUT').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
             const totalDep = history.filter(x => x.type === 'IN').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
             const tierName = totalSpent >= 500 ? '💎 Diamond VIP' : (totalSpent >= 200 ? '🥇 Gold VIP' : (totalSpent >= 50 ? '🥈 Silver VIP' : '🥉 Bronze Member'));
+
+            if (subSection.includes('Purchased Accounts Vault')) {
+                const vaultHtml = vault.length === 0
+                    ? `<div style="padding:24px;text-align:center;color:var(--text-muted);font-weight:700;">You haven't purchased any GitHub accounts in this browser yet. Click <b>🐙 GitHub ➔ 📂 Inspect Vault</b> to choose an account!</div>`
+                    : vault.map((entry, idx) => renderCredentialCardHtml(entry, idx)).join('');
+
+                container.innerHTML = `
+                    <div class="inpage-drawer">
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
+                            <div>
+                                <span class="item-tag">ENCRYPTED LOCAL CREDENTIAL STORAGE</span>
+                                <h3 style="margin:2px 0 0 0;">🔐 My Purchased Accounts Vault (${vault.length} Saved)</h3>
+                            </div>
+                            ${vault.length > 0 ? `<button class="btn-ui buy-now" style="flex:0 0 auto;" onclick='downloadBatchCredentialsTxt(${JSON.stringify(vault)}, "ALL-VAULT")'>💾 Download All (.TXT)</button>` : ''}
+                        </div>
+                        ${vaultHtml}
+                    </div>
+                `;
+                return;
+            }
 
             if (subSection.includes('Transaction History')) {
                 const rowsHtml = history.length === 0
@@ -1568,7 +1887,6 @@
                 return;
             }
 
-            // Default Profile & Loyalty Milestone CRM View (Matches Sheet4 Rules)
             const accCycle = (totalSpent % 500);
             const boostCycle = (totalSpent % 200);
             const topCycle = (totalDep % 500);
@@ -1586,14 +1904,14 @@
                                     <div style="font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:800;color:var(--success);margin-top:2px;">${fmtPrice(userBalanceUsdt)}</div>
                                 </div>
                                 <div style="background:var(--bg-soft);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);">
-                                    <div style="font-size:0.7rem;color:var(--text-muted);font-weight:700;">TOTAL ORDERS</div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:800;margin-top:2px;">${history.length} TX</div>
+                                    <div style="font-size:0.7rem;color:var(--text-muted);font-weight:700;">SAVED IN VAULT</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:800;margin-top:2px;">${vault.length} Accounts</div>
                                 </div>
                             </div>
                         </div>
                         <div class="item-actions">
                             <button class="btn-ui buy-now" onclick="switchTab('wallet')">➕ Deposit Balance</button>
-                            <button class="btn-ui secondary" onclick="activeSub='🧾 Transaction History'; renderViewport();">🧾 View History</button>
+                            <button class="btn-ui primary" onclick="activeSub='🔐 Purchased Accounts Vault'; renderViewport();">🔐 View Purchased Vault</button>
                         </div>
                     </div>
 
@@ -1633,7 +1951,7 @@
         }
 
         // =========================================================
-        // 👑 8. CLEAN EXECUTIVE ADMIN COMMAND CENTER
+        // 👑 9. CLEAN EXECUTIVE ADMIN COMMAND CENTER
         // =========================================================
         function renderAdminTab(container) {
             const isAuthorized = ADMIN_IDS.includes(String(currentUserId));
@@ -1716,7 +2034,7 @@
         }
 
         // =========================================================
-        // ⚡ 9. DIRECT PAYMENT ENGINE (BALANCE INSTANT + OXAPAY CRYPTO INSTANT)
+        // ⚡ 10. DIRECT PAYMENT ENGINE + CREDENTIAL VAULT UNLOCKER
         // =========================================================
         let modalProduct = null;
         let modalUnitPrice = 0;
@@ -1724,6 +2042,7 @@
         let modalSpeedCode = 'reg';
         let cart = [];
         let cartDiscountPct = 0;
+        let oxaPollTimer = null;
 
         function openDirectOrderModal(item) {
             modalProduct = item;
@@ -1735,7 +2054,9 @@
             document.getElementById('ordModalTitle').innerText = item.title;
             document.getElementById('ordModalDesc').innerText = item.desc;
             document.getElementById('ordTargetLabel').innerText = item.prompt || 'Target / Delivery Email:';
-            if (!item.isAccount) document.getElementById('ordTargetInput').value = '';
+            const inp = document.getElementById('ordTargetInput');
+            inp.readOnly = false;
+            if (!item.isAccount) inp.value = '';
             document.getElementById('ordGithubPreview').style.display = 'none';
 
             const varBox = document.getElementById('ordVariantBox');
@@ -1785,7 +2106,6 @@
             document.getElementById('ordModalUserBal').innerText = fmtPrice(userBalanceUsdt);
         }
 
-        // Live GitHub Target verification inside Order Modal
         let previewTimer = null;
         document.getElementById('ordTargetInput').addEventListener('input', function(e) {
             clearTimeout(previewTimer);
@@ -1822,7 +2142,7 @@
             if (modalProduct.isUnit) {
                 qty = Math.max(10, parseInt(document.getElementById('ordQtyInput').value) || 10);
                 const mult = qty >= 200 ? 0.95 : 1.0;
-                totalUsdt = q = qty * modalUnitPrice * mult;
+                totalUsdt = qty * modalUnitPrice * mult;
                 title = `${modalProduct.title} (${qty} Units • ${modalTierLabel})`;
             } else if (modalProduct.tiers) {
                 title = `${modalProduct.title} [${modalTierLabel}]`;
@@ -1831,6 +2151,7 @@
                 id: modalProduct.id,
                 yearKey: modalProduct.yearKey || '2026',
                 isAccount: !!modalProduct.isAccount,
+                accountData: modalProduct.accountData || null,
                 isUnit: !!modalProduct.isUnit,
                 ghType: modalProduct.ghType || modalProduct.id.replace('jasa_', ''),
                 speed: modalSpeedCode,
@@ -1852,26 +2173,10 @@
             showToast('Added to Shopping Cart!');
         }
 
-        function addAccountToCart(accId, title, usdt, yrKey) {
-            cart.push({
-                id: accId,
-                yearKey: yrKey,
-                isAccount: true,
-                qty: 1,
-                title: title,
-                target: `Account ID: ${accId}`,
-                usdt: parseFloat(usdt)
-            });
-            updateCartUI();
-            showToast(`${title} added to Cart!`);
-            sendPayloadToBot('ADD_TO_CART', { item_name: title, price: usdt }, false);
-        }
-
         function updateCartUI() {
             document.getElementById('cartCountBadge').innerText = cart.length;
         }
 
-        // EXECUTE DIRECT PAYMENT (BALANCE OR CRYPTO INSTANT)
         function executeDirectPayment(method) {
             if (modalProduct.isUnit && !document.getElementById('ordTargetInput').value.trim()) {
                 return showToast('Please enter a valid target username or link!');
@@ -1898,20 +2203,22 @@
             // A. PAY WITH BALANCE (INSTANT)
             if (method === 'balance') {
                 if (userBalanceUsdt < totalUsdt) {
-                    showToast(`Insufficient Balance! You need ${fmtPrice(totalUsdt)}. Redirecting to Deposit...`);
+                    showToast(`Insufficient Balance! Need ${fmtPrice(totalUsdt)}. Redirecting to Deposit...`);
                     switchTab('wallet');
                     return;
                 }
 
-                // Deduct balance locally & record history
                 userBalanceUsdt = Math.max(0, userBalanceUsdt - totalUsdt);
                 localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
                 updateTopBalance();
                 recordWebTransaction(invId, summaryTitle, targetStr, totalUsdt, 'OUT', 'Wallet Balance (Instant)');
 
+                // Unlock & Save any purchased GitHub accounts to Web Vault + mark SOLD OUT in GSheet!
+                const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
+
                 if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
 
-                // If inside Telegram WebApp, also trigger bot backend execution automatically
+                // Notify Bot if inside Telegram WebApp
                 if (itemsList.length === 1 && itemsList[0].isUnit) {
                     sendPayloadToBot('ORDER_SERVICE', {
                         service_type: itemsList[0].ghType,
@@ -1925,13 +2232,14 @@
                     }, false);
                 }
 
-                showInstantReceiptModal(invId, summaryTitle, targetStr, totalUsdt, 'Wallet Balance (Instant Settled)');
+                renderViewport();
+                showInstantReceiptModal(invId, summaryTitle, targetStr, totalUsdt, 'Wallet Balance (Instant Settled)', unlockedAccounts);
                 return;
             }
 
             // B. PAY WITH CRYPTO (INSTANT OXAPAY API GATEWAY)
             if (method === 'crypto') {
-                openOxaPayInstantGateway(invId, summaryTitle, targetStr, totalUsdt, false, isFromCart);
+                openOxaPayInstantGateway(invId, summaryTitle, targetStr, totalUsdt, false, isFromCart, itemsList);
             }
         }
 
@@ -1940,11 +2248,11 @@
                 return showToast('Minimum deposit amount is 5.00 USDT!');
             }
             const invId = 'INV-TOPUP-' + Math.floor(10000 + Math.random() * 90000);
-            openOxaPayInstantGateway(invId, `Wallet Balance Deposit (${amountUsdt.toFixed(2)} USDT)`, `@${currentUsername}`, amountUsdt, true, false);
+            openOxaPayInstantGateway(invId, `Wallet Balance Deposit (${amountUsdt.toFixed(2)} USDT)`, `@${currentUsername}`, amountUsdt, true, false, []);
         }
 
-        // CALL OXAPAY MERCHANT API DIRECTLY FROM BROWSER FOR INSTANT CRYPTO PAYMENT!
-        async function openOxaPayInstantGateway(invId, title, targetStr, amountUsdt, isTopup = false, clearCartOnInit = false) {
+        async function openOxaPayInstantGateway(invId, title, targetStr, amountUsdt, isTopup = false, clearCartOnInit = false, pendingItems = []) {
+            if (oxaPollTimer) clearInterval(oxaPollTimer);
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
@@ -1953,7 +2261,7 @@
                 <div style="text-align:center;padding:24px 10px;">
                     <div style="font-size:2rem;margin-bottom:10px;">🪙</div>
                     <h3 style="margin:0 0 6px 0;">Connecting to OxaPay Crypto Gateway...</h3>
-                    <p style="font-size:0.8rem;color:var(--text-secondary);">Generating live blockchain payment address for <b>${amountUsdt.toFixed(2)} USDT</b></p>
+                    <p style="font-size:0.8rem;color:var(--text-secondary);">Generating live blockchain payment invoice for <b>${amountUsdt.toFixed(2)} USDT</b></p>
                 </div>
             `;
 
@@ -1981,7 +2289,7 @@
                     trackId = data.trackId;
                 }
             } catch (e) {
-                console.log("Direct OxaPay CORS fallback active.");
+                console.log("Direct OxaPay fallback mode.");
             }
 
             if (clearCartOnInit) { cart = []; cartDiscountPct = 0; updateCartUI(); }
@@ -1992,7 +2300,7 @@
             body.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                     <span class="item-tag" style="margin:0;">🪙 OXAPAY INSTANT CRYPTO GATEWAY</span>
-                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                    <button class="top-pill" onclick="if(oxaPollTimer) clearInterval(oxaPollTimer); closeModal('paymentGatewayModal');">✕</button>
                 </div>
                 <h3 style="margin:0 0 4px 0;font-family:'JetBrains Mono',monospace;">${invId}</h3>
                 <p style="margin:0 0 14px 0;font-size:0.78rem;color:var(--text-secondary);">${title}</p>
@@ -2000,54 +2308,101 @@
                 <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:14px;border-radius:12px;margin-bottom:14px;font-size:0.82rem;line-height:1.55;">
                     <div><b>Target / Account:</b> <code>${targetStr}</code></div>
                     <div><b>Amount Due:</b> <span style="color:var(--success);font-weight:800;font-family:'JetBrains Mono',monospace;">${amountUsdt.toFixed(2)} USDT</span> (~Rp ${idrEquiv})</div>
-                    ${trackId ? `<div><b>OxaPay Track ID:</b> <code>${trackId}</code></div>` : ''}
+                    ${trackId ? `<div><b>OxaPay Track ID:</b> <code>${trackId}</code> <span id="oxaLiveStatusBadge" style="color:var(--warning);font-weight:800;">(⏳ Waiting Blockchain Confirmation...)</span></div>` : ''}
                 </div>
 
                 ${payUrl ? `
                     <a href="${payUrl}" target="_blank" class="btn-ui primary" style="width:100%;padding:13px;font-size:0.88rem;margin-bottom:10px;">
-                        💳 Open OxaPay Instant Checkout Page
+                        💳 Pay ${amountUsdt.toFixed(2)} USDT on OxaPay Now
                     </a>
                 ` : ''}
 
                 <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:12px;border-radius:12px;font-size:0.76rem;line-height:1.5;margin-bottom:14px;">
-                    <div style="color:var(--accent-cyan);font-weight:800;margin-bottom:4px;">DIRECT USDT WALLET TRANSFER (INSTANT):</div>
+                    <div style="color:var(--accent-cyan);font-weight:800;margin-bottom:4px;">OR DIRECT TRANSFER TO MERCHANT WALLET:</div>
                     <div><b>USDT (BEP-20 / Arbitrum / Base):</b><br><code style="word-break:break-all;">0xA0F03ABeED5e6926F2CF2f91ED9927C143872a1B</code></div>
                     <div style="margin-top:6px;"><b>USDT (TRC-20):</b><br><code style="word-break:break-all;">TA1fH7BU6eKb996cPvG6tRv4zc4Z7sDQcz</code></div>
-                    <div style="margin-top:6px;"><b>Binance Pay ID:</b> <code>84876607</code> &nbsp;|&nbsp; <b>DANA/QRIS:</b> <code>089638423184</code></div>
                 </div>
 
                 <div style="display:flex;gap:8px;">
-                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal'); switchTab('profile'); activeSub='🧾 Transaction History'; renderViewport();">
-                        🧾 View in Order History
-                    </button>
-                    <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Hello Admin, I have paid Invoice ${invId}\nOrder: ${title}\nTarget: ${targetStr}\nAmount: ${amountUsdt.toFixed(2)} USDT`)}" target="_blank" class="btn-ui buy-now">
-                        ✅ Confirm Payment
+                    ${trackId ? `<button class="btn-ui buy-now" onclick='checkOxaPayInvoiceNow("${trackId}", "${invId}", "${title}", "${targetStr}", ${amountUsdt}, ${isTopup}, ${JSON.stringify(pendingItems)})'>🔄 Check Payment Status</button>` : ''}
+                    <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Hello Admin, I have paid Invoice ${invId}\nOrder: ${title}\nTarget: ${targetStr}\nAmount: ${amountUsdt.toFixed(2)} USDT`)}" target="_blank" class="btn-ui secondary">
+                        💬 Support
                     </a>
                 </div>
             `;
+
+            if (trackId) {
+                oxaPollTimer = setInterval(() => {
+                    checkOxaPayInvoiceNow(trackId, invId, title, targetStr, amountUsdt, isTopup, pendingItems, true);
+                }, 8000);
+            }
         }
 
-        function showInstantReceiptModal(invId, title, targetStr, amountUsdt, methodStr) {
+        async function checkOxaPayInvoiceNow(trackId, invId, title, targetStr, amountUsdt, isTopup, pendingItems, silent = false) {
+            try {
+                const res = await fetch(`https://api.oxapay.com/v1/payment/${trackId}`, {
+                    headers: { 'merchant_api_key': OXAPAY_MERCHANT_KEY }
+                });
+                const info = await res.json();
+                const st = (info && info.data && info.data.status) ? String(info.data.status).toLowerCase() : '';
+                const badgeEl = document.getElementById('oxaLiveStatusBadge');
+                if (badgeEl && st) badgeEl.innerText = `(Status: ${st.toUpperCase()})`;
+
+                if (st === 'paid') {
+                    if (oxaPollTimer) clearInterval(oxaPollTimer);
+                    if (isTopup) {
+                        userBalanceUsdt += parseFloat(amountUsdt);
+                        localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
+                        updateTopBalance();
+                        showInstantReceiptModal(invId, title, targetStr, amountUsdt, 'OxaPay Crypto (Confirmed)', []);
+                    } else {
+                        const unlocked = savePurchasedAccountsToWebVault(pendingItems || [], invId);
+                        renderViewport();
+                        showInstantReceiptModal(invId, title, targetStr, amountUsdt, 'OxaPay Crypto (Confirmed)', unlocked);
+                    }
+                } else if (!silent) {
+                    showToast(`Blockchain Status: ${(st || 'Pending').toUpperCase()} — Please complete payment first.`);
+                }
+            } catch (e) {
+                if (!silent) showToast('Checking blockchain status...');
+            }
+        }
+
+        function showInstantReceiptModal(invId, title, targetStr, amountUsdt, methodStr, unlockedAccounts = []) {
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
+            const vaultIdxMap = {};
+            const allVault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            unlockedAccounts.forEach((u, i) => { vaultIdxMap[u.username] = i; });
+
+            const credsHtml = unlockedAccounts.length > 0
+                ? `<div style="margin-bottom:14px;">
+                       <div style="font-size:0.78rem;font-weight:800;color:var(--success);margin-bottom:8px;">🔐 UNLOCKED ACCOUNT CREDENTIALS (SAVED TO YOUR WEB VAULT):</div>
+                       ${unlockedAccounts.map((acc, i) => renderCredentialCardHtml(acc, i)).join('')}
+                       <button class="btn-ui buy-now" style="width:100%;padding:12px;" onclick='downloadBatchCredentialsTxt(${JSON.stringify(unlockedAccounts)}, "${invId}")'>
+                           💾 Save / Download All Credentials (.TXT)
+                       </button>
+                   </div>`
+                : '';
+
             body.innerHTML = `
                 <div style="text-align:center;margin-bottom:14px;">
-                    <div style="font-size:2.2rem;margin-bottom:6px;">🎉</div>
-                    <span class="item-tag">PAYMENT SETTLED INSTANTLY</span>
+                    <div style="font-size:2.1rem;margin-bottom:4px;">🎉</div>
+                    <span class="item-tag">ORDER COMPLETED & VERIFIED</span>
                     <h3 style="margin:6px 0 2px 0;font-family:'JetBrains Mono',monospace;">${invId}</h3>
                 </div>
-                <div style="background:var(--bg-soft);border:1px solid var(--success);padding:14px;border-radius:12px;font-size:0.82rem;line-height:1.6;margin-bottom:16px;">
+                <div style="background:var(--bg-soft);border:1px solid var(--success);padding:14px;border-radius:12px;font-size:0.8rem;line-height:1.6;margin-bottom:14px;">
                     <div><b>Item / Service:</b> ${title}</div>
                     <div><b>Target / ID:</b> <code>${targetStr}</code></div>
-                    <div><b>Gateway:</b> ${methodStr}</div>
-                    <div><b>Amount Deducted:</b> <b style="color:var(--success);">${amountUsdt.toFixed(2)} USDT</b></div>
-                    <div><b>Remaining Balance:</b> <b>${userBalanceUsdt.toFixed(2)} USDT</b></div>
+                    <div><b>Payment Method:</b> ${methodStr}</div>
+                    <div><b>Total Paid:</b> <b style="color:var(--success);">${amountUsdt.toFixed(2)} USDT</b></div>
                 </div>
+                ${credsHtml}
                 <div style="display:flex;gap:8px;">
-                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal'); switchTab('profile'); activeSub='🧾 Transaction History'; renderViewport();">
-                        🧾 View Receipt in Profile
+                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal'); switchTab('profile'); activeSub='🔐 Purchased Accounts Vault'; renderViewport();">
+                        🔐 Open Purchased Vault
                     </button>
                     <button class="btn-ui primary" onclick="closeModal('paymentGatewayModal')">
                         ✅ Done
@@ -2071,7 +2426,7 @@
         }
 
         // =========================================================
-        // 🛠️ 10. IN-BROWSER 2FA OTP & DIAGNOSTIC TOOLS
+        // 🛠️ 11. IN-BROWSER 2FA OTP & DIAGNOSTIC TOOLS
         // =========================================================
         let otpIntervalId = null;
 
@@ -2177,7 +2532,7 @@
                     }
                     const d = await r.json();
                     const yr = d.created_at ? parseInt(d.created_at.substring(0, 4)) : 2026;
-                    const baseP = {2011:30,2012:28,2013:26,2014:24,2015:22,2016:20,2017:18,2018:16,2019:15,2020:12,2021:10,2022:8.5,2023:7.5,2024:6.5,2025:5.5,2026:4.5}[yr] || 15;
+                    const baseP = BASE_YEAR_PRICES[String(yr)] || 15;
                     const estVal = baseP + (d.followers * 0.15) + (d.public_repos * 0.05);
                     out.innerHTML = `
                         <div style="padding:14px;border-radius:12px;background:var(--bg-soft);border:1px solid var(--success);display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
@@ -2220,7 +2575,7 @@
         }
 
         // =========================================================
-        // 🛒 11. CART MODAL & BOT BRIDGE HELPERS
+        // 🛒 12. CART MODAL & BOT BRIDGE HELPERS
         // =========================================================
         function openCartModal() {
             const box = document.getElementById('cartItemsContainer');
@@ -2277,7 +2632,7 @@
             showToast('Balance sync signal sent!');
         }
 
-        function sendPayloadToBot(action, extra = {}, closeApp = false) {
+        function sendPayloadToBot(action, extra = {}) {
             try {
                 if (tg && tg.sendData) {
                     tg.sendData(JSON.stringify({ action: action, ...extra }));
