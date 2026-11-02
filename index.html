@@ -1846,7 +1846,7 @@
                 </div>
                 <div class="item-actions">
                     <a href="${url}" target="_blank" class="btn-ui secondary" style="min-width:70px;">🌐 Profile</a>
-                    <button class="btn-ui secondary" style="min-width:75px;" onclick="openNegoModalById('${accId}')">🤝 Nego</button>
+                    <button class="btn-ui secondary" style="min-width:75px;" onclick="openNegoModalById('${accId}')">🤝 Make an Offer</button>
                     <button class="btn-ui secondary" style="min-width:75px;" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
                     <button class="btn-ui buy-now" style="min-width:85px;" onclick="buySpecificAccountById('${accId}')">⚡ Buy Now</button>
                 </div>
@@ -3435,24 +3435,24 @@
 
             body.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">🤝 MAKE AN OFFER (NEGOTIATE)</span>
+                    <span class="item-tag" style="margin:0;">🤝 MAKE AN OFFER</span>
                     <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
                 <h3 style="margin:0 0 4px 0;font-family:'JetBrains Mono',monospace;">@${acc.username} (GitHub ${yrKey})</h3>
                 <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">
-                    Normal Price: <b style="color:var(--success);">${fmtPrice(origPrice)}</b> (${origPrice.toFixed(2)} USDT) • Submit your offer below and it will be sent directly to the Executive Admin!
+                    Standard Price: <b style="color:var(--success);">${fmtPrice(origPrice)}</b> (${origPrice.toFixed(2)} USDT) • Propose your custom price below for executive review.
                 </p>
                 <div class="form-group">
                     <label>Your Offer Amount (in USDT):</label>
                     <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origPrice - 0.5).toFixed(2)}" value="${Math.max(1, (origPrice * 0.85)).toFixed(1)}">
                 </div>
                 <div class="form-group">
-                    <label>Message / Note for Admin (Optional):</label>
-                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Ready to pay immediately with balance if approved!">
+                    <label>Note / Reason for Admin (Optional):</label>
+                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Ready to settle instantly via balance!">
                 </div>
                 <div style="display:flex;gap:8px;">
                     <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
-                    <button class="btn-ui primary" onclick="submitWebNegoOffer()">🚀 Send Offer to Admin</button>
+                    <button class="btn-ui primary" onclick="submitWebNegoOffer()">🚀 Send Offer</button>
                 </div>
             `;
         }
@@ -3497,8 +3497,8 @@
                 `📝 <b>Buyer Note:</b> ${note}`
             );
 
-            pushInWebNotification('buyer', '🤝 NEGOTIATION SENT', buyerNegoMsg);
-            pushInWebNotification('admin', '🤝 INCOMING PRICE OFFER', adminNegoMsg);
+            pushInWebNotification('buyer', '🤝 OFFER SUBMITTED', buyerNegoMsg);
+            pushInWebNotification('admin', '🤝 INCOMING OFFER', adminNegoMsg);
             sendTelegramSilentPush(currentUserId, buyerNegoMsg, true);
             ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminNegoMsg, true));
 
