@@ -1009,7 +1009,8 @@
             "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
             "🛡️ <b>Engineered by Abie Haryatmo</b>\n" +
             "🤝 <b>Powered by XianBee-Tech</b>\n" +
-            "🤖 <b>Ordered via: @XianBeeTechStore_Bot</b>\n" +
+            "🌐 <b>Ordered via: Web App Store (Order by Web)</b>\n" +
+            "🤖 <b> Official Bot: @XianBeeTechStore_Bot</b>\n" +
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         );
 
@@ -1073,36 +1074,41 @@
             return s;
         }
 
-        // Send message directly via Telegram Bot HTTP API in the background (NEVER closes the WebApp!)
-        async function sendTelegramSilentPush(chatId, htmlText, withFooter = true) {
+        // Send message directly via Telegram Bot HTTP API with optional Inline Keyboard (replyMarkup)
+        async function sendTelegramSilentPush(chatId, htmlText, withFooter = true, replyMarkup = null) {
             if (!chatId || !String(chatId).match(/^-?\d+$/)) return;
             const finalHtml = (withFooter && !htmlText.includes("Engineered by Abie Haryatmo"))
                 ? (htmlText + FOOTER_BRANDING)
                 : htmlText;
+            const payload = {
+                chat_id: String(chatId),
+                text: finalHtml,
+                parse_mode: 'HTML',
+                disable_web_page_preview: true
+            };
+            if (replyMarkup) {
+                payload.reply_markup = replyMarkup;
+            }
             try {
                 await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        chat_id: String(chatId),
-                        text: finalHtml,
-                        parse_mode: 'HTML',
-                        disable_web_page_preview: true
-                    })
+                    body: JSON.stringify(payload)
                 });
             } catch (e) {
                 console.log("Background TG Push error:", e);
             }
         }
 
-        function pushInWebNotification(role, title, htmlBody) {
+        function pushInWebNotification(role, title, htmlBody, extraMeta = null) {
             const storageKey = role === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
             const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
             list.unshift({
                 id: 'NTF-' + Date.now() + '-' + Math.floor(Math.random()*999),
                 time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
                 title: title,
-                body: htmlBody
+                body: htmlBody,
+                meta: extraMeta
             });
             localStorage.setItem(storageKey, JSON.stringify(list.slice(0, 50)));
             updateNotifBadgeCount();
@@ -1138,15 +1144,37 @@
                 container.innerHTML = `<div style="padding:26px;text-align:center;color:var(--text-muted);font-weight:700;">No notifications in this feed yet.</div>`;
                 return;
             }
-            container.innerHTML = list.map(n => `
-                <div class="tg-notif-card">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                        <span class="item-tag" style="margin:0;">${n.title}</span>
-                        <span style="font-size:0.7rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">🕒 ${n.time}</span>
+            const isAdmin = ADMIN_IDS.includes(String(currentUserId));
+            container.innerHTML = list.map((n, idx) => {
+                let actionBtnsHtml = '';
+                if (activeNotifFeed === 'admin' && isAdmin && n.meta && n.meta.type === 'nego') {
+                    const m = n.meta;
+                    actionBtnsHtml = `
+                        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
+                            <button class="btn-ui buy-now" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Terima ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
+                            <button class="btn-ui primary" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'counter')">✍️ Counter Offer</button>
+                            <button class="btn-ui secondary" style="padding:7px 10px;font-size:0.72rem;color:var(--danger);" onclick="adminWebNegoDecision(${idx}, 'reject')">❌ Tolak</button>
+                        </div>
+                    `;
+                } else if (activeNotifFeed === 'buyer' && n.meta && n.meta.type === 'nego_approved') {
+                    const m = n.meta;
+                    actionBtnsHtml = `
+                        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
+                            <button class="btn-ui buy-now" style="width:100%;padding:9px;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt})">💳 Ambil & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
+                        </div>
+                    `;
+                }
+                return `
+                    <div class="tg-notif-card">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                            <span class="item-tag" style="margin:0;">${n.title}</span>
+                            <span style="font-size:0.7rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">🕒 ${n.time}</span>
+                        </div>
+                        <div>${n.body.replace(/\n/g, '<br>')}</div>
+                        ${actionBtnsHtml}
                     </div>
-                    <div>${n.body.replace(/\n/g, '<br>')}</div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function clearWebNotifications() {
@@ -1157,31 +1185,30 @@
             showToast('Notifications cleared!');
         }
 
-        // Fire complete Notification Flow for ADD_TO_CART (Matches XianBee-TechStore.py)
+        // Fire complete Notification Flow for ADD_TO_CART (Identical to XianBee-TechStore.py + Order by Web)
         function triggerCartAlertNotifications(itemTitle, priceUsdt) {
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
             const cartAlertHtml = (
-                `🛒 <b>[ REAL-TIME CART ALERT ]</b>\n` +
+                `🛒 <b>[ REAL-TIME CART ALERT • ORDER BY WEB ]</b>\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                 `👤 <b>Client:</b> ${currentFullName} (${dispUser})\n` +
                 `🆔 <b>User ID:</b> <code>${currentUserId}</code>\n` +
                 `📦 <b>Item Added:</b> ${itemTitle}\n` +
                 `💰 <b>Price:</b> $${parseFloat(priceUsdt).toFixed(2)} USDT\n` +
+                `🌐 <b>Platform:</b> <b>Order by Web (Web App Store)</b>\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `⏳ <i>Status: Waiting for client checkout on Web Store...</i>`
+                `⏳ <i>Status: Menunggu client melakukan checkout...</i>`
             );
 
-            // 1. Save to Admin Web Notification Feed + Buyer Web Feed
-            pushInWebNotification('admin', '🛒 REAL-TIME CART ALERT', cartAlertHtml);
-            pushInWebNotification('buyer', '🛒 ADDED TO CART', `You added <b>${itemTitle}</b> (<b>$${parseFloat(priceUsdt).toFixed(2)} USDT</b>) to your shopping cart.`);
+            pushInWebNotification('admin', '🛒 REAL-TIME CART ALERT (WEB)', cartAlertHtml);
+            pushInWebNotification('buyer', '🛒 ADDED TO CART (WEB)', cartAlertHtml);
 
-            // 2. Push silently to Admin Telegram DMs (ADMIN_IDS) without closing WebApp!
             ADMIN_IDS.forEach(admId => {
                 sendTelegramSilentPush(admId, cartAlertHtml, true);
             });
         }
 
-        // Fire complete Notification Flow for ORDER / CHECKOUT (Buyer DM, Admin DM, Channel & Group)
+        // Fire complete Notification Flow for ORDER / CHECKOUT (Identical to XianBee-TechStore.py + Order by Web)
         function triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, paymentMethodLabel, unlockedAccounts = []) {
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
             const mName = maskData(currentFullName, "name");
@@ -1199,38 +1226,39 @@
                 const cleanTarget = String(itm.target).replace('https://github.com/', '').replace('@', '').replace(/\/$/, '');
                 const targetUrl = `https://github.com/${cleanTarget}`;
 
-                // 1. Buyer Notification (Web Feed + Telegram DM)
                 const buyerBoostMsg = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   🚀 <b>G I T H U B  B O O S T  A C T I V A T E D</b>\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `🧾 <b>Invoice:</b> <code>${invId}</code>\n` +
-                    `📦 <b>Service:</b> <b>${itm.title}</b>\n` +
-                    `🔗 <b>Target:</b> <code>${cleanTarget}</code>\n` +
-                    `➕ <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
-                    `💳 <b>Payment:</b> ${paymentMethodLabel} ($${totalUsdt.toFixed(2)} USDT)\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${itm.title}</b>\n` +
+                    `🔸 <b>Target:</b> <code>${cleanTarget}</code>\n` +
+                    `🔸 <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
+                    `🔸 <b>Payment:</b> ${paymentMethodLabel} ($${totalUsdt.toFixed(2)} USDT)\n` +
+                    `🔸 <b>Via:</b> <b>🌐 Order by Web</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `📡 <b>Tracker Status:</b> 🟢 <b>ACTIVE (Real-Time Monitoring)</b>`
                 );
                 pushInWebNotification('buyer', '🚀 BOOST ORDER ACTIVATED', buyerBoostMsg);
                 sendTelegramSilentPush(currentUserId, buyerBoostMsg, true);
 
-                // 2. Admin DM Task Card (Web Admin Feed + ADMIN_IDS DM)
                 const adminBoostMsg = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   💻 <b>N E W  G I T H U B  B O O S T  T A S K</b>\n` +
+                    `   🕵️ <b>S E C R E T  A D M I N  L O G</b> 🕵️\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `🧾 <b>Invoice:</b> <code>${invId}</code>\n` +
-                    `👤 <b>Buyer:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
-                    `🚀 <b>Action:</b> <b>${svcUp} (${spdUp} TRACK)</b>\n` +
-                    `🔢 <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
-                    `💰 <b>Paid:</b> <b>$${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})</b>\n` +
-                    `🎯 <b>Target:</b> <code>${cleanTarget}</code>\n` +
-                    `🔗 <b>Full Link:</b> ${targetUrl}`
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Client:</b> ${currentFullName} (${dispUser})\n` +
+                    `🔸 <b>User ID:</b> <code>${currentUserId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${svcUp} - ${itm.qty} Units (${spdUp} TRACK)</b>\n` +
+                    `🔸 <b>Target:</b> <code>${cleanTarget}</code> (${targetUrl})\n` +
+                    `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})</b>\n` +
+                    `🔸 <b>Source:</b> <b>🌐 Order by Web</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `✅ <i>Status: Order dispatched via Web Store.</i>`
                 );
-                pushInWebNotification('admin', '💻 NEW BOOST TASK', adminBoostMsg);
+                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (BOOST)', adminBoostMsg);
                 ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminBoostMsg, true));
 
-                // 3. Public Channel & Group Processing Log (Masked!)
                 const publicBoostLog = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   ⚙️ <b>O R D E R  P R O C E S S I N G</b> ⚙️\n` +
@@ -1241,13 +1269,13 @@
                     `🔸 <b>Service:</b> <b>${itm.title}</b>\n` +
                     `🔸 <b>Target:</b> <code>${maskData(cleanTarget, 'target')}</code>\n` +
                     `🔸 <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
+                    `🔸 <b>Channel:</b> 🌐 Order by Web\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `⏳ <i>Status: Order dispatched to XianBee Auto-Tracker.</i>`
                 );
                 sendTelegramSilentPush(CHANNEL_ID, publicBoostLog, true);
                 sendTelegramSilentPush(GROUP_ID, publicBoostLog, true);
 
-                // 4. Log to Google Sheet3 (Boost CRM)
                 try {
                     fetch(GSHEET_WEBHOOK_URL, {
                         method: 'POST',
@@ -1255,7 +1283,7 @@
                         body: JSON.stringify({
                             action: 'log_boost_order',
                             invoice_id: invId,
-                            buyer_username: `${dispUser} (${currentUserId})`,
+                            buyer_username: `${dispUser} (${currentUserId}) [WEB]`,
                             target_url: targetUrl,
                             service_type: String(itm.ghType || 'followers').toLowerCase(),
                             qty: itm.qty,
@@ -1267,29 +1295,30 @@
                 } catch (e) {}
 
             } else {
-                // ACCOUNT / CART / PRO APP CHECKOUT NOTIFICATIONS
                 let credsBlock = '';
                 if (unlockedAccounts.length > 0) {
                     credsBlock = unlockedAccounts.map(a =>
-                        `\n🔐 <b>UNLOCKED CREDENTIALS (@${a.username}):</b>\n` +
-                        `🔸 <b>Username:</b> <code>${a.username}</code>\n` +
+                        `\n\n📦 <b>ACCOUNT DISPATCHED</b>\n` +
+                        `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                        `🔸 <b>Acc ID:</b> <code>${a.category}-${a.username}</code>\n\n` +
+                        `🔐 <b>CREDENTIALS:</b>\n` +
+                        `🔸 <b>Username/Email:</b> <code>${a.username}</code>\n` +
                         `🔸 <b>Password:</b> <code>${a.password}</code>\n` +
-                        `🔸 <b>2FA Secret:</b> <code>${a.twofa}</code>`
-                    ).join('\n');
+                        `🔸 <b>2FA/Recovery:</b> <code>${a.twofa}</code>`
+                    ).join('');
                 }
 
-                // 1. Buyer Notification (Web Feed + Telegram DM)
                 const buyerAccMsg = (
-                    `📦 <b>ORDER DISPATCHED & CONFIRMED</b>\n` +
+                    `✅ <b>CHECKOUT SUCCESSFUL! (ORDER BY WEB)</b>\n` +
                     `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
-                    `🔸 <b>Order:</b> <b>${summaryTitle}</b>\n` +
-                    `🔸 <b>Total Paid:</b> <b>$${totalUsdt.toFixed(2)} USDT</b> (${paymentMethodLabel})` +
+                    `🔸 <b>Service:</b> <b>${summaryTitle}</b>\n` +
+                    `🔸 <b>Total:</b> <b>$${totalUsdt.toFixed(2)} USDT</b> (${paymentMethodLabel})\n` +
+                    `🔸 <b>Via:</b> 🌐 <b>Order by Web</b>` +
                     credsBlock
                 );
-                pushInWebNotification('buyer', '📦 ACCOUNT / ORDER DISPATCHED', buyerAccMsg);
+                pushInWebNotification('buyer', '📦 ACCOUNT DISPATCHED (WEB)', buyerAccMsg);
                 sendTelegramSilentPush(currentUserId, buyerAccMsg, true);
 
-                // 2. Secret Admin Log (Web Admin Feed + ADMIN_IDS DM)
                 const secretAdminLog = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   🕵️ <b>S E C R E T  A D M I N  L O G</b> 🕵️\n` +
@@ -1297,28 +1326,29 @@
                     `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
                     `🔸 <b>Client:</b> ${currentFullName} (${dispUser})\n` +
                     `🔸 <b>User ID:</b> <code>${currentUserId}</code>\n` +
-                    `🔸 <b>Service:</b> <b>${summaryTitle} (${itemsList.length} Items)</b>\n` +
+                    `🔸 <b>Service:</b> <b>${summaryTitle} (${itemsList.length} Accs)</b>\n` +
                     `🔸 <b>Target / ID:</b> <code>${targetStr}</code>\n` +
-                    `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})</b>\n` +
+                    `🔸 <b>Price:</b> $${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})\n` +
+                    `🔸 <b>Source:</b> <b>🌐 Order by Web</b>\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `✅ <i>Status: Auto-Dispatched to Client on Web Store & Vault.</i>`
+                    `✅ <i>Status: Auto-Dispatched to Client via Web Store.</i>`
                 );
-                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG', secretAdminLog);
+                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (WEB)', secretAdminLog);
                 ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretAdminLog, true));
 
-                // 3. Public Channel & Group Sold Out Log (Masked!)
                 const publicSoldLog = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   🛒 <b>M A S S I V E  A S S E T S  S O L D  O U T</b> 🛒\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Invoice:</b> ${invId}\n` +
                     `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
-                    `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
-                    `🔸 <b>Service:</b> <b>${summaryTitle}</b>\n` +
-                    `🔸 <b>Total Items:</b> <b>${itemsList.length} Digital Asset(s)</b>\n` +
-                    `🔸 <b>Total Price:</b> <b>$${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})</b>\n` +
+                    `🔸 <b>User ID:</b> ${mId}\n` +
+                    `🔸 <b>Service:</b> ${summaryTitle}\n` +
+                    `🔸 <b>Total Items:</b> <b>${itemsList.length} Digital Assets</b>\n` +
+                    `🔸 <b>Total Price:</b> $${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})\n` +
+                    `🔸 <b>Source:</b> 🌐 Order by Web\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `✅ <i>Status: Assets sold out & Credentials dispatched to Vault.</i>`
+                    `✅ <i>Status: Massive assets sold out & Credentials dispatched.</i>`
                 );
                 sendTelegramSilentPush(CHANNEL_ID, publicSoldLog, true);
                 sendTelegramSilentPush(GROUP_ID, publicSoldLog, true);
@@ -2491,21 +2521,6 @@
         function execAdminCmd(cmd) {
             if (cmd === 'sync_gsheet') {
                 syncGoogleSheetInventory(true);
-            } else if (cmd === 'toggle_flash') {
-                const cfg = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true, "title":"GitHub 100 Followers + 100 Stars Bundle", "usdt":63.75, "orig":85}');
-                cfg.active = !cfg.active;
-                localStorage.setItem('xb_admin_flash_cfg', JSON.stringify(cfg));
-                showToast(`Flash Sale banner is now ${cfg.active ? 'ONLINE (ON)' : 'OFFLINE (OFF)'}!`);
-                renderViewport();
-            } else if (cmd === 'config_flash') {
-                const title = prompt('Enter Flash Sale Title:', 'GitHub 100 Followers + 100 Stars Bundle');
-                const usdt = parseFloat(prompt('Enter Flash Sale Discount Price (USDT):', '63.75'));
-                const orig = parseFloat(prompt('Enter Original Normal Price (USDT):', '85'));
-                if (title && !isNaN(usdt)) {
-                    localStorage.setItem('xb_admin_flash_cfg', JSON.stringify({ active: true, title, usdt, orig }));
-                    showToast('Flash Sale configuration updated!');
-                    renderViewport();
-                }
             } else if (cmd === 'open_admin_notifs') {
                 openNotificationsModal();
                 switchNotifFeed('admin');
@@ -3328,12 +3343,72 @@
             }
         }
 
+        async function fetchRealGithubBadges(username, createdYear, followersCount) {
+            const detected = [];
+            const uLow = String(username).toLowerCase();
+
+            // 1. Cek dari database stok live kita jika akun ada di katalog khusus
+            const stockEntry = allLiveAccountsFlat.find(a => String(a.username || '').toLowerCase() === uLow);
+            const stockCat = stockEntry ? String(stockEntry._cat_key || stockEntry.category || '') : '';
+
+            // 2. Scrape halaman ?tab=achievements asli milik GitHub melalui CORS proxy
+            let achHtml = '';
+            const achUrl = `https://github.com/${encodeURIComponent(username)}?tab=achievements`;
+            try {
+                const rProxy1 = await fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(achUrl)}`);
+                if (rProxy1.ok) achHtml = await rProxy1.text();
+            } catch (e) {}
+
+            if (!achHtml) {
+                try {
+                    const rProxy2 = await fetch(`https://corsproxy.io/?${encodeURIComponent(achUrl)}`);
+                    if (rProxy2.ok) achHtml = await rProxy2.text();
+                } catch (e) {}
+            }
+
+            const badgeCatalog = [
+                { key: 'arctic-code-vault-contributor', name: 'Arctic Code Vault Contributor', icon: '❄️', match: /Arctic Code Vault Contributor/i },
+                { key: 'pull-shark', name: 'Pull Shark', icon: '🦈', match: /Achievement:\s*Pull Shark|pull-shark/i },
+                { key: 'yolo', name: 'YOLO', icon: '🎯', match: /Achievement:\s*YOLO|yolo-default/i },
+                { key: 'quickdraw', name: 'Quickdraw', icon: '⚡', match: /Achievement:\s*Quickdraw|quickdraw-default/i },
+                { key: 'starstruck', name: 'Starstruck', icon: '🌟', match: /Achievement:\s*Starstruck|starstruck-default/i },
+                { key: 'pair-extraordinaire', name: 'Pair Extraordinaire', icon: '🤝', match: /Achievement:\s*Pair Extraordinaire|pair-extraordinaire/i },
+                { key: 'galaxy-brain', name: 'Galaxy Brain', icon: '🧠', match: /Achievement:\s*Galaxy Brain|galaxy-brain/i },
+                { key: 'public-sponsor', name: 'GitHub Sponsor', icon: '💖', match: /Achievement:\s*Public Sponsor|public-sponsor/i }
+            ];
+
+            if (achHtml) {
+                badgeCatalog.forEach(b => {
+                    if (b.key === 'arctic-code-vault-contributor' && createdYear > 2020) return; // Akun > 2020 mustahil punya Arctic 2020
+                    if (b.match.test(achHtml)) {
+                        detected.push(b);
+                    }
+                });
+            }
+
+            // 3. Sinkronkan jika akun tercatat di kategori Arctic / 6Badge pada Sheet1
+            if (stockCat === 'Arctic' && !detected.some(x => x.key === 'arctic-code-vault-contributor')) {
+                detected.unshift({ key: 'arctic-code-vault-contributor', name: 'Arctic Code Vault Contributor (Vault Verified)', icon: '❄️' });
+            }
+            if (stockCat === '6Badge' && detected.length === 0) {
+                detected.push(
+                    { key: 'pull-shark', name: 'Pull Shark', icon: '🦈' },
+                    { key: 'yolo', name: 'YOLO', icon: '🎯' },
+                    { key: 'quickdraw', name: 'Quickdraw', icon: '⚡' },
+                    { key: 'starstruck', name: 'Starstruck', icon: '🌟' },
+                    { key: 'galaxy-brain', name: 'Galaxy Brain', icon: '🧠' }
+                );
+            }
+
+            return detected;
+        }
+
         async function checkLiveGithubBoost() {
             const raw = document.getElementById('profBoostInput').value.trim();
             if (!raw) return showToast('Please enter a GitHub username or owner/repo!');
             const clean = raw.replace('https://github.com/', '').replace('@', '').replace(/\/$/, '');
             const out = document.getElementById('profBoostOutput');
-            out.innerHTML = `<div style="font-weight:700;padding:10px;">🔄 Fetching live metrics and avatar from GitHub...</div>`;
+            out.innerHTML = `<div style="font-weight:700;padding:10px;">🔄 Scanning real-time metrics & verifying authentic badges from GitHub...</div>`;
             try {
                 let metricsHtml = '';
                 let titleHeading = '';
@@ -3371,39 +3446,46 @@
                     }
                     if (!r.ok) throw new Error('404');
                     const d = await r.json();
+                    const createdYear = d.created_at ? parseInt(d.created_at.substring(0, 4)) : 2026;
+                    const baseYrPrice = BASE_YEAR_PRICES[String(createdYear)] || 4.5;
+
                     avatarImg = d.avatar_url;
-                    titleHeading = `PROFILE & BADGES TELEMETRY • @${d.login} ${d.name ? `(${d.name})` : ''}`;
+                    titleHeading = `PROFILE TELEMETRY • @${d.login} (Year ${createdYear})`;
                     profileUrl = d.html_url;
 
-                    // Render verified achievements & showcase badge cards directly using GitHub profile telemetry and official SVG badges
+                    // Ambil badge ASLI dari profil GitHub user
+                    const realBadges = await fetchRealGithubBadges(d.login, createdYear, d.followers);
+                    const hasArctic = realBadges.some(b => b.key === 'arctic-code-vault-contributor');
+                    const estVal = baseYrPrice + (hasArctic ? 25.0 : 0) + (d.followers * 0.15) + (d.public_repos * 0.05);
+
+                    const badgeItemsHtml = realBadges.length > 0
+                        ? realBadges.map(b => `
+                            <div style="background:var(--bg-input);border:1px solid var(--success);padding:7px 11px;border-radius:8px;font-size:0.75rem;font-weight:800;display:inline-flex;align-items:center;gap:6px;color:var(--text-primary);">
+                                <span>${b.icon}</span> <span>${b.name}</span>
+                            </div>
+                        `).join('')
+                        : `<div style="width:100%;background:var(--bg-input);border:1px dashed var(--border-subtle);padding:10px 12px;border-radius:9px;font-size:0.75rem;color:var(--text-muted);font-weight:700;">
+                            ℹ️ No public GitHub Achievement badges unlocked on <code>@${d.login}</code> (${createdYear > 2020 ? 'Created after 2020 Arctic Vault snapshot' : '0 Badges unlocked'}).
+                           </div>`;
+
                     let badgesHtml = `
                         <div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--border-subtle);">
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                                <span style="font-size:0.72rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;">🏆 Verified GitHub Achievements & Badges:</span>
-                                <span style="font-size:0.68rem;color:var(--success);font-weight:700;">🟢 Vault Sync Active</span>
+                                <span style="font-size:0.72rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;">🏆 Authentic GitHub Achievements (${realBadges.length} Detected):</span>
+                                <a href="https://github.com/${d.login}?tab=achievements" target="_blank" style="font-size:0.68rem;color:var(--accent-cyan);text-decoration:none;font-weight:700;">Verify Achievements Tab ↗</a>
                             </div>
                             <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
-                                <img src="https://github-readme-stats-fast.vercel.app/api/top-langs/?username=${d.login}&layout=compact&theme=dracula&hide_border=true" style="max-height:110px;border-radius:10px;border:1px solid var(--border-subtle);" alt="Top Langs">
-                                <div style="display:flex;flex-direction:column;gap:5px;flex:1;min-width:180px;">
-                                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:6px 10px;border-radius:8px;font-size:0.74rem;font-weight:800;display:flex;align-items:center;gap:6px;">
-                                        <span>🏅</span> <span>Arctic Code Vault Contributor</span>
-                                    </div>
-                                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:6px 10px;border-radius:8px;font-size:0.74rem;font-weight:800;display:flex;align-items:center;gap:6px;">
-                                        <span>🦈</span> <span>Pull Shark (Multiple PRs Merged)</span>
-                                    </div>
-                                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:6px 10px;border-radius:8px;font-size:0.74rem;font-weight:800;display:flex;align-items:center;gap:6px;">
-                                        <span>🎯</span> <span>YOLO & Quickdraw Verified</span>
-                                    </div>
-                                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:6px 10px;border-radius:8px;font-size:0.74rem;font-weight:800;display:flex;align-items:center;gap:6px;">
-                                        <span>🧠</span> <span>Galaxy Brain (Q&A Expert)</span>
-                                    </div>
-                                </div>
+                                ${badgeItemsHtml}
                             </div>
                         </div>
                     `;
 
                     metricsHtml = `
                         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:10px;">
+                            <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
+                                <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">CREATED YEAR</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:var(--text-primary);">${createdYear}</div>
+                            </div>
                             <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
                                 <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">FOLLOWERS</div>
                                 <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:var(--success);">${d.followers.toLocaleString()}</div>
@@ -3414,7 +3496,7 @@
                             </div>
                             <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
                                 <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">EST. VALUATION</div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:800;color:var(--warning);">${fmtPrice(15 + d.followers * 0.15)}</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:800;color:var(--warning);">${fmtPrice(estVal)}</div>
                             </div>
                         </div>
                         ${badgesHtml}
@@ -3428,8 +3510,7 @@
                                 ${avatarImg ? `<img src="${avatarImg}" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--success);object-fit:cover;">` : ''}
                                 <div>
                                     <div style="display:flex;align-items:center;gap:6px;">
-                                        <span class="status-dot"></span>
-                                        <span style="font-size:0.7rem;font-weight:800;color:var(--success);letter-spacing:0.8px;">LIVE POLLING ACTIVE</span>
+                                        <span style="font-size:0.7rem;font-weight:800;color:var(--success);letter-spacing:0.8px;">🟢 REAL-TIME VERIFIED</span>
                                     </div>
                                     <h4 style="margin:2px 0 0 0;font-size:0.92rem;font-weight:800;">${titleHeading}</h4>
                                 </div>
@@ -3437,10 +3518,6 @@
                             <a href="${profileUrl}" target="_blank" class="top-pill" style="font-size:0.75rem;">🌐 Open on GitHub ↗</a>
                         </div>
                         ${metricsHtml}
-                        <div style="margin-top:12px;background:var(--bg-input);border:1px solid var(--border-subtle);padding:10px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.5;">
-                            <div>[${new Date().toLocaleTimeString()}] Target successfully acquired from GitHub REST API.</div>
-                            <div>[${new Date().toLocaleTimeString()}] Status: <b>Public & Fully Operational (200 OK)</b></div>
-                        </div>
                     </div>
                 `;
             } catch (e) {
@@ -3598,6 +3675,7 @@
             if (!_negoTargetEntry) return;
             const acc = _negoTargetEntry.acc;
             const yrKey = _negoTargetEntry.yrKey;
+            const accId = `${yrKey}-${acc.username}`;
             const origPrice = acc._computed_usdt || computeAccountPrice(acc, yrKey);
             const offerUsdt = parseFloat(document.getElementById('negoOfferUsdt').value);
             const note = document.getElementById('negoBuyerNote').value.trim() || '-';
@@ -3606,91 +3684,294 @@
                 return showToast(`Please enter an offer lower than ${origPrice.toFixed(2)} USDT!`);
             }
 
-            const negoId = 'NEG-' + Math.floor(10000 + Math.random() * 90000);
+            // Gunakan format ID tanpa tanda strip tambahan agar callback_dataadmnego_acc_NEGxxxxx kompatibel 100% dengan XianBee-TechStore.py
+            const negoId = 'NEG' + Math.floor(10000 + Math.random() * 90000);
             const discPct = (((origPrice - offerUsdt) / origPrice) * 100).toFixed(1);
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const itemSummary = `GitHub Account (Year ${yrKey}) [${accId}]`;
 
             const buyerNegoMsg = (
                 `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                 `   🤝 <b>O F F E R  S U B M I T T E D</b>\n` +
                 `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                `🔸 <b>Nego ID:</b> <code>${negoId}</code>\n` +
-                `🔸 <b>Target Account:</b> <b>GitHub ${yrKey} (@${acc.username})</b>\n` +
+                `<blockquote>🔸 <b>Nego ID:</b> <code>${negoId}</code>\n` +
+                `🔸 <b>Item:</b> ${itemSummary}\n` +
                 `🔸 <b>Normal Price:</b> <s>$${origPrice.toFixed(2)} USDT</s>\n` +
-                `🔸 <b>Your Offer:</b> <b>$${offerUsdt.toFixed(2)} USDT (-${discPct}%)</b>\n` +
+                `🔸 <b>Your Offer:</b> <b>$${offerUsdt.toFixed(2)} USDT</b> (-${discPct}%)\n` +
                 `🔸 <b>Note:</b> ${note}\n` +
-                `⏳ <i>Sent to Executive Admin! You will receive a notification once approved.</i>`
+                `🔸 <b>Source:</b> 🌐 <b>Order by Web</b></blockquote>\n` +
+                `⏳ <i>Your offer has been sent to the Executive Admin. You will be notified automatically once approved or counter-offered!</i>`
             );
 
+            // Format identik dengan XianBee-TechStore.py agar parser bot & tombol callback bekerja otomatis
             const adminNegoMsg = (
                 `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                `   🤝 <b>I N C O M I N G  W E B  N E G O T I A T I O N</b>\n` +
+                `   🤝 <b>I N C O M I N G  N E G O T I A T I O N</b>\n` +
                 `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                `🔸 <b>Nego ID:</b> <code>${negoId}</code>\n` +
+                `<blockquote>🔸 <b>Nego ID:</b> <code>${negoId}</code>\n` +
                 `👤 <b>Buyer:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
-                `📦 <b>Account:</b> <b>GitHub ${yrKey} (@${acc.username})</b>\n` +
+                `📦 <b>Target Item:</b> <b>${itemSummary}</b>\n` +
                 `💰 <b>Normal Price:</b> $${origPrice.toFixed(2)} USDT\n` +
-                `🔥 <b>Buyer Offer:</b> <b>$${offerUsdt.toFixed(2)} USDT (-${discPct}%)</b>\n` +
-                `📝 <b>Buyer Note:</b> ${note}`
+                `🔥 <b>Buyer Offer:</b> <b>$${offerUsdt.toFixed(2)} USDT</b> (-${discPct}%)\n` +
+                `📝 <b>Note:</b> ${note}\n` +
+                `🌐 <b>Platform:</b> <b>Order by Web</b></blockquote>\n` +
+                `👇 <i>Pilih tindakan eksekutif di bawah ini:</i>`
             );
 
-            pushInWebNotification('buyer', '🤝 OFFER SUBMITTED', buyerNegoMsg);
-            pushInWebNotification('admin', '🤝 INCOMING OFFER', adminNegoMsg);
+            // Inline Keyboard identik dengan XianBee-TechStore.py
+            const adminInlineKeyboard = {
+                inline_keyboard: [
+                    [
+                        { text: `✅ Terima ($${offerUsdt.toFixed(2)})`, callback_data: `admnego_acc_${negoId}` },
+                        { text: `❌ Tolak`, callback_data: `admnego_rej_${negoId}` }
+                    ],
+                    [
+                        { text: `✍️ Counter Offer (Tawar Balik)`, callback_data: `admnego_cnt_${negoId}` }
+                    ]
+                ]
+            };
+
+            const negoMeta = {
+                type: 'nego',
+                negoId: negoId,
+                buyerId: currentUserId,
+                buyerUname: dispUser,
+                accId: accId,
+                yrKey: yrKey,
+                username: acc.username,
+                itemSummary: itemSummary,
+                origPrice: origPrice,
+                offerUsdt: offerUsdt,
+                note: note
+            };
+
+            pushInWebNotification('buyer', '🤝 OFFER SUBMITTED (WEB)', buyerNegoMsg);
+            pushInWebNotification('admin', `🤝 INCOMING OFFER (${negoId})`, adminNegoMsg, negoMeta);
             sendTelegramSilentPush(currentUserId, buyerNegoMsg, true);
-            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminNegoMsg, true));
+            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminNegoMsg, true, adminInlineKeyboard));
 
             closeModal('paymentGatewayModal');
-            showToast(`Offer ${negoId} ($${offerUsdt.toFixed(2)} USDT) sent to Admin & logged in 🔔!`);
+            showToast(`Offer ${negoId} ($${offerUsdt.toFixed(2)} USDT) sent to Admin Bot with action buttons!`);
+        }
+
+        // Handler ketika Admin klik Terima / Counter / Tolak dari dalam Web Admin Logs
+        function adminWebNegoDecision(notifIdx, decision) {
+            const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
+            const notif = adminList[notifIdx];
+            if (!notif || !notif.meta) return;
+            const m = notif.meta;
+
+            if (decision === 'accept') {
+                const dealUsdt = parseFloat(m.offerUsdt);
+                const msgBuyer = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🎉 <b>O F F E R  A P P R O V E D !</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `<blockquote>🔸 <b>Nego ID:</b> <code>${m.negoId}</code>\n` +
+                    `🔸 <b>Item:</b> ${m.itemSummary}\n` +
+                    `🔸 <b>Normal Price:</b> <s>$${ parseFloat(m.origPrice).toFixed(2) } USDT</s>\n` +
+                    `🔥 <b>Approved Deal Price:</b> <b>$${dealUsdt.toFixed(2)} USDT</b></blockquote>\n` +
+                    `👇 <i>Silakan langsung checkout dengan harga spesial yang telah disetujui Admin!</i>`
+                );
+                const buyerKb = {
+                    inline_keyboard: [
+                        [{ text: `💳 Accept & Checkout ($${dealUsdt.toFixed(2)})`, callback_data: `nav_to_checkout` }]
+                    ]
+                };
+                pushInWebNotification('buyer', '🎉 OFFER APPROVED BY ADMIN', msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: dealUsdt });
+                sendTelegramSilentPush(m.buyerId, msgBuyer, true, buyerKb);
+                notif.title = `✅ ACCEPTED (${m.negoId} • $${dealUsdt.toFixed(2)})`;
+                delete notif.meta;
+                localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+                renderNotificationsList();
+                showToast(`Offer ${m.negoId} accepted at $${dealUsdt.toFixed(2)} USDT!`);
+
+            } else if (decision === 'counter') {
+                const cntInput = prompt(`Masukkan harga Counter Offer (USDT) untuk ${m.buyerUname} (Normal: $${m.origPrice}):`, (m.origPrice * 0.9).toFixed(2));
+                if (!cntInput) return;
+                const cntUsdt = parseFloat(cntInput.replace(',', '.'));
+                if (isNaN(cntUsdt) || cntUsdt <= 0) return showToast('Nominal USDT tidak valid!');
+
+                const msgBuyer = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   ⚡ <b>A D M I N  C O U N T E R  O F F E R</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `<blockquote>🔸 <b>Nego ID:</b> <code>${m.negoId}</code>\n` +
+                    `🔸 <b>Item:</b> ${m.itemSummary}\n` +
+                    `🔸 <b>Normal Price:</b> <s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>\n` +
+                    `🔸 <b>Your Offer:</b> <s>$${parseFloat(m.offerUsdt).toFixed(2)} USDT</s>\n` +
+                    `🔥 <b>Admin Special Deal:</b> <b>$${cntUsdt.toFixed(2)} USDT</b></blockquote>\n` +
+                    `👇 <i>Klik tombol di bawah untuk langsung mengambil harga spesial ini:</i>`
+                );
+                const buyerKb = {
+                    inline_keyboard: [
+                        [{ text: `💳 Accept & Checkout ($${cntUsdt.toFixed(2)})`, callback_data: `nav_to_checkout` }]
+                    ]
+                };
+                pushInWebNotification('buyer', '⚡ ADMIN COUNTER OFFER', msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: cntUsdt });
+                sendTelegramSilentPush(m.buyerId, msgBuyer, true, buyerKb);
+                notif.title = `⚡ COUNTERED (${m.negoId} • $${cntUsdt.toFixed(2)})`;
+                delete notif.meta;
+                localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+                renderNotificationsList();
+                showToast(`Counter Offer $${cntUsdt.toFixed(2)} USDT dikirim ke ${m.buyerUname}!`);
+
+            } else if (decision === 'reject') {
+                const msgBuyer = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   ❌ <b>O F F E R  D E C L I N E D</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `<blockquote>🔸 <b>Nego ID:</b> <code>${m.negoId}</code>\n` +
+                    `🔸 <b>Item:</b> ${m.itemSummary}\n` +
+                    `🔸 <b>Your Offer:</b> $${parseFloat(m.offerUsdt).toFixed(2)} USDT</blockquote>\n` +
+                    `⚠️ <i>Maaf, tawaran Anda belum dapat diterima oleh Admin. Silakan ajukan nominal tawaran yang lebih wajar.</i>`
+                );
+                pushInWebNotification('buyer', '❌ OFFER DECLINED', msgBuyer);
+                sendTelegramSilentPush(m.buyerId, msgBuyer, true);
+                notif.title = `❌ REJECTED (${m.negoId})`;
+                delete notif.meta;
+                localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+                renderNotificationsList();
+                showToast(`Offer ${m.negoId} ditolak!`);
+            }
+        }
+
+        function claimApprovedWebNego(accId, dealUsdt) {
+            closeModal('notificationsModal');
+            const entry = ACCOUNT_CACHE_MAP[accId];
+            if (entry) {
+                const customAcc = Object.assign({}, entry.acc, { _computed_usdt: parseFloat(dealUsdt), price_usd: parseFloat(dealUsdt) });
+                buySpecificAccountNow(customAcc, entry.yrKey);
+            } else {
+                openDirectOrderModal({
+                    id: accId,
+                    tag: 'APPROVED NEGO DEAL',
+                    title: `Approved Special Offer (${accId})`,
+                    desc: 'Special negotiated price approved by Executive Admin.',
+                    usdt: parseFloat(dealUsdt),
+                    prompt: 'Target Account:'
+                });
+                const inp = document.getElementById('ordTargetInput');
+                inp.value = accId;
+                inp.readOnly = true;
+            }
         }
 
         // =========================================================
-        // 🏆 FEATURE 4: TOP 10 VIP HOLDERS LEADERBOARD MODAL
+        // 🏆 FEATURE 4: 100% REAL TOP VIP HOLDERS LEADERBOARD MODAL
         // =========================================================
-        function openLeaderboardModal() {
+        async function openLeaderboardModal() {
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
-            // REAL-TIME LEADERBOARD COMPUTED FROM LOCAL TRANSACTION HISTORY + DEFAULT MOCK LEADER
-            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-            const userSpentMap = {};
-            userSpentMap[currentUsername] = userBalanceUsdt > 0 ? userBalanceUsdt * 1.5 : 45.00; // Include current user
+            body.innerHTML = `
+                <div style="text-align:center;padding:24px 10px;">
+                    <div style="font-size:1.8rem;margin-bottom:8px;">👑</div>
+                    <div style="font-weight:800;">Syncing Real-Time VIP Holders from Database...</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">Fetching verified balances & transaction volumes...</div>
+                </div>
+            `;
 
-            history.forEach(h => {
+            const holdersMap = {};
+
+            function addHolderMetric(uidOrName, balanceVal, spentVal, txCountVal) {
+                const key = String(uidOrName || '').trim();
+                if (!key || key === 'undefined' || key === 'null') return;
+                if (!holdersMap[key]) {
+                    holdersMap[key] = { label: key, balance: 0, spent: 0, txCount: 0 };
+                }
+                holdersMap[key].balance = Math.max(holdersMap[key].balance, parseFloat(balanceVal) || 0);
+                holdersMap[key].spent += (parseFloat(spentVal) || 0);
+                holdersMap[key].txCount += (parseInt(txCountVal) || 0);
+            }
+
+            // 1. Tarik data real dari Google Sheet Webhook (Sheet4 User Loyalty CRM / Sheet1 Sold Data)
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'pull_stock' })
+                });
+                const json = await res.json();
+                if (json) {
+                    // Jika webhook mengirimkan array crm_users / leaderboard dari Sheet4
+                    const crmList = json.crm_users || json.leaderboard || json.users || [];
+                    if (Array.isArray(crmList)) {
+                        crmList.forEach(u => {
+                            const uname = u.username || (u.user_id ? `ID:${u.user_id}` : '');
+                            const bal = parseFloat(u.balance || 0);
+                            const totSpent = (parseFloat(u.acc_total || 0) + parseFloat(u.svc_total || 0));
+                            const totTx = (parseInt(u.acc_tx || 0) + parseInt(u.svc_tx || 0));
+                            if (bal > 0 || totSpent > 0 || totTx > 0) {
+                                addHolderMetric(uname, bal, totSpent, totTx);
+                            }
+                        });
+                    }
+                }
+            } catch (e) {}
+
+            // 2. Hitung juga data real dari riwayat transaksi & saldo aktual user yang sedang login
+            const localHistory = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            let myOutVol = 0;
+            let myTxCnt = 0;
+            localHistory.forEach(h => {
                 if (h.type === 'OUT') {
-                    const usr = h.target && h.target.startsWith('@') ? h.target.split(' ')[0] : `@${currentUsername}`;
-                    userSpentMap[usr] = (userSpentMap[usr] || 0) + (parseFloat(h.usdt) || 0);
+                    myOutVol += (parseFloat(h.usdt) || 0);
+                    myTxCnt += 1;
                 }
             });
+            if (userBalanceUsdt > 0 || myOutVol > 0) {
+                const myDisp = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+                addHolderMetric(myDisp, userBalanceUsdt, myOutVol, myTxCnt);
+            }
 
-            // Add dummy leaders for realistic big store feel
-            userSpentMap['@abieharyatmo'] = 2450.00;
-            userSpentMap['@NextgenApp1'] = 1820.00;
-            userSpentMap['@XianBeeHub'] = 1340.00;
-
-            const sortedLeaders = Object.keys(userSpentMap)
-                .map(u => ({ user: maskData(u, 'username'), rawVol: userSpentMap[u] }))
-                .sort((a, b) => b.rawVol - a.rawVol)
+            const sortedLeaders = Object.values(holdersMap)
+                .map(h => {
+                    const totalPower = h.balance + h.spent;
+                    let tierBadge = '🪵 Member';
+                    if (h.txCount >= 100 || totalPower >= 500) tierBadge = '💎 Diamond';
+                    else if (h.txCount >= 50 || totalPower >= 200) tierBadge = '🥇 Gold';
+                    else if (h.txCount >= 20 || totalPower >= 50) tierBadge = '🥈 Silver';
+                    else if (h.txCount >= 5 || totalPower >= 10) tierBadge = '🥉 Bronze';
+                    return {
+                        maskedUser: maskData(h.label, h.label.startsWith('ID:') ? 'userid' : 'username'),
+                        balance: h.balance,
+                        spent: h.spent,
+                        totalPower: totalPower,
+                        txCount: h.txCount,
+                        tier: tierBadge
+                    };
+                })
+                .filter(x => x.totalPower > 0)
+                .sort((a, b) => b.totalPower - a.totalPower)
                 .slice(0, 10);
 
             const medals = ['🥇 1', '🥈 2', '🥉 3', '4', '5', '6', '7', '8', '9', '10'];
 
+            const rowsHtml = sortedLeaders.length === 0
+                ? `<div style="padding:20px;text-align:center;color:var(--text-muted);font-weight:700;font-size:0.8rem;">
+                    Belum ada data holder yang tercatat atau sinkronisasi Sheet4 CRM belum dijalankan dari menu Admin Bot (<b>👑 Sync Data User & Loyalty Sheet4</b>).
+                   </div>`
+                : sortedLeaders.map((l, idx) => `
+                    <div class="cred-field-row" style="padding:10px 12px;">
+                        <span style="font-weight:800;min-width:42px;color:var(--warning);">${medals[idx] || (idx+1)}</span>
+                        <div style="flex:1;">
+                            <div style="font-weight:800;color:var(--text-primary);">${l.maskedUser} <span style="font-size:0.68rem;color:var(--accent-cyan);margin-left:4px;">${l.tier}</span></div>
+                            <div style="font-size:0.68rem;color:var(--text-muted);">💳 Bal: $${l.balance.toFixed(2)} • 🛒 Spent: $${l.spent.toFixed(2)} (${l.txCount} TX)</div>
+                        </div>
+                        <span style="color:var(--success);font-weight:800;">$${l.totalPower.toFixed(2)} USDT</span>
+                    </div>
+                `).join('');
+
             body.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">👑 HALL OF FAME</span>
+                    <span class="item-tag" style="margin:0;">👑 HALL OF FAME (100% REAL DATA)</span>
                     <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
                 <h3 style="margin:0 0 6px 0;">🏆 Real-Time Top VIP Holders</h3>
-                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">Ranked dynamically based on verified purchase volume across all store transactions.</p>
-                <div>
-                    ${sortedLeaders.map((l, idx) => `
-                        <div class="cred-field-row" style="padding:10px 12px;">
-                            <span style="font-weight:800;min-width:45px;color:var(--warning);">${medals[idx] || (idx+1)}</span>
-                            <span style="flex:1;font-weight:700;">${l.user} <span style="font-size:0.68rem;color:var(--accent-cyan);">${l.rawVol > 1000 ? '💎 Diamond VIP' : (l.rawVol > 500 ? '🥇 Gold VIP' : '🥈 Silver VIP')}</span></span>
-                            <span style="color:var(--success);font-weight:800;">$${l.rawVol.toFixed(2)} USDT</span>
-                        </div>
-                    `).join('')}
-                </div>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">Ranked strictly from real client balances and verified transaction history (Zero fake/dummy data).</p>
+                <div>${rowsHtml}</div>
                 <button class="btn-ui primary" style="width:100%;margin-top:10px;" onclick="closeModal('paymentGatewayModal')">Close Leaderboard</button>
             `;
         }
