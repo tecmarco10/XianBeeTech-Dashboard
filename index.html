@@ -828,7 +828,9 @@
         <!-- 🖥️ DESKTOP SIDEBAR -->
         <aside class="sidebar">
             <div class="brand-box" onclick="switchTab('home')">
-                <div class="brand-orb">🐝</div>
+                <div class="brand-orb" style="background:transparent;box-shadow:none;padding:0;">
+                    <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:11px;">
+                </div>
                 <div>
                     <h2 class="brand-name">XianBee-Tech</h2>
                     <span class="brand-tag">Enterprise Hub</span>
@@ -858,7 +860,9 @@
                 <!-- BARIS 1: KOTAK BRAND XIANBEE-TECH + TOMBOL KURS & GANTI TEMA -->
                 <div class="topbar-box-brand">
                     <div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="switchTab('home')">
-                        <div class="brand-orb" style="width:32px;height:32px;font-size:1rem;border-radius:8px;">🐝</div>
+                        <div class="brand-orb" style="width:32px;height:32px;background:transparent;box-shadow:none;padding:0;border-radius:8px;">
+                            <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:8px;">
+                        </div>
                         <div>
                             <div style="font-weight:800;font-size:0.92rem;letter-spacing:-0.2px;line-height:1.1;">XIANBEE-TECH</div>
                             <div style="font-size:0.62rem;font-weight:800;color:var(--accent-cyan);letter-spacing:1.1px;">ENTERPRISE STORE</div>
@@ -3845,9 +3849,9 @@
             const notif = adminList[notifIdx];
             if (!notif || !notif.meta) return;
             const m = notif.meta;
+            const amt = parseFloat(m.amountUsdt || 0);
 
             if (decision === 'approve') {
-                const amt = parseFloat(m.amountUsdt || 0);
                 if (String(m.buyerId) === String(currentUserId)) {
                     userBalanceUsdt += amt;
                     localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
@@ -3884,13 +3888,13 @@
                     `   ❌ <b>I D R  P A Y M E N T  R E J E C T E D</b>\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
                     `🧾 <b>Invoice:</b> <code>${m.invId}</code>\n` +
-                    `⚠️ <i>Your uploaded payment screenshot could not be verified. Please contact Live Support.</i>`
+                    `⚠️ <i>Your uploaded payment screenshot could not be verified. Please contact Live Support or re-upload a valid transfer receipt.</i>`
                 );
                 pushInWebNotification('buyer', `❌ IDR PAYMENT REJECTED (${m.invId})`, rejMsg);
                 await sendTelegramSilentPush(m.buyerId, rejMsg, true);
 
                 if (m.tgMsgIds) {
-                    await syncEditTelegramAdminMessages(m.tgMsgIds, notif.body, `❌ <b>STATUS: REJECTED VIA WEB</b>`, true);
+                    await syncEditTelegramAdminMessages(m.tgMsgIds, notif.body, `❌ <b>STATUS: REJECTED VIA WEB (DECLINED)</b>`, true);
                 }
 
                 const newTitle = `❌ REJECTED IDR (${m.invId})`;
