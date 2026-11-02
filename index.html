@@ -1797,14 +1797,24 @@
             attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
         }
 
-        // Fire complete Notification Flow for ORDER / CHECKOUT (Identical to XianBee-TechStore.py + Order by Web)
+        function formatStandardServiceName(yrKey, fallbackTitle = 'Digital Asset') {
+            const y = String(yrKey || '').trim();
+            if (/^\d{4}$/.test(y)) return `GitHub Account (Year ${y})`;
+            if (y === 'Arctic') return 'GitHub Account (Arctic Vault)';
+            if (y === '6Badge') return 'GitHub Account (6 Premium Badges)';
+            if (y === 'Followers') return 'GitHub Account (With Followers)';
+            if (y === 'StudentPack') return 'GitHub Student Developer Pack';
+            if (y === 'Contrib') return 'GitHub Account (High Contributions)';
+            if (y === 'OldRepo') return 'GitHub Account (Old Repository)';
+            return String(fallbackTitle).split('—')[0].split('(@')[0].trim() || 'GitHub Account';
+        }
+
+        // Fire complete Notification Flow for ORDER / CHECKOUT (Clean & Elegant Telegram Format + Order by Web)
         function triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, paymentMethodLabel, unlockedAccounts = []) {
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
             const mName = maskData(currentFullName, "name");
             const mUser = maskData(currentUsername, "username");
             const mId = maskData(String(currentUserId), "userid");
-            const summaryTitle = itemsList.map(x => x.title).join(' + ');
-            const targetStr = itemsList.map(x => x.target).join(', ');
 
             const isBoostOrder = itemsList.length === 1 && itemsList[0].isUnit;
 
@@ -1828,7 +1838,7 @@
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `📡 <b>Tracker Status:</b> 🟢 <b>ACTIVE (Real-Time Monitoring)</b>`
                 );
-                pushInWebNotification('buyer', '🚀 BOOST ORDER ACTIVATED', buyerBoostMsg);
+                pushInWebNotification('buyer', '🚀 BOOST ORDER ACTIVATED (WEB)', buyerBoostMsg);
                 sendTelegramSilentPush(currentUserId, buyerBoostMsg, true);
 
                 const adminBoostMsg = (
@@ -1845,7 +1855,7 @@
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `✅ <i>Status: Order dispatched via Web Store.</i>`
                 );
-                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (BOOST)', adminBoostMsg);
+                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (BOOST WEB)', adminBoostMsg);
                 ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminBoostMsg, true));
 
                 const publicBoostLog = (
@@ -1858,7 +1868,7 @@
                     `🔸 <b>Service:</b> <b>${itm.title}</b>\n` +
                     `🔸 <b>Target:</b> <code>${maskData(cleanTarget, 'target')}</code>\n` +
                     `🔸 <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
-                    `🔸 <b>Channel:</b> 🌐 Order by Web\n` +
+                    `🔸 <b>Source:</b> 🌐 Order by Web\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `⏳ <i>Status: Order dispatched to XianBee Auto-Tracker.</i>`
                 );
@@ -1883,64 +1893,147 @@
                     });
                 } catch (e) {}
 
-            } else {
-                let credsBlock = '';
-                if (unlockedAccounts.length > 0) {
-                    credsBlock = unlockedAccounts.map(a =>
-                        `\n\n📦 <b>ACCOUNT DISPATCHED</b>\n` +
-                        `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
-                        `🔸 <b>Acc ID:</b> <code>${a.category}-${a.username}</code>\n\n` +
-                        `🔐 <b>CREDENTIALS:</b>\n` +
-                        `🔸 <b>Username/Email:</b> <code>${a.username}</code>\n` +
-                        `🔸 <b>Password:</b> <code>${a.password}</code>\n` +
-                        `🔸 <b>2FA/Recovery:</b> <code>${a.twofa}</code>`
-                    ).join('');
-                }
+            } else if (itemsList.length === 1) {
+                // =========================================================
+                // 🟢 SINGLE ACCOUNT PURCHASE (CLEAN & ELEGANT + ORDER BY WEB)
+                // =========================================================
+                const singleItem = itemsList[0];
+                const accObj = unlockedAccounts[0] || null;
+                const yrKey = accObj ? accObj.category : (singleItem.yearKey || '2026');
+                const cleanServiceName = singleItem.isAccount
+                    ? formatStandardServiceName(yrKey, singleItem.title)
+                    : String(singleItem.title).split('—')[0].trim();
+                const fullAccId = accObj
+                    ? `${accObj.category}-${accObj.username}`
+                    : (singleItem.id ? String(singleItem.id).replace(/-\d{10,}$/, '') : `${yrKey}-Account`);
+                const maskedAccId = maskData(fullAccId, "target");
 
-                const buyerAccMsg = (
-                    `✅ <b>CHECKOUT SUCCESSFUL! (ORDER BY WEB)</b>\n` +
+                const buyerSingleMsg = accObj ? (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   📦 <b>A C C O U N T  D I S P A T C H E D</b> 📦\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
                     `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
-                    `🔸 <b>Service:</b> <b>${summaryTitle}</b>\n` +
-                    `🔸 <b>Total:</b> <b>$${totalUsdt.toFixed(2)} USDT</b> (${paymentMethodLabel})\n` +
-                    `🔸 <b>Via:</b> 🌐 <b>Order by Web</b>` +
-                    credsBlock
+                    `🔸 <b>Service:</b> <b>${cleanServiceName}</b>\n` +
+                    `🔸 <b>Acc ID:</b> <code>${fullAccId}</code>\n` +
+                    `🔸 <b>Via:</b> <b>🌐 Order by Web</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🔐 <b>CREDENTIALS:</b>\n` +
+                    `🔸 <b>Username/Email:</b> <code>${accObj.username}</code>\n` +
+                    `🔸 <b>Password:</b> <code>${accObj.password}</code>\n` +
+                    `🔸 <b>2FA/Recovery:</b> <code>${accObj.twofa}</code>\n\n` +
+                    `⚠️ <i>Please secure your account immediately!</i>`
+                ) : (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   📦 <b>O R D E R  C O N F I R M E D</b> 📦\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${cleanServiceName}</b>\n` +
+                    `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})</b>\n` +
+                    `🔸 <b>Via:</b> <b>🌐 Order by Web</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `✅ <i>Status: Balance deducted & Order confirmed via Web Store.</i>`
                 );
-                pushInWebNotification('buyer', '📦 ACCOUNT DISPATCHED (WEB)', buyerAccMsg);
-                sendTelegramSilentPush(currentUserId, buyerAccMsg, true);
+                pushInWebNotification('buyer', '📦 ACCOUNT DISPATCHED (ORDER BY WEB)', buyerSingleMsg);
+                sendTelegramSilentPush(currentUserId, buyerSingleMsg, true);
 
-                const secretAdminLog = (
+                const secretSingleLog = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   🕵️ <b>S E C R E T  A D M I N  L O G</b> 🕵️\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
                     `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
                     `🔸 <b>Client:</b> ${currentFullName} (${dispUser})\n` +
                     `🔸 <b>User ID:</b> <code>${currentUserId}</code>\n` +
-                    `🔸 <b>Service:</b> <b>${summaryTitle} (${itemsList.length} Accs)</b>\n` +
-                    `🔸 <b>Target / ID:</b> <code>${targetStr}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${cleanServiceName}</b>\n` +
+                    `🔸 <b>Price:</b> $${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})\n` +
+                    `🔸 <b>Acc ID:</b> <code>${fullAccId}</code>\n` +
+                    `🔸 <b>Source:</b> <b>🌐 Order by Web</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `✅ <i>Status: Auto-Dispatched to Client via Web Store.</i>`
+                );
+                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (ORDER BY WEB)', secretSingleLog);
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretSingleLog, true));
+
+                const publicSingleLog = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🟢 <b>A S S E T  I N S T A N T L Y  S O L D</b> 🟢\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Invoice:</b> ${invId}\n` +
+                    `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
+                    `🔸 <b>User ID:</b> ${mId}\n` +
+                    `🔸 <b>Service:</b> ${cleanServiceName}\n` +
+                    `🔸 <b>Price:</b> $${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})\n` +
+                    `🔸 <b>Acc ID:</b> ${maskedAccId}\n` +
+                    `🔸 <b>Source:</b> 🌐 Order by Web\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `✅ <i>Status: Balance deducted & Credentials auto-delivered.</i>`
+                );
+                sendTelegramSilentPush(CHANNEL_ID, publicSingleLog, true);
+                sendTelegramSilentPush(GROUP_ID, publicSingleLog, true);
+
+            } else {
+                // =========================================================
+                // 🛒 MULTI-ITEM CART CHECKOUT (ALL USERNAMES MASKED + ORDER BY WEB)
+                // =========================================================
+                const unmaskedIdsList = unlockedAccounts.length > 0
+                    ? unlockedAccounts.map(a => `${a.category}-${a.username}`).join(', ')
+                    : itemsList.map(x => String(x.id).replace(/-\d{10,}$/, '')).join(', ');
+                const maskedIdsList = unlockedAccounts.length > 0
+                    ? unlockedAccounts.map(a => maskData(`${a.category}-${a.username}`, 'target')).join(', ')
+                    : itemsList.map(x => maskData(String(x.id).replace(/-\d{10,}$/, ''), 'target')).join(', ');
+
+                for (const a of unlockedAccounts) {
+                    const eachBuyerMsg = (
+                        `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                        `   📦 <b>A C C O U N T  D I S P A T C H E D</b> 📦\n` +
+                        `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                        `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                        `🔸 <b>Acc ID:</b> <code>${a.category}-${a.username}</code>\n` +
+                        `🔸 <b>Via:</b> <b>🌐 Order by Web</b>\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `🔐 <b>CREDENTIALS:</b>\n` +
+                        `🔸 <b>Username/Email:</b> <code>${a.username}</code>\n` +
+                        `🔸 <b>Password:</b> <code>${a.password}</code>\n` +
+                        `🔸 <b>2FA/Recovery:</b> <code>${a.twofa}</code>\n\n` +
+                        `⚠️ <i>Please secure your account immediately!</i>`
+                    );
+                    pushInWebNotification('buyer', `📦 ACCOUNT DISPATCHED (@${a.username} • WEB)`, eachBuyerMsg);
+                    sendTelegramSilentPush(currentUserId, eachBuyerMsg, true);
+                }
+
+                const secretCartLog = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🕵️ <b>S E C R E T  A D M I N  L O G</b> 🕵️\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Client:</b> ${currentFullName} (${dispUser})\n` +
+                    `🔸 <b>User ID:</b> <code>${currentUserId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>Cart Checkout (${itemsList.length} Accs)</b>\n` +
+                    `🔸 <b>Acc IDs:</b> <code>${unmaskedIdsList}</code>\n` +
                     `🔸 <b>Price:</b> $${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})\n` +
                     `🔸 <b>Source:</b> <b>🌐 Order by Web</b>\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `✅ <i>Status: Auto-Dispatched to Client via Web Store.</i>`
                 );
-                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (WEB)', secretAdminLog);
-                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretAdminLog, true));
+                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (CART WEB)', secretCartLog);
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretCartLog, true));
 
-                const publicSoldLog = (
+                const publicCartLog = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   🛒 <b>M A S S I V E  A S S E T S  S O L D  O U T</b> 🛒\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
                     `🔸 <b>Invoice:</b> ${invId}\n` +
                     `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
                     `🔸 <b>User ID:</b> ${mId}\n` +
-                    `🔸 <b>Service:</b> ${summaryTitle}\n` +
+                    `🔸 <b>Service:</b> Executive Cart Checkout\n` +
                     `🔸 <b>Total Items:</b> <b>${itemsList.length} Digital Assets</b>\n` +
+                    `🔸 <b>Acc ID:</b> ${maskedIdsList}\n` +
                     `🔸 <b>Total Price:</b> $${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})\n` +
                     `🔸 <b>Source:</b> 🌐 Order by Web\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `✅ <i>Status: Massive assets sold out & Credentials dispatched.</i>`
                 );
-                sendTelegramSilentPush(CHANNEL_ID, publicSoldLog, true);
-                sendTelegramSilentPush(GROUP_ID, publicSoldLog, true);
+                sendTelegramSilentPush(CHANNEL_ID, publicCartLog, true);
+                sendTelegramSilentPush(GROUP_ID, publicCartLog, true);
             }
         }
 
@@ -2937,39 +3030,58 @@
         function renderCredentialCardHtml(entry, idx) {
             const safeSecret = String(entry.twofa || '').replace(/[^A-Za-z2-7]/g, '');
             const otpDomId = `inline_otp_${idx}_${Math.floor(Math.random()*9999)}`;
+            const accIdStr = `${entry.category}-${entry.username}`;
             return `
-                <div class="item-card" style="border-color:var(--success);margin-bottom:14px;">
-                    <div class="item-top">
-                        <div>
-                            <span class="item-tag" style="color:var(--success);border-color:var(--success);">🔓 UNLOCKED • ${entry.invoice} • ${entry.date}</span>
-                            <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:1.05rem;">@${entry.username} (GitHub ${entry.category})</h4>
-                        </div>
-                        <div class="price-chip">${entry.priceUsdt} USDT</div>
+                <div class="item-card" style="border:1.5px solid var(--success);background:var(--bg-card);margin-bottom:14px;padding:16px;gap:12px;">
+                    <!-- TELEGRAM-STYLE CLEAN HEADER WITH ORDER BY WEB BADGE -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--success);border-radius:10px;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:0.76rem;line-height:1.6;">
+                        <div style="color:var(--success);font-weight:800;font-size:0.8rem;margin-bottom:4px;">📦 A C C O U N T &nbsp; D I S P A T C H E D</div>
+                        <div>🔸 <b>Invoice:</b> <code>${entry.invoice}</code></div>
+                        <div>🔸 <b>Service:</b> ${formatStandardServiceName(entry.category)}</div>
+                        <div>🔸 <b>Acc ID:</b> <code>${accIdStr}</code></div>
+                        <div>🔸 <b>Price:</b> <b style="color:var(--success);">$${entry.priceUsdt} USDT</b> <span style="color:var(--text-muted);font-size:0.68rem;">(${entry.date})</span></div>
+                        <div>🔸 <b>Source:</b> <b style="color:var(--accent-cyan);">🌐 Order by Web</b></div>
                     </div>
 
-                    <div>
-                        <div class="cred-field-row">
-                            <span class="lbl">USERNAME</span>
-                            <span class="val">${entry.username}</span>
-                            <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.username}'); showToast('Username copied!');">📋 Copy</button>
+                    <!-- CLEAN FULL-WIDTH CREDENTIAL ROWS (NEVER SQUISHED VERTICALLY) -->
+                    <div style="display:flex;flex-direction:column;gap:8px;">
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:9px 12px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                                <span style="font-size:0.68rem;font-weight:800;color:var(--text-muted);letter-spacing:0.6px;">🔸 USERNAME / EMAIL</span>
+                                <button class="top-pill" style="padding:4px 9px;font-size:0.68rem;" onclick="navigator.clipboard.writeText('${entry.username}'); showToast('Username copied!');">📋 Copy</button>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--text-primary);word-break:break-all;">${entry.username}</div>
                         </div>
-                        <div class="cred-field-row">
-                            <span class="lbl">PASSWORD</span>
-                            <span class="val">${entry.password}</span>
-                            <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋 Copy</button>
+
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:9px 12px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                                <span style="font-size:0.68rem;font-weight:800;color:var(--text-muted);letter-spacing:0.6px;">🔸 PASSWORD</span>
+                                <button class="top-pill" style="padding:4px 9px;font-size:0.68rem;" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋 Copy</button>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--text-primary);word-break:break-all;">${entry.password}</div>
                         </div>
-                        <div class="cred-field-row">
-                            <span class="lbl">2FA KEY</span>
-                            <span class="val">${entry.twofa}</span>
-                            ${safeSecret.length >= 8 ? `<button class="top-pill" id="${otpDomId}" onclick="showInline2faOtp('${safeSecret}', '${otpDomId}')">🔑 Get 6-Digit OTP</button>` : ''}
-                            <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.twofa}'); showToast('2FA Secret copied!');">📋 Copy</button>
+
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:9px 12px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
+                                <span style="font-size:0.68rem;font-weight:800;color:var(--text-muted);letter-spacing:0.6px;">🔸 2FA / RECOVERY KEY</span>
+                                <button class="top-pill" style="padding:4px 9px;font-size:0.68rem;" onclick="navigator.clipboard.writeText('${entry.twofa}'); showToast('2FA Secret copied!');">📋 Copy</button>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:800;color:var(--accent-cyan);word-break:break-all;">${entry.twofa}</div>
+                            ${safeSecret.length >= 8 ? `
+                                <button class="btn-ui primary" id="${otpDomId}" style="width:100%;margin-top:8px;padding:8px 10px;font-size:0.75rem;" onclick="showInline2faOtp('${safeSecret}', '${otpDomId}')">
+                                    🔑 Get Live 6-Digit 2FA OTP Code (30s)
+                                </button>
+                            ` : ''}
                         </div>
                     </div>
 
-                    <div class="item-actions">
-                        <button class="btn-ui buy-now" onclick="downloadCredentialTxt(${idx})">💾 Save / Download (.TXT)</button>
-                        <button class="btn-ui secondary" onclick="copyFullCredentialBlock(${idx})">📋 Copy All Data</button>
-                        <a href="${entry.url}" target="_blank" class="btn-ui secondary">🌐 Open GitHub</a>
+                    <!-- SYMMETRICAL ACTION BUTTONS -->
+                    <div style="display:flex;flex-direction:column;gap:7px;padding-top:6px;border-top:1px solid var(--border-subtle);">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                            <button class="btn-ui secondary" style="padding:9px;" onclick="copyFullCredentialBlock(${idx})">📋 Copy All Data</button>
+                            <a href="${entry.url}" target="_blank" class="btn-ui secondary" style="padding:9px;">🌐 Open GitHub</a>
+                        </div>
+                        <button class="btn-ui buy-now" style="width:100%;padding:10px;" onclick="downloadCredentialTxt(${idx})">💾 Save / Download Credentials (.TXT)</button>
                     </div>
                 </div>
             `;
@@ -4450,32 +4562,36 @@
 
             const credsHtml = unlockedAccounts.length > 0
                 ? `<div style="margin-bottom:14px;">
-                       <div style="font-size:0.78rem;font-weight:800;color:var(--success);margin-bottom:8px;">🔐 UNLOCKED ACCOUNT CREDENTIALS (SAVED TO YOUR WEB VAULT):</div>
                        ${unlockedAccounts.map((acc, i) => renderCredentialCardHtml(acc, i)).join('')}
-                       <button class="btn-ui buy-now" style="width:100%;padding:12px;" onclick='downloadBatchCredentialsTxt(${JSON.stringify(unlockedAccounts)}, "${invId}")'>
-                           💾 Save / Download All Credentials (.TXT)
-                       </button>
+                       ${unlockedAccounts.length > 1 ? `
+                           <button class="btn-ui buy-now" style="width:100%;padding:12px;" onclick='downloadBatchCredentialsTxt(${JSON.stringify(unlockedAccounts)}, "${invId}")'>
+                               💾 Save / Download All ${unlockedAccounts.length} Credentials (.TXT)
+                           </button>
+                       ` : ''}
                    </div>`
-                : '';
+                : `
+                    <div style="background:var(--bg-input);border:1px solid var(--success);border-left:4px solid var(--success);padding:14px;border-radius:12px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;line-height:1.65;margin-bottom:14px;">
+                        <div style="color:var(--success);font-weight:800;margin-bottom:6px;">🟢 O R D E R &nbsp; C O N F I R M E D</div>
+                        <div>🔸 <b>Invoice:</b> <code>${invId}</code></div>
+                        <div>🔸 <b>Service:</b> ${title}</div>
+                        <div>🔸 <b>Target:</b> <code>${targetStr}</code></div>
+                        <div>🔸 <b>Price:</b> <b style="color:var(--success);">$${amountUsdt.toFixed(2)} USDT</b> (${methodStr})</div>
+                        <div>🔸 <b>Source:</b> <b style="color:var(--accent-cyan);">🌐 Order by Web</b></div>
+                        <div style="margin-top:6px;padding-top:6px;border-top:1px solid var(--border-subtle);color:var(--success);">✅ <i>Status: Balance deducted & Order auto-dispatched via Web Store.</i></div>
+                    </div>
+                `;
 
             body.innerHTML = `
-                <div style="text-align:center;margin-bottom:14px;">
-                    <div style="font-size:2.1rem;margin-bottom:4px;">🎉</div>
-                    <span class="item-tag">ORDER COMPLETED & NOTIFICATIONS DISPATCHED</span>
-                    <h3 style="margin:6px 0 2px 0;font-family:'JetBrains Mono',monospace;">${invId}</h3>
-                </div>
-                <div style="background:var(--bg-soft);border:1px solid var(--success);padding:14px;border-radius:12px;font-size:0.8rem;line-height:1.6;margin-bottom:14px;">
-                    <div><b>Item / Service:</b> ${title}</div>
-                    <div><b>Target / ID:</b> <code>${targetStr}</code></div>
-                    <div><b>Payment Method:</b> ${methodStr}</div>
-                    <div><b>Total Paid:</b> <b style="color:var(--success);">${amountUsdt.toFixed(2)} USDT</b></div>
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;color:var(--success);border-color:var(--success);">✅ INSTANT RECEIPT • 🌐 ORDER BY WEB</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
                 ${credsHtml}
-                <div style="display:flex;gap:8px;">
-                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal'); switchTab('profile'); activeSub='🔐 Purchased Vault'; renderViewport();">
-                        🔐 Open Purchased Vault
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                    <button class="btn-ui secondary" style="padding:11px;" onclick="closeModal('paymentGatewayModal'); switchTab('profile'); activeSub='🔐 Purchased Vault'; renderViewport();">
+                        🔐 Purchased Vault
                     </button>
-                    <button class="btn-ui primary" onclick="closeModal('paymentGatewayModal')">
+                    <button class="btn-ui primary" style="padding:11px;" onclick="closeModal('paymentGatewayModal')">
                         ✅ Done
                     </button>
                 </div>
