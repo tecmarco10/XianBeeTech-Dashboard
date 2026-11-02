@@ -1193,30 +1193,28 @@
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area">
             <header class="topbar">
-                <!-- BARIS 1: KOTAK BRAND XIANBEE-TECH + TOMBOL KURS & GANTI TEMA -->
+                <!-- BARIS 1: KOTAK BRAND + TOMBOL KURS, TEMA & ADMIN -->
                 <div class="topbar-box-brand">
-                    <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="switchTab('home')">
-                        <div class="brand-orb" style="width:52px;height:52px;background:transparent;box-shadow:none;padding:0;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:12px;">
+                    <div style="display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;" onclick="switchTab('home')">
+                        <div class="brand-orb" style="width:36px;height:36px;background:transparent;box-shadow:none;padding:0;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:10px;" onerror="this.style.display='none'">
                         </div>
-                        <div>
-                            <div style="font-weight:800;font-size:1.02rem;letter-spacing:-0.2px;line-height:1.1;">XIANBEE-TECH</div>
-                            <div style="font-size:0.66rem;font-weight:800;color:var(--accent-cyan);letter-spacing:1.1px;">ENTERPRISE STORE</div>
+                        <div style="min-width:0;">
+                            <div style="font-weight:800;font-size:0.88rem;letter-spacing:-0.2px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">XIANBEE-TECH</div>
+                            <div style="font-size:0.58rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.8px;">STORE HUB</div>
                         </div>
                     </div>
 
-                    <div style="display:flex;align-items:center;gap:6px;">
-                        <button class="top-pill" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 10px;font-size:0.72rem;">
-                            <span>💱</span>
+                    <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                        <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 8px;font-size:0.7rem;">
                             <span id="currSwitchText">USDT</span>
                         </button>
-                        <button class="top-pill" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 10px;font-size:0.75rem;">
+                        <button class="top-pill" type="button" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 8px;font-size:0.72rem;">
                             <span id="themeIcon">☀️</span>
                         </button>
-                        <button class="top-pill" id="topAuthActionBtn" onclick="handleTopAuthButtonClick()" title="Account Session" style="padding:6px 10px;font-size:0.72rem;border-color:var(--accent-cyan);color:var(--accent-cyan);">
-                            <span id="topAuthActionLabel">🔐 Account</span>
+                        <button class="top-pill" type="button" id="topAdminBtn" onclick="switchTab('admin')" title="Command Center" style="display:none;padding:6px 8px;border-color:var(--warning);color:var(--warning);">
+                            <span>👑</span>
                         </button>
-                        <button class="top-pill" id="topAdminBtn" onclick="switchTab('admin')" title="Command Center" style="display:none;padding:6px 9px;border-color:var(--warning);color:var(--warning);">👑</button>
                     </div>
                 </div>
 
