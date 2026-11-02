@@ -814,9 +814,196 @@
 
         @media (min-width: 1100px) {
             .sidebar { display: flex; }
-            .main-area { margin-left: 265px; padding-bottom: 40px; }
+            .main-area { margin-left: 265px; padding-bottom: 115px; }
             .bottom-nav { display: none; }
             .grid-cards { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        /* 🚪 ENTERPRISE AUTH PORTAL & LANDING GATE STYLING */
+        .auth-gate-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 2000;
+            background: radial-gradient(circle at 15% 15%, rgba(99, 102, 241, 0.16) 0%, transparent 45%),
+                        radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.14) 0%, transparent 45%),
+                        var(--bg-base);
+            overflow-y: auto;
+            display: none;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 100vh;
+        }
+
+        .auth-gate-overlay.active {
+            display: flex;
+        }
+
+        .auth-ticker-bar {
+            width: 100%;
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 9px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-size: 0.73rem;
+            font-weight: 700;
+        }
+
+        .auth-ticker-items {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        .auth-main-grid {
+            width: 100%;
+            max-width: 1160px;
+            margin: auto;
+            padding: 28px 16px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 28px;
+            align-items: center;
+        }
+
+        @media (min-width: 960px) {
+            .auth-main-grid {
+                grid-template-columns: 1.15fr 0.85fr;
+                padding: 40px 24px;
+            }
+        }
+
+        .auth-showcase-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .auth-hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            width: fit-content;
+            padding: 6px 12px;
+            border-radius: 99px;
+            background: rgba(6, 182, 212, 0.12);
+            border: 1px solid rgba(6, 182, 212, 0.35);
+            color: var(--accent-cyan);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .auth-showcase-title {
+            margin: 0;
+            font-size: clamp(1.65rem, 3.5vw, 2.45rem);
+            font-weight: 800;
+            line-height: 1.18;
+            letter-spacing: -0.6px;
+        }
+
+        .auth-feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .auth-feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            padding: 14px;
+            box-shadow: var(--shadow-card);
+            transition: 0.2s;
+        }
+
+        .auth-feature-card:hover {
+            border-color: var(--border-focus);
+            transform: translateY(-2px);
+        }
+
+        .auth-container {
+            width: 100%;
+            max-width: 460px;
+            margin: 0 auto;
+            background: var(--bg-surface);
+            border: 1.5px solid var(--border-focus);
+            border-radius: 24px;
+            padding: 26px 22px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), var(--shadow-glow);
+            position: relative;
+            overflow: hidden;
+            animation: authModalPop 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes authModalPop {
+            from { opacity: 0; transform: scale(0.94) translateY(12px); }
+            to { opacity: 1; transform: scale(1) translateY(0); }
+        }
+
+        .auth-tab-switcher {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            padding: 5px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+
+        .auth-tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            padding: 10px;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 0.78rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.18s;
+        }
+
+        .auth-tab-btn.active {
+            background: var(--grad-primary);
+            color: #ffffff;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .auth-form-panel {
+            transition: all 0.28s ease-in-out;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .auth-form-panel.hidden {
+            opacity: 0;
+            transform: translateY(-10px);
+            pointer-events: none;
+            display: none !important;
+        }
+
+        .auth-security-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 14px;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            font-weight: 700;
         }
     </style>
 </head>
@@ -824,12 +1011,161 @@
 
     <div class="toast-msg" id="toastBanner">✅ Action completed</div>
 
+    <!-- =========================================================
+         🚪 ENTERPRISE AUTH PORTAL & LANDING GATE (FOR WEB USERS)
+         ========================================================= -->
+    <div class="auth-gate-overlay" id="enterpriseAuthGate">
+        <!-- TOP LIVE TELEMETRY & MARKET TICKER BAR -->
+        <div class="auth-ticker-bar">
+            <div style="display:flex;align-items:center;gap:8px;">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);"></span>
+                <span style="font-weight:800;letter-spacing:0.5px;">XIANBEE CLOUD VAULT v4.8 — ONLINE</span>
+            </div>
+            <div class="auth-ticker-items">
+                <span style="color:var(--success);">💱 1 USDT = <b id="authLiveIdrTicker">Rp 16.250</b></span>
+                <span style="color:var(--accent-cyan);">📦 Live Stock: <b id="authLiveStockTicker">Syncing...</b></span>
+                <span style="color:var(--warning);">🔒 256-Bit Cloud DB Sync</span>
+                <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:4px 9px;font-size:0.7rem;">☀️/🌌 Theme</button>
+            </div>
+        </div>
+
+        <!-- MAIN SPLIT-SCREEN ENTERPRISE GATE -->
+        <div class="auth-main-grid">
+            <!-- LEFT COLUMN: ENTERPRISE INFRASTRUCTURE SHOWCASE -->
+            <div class="auth-showcase-panel">
+                <div class="auth-hero-badge">
+                    <span>🐝</span>
+                    <span>ENTERPRISE DIGITAL ASSET &amp; GITHUB INFRASTRUCTURE HUB</span>
+                </div>
+
+                <h1 class="auth-showcase-title">
+                    Instant Access to Verified <span style="background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Aged GitHub Vaults</span> &amp; Web3 Infrastructure.
+                </h1>
+
+                <p style="margin:0;font-size:0.88rem;color:var(--text-secondary);line-height:1.6;max-width:600px;">
+                    Engineered for developers, Web3 teams, and digital agencies. Sign in to your cloud-synced account to inspect live <b>2011–2026 GitHub profiles</b>, generate real-time <b>2FA OTP codes</b>, deploy repository metrics, and manage your encrypted credential vault across any device.
+                </p>
+
+                <div class="auth-feature-grid">
+                    <div class="auth-feature-card">
+                        <div style="font-size:1.25rem;margin-bottom:6px;">🐙</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:4px;">Aged GitHub Vault (2011–2026)</div>
+                        <div style="font-size:0.74rem;color:var(--text-secondary);line-height:1.45;">Inspect exact <code>@usernames</code>, Arctic Code Vault badges &amp; full 2FA secret keys before checkout.</div>
+                    </div>
+                    <div class="auth-feature-card">
+                        <div style="font-size:1.25rem;margin-bottom:6px;">☁️</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:4px;">Google Cloud DB Sync</div>
+                        <div style="font-size:0.74rem;color:var(--text-secondary);line-height:1.45;">Your USDT balance, 6-digit security PIN &amp; purchased account vault stay synced across Phone &amp; PC.</div>
+                    </div>
+                    <div class="auth-feature-card">
+                        <div style="font-size:1.25rem;margin-bottom:6px;">🚀</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:4px;">Automated Repo &amp; Dev Boost</div>
+                        <div style="font-size:0.74rem;color:var(--text-secondary);line-height:1.45;">High-trust GitHub Followers, Stars, Forks &amp; Watchers with real-time telemetry tracking.</div>
+                    </div>
+                    <div class="auth-feature-card">
+                        <div style="font-size:1.25rem;margin-bottom:6px;">⚡</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:4px;">Multi-Currency Settlement</div>
+                        <div style="font-size:0.74rem;color:var(--text-secondary);line-height:1.45;">Instant checkout via Wallet Balance, OxaPay Crypto (USDT), QRIS, SeaBank, or DANA.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: INTERACTIVE SIGN IN / SIGN UP PORTAL -->
+            <div class="auth-container">
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+                    <div class="brand-orb" style="width:46px;height:46px;background:transparent;box-shadow:none;padding:0;overflow:hidden;">
+                        <img src="logo.png" alt="XianBee-Tech" style="width:100%;height:100%;object-fit:contain;border-radius:12px;" onerror="this.style.display='none'">
+                    </div>
+                    <div>
+                        <h2 style="margin:0;font-size:1.12rem;font-weight:800;">XianBee-Tech Portal</h2>
+                        <span style="font-size:0.7rem;color:var(--accent-cyan);font-weight:800;letter-spacing:0.8px;">CLOUD VAULT AUTHENTICATION</span>
+                    </div>
+                </div>
+
+                <!-- DUAL-TAB SWITCHER -->
+                <div class="auth-tab-switcher">
+                    <button class="auth-tab-btn active" type="button" id="authTabSignInBtn" onclick="switchAuthPortalTab('signin')">🔐 Sign In</button>
+                    <button class="auth-tab-btn" type="button" id="authTabSignUpBtn" onclick="switchAuthPortalTab('signup')">✨ Create Account</button>
+                </div>
+
+                <!-- PANEL 1: SIGN IN FORM -->
+                <div class="auth-form-panel" id="authPanelSignIn">
+                    <div class="form-group">
+                        <label>Username (Without @):</label>
+                        <input type="text" class="form-input" id="loginUsernameInput" placeholder="e.g. abieharyatmo" autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <div style="position:relative;">
+                            <input type="password" class="form-input" id="loginPasswordInput" placeholder="Enter your account password..." style="padding-right:42px;" autocomplete="current-password">
+                            <button type="button" onclick="toggleAuthPwdVisibility('loginPasswordInput')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:0.95rem;">👁️</button>
+                        </div>
+                    </div>
+
+                    <button class="btn-ui primary" type="button" id="btnExecSignIn" style="width:100%;padding:13px;font-size:0.86rem;margin-top:4px;" onclick="executeWebCloudSignIn()">
+                        🚀 Sign In &amp; Sync Cloud Vault
+                    </button>
+                </div>
+
+                <!-- PANEL 2: SIGN UP (REGISTER) FORM -->
+                <div class="auth-form-panel hidden" id="authPanelSignUp">
+                    <div class="form-group">
+                        <label>Choose Username (Without @):</label>
+                        <input type="text" class="form-input" id="regUsernameInput" placeholder="e.g. xianbee_client" autocomplete="username">
+                    </div>
+                    <div class="form-group">
+                        <label>Email or Telegram / WhatsApp Contact:</label>
+                        <input type="text" class="form-input" id="regContactInput" placeholder="e.g. client@email.com or @telegram">
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div class="form-group">
+                            <label>Password (Min 6 Chars):</label>
+                            <input type="password" class="form-input" id="regPasswordInput" placeholder="••••••••" autocomplete="new-password">
+                        </div>
+                        <div class="form-group">
+                            <label>6-Digit Security PIN:</label>
+                            <input type="password" class="form-input" id="regPinInput" maxlength="6" inputmode="numeric" style="font-family:'JetBrains Mono',monospace;letter-spacing:3px;" placeholder="123456">
+                        </div>
+                    </div>
+
+                    <button class="btn-ui buy-now" type="button" id="btnExecSignUp" style="width:100%;padding:13px;font-size:0.86rem;margin-top:4px;" onclick="executeWebCloudSignUp()">
+                        ✨ Create Cloud Account &amp; Enter Store
+                    </button>
+                </div>
+
+                <!-- QUICK ALTERNATIVE ACCESS -->
+                <div style="text-align:center;margin:14px 0 10px 0;font-size:0.68rem;font-weight:800;color:var(--text-muted);letter-spacing:1px;">
+                    — OR CONTINUE VIA —
+                </div>
+
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn-ui secondary" type="button" style="flex:1;padding:10px;font-size:0.75rem;" onclick="enterGuestPreviewMode()">
+                        👁️ Browse Catalog as Guest
+                    </button>
+                    <a href="https://t.me/XianBeeTechStore_Bot" target="_blank" class="btn-ui secondary" style="flex:1;padding:10px;font-size:0.75rem;border-color:var(--accent-cyan);color:var(--accent-cyan);">
+                        ✈️ Open Telegram Bot
+                    </a>
+                </div>
+
+                <div class="auth-security-strip">
+                    <span>🛡️ SSL 256-Bit Encrypted</span>
+                    <span>☁️ Google Sheet CRM Synced</span>
+                    <span>⚡ 99.9% Uptime</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="text-align:center;padding:14px;font-size:0.72rem;color:var(--text-muted);border-top:1px solid var(--border-subtle);">
+            🛡️ Engineered by <b>Abie Haryatmo</b> &nbsp;•&nbsp; 🤝 Powered by <b>XianBee-Tech Enterprise</b>
+        </div>
+    </div>
+
     <div class="app-shell">
         <!-- 🖥️ DESKTOP SIDEBAR -->
         <aside class="sidebar">
             <div class="brand-box" onclick="switchTab('home')">
-                <div class="brand-orb" style="width:48px;height:48px;background:transparent;box-shadow:none;padding:0;">
-                    <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:12px;">
+                <div class="brand-orb" style="width:60px;height:60px;background:transparent;box-shadow:none;padding:0;">
+                    <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:14px;">
                 </div>
                 <div>
                     <h2 class="brand-name">XianBee-Tech</h2>
@@ -859,13 +1195,13 @@
             <header class="topbar">
                 <!-- BARIS 1: KOTAK BRAND XIANBEE-TECH + TOMBOL KURS & GANTI TEMA -->
                 <div class="topbar-box-brand">
-                    <div style="display:flex;align-items:center;gap:10px;cursor:pointer;" onclick="switchTab('home')">
-                        <div class="brand-orb" style="width:42px;height:42px;background:transparent;box-shadow:none;padding:0;border-radius:10px;display:flex;align-items:center;justify-content:center;">
-                            <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:10px;">
+                    <div style="display:flex;align-items:center;gap:12px;cursor:pointer;" onclick="switchTab('home')">
+                        <div class="brand-orb" style="width:52px;height:52px;background:transparent;box-shadow:none;padding:0;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:12px;">
                         </div>
                         <div>
-                            <div style="font-weight:800;font-size:0.95rem;letter-spacing:-0.2px;line-height:1.1;">XIANBEE-TECH</div>
-                            <div style="font-size:0.64rem;font-weight:800;color:var(--accent-cyan);letter-spacing:1.1px;">ENTERPRISE STORE</div>
+                            <div style="font-weight:800;font-size:1.02rem;letter-spacing:-0.2px;line-height:1.1;">XIANBEE-TECH</div>
+                            <div style="font-size:0.66rem;font-weight:800;color:var(--accent-cyan);letter-spacing:1.1px;">ENTERPRISE STORE</div>
                         </div>
                     </div>
 
@@ -876,6 +1212,9 @@
                         </button>
                         <button class="top-pill" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 10px;font-size:0.75rem;">
                             <span id="themeIcon">☀️</span>
+                        </button>
+                        <button class="top-pill" id="topAuthActionBtn" onclick="handleTopAuthButtonClick()" title="Account Session" style="padding:6px 10px;font-size:0.72rem;border-color:var(--accent-cyan);color:var(--accent-cyan);">
+                            <span id="topAuthActionLabel">🔐 Account</span>
                         </button>
                         <button class="top-pill" id="topAdminBtn" onclick="switchTab('admin')" title="Command Center" style="display:none;padding:6px 9px;border-color:var(--warning);color:var(--warning);">👑</button>
                     </div>
@@ -5114,8 +5453,258 @@
             showToast('Message delivered to Admin Telegram Bot!');
         }
 
-        // Initial Render
+        // =========================================================
+        // 🚪 FEATURE 12: HYBRID AUTH PORTAL & GOOGLE SHEET CLOUD SYNC
+        // =========================================================
+        const isFromTelegramSession = Boolean((tgUser && tgUser.id) || urlParams.get('uid'));
+        let isWebCloudAuthenticated = localStorage.getItem('xb_web_logged_in') === 'true';
+        let isGuestPreviewSession = sessionStorage.getItem('xb_guest_preview') === 'true';
+
+        function updateAuthPortalTickers() {
+            const idrEl = document.getElementById('authLiveIdrTicker');
+            if (idrEl) idrEl.innerText = 'Rp ' + Math.round(liveUsdtIdrRate).toLocaleString('id-ID');
+            const stkEl = document.getElementById('authLiveStockTicker');
+            if (stkEl) stkEl.innerText = (totalLiveAccounts > 0 ? `${totalLiveAccounts} Ready Accounts` : 'Live Vault Online');
+
+            const topAuthLbl = document.getElementById('topAuthActionLabel');
+            if (topAuthLbl) {
+                if (isFromTelegramSession) {
+                    topAuthLbl.innerText = `✈️ @${currentUsername.slice(0, 10)}`;
+                } else if (isWebCloudAuthenticated) {
+                    topAuthLbl.innerText = `🚪 Logout (@${currentUsername.slice(0, 8)})`;
+                } else {
+                    topAuthLbl.innerText = `🔐 Sign In`;
+                }
+            }
+        }
+
+        function checkInitialAuthGate() {
+            const gate = document.getElementById('enterpriseAuthGate');
+            updateAuthPortalTickers();
+            if (isFromTelegramSession || isWebCloudAuthenticated || isGuestPreviewSession) {
+                if (gate) gate.classList.remove('active');
+            } else {
+                if (gate) gate.classList.add('active');
+            }
+        }
+
+        function switchAuthPortalTab(mode) {
+            const isSignIn = (mode === 'signin');
+            document.getElementById('authTabSignInBtn').classList.toggle('active', isSignIn);
+            document.getElementById('authTabSignUpBtn').classList.toggle('active', !isSignIn);
+            document.getElementById('authPanelSignIn').classList.toggle('hidden', !isSignIn);
+            document.getElementById('authPanelSignUp').classList.toggle('hidden', isSignIn);
+        }
+
+        function toggleAuthPwdVisibility(inputId) {
+            const el = document.getElementById(inputId);
+            if (!el) return;
+            el.type = el.type === 'password' ? 'text' : 'password';
+        }
+
+        function enterGuestPreviewMode() {
+            isGuestPreviewSession = true;
+            sessionStorage.setItem('xb_guest_preview', 'true');
+            if (!localStorage.getItem('xb_web_logged_in')) {
+                currentUsername = 'GuestPreview';
+                currentUserId = 'GUEST-' + Math.floor(10000 + Math.random() * 89999);
+            }
+            document.getElementById('enterpriseAuthGate').classList.remove('active');
+            updateAuthPortalTickers();
+            renderViewport();
+            showToast('👁️ Browsing in Guest Preview Mode. Click "🔐 Sign In" anytime to unlock full vault!');
+        }
+
+        function handleTopAuthButtonClick() {
+            if (isFromTelegramSession) {
+                switchTab('profile');
+                return;
+            }
+            if (isWebCloudAuthenticated) {
+                if (confirm(`Sign out from @${currentUsername}? Your balance and vault remain safely stored in Google Cloud.`)) {
+                    localStorage.removeItem('xb_web_logged_in');
+                    sessionStorage.removeItem('xb_guest_preview');
+                    isWebCloudAuthenticated = false;
+                    isGuestPreviewSession = false;
+                    currentUsername = 'GuestClient';
+                    currentUserId = 'Client-Web';
+                    userBalanceUsdt = 0;
+                    localStorage.setItem('xb_bal_usdt', '0.00');
+                    updateTopBalance();
+                    checkAdminVisibility();
+                    checkInitialAuthGate();
+                    showToast('Signed out successfully.');
+                }
+            } else {
+                document.getElementById('enterpriseAuthGate').classList.add('active');
+            }
+        }
+
+        async function executeWebCloudSignUp() {
+            const rawUname = (document.getElementById('regUsernameInput').value || '').trim().replace(/^@/, '').replace(/\s+/g, '');
+            const contact = (document.getElementById('regContactInput').value || '').trim() || '-';
+            const rawPwd = (document.getElementById('regPasswordInput').value || '').trim();
+            const rawPin = (document.getElementById('regPinInput').value || '').trim();
+
+            if (rawUname.length < 3) return showToast('⚠️ Username must be at least 3 characters!');
+            if (rawPwd.length < 6) return showToast('⚠️ Password must be at least 6 characters!');
+            if (!/^\d{6}$/.test(rawPin)) return showToast('⚠️ Security PIN must be exactly 6 digits (numbers only)!');
+
+            const btn = document.getElementById('btnExecSignUp');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Creating Cloud Account in Google Sheet...'; }
+
+            const pwdHash = md5Hash(rawPwd);
+            const pinHash = md5Hash(rawPin);
+            const generatedUid = '88' + String(Math.floor(10000000 + Math.random() * 89999999));
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_auth_register',
+                        user_id: generatedUid,
+                        username: rawUname,
+                        contact: contact,
+                        password_hash: pwdHash,
+                        pin_hash: pinHash
+                    })
+                });
+                const data = await res.json();
+                if (data && data.result === false && data.error) {
+                    if (btn) { btn.disabled = false; btn.innerText = '✨ Create Cloud Account & Enter Store'; }
+                    return showToast('❌ ' + data.error);
+                }
+
+                const finalUid = (data && data.user && data.user.user_id) ? String(data.user.user_id) : generatedUid;
+                const finalBal = (data && data.user && !isNaN(parseFloat(data.user.balance))) ? parseFloat(data.user.balance) : 0.00;
+
+                currentUserId = finalUid;
+                currentUsername = rawUname;
+                currentFullName = rawUname;
+                userBalanceUsdt = finalBal;
+                isWebCloudAuthenticated = true;
+
+                localStorage.setItem('xb_web_logged_in', 'true');
+                localStorage.setItem('xb_uid', currentUserId);
+                localStorage.setItem('xb_uname', currentUsername);
+                localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
+                localStorage.setItem('xb_bot_pin_hash', pinHash);
+                localStorage.setItem('xb_user_pin', rawPin);
+
+                // Notify Admin Telegram Bot of New Web Registration
+                const regAlertHtml = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🌐 <b>N E W  W E B  U S E R  R E G I S T E R E D</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `👤 <b>Username:</b> @${rawUname}\n` +
+                    `🆔 <b>Web Client ID:</b> <code>${currentUserId}</code>\n` +
+                    `📩 <b>Contact:</b> <code>${contact}</code>\n` +
+                    `☁️ <b>Database:</b> Synced to Google Sheet4 CRM`
+                );
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, regAlertHtml, true));
+                pushInWebNotification('buyer', '🎉 WELCOME TO XIANBEE-TECH', `Your cloud account <b>@${rawUname}</b> (ID: <code>${currentUserId}</code>) is now active and synced with Google Cloud Vault.`);
+
+                updateTopBalance();
+                checkAdminVisibility();
+                checkInitialAuthGate();
+                renderViewport();
+                showToast(`🎉 Welcome, @${rawUname}! Cloud account created.`);
+            } catch (err) {
+                console.log('Cloud register fallback:', err);
+                showToast('⚠️ Connection slow, please try again.');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = '✨ Create Cloud Account & Enter Store'; }
+            }
+        }
+
+        async function executeWebCloudSignIn() {
+            const rawUname = (document.getElementById('loginUsernameInput').value || '').trim().replace(/^@/, '').replace(/\s+/g, '');
+            const rawPwd = (document.getElementById('loginPasswordInput').value || '').trim();
+
+            if (!rawUname || !rawPwd) return showToast('⚠️ Please enter both your Username and Password!');
+
+            const btn = document.getElementById('btnExecSignIn');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Verifying Credentials with Google Sheet...'; }
+
+            const pwdHash = md5Hash(rawPwd);
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_auth_login',
+                        username: rawUname,
+                        password_hash: pwdHash
+                    })
+                });
+                const data = await res.json();
+                if (!data || !data.result || !data.user) {
+                    if (btn) { btn.disabled = false; btn.innerText = '🚀 Sign In & Sync Cloud Vault'; }
+                    return showToast('❌ ' + ((data && data.error) ? data.error : 'Invalid username or password!'));
+                }
+
+                const usr = data.user;
+                currentUserId = String(usr.user_id || 'Client-Web');
+                currentUsername = String(usr.username || rawUname).replace(/^@/, '');
+                currentFullName = currentUsername;
+                userBalanceUsdt = parseFloat(usr.balance || 0);
+                isWebCloudAuthenticated = true;
+
+                localStorage.setItem('xb_web_logged_in', 'true');
+                localStorage.setItem('xb_uid', currentUserId);
+                localStorage.setItem('xb_uname', currentUsername);
+                localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
+                if (usr.pin_hash) localStorage.setItem('xb_bot_pin_hash', usr.pin_hash);
+                if (Array.isArray(usr.vault) && usr.vault.length > 0) {
+                    localStorage.setItem('xb_purchased_vault', JSON.stringify(usr.vault));
+                }
+                if (Array.isArray(usr.tx_history) && usr.tx_history.length > 0) {
+                    localStorage.setItem('xb_tx_history', JSON.stringify(usr.tx_history));
+                }
+
+                updateTopBalance();
+                checkAdminVisibility();
+                checkInitialAuthGate();
+                renderViewport();
+                showToast(`✅ Welcome back, @${currentUsername}! Balance: ${fmtPrice(userBalanceUsdt)}`);
+            } catch (err) {
+                showToast('⚠️ Error connecting to Cloud DB. Please try again.');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = '🚀 Sign In & Sync Cloud Vault'; }
+            }
+        }
+
+        // Automatically sync Web User's Purchased Vault & Balance to Google Cloud whenever an order completes
+        const _origSavePurchasedVault = savePurchasedAccountsToWebVault;
+        savePurchasedAccountsToWebVault = function(itemsList, invId) {
+            const unlocked = _origSavePurchasedVault(itemsList, invId);
+            if (isWebCloudAuthenticated) {
+                try {
+                    const fullVault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+                    const fullTx = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+                    fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'web_sync_vault',
+                            user_id: String(currentUserId),
+                            username: currentUsername,
+                            balance: parseFloat(userBalanceUsdt.toFixed(2)),
+                            vault: fullVault.slice(0, 50),
+                            tx_history: fullTx.slice(0, 30)
+                        })
+                    });
+                } catch (e) {}
+            }
+            return unlocked;
+        };
+
+        // Initial Render & Auth Gate Check
+        checkInitialAuthGate();
         switchTab('home');
+        setInterval(updateAuthPortalTickers, 5000);
     </script>
 </body>
 </html>
