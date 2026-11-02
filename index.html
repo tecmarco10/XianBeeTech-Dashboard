@@ -222,35 +222,43 @@
             padding-bottom: 84px;
         }
 
-        /* TOPBAR (CLEAN & SPACIOUS FOR MOBILE) */
+        /* 2-ROW BOXED TOPBAR (100% FIT ON MOBILE SCREENS) */
         .topbar {
             position: sticky;
             top: 0;
             z-index: 30;
-            height: 62px;
             background: var(--bg-elevated);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-subtle);
-            padding: 0 12px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .topbar-box-brand {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
+            box-shadow: var(--shadow-card);
         }
 
-        .topbar-left {
-            display: flex;
+        .topbar-box-actions {
+            width: 100%;
+            background: var(--bg-card);
+            border: 1px solid var(--border-focus);
+            border-radius: 12px;
+            padding: 7px 10px;
+            display: grid;
+            grid-template-columns: 1fr 1.25fr auto;
             align-items: center;
             gap: 8px;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .topbar-right {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
+            box-shadow: var(--shadow-card);
         }
 
         .top-pill {
@@ -767,42 +775,44 @@
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area">
             <header class="topbar">
-                <div class="topbar-left" onclick="switchTab('home')">
-                    <div class="brand-orb" style="width:34px;height:34px;font-size:1.05rem;border-radius:9px;">🐝</div>
-                    <span style="font-weight:800;font-size:0.92rem;letter-spacing:-0.3px;">XianBee</span>
+                <!-- BARIS 1: KOTAK BRAND XIANBEE-TECH + TOMBOL KURS & GANTI TEMA -->
+                <div class="topbar-box-brand">
+                    <div style="display:flex;align-items:center;gap:9px;cursor:pointer;" onclick="switchTab('home')">
+                        <div class="brand-orb" style="width:32px;height:32px;font-size:1rem;border-radius:8px;">🐝</div>
+                        <div>
+                            <div style="font-weight:800;font-size:0.92rem;letter-spacing:-0.2px;line-height:1.1;">XIANBEE-TECH</div>
+                            <div style="font-size:0.62rem;font-weight:800;color:var(--accent-cyan);letter-spacing:1.1px;">ENTERPRISE STORE</div>
+                        </div>
+                    </div>
+
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <button class="top-pill" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 10px;font-size:0.72rem;">
+                            <span>💱</span>
+                            <span id="currSwitchText">USDT</span>
+                        </button>
+                        <button class="top-pill" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 10px;font-size:0.75rem;">
+                            <span id="themeIcon">☀️</span>
+                        </button>
+                        <button class="top-pill" id="topAdminBtn" onclick="switchTab('admin')" title="Command Center" style="display:none;padding:6px 9px;border-color:var(--warning);color:var(--warning);">👑</button>
+                    </div>
                 </div>
 
-                <div class="topbar-right">
-                    <!-- 1. WALLET BALANCE PILL -->
-                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')">
-                        <span>💳</span>
-                        <span id="topBalanceText">0.00 USDT</span>
-                    </button>
-
-                    <!-- 2. CART BUTTON RIGHT NEXT TO USDT BALANCE -->
-                    <button class="top-pill cart-top-pill" onclick="openCartModal()">
+                <!-- BARIS 2: KOTAK KHUSUS CART + JUMLAH SALDO + LONCENG NOTIFIKASI -->
+                <div class="topbar-box-actions">
+                    <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:9px 10px;">
                         <span>🛒 Cart</span>
                         <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);">0</span>
                     </button>
 
-                    <!-- 3. LIVE NOTIFICATION FEED BELL (BUYER & ADMIN ALERTS) -->
-                    <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications">
+                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:9px 10px;">
+                        <span>💳</span>
+                        <span id="topBalanceText">0.00 USDT</span>
+                    </button>
+
+                    <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications" style="padding:9px 12px;justify-content:center;">
                         <span>🔔</span>
                         <span class="badge-dot" id="notifCountBadge">0</span>
                     </button>
-
-                    <!-- 4. REAL-TIME USDT <-> IDR SWITCHER -->
-                    <button class="top-pill" onclick="toggleCurrency()" title="Switch between USDT and Real-Time IDR">
-                        <span id="currSwitchText">USDT</span>
-                    </button>
-
-                    <!-- 5. THEME SWITCHER -->
-                    <button class="top-pill" onclick="toggleTheme()" title="Switch Theme">
-                        <span id="themeIcon">☀️</span>
-                    </button>
-
-                    <!-- 6. ADMIN BUTTON (HIDDEN FROM REGULAR USERS, ONLY SHOWN TO ADMIN_IDS) -->
-                    <button class="top-pill" id="topAdminBtn" onclick="switchTab('admin')" title="Command Center" style="display:none;border-color:var(--warning);color:var(--warning);">👑</button>
                 </div>
             </header>
 
@@ -1260,7 +1270,6 @@
                         `\n🔐 <b>UNLOCKED CREDENTIALS (@${a.username}):</b>\n` +
                         `🔸 <b>Username:</b> <code>${a.username}</code>\n` +
                         `🔸 <b>Password:</b> <code>${a.password}</code>\n` +
-                        `🔸 <b>Email:</b> <code>${a.email}</code>\n` +
                         `🔸 <b>2FA Secret:</b> <code>${a.twofa}</code>`
                     ).join('\n');
                 }
@@ -1405,7 +1414,7 @@
             { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Developer Pack', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
             { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub High Green Contributions', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 },
             { yr: '2011', icon: '11', tag: 'VINTAGE 2011', title: 'Aged GitHub Account (Year 2011)', desc: '15-Year-Old Vintage Account • Maximum Trust Score + Full 2FA', usdt: 30.00 },
-            { yr: '2012', icon: '12', tag: 'VINTAGE 2012', title: 'Aged GitHub Account (Year 2012)', desc: '14-Year-Old Vintage Account • Anti-Flagged + Email & 2FA', usdt: 28.00 },
+            { yr: '2012', icon: '12', tag: 'VINTAGE 2012', title: 'Aged GitHub Account (Year 2012)', desc: '14-Year-Old Vintage Account • Anti-Flagged • Full 2FA Key', usdt: 28.00 },
             { yr: '2013', icon: '13', tag: 'VINTAGE 2013', title: 'Aged GitHub Account (Year 2013)', desc: '13-Year-Old Vintage Account • Ideal for Web3 & Open Source', usdt: 26.00 },
             { yr: '2014', icon: '14', tag: 'VINTAGE 2014', title: 'Aged GitHub Account (Year 2014)', desc: '12-Year-Old Aged Account • Verified Healthy (200 OK)', usdt: 24.00 },
             { yr: '2015', icon: '15', tag: 'VINTAGE 2015', title: 'Aged GitHub Account (Year 2015)', desc: '11-Year-Old Aged Account • Clean Commit History + 2FA', usdt: 22.00 },
@@ -1786,7 +1795,7 @@
                     <div>
                         <span class="item-tag">ID: ${accId} • YEAR ${acc.year || yrKey}</span>
                         <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:1rem;">@${uname}</h4>
-                        <p class="item-desc">👥 Followers: <b>${acc.followers || 0}</b> &nbsp;•&nbsp; 📁 Public Repos: <b>${acc.repos || 0}</b> &nbsp;•&nbsp; 🔐 Full Email & 2FA</p>
+                        <p class="item-desc">👥 Followers: <b>${acc.followers || 0}</b> &nbsp;•&nbsp; 📁 Public Repos: <b>${acc.repos || 0}</b> &nbsp;•&nbsp; 🔐 Username, Pass & 2FA</p>
                     </div>
                     <div class="price-chip">${fmtPrice(prc)}</div>
                 </div>
@@ -1909,7 +1918,7 @@
                 accountData: acc,
                 tag: `LIVE ACCOUNT • ${acc.followers || 0} FLW • ${acc.repos || 0} REPOS`,
                 title: `GitHub ${yrKey} — @${acc.username}`,
-                desc: `Instant Web Delivery: Full Username, Password, Recovery Email (${acc.email || 'Included'}) & 2FA Secret Key will be unlocked and saved right in your Web Vault immediately after payment.`,
+                desc: `Instant Web Delivery: Full Username, Password & 2FA Secret Key will be unlocked and saved right in your Web Vault immediately after payment.`,
                 usdt: prc,
                 prompt: 'Selected GitHub Account (Locked for Your Order):'
             });
@@ -1969,12 +1978,11 @@
                 `GitHub URL     : ${entry.url}`,
                 `Username       : ${entry.username}`,
                 `Password       : ${entry.password}`,
-                `Recovery Email : ${entry.email}`,
                 `2FA Secret Key : ${entry.twofa}`,
                 "----------------------------------------------------",
                 "SECURITY POLICY:",
                 "Please wait 24 hours after your initial login before",
-                "changing the password or recovery email.",
+                "changing the account password.",
                 "===================================================="
             ].join("\r\n");
         }
@@ -2014,7 +2022,7 @@
             const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
             const e = vault[idx];
             if (!e) return;
-            const str = `Username: ${e.username}\nPassword: ${e.password}\nEmail: ${e.email}\n2FA Secret: ${e.twofa}\nURL: ${e.url}`;
+            const str = `Username: ${e.username}\nPassword: ${e.password}\n2FA Secret: ${e.twofa}\nURL: ${e.url}`;
             navigator.clipboard.writeText(str);
             showToast(`Copied all credentials for @${e.username}!`);
         }
@@ -2054,11 +2062,6 @@
                             <span class="lbl">PASSWORD</span>
                             <span class="val">${entry.password}</span>
                             <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋 Copy</button>
-                        </div>
-                        <div class="cred-field-row">
-                            <span class="lbl">EMAIL</span>
-                            <span class="val">${entry.email}</span>
-                            <button class="top-pill" onclick="navigator.clipboard.writeText('${entry.email}'); showToast('Email copied!');">📋 Copy</button>
                         </div>
                         <div class="cred-field-row">
                             <span class="lbl">2FA KEY</span>
