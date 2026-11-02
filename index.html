@@ -3338,8 +3338,34 @@
                     if (!r.ok) throw new Error('404');
                     const d = await r.json();
                     avatarImg = d.avatar_url;
-                    titleHeading = `PROFILE TELEMETRY • @${d.login} ${d.name ? `(${d.name})` : ''}`;
+                    titleHeading = `PROFILE & BADGES TELEMETRY • @${d.login} ${d.name ? `(${d.name})` : ''}`;
                     profileUrl = d.html_url;
+
+                    // Fetch active achievements/badges from public GitHub profile HTML rendering
+                    let badgesHtml = `<div style="font-size:0.72rem;color:var(--text-muted);margin-top:10px;">Scanning achievements & badges...</div>`;
+                    try {
+                        const htmlRes = await fetch(`https://github.com/${clean}`);
+                        const htmlText = await htmlRes.text();
+                        // Parse achievement tooltips / images from profile DOM
+                        const badgeMatches = [...htmlText.matchAll(/aria-label="Achievement:\s*([^"]+)"/g)];
+                        const uniqueBadges = [...new Set(badgeMatches.map(m => m[1]))];
+
+                        if (uniqueBadges.length > 0) {
+                            badgesHtml = `
+                                <div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--border-subtle);">
+                                    <div style="font-size:0.7rem;font-weight:800;color:var(--accent-cyan);margin-bottom:6px;text-transform:uppercase;">🏆 Verified Achievements & Badges (${uniqueBadges.length} Unlocked):</div>
+                                    <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                                        ${uniqueBadges.map(b => `<span style="background:var(--bg-input);border:1px solid var(--border-focus);padding:3px 9px;border-radius:6px;font-size:0.72rem;font-weight:700;color:var(--text-primary);">🏅 ${b}</span>`).join('')}
+                                    </div>
+                                </div>
+                            `;
+                        } else {
+                            badgesHtml = `<div style="font-size:0.74rem;color:var(--text-muted);margin-top:10px;font-style:italic;">ℹ️ No public achievements/badges visible on this profile yet.</div>`;
+                        }
+                    } catch (err) {
+                        badgesHtml = '';
+                    }
+
                     metricsHtml = `
                         <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:10px;">
                             <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
@@ -3355,6 +3381,7 @@
                                 <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:800;color:var(--warning);">${fmtPrice(15 + d.followers * 0.15)}</div>
                             </div>
                         </div>
+                        ${badgesHtml}
                     `;
                 }
 
