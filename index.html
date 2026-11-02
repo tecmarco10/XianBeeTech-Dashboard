@@ -1,74 +1,120 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="nebula">
+<html lang="id" data-theme="brutal">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee-Tech Enterprise Store</title>
+    <title>XianBee-Tech — Official Digital Store</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@700;800&family=JetBrains+Mono:wght@600;700;800&display=swap');
 
         /* =========================================================
-           🎨 DUAL THEME ENGINE (1: CYBER NEBULA | 2: PLATINUM LIGHT)
+           🎨 3-THEME ENGINE:
+           1. BRUTAL (Neo-Brutalism seperti Brilliant Digital)
+           2. NEBULA (Cyber Dark)
+           3. PLATINUM (Clean Light)
            ========================================================= */
         :root,
-        [data-theme="nebula"] {
-            --bg-base: #06040d;
-            --bg-elevated: rgba(15, 11, 28, 0.90);
-            --topbar-bg: rgba(12, 9, 23, 0.86);
-            --panel-bg: rgba(24, 18, 44, 0.78);
-            --panel-hover: rgba(38, 28, 68, 0.95);
-            --modal-bg: #120e24;
-            --input-bg: rgba(0, 0, 0, 0.52);
-            --soft-surface: rgba(255, 255, 255, 0.05);
+        [data-theme="brutal"] {
+            --bg-base: #f6f3e8;
+            --bg-grid: rgba(17, 24, 39, 0.055);
+            --bg-elevated: #ffffff;
+            --topbar-bg: #fffdf7;
+            --panel-bg: #ffffff;
+            --panel-hover: #fffbeb;
+            --soft-surface: #f1ede0;
+            --input-bg: #ffffff;
 
-            --grad-master: linear-gradient(135deg, #0072ff 0%, #8b5cf6 52%, #f85032 100%);
-            --grad-danger: linear-gradient(135deg, #dc2626 0%, #f43f5e 100%);
+            --text-main: #111827;
+            --text-muted: #4b5563;
+            --accent-yellow: #ffe600;
+            --accent-blue: #2563eb;
+            --accent-pink: #ec4899;
+            --accent-green: #10b981;
+            --accent-purple: #8b5cf6;
+
+            --border-width: 2.5px;
+            --border-color: #111827;
+            --shadow-card: 4px 4px 0px #111827;
+            --shadow-hover: 6px 6px 0px #111827;
+            --shadow-btn: 3px 3px 0px #111827;
+            --radius-card: 12px;
+            --radius-btn: 8px;
+
+            --price-bg: #e6007a;
+            --price-text: #ffffff;
+            --primary-btn-bg: #2563eb;
+            --primary-btn-text: #ffffff;
+            --badge-bg: #ffe600;
+            --badge-text: #111827;
+        }
+
+        [data-theme="nebula"] {
+            --bg-base: #070510;
+            --bg-grid: rgba(139, 92, 246, 0.07);
+            --bg-elevated: #110d22;
+            --topbar-bg: rgba(15, 11, 29, 0.92);
+            --panel-bg: #16112b;
+            --panel-hover: #1f183d;
+            --soft-surface: rgba(255, 255, 255, 0.06);
+            --input-bg: #0c0918;
 
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
-            --accent-color: #a78bfa;
-            --border: rgba(139, 92, 246, 0.26);
-            --border-bright: rgba(167, 139, 250, 0.58);
-            --glow-shadow: 0 10px 28px rgba(139, 92, 246, 0.30);
-            --card-shadow: 0 4px 20px rgba(0, 0, 0, 0.35);
+            --accent-yellow: #facc15;
+            --accent-blue: #3b82f6;
+            --accent-pink: #f43f5e;
+            --accent-green: #10b981;
+            --accent-purple: #a78bfa;
 
-            --danger: #ef4444;
-            --success: #10b981;
-            --warning: #f59e0b;
-            --particle-rgb: 139, 92, 246;
-            --bg-radial-1: rgba(0, 114, 255, 0.14);
-            --bg-radial-2: rgba(139, 92, 246, 0.16);
+            --border-width: 1.5px;
+            --border-color: rgba(167, 139, 250, 0.38);
+            --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.45);
+            --shadow-hover: 0 12px 28px rgba(139, 92, 246, 0.28);
+            --shadow-btn: 0 4px 14px rgba(37, 99, 235, 0.35);
+            --radius-card: 16px;
+            --radius-btn: 10px;
+
+            --price-bg: #ec4899;
+            --price-text: #ffffff;
+            --primary-btn-bg: #6d28d9;
+            --primary-btn-text: #ffffff;
+            --badge-bg: #facc15;
+            --badge-text: #0f172a;
         }
 
         [data-theme="platinum"] {
-            --bg-base: #f1f5f9;
-            --bg-elevated: rgba(255, 255, 255, 0.94);
-            --topbar-bg: rgba(255, 255, 255, 0.88);
+            --bg-base: #f8fafc;
+            --bg-grid: rgba(15, 23, 42, 0.035);
+            --bg-elevated: #ffffff;
+            --topbar-bg: rgba(255, 255, 255, 0.92);
             --panel-bg: #ffffff;
-            --panel-hover: #f8fafc;
-            --modal-bg: #ffffff;
-            --input-bg: #f1f5f9;
-            --soft-surface: rgba(15, 23, 42, 0.05);
-
-            --grad-master: linear-gradient(135deg, #2563eb 0%, #7c3aed 55%, #db2777 100%);
-            --grad-danger: linear-gradient(135deg, #dc2626 0%, #e11d48 100%);
+            --panel-hover: #f1f5f9;
+            --soft-surface: #f1f5f9;
+            --input-bg: #f8fafc;
 
             --text-main: #0f172a;
             --text-muted: #64748b;
-            --accent-color: #6d28d9;
-            --border: rgba(148, 163, 184, 0.32);
-            --border-bright: rgba(124, 58, 237, 0.55);
-            --glow-shadow: 0 10px 25px rgba(99, 102, 241, 0.22);
-            --card-shadow: 0 4px 16px rgba(15, 23, 42, 0.06);
+            --accent-yellow: #fde047;
+            --accent-blue: #2563eb;
+            --accent-pink: #db2777;
+            --accent-green: #059669;
+            --accent-purple: #7c3aed;
 
-            --danger: #dc2626;
-            --success: #059669;
-            --warning: #d97706;
-            --particle-rgb: 99, 102, 241;
-            --bg-radial-1: rgba(37, 99, 235, 0.08);
-            --bg-radial-2: rgba(124, 58, 237, 0.08);
+            --border-width: 1.5px;
+            --border-color: #cbd5e1;
+            --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.06);
+            --shadow-hover: 0 10px 25px rgba(37, 99, 235, 0.14);
+            --shadow-btn: 0 4px 10px rgba(37, 99, 235, 0.2);
+            --radius-card: 16px;
+            --radius-btn: 10px;
+
+            --price-bg: #db2777;
+            --price-text: #ffffff;
+            --primary-btn-bg: #2563eb;
+            --primary-btn-text: #ffffff;
+            --badge-bg: #fde047;
+            --badge-text: #0f172a;
         }
 
         * {
@@ -80,858 +126,246 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            height: 100%;
+            min-height: 100%;
             background-color: var(--bg-base);
+            background-image:
+                linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
+                linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
+            background-size: 28px 28px;
             color: var(--text-main);
             font-family: 'Plus Jakarta Sans', sans-serif;
-            overflow: hidden;
-            transition: background-color 0.3s ease, color 0.3s ease;
-            background-image:
-                radial-gradient(circle at 15% 15%, var(--bg-radial-1) 0%, transparent 45%),
-                radial-gradient(circle at 85% 80%, var(--bg-radial-2) 0%, transparent 50%);
-        }
-
-        #canvas-bg {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            opacity: 0.55;
-            pointer-events: none;
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-        }
-        ::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: rgba(139, 92, 246, 0.35);
-            border-radius: 10px;
+            transition: background-color 0.25s ease, color 0.25s ease;
         }
 
         /* =========================================================
-           📐 AUTO-RESPONSIVE SHELL (MOBILE -> TABLET -> DESKTOP)
+           📐 LAYOUT SHELL (SIDEBAR PC + TOPBAR + BOTTOM NAV MOBILE)
            ========================================================= */
         .app-shell {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            min-height: 100vh;
+            width: 100%;
         }
 
-        /* SIDEBAR (Auto-shows on Tablet & PC/Laptop) */
         .app-sidebar {
             display: none;
             flex-direction: column;
+            width: 270px;
             background: var(--bg-elevated);
-            border-right: 1px solid var(--border);
-            backdrop-filter: blur(18px);
-            z-index: 20;
-            flex-shrink: 0;
-            transition: width 0.25s ease, background 0.3s ease;
+            border-right: var(--border-width) solid var(--border-color);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 40;
+            padding: 20px 16px;
         }
 
-        .sidebar-brand {
-            padding: 22px 20px;
-            display: flex;
+        .brand-box {
+            display: inline-flex;
             align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .brand-orb {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: var(--grad-master);
-            color: #ffffff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.35rem;
-            box-shadow: var(--glow-shadow);
-            flex-shrink: 0;
-        }
-
-        .brand-text h2 {
-            margin: 0;
-            font-size: 1.15rem;
+            gap: 10px;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--shadow-btn);
+            padding: 8px 14px;
+            font-family: 'Space Grotesk', sans-serif;
             font-weight: 800;
-            letter-spacing: -0.3px;
-            color: var(--text-main);
-        }
-
-        .brand-text span {
-            font-size: 0.68rem;
-            font-weight: 800;
-            letter-spacing: 1.8px;
-            color: var(--accent-color);
-            display: block;
+            font-size: 0.95rem;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            border-radius: 6px;
+            cursor: pointer;
         }
 
         .sidebar-nav {
-            padding: 16px 12px;
+            margin-top: 24px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
             flex: 1;
-            overflow-y: auto;
         }
 
-        .side-link {
+        .side-tab-btn {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px 14px;
-            border-radius: 12px;
-            color: var(--text-muted);
-            font-weight: 700;
-            font-size: 0.88rem;
-            border: 1px solid transparent;
-            background: transparent;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            text-align: left;
             width: 100%;
-            font-family: inherit;
-        }
-
-        .side-link:hover {
+            padding: 12px 14px;
+            border-radius: var(--radius-btn);
+            border: var(--border-width) solid transparent;
+            background: transparent;
             color: var(--text-main);
-            background: var(--soft-surface);
-            border-color: var(--border);
-        }
-
-        .side-link.active {
-            color: #ffffff;
-            background: var(--grad-master);
-            box-shadow: var(--glow-shadow);
-        }
-
-        .side-link .nav-ic {
-            font-size: 1.2rem;
-            width: 26px;
-            text-align: center;
-            flex-shrink: 0;
-        }
-
-        .sidebar-footer {
-            padding: 16px;
-            border-top: 1px solid var(--border);
-        }
-
-        .telemetry-pill {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.32);
-            padding: 9px 12px;
-            border-radius: 10px;
-            color: var(--success);
+            font-family: inherit;
             font-weight: 800;
-            font-size: 0.74rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.15s;
         }
 
-        .pulse-dot {
-            width: 8px;
-            height: 8px;
-            background: var(--success);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--success);
-            animation: pulseAnim 1.8s infinite;
-            flex-shrink: 0;
+        .side-tab-btn:hover {
+            background: var(--soft-surface);
+            border-color: var(--border-color);
         }
 
-        @keyframes pulseAnim {
-            0%, 100% { transform: scale(1); opacity: 1; }
-            50% { transform: scale(1.35); opacity: 0.6; }
+        .side-tab-btn.active {
+            background: var(--primary-btn-bg);
+            color: var(--primary-btn-text);
+            border-color: var(--border-color);
+            box-shadow: var(--shadow-btn);
         }
 
-        /* MAIN WORKSPACE */
         .app-main {
             flex: 1;
             display: flex;
             flex-direction: column;
-            height: 100%;
-            overflow: hidden;
-            position: relative;
+            width: 100%;
+            padding-bottom: 85px;
         }
 
         /* TOPBAR */
         .topbar {
-            height: 66px;
-            padding: 0 18px;
+            position: sticky;
+            top: 0;
+            z-index: 35;
             background: var(--topbar-bg);
-            border-bottom: 1px solid var(--border);
-            backdrop-filter: blur(16px);
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding: 12px 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
-            flex-shrink: 0;
-            z-index: 15;
-            transition: background 0.3s ease;
-        }
-
-        .topbar-left {
-            display: flex;
-            align-items: center;
             gap: 10px;
-            min-width: 0;
+            backdrop-filter: blur(10px);
         }
 
-        .btn-icon-top {
-            width: 38px;
-            height: 38px;
-            border-radius: 11px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: 0.2s;
-            flex-shrink: 0;
-            box-shadow: var(--card-shadow);
-        }
-
-        .btn-icon-top:hover, .btn-icon-top:active {
-            background: var(--grad-master);
-            color: #ffffff;
-            border-color: transparent;
-        }
-
-        .topbar-title-wrap {
-            min-width: 0;
-        }
-
-        .topbar-title {
-            margin: 0;
-            font-size: 0.98rem;
-            font-weight: 800;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            letter-spacing: 0.4px;
-            color: var(--text-main);
-        }
-
-        .topbar-sub {
-            font-size: 0.7rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .topbar-right {
+        .topbar-actions {
             display: flex;
             align-items: center;
             gap: 8px;
-            flex-shrink: 0;
         }
 
-        /* THEME SWITCHER PILL */
-        .theme-toggle-btn {
+        .ctrl-btn {
             background: var(--panel-bg);
-            border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 7px 12px;
-            border-radius: 11px;
-            font-size: 0.75rem;
-            font-weight: 800;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-family: inherit;
-            box-shadow: var(--card-shadow);
-            transition: all 0.2s ease;
-        }
-
-        .theme-toggle-btn:hover {
-            border-color: var(--border-bright);
-            transform: translateY(-1px);
-        }
-
-        .wallet-pill {
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.35);
-            color: var(--success);
-            padding: 7px 12px;
-            border-radius: 11px;
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--shadow-btn);
+            padding: 7px 11px;
+            border-radius: var(--radius-btn);
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
+            font-size: 0.76rem;
             font-weight: 800;
             cursor: pointer;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             gap: 5px;
-            transition: 0.2s;
+            transition: transform 0.12s;
         }
 
-        .wallet-pill:hover {
-            background: rgba(16, 185, 129, 0.2);
+        .ctrl-btn:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--border-color);
         }
 
-        .cart-top-btn {
+        .ctrl-btn.cart-btn {
+            background: var(--accent-yellow);
+            color: #111827;
             position: relative;
-            width: 38px;
-            height: 38px;
-            border-radius: 11px;
-            background: var(--grad-master);
-            border: none;
+        }
+
+        .cart-count {
+            background: #e6007a;
             color: #ffffff;
-            font-size: 1.05rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            box-shadow: var(--glow-shadow);
+            padding: 1px 6px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            border: 1.5px solid #111827;
         }
 
-        .cart-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #ffffff;
-            color: #090514;
-            font-size: 0.68rem;
-            font-weight: 800;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid #7c3aed;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: 0.25s;
-        }
-
-        .cart-badge.show {
-            opacity: 1;
-            transform: scale(1);
-        }
-
-        /* VIEWPORT CONTENT AREA */
-        .content-scroll {
-            flex: 1;
-            overflow-y: auto;
-            overflow-x: hidden;
-            padding: 18px 16px 96px 16px;
-        }
-
-        .view-section {
-            display: none;
-            animation: fadeInView 0.26s ease;
-            max-width: 1320px;
+        /* CONTAINER UTAMA */
+        .container {
+            width: 100%;
+            max-width: 1180px;
             margin: 0 auto;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        @keyframes fadeInView {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* BOTTOM NAVIGATION BAR (Mobile Only) */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            height: 66px;
-            background: var(--bg-elevated);
-            border-top: 1px solid var(--border);
-            backdrop-filter: blur(18px);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            padding: 0 8px;
-            z-index: 30;
-        }
-
-        .bnav-item {
-            flex: 1;
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            padding: 8px 4px;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.2s;
-        }
-
-        .bnav-item .b-ic {
-            font-size: 1.2rem;
-            transition: 0.2s;
-        }
-
-        .bnav-item .b-tx {
-            font-size: 0.66rem;
-            font-weight: 700;
-        }
-
-        .bnav-item.active {
-            color: var(--accent-color);
-        }
-
-        .bnav-item.active .b-ic {
-            transform: translateY(-2px) scale(1.12);
+            padding: 20px 16px;
         }
 
         /* =========================================================
-           🃏 CARDS, GRIDS & UI COMPONENTS
+           🏷️ POSTER HERO (GAYA BRILLIANT DIGITAL)
            ========================================================= */
-        .hero-banner {
-            background: var(--grad-master);
-            color: #ffffff;
-            border-radius: 22px;
-            padding: 24px;
+        .poster-header {
+            background: var(--panel-bg);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            border-radius: var(--radius-card);
+            padding: 22px 20px;
+            margin-bottom: 20px;
             position: relative;
-            overflow: hidden;
-            box-shadow: var(--glow-shadow);
-            margin-bottom: 22px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 16px;
         }
 
-        .hero-banner::after {
-            content: '';
-            position: absolute;
-            right: -30px;
-            top: -30px;
-            width: 180px;
-            height: 180px;
-            background: rgba(255,255,255,0.14);
-            border-radius: 50%;
-            filter: blur(22px);
-            pointer-events: none;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: rgba(0, 0, 0, 0.28);
-            color: #ffffff;
+        .poster-tag {
+            display: inline-block;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 3px 3px 0px #111827;
             padding: 5px 12px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            font-weight: 800;
-            letter-spacing: 1px;
-            width: fit-content;
-        }
-
-        .hero-title {
-            margin: 6px 0 4px 0;
-            font-size: 1.5rem;
-            font-weight: 800;
-            line-height: 1.22;
-            color: #ffffff;
-        }
-
-        .hero-sub {
-            margin: 0;
-            font-size: 0.84rem;
-            color: rgba(255, 255, 255, 0.9);
-            max-width: 650px;
-            line-height: 1.45;
-        }
-
-        .hero-actions {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .btn-hero {
-            background: #ffffff;
-            color: #0f172a;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.8rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: inherit;
-            transition: 0.2s;
-        }
-
-        .btn-hero.secondary {
-            background: rgba(0, 0, 0, 0.32);
-            color: #ffffff;
-            border: 1px solid rgba(255, 255, 255, 0.35);
-        }
-
-        .btn-hero:active {
-            transform: scale(0.96);
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin: 20px 0 12px 2px;
-        }
-
-        .menu-category {
-            font-weight: 800;
+            font-weight: 900;
             font-size: 0.76rem;
-            color: var(--text-muted);
+            letter-spacing: 1px;
             text-transform: uppercase;
-            letter-spacing: 1.4px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            margin: 0;
+            margin-bottom: 12px;
         }
 
-        .menu-category::before {
-            content: '';
+        .poster-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 2rem;
+            font-weight: 900;
+            line-height: 1.05;
+            margin: 0 0 8px 0;
+            text-transform: uppercase;
+            letter-spacing: -0.5px;
+        }
+
+        .poster-title .highlight-blue {
+            color: var(--accent-blue);
             display: block;
-            width: 7px;
-            height: 7px;
-            background: var(--accent-color);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent-color);
         }
 
-        .bento-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
-        .menu-btn, .btn-master {
-            width: 100%;
-            padding: 15px 16px;
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            color: var(--text-main);
-            text-align: left;
-            font-family: inherit;
-            box-shadow: var(--card-shadow);
-        }
-
-        .btn-master {
-            background: var(--grad-master);
-            color: #ffffff;
-            border: none;
-            box-shadow: var(--glow-shadow);
-        }
-
-        .menu-btn:hover {
-            background: var(--panel-hover);
-            border-color: var(--border-bright);
-            transform: translateY(-2px);
-        }
-
-        .menu-btn:active, .btn-master:active {
-            transform: scale(0.97);
-        }
-
-        .btn-content {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            min-width: 0;
-            flex: 1;
-        }
-
-        .btn-icon {
-            font-size: 1.35rem;
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: var(--grad-master);
-            color: #ffffff;
-            flex-shrink: 0;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.25);
-        }
-
-        .btn-master .btn-icon {
-            background: rgba(0, 0, 0, 0.24);
-        }
-
-        .btn-text-wrapper {
-            display: flex;
-            flex-direction: column;
-            min-width: 0;
-            flex: 1;
-        }
-
-        .btn-title {
-            font-weight: 800;
-            font-size: 0.94rem;
-            color: var(--text-main);
-            margin-bottom: 3px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .btn-master .btn-title {
-            color: #ffffff;
-        }
-
-        .btn-desc {
-            font-size: 0.75rem;
+        .poster-sub {
+            font-size: 0.86rem;
+            font-weight: 700;
             color: var(--text-muted);
-            font-weight: 600;
-            line-height: 1.3;
+            margin: 0 0 16px 0;
         }
 
-        .btn-master .btn-desc {
-            color: rgba(255, 255, 255, 0.86);
-        }
-
-        .price-tag {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
-            font-weight: 800;
-            color: var(--success);
-            background: rgba(16, 185, 129, 0.12);
-            border: 1px solid rgba(16, 185, 129, 0.3);
-            padding: 5px 10px;
-            border-radius: 9px;
-            flex-shrink: 0;
-        }
-
-        .arrow-icon {
-            color: var(--accent-color);
-            font-size: 1.1rem;
-            font-weight: 800;
-            flex-shrink: 0;
-        }
-
-        /* GITHUB ACCOUNT CARD */
-        .acc-card {
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 16px;
+        /* SEARCH & QUICK BAR */
+        .search-wrap {
             display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 14px;
-            box-shadow: var(--card-shadow);
-            transition: 0.2s;
-        }
-
-        .acc-card:hover {
-            border-color: var(--border-bright);
-            transform: translateY(-2px);
-        }
-
-        .acc-card-top {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .acc-actions {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn-card-action {
+        .search-input {
             flex: 1;
-            padding: 10px 12px;
-            border-radius: 10px;
-            font-size: 0.76rem;
-            font-weight: 800;
-            cursor: pointer;
-            border: none;
-            font-family: inherit;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            transition: 0.2s;
-        }
-
-        .btn-card-action.primary {
-            background: var(--grad-master);
-            color: #ffffff;
-        }
-
-        .btn-card-action.secondary {
-            background: var(--soft-surface);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-        }
-
-        .btn-card-action:active {
-            transform: scale(0.95);
-        }
-
-        /* WALLET LAYOUT */
-        .wallet-layout {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 20px;
-        }
-
-        .card-wrapper {
-            perspective: 1000px;
-        }
-
-        .digital-card {
-            width: 100%;
-            height: 220px;
-            background: var(--grad-master);
-            border: 1px solid rgba(255, 255, 255, 0.35);
-            border-radius: 22px;
-            padding: 24px;
-            position: relative;
-            transform-style: preserve-3d;
-            box-shadow: var(--glow-shadow);
-            overflow: hidden;
-            transition: transform 0.15s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            color: #ffffff;
-        }
-
-        .digital-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -150%;
-            width: 55%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.32), transparent);
-            transform: skewX(-20deg);
-            animation: shine 5s infinite;
-            pointer-events: none;
-        }
-
-        @keyframes shine {
-            0%, 15% { left: -150%; }
-            25%, 100% { left: 200%; }
-        }
-
-        .chip {
-            width: 42px;
-            height: 30px;
-            background: linear-gradient(135deg, #fcd34d 0%, #d97706 100%);
-            border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-
-        .card-type {
-            font-weight: 800;
-            font-size: 0.76rem;
-            letter-spacing: 1.5px;
-            color: #ffffff;
-            background: rgba(0,0,0,0.28);
-            padding: 4px 10px;
-            border-radius: 8px;
-        }
-
-        .balance-label {
-            font-size: 0.74rem;
-            color: rgba(255,255,255,0.88);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            font-weight: 700;
-        }
-
-        .balance-amount {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 2.35rem;
-            font-weight: 800;
-            color: #ffffff;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-
-        .btn-refresh {
-            background: rgba(0,0,0,0.28);
-            border: 1px solid rgba(255,255,255,0.4);
-            padding: 7px 13px;
-            border-radius: 10px;
-            color: #ffffff;
-            font-weight: 700;
-            cursor: pointer;
-            font-size: 0.75rem;
-            font-family: inherit;
-        }
-
-        .topup-grid, .tools-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
-            margin-bottom: 18px;
-        }
-
-        .topup-btn, .tool-btn {
-            background: var(--panel-bg);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 13px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            min-width: 210px;
+            padding: 12px 14px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-btn);
+            background: var(--input-bg);
             color: var(--text-main);
             font-family: inherit;
-            box-shadow: var(--card-shadow);
-            transition: 0.2s;
+            font-weight: 700;
+            font-size: 0.88rem;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.04);
+            outline: none;
         }
 
-        .topup-btn {
-            flex-direction: column;
-            justify-content: center;
-            text-align: center;
-        }
-
-        .topup-btn:hover, .tool-btn:hover {
-            border-color: var(--border-bright);
-            background: var(--panel-hover);
-        }
-
-        /* FILTER PILLS */
-        .filter-pills {
+        /* =========================================================
+           🗂️ SISTEM TAB DI DALAM TAB (NESTED SUB-TABS)
+           ========================================================= */
+        .main-tabs-bar {
             display: flex;
             gap: 8px;
             overflow-x: auto;
@@ -939,111 +373,232 @@
             margin-bottom: 14px;
         }
 
-        .pill-btn {
+        .main-tab-pill {
             background: var(--panel-bg);
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            padding: 8px 14px;
-            border-radius: 20px;
-            font-size: 0.76rem;
-            font-weight: 700;
+            color: var(--text-main);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--shadow-btn);
+            padding: 10px 16px;
+            border-radius: var(--radius-btn);
+            font-weight: 800;
+            font-size: 0.82rem;
             white-space: nowrap;
             cursor: pointer;
             font-family: inherit;
-            box-shadow: var(--card-shadow);
-            transition: 0.2s;
+            transition: 0.15s;
         }
 
-        .pill-btn.active {
-            background: var(--grad-master);
-            color: #ffffff;
-            border-color: transparent;
-            box-shadow: var(--glow-shadow);
+        .main-tab-pill.active {
+            background: var(--primary-btn-bg);
+            color: var(--primary-btn-text);
+            transform: translate(-1px, -1px);
         }
 
-        /* LIVE TARGET PREVIEW BOX */
-        .preview-box {
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid var(--border-bright);
-            border-radius: 12px;
-            padding: 10px 12px;
-            margin-bottom: 14px;
+        /* SUB-TAB LEVEL 2 & LEVEL 3 (DI DALAM TAB) */
+        .sub-tabs-container {
+            background: var(--soft-surface);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-card);
+            padding: 10px;
+            margin-bottom: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .sub-tab-btn {
+            background: var(--panel-bg);
+            color: var(--text-main);
+            border: 2px solid var(--border-color);
+            padding: 7px 13px;
+            border-radius: 6px;
+            font-weight: 800;
+            font-size: 0.76rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.12s;
+        }
+
+        .sub-tab-btn.active {
+            background: var(--accent-yellow);
+            color: #111827;
+            box-shadow: 2px 2px 0px #111827;
+        }
+
+        /* =========================================================
+           📦 KARTU PRODUK (GAYA BRILLIANT DIGITAL + TOMBOL AKSI)
+           ========================================================= */
+        .product-list-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .brutal-card {
+            background: var(--panel-bg);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            border-radius: var(--radius-card);
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 14px;
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .brutal-card:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .brutal-card-row {
             display: flex;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
         }
 
-        .preview-img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid var(--accent-color);
+        .prod-info {
+            flex: 1;
+            min-width: 0;
         }
 
-        .preview-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .preview-name {
+        .prod-badge-mini {
+            display: inline-block;
+            font-size: 0.66rem;
             font-weight: 800;
-            font-size: 0.86rem;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--soft-surface);
             color: var(--text-main);
+            margin-bottom: 5px;
         }
 
-        .preview-stats {
-            font-size: 0.73rem;
-            color: var(--success);
+        .prod-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin: 0 0 4px 0;
+            color: var(--text-main);
+            line-height: 1.25;
+        }
+
+        .prod-desc {
+            font-size: 0.76rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin: 0;
+            line-height: 1.35;
+        }
+
+        /* KOTAK HARGA PINK MAGENTA PERSIS GAMBAR BRILLIANT DIGITAL */
+        .pink-price-box {
+            background: var(--price-bg);
+            color: var(--price-text);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 3px 3px 0px #111827;
+            padding: 8px 14px;
             font-family: 'JetBrains Mono', monospace;
+            font-weight: 800;
+            font-size: 0.92rem;
+            border-radius: 6px;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
-        /* FOMO TICKER */
-        .fomo-ticker {
-            position: fixed;
-            bottom: 78px;
-            left: 16px;
-            background: var(--bg-elevated);
+        .card-footer-btns {
+            display: flex;
+            gap: 8px;
+            border-top: 1.5px dashed rgba(100, 116, 139, 0.35);
+            padding-top: 12px;
+        }
+
+        .btn-brutal {
+            flex: 1;
+            padding: 10px 12px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-btn);
+            box-shadow: var(--shadow-btn);
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: transform 0.1s;
+            text-decoration: none;
+        }
+
+        .btn-brutal:active {
+            transform: translate(2px, 2px);
+            box-shadow: 1px 1px 0px var(--border-color);
+        }
+
+        .btn-brutal.primary {
+            background: var(--primary-btn-bg);
+            color: var(--primary-btn-text);
+        }
+
+        .btn-brutal.yellow {
+            background: var(--accent-yellow);
+            color: #111827;
+        }
+
+        .btn-brutal.secondary {
+            background: var(--soft-surface);
             color: var(--text-main);
-            border: 1px solid var(--border-bright);
-            border-radius: 14px;
-            padding: 10px 14px;
+        }
+
+        /* =========================================================
+           🪟 PANEL DETAIL DALAM TAB (IN-PAGE DRAWER / SUB-VIEW)
+           ========================================================= */
+        .inpage-subview {
+            background: var(--panel-bg);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: var(--shadow-card);
+            border-radius: var(--radius-card);
+            padding: 20px;
+            margin-bottom: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .subview-topbar {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
             gap: 10px;
-            box-shadow: var(--card-shadow);
-            z-index: 90;
-            font-size: 0.75rem;
-            transform: translateY(120px);
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            border-bottom: var(--border-width) solid var(--border-color);
+            padding-bottom: 14px;
+            margin-bottom: 16px;
         }
 
-        .fomo-ticker.show {
-            transform: translateY(0);
-            opacity: 1;
-        }
-
-        .fomo-ticker span {
-            color: var(--accent-color);
-            font-weight: 800;
-        }
-
-        /* MODALS & TOAST */
+        /* =========================================================
+           🧾 MODAL CHECKOUT & INVOICE MANDIRI DI DALAM WEB
+           ========================================================= */
         .modal-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(8px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            background: rgba(0, 0, 0, 0.72);
+            backdrop-filter: blur(5px);
             z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
             opacity: 0;
             pointer-events: none;
-            transition: 0.25s;
-            padding: 16px;
+            transition: 0.2s;
         }
 
         .modal-overlay.active {
@@ -1051,1686 +606,1117 @@
             pointer-events: auto;
         }
 
-        .modal-box {
-            background: var(--modal-bg);
+        .modal-card {
+            background: var(--panel-bg);
             color: var(--text-main);
-            border: 1px solid var(--border-bright);
-            border-radius: 22px;
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 8px 8px 0px #111827;
+            border-radius: var(--radius-card);
             width: 100%;
-            max-width: 420px;
-            max-height: 86vh;
+            max-width: 480px;
+            max-height: 90vh;
             overflow-y: auto;
-            padding: 24px;
-            transform: translateY(20px) scale(0.96);
-            transition: 0.25s;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.55);
+            padding: 22px;
         }
 
-        .modal-overlay.active .modal-box {
-            transform: translateY(0) scale(1);
-        }
-
-        .modal-title {
-            font-weight: 800;
-            color: var(--text-main);
-            font-size: 1.18rem;
-            margin: 0 0 6px 0;
-            text-align: center;
-        }
-
-        .modal-desc {
-            color: var(--text-muted);
-            font-size: 0.81rem;
-            margin-bottom: 18px;
-            text-align: center;
-            line-height: 1.4;
-        }
-
-        .input-group {
+        .form-group {
             margin-bottom: 14px;
         }
 
-        .input-group label {
+        .form-group label {
             display: block;
-            font-size: 0.74rem;
-            color: var(--text-muted);
-            margin-bottom: 6px;
-            font-weight: 700;
+            font-size: 0.75rem;
+            font-weight: 800;
             text-transform: uppercase;
+            margin-bottom: 6px;
         }
 
-        .input-group input,
-        .input-group textarea,
-        .input-group select {
+        .form-control {
             width: 100%;
+            padding: 12px 14px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-btn);
             background: var(--input-bg);
-            border: 1px solid var(--border);
             color: var(--text-main);
-            padding: 13px 14px;
-            border-radius: 12px;
             font-family: inherit;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.9rem;
             outline: none;
         }
 
-        .input-group textarea {
-            min-height: 100px;
-            resize: vertical;
-        }
-
-        .price-display {
-            background: rgba(139, 92, 246, 0.10);
-            border: 1px solid var(--border-bright);
-            padding: 13px 16px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 18px;
-        }
-
-        .price-value {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 1.28rem;
-            font-weight: 800;
-            color: var(--success);
-        }
-
-        .modal-actions {
-            display: flex;
+        .pay-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
             gap: 10px;
+            margin-bottom: 16px;
         }
 
-        .btn-modal {
-            flex: 1;
-            padding: 13px;
-            border-radius: 12px;
-            font-weight: 800;
-            font-size: 0.88rem;
+        .pay-option {
+            padding: 12px;
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--radius-btn);
+            background: var(--soft-surface);
             cursor: pointer;
-            border: none;
-            font-family: inherit;
+            text-align: center;
+            font-weight: 800;
+            font-size: 0.8rem;
+            transition: 0.12s;
         }
 
-        .btn-cancel {
-            background: var(--soft-surface);
-            color: var(--text-main);
-            border: 1px solid var(--border);
+        .pay-option.selected {
+            background: var(--accent-yellow);
+            color: #111827;
+            box-shadow: 3px 3px 0px #111827;
         }
 
-        .btn-confirm {
-            background: var(--grad-master);
-            color: #ffffff;
-            box-shadow: var(--glow-shadow);
-        }
-
-        .cart-item-row {
-            background: var(--soft-surface);
-            border: 1px solid var(--border);
-            padding: 12px 14px;
-            border-radius: 12px;
-            margin-bottom: 10px;
+        /* BOTTOM NAV MOBILE */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 68px;
+            background: var(--topbar-bg);
+            border-top: var(--border-width) solid var(--border-color);
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around;
             align-items: center;
-            gap: 10px;
+            z-index: 50;
+            padding: 0 6px;
         }
 
-        .toast-ui {
+        .bnav-btn {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: inherit;
+            font-weight: 800;
+            font-size: 0.68rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            cursor: pointer;
+            padding: 6px 2px;
+        }
+
+        .bnav-btn.active {
+            color: var(--text-main);
+        }
+
+        .bnav-btn.active .bnav-icon {
+            background: var(--accent-yellow);
+            color: #111827;
+            border: 1.5px solid #111827;
+            padding: 2px 10px;
+            border-radius: 14px;
+            box-shadow: 2px 2px 0px #111827;
+        }
+
+        .toast-pop {
             position: fixed;
             top: 18px;
             left: 50%;
-            transform: translateX(-50%) translateY(-100px);
-            background: var(--text-main);
-            color: var(--bg-base);
-            padding: 12px 22px;
-            border-radius: 30px;
+            transform: translateX(-50%) translateY(-120px);
+            background: var(--accent-yellow);
+            color: #111827;
+            border: 2.5px solid #111827;
+            box-shadow: 4px 4px 0px #111827;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 900;
             font-size: 0.84rem;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.35);
             z-index: 9999;
-            opacity: 0;
-            transition: 0.35s;
+            transition: 0.3s;
         }
 
-        .toast-ui.show {
+        .toast-pop.show {
             transform: translateX(-50%) translateY(0);
-            opacity: 1;
         }
 
-        /* =========================================================
-           🖥️ AUTOMATIC RESPONSIVE BREAKPOINTS (TABLET & DESKTOP)
-           ========================================================= */
-        /* Tablet (768px - 1099px): Icon Sidebar Rail + 2-Column Grid */
-        @media (min-width: 768px) and (max-width: 1099px) {
-            .app-shell {
-                flex-direction: row;
-            }
-            .app-sidebar {
-                display: flex;
-                width: 84px;
-            }
-            .sidebar-brand .brand-text,
-            .side-link .nav-tx,
-            .sidebar-footer .telemetry-text {
-                display: none;
-            }
-            .sidebar-brand,
-            .side-link,
-            .telemetry-pill {
-                justify-content: center;
-            }
-            .bottom-nav {
-                display: none;
-            }
-            .content-scroll {
-                padding: 24px 24px 40px 24px;
-            }
-            .bento-grid {
+        @media (min-width: 768px) {
+            .product-list-grid {
                 grid-template-columns: repeat(2, 1fr);
-                gap: 14px;
             }
-            .wallet-layout {
-                grid-template-columns: 1fr 1.15fr;
-            }
-            .fomo-ticker {
-                bottom: 24px;
-                left: 104px;
+            .poster-title {
+                font-size: 2.4rem;
             }
         }
 
-        /* Desktop / Laptop (>= 1100px): Full Executive Sidebar + 3-Column Grid */
-        @media (min-width: 1100px) {
-            .app-shell {
-                flex-direction: row;
-            }
+        @media (min-width: 1080px) {
             .app-sidebar {
                 display: flex;
-                width: 260px;
+            }
+            .app-main {
+                margin-left: 270px;
+                padding-bottom: 40px;
             }
             .bottom-nav {
                 display: none;
             }
-            .content-scroll {
-                padding: 28px 34px 50px 34px;
-            }
-            .bento-grid {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 16px;
-            }
-            .wallet-layout {
-                grid-template-columns: 1fr 1.2fr;
-            }
-            .fomo-ticker {
-                bottom: 24px;
-                left: 280px;
+            .product-list-grid {
+                grid-template-columns: repeat(2, 1fr);
             }
         }
     </style>
 </head>
 <body>
-    <canvas id="canvas-bg"></canvas>
 
-    <!-- TOAST & FOMO TICKER -->
-    <div class="toast-ui" id="sysToast">
-        <span>✅</span> <span id="toastMsg">Action Successful!</span>
-    </div>
-
-    <div class="fomo-ticker" id="fomoTicker">
-        <div id="fomoIcon" style="font-size:1.25rem;">🔥</div>
-        <div id="fomoText">Client <span>@abi***</span> just purchased</div>
-    </div>
+    <div class="toast-pop" id="toastPop">✅ Berhasil ditambahkan!</div>
 
     <div class="app-shell">
-        <!-- 🖥️ SIDEBAR NAVIGATION (OTOMATIS MUNCUL DI TABLET & PC/LAPTOP) -->
+        <!-- 🖥️ SIDEBAR DESKTOP -->
         <aside class="app-sidebar">
-            <div class="sidebar-brand">
-                <div class="brand-orb">🐝</div>
-                <div class="brand-text">
-                    <h2>XianBee-Tech</h2>
-                    <span>ENTERPRISE HUB</span>
-                </div>
+            <div class="brand-box" onclick="switchTab('best')">
+                <span>🐝</span>
+                <span>XIANBEE DIGITAL</span>
             </div>
 
             <nav class="sidebar-nav">
-                <button class="side-link active" data-nav="home" onclick="switchMainTab('home')">
-                    <span class="nav-ic">🏠</span>
-                    <span class="nav-tx">Dashboard Home</span>
-                </button>
-                <button class="side-link" data-nav="github" onclick="switchMainTab('github')">
-                    <span class="nav-ic">🐙</span>
-                    <span class="nav-tx">GitHub Enterprise</span>
-                </button>
-                <button class="side-link" data-nav="smm" onclick="switchMainTab('smm')">
-                    <span class="nav-ic">🚀</span>
-                    <span class="nav-tx">SMM & Marketing</span>
-                </button>
-                <button class="side-link" data-nav="accounts" onclick="switchMainTab('accounts')">
-                    <span class="nav-ic">🔑</span>
-                    <span class="nav-tx">Aged Social & Apps</span>
-                </button>
-                <button class="side-link" data-nav="wallet" onclick="switchMainTab('wallet')">
-                    <span class="nav-ic">💳</span>
-                    <span class="nav-tx">Wallet & Top-Up</span>
-                </button>
-                <button class="side-link" data-nav="admin" onclick="openAdminPanel()">
-                    <span class="nav-ic">👑</span>
-                    <span class="nav-tx" style="color:var(--danger);">Command Center</span>
-                </button>
+                <button class="side-tab-btn active" data-tab="best" onclick="switchTab('best')">🔥 Produk Terlaris</button>
+                <button class="side-tab-btn" data-tab="github" onclick="switchTab('github')">🐙 GitHub Enterprise</button>
+                <button class="side-tab-btn" data-tab="pro" onclick="switchTab('pro')">👑 Aplikasi Pro & AI</button>
+                <button class="side-tab-btn" data-tab="social" onclick="switchTab('social')">📱 Aged Social & Exchange</button>
+                <button class="side-tab-btn" data-tab="smm" onclick="switchTab('smm')">🚀 SMM & Traffic Boost</button>
+                <button class="side-tab-btn" data-tab="orders" onclick="switchTab('orders')">🧾 Cek Pesanan & Tracker</button>
             </nav>
 
-            <div class="sidebar-footer">
-                <div class="telemetry-pill">
-                    <span class="pulse-dot"></span>
-                    <span class="telemetry-text">AUTO-PILOT ONLINE</span>
-                </div>
+            <div style="border-top:2px solid var(--border-color);padding-top:14px;font-size:0.75rem;font-weight:800;">
+                <div style="margin-bottom:6px;">🟢 STATUS: STOK READY</div>
+                <div style="color:var(--text-muted);">Order langsung di Website atau via Bot @XianBeeTechStore_Bot</div>
             </div>
         </aside>
 
-        <!-- 📱 MAIN CONTENT AREA -->
+        <!-- 📱 MAIN AREA -->
         <div class="app-main">
-            <!-- TOP HEADER BAR -->
             <header class="topbar">
-                <div class="topbar-left">
-                    <button class="btn-icon-top" id="globalBackBtn" style="display:none;" onclick="navigateBack()">
-                        ◀
-                    </button>
-                    <div class="topbar-title-wrap">
-                        <h1 class="topbar-title" id="topbarTitle">XIANBEE ENTERPRISE</h1>
-                        <div class="topbar-sub">
-                            <span class="pulse-dot" style="width:6px;height:6px;"></span>
-                            <span>100% Auto-Pilot System</span>
-                        </div>
-                    </div>
+                <div class="brand-box" onclick="switchTab('best')">
+                    <span>🐝</span>
+                    <span>XIANBEE STORE</span>
                 </div>
 
-                <div class="topbar-right">
-                    <!-- TOMBOL SWITCHER 2 TEMA (NEBULA DARK / PLATINUM LIGHT) -->
-                    <button class="theme-toggle-btn" id="themeToggleBtn" onclick="toggleTheme()">
-                        <span id="themeIcon">☀️</span>
-                        <span id="themeLabel">Light</span>
+                <div class="topbar-actions">
+                    <!-- TOMBOL GANTI MATA UANG (IDR ⇄ USDT) -->
+                    <button class="ctrl-btn" id="currBtn" onclick="toggleCurrency()">
+                        <span>💱</span>
+                        <span id="currLabel">IDR (Rp)</span>
                     </button>
 
-                    <div class="wallet-pill" onclick="switchMainTab('wallet')">
-                        <span>💰</span>
-                        <span>$<span id="topBalance">0.00</span></span>
-                    </div>
+                    <!-- TOMBOL GANTI TEMA (BRUTAL / NEBULA / PLATINUM) -->
+                    <button class="ctrl-btn" onclick="cycleTheme()">
+                        <span id="themeIcon">🎨</span>
+                        <span id="themeText">Brutal</span>
+                    </button>
 
-                    <button class="cart-top-btn" onclick="openCartModal()">
-                        🛒
-                        <div class="cart-badge" id="cartBadge">0</div>
+                    <!-- TOMBOL KERANJANG -->
+                    <button class="ctrl-btn cart-btn" onclick="openCartModal()">
+                        <span>🛒</span>
+                        <span class="cart-count" id="cartCount">0</span>
                     </button>
                 </div>
             </header>
 
-            <!-- SCROLLABLE VIEWPORT -->
-            <main class="content-scroll" id="mainScroll">
-                <!-- 1. HOME VIEW -->
-                <section class="view-section active" id="view-home">
-                    <div class="hero-banner">
-                        <div>
-                            <div class="hero-badge">⚡ ENTERPRISE DIGITAL INFRASTRUCTURE</div>
-                            <h2 class="hero-title">The Ultimate Digital Asset & GitHub Ecosystem</h2>
-                            <p class="hero-sub">Aged GitHub Accounts (2011–2026), Repository Metric Automation, Social Media Accounts, Pro Apps, & Instant Crypto Top-Up.</p>
-                        </div>
-                        <div class="hero-actions">
-                            <button class="btn-hero" onclick="switchMainTab('github')">🐙 Explore GitHub Vault</button>
-                            <button class="btn-hero secondary" onclick="switchMainTab('wallet')">💳 Deposit Balance</button>
-                            <button class="btn-hero secondary" onclick="openCheckStatusModal()">🛡️ Shadowban Scanner</button>
-                        </div>
-                    </div>
+            <div class="container">
+                <!-- BANNER UTAMA PERSIS GAYA BRILLIANT DIGITAL -->
+                <div class="poster-header">
+                    <div class="poster-tag">XIANBEE DIGITAL STORE</div>
+                    <h1 class="poster-title" id="mainBannerTitle">
+                        PRODUK <span class="highlight-blue">TERLARIS</span>
+                    </h1>
+                    <p class="poster-sub" id="mainBannerSub">
+                        Paling dicari • Stok ready • Pilih & Checkout langsung di Website tanpa ribet!
+                    </p>
 
-                    <div class="section-header">
-                        <div class="menu-category">CORE DEPARTMENTS</div>
-                    </div>
-
-                    <div class="bento-grid">
-                        <button class="btn-master" onclick="switchMainTab('github')">
-                            <div class="btn-content">
-                                <div class="btn-icon">🐙</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">GitHub Enterprise Hub</span>
-                                    <span class="btn-desc">Aged 2011–2026, Arctic, Stars, Forks, Followers</span>
-                                </div>
-                            </div>
-                            <span class="arrow-icon" style="color:#fff;">▶</span>
-                        </button>
-
-                        <button class="menu-btn" onclick="switchMainTab('smm')">
-                            <div class="btn-content">
-                                <div class="btn-icon">🚀</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">Digital Marketing & SMM</span>
-                                    <span class="btn-desc">Social Boost, Web Traffic, Audio & Video</span>
-                                </div>
-                            </div>
-                            <span class="arrow-icon">▶</span>
-                        </button>
-
-                        <button class="menu-btn" onclick="switchMainTab('accounts')">
-                            <div class="btn-content">
-                                <div class="btn-icon">🔑</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">Aged Socials & Pro Apps</span>
-                                    <span class="btn-desc">X, IG, TikTok, Discord, Canva, CapCut, ChatGPT</span>
-                                </div>
-                            </div>
-                            <span class="arrow-icon">▶</span>
-                        </button>
-
-                        <button class="menu-btn" onclick="switchMainTab('wallet')">
-                            <div class="btn-content">
-                                <div class="btn-icon">💳</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">My Wallet & Tools</span>
-                                    <span class="btn-desc">Instant OxaPay Crypto Deposit, Status & Referral</span>
-                                </div>
-                            </div>
-                            <span class="arrow-icon">▶</span>
-                        </button>
-
-                        <button class="menu-btn" onclick="contactAdminDirect()">
-                            <div class="btn-content">
-                                <div class="btn-icon">💬</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title">Live Executive Support</span>
-                                    <span class="btn-desc">Custom Orders, B2B API & Helpdesk</span>
-                                </div>
-                            </div>
-                            <span class="arrow-icon">▶</span>
-                        </button>
-
-                        <button class="menu-btn" style="border-color:rgba(239,68,68,0.45);" onclick="openAdminPanel()">
-                            <div class="btn-content">
-                                <div class="btn-icon" style="background:var(--grad-danger);">👑</div>
-                                <div class="btn-text-wrapper">
-                                    <span class="btn-title" style="color:var(--danger);">Executive Command Center</span>
-                                    <span class="btn-desc">Admin Inventory, Engine Deploy & Analytics</span>
-                                </div>
-                            </div>
-                            <span class="arrow-icon" style="color:var(--danger);">🔒</span>
+                    <div class="search-wrap">
+                        <input type="text" class="search-input" id="globalSearch" placeholder="🔍 Cari akun GitHub 2012, Canva Pro, Gemini, Followers, CapCut..." oninput="handleGlobalSearch(this.value)">
+                        <button class="btn-brutal yellow" style="flex:0 0 auto;padding:10px 16px;" onclick="switchTab('orders')">
+                            📡 Track Order / Cek Pesanan
                         </button>
                     </div>
-                </section>
+                </div>
 
-                <!-- 2. GITHUB ENTERPRISE HUB VIEW -->
-                <section class="view-section" id="view-github">
-                    <div class="filter-pills">
-                        <button class="pill-btn active" id="ghTabAccBtn" onclick="toggleGithubSection('acc')">🛒 Aged Accounts (2011–2026 & Badges)</button>
-                        <button class="pill-btn" id="ghTabBoostBtn" onclick="toggleGithubSection('boost')">🚀 Metric Boost (Followers / Stars / Forks)</button>
-                        <button class="pill-btn" onclick="openCheckStatusModal()">🛡️ Shadowban Scanner</button>
+                <!-- BARIS TAB UTAMA (LEVEL 1) -->
+                <div class="main-tabs-bar">
+                    <button class="main-tab-pill active" data-tab="best" onclick="switchTab('best')">🔥 Produk Terlaris</button>
+                    <button class="main-tab-pill" data-tab="github" onclick="switchTab('github')">🐙 GitHub Vault (2011–2026)</button>
+                    <button class="main-tab-pill" data-tab="pro" onclick="switchTab('pro')">👑 Pro Apps & AI</button>
+                    <button class="main-tab-pill" data-tab="social" onclick="switchTab('social')">📱 Aged Social & Crypto</button>
+                    <button class="main-tab-pill" data-tab="smm" onclick="switchTab('smm')">🚀 SMM & GitHub Boost</button>
+                    <button class="main-tab-pill" data-tab="orders" onclick="switchTab('orders')">🧾 Pesanan & Tracker</button>
+                </div>
+
+                <!-- BARIS SUB-TAB DI DALAM TAB (LEVEL 2 — DINAMIS SESUAI TAB UTAMA) -->
+                <div class="sub-tabs-container" id="subTabsBar"></div>
+
+                <!-- AREA SUB-VIEW LEVEL 3 (MUNCUL SAAT KLIK TAHUN GITHUB ATAU PAKET TERTENTU DI DALAM TAB) -->
+                <div id="nestedSubView" style="display:none;"></div>
+
+                <!-- GRID DAFTAR PRODUK -->
+                <div class="product-list-grid" id="mainProductGrid"></div>
+
+                <!-- FOOTER ALA POSTER BRILLIANT DIGITAL -->
+                <div class="poster-header" style="margin-top:28px;text-align:center;">
+                    <button class="btn-brutal primary" style="width:100%;max-width:340px;font-size:1rem;padding:14px 20px;margin-bottom:12px;" onclick="openCartModal()">
+                        🛒 ORDER SEKARANG (CHECKOUT WEB)
+                    </button>
+                    <div style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:900;">
+                        xianbee-tech.store
                     </div>
-
-                    <div id="ghAccountsSection">
-                        <div class="section-header">
-                            <div class="menu-category">SPECIAL EDITION & BADGE ACCOUNTS</div>
-                            <button class="pill-btn active" onclick="sendActionToBot('VIEW_CATALOG', { year: 'ALL' })">📦 View ALL Stock in Bot</button>
-                        </div>
-                        <div class="bento-grid" id="ghSpecialGrid"></div>
-
-                        <div class="section-header">
-                            <div class="menu-category">AGED GITHUB ACCOUNTS BY YEAR (2011 – 2026)</div>
-                        </div>
-                        <div class="bento-grid" id="ghYearsGrid"></div>
+                    <div style="font-size:0.82rem;font-weight:700;color:var(--text-muted);margin-top:4px;">
+                        Transaksi Otomatis di Website atau via Bot <b>@XianBeeTechStore_Bot</b>
                     </div>
+                </div>
+            </div>
+        </div>
 
-                    <div id="ghBoostSection" style="display:none;">
-                        <div class="section-header">
-                            <div class="menu-category">AUTOMATED GITHUB METRIC INJECTION</div>
-                        </div>
-                        <div class="bento-grid" id="ghBoostGrid"></div>
-                    </div>
-                </section>
+        <!-- 📱 BOTTOM NAVIGATION (MOBILE) -->
+        <nav class="bottom-nav">
+            <button class="bnav-btn active" data-tab="best" onclick="switchTab('best')">
+                <span class="bnav-icon">🔥</span>
+                <span>Terlaris</span>
+            </button>
+            <button class="bnav-btn" data-tab="github" onclick="switchTab('github')">
+                <span class="bnav-icon">🐙</span>
+                <span>GitHub</span>
+            </button>
+            <button class="bnav-btn" data-tab="pro" onclick="switchTab('pro')">
+                <span class="bnav-icon">👑</span>
+                <span>Pro Apps</span>
+            </button>
+            <button class="bnav-btn" data-tab="smm" onclick="switchTab('smm')">
+                <span class="bnav-icon">🚀</span>
+                <span>Boost</span>
+            </button>
+            <button class="bnav-btn" data-tab="orders" onclick="switchTab('orders')">
+                <span class="bnav-icon">🧾</span>
+                <span>Pesanan</span>
+            </button>
+        </nav>
+    </div>
 
-                <!-- 3. SMM & DIGITAL MARKETING VIEW -->
-                <section class="view-section" id="view-smm">
-                    <div class="filter-pills" id="smmCategoryPills"></div>
-                    <div class="bento-grid" id="smmServicesGrid"></div>
-                </section>
+    <!-- =========================================================
+         🪟 MODAL 1: KONFIGURASI ORDER LANGSUNG DI WEB
+         ========================================================= -->
+    <div class="modal-overlay" id="itemOrderModal">
+        <div class="modal-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span class="poster-tag" style="margin:0;" id="modItemBadge">INSTANT ORDER</span>
+                <button class="ctrl-btn" onclick="closeModal('itemOrderModal')">✕</button>
+            </div>
+            <h2 style="margin:0 0 6px 0;font-size:1.25rem;font-weight:900;" id="modItemTitle">Nama Produk</h2>
+            <p style="margin:0 0 16px 0;font-size:0.8rem;color:var(--text-muted);font-weight:600;" id="modItemDesc"></p>
 
-                <!-- 4. AGED SOCIAL ACCOUNTS & PRO APPS VIEW -->
-                <section class="view-section" id="view-accounts">
-                    <div class="section-header">
-                        <div class="menu-category">👑 PRO APPS & AI SUBSCRIPTIONS</div>
-                    </div>
-                    <div class="bento-grid" id="proAppsGrid"></div>
+            <!-- PILIHAN VARIAN / DURASI / TRACK SPEED DI DALAM MODAL -->
+            <div class="form-group" id="modVariantGroup" style="display:none;">
+                <label>Pilih Varian / Kecepatan:</label>
+                <div class="sub-tabs-container" id="modVariantPills" style="margin-bottom:0;"></div>
+            </div>
 
-                    <div class="section-header">
-                        <div class="menu-category">🏦 CRYPTO EXCHANGE ACCOUNTS (AGED / KYC)</div>
-                    </div>
-                    <div class="bento-grid" id="exchangeAccGrid"></div>
+            <div class="form-group" id="modTargetGroup">
+                <label id="modTargetLabel">Masukkan Email / Username / Link Target:</label>
+                <input type="text" class="form-control" id="modTargetInput" placeholder="Contoh: email@gmail.com atau https://github.com/username">
+                <div id="modGithubPreview" style="display:none;margin-top:8px;padding:10px;border:2px solid var(--border-color);border-radius:8px;background:var(--soft-surface);font-size:0.78rem;font-weight:700;"></div>
+            </div>
 
-                    <div class="section-header">
-                        <div class="menu-category">📱 AGED SOCIAL MEDIA & EMAIL ACCOUNTS</div>
-                    </div>
-                    <div class="filter-pills" id="socmedPlatPills"></div>
-                    <div class="bento-grid" id="socmedAccGrid"></div>
-                </section>
+            <div class="form-group" id="modQtyGroup" style="display:none;">
+                <label>Jumlah Unit (Minimal 10):</label>
+                <input type="number" class="form-control" id="modQtyInput" value="100" min="10" oninput="recalcModalPrice()">
+            </div>
 
-                <!-- 5. DYNAMIC SUB-MENU / PACKAGE VIEW -->
-                <section class="view-section" id="view-detail">
-                    <div class="section-header">
-                        <div class="menu-category" id="detailCategoryTitle">SELECT PACKAGE</div>
-                    </div>
-                    <div id="service-detail-content"></div>
-                </section>
+            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--soft-surface);border:var(--border-width) solid var(--border-color);padding:12px 14px;border-radius:8px;margin-bottom:16px;">
+                <span style="font-weight:800;font-size:0.85rem;">Total Harga:</span>
+                <span class="pink-price-box" id="modTotalPrice">Rp 0</span>
+            </div>
 
-                <!-- 6. WALLET & PROFILE VIEW -->
-                <section class="view-section" id="view-wallet">
-                    <div class="wallet-layout">
-                        <div>
-                            <div class="card-wrapper" id="cardWrapper">
-                                <div class="digital-card" id="digitalCard">
-                                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                                        <div class="chip"></div>
-                                        <div class="card-type">VIP MEMBER</div>
-                                    </div>
-                                    <div style="display:flex;justify-content:space-between;align-items:flex-end;">
-                                        <div>
-                                            <div class="balance-label">Available Balance</div>
-                                            <div class="balance-amount">$<span id="counter">0.00</span></div>
-                                        </div>
-                                        <button class="btn-refresh" onclick="requestBalanceSync()">🔄 Sync Bot</button>
-                                    </div>
-                                    <div style="display:flex;justify-content:space-between;align-items:center;">
-                                        <div id="displayUserId" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:700;">XB-USER</div>
-                                        <span style="font-size:0.72rem;color:rgba(255,255,255,0.85);font-weight:700;">XIANBEE VAULT</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="section-header">
-                                <div class="menu-category">CLIENT UTILITIES & SUPPORT</div>
-                            </div>
-                            <div class="tools-grid">
-                                <button class="tool-btn" onclick="openCheckStatusModal()">
-                                    <span>🔍</span>
-                                    <span style="font-size:0.8rem;font-weight:700;">Shadowban Scanner</span>
-                                </button>
-                                <button class="tool-btn" onclick="sendActionToBot('REFERRAL')">
-                                    <span>🤝</span>
-                                    <span style="font-size:0.8rem;font-weight:700;">5% Referral Link</span>
-                                </button>
-                                <button class="tool-btn" onclick="sendActionToBot('SYS_STATUS')">
-                                    <span>📈</span>
-                                    <span style="font-size:0.8rem;font-weight:700;">Infra Status</span>
-                                </button>
-                                <button class="tool-btn" onclick="sendActionToBot('FAQ')">
-                                    <span>📜</span>
-                                    <span style="font-size:0.8rem;font-weight:700;">FAQ & Warranty</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="section-header" style="margin-top:0;">
-                                <div class="menu-category">INSTANT BALANCE DEPOSIT (USDT)</div>
-                            </div>
-                            <div class="topup-grid">
-                                <div class="topup-btn" onclick="openTopupSelection(5)">
-                                    <div style="font-size:1.5rem;">💵</div>
-                                    <div style="font-weight:800;font-size:0.9rem;">$5 USDT</div>
-                                    <div style="font-size:0.7rem;color:var(--text-muted);">Starter Pack</div>
-                                </div>
-                                <div class="topup-btn" onclick="openTopupSelection(25)">
-                                    <div style="font-size:1.5rem;">💸</div>
-                                    <div style="font-weight:800;font-size:0.9rem;">$25 USDT</div>
-                                    <div style="font-size:0.7rem;color:var(--text-muted);">Standard Pack</div>
-                                </div>
-                                <div class="topup-btn" onclick="openTopupSelection(50)">
-                                    <div style="font-size:1.5rem;">💰</div>
-                                    <div style="font-weight:800;font-size:0.9rem;">$50 USDT</div>
-                                    <div style="font-size:0.7rem;color:var(--success);font-weight:700;">+5% Bonus!</div>
-                                </div>
-                                <div class="topup-btn" onclick="openTopupSelection(100)">
-                                    <div style="font-size:1.5rem;">💎</div>
-                                    <div style="font-weight:800;font-size:0.9rem;">$100 USDT</div>
-                                    <div style="font-size:0.7rem;color:var(--success);font-weight:700;">+10% Bonus!</div>
-                                </div>
-                                <div class="topup-btn" style="grid-column: 1 / -1;" onclick="openCustomTopup()">
-                                    <div style="font-size:0.9rem;font-weight:800;">✍️ Enter Custom Deposit Amount (Min $5)</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 7. ADMIN COMMAND CENTER VIEW -->
-                <section class="view-section" id="view-admin">
-                    <div class="wallet-layout" style="margin-bottom:22px;">
-                        <div style="background:var(--panel-bg);border:1px solid var(--border);border-radius:18px;padding:18px;box-shadow:var(--card-shadow);">
-                            <div class="menu-category" style="margin-bottom:12px;">📊 ENTERPRISE PERFORMANCE</div>
-                            <canvas id="revenueChart" height="200"></canvas>
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:12px;justify-content:center;">
-                            <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.3);padding:18px;border-radius:16px;">
-                                <div style="font-size:0.75rem;color:var(--text-muted);font-weight:800;">CLOUD AUTOMATION NODES</div>
-                                <div style="font-size:1.5rem;color:var(--success);font-family:'JetBrains Mono';font-weight:800;margin-top:4px;">10 ENGINES READY</div>
-                            </div>
-                            <div style="background:rgba(139,92,246,0.1);border:1px solid rgba(139,92,246,0.3);padding:18px;border-radius:16px;">
-                                <div style="font-size:0.75rem;color:var(--text-muted);font-weight:800;">GSHEET & GITHUB VAULT SYNC</div>
-                                <div style="font-size:1.25rem;color:var(--accent-color);font-family:'JetBrains Mono';font-weight:800;margin-top:4px;">60s AUTO-DAEMON ACTIVE</div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="section-header">
-                        <div class="menu-category" style="color:var(--danger);">⚡ EXECUTIVE BOT COMMANDS</div>
-                    </div>
-                    <div class="bento-grid" id="admin-content"></div>
-                </section>
-            </main>
-
-            <!-- 📱 MOBILE BOTTOM NAVIGATION -->
-            <nav class="bottom-nav">
-                <button class="bnav-item active" data-nav="home" onclick="switchMainTab('home')">
-                    <span class="b-ic">🏠</span>
-                    <span class="b-tx">Home</span>
-                </button>
-                <button class="bnav-item" data-nav="github" onclick="switchMainTab('github')">
-                    <span class="b-ic">🐙</span>
-                    <span class="b-tx">GitHub</span>
-                </button>
-                <button class="bnav-item" data-nav="smm" onclick="switchMainTab('smm')">
-                    <span class="b-ic">🚀</span>
-                    <span class="b-tx">SMM Boost</span>
-                </button>
-                <button class="bnav-item" data-nav="accounts" onclick="switchMainTab('accounts')">
-                    <span class="b-ic">🔑</span>
-                    <span class="b-tx">Pro & Accs</span>
-                </button>
-                <button class="bnav-item" data-nav="wallet" onclick="switchMainTab('wallet')">
-                    <span class="b-ic">💳</span>
-                    <span class="b-tx">Wallet</span>
-                </button>
-            </nav>
+            <div style="display:flex;gap:10px;">
+                <button class="btn-brutal secondary" onclick="addModalItemToCart()">🛒 +Keranjang</button>
+                <button class="btn-brutal primary" onclick="buyNowDirect()">⚡ Beli Sekarang</button>
+            </div>
         </div>
     </div>
 
     <!-- =========================================================
-         🪟 MODALS (ORDER, CART, TOPUP, SCANNER, ADMIN)
+         🪟 MODAL 2: KERANJANG & CHECKOUT PEMBAYARAN MANDIRI DI WEB
          ========================================================= -->
-    <!-- ORDER SERVICE MODAL -->
-    <div class="modal-overlay" id="orderModal">
-        <div class="modal-box">
-            <h2 class="modal-title" id="orderTitle">Order Details</h2>
-            <p class="modal-desc">Enter your target Username or URL below.</p>
-
-            <div class="input-group">
-                <label id="orderLabel">Target URL / Username</label>
-                <input type="text" id="orderTarget" placeholder="e.g. owner/repo or username">
+    <div class="modal-overlay" id="cartCheckoutModal">
+        <div class="modal-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span class="poster-tag" style="margin:0;">🛒 KERANJANG & CHECKOUT WEB</span>
+                <button class="ctrl-btn" onclick="closeModal('cartCheckoutModal')">✕</button>
             </div>
 
-            <div id="targetPreview" class="preview-box" style="display:none;"></div>
+            <div id="cartListContainer" style="max-height:210px;overflow-y:auto;margin-bottom:14px;"></div>
 
-            <div class="input-group" style="display:none;" id="qtyGroup">
-                <label>Custom Quantity (Min 10)</label>
-                <input type="number" id="orderQty" value="100" min="10" oninput="calcTotal()">
+            <div class="form-group">
+                <label>Username Telegram / WhatsApp Anda (Untuk Konfirmasi & Garansi):</label>
+                <input type="text" class="form-control" id="buyerContactInput" placeholder="Contoh: @username atau 08123456789">
             </div>
 
-            <div class="price-display">
-                <span style="font-size:0.85rem;font-weight:700;">Total Cost:</span>
-                <span class="price-value" id="orderTotal">$0.00</span>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('orderModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" onclick="submitOrder()">🚀 Execute Order</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SHADOWBAN SCANNER MODAL -->
-    <div class="modal-overlay" id="checkStatusModal">
-        <div class="modal-box">
-            <h2 class="modal-title">🛡️ Shadowban & Trust Scanner</h2>
-            <p class="modal-desc">Enter a GitHub username to check if the profile is healthy or flagged/404.</p>
-            <div class="input-group">
-                <label>GitHub Username</label>
-                <input type="text" id="checkStatusTarget" placeholder="e.g. abieharyatmo">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('checkStatusModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" onclick="submitCheckStatus()">🔍 Scan Now</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SHOPPING CART MODAL -->
-    <div class="modal-overlay" id="cartModal">
-        <div class="modal-box">
-            <h2 class="modal-title">🛒 Executive Shopping Cart</h2>
-            <p class="modal-desc">Instant automated credential delivery upon balance checkout.</p>
-
-            <div id="cartContent" style="margin-bottom: 18px; max-height: 260px; overflow-y: auto;"></div>
-
-            <div class="price-display">
-                <span style="font-size:0.85rem;font-weight:700;">Total Payable:</span>
-                <span class="price-value" id="cartTotal">$0.00</span>
-            </div>
-
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('cartModal')">Close</button>
-                <button class="btn-modal btn-confirm" id="btnCheckout" onclick="checkoutCart()">⚡ Pay with Balance</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- CUSTOM TOPUP MODAL -->
-    <div class="modal-overlay" id="customTopupModal">
-        <div class="modal-box">
-            <h2 class="modal-title">✍️ Custom Deposit Amount</h2>
-            <p class="modal-desc">Enter the amount of USDT you wish to deposit (Minimum $5.00).</p>
-            <div class="input-group">
-                <label>Amount (USDT)</label>
-                <input type="number" id="customTopupInput" value="50" min="5" step="0.5">
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('customTopupModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" onclick="confirmCustomTopup()">Continue</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- SELECT GATEWAY MODAL -->
-    <div class="modal-overlay" id="topupSelectModal">
-        <div class="modal-box">
-            <h2 class="modal-title">💳 Select Payment Gateway</h2>
-            <p class="modal-desc">Choose your preferred deposit method for <b>$<span id="topupAmtDisplay">0.00</span> USDT</b>.</p>
-
-            <div class="topup-grid">
-                <div class="topup-btn" onclick="submitTopup('crypto')">
-                    <div style="font-size:1.5rem;">🪙</div>
-                    <div style="font-weight:800;font-size:0.82rem;">OxaPay Crypto</div>
-                    <div style="font-size:0.68rem;color:var(--success);font-weight:700;">Instant Auto-Pilot</div>
-                </div>
-                <div class="topup-btn" onclick="submitTopup('binance')">
-                    <div style="font-size:1.5rem;">🔶</div>
-                    <div style="font-weight:800;font-size:0.82rem;">Binance Pay</div>
-                    <div style="font-size:0.68rem;color:var(--text-muted);">Manual Verify</div>
-                </div>
-                <div class="topup-btn" onclick="submitTopup('ewallet')">
-                    <div style="font-size:1.5rem;">📱</div>
-                    <div style="font-weight:800;font-size:0.82rem;">E-Wallet (IDR)</div>
-                    <div style="font-size:0.68rem;color:var(--text-muted);">DANA / OVO / GoPay</div>
-                </div>
-                <div class="topup-btn" onclick="submitTopup('bank')">
-                    <div style="font-size:1.5rem;">🏦</div>
-                    <div style="font-weight:800;font-size:0.82rem;">Bank Transfer</div>
-                    <div style="font-size:0.68rem;color:var(--text-muted);">SeaBank / Local Bank</div>
+            <div class="form-group">
+                <label>Pilih Metode Pembayaran Instant:</label>
+                <div class="pay-grid" id="payMethodGrid">
+                    <div class="pay-option selected" data-pay="QRIS / E-Wallet" onclick="selectPayMethod(this)">📱 QRIS / DANA / GoPay</div>
+                    <div class="pay-option" data-pay="SeaBank / Transfer Bank" onclick="selectPayMethod(this)">🏦 SeaBank / Bank</div>
+                    <div class="pay-option" data-pay="OxaPay Crypto (USDT)" onclick="selectPayMethod(this)">🪙 Crypto USDT</div>
+                    <div class="pay-option" data-pay="Binance Pay" onclick="selectPayMethod(this)">🔶 Binance Pay</div>
                 </div>
             </div>
-            <button class="btn-modal btn-cancel" style="width:100%;" onclick="closeModal('topupSelectModal')">Cancel</button>
-        </div>
-    </div>
 
-    <!-- ADMIN INPUT MODAL -->
-    <div class="modal-overlay" id="adminInputModal">
-        <div class="modal-box" style="border-color:var(--danger);">
-            <h2 class="modal-title" id="adminInputTitle" style="color:var(--danger);">Admin Command</h2>
-            <p class="modal-desc" id="adminInputDesc">Enter command payload below.</p>
-            <div class="input-group">
-                <textarea id="adminInputArea" style="display:none;"></textarea>
-                <input type="text" id="adminInputText" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--soft-surface);border:var(--border-width) solid var(--border-color);padding:12px 14px;border-radius:8px;margin-bottom:16px;">
+                <span style="font-weight:800;font-size:0.86rem;">Total Tagihan:</span>
+                <span class="pink-price-box" id="cartGrandTotal">Rp 0</span>
             </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('adminInputModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" style="background:var(--grad-danger);" onclick="submitAdminInput()">⚡ Execute</button>
+
+            <div style="display:flex;gap:10px;">
+                <button class="btn-brutal yellow" onclick="createWebInvoice()">🧾 Buat Invoice di Web</button>
+                <button class="btn-brutal primary" onclick="checkoutViaTelegramBot()">🤖 Proses via Bot</button>
             </div>
         </div>
     </div>
 
-    <!-- ADMIN MANUAL DEPLOY MODAL -->
-    <div class="modal-overlay" id="adminDeployModal">
-        <div class="modal-box" style="border-color:var(--danger);">
-            <h2 class="modal-title" style="color:var(--danger);">🚀 Manual Swarm Deploy</h2>
-            <p class="modal-desc">Trigger GitHub Actions worker nodes directly.</p>
-            <div class="input-group">
-                <label>Target (Username or owner/repo)</label>
-                <input type="text" id="deployTarget" placeholder="e.g. owner/repo">
-            </div>
-            <div class="input-group">
-                <label>Service & Quantity (Max 100)</label>
-                <div style="display:flex;gap:8px;">
-                    <select id="deploySvc" style="flex:1;">
-                        <option value="followers">Followers</option>
-                        <option value="stars">Stars</option>
-                        <option value="forks">Forks</option>
-                        <option value="watch">Watch</option>
-                    </select>
-                    <input type="number" id="deployQty" value="100" max="100" style="width:100px;">
-                </div>
-            </div>
-            <div class="input-group">
-                <label>Engine ID | Duration (Hours) | Start Index</label>
-                <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;">
-                    <input type="text" id="deployEngine" placeholder="Eng (1)" value="1">
-                    <input type="text" id="deployDur" placeholder="Hours" value="2">
-                    <input type="text" id="deployIdx" placeholder="auto" value="auto">
-                </div>
-            </div>
-            <div class="modal-actions">
-                <button class="btn-modal btn-cancel" onclick="closeModal('adminDeployModal')">Cancel</button>
-                <button class="btn-modal btn-confirm" style="background:var(--grad-danger);" onclick="submitManualDeployFull()">🚀 Deploy</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ACCESS DENIED MODAL -->
-    <div class="modal-overlay" id="glitchModal">
-        <div class="modal-box" style="border-color:var(--danger);">
-            <h2 class="modal-title" style="color:var(--danger);">⛔ ACCESS DENIED</h2>
-            <p class="modal-desc">Restricted to authorized XianBee-Tech Executive Administrators only.</p>
-            <button class="btn-modal btn-cancel" style="width:100%;" onclick="closeModal('glitchModal')">Return</button>
-        </div>
+    <!-- =========================================================
+         🪟 MODAL 3: INVOICE PEMBAYARAN RESMI DI DALAM WEB
+         ========================================================= -->
+    <div class="modal-overlay" id="invoiceResultModal">
+        <div class="modal-card" id="invoiceResultBody"></div>
     </div>
 
     <script>
-        const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : {
-            expand: () => {},
-            ready: () => {},
-            sendData: (d) => console.log("TG Payload:", d),
-            openTelegramLink: (u) => window.open(u, '_blank')
-        };
-        tg.expand();
-        tg.ready();
+        const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
+        if (tg) { try { tg.expand(); tg.ready(); } catch(e){} }
 
-        // 1. DUAL THEME CONTROLLER (CYBER NEBULA DARK <-> PLATINUM LIGHT)
-        let currentTheme = localStorage.getItem('xb_theme') || 'nebula';
+        // URL Webhook Google Sheet dari XianBee-TechStore_4.py untuk narik stok akun GitHub live!
+        const GSHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwakQrIn6zsKZLyvLnIklk6cXNRVOHSgsD3UNM5ApQrRVXpLXxT6X4tW1pMQIvGdnlx/exec";
+        const IDR_RATE = 16000;
 
-        function applyTheme(themeName) {
-            currentTheme = themeName;
-            document.documentElement.setAttribute('data-theme', themeName);
-            localStorage.setItem('xb_theme', themeName);
+        let currentCurrency = localStorage.getItem('xb_curr') || 'IDR'; // Default IDR seperti gambar referensi
+        let currentTheme = localStorage.getItem('xb_theme_v2') || 'brutal';
+        let activeMainTab = 'best';
+        let activeSubTab = 'ALL';
+        let liveGithubStock = {}; // Menyimpan stok akun asli dari Google Sheet
 
-            const iconEl = document.getElementById('themeIcon');
-            const labelEl = document.getElementById('themeLabel');
-            if (themeName === 'platinum') {
-                iconEl.innerText = '🌌';
-                labelEl.innerText = 'Nebula';
-            } else {
-                iconEl.innerText = '☀️';
-                labelEl.innerText = 'Platinum';
+        // =========================================================
+        // 💰 FORMATTER HARGA (OTOMATIS IDR Rp ⇄ USDT $)
+        // =========================================================
+        function fmtPrice(usdAmount) {
+            const usd = parseFloat(usdAmount) || 0;
+            if (currentCurrency === 'IDR') {
+                const idr = Math.round(usd * IDR_RATE);
+                return 'Rp' + idr.toLocaleString('id-ID');
             }
+            return '$' + usd.toFixed(2);
         }
 
-        function toggleTheme() {
-            triggerHaptic('light');
-            const nextTheme = currentTheme === 'nebula' ? 'platinum' : 'nebula';
-            applyTheme(nextTheme);
-            showToast(nextTheme === 'platinum' ? '☀️ Platinum Light Theme Active' : '🌌 Cyber Nebula Theme Active');
+        function toggleCurrency() {
+            currentCurrency = (currentCurrency === 'IDR') ? 'USD' : 'IDR';
+            localStorage.setItem('xb_curr', currentCurrency);
+            document.getElementById('currLabel').innerText = (currentCurrency === 'IDR') ? 'IDR (Rp)' : 'USDT ($)';
+            renderActiveView();
+            showToast(`Mata uang diubah ke ${currentCurrency}`);
         }
 
-        applyTheme(currentTheme);
+        function cycleTheme() {
+            const order = ['brutal', 'nebula', 'platinum'];
+            const idx = (order.indexOf(currentTheme) + 1) % order.length;
+            currentTheme = order[idx];
+            document.documentElement.setAttribute('data-theme', currentTheme);
+            localStorage.setItem('xb_theme_v2', currentTheme);
+            const names = { brutal: '🎨 Brutal', nebula: '🌌 Nebula', platinum: '☀️ Light' };
+            document.getElementById('themeText').innerText = names[currentTheme].split(' ')[1];
+            document.getElementById('themeIcon').innerText = names[currentTheme].split(' ')[0];
+            showToast(`Tema: ${names[currentTheme]}`);
+        }
 
-        // 2. PARSE URL PARAMETERS & TELEGRAM INITDATA FALLBACK
-        const urlParams = new URLSearchParams(window.location.search);
-        const rawBalance = urlParams.get('bal');
-        const userBalance = rawBalance !== null && !isNaN(parseFloat(rawBalance)) ? parseFloat(rawBalance) : 0.00;
-        const tgUser = (tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
-        const urlUid = urlParams.get('uid') || (tgUser ? String(tgUser.id) : "");
-        const urlUname = urlParams.get('uname') || (tgUser ? (tgUser.username || tgUser.first_name) : "XB-CLIENT");
+        // Set initial state
+        document.documentElement.setAttribute('data-theme', currentTheme);
+        document.getElementById('currLabel').innerText = (currentCurrency === 'IDR') ? 'IDR (Rp)' : 'USDT ($)';
 
-        document.getElementById('counter').innerText = userBalance.toFixed(2);
-        document.getElementById('topBalance').innerText = userBalance.toFixed(2);
-        document.getElementById('displayUserId').innerText = urlUname.startsWith('@') ? urlUname : `@${urlUname}`;
+        // =========================================================
+        // 📦 DATABASE KATALOG LENGKAP (TERMASUK PRODUK TERLARIS GAMBAR REFERENSI)
+        // =========================================================
+        const CATALOG_PRODUCTS = [
+            // --- PRODUK TERLARIS & PRO APPS (PERSIS REFERENSI GAMBAR + KATALOG XIANBEE) ---
+            { id: 'gemini_18m', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '🔥 PALING DICARI', title: 'Gemini Pro / Advanced 18 Bulan', desc: 'Akses Google AI Ultra + Cloud Storage 2TB • Garansi Full', usd: 1.925, needTarget: 'Masukkan Email Google Anda:' },
+            { id: 'muse_ai', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '⚡ STOK READY', title: 'Muse AI Pro Subscription', desc: 'Full Akses AI Generator & Creative Tools • Aktivasi Instan', usd: 1.13125, needTarget: 'Masukkan Email Aktif Anda:' },
+            { id: 'duolingo_12m', tab: 'pro', sub: 'Edukasi & Bahasa', bestSeller: true, badge: '🔥 TERLARIS', title: 'Super Duolingo 12 Bulan (1 Tahun)', desc: 'Bebas Iklan, Unlimited Hearts & Personalized Practice', usd: 1.3125, needTarget: 'Masukkan Username / Email Duolingo:' },
+            { id: 'notion_12m', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '💼 WORKSPACE PRO', title: 'Notion Plus 12 Bulan (1 Tahun)', desc: 'Unlimited Blocks, File Uploads & Workspace Collaboration', usd: 1.8125, needTarget: 'Masukkan Email Akun Notion Anda:' },
+            { id: 'office_365_1y', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '💎 HARGA PROMO', title: 'Microsoft Office 365 Plus 1 Tahun', desc: 'Word, Excel, PowerPoint, Outlook + 1TB OneDrive Cloud', usd: 0.6125, needTarget: 'Masukkan Email / Catatan Order:' },
+            { id: 'canva_1y', tab: 'pro', sub: 'Desain & Video', bestSeller: true, badge: '🎨 DESAINER WAJIB', title: 'Canva Pro 1 Tahun (Official Invite)', desc: 'Akses Semua Template Premium, Magic Resize & Brand Kit', usd: 5.00, needTarget: 'Masukkan Email Canva Free Anda:' },
+            { id: 'capcut_1m', tab: 'pro', sub: 'Desain & Video', bestSeller: true, badge: '✂️ EDITOR PRO', title: 'CapCut Pro 1 Bulan (Private Account)', desc: 'Full Efek Pro, Cloud Backup & Auto Captions Tanpa Watermark', usd: 3.00, needTarget: 'Masukkan Email Aktif Anda:' },
+            { id: 'chatgpt_1m', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '🤖 OPEN-AI PLUS', title: 'ChatGPT Plus 1 Bulan (GPT-4o)', desc: 'Akses Penuh Model Tercepat, DALL-E & Analisis File', usd: 15.00, needTarget: 'Masukkan Email Anda:' },
 
-        // 3. EXACT PRICE SYNCHRONIZATION WITH XianBee-TechStore.py
-        const PRICES = {
-            followers:  { reg: 0.50, fast: 0.55, ultra: 0.60 },
-            forks:      { reg: 0.40, fast: 0.45, ultra: 0.50 },
-            stars:      { reg: 0.35, fast: 0.40, ultra: 0.45 },
-            watch:      { reg: 0.30, fast: 0.35, ultra: 0.40 },
-            threads:    { reg: 0.10 },
-            twitch:     { reg: 0.15 },
-            snapchat:   { reg: 0.20 },
-            kick:       { reg: 0.12 },
-            bigo:       { reg: 0.25 },
-            tumblr:     { reg: 0.10 },
-            quora:      { reg: 0.30 },
-            mixcloud:   { reg: 0.08 },
-            shazam:     { reg: 0.05 },
-            vk:         { reg: 0.10 },
-            clubhouse:  { reg: 0.15 },
-            likee:      { reg: 0.10 },
-            reverbnation: { reg: 0.05 },
-            tidal:      { reg: 0.20 },
-            dribble:    { reg: 0.15 },
-            kwai:       { reg: 0.10 },
-            vimeo:      { reg: 0.10 },
-            audiomack:  { reg: 0.05 },
-            coub:       { reg: 0.05 },
-            boomplay:   { reg: 0.05 },
-            podcast:    { reg: 0.30 },
-            traffic:    { reg: 0.02 },
-            traffic_id: { reg: 0.05 },
-            yandex:     { reg: 0.05 },
-            lazada:     { reg: 0.15 },
-            shopee:     { reg: 0.15 },
-            roblox:     { reg: 0.10 },
-            capcut:     { reg: 0.10 },
-            cmc:        { reg: 0.25 },
-            linkedin:   { reg: 0.20 },
-            ig_svc:     { reg: 0.15 },
-            tiktok_svc: { reg: 0.15 },
-            fb_svc:     { reg: 0.15 },
-            tg_svc:     { reg: 0.15 },
-            discord_svc:{ reg: 0.15 },
-            reddit_svc: { reg: 0.15 }
-        };
+            // --- AGED SOCIAL MEDIA, EMAIL & CRYPTO EXCHANGE ---
+            { id: 'tw_aged', tab: 'social', sub: 'Twitter (X)', bestSeller: true, badge: '🐦 AGED X', title: 'Twitter (X) Aged Account (2011–2019)', desc: 'Akun Tua Trust Score Tinggi + 2FA & Email Recovery', usd: 15.00, needTarget: 'Catatan Tahun / Spesifikasi (Opsional):' },
+            { id: 'tw_crypto', tab: 'social', sub: 'Twitter (X)', bestSeller: false, badge: '🪙 WEB3 READY', title: 'Twitter (X) Crypto & Airdrop Ready', desc: 'Sudah Di-warmup & Aman untuk Kampanye Web3', usd: 30.00, needTarget: 'Catatan Order (Opsional):' },
+            { id: 'ig_aged', tab: 'social', sub: 'Instagram & TikTok', bestSeller: false, badge: '📸 AGED IG', title: 'Instagram Aged Account (2013–2020)', desc: 'Akun Lawas Tahan Banting untuk Marketing / Bisnis', usd: 15.00, needTarget: 'Catatan Order (Opsional):' },
+            { id: 'tt_foll', tab: 'social', sub: 'Instagram & TikTok', bestSeller: false, badge: '🎵 TIKTOK', title: 'TikTok High Followers Account', desc: 'Siap Live & TikTok Affiliate • Follower Organik', usd: 25.00, needTarget: 'Catatan Order (Opsional):' },
+            { id: 'dc_aged', tab: 'social', sub: 'Discord & Telegram', bestSeller: false, badge: '🎮 DISCORD', title: 'Discord Aged Account (2016–2021)', desc: 'Full Token & Email • Anti-Captcha untuk Whitelist/Server', usd: 15.00, needTarget: 'Catatan Order (Opsional):' },
+            { id: 'tg_aged', tab: 'social', sub: 'Discord & Telegram', bestSeller: false, badge: '✈️ TELEGRAM', title: 'Telegram Aged Account (TData / Session)', desc: 'Akun Tua Tahan Limit & Broadcast', usd: 15.00, needTarget: 'Catatan Order (Opsional):' },
+            { id: 'exc_binance', tab: 'social', sub: 'Crypto Exchange', bestSeller: false, badge: '🔶 BINANCE', title: 'Binance Aged Verified Account', desc: 'Akun Exchange Terverifikasi siap Spot & Futures', usd: 35.00, needTarget: 'Catatan Order (Opsional):' },
+            { id: 'exc_okx', tab: 'social', sub: 'Crypto Exchange', bestSeller: false, badge: '⚫ OKX', title: 'OKX Aged Verified Account', desc: 'Limit Tinggi & Siap Transaksi Web3', usd: 35.00, needTarget: 'Catatan Order (Opsional):' },
+            { id: 'exc_mexc', tab: 'social', sub: 'Crypto Exchange', bestSeller: false, badge: '🟢 MEXC', title: 'MEXC Aged Account (No KYC / KYC)', desc: 'Bebas Trading Altcoin & Futures', usd: 25.00, needTarget: 'Ketik No-KYC atau With-KYC:' },
+            { id: 'mail_pack', tab: 'social', sub: 'Email Tua', bestSeller: false, badge: '📧 EMAIL', title: 'Aged Gmail / Outlook / Protonmail', desc: 'Email Tua Terverifikasi Anti- Nonaktif', usd: 5.00, needTarget: 'Pilih: Gmail / Outlook / Protonmail:' },
 
-        const GITHUB_YEAR_PRICES = {
-            2011: 30.0, 2012: 28.0, 2013: 26.0, 2014: 24.0,
-            2015: 22.0, 2016: 20.0, 2017: 18.0, 2018: 16.0,
-            2019: 15.0, 2020: 12.0, 2021: 10.0, 2022: 8.5,
-            2023: 7.5,  2024: 6.5,  2025: 5.5,  2026: 4.5
-        };
-
-        const GITHUB_SPECIAL_CATS = [
-            { key: 'Arctic',      icon: '❄️', title: 'Arctic Code Vault Badge', desc: 'Rare 2020 Arctic Contributor', price: 25.0 },
-            { key: '6Badge',      icon: '🏅', title: '6 Premium Badges',        desc: 'Pull Shark, YOLO, Starstruck+', price: 10.0 },
-            { key: 'Followers',   icon: '👥', title: 'GitHub High Followers',   desc: 'Pre-warmed 50+ Organic Flw',   price: 10.0 },
-            { key: 'StudentPack', icon: '🎒', title: 'Student Developer Pack',  desc: 'Approved Benefits & Credits',  price: 5.0 },
-            { key: 'Contrib',     icon: '📈', title: 'High Green Contributions',desc: 'Active Commit History Graph',  price: 10.0 },
-            { key: 'OldRepo',     icon: '📁', title: 'Aged Old Repository',     desc: 'Includes Aged Public Repos',   price: 10.0 }
+            // --- GITHUB BOOST & SMM SERVICES ---
+            { id: 'gh_followers', tab: 'smm', sub: 'GitHub Boost', bestSeller: true, isBoost: true, svcKey: 'followers', badge: '🐙 GITHUB BOOST', title: 'Jasa Tambah GitHub Followers (Auto-Track)', desc: 'Follower GitHub Permanen + Live Progress Tracker Otomatis', usd: 0.50, needTarget: 'Masukkan Username / Link Profil GitHub:' },
+            { id: 'gh_stars', tab: 'smm', sub: 'GitHub Boost', bestSeller: true, isBoost: true, svcKey: 'stars', badge: '⭐ REPO STARS', title: 'Jasa Tambah GitHub Repository Stars', desc: 'Naikkan Reputasi & Trending Repo GitHub Anda', usd: 0.35, needTarget: 'Masukkan Link Repository (owner/repo):' },
+            { id: 'gh_forks', tab: 'smm', sub: 'GitHub Boost', bestSeller: false, isBoost: true, svcKey: 'forks', badge: '⎇ REPO FORKS', title: 'Jasa Tambah GitHub Repository Forks', desc: 'Forks Akun Developer Aktif + Live Tracker', usd: 0.40, needTarget: 'Masukkan Link Repository (owner/repo):' },
+            { id: 'gh_watch', tab: 'smm', sub: 'GitHub Boost', bestSeller: false, isBoost: true, svcKey: 'watch', badge: '👁️ REPO WATCH', title: 'Jasa Tambah GitHub Watchers', desc: 'Tambah Subscribers/Watchers Repository', usd: 0.30, needTarget: 'Masukkan Link Repository (owner/repo):' },
+            { id: 'smm_ig', tab: 'smm', sub: 'Sosmed Boost', bestSeller: false, isBoost: true, svcKey: 'ig_svc', badge: '📸 INSTAGRAM', title: 'Instagram Followers / Likes / Views Boost', desc: 'Proses Instan Server SMM High-Speed', usd: 0.15, needTarget: 'Masukkan Link Profil / Postingan Instagram:' },
+            { id: 'smm_tt', tab: 'smm', sub: 'Sosmed Boost', bestSeller: false, isBoost: true, svcKey: 'tiktok_svc', badge: '🎵 TIKTOK', title: 'TikTok Followers / Views / Likes Boost', desc: 'FYP Booster & Penambah Interaksi Video', usd: 0.15, needTarget: 'Masukkan Link Video / Profil TikTok:' },
+            { id: 'smm_web', tab: 'smm', sub: 'Web & Crypto Traffic', bestSeller: false, isBoost: true, svcKey: 'traffic', badge: '🌐 WEB TRAFFIC', title: 'Organic Website Traffic (Global / ID)', desc: 'Trafik Pengunjung Asli untuk SEO & Analytics', usd: 0.05, needTarget: 'Masukkan URL Website Anda:' },
+            { id: 'smm_cmc', tab: 'smm', sub: 'Web & Crypto Traffic', bestSeller: false, isBoost: true, svcKey: 'cmc', badge: '🪙 COINMARKETCAP', title: 'CoinMarketCap Watchlist & Upvotes', desc: 'Boost Sentimen Positif Token/Koin Web3 Anda', usd: 0.25, needTarget: 'Masukkan Link Token CoinMarketCap:' }
         ];
 
-        // 4. RENDER GITHUB CATALOG (YEARS 2011-2026 + SPECIALS + BOOST)
-        function renderGithubHub() {
-            const specGrid = document.getElementById('ghSpecialGrid');
-            specGrid.innerHTML = '';
-            GITHUB_SPECIAL_CATS.forEach(item => {
-                const card = document.createElement('div');
-                card.className = 'acc-card';
-                card.innerHTML = `
-                    <div class="acc-card-top">
-                        <div class="btn-content">
-                            <div class="btn-icon">${item.icon}</div>
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title">${item.title}</span>
-                                <span class="btn-desc">${item.desc}</span>
-                            </div>
-                        </div>
-                        <span class="price-tag">$${item.price.toFixed(2)}+</span>
-                    </div>
-                    <div class="acc-actions">
-                        <button class="btn-card-action secondary" onclick="sendActionToBot('VIEW_CATALOG', { year: '${item.key}' })">🔍 Browse Vault</button>
-                        <button class="btn-card-action primary" onclick="addToCart('${item.key}-AUTO', 'GitHub (${item.title})', ${item.price}, '${item.key}')">🛒 +Cart</button>
-                    </div>
-                `;
-                specGrid.appendChild(card);
-            });
+        const GITHUB_YEARS = [
+            { yr: 'Arctic', title: 'GitHub Arctic Code Vault Badge', badge: '❄️ RARE BADGE', usd: 25.0, desc: 'Akun Langka Kontributor Arctic Vault 2020 + 6 Achievements' },
+            { yr: '2011', title: 'Aged GitHub Account — Tahun 2011', badge: '🏛️ VINTAGE 2011', usd: 30.0, desc: 'Akun GitHub 15 Tahun Silam • Kredensial Lengkap + 2FA' },
+            { yr: '2012', title: 'Aged GitHub Account — Tahun 2012', badge: '🏛️ VINTAGE 2012', usd: 28.0, desc: 'Akun GitHub Berumur 14 Tahun • High Trust Score' },
+            { yr: '2013', title: 'Aged GitHub Account — Tahun 2013', badge: '🏛️ VINTAGE 2013', usd: 26.0, desc: 'Akun GitHub Berumur 13 Tahun • Siap Developer & Web3' },
+            { yr: '2014', title: 'Aged GitHub Account — Tahun 2014', badge: '🏛️ VINTAGE 2014', usd: 24.0, desc: 'Akun GitHub Berumur 12 Tahun • Clean History' },
+            { yr: '2015', title: 'Aged GitHub Account — Tahun 2015', badge: '🏛️ VINTAGE 2015', usd: 22.0, desc: 'Akun GitHub Berumur 11 Tahun • Anti-Shadowban' },
+            { yr: '2016', title: 'Aged GitHub Account — Tahun 2016', badge: '🛡️ AGED 2016', usd: 20.0, desc: 'Akun GitHub 10 Tahun • Full Akses Email & 2FA' },
+            { yr: '2017', title: 'Aged GitHub Account — Tahun 2017', badge: '🛡️ AGED 2017', usd: 18.0, desc: 'Akun GitHub Tahun 2017 • Cocok untuk Airdrop & Dev' },
+            { yr: '2018', title: 'Aged GitHub Account — Tahun 2018', badge: '🛡️ AGED 2018', usd: 16.0, desc: 'Akun GitHub Tahun 2018 • Terverifikasi Sehat (200 OK)' },
+            { yr: '2019', title: 'Aged GitHub Account — Tahun 2019', badge: '🛡️ AGED 2019', usd: 15.0, desc: 'Akun GitHub Tahun 2019 • Full 2FA Authenticator' },
+            { yr: '2020', title: 'Aged GitHub Account — Tahun 2020', badge: '🛡️ AGED 2020', usd: 12.0, desc: 'Akun GitHub Tahun 2020 • Siap Pakai' },
+            { yr: '2021', title: 'Aged GitHub Account — Tahun 2021', badge: '✨ WARMED 2021', usd: 10.0, desc: 'Akun GitHub Tahun 2021 • Aman & Terawat' },
+            { yr: '2022', title: 'Aged GitHub Account — Tahun 2022', badge: '✨ WARMED 2022', usd: 8.5, desc: 'Akun GitHub Tahun 2022 • Full Kredensial' },
+            { yr: '2023', title: 'Aged GitHub Account — Tahun 2023', badge: '✨ WARMED 2023', usd: 7.5, desc: 'Akun GitHub Tahun 2023 • Harga Ekonomis' },
+            { yr: '2024', title: 'Aged GitHub Account — Tahun 2024', badge: '✨ WARMED 2024', usd: 6.5, desc: 'Akun GitHub Tahun 2024 • Ready Banyak Stok' },
+            { yr: '2025', title: 'Aged GitHub Account — Tahun 2025', badge: '✨ WARMED 2025', usd: 5.5, desc: 'Akun GitHub Tahun 2025 • Sudah Warmup' },
+            { yr: '2026', title: 'Fresh Warmed GitHub — Tahun 2026', badge: '🔥 BEST VALUE', usd: 4.5, desc: 'Stok Melimpah • Sudah Ada Repo & Aktivitas' }
+        ];
 
-            const yearsGrid = document.getElementById('ghYearsGrid');
-            yearsGrid.innerHTML = '';
-            Object.keys(GITHUB_YEAR_PRICES).forEach(yr => {
-                const prc = GITHUB_YEAR_PRICES[yr];
-                const tier = yr <= 2015 ? '🏛️ Vintage Elite' : (yr <= 2020 ? '🛡️ Aged Trusted' : '✨ Warmed Ready');
-                const card = document.createElement('div');
-                card.className = 'acc-card';
-                card.innerHTML = `
-                    <div class="acc-card-top">
-                        <div class="btn-content">
-                            <div class="btn-icon" style="font-family:'JetBrains Mono';font-size:0.95rem;font-weight:800;">${yr}</div>
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title">GitHub Account ${yr}</span>
-                                <span class="btn-desc">${tier} • Full 2FA & Creds</span>
-                            </div>
-                        </div>
-                        <span class="price-tag">$${prc.toFixed(2)}</span>
-                    </div>
-                    <div class="acc-actions">
-                        <button class="btn-card-action secondary" onclick="sendActionToBot('VIEW_CATALOG', { year: '${yr}' })">🔍 Select Specific</button>
-                        <button class="btn-card-action primary" onclick="addToCart('${yr}-AUTO', 'GitHub Account (${yr})', ${prc}, '${yr}')">🛒 +Cart</button>
-                    </div>
-                `;
-                yearsGrid.appendChild(card);
-            });
-
-            const boostGrid = document.getElementById('ghBoostGrid');
-            boostGrid.innerHTML = '';
-            const ghServices = [
-                { key: 'followers', icon: '👥', title: 'GitHub Followers', desc: 'Organic Stealth Profile Followers' },
-                { key: 'stars',     icon: '⭐', title: 'Repository Stars', desc: 'Boost Repo Ranking & Trending' },
-                { key: 'forks',     icon: '⎇', title: 'Repository Forks', desc: 'Authentic Developer Repo Forks' },
-                { key: 'watch',     icon: '👁️', title: 'Repository Watchers', desc: 'Active Repo Subscribers/Watchers' }
-            ];
-            ghServices.forEach(s => {
-                const p = PRICES[s.key];
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon">${s.icon}</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">${s.title}</span>
-                            <span class="btn-desc">${s.desc}</span>
-                        </div>
-                    </div>
-                    <span class="price-tag">$${p.reg.toFixed(2)}/u</span>
-                `;
-                btn.onclick = () => openServiceDetail(s.title, s.key, 'github');
-                boostGrid.appendChild(btn);
-            });
+        // =========================================================
+        // 🔄 TARIK STOK REAL-TIME DARI GOOGLE SHEET LU (SHEET1)
+        // =========================================================
+        async function fetchLiveStockFromGSheet() {
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'pull_stock' })
+                });
+                const data = await res.json();
+                if (data && data.result && Array.isArray(data.data)) {
+                    const grouped = {};
+                    data.data.forEach(acc => {
+                        const cat = String(acc.category || acc.year || '2026');
+                        if (!grouped[cat]) grouped[cat] = [];
+                        grouped[cat].push(acc);
+                    });
+                    liveGithubStock = grouped;
+                    if (activeMainTab === 'github') renderActiveView();
+                }
+            } catch (e) {
+                console.log("GSheet live preview fallback mode:", e);
+            }
         }
+        fetchLiveStockFromGSheet();
 
-        function toggleGithubSection(sec) {
-            document.getElementById('ghAccountsSection').style.display = sec === 'acc' ? 'block' : 'none';
-            document.getElementById('ghBoostSection').style.display = sec === 'boost' ? 'block' : 'none';
-            document.getElementById('ghTabAccBtn').classList.toggle('active', sec === 'acc');
-            document.getElementById('ghTabBoostBtn').classList.toggle('active', sec === 'boost');
-        }
+        // =========================================================
+        // 🧭 NAVIGASI TAB UTAMA & SUB-TAB DI DALAM TAB
+        // =========================================================
+        function switchTab(tabName) {
+            activeMainTab = tabName;
+            activeSubTab = 'ALL';
+            document.getElementById('nestedSubView').style.display = 'none';
+            document.getElementById('globalSearch').value = '';
 
-        // 5. RENDER SMM & DIGITAL MARKETING (CONNECTED TO EXACT BOT KEYS)
-        const SMM_CATALOG = {
-            'Social Media': [
-                { key: 'ig_svc',      icon: '📸', title: 'Instagram Boost (Likes/Followers/Views)' },
-                { key: 'tiktok_svc',  icon: '🎵', title: 'TikTok Boost (Followers/Views/Likes)' },
-                { key: 'fb_svc',      icon: '📘', title: 'Facebook Page & Post Boost' },
-                { key: 'tg_svc',      icon: '✈️', title: 'Telegram Channel Members & Views' },
-                { key: 'threads',     icon: '🧵', title: 'Threads Followers & Reshares' },
-                { key: 'reddit_svc',  icon: '👽', title: 'Reddit Upvotes & Subscribers' },
-                { key: 'quora',       icon: '❓', title: 'Quora Upvotes & Views' },
-                { key: 'tumblr',      icon: '☕', title: 'Tumblr Reblogs & Followers' },
-                { key: 'vk',          icon: '🌐', title: 'VK.com Community Boost' }
-            ],
-            'Streaming & Gaming': [
-                { key: 'twitch',      icon: '🟪', title: 'Twitch Followers & Live Views' },
-                { key: 'kick',        icon: '🟩', title: 'Kick.com Followers & Stream Views' },
-                { key: 'bigo',        icon: '🦖', title: 'Bigo Live Viewers & Fans' },
-                { key: 'roblox',      icon: '🟥', title: 'Roblox Game Favorites & Visits' },
-                { key: 'discord_svc', icon: '🎮', title: 'Discord Server Members' }
-            ],
-            'Music & Audio': [
-                { key: 'podcast',     icon: '🎙️', title: 'iTunes Podcast Downloads & Subscriptions' },
-                { key: 'tidal',       icon: '🌊', title: 'Tidal Streams & Followers' },
-                { key: 'mixcloud',    icon: '🎧', title: 'Mixcloud Plays & Followers' },
-                { key: 'audiomack',   icon: '💿', title: 'Audiomack Streams & Likes' },
-                { key: 'shazam',      icon: '🎶', title: 'Shazam Track Boost' },
-                { key: 'boomplay',    icon: '📻', title: 'Boomplay Streams' },
-                { key: 'reverbnation',icon: '🎸', title: 'Reverbnation Plays & Fans' },
-                { key: 'clubhouse',   icon: '🗣️', title: 'Clubhouse Room Visitors' }
-            ],
-            'Web Traffic & E-Com': [
-                { key: 'traffic',     icon: '🌍', title: 'Global Website Traffic (Organic)' },
-                { key: 'traffic_id',  icon: '🇮🇩', title: 'Indonesian Website Traffic' },
-                { key: 'yandex',      icon: '🔎', title: 'Yandex Search Traffic' },
-                { key: 'shopee',      icon: '🛍️', title: 'Shopee Store Followers & Likes' },
-                { key: 'lazada',      icon: '🛒', title: 'Lazada Store Followers & Likes' }
-            ],
-            'Pro, Web3 & Short Video': [
-                { key: 'cmc',         icon: '🪙', title: 'CoinMarketCap Watchlist & Upvotes' },
-                { key: 'linkedin',    icon: '👔', title: 'LinkedIn Connections & Followers' },
-                { key: 'capcut',      icon: '✂️', title: 'CapCut Template Uses & Likes' },
-                { key: 'snapchat',    icon: '👻', title: 'Snapchat Spotlight & Followers' },
-                { key: 'likee',       icon: '💖', title: 'Likee Video Views & Likes' },
-                { key: 'kwai',        icon: '🎬', title: 'Kwai Video Views & Followers' },
-                { key: 'vimeo',       icon: '📹', title: 'Vimeo Video Plays' },
-                { key: 'dribble',     icon: '🏀', title: 'Dribbble Shots Likes & Views' },
-                { key: 'coub',        icon: '📼', title: 'Coub Views & Reposts' }
-            ]
-        };
-
-        function renderSmmHub(activeCat = 'Social Media') {
-            const pills = document.getElementById('smmCategoryPills');
-            pills.innerHTML = '';
-            Object.keys(SMM_CATALOG).forEach(cat => {
-                const b = document.createElement('button');
-                b.className = 'pill-btn' + (cat === activeCat ? ' active' : '');
-                b.innerText = cat;
-                b.onclick = () => renderSmmHub(cat);
-                pills.appendChild(b);
-            });
-
-            const grid = document.getElementById('smmServicesGrid');
-            grid.innerHTML = '';
-            (SMM_CATALOG[activeCat] || []).forEach(svc => {
-                const rate = PRICES[svc.key] ? PRICES[svc.key].reg : 0.15;
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon">${svc.icon}</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">${svc.title}</span>
-                            <span class="btn-desc">Auto-Pilot Execution • Instant Queue</span>
-                        </div>
-                    </div>
-                    <span class="price-tag">$${rate.toFixed(2)}/u</span>
-                `;
-                btn.onclick = () => openServiceDetail(svc.title, svc.key, 'smm');
-                grid.appendChild(btn);
-            });
-        }
-
-        // 6. RENDER PRO APPS, EXCHANGES & AGED SOCIAL ACCOUNTS
-        function renderAccountsAndAppsHub(activePlat = 'tw') {
-            const proApps = [
-                { id: 'canva',   icon: '🎨', title: 'Canva Pro (1 Year)',        desc: 'Official Invite to Your Email', price: 5.00 },
-                { id: 'capcut',  icon: '✂️', title: 'CapCut Pro (1 Month)',      desc: 'Private Full Pro Account',      price: 3.00 },
-                { id: 'ChatGPT', icon: '🤖', title: 'ChatGPT Plus (1 Month)',    desc: 'GPT-4o Full Access Subscription',price: 15.00 },
-                { id: 'Gemini',  icon: '✨', title: 'Gemini Advanced (1 Month)', desc: 'Google AI Ultra Access',        price: 15.00 }
-            ];
-            const proGrid = document.getElementById('proAppsGrid');
-            proGrid.innerHTML = '';
-            proApps.forEach(app => {
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon">${app.icon}</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">${app.title}</span>
-                            <span class="btn-desc">${app.desc}</span>
-                        </div>
-                    </div>
-                    <span class="price-tag">$${app.price.toFixed(2)}</span>
-                `;
-                btn.onclick = () => {
-                    showToast(`Sending ${app.title} invoice to Bot...`);
-                    sendActionToBot('PREMIUM_SUB', { item_id: app.id, title: app.title });
-                };
-                proGrid.appendChild(btn);
-            });
-
-            const exchanges = [
-                { id: 'exc_binance',    icon: '🔶', title: 'Binance Aged Account', desc: 'Verified High-Trust Exchange', price: 35.0 },
-                { id: 'exc_okx',        icon: '⚫', title: 'OKX Aged Account',     desc: 'Verified High-Trust Exchange', price: 35.0 },
-                { id: 'exc_mexc_nokyc', icon: '🟢', title: 'MEXC (No KYC)',        desc: 'Ready for Spot & Futures',     price: 35.0 },
-                { id: 'exc_mexc_old',   icon: '🏛️', title: 'MEXC (Aged Old)',      desc: 'Aged High-Limit Account',      price: 35.0 }
-            ];
-            const excGrid = document.getElementById('exchangeAccGrid');
-            excGrid.innerHTML = '';
-            exchanges.forEach(ex => {
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon">${ex.icon}</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">${ex.title}</span>
-                            <span class="btn-desc">${ex.desc}</span>
-                        </div>
-                    </div>
-                    <span class="price-tag">$${ex.price.toFixed(2)}</span>
-                `;
-                btn.onclick = () => {
-                    showToast(`Requesting ${ex.title} in Bot...`);
-                    sendActionToBot('ACC_ORDER', { item_id: ex.id, title: ex.title });
-                };
-                excGrid.appendChild(btn);
-            });
-
-            const socPlatforms = [
-                { id: 'tw',   name: '🐦 Twitter (X)' },
-                { id: 'ig',   name: '📸 Instagram' },
-                { id: 'tt',   name: '🎵 TikTok' },
-                { id: 'fb',   name: '📘 Facebook' },
-                { id: 'tg',   name: '✈️ Telegram' },
-                { id: 'dc',   name: '🎮 Discord' },
-                { id: 'rd',   name: '👽 Reddit' },
-                { id: 'mail', name: '📧 Email (Gmail/Outlook)' }
-            ];
-            const pills = document.getElementById('socmedPlatPills');
-            pills.innerHTML = '';
-            socPlatforms.forEach(p => {
-                const b = document.createElement('button');
-                b.className = 'pill-btn' + (p.id === activePlat ? ' active' : '');
-                b.innerText = p.name;
-                b.onclick = () => renderAccountsAndAppsHub(p.id);
-                pills.appendChild(b);
-            });
-
-            const platObj = socPlatforms.find(x => x.id === activePlat) || socPlatforms[0];
-            const cleanName = platObj.name.replace(/^[^\s]+\s/, '');
-            const variants = [
-                { suffix: 'aged',   icon: '🏛️', title: `Aged ${cleanName} (2009–2018)`, desc: 'High Trust Score & Anti-Ban', price: 25.0 },
-                { suffix: 'foll',   icon: '📈', title: `High Followers ${cleanName}`,   desc: 'Pre-warmed with Organic Reach', price: 15.0 },
-                { suffix: 'crypto', icon: '🪙', title: `Crypto-Ready ${cleanName}`,     desc: 'Optimized for Web3 / Airdrop', price: 30.0 },
-                { suffix: 'fresh',  icon: '✨', title: `Fresh Verified ${cleanName}`,   desc: 'Clean History + 2FA Included', price: 5.0 }
-            ];
-            const socGrid = document.getElementById('socmedAccGrid');
-            socGrid.innerHTML = '';
-            variants.forEach(v => {
-                const itemId = `${activePlat}_${v.suffix}`;
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon">${v.icon}</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">${v.title}</span>
-                            <span class="btn-desc">${v.desc}</span>
-                        </div>
-                    </div>
-                    <span class="price-tag">$${v.price.toFixed(2)}</span>
-                `;
-                btn.onclick = () => {
-                    showToast(`Opening checkout for ${v.title} in Bot...`);
-                    sendActionToBot('ACC_ORDER', { item_id: itemId, title: v.title });
-                };
-                socGrid.appendChild(btn);
-            });
-        }
-
-        // 7. NAVIGATION & VIEW ROUTER
-        let currentTab = 'home';
-        let previousTab = 'home';
-
-        function switchMainTab(tabName, isSubView = false) {
-            triggerHaptic('light');
-            if (!isSubView) previousTab = tabName;
-            currentTab = tabName;
-
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            const targetView = document.getElementById('view-' + tabName);
-            if (targetView) targetView.classList.add('active');
-
-            document.querySelectorAll('.side-link, .bnav-item').forEach(btn => {
-                btn.classList.toggle('active', btn.getAttribute('data-nav') === tabName);
+            document.querySelectorAll('.main-tab-pill, .side-tab-btn, .bnav-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
             });
 
             const titles = {
-                home: 'XIANBEE ENTERPRISE',
-                github: 'GITHUB ENTERPRISE HUB',
-                smm: 'DIGITAL MARKETING & SMM',
-                accounts: 'PRO APPS & AGED ACCOUNTS',
-                wallet: 'MY WALLET & PROFILE',
-                admin: 'EXECUTIVE COMMAND CENTER'
+                best: ['PRODUK', 'TERLARIS', 'Paling dicari • Stok ready • Harga resmi website'],
+                github: ['GITHUB', 'ENTERPRISE VAULT', 'Pilih tahun akun (2011–2026) & lihat daftar username langsung di dalam tab ini!'],
+                pro: ['APLIKASI PRO', '& AI PREMIUM', 'Langganan resmi bergaransi penuh • Klik produk untuk pilih paket'],
+                social: ['AGED SOCIAL', '& CRYPTO EXCHANGE', 'Akun sosmed tua & exchange terverifikasi siap pakai'],
+                smm: ['GITHUB BOOST', '& SMM TRAFFIC', 'Tambah Followers, Stars, Forks & Traffic dengan Live Tracker'],
+                orders: ['CEK PESANAN', '& LIVE TRACKER', 'Pantau status invoice & progres penambahan Followers/Stars GitHub Anda secara live']
             };
-            if (titles[tabName]) document.getElementById('topbarTitle').innerText = titles[tabName];
-            document.getElementById('globalBackBtn').style.display = (tabName === 'home') ? 'none' : 'flex';
-            document.getElementById('mainScroll').scrollTop = 0;
+            const t = titles[tabName] || titles.best;
+            document.getElementById('mainBannerTitle').innerHTML = `${t[0]} <span class="highlight-blue">${t[1]}</span>`;
+            document.getElementById('mainBannerSub').innerText = t[2];
+
+            renderActiveView();
         }
 
-        function navigateBack() {
-            if (currentTab === 'detail') {
-                switchMainTab(previousTab);
-            } else {
-                switchMainTab('home');
+        function renderActiveView(searchQuery = '') {
+            const subBar = document.getElementById('subTabsBar');
+            const grid = document.getElementById('mainProductGrid');
+            subBar.innerHTML = '';
+            grid.innerHTML = '';
+
+            if (activeMainTab === 'orders') {
+                subBar.style.display = 'none';
+                renderOrdersAndTrackerTab(grid);
+                return;
             }
-        }
 
-        // 8. PACKAGE DETAIL VIEW (100% MATCHED WITH XianBee-TechStore.py PRICES & SPEED KEYS)
-        function openServiceDetail(title, svcType, originTab = 'github') {
-            previousTab = originTab;
-            document.getElementById('topbarTitle').innerText = title.toUpperCase();
-            document.getElementById('detailCategoryTitle').innerText = `${title} — SELECT QUANTITY`;
-            const detailContent = document.getElementById('service-detail-content');
-            detailContent.innerHTML = '';
-
-            const p = PRICES[svcType] || { reg: 0.15, fast: 0.20, ultra: 0.25 };
-            const isGithubSvc = ['followers', 'forks', 'stars', 'watch'].includes(svcType);
-
-            const tracks = isGithubSvc ? [
-                { icon: '🐌', name: 'Regular Track', speed: 'reg',   base: p.reg },
-                { icon: '🚀', name: 'Fast Track',    speed: 'fast',  base: p.fast },
-                { icon: '⚡', name: 'Ultra Track',   speed: 'ultra', base: p.ultra }
-            ] : [
-                { icon: '⚡', name: 'Standard Auto-Pilot Track', speed: 'reg', base: p.reg }
-            ];
-
-            tracks.forEach(t => {
-                const section = document.createElement('div');
-                section.style.marginBottom = '24px';
-
-                const hdr = document.createElement('div');
-                hdr.className = 'menu-category';
-                hdr.style.marginBottom = '12px';
-                hdr.innerHTML = `${t.icon} ${t.name} ($${t.base.toFixed(2)} / unit)`;
-                section.appendChild(hdr);
-
-                const grid = document.createElement('div');
-                grid.className = 'bento-grid';
-
-                const qtys = [
-                    { q: 50,  mult: 1.0,  badge: '' },
-                    { q: 100, mult: 1.0,  badge: '' },
-                    { q: 150, mult: 1.0,  badge: '' },
-                    { q: 200, mult: 0.95, badge: '5% OFF' }
-                ];
-
-                qtys.forEach(qItem => {
-                    const price = qItem.q * t.base * qItem.mult;
-                    const btn = document.createElement('button');
-                    btn.className = 'menu-btn';
-                    btn.innerHTML = `
-                        <div class="btn-content">
-                            <div class="btn-icon">${t.icon}</div>
-                            <div class="btn-text-wrapper">
-                                <span class="btn-title">${qItem.q} Units ${qItem.badge ? `<span style="color:var(--warning);font-size:0.7rem;">(${qItem.badge})</span>` : ''}</span>
-                                <span class="btn-desc">Auto-Pilot Dispatch</span>
-                            </div>
-                        </div>
-                        <span class="price-tag">$${price.toFixed(2)}</span>
-                    `;
-                    btn.onclick = () => openOrderModal(`${title} (${t.name})`, price, svcType, qItem.q, t.speed);
-                    grid.appendChild(btn);
+            if (activeMainTab === 'github') {
+                subBar.style.display = 'flex';
+                const ghSubTabs = ['Semua Tahun (2011–2026)', 'Vintage (2011–2016)', 'Mid-Aged (2017–2021)', 'Warmed (2022–2026)', '🚀 Jasa Boost GitHub', '🛡️ Scanner Shadowban'];
+                ghSubTabs.forEach(st => {
+                    const b = document.createElement('button');
+                    b.className = 'sub-tab-btn' + (activeSubTab === st || (activeSubTab === 'ALL' && st.startsWith('Semua')) ? ' active' : '');
+                    b.innerText = st;
+                    b.onclick = () => {
+                        activeSubTab = st;
+                        document.getElementById('nestedSubView').style.display = 'none';
+                        renderActiveView();
+                    };
+                    subBar.appendChild(b);
                 });
 
-                const btnCustom = document.createElement('button');
-                btnCustom.className = 'menu-btn';
-                btnCustom.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon">✍️</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">Custom Quantity (Min 10 Units)</span>
-                            <span class="btn-desc">5% Automatic Discount for >= 200 Units</span>
+                if (activeSubTab === '🛡️ Scanner Shadowban') {
+                    renderInPageScanner(grid);
+                    return;
+                }
+                if (activeSubTab === '🚀 Jasa Boost GitHub') {
+                    const boostItems = CATALOG_PRODUCTS.filter(p => p.sub === 'GitHub Boost');
+                    boostItems.forEach(item => grid.appendChild(createProductCard(item)));
+                    return;
+                }
+
+                GITHUB_YEARS.filter(yObj => {
+                    if (searchQuery && !yObj.title.toLowerCase().includes(searchQuery)) return false;
+                    const yNum = parseInt(yObj.yr);
+                    if (activeSubTab.startsWith('Vintage')) return yObj.yr === 'Arctic' || (yNum >= 2011 && yNum <= 2016);
+                    if (activeSubTab.startsWith('Mid-Aged')) return yNum >= 2017 && yNum <= 2021;
+                    if (activeSubTab.startsWith('Warmed')) return yNum >= 2022 && yNum <= 2026;
+                    return true;
+                }).forEach(yObj => {
+                    grid.appendChild(createGithubYearCard(yObj));
+                });
+                return;
+            }
+
+            // Untuk Tab Best, Pro, Social, SMM -> Buat Sub-Tab otomatis dari properti `sub`
+            let pool = [];
+            if (searchQuery) {
+                pool = CATALOG_PRODUCTS.filter(p => p.title.toLowerCase().includes(searchQuery) || p.desc.toLowerCase().includes(searchQuery));
+                subBar.style.display = 'none';
+            } else if (activeMainTab === 'best') {
+                pool = CATALOG_PRODUCTS.filter(p => p.bestSeller);
+                const subCats = ['ALL', ...new Set(pool.map(p => p.sub))];
+                subBar.style.display = 'flex';
+                subCats.forEach(sc => {
+                    const b = document.createElement('button');
+                    b.className = 'sub-tab-btn' + (activeSubTab === sc ? ' active' : '');
+                    b.innerText = sc === 'ALL' ? '🔥 Semua Terlaris' : sc;
+                    b.onclick = () => { activeSubTab = sc; renderActiveView(); };
+                    subBar.appendChild(b);
+                });
+                if (activeSubTab !== 'ALL') pool = pool.filter(p => p.sub === activeSubTab);
+            } else {
+                pool = CATALOG_PRODUCTS.filter(p => p.tab === activeMainTab);
+                const subCats = ['ALL', ...new Set(pool.map(p => p.sub))];
+                subBar.style.display = 'flex';
+                subCats.forEach(sc => {
+                    const b = document.createElement('button');
+                    b.className = 'sub-tab-btn' + (activeSubTab === sc ? ' active' : '');
+                    b.innerText = sc === 'ALL' ? '📦 Semua Kategori' : sc;
+                    b.onclick = () => { activeSubTab = sc; renderActiveView(); };
+                    subBar.appendChild(b);
+                });
+                if (activeSubTab !== 'ALL') pool = pool.filter(p => p.sub === activeSubTab);
+            }
+
+            pool.forEach(item => grid.appendChild(createProductCard(item)));
+        }
+
+        function handleGlobalSearch(val) {
+            const q = val.trim().toLowerCase();
+            renderActiveView(q);
+        }
+
+        // =========================================================
+        // 🃏 PEMBUAT KARTU PRODUK & SUB-TAB KATALOG TAHUN GITHUB
+        // =========================================================
+        function createProductCard(item) {
+            const card = document.createElement('div');
+            card.className = 'brutal-card';
+            const priceLabel = fmtPrice(item.usd) + (item.isBoost ? '/u' : '');
+            card.innerHTML = `
+                <div class="brutal-card-row">
+                    <div class="prod-info">
+                        <span class="prod-badge-mini">${item.badge}</span>
+                        <h3 class="prod-title">${item.title}</h3>
+                        <p class="prod-desc">${item.desc}</p>
+                    </div>
+                    <div class="pink-price-box">${priceLabel}</div>
+                </div>
+                <div class="card-footer-btns">
+                    <button class="btn-brutal yellow" onclick='openItemModal(${JSON.stringify(item)})'>⚡ Pilih Paket / Order</button>
+                </div>
+            `;
+            return card;
+        }
+
+        function createGithubYearCard(yObj) {
+            const liveList = liveGithubStock[yObj.yr] || [];
+            const countTxt = liveList.length > 0 ? `🟢 ${liveList.length} Akun Ready` : `⚡ Cek Ketersediaan`;
+            const card = document.createElement('div');
+            card.className = 'brutal-card';
+            card.innerHTML = `
+                <div class="brutal-card-row">
+                    <div class="prod-info">
+                        <span class="prod-badge-mini">${yObj.badge} • ${countTxt}</span>
+                        <h3 class="prod-title">${yObj.title}</h3>
+                        <p class="prod-desc">${yObj.desc}</p>
+                    </div>
+                    <div class="pink-price-box">${fmtPrice(yObj.usd)}</div>
+                </div>
+                <div class="card-footer-btns">
+                    <button class="btn-brutal secondary" onclick="openYearCatalogSubView('${yObj.yr}', '${yObj.title}', ${yObj.usd})">📂 Buka Daftar Akun (Di Sini)</button>
+                    <button class="btn-brutal primary" onclick="quickAddYearToCart('${yObj.yr}', '${yObj.title}', ${yObj.usd})">🛒 +Keranjang</button>
+                </div>
+            `;
+            return card;
+        }
+
+        // LEVEL 3 SUB-TAB: BUKA DAFTAR AKUN GITHUB LANGSUNG DI DALAM HALAMAN WEB (TANPA KE BOT!)
+        function openYearCatalogSubView(yearKey, title, defaultUsd) {
+            const box = document.getElementById('nestedSubView');
+            const list = liveGithubStock[yearKey] || [];
+            box.style.display = 'block';
+
+            let accountsHtml = '';
+            if (list.length > 0) {
+                accountsHtml = `<div class="product-list-grid">` + list.map((acc, idx) => {
+                    const prc = (acc.price_usd && acc.price_usd > 0) ? parseFloat(acc.price_usd) : (defaultUsd + (parseInt(acc.followers || 0) * 0.15));
+                    const uname = acc.username || `Account-${idx+1}`;
+                    const url = acc.url || `https://github.com/${uname}`;
+                    return `
+                        <div class="brutal-card" style="background:var(--soft-surface);">
+                            <div class="brutal-card-row">
+                                <div class="prod-info">
+                                    <span class="prod-badge-mini">ID: ${yearKey}-${uname}</span>
+                                    <h4 class="prod-title" style="font-family:'JetBrains Mono',monospace;">@${uname}</h4>
+                                    <p class="prod-desc">📊 Followers: <b>${acc.followers || 0}</b> • 📁 Repos: <b>${acc.repos || 0}</b></p>
+                                </div>
+                                <div class="pink-price-box">${fmtPrice(prc)}</div>
+                            </div>
+                            <div class="card-footer-btns">
+                                <a href="${url}" target="_blank" class="btn-brutal secondary">🔗 Cek Profil GitHub</a>
+                                <button class="btn-brutal primary" onclick="addSpecificAccToCart('${yearKey}-${uname}', 'GitHub ${yearKey} (@${uname})', ${prc}, '${yearKey}')">🛒 Pilih Akun Ini</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('') + `</div>`;
+            } else {
+                accountsHtml = `
+                    <div style="padding:16px;border:2px dashed var(--border-color);border-radius:8px;text-align:center;">
+                        <div style="font-weight:800;margin-bottom:6px;">📦 Pengiriman Otomatis dari Brankas (${title})</div>
+                        <p style="font-size:0.8rem;color:var(--text-muted);margin:0 0 12px 0;">Klik tombol di bawah untuk langsung memesan akun kategori <b>${yearKey}</b> dengan pengiriman kredensial instan (Username + Password + 2FA Key).</p>
+                        <button class="btn-brutal primary" style="max-width:280px;" onclick="quickAddYearToCart('${yearKey}', '${title}', ${defaultUsd})">⚡ Order ${title} Sekarang</button>
+                    </div>
+                `;
+            }
+
+            box.innerHTML = `
+                <div class="inpage-subview">
+                    <div class="subview-topbar">
+                        <div>
+                            <span class="poster-tag" style="margin-bottom:4px;">SUB-KATALOG LIVE</span>
+                            <h3 style="margin:0;font-size:1.15rem;font-weight:900;">📂 ${title}</h3>
+                        </div>
+                        <button class="ctrl-btn" onclick="document.getElementById('nestedSubView').style.display='none'">✕ Tutup Sub-Tab</button>
+                    </div>
+                    ${accountsHtml}
+                </div>
+            `;
+            box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // =========================================================
+        // 🛡️ IN-PAGE SHADOWBAN SCANNER (LANGSUNG JALAN DI WEB TANPA KE BOT!)
+        // =========================================================
+        function renderInPageScanner(container) {
+            container.style.gridTemplateColumns = '1fr';
+            container.innerHTML = `
+                <div class="inpage-subview">
+                    <span class="poster-tag">LIVE DIAGNOSTIC TOOL</span>
+                    <h3 style="margin:4px 0 8px 0;font-size:1.2rem;font-weight:900;">🛡️ GitHub Shadowban, Trust Score & Repo Scanner</h3>
+                    <p style="font-size:0.82rem;color:var(--text-muted);margin:0 0 14px 0;">Cek kesehatan akun atau repository GitHub langsung di halaman web ini tanpa perlu pindah ke Telegram.</p>
+                    <div class="search-wrap" style="margin-bottom:14px;">
+                        <input type="text" class="search-input" id="webScanInput" placeholder="Ketik username GitHub (contoh: torvalds)...">
+                        <button class="btn-brutal primary" style="flex:0 0 auto;padding:12px 20px;" onclick="runWebShadowbanScan()">🔍 Scan Sekarang</button>
+                    </div>
+                    <div id="webScanResult"></div>
+                </div>
+            `;
+        }
+
+        async function runWebShadowbanScan() {
+            const raw = document.getElementById('webScanInput').value.trim();
+            if (!raw) return showToast('Masukkan username GitHub!');
+            const uname = raw.replace('https://github.com/', '').replace('@', '').split('/')[0];
+            const resBox = document.getElementById('webScanResult');
+            resBox.innerHTML = `<div style="padding:12px;font-weight:800;">⏳ Mengecek status akun @${uname} langsung ke server GitHub...</div>`;
+            try {
+                const r = await fetch(`https://api.github.com/users/${uname}`);
+                if (r.status === 404) {
+                    resBox.innerHTML = `<div style="padding:14px;background:#fee2e2;border:2px solid #111;border-radius:8px;color:#991b1b;font-weight:800;">🔴 SUSPENDED / 404 NOT FOUND: Akun <b>@${uname}</b> tidak ditemukan atau terkena suspend!</div>`;
+                    return;
+                }
+                const d = await r.json();
+                const yr = d.created_at ? d.created_at.substring(0, 4) : 'N/A';
+                resBox.innerHTML = `
+                    <div style="padding:16px;background:var(--soft-surface);border:2.5px solid #111;border-radius:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                        <img src="${d.avatar_url}" style="width:56px;height:56px;border-radius:50%;border:2px solid #111;">
+                        <div style="flex:1;">
+                            <div style="font-weight:900;font-size:1rem;">🟢 AKUN SEHAT (PUBLIC 200 OK) — @${d.login}</div>
+                            <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin-top:4px;">
+                                📅 Tahun Pembuatan: <b>${yr}</b> • 👥 Followers: <b>${d.followers}</b> • 📁 Public Repos: <b>${d.public_repos}</b>
+                            </div>
+                        </div>
+                        <a href="https://github.com/${d.login}" target="_blank" class="btn-brutal yellow" style="flex:0 0 auto;">🌐 Buka Profil</a>
+                    </div>
+                `;
+            } catch (e) {
+                resBox.innerHTML = `<div style="padding:12px;color:#dc2626;font-weight:800;">⚠️ Gagal menghubungi API GitHub. Coba beberapa saat lagi.</div>`;
+            }
+        }
+
+        // =========================================================
+        // 🧾 TAB CEK PESANAN & LIVE GITHUB BOOST TRACKER DI WEB
+        // =========================================================
+        function renderOrdersAndTrackerTab(container) {
+            container.style.gridTemplateColumns = '1fr';
+            const savedOrders = JSON.parse(localStorage.getItem('xb_web_orders') || '[]');
+
+            let historyHtml = '';
+            if (savedOrders.length === 0) {
+                historyHtml = `<div style="padding:16px;border:2px dashed var(--border-color);border-radius:8px;text-align:center;font-weight:700;color:var(--text-muted);">Belum ada riwayat invoice di browser ini. Silakan pilih produk lalu klik Order Sekarang.</div>`;
+            } else {
+                historyHtml = savedOrders.map(o => `
+                    <div class="brutal-card" style="margin-bottom:10px;">
+                        <div class="brutal-card-row">
+                            <div>
+                                <span class="prod-badge-mini">🧾 ${o.invoice} • ${o.date}</span>
+                                <h4 class="prod-title">${o.summary}</h4>
+                                <p class="prod-desc">Metode: <b>${o.payMethod}</b> • Kontak: <b>${o.contact}</b></p>
+                            </div>
+                            <div class="pink-price-box">${fmtPrice(o.totalUsd)}</div>
                         </div>
                     </div>
-                    <span class="arrow-icon">▶</span>
-                `;
-                btnCustom.onclick = () => openOrderModalCustom(`${title} (${t.name})`, svcType, t.speed, t.base);
-                grid.appendChild(btnCustom);
-
-                section.appendChild(grid);
-                detailContent.appendChild(section);
-            });
-
-            switchMainTab('detail', true);
-        }
-
-        // 9. ORDER MODAL & GITHUB LIVE TARGET PREVIEW
-        let currentPrice = 0, currentItem = "", currentSvcType = "", currentQty = 100, currentSpeed = "reg", currentBasePrice = 0, isCustomQty = false;
-
-        function openOrderModal(title, price, type, qty, speed) {
-            triggerHaptic('light');
-            isCustomQty = false;
-            currentItem = title;
-            currentSvcType = type;
-            currentQty = qty;
-            currentSpeed = speed;
-            currentPrice = price;
-
-            document.getElementById('orderTitle').innerText = title;
-            document.getElementById('orderTarget').value = '';
-            document.getElementById('qtyGroup').style.display = 'none';
-            document.getElementById('targetPreview').style.display = 'none';
-            document.getElementById('orderLabel').innerText = (type === 'followers') ? 'Target GitHub Username' : 'Target Link / Repository (owner/repo)';
-            document.getElementById('orderTotal').innerText = '$' + price.toFixed(2);
-            document.getElementById('orderModal').classList.add('active');
-        }
-
-        function openOrderModalCustom(title, type, speed, basePrice) {
-            triggerHaptic('light');
-            isCustomQty = true;
-            currentItem = title;
-            currentSvcType = type;
-            currentSpeed = speed;
-            currentBasePrice = basePrice;
-
-            document.getElementById('orderTitle').innerText = title;
-            document.getElementById('orderTarget').value = '';
-            document.getElementById('orderQty').value = '100';
-            document.getElementById('qtyGroup').style.display = 'block';
-            document.getElementById('targetPreview').style.display = 'none';
-            document.getElementById('orderLabel').innerText = (type === 'followers') ? 'Target GitHub Username' : 'Target Link / Repository (owner/repo)';
-            calcTotal();
-            document.getElementById('orderModal').classList.add('active');
-        }
-
-        function calcTotal() {
-            if (!isCustomQty) return;
-            let q = parseInt(document.getElementById('orderQty').value) || 0;
-            if (q < 0) q = 0;
-            currentQty = q;
-            const mult = (q >= 200) ? 0.95 : 1.0;
-            currentPrice = q * currentBasePrice * mult;
-            document.getElementById('orderTotal').innerText = '$' + currentPrice.toFixed(2);
-        }
-
-        function submitOrder() {
-            const target = document.getElementById('orderTarget').value.trim();
-            if (!target) {
-                showToast('Please enter a valid target!', true);
-                return;
+                `).join('');
             }
-            if (isCustomQty && currentQty < 10) {
-                showToast('Minimum order is 10 units!', true);
-                return;
-            }
-            closeModal('orderModal');
-            sendActionToBot("ORDER_SERVICE", {
-                item_name: currentItem,
-                service_type: currentSvcType,
-                speed: currentSpeed,
-                quantity: currentQty,
-                total_price: currentPrice.toFixed(2),
-                target: target
-            });
+
+            container.innerHTML = `
+                <div class="inpage-subview">
+                    <span class="poster-tag">📡 LIVE BOOST TRACKER</span>
+                    <h3 style="margin:4px 0 8px 0;font-size:1.2rem;font-weight:900;">Cek Metrik GitHub Real-Time (Followers / Stars / Forks)</h3>
+                    <p style="font-size:0.8rem;color:var(--text-muted);margin:0 0 12px 0;">Masukkan username atau link repository GitHub yang sedang Anda boost untuk melihat jumlah Followers, Stars, dan Forks saat ini secara live.</p>
+                    <div class="search-wrap" style="margin-bottom:14px;">
+                        <input type="text" class="search-input" id="liveTrackInput" placeholder="Contoh: username atau owner/repo">
+                        <button class="btn-brutal primary" style="flex:0 0 auto;padding:12px 18px;" onclick="checkLiveBoostMetric()">📡 Cek Metrik Live</button>
+                    </div>
+                    <div id="liveTrackResult"></div>
+                </div>
+
+                <div class="inpage-subview">
+                    <span class="poster-tag">🧾 RIWAYAT INVOICE WEB ANDA</span>
+                    <h3 style="margin:4px 0 12px 0;font-size:1.15rem;font-weight:900;">Daftar Pesanan Terbaru</h3>
+                    ${historyHtml}
+                </div>
+            `;
         }
 
-        // Live GitHub API Target Preview
-        let previewTimeout;
-        document.getElementById('orderTarget').addEventListener('input', function(e) {
-            clearTimeout(previewTimeout);
-            const val = e.target.value.trim();
-            const previewBox = document.getElementById('targetPreview');
-            if (!val || val.length < 2 || !['followers', 'stars', 'forks', 'watch'].includes(currentSvcType)) {
-                previewBox.style.display = 'none';
-                return;
+        async function checkLiveBoostMetric() {
+            const raw = document.getElementById('liveTrackInput').value.trim();
+            if (!raw) return showToast('Masukkan username atau owner/repo!');
+            const clean = raw.replace('https://github.com/', '').replace('@', '').replace(/\/$/, '');
+            const box = document.getElementById('liveTrackResult');
+            box.innerHTML = `<div style="font-weight:800;">🔄 Mengambil data live dari GitHub...</div>`;
+            try {
+                if (clean.includes('/')) {
+                    const r = await fetch(`https://api.github.com/repos/${clean}`);
+                    if (!r.ok) throw new Error('Repo tidak ditemukan');
+                    const d = await r.json();
+                    box.innerHTML = `
+                        <div style="padding:14px;background:var(--soft-surface);border:2.5px solid #111;border-radius:8px;font-weight:800;">
+                            📦 Repo: <b>${d.full_name}</b><br>
+                            ⭐ Stars Saat Ini: <b>${d.stargazers_count}</b> &nbsp;|&nbsp; ⎇ Forks: <b>${d.forks_count}</b> &nbsp;|&nbsp; 👁️ Watchers: <b>${d.subscribers_count || d.watchers_count}</b>
+                        </div>
+                    `;
+                } else {
+                    const r = await fetch(`https://api.github.com/users/${clean}`);
+                    if (!r.ok) throw new Error('User tidak ditemukan');
+                    const d = await r.json();
+                    box.innerHTML = `
+                        <div style="padding:14px;background:var(--soft-surface);border:2.5px solid #111;border-radius:8px;font-weight:800;">
+                            👤 User: <b>@${d.login}</b><br>
+                            👥 Followers Saat Ini: <b>${d.followers} Followers</b> &nbsp;|&nbsp; 📁 Public Repos: <b>${d.public_repos}</b>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                box.innerHTML = `<div style="color:#dc2626;font-weight:800;">❌ Target tidak ditemukan atau Private!</div>`;
             }
-            previewTimeout = setTimeout(() => {
-                let target = val.replace('https://github.com/', '').replace('@', '').split('?')[0].split('#')[0].replace(/\/$/, '');
-                if (!target) return;
-                const isRepo = currentSvcType !== 'followers' && target.includes('/');
-                const apiUrl = isRepo ? `https://api.github.com/repos/${target}` : `https://api.github.com/users/${target.split('/')[0]}`;
-                previewBox.style.display = 'flex';
-                previewBox.innerHTML = `<span style="font-size:0.78rem;color:var(--accent-color);">🔄 Verifying target on GitHub...</span>`;
+        }
 
-                fetch(apiUrl)
-                    .then(r => { if (!r.ok) throw new Error('404'); return r.json(); })
-                    .then(data => {
-                        const avatar = isRepo ? data.owner.avatar_url : data.avatar_url;
-                        const name = isRepo ? data.full_name : (data.name || data.login);
-                        const metric = isRepo ? `⭐ ${data.stargazers_count} Stars • ⎇ ${data.forks_count} Forks` : `👥 ${data.followers} Followers • 📁 ${data.public_repos} Repos`;
-                        previewBox.innerHTML = `
-                            <img src="${avatar}" class="preview-img">
-                            <div class="preview-info">
-                                <span class="preview-name">${name}</span>
-                                <span class="preview-stats">${metric}</span>
-                            </div>
-                        `;
-                    })
-                    .catch(() => {
-                        previewBox.innerHTML = `<span style="font-size:0.78rem;color:var(--danger);">❌ Target not found (404) or Private!</span>`;
-                    });
-            }, 600);
-        });
-
-        // 10. SHOPPING CART (TERKONEKSI PENUH DENGAN CHECKOUT_CART DI XianBee-TechStore.py)
+        // =========================================================
+        // 🛒 MODAL ORDER & KERANJANG BELANJA MANDIRI
+        // =========================================================
+        let selectedModalItem = null;
+        let selectedSpeedMult = 1.0;
+        let selectedSpeedName = 'Regular';
         let cart = [];
+        let selectedPayment = 'QRIS / E-Wallet';
 
-        function addToCart(itemId, title, price, yearStr) {
-            triggerHaptic('medium');
-            const uniqueCartId = `${yearStr}-${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
-            cart.push({
-                id: uniqueCartId,
-                item_id: `akun_${String(yearStr)}`,
-                year: String(yearStr),
+        function openItemModal(item) {
+            selectedModalItem = item;
+            selectedSpeedMult = 1.0;
+            selectedSpeedName = 'Regular';
+
+            document.getElementById('modItemBadge').innerText = item.badge || 'INSTANT ORDER';
+            document.getElementById('modItemTitle').innerText = item.title;
+            document.getElementById('modItemDesc').innerText = item.desc;
+            document.getElementById('modTargetLabel').innerText = item.needTarget || 'Masukkan Target / Catatan:';
+            document.getElementById('modTargetInput').value = '';
+            document.getElementById('modGithubPreview').style.display = 'none';
+
+            const varGroup = document.getElementById('modVariantGroup');
+            const varPills = document.getElementById('modVariantPills');
+            const qtyGroup = document.getElementById('modQtyGroup');
+
+            if (item.isBoost) {
+                qtyGroup.style.display = 'block';
+                document.getElementById('modQtyInput').value = 100;
+                if (['followers', 'stars', 'forks', 'watch'].includes(item.svcKey)) {
+                    varGroup.style.display = 'block';
+                    varPills.innerHTML = '';
+                    const tracks = [
+                        { name: '🐌 Regular Track', mult: 1.0 },
+                        { name: '🚀 Fast Track (+10%)', mult: 1.1 },
+                        { name: '⚡ Ultra Track (+20%)', mult: 1.2 }
+                    ];
+                    tracks.forEach((tr, i) => {
+                        const b = document.createElement('button');
+                        b.className = 'sub-tab-btn' + (i === 0 ? ' active' : '');
+                        b.innerText = tr.name;
+                        b.onclick = () => {
+                            varPills.querySelectorAll('.sub-tab-btn').forEach(x => x.classList.remove('active'));
+                            b.classList.add('active');
+                            selectedSpeedMult = tr.mult;
+                            selectedSpeedName = tr.name.split(' ')[1];
+                            recalcModalPrice();
+                        };
+                        varPills.appendChild(b);
+                    });
+                } else {
+                    varGroup.style.display = 'none';
+                }
+            } else {
+                qtyGroup.style.display = 'none';
+                varGroup.style.display = 'none';
+            }
+
+            recalcModalPrice();
+            document.getElementById('itemOrderModal').classList.add('active');
+        }
+
+        function recalcModalPrice() {
+            if (!selectedModalItem) return;
+            let totalUsd = selectedModalItem.usd;
+            if (selectedModalItem.isBoost) {
+                const q = Math.max(10, parseInt(document.getElementById('modQtyInput').value) || 10);
+                const disc = q >= 200 ? 0.95 : 1.0;
+                totalUsd = q * selectedModalItem.usd * selectedSpeedMult * disc;
+            }
+            document.getElementById('modTotalPrice').innerText = fmtPrice(totalUsd);
+        }
+
+        function buildCurrentModalCartEntry() {
+            const target = document.getElementById('modTargetInput').value.trim() || '-';
+            let qty = 1;
+            let totalUsd = selectedModalItem.usd;
+            let title = selectedModalItem.title;
+            if (selectedModalItem.isBoost) {
+                qty = Math.max(10, parseInt(document.getElementById('modQtyInput').value) || 10);
+                const disc = qty >= 200 ? 0.95 : 1.0;
+                totalUsd = qty * selectedModalItem.usd * selectedSpeedMult * disc;
+                title = `${selectedModalItem.title} (${qty} Units - ${selectedSpeedName})`;
+            }
+            return {
+                id: selectedModalItem.id + '-' + Date.now(),
                 title: title,
-                price: parseFloat(price)
+                target: target,
+                qty: qty,
+                priceUsd: totalUsd,
+                rawItem: selectedModalItem
+            };
+        }
+
+        function addModalItemToCart() {
+            if (selectedModalItem.isBoost && !document.getElementById('modTargetInput').value.trim()) {
+                return showToast('Harap isi target username/link terlebih dahulu!');
+            }
+            cart.push(buildCurrentModalCartEntry());
+            updateCartCounter();
+            closeModal('itemOrderModal');
+            showToast('Produk ditambahkan ke Keranjang!');
+        }
+
+        function buyNowDirect() {
+            if (selectedModalItem.isBoost && !document.getElementById('modTargetInput').value.trim()) {
+                return showToast('Harap isi target username/link terlebih dahulu!');
+            }
+            cart.push(buildCurrentModalCartEntry());
+            updateCartCounter();
+            closeModal('itemOrderModal');
+            openCartModal();
+        }
+
+        function quickAddYearToCart(yrKey, title, usd) {
+            cart.push({
+                id: `gh-${yrKey}-${Date.now()}`,
+                title: title,
+                target: `Auto-Assign Vault (${yrKey})`,
+                qty: 1,
+                priceUsd: parseFloat(usd),
+                yearKey: yrKey
             });
-            updateCartBadge();
-            showToast(`${title} added to Cart!`);
+            updateCartCounter();
+            openCartModal();
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartBadge();
-            renderCartModal();
+        function addSpecificAccToCart(accId, title, usd, yrKey) {
+            cart.push({
+                id: accId,
+                title: title,
+                target: `Specific ID: ${accId}`,
+                qty: 1,
+                priceUsd: parseFloat(usd),
+                yearKey: yrKey
+            });
+            updateCartCounter();
+            openCartModal();
         }
 
-        function updateCartBadge() {
-            const badge = document.getElementById('cartBadge');
-            badge.innerText = cart.length;
-            badge.classList.toggle('show', cart.length > 0);
+        function updateCartCounter() {
+            document.getElementById('cartCount').innerText = cart.length;
         }
 
         function openCartModal() {
-            triggerHaptic('light');
-            renderCartModal();
-            document.getElementById('cartModal').classList.add('active');
-        }
-
-        function renderCartModal() {
-            const content = document.getElementById('cartContent');
-            const totalEl = document.getElementById('cartTotal');
-            const btnCheck = document.getElementById('btnCheckout');
-            content.innerHTML = '';
-
+            const listEl = document.getElementById('cartListContainer');
             if (cart.length === 0) {
-                content.innerHTML = '<p style="text-align:center;color:var(--text-muted);font-weight:600;margin:20px 0;">Your cart is empty.</p>';
-                totalEl.innerText = '$0.00';
-                btnCheck.disabled = true;
-                btnCheck.style.opacity = '0.5';
-                return;
-            }
-
-            let total = 0;
-            cart.forEach((item, idx) => {
-                total += item.price;
-                const div = document.createElement('div');
-                div.className = 'cart-item-row';
-                div.innerHTML = `
-                    <div>
-                        <div style="font-weight:800;font-size:0.88rem;color:var(--text-main);">${item.title}</div>
-                        <div style="font-size:0.72rem;color:var(--accent-color);font-family:'JetBrains Mono';">Category: ${item.year}</div>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px;">
-                        <span style="font-family:'JetBrains Mono';font-weight:800;color:var(--success);">$${item.price.toFixed(2)}</span>
-                        <button onclick="removeFromCart(${idx})" style="background:rgba(239,68,68,0.18);border:1px solid var(--danger);color:var(--text-main);border-radius:8px;padding:4px 8px;cursor:pointer;">🗑️</button>
-                    </div>
-                `;
-                content.appendChild(div);
-            });
-
-            totalEl.innerText = '$' + total.toFixed(2);
-            btnCheck.disabled = false;
-            btnCheck.style.opacity = '1';
-        }
-
-        function checkoutCart() {
-            if (cart.length === 0) return;
-            sendActionToBot("CHECKOUT_CART", { items: cart });
-            cart = [];
-            updateCartBadge();
-            closeModal('cartModal');
-        }
-
-        // 11. WALLET DEPOSIT & UTILITIES
-        let currentTopupAmount = 10;
-
-        function openTopupSelection(amount) {
-            currentTopupAmount = amount;
-            document.getElementById('topupAmtDisplay').innerText = amount.toFixed(2);
-            triggerHaptic('light');
-            document.getElementById('topupSelectModal').classList.add('active');
-        }
-
-        function openCustomTopup() {
-            triggerHaptic('light');
-            document.getElementById('customTopupModal').classList.add('active');
-        }
-
-        function confirmCustomTopup() {
-            const val = parseFloat(document.getElementById('customTopupInput').value);
-            if (isNaN(val) || val < 5) {
-                showToast('Minimum deposit is $5.00 USDT!', true);
-                return;
-            }
-            closeModal('customTopupModal');
-            openTopupSelection(val);
-        }
-
-        function submitTopup(method) {
-            closeModal('topupSelectModal');
-            sendActionToBot("TOPUP", { amount: currentTopupAmount, method: method });
-        }
-
-        function requestBalanceSync() {
-            showToast('Syncing balance with Bot...');
-            sendActionToBot("REFRESH_BALANCE");
-        }
-
-        function openCheckStatusModal() {
-            triggerHaptic('light');
-            document.getElementById('checkStatusTarget').value = '';
-            document.getElementById('checkStatusModal').classList.add('active');
-        }
-
-        function submitCheckStatus() {
-            const target = document.getElementById('checkStatusTarget').value.trim();
-            if (!target) {
-                showToast('Please enter a GitHub username!', true);
-                return;
-            }
-            closeModal('checkStatusModal');
-            sendActionToBot('CHECK_STATUS_WEB', { target: target });
-        }
-
-        function contactAdminDirect() {
-            try { tg.openTelegramLink('https://t.me/XianBeeTechStore'); }
-            catch (e) { window.open('https://t.me/XianBeeTechStore', '_blank'); }
-        }
-
-        // 12. EXECUTIVE ADMIN COMMAND CENTER (100% MATCHED WITH handle_webapp_data)
-        const ADMIN_IDS = ["6740043923", "7095661271"];
-        const adminTools = [
-            { icon: '📢', title: 'Mass Broadcast',       cmd: 'admin_broadcast',    type: 'text',   placeholder: 'Enter broadcast text (HTML supported)...' },
-            { icon: '📦', title: 'Add Account Stock',    cmd: 'admin_addstock',     type: 'text',   placeholder: 'Format: 2012 username1 username2' },
-            { icon: '🗑️', title: 'Delete Account Stock', cmd: 'admin_delstock',     type: 'input',  placeholder: 'Enter username(s) to delete...' },
-            { icon: '💰', title: 'Update Account Price', cmd: 'admin_update_price', type: 'text',   placeholder: 'Format: 2012 28.0 or username 35.0' },
-            { icon: '💸', title: 'Update Service Price', cmd: 'admin_svc_price',    type: 'text',   placeholder: 'Format: followers reg 0.50' },
-            { icon: '🧹', title: 'Cleanup 404 Stock',    cmd: 'admin_cleanup',      type: 'input',  placeholder: 'Enter Year (e.g. 2012) or ALL' },
-            { icon: '🔍', title: 'Mass Check Links',     cmd: 'admin_check_links',  type: 'text',   placeholder: 'Paste GitHub URLs separated by space/newline...' },
-            { icon: '🚀', title: 'Manual Swarm Deploy',  cmd: 'admin_manual_deploy',type: 'deploy' },
-            { icon: '⚙️', title: 'Add Worker Engine',    cmd: 'admin_add_engine',   type: 'input',  placeholder: 'Name | Token | owner/repo | 100' },
-            { icon: '🗑️', title: 'Delete Worker Engine', cmd: 'admin_del_engine',   type: 'input',  placeholder: 'Enter Engine ID to delete...' },
-            { icon: '📋', title: 'List Active Engines',  cmd: 'admin_list_engines', type: 'action' },
-            { icon: '📁', title: 'View Sold Accounts',   cmd: 'admin_view_sold',    type: 'action' },
-            { icon: '📜', title: 'View Service Orders',  cmd: 'admin_view_history', type: 'action' },
-            { icon: '🚨', title: 'View 404 Suspended',   cmd: 'admin_view_suspend', type: 'action' }
-        ];
-
-        let adminChartInstance = null;
-        let pendingAdminCmd = "";
-
-        function openAdminPanel() {
-            if (!urlUid || !ADMIN_IDS.includes(String(urlUid))) {
-                triggerHaptic('error');
-                document.getElementById('glitchModal').classList.add('active');
-                return;
-            }
-            switchMainTab('admin');
-
-            const ctxChart = document.getElementById('revenueChart');
-            if (ctxChart) {
-                if (adminChartInstance) adminChartInstance.destroy();
-                const isLight = currentTheme === 'platinum';
-                const tickColor = isLight ? '#475569' : '#94a3b8';
-                adminChartInstance = new Chart(ctxChart, {
-                    type: 'bar',
-                    data: {
-                        labels: ['2012', '2015', '2018', '2020', '2023', '2025', '2026'],
-                        datasets: [
-                            {
-                                type: 'line',
-                                label: 'Base Price ($ USDT)',
-                                data: [28, 22, 16, 12, 7.5, 5.5, 4.5],
-                                borderColor: '#10b981',
-                                backgroundColor: 'rgba(16, 185, 129, 0.15)',
-                                borderWidth: 2.5,
-                                tension: 0.35,
-                                fill: true
-                            },
-                            {
-                                type: 'bar',
-                                label: 'Demand Index',
-                                data: [95, 88, 82, 78, 85, 92, 98],
-                                backgroundColor: 'rgba(139, 92, 246, 0.72)',
-                                borderRadius: 6
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        plugins: { legend: { labels: { color: tickColor, font: { size: 11 } } } },
-                        scales: {
-                            x: { ticks: { color: tickColor }, grid: { color: 'rgba(148,163,184,0.1)' } },
-                            y: { ticks: { color: tickColor }, grid: { color: 'rgba(148,163,184,0.1)' } }
-                        }
-                    }
-                });
-            }
-
-            const adminContent = document.getElementById('admin-content');
-            adminContent.innerHTML = '';
-            adminTools.forEach(tool => {
-                const btn = document.createElement('button');
-                btn.className = 'menu-btn';
-                btn.innerHTML = `
-                    <div class="btn-content">
-                        <div class="btn-icon" style="background:var(--grad-danger);">${tool.icon}</div>
-                        <div class="btn-text-wrapper">
-                            <span class="btn-title">${tool.title}</span>
-                            <span class="btn-desc" style="font-family:'JetBrains Mono';">${tool.cmd}</span>
-                        </div>
-                    </div>
-                    <span class="arrow-icon" style="color:var(--danger);">▶</span>
-                `;
-                btn.onclick = () => handleAdminAction(tool);
-                adminContent.appendChild(btn);
-            });
-        }
-
-        function handleAdminAction(tool) {
-            triggerHaptic('light');
-            if (tool.type === 'action') {
-                sendActionToBot("ADMIN_CMD", { command: tool.cmd });
-            } else if (tool.type === 'deploy') {
-                document.getElementById('deployTarget').value = '';
-                document.getElementById('adminDeployModal').classList.add('active');
+                listEl.innerHTML = `<div style="padding:18px;text-align:center;color:var(--text-muted);font-weight:700;">Keranjang belanja Anda masih kosong.</div>`;
+                document.getElementById('cartGrandTotal').innerText = fmtPrice(0);
             } else {
-                pendingAdminCmd = tool.cmd;
-                document.getElementById('adminInputTitle').innerText = tool.title;
-                const area = document.getElementById('adminInputArea');
-                const inp = document.getElementById('adminInputText');
-                if (tool.type === 'text') {
-                    area.style.display = 'block';
-                    inp.style.display = 'none';
-                    area.value = '';
-                    area.placeholder = tool.placeholder;
-                } else {
-                    area.style.display = 'none';
-                    inp.style.display = 'block';
-                    inp.value = '';
-                    inp.placeholder = tool.placeholder;
-                }
-                document.getElementById('adminInputModal').classList.add('active');
+                let sumUsd = 0;
+                listEl.innerHTML = cart.map((c, idx) => {
+                    sumUsd += c.priceUsd;
+                    return `
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:2px solid var(--border-color);border-radius:8px;margin-bottom:8px;background:var(--soft-surface);">
+                            <div style="flex:1;min-width:0;padding-right:8px;">
+                                <div style="font-weight:800;font-size:0.86rem;">${c.title}</div>
+                                <div style="font-size:0.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Target: ${c.target}</div>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:8px;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-weight:800;">${fmtPrice(c.priceUsd)}</span>
+                                <button class="ctrl-btn" style="background:#fee2e2;color:#991b1b;" onclick="removeCartItem(${idx})">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                document.getElementById('cartGrandTotal').innerText = fmtPrice(sumUsd);
             }
+            document.getElementById('cartCheckoutModal').classList.add('active');
         }
 
-        function submitAdminInput() {
-            const area = document.getElementById('adminInputArea');
-            const inp = document.getElementById('adminInputText');
-            const val = area.style.display === 'block' ? area.value.trim() : inp.value.trim();
-            if (!val) {
-                showToast('Input cannot be empty!', true);
-                return;
-            }
-            closeModal('adminInputModal');
-            sendActionToBot("ADMIN_CMD_DATA", { command: pendingAdminCmd, data: val });
+        function removeCartItem(i) {
+            cart.splice(i, 1);
+            updateCartCounter();
+            openCartModal();
         }
 
-        function submitManualDeployFull() {
-            const target = document.getElementById('deployTarget').value.trim();
-            const svc = document.getElementById('deploySvc').value;
-            const qty = document.getElementById('deployQty').value;
-            const eng = document.getElementById('deployEngine').value.trim();
-            const dur = document.getElementById('deployDur').value.trim();
-            const idx = document.getElementById('deployIdx').value.trim();
-            if (!target || !eng || !dur || !idx) {
-                showToast('All fields are required!', true);
-                return;
-            }
-            closeModal('adminDeployModal');
-            const payload = `${target} | ${svc} | ${qty} | ${eng} | ${dur} | ${idx}`;
-            sendActionToBot("ADMIN_CMD_DATA", { command: "admin_manual_deploy_full", data: payload });
+        function selectPayMethod(el) {
+            document.querySelectorAll('#payMethodGrid .pay-option').forEach(x => x.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedPayment = el.getAttribute('data-pay');
         }
 
-        // 13. BOT BRIDGE, HAPTICS, TOAST, 3D TILT & AMBIENT PARTICLES
-        function sendActionToBot(actionType, extraData = {}) {
-            triggerHaptic('medium');
-            const payload = { action: actionType, ...extraData };
-            try {
-                tg.sendData(JSON.stringify(payload));
-            } catch (e) {
-                console.log("Payload:", payload);
+        // BUAT INVOICE LANGSUNG DI DALAM WEB (MANDIRI 100%)
+        function createWebInvoice() {
+            if (cart.length === 0) return showToast('Keranjang masih kosong!');
+            const contact = document.getElementById('buyerContactInput').value.trim() || 'Guest-Web';
+            const invCode = 'INV-XB-' + Math.floor(10000 + Math.random() * 90000);
+            const totalUsd = cart.reduce((acc, x) => acc + x.priceUsd, 0);
+            const totalIdr = Math.round(totalUsd * IDR_RATE);
+            const summary = cart.map(x => x.title).join(', ');
+
+            const payInstructions = {
+                'QRIS / E-Wallet': '📱 <b>DANA / OVO / GoPay:</b> <code>089638423184</code> (a/n Admin XianBee-Tech)',
+                'SeaBank / Transfer Bank': '🏦 <b>SeaBank Transfer:</b> <code>901016712730</code> (a/n Admin XianBee-Tech)',
+                'Binance Pay': '🔶 <b>Binance Pay ID:</b> <code>84876607</code>',
+                'OxaPay Crypto (USDT)': '🪙 <b>USDT (BEP-20 / TRC-20):</b> <code>0xA0F03ABeED5e6926F2CF2f91ED9927C143872a1B</code>'
+            };
+
+            const orders = JSON.parse(localStorage.getItem('xb_web_orders') || '[]');
+            orders.unshift({
+                invoice: invCode,
+                date: new Date().toLocaleString('id-ID'),
+                summary: summary,
+                totalUsd: totalUsd,
+                payMethod: selectedPayment,
+                contact: contact
+            });
+            localStorage.setItem('xb_web_orders', JSON.stringify(orders.slice(0, 20)));
+
+            const body = document.getElementById('invoiceResultBody');
+            body.innerHTML = `
+                <div style="text-align:center;margin-bottom:14px;">
+                    <span class="poster-tag">OFFICIAL WEB INVOICE</span>
+                    <h2 style="margin:6px 0 2px 0;font-family:'JetBrains Mono',monospace;font-size:1.3rem;">${invCode}</h2>
+                    <div style="font-size:0.78rem;color:var(--text-muted);font-weight:700;">Simpan kode invoice ini untuk klaim & garansi</div>
+                </div>
+
+                <div style="background:var(--soft-surface);border:2px solid var(--border-color);border-radius:8px;padding:14px;margin-bottom:14px;font-size:0.84rem;line-height:1.5;">
+                    <div>📦 <b>Pesanan:</b> ${summary}</div>
+                    <div>👤 <b>Kontak Pembeli:</b> ${contact}</div>
+                    <div>💳 <b>Metode Bayar:</b> ${selectedPayment}</div>
+                    <hr style="border:none;border-top:1.5px dashed var(--border-color);margin:10px 0;">
+                    <div style="font-size:0.95rem;font-weight:900;">💰 Total Bayar: <span style="color:#e6007a;">Rp${totalIdr.toLocaleString('id-ID')}</span> ($${totalUsd.toFixed(2)} USDT)</div>
+                </div>
+
+                <div style="background:#fffbeb;color:#111827;border:2px solid #111827;border-radius:8px;padding:12px;margin-bottom:16px;font-size:0.82rem;">
+                    <b>📥 INSTRUKSI PEMBAYARAN:</b><br>
+                    ${payInstructions[selectedPayment]}
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Halo Admin XianBee, saya sudah checkout di Web.\nInvoice: ${invCode}\nPesanan: ${summary}\nTotal: Rp${totalIdr.toLocaleString('id-ID')} ($${totalUsd.toFixed(2)})\nMetode: ${selectedPayment}`)}" target="_blank" class="btn-brutal primary">
+                        ✅ Kirim Bukti Bayar ke Admin (@XianBeeTechStore)
+                    </a>
+                    <button class="btn-brutal secondary" onclick="closeModal('invoiceResultModal'); switchTab('orders');">
+                        🧾 Lihat di Tab Riwayat Pesanan Web
+                    </button>
+                </div>
+            `;
+
+            cart = [];
+            updateCartCounter();
+            closeModal('cartCheckoutModal');
+            document.getElementById('invoiceResultModal').classList.add('active');
+        }
+
+        function checkoutViaTelegramBot() {
+            if (cart.length === 0) return showToast('Keranjang masih kosong!');
+            if (tg && tg.sendData) {
+                const itemsPayload = cart.map(c => ({
+                    id: c.id,
+                    year: c.yearKey || '2026',
+                    title: c.title,
+                    price: c.priceUsd
+                }));
+                tg.sendData(JSON.stringify({ action: 'CHECKOUT_CART', items: itemsPayload }));
+            } else {
+                createWebInvoice();
             }
         }
 
@@ -2738,94 +1724,17 @@
             document.getElementById(id).classList.remove('active');
         }
 
-        let tstTm;
-        function showToast(msg, isError = false) {
-            const t = document.getElementById('sysToast');
-            t.innerHTML = `<span>${isError ? '❌' : '✅'}</span> <span>${msg}</span>`;
-            t.classList.add('show');
-            clearTimeout(tstTm);
-            tstTm = setTimeout(() => t.classList.remove('show'), 2800);
+        let toastTimer;
+        function showToast(msg) {
+            const el = document.getElementById('toastPop');
+            el.innerText = '⚡ ' + msg;
+            el.classList.add('show');
+            clearTimeout(toastTimer);
+            toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
         }
 
-        function triggerHaptic(style) {
-            try { if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred(style); } catch (e) {}
-        }
-
-        // 3D Wallet Card Tilt
-        const cardWrapper = document.getElementById('cardWrapper');
-        const card = document.getElementById('digitalCard');
-        if (cardWrapper && card) {
-            cardWrapper.addEventListener('mousemove', (e) => {
-                const rect = cardWrapper.getBoundingClientRect();
-                const rotateX = (((e.clientY - rect.top) - (rect.height / 2)) / (rect.height / 2)) * -8;
-                const rotateY = (((e.clientX - rect.left) - (rect.width / 2)) / (rect.width / 2)) * 8;
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            });
-            cardWrapper.addEventListener('mouseleave', () => {
-                card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
-            });
-        }
-
-        // FOMO Live Ticker
-        const fomoNames = ['@abi***', '@dan***', '@sky***', 'XB-9***', '@nex***', '@mar***', '@xian***'];
-        const fomoActions = [
-            { i: '🎉', t: 'just purchased <span>GitHub 2012 Account</span>' },
-            { i: '🔥', t: 'just topped up <span>$50.00 USDT</span>' },
-            { i: '🚀', t: 'deployed <span>100 GitHub Stars</span>' },
-            { i: '❄️', t: 'checked out <span>Arctic Vault Account</span>' },
-            { i: '👑', t: 'subscribed to <span>ChatGPT Plus</span>' }
-        ];
-        setInterval(() => {
-            if (document.visibilityState !== 'visible') return;
-            const t = document.getElementById('fomoTicker');
-            const n = fomoNames[Math.floor(Math.random() * fomoNames.length)];
-            const a = fomoActions[Math.floor(Math.random() * fomoActions.length)];
-            document.getElementById('fomoIcon').innerHTML = a.i;
-            document.getElementById('fomoText').innerHTML = `Client <span>${n}</span> ${a.t}`;
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 3800);
-        }, 16000);
-
-        // Background Particles (Adapts to Active Theme)
-        const canvas = document.getElementById("canvas-bg");
-        const ctx = canvas.getContext("2d");
-        let width, height, particles;
-        function initCanvas() {
-            width = canvas.width = window.innerWidth;
-            height = canvas.height = window.innerHeight;
-            particles = Array.from({ length: 28 }, () => ({
-                x: Math.random() * width,
-                y: Math.random() * height,
-                vx: (Math.random() - 0.5) * 0.25,
-                vy: Math.random() * -0.45 - 0.1,
-                size: Math.random() * 2 + 1,
-                alpha: Math.random() * 0.35 + 0.1
-            }));
-        }
-        function drawParticles() {
-            ctx.clearRect(0, 0, width, height);
-            const rgb = getComputedStyle(document.documentElement).getPropertyValue('--particle-rgb').trim() || '139, 92, 246';
-            particles.forEach(p => {
-                p.x += p.vx;
-                p.y += p.vy;
-                if (p.y < 0) { p.y = height; p.x = Math.random() * width; }
-                if (p.x < 0) p.x = width;
-                if (p.x > width) p.x = 0;
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                ctx.fillStyle = `rgba(${rgb}, ${p.alpha})`;
-                ctx.fill();
-            });
-            requestAnimationFrame(drawParticles);
-        }
-        window.addEventListener("resize", initCanvas);
-        initCanvas();
-        drawParticles();
-
-        // Initialize All Catalogs
-        renderGithubHub();
-        renderSmmHub('Social Media');
-        renderAccountsAndAppsHub('tw');
+        // Render awal saat halaman dibuka
+        switchTab('best');
     </script>
 </body>
 </html>
