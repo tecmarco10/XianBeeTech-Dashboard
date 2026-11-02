@@ -389,6 +389,62 @@
             gap: 14px;
         }
 
+        .grid-years-2col {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+
+        @media (max-width: 520px) {
+            .grid-years-2col .item-card {
+                padding: 12px;
+                gap: 10px;
+            }
+            .grid-years-2col .item-icon {
+                width: 34px;
+                height: 34px;
+                font-size: 0.92rem;
+            }
+            .grid-years-2col .item-title {
+                font-size: 0.82rem;
+            }
+            .grid-years-2col .item-desc {
+                font-size: 0.68rem;
+            }
+            .grid-years-2col .price-chip {
+                font-size: 0.72rem;
+                padding: 4px 7px;
+            }
+        }
+
+        .floating-cart-bar {
+            position: fixed;
+            bottom: 74px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: calc(100% - 24px);
+            max-width: 620px;
+            background: var(--bg-elevated);
+            backdrop-filter: blur(18px);
+            border: 1.5px solid var(--border-focus);
+            border-radius: 16px;
+            padding: 10px 14px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65), var(--shadow-glow);
+            z-index: 90;
+            animation: fadeIn 0.22s ease;
+        }
+
+        @media (min-width: 1100px) {
+            .floating-cart-bar {
+                bottom: 22px;
+                left: calc(50% + 132px);
+            }
+        }
+
         .item-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
@@ -900,25 +956,30 @@
                 </div>
             </div>
 
-            <!-- 3 INSTANT ACTIONS: PAY WITH BALANCE, PAY WITH CRYPTO, OR ADD CART -->
+            <!-- 4 INSTANT ACTIONS: BALANCE, USDT CRYPTO, IDR (QRIS/BANK/DANA), OR ADD CART -->
             <div style="display:flex;flex-direction:column;gap:8px;">
-                <div style="display:flex;gap:8px;">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
                     <button class="btn-ui buy-now" style="flex:1;padding:12px;" onclick="executeDirectPayment('balance')">
-                        ⚡ Pay with Balance (Instant)
+                        ⚡ Pay with Balance
                     </button>
                     <button class="btn-ui primary" style="flex:1;padding:12px;" onclick="executeDirectPayment('crypto')">
-                        🪙 Pay with Crypto (Instant)
+                        🪙 Pay USDT (OxaPay)
                     </button>
                 </div>
-                <button class="btn-ui secondary" style="padding:10px;" onclick="addConfiguredItemToCart()">
-                    🛒 Add to Shopping Cart Instead
-                </button>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn-ui secondary" style="flex:1;padding:11px;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="executeDirectPayment('idr')">
+                        🇮🇩 Pay IDR (QRIS / Bank / DANA)
+                    </button>
+                    <button class="btn-ui secondary" style="flex:1;padding:11px;" onclick="addConfiguredItemToCart()">
+                        🛒 Add to Cart
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 2: SHOPPING CART (PERSISTENT IN LOCALSTORAGE)
+         🪟 MODAL 2: SHOPPING CART (WITH MAKE AN OFFER & IDR CHECKOUT)
          ========================================================= -->
     <div class="modal-overlay" id="cartModal">
         <div class="modal-box">
@@ -937,7 +998,7 @@
                 </div>
             </div>
 
-            <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:12px 14px;border-radius:12px;margin-bottom:16px;">
+            <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:12px 14px;border-radius:12px;margin-bottom:14px;">
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
                     <span style="font-size:0.84rem;font-weight:800;">Grand Total:</span>
                     <span class="price-chip" id="cartGrandTotal">0.00 USDT</span>
@@ -948,14 +1009,39 @@
                 </div>
             </div>
 
-            <div style="display:flex;gap:8px;">
-                <button class="btn-ui buy-now" style="padding:12px;" onclick="checkoutCartWith('balance')">
-                    ⚡ Pay with Balance (Instant)
-                </button>
-                <button class="btn-ui primary" style="padding:12px;" onclick="checkoutCartWith('crypto')">
-                    🪙 Pay with Crypto (Instant)
-                </button>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn-ui buy-now" style="flex:1;padding:12px;" onclick="checkoutCartWith('balance')">
+                        ⚡ Pay with Balance
+                    </button>
+                    <button class="btn-ui primary" style="flex:1;padding:12px;" onclick="checkoutCartWith('crypto')">
+                        🪙 Pay USDT (OxaPay)
+                    </button>
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    <button class="btn-ui secondary" style="flex:1;padding:11px;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="checkoutCartWith('idr')">
+                        🇮🇩 Pay IDR (QRIS / Bank / DANA)
+                    </button>
+                    <button class="btn-ui secondary" style="flex:1;padding:11px;border-color:var(--warning);color:var(--warning);" onclick="openCartMakeOfferModal()">
+                        🤝 Make an Offer (All Cart)
+                    </button>
+                </div>
             </div>
+        </div>
+    </div>
+
+    <!-- FLOATING CART BAR AT BOTTOM WHEN CART HAS ITEMS -->
+    <div class="floating-cart-bar" id="floatingCartBar">
+        <div style="display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer;" onclick="openCartModal()">
+            <div style="width:38px;height:38px;border-radius:10px;background:var(--grad-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;flex-shrink:0;">🛒</div>
+            <div style="min-width:0;">
+                <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="floatingCartTitle">0 Items in Cart</div>
+                <div style="font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--success);font-weight:800;" id="floatingCartTotal">0.00 USDT</div>
+            </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+            <button class="top-pill" style="border-color:var(--warning);color:var(--warning);padding:8px 10px;font-size:0.73rem;" onclick="openCartMakeOfferModal()">🤝 Make Offer</button>
+            <button class="top-pill cart-top-pill" style="padding:8px 12px;font-size:0.75rem;" onclick="openCartModal()">⚡ Checkout</button>
         </div>
     </div>
 
@@ -1074,9 +1160,9 @@
             return s;
         }
 
-        // Send message directly via Telegram Bot HTTP API with optional Inline Keyboard (replyMarkup)
+        // Send message directly via Telegram Bot HTTP API and return message_id for 2-Way Web <-> Bot State Sync
         async function sendTelegramSilentPush(chatId, htmlText, withFooter = true, replyMarkup = null) {
-            if (!chatId || !String(chatId).match(/^-?\d+$/)) return;
+            if (!chatId || !String(chatId).match(/^-?\d+$/)) return null;
             const finalHtml = (withFooter && !htmlText.includes("Engineered by Abie Haryatmo"))
                 ? (htmlText + FOOTER_BRANDING)
                 : htmlText;
@@ -1090,21 +1176,45 @@
                 payload.reply_markup = replyMarkup;
             }
             try {
-                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload)
                 });
+                const d = await r.json();
+                if (d && d.ok && d.result) return d.result.message_id;
             } catch (e) {
                 console.log("Background TG Push error:", e);
+            }
+            return null;
+        }
+
+        // Edit Telegram message in-place when Admin already clicked the action button on Web Store (2-Way Sync!)
+        async function syncEditTelegramAdminMessages(tgMsgIdsMap, baseHtmlText, statusFooterLine, isPhotoCaption = false) {
+            if (!tgMsgIdsMap || typeof tgMsgIdsMap !== 'object') return;
+            const updatedText = baseHtmlText + `\n\n${statusFooterLine}` + FOOTER_BRANDING;
+            for (const [admChatId, msgId] of Object.entries(tgMsgIdsMap)) {
+                if (!msgId) continue;
+                try {
+                    const endpoint = isPhotoCaption ? 'editMessageCaption' : 'editMessageText';
+                    const bodyPayload = isPhotoCaption
+                        ? { chat_id: String(admChatId), message_id: msgId, caption: updatedText, parse_mode: 'HTML', reply_markup: { inline_keyboard: [] } }
+                        : { chat_id: String(admChatId), message_id: msgId, text: updatedText, parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: [] } };
+                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/${endpoint}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(bodyPayload)
+                    });
+                } catch (e) {}
             }
         }
 
         function pushInWebNotification(role, title, htmlBody, extraMeta = null) {
             const storageKey = role === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
             const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const newId = 'NTF-' + Date.now() + '-' + Math.floor(Math.random()*999);
             list.unshift({
-                id: 'NTF-' + Date.now() + '-' + Math.floor(Math.random()*999),
+                id: newId,
                 time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
                 title: title,
                 body: htmlBody,
@@ -1112,6 +1222,16 @@
             });
             localStorage.setItem(storageKey, JSON.stringify(list.slice(0, 50)));
             updateNotifBadgeCount();
+            return newId;
+        }
+
+        function attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap) {
+            const list = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
+            const item = list.find(x => x.id === notifId);
+            if (item && item.meta) {
+                item.meta.tgMsgIds = tgMsgIdsMap;
+                localStorage.setItem('xb_admin_notifs', JSON.stringify(list));
+            }
         }
 
         function updateNotifBadgeCount() {
@@ -1123,8 +1243,9 @@
             if (el) el.innerText = total;
         }
 
-        function openNotificationsModal() {
+        async function openNotificationsModal() {
             checkAdminVisibility();
+            await syncSharedActionStatesFromCloud();
             renderNotificationsList();
             document.getElementById('notificationsModal').classList.add('active');
         }
@@ -1134,6 +1255,30 @@
             document.getElementById('tabNotifBuyer').classList.toggle('active', mode === 'buyer');
             document.getElementById('tabNotifAdmin').classList.toggle('active', mode === 'admin');
             renderNotificationsList();
+        }
+
+        // Sync decisions made in Telegram Bot so Web Notification buttons lock automatically
+        async function syncSharedActionStatesFromCloud() {
+            try {
+                const resolvedMap = JSON.parse(localStorage.getItem('xb_resolved_actions') || '{}');
+                const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
+                let changed = false;
+                adminList.forEach(n => {
+                    if (n.meta && n.meta.actionKey && resolvedMap[n.meta.actionKey]) {
+                        n.title = resolvedMap[n.meta.actionKey];
+                        delete n.meta;
+                        changed = true;
+                    }
+                });
+                if (changed) localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+            } catch (e) {}
+        }
+
+        function markActionResolvedEverywhere(actionKey, statusTitle) {
+            if (!actionKey) return;
+            const resolvedMap = JSON.parse(localStorage.getItem('xb_resolved_actions') || '{}');
+            resolvedMap[actionKey] = statusTitle;
+            localStorage.setItem('xb_resolved_actions', JSON.stringify(resolvedMap));
         }
 
         function renderNotificationsList() {
@@ -1147,20 +1292,39 @@
             const isAdmin = ADMIN_IDS.includes(String(currentUserId));
             container.innerHTML = list.map((n, idx) => {
                 let actionBtnsHtml = '';
-                if (activeNotifFeed === 'admin' && isAdmin && n.meta && n.meta.type === 'nego') {
+                let imgPreviewHtml = '';
+                if (n.meta && n.meta.proofDataUrl) {
+                    imgPreviewHtml = `<div style="margin-top:8px;"><img src="${n.meta.proofDataUrl}" style="max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border-focus);"></div>`;
+                }
+                if (activeNotifFeed === 'admin' && isAdmin && n.meta) {
                     const m = n.meta;
-                    actionBtnsHtml = `
-                        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
-                            <button class="btn-ui buy-now" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Accept ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
-                            <button class="btn-ui primary" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'counter')">✍️ Counter Offer</button>
-                            <button class="btn-ui secondary" style="padding:7px 10px;font-size:0.72rem;color:var(--danger);" onclick="adminWebNegoDecision(${idx}, 'reject')">❌ Decline</button>
-                        </div>
-                    `;
+                    if (m.type === 'nego') {
+                        actionBtnsHtml = `
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
+                                <button class="btn-ui buy-now" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Accept ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
+                                <button class="btn-ui primary" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'counter')">✍️ Counter Offer</button>
+                                <button class="btn-ui secondary" style="padding:7px 10px;font-size:0.72rem;color:var(--danger);" onclick="adminWebNegoDecision(${idx}, 'reject')">❌ Decline</button>
+                            </div>
+                        `;
+                    } else if (m.type === 'remind_cart' || m.type === 'remind_topup') {
+                        actionBtnsHtml = `
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
+                                <button class="btn-ui primary" style="padding:7px 12px;font-size:0.72rem;" onclick="adminSendBuyerReminder(${idx})">🔔 Remind Buyer Now</button>
+                            </div>
+                        `;
+                    } else if (m.type === 'idr_proof') {
+                        actionBtnsHtml = `
+                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
+                                <button class="btn-ui buy-now" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebIdrDecision(${idx}, 'approve')">✅ Approve (+$${parseFloat(m.amountUsdt).toFixed(2)})</button>
+                                <button class="btn-ui secondary" style="padding:7px 10px;font-size:0.72rem;color:var(--danger);" onclick="adminWebIdrDecision(${idx}, 'reject')">❌ Reject Proof</button>
+                            </div>
+                        `;
+                    }
                 } else if (activeNotifFeed === 'buyer' && n.meta && n.meta.type === 'nego_approved') {
                     const m = n.meta;
                     actionBtnsHtml = `
                         <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
-                            <button class="btn-ui buy-now" style="width:100%;padding:9px;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt})">💳 Accept & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
+                            <button class="btn-ui buy-now" style="width:100%;padding:9px;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt}, ${!!m.isCartOffer})">💳 Accept & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
                         </div>
                     `;
                 }
@@ -1171,10 +1335,50 @@
                             <span style="font-size:0.7rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">🕒 ${n.time}</span>
                         </div>
                         <div>${n.body.replace(/\n/g, '<br>')}</div>
+                        ${imgPreviewHtml}
                         ${actionBtnsHtml}
                     </div>
                 `;
             }).join('');
+        }
+
+        async function adminSendBuyerReminder(notifIdx) {
+            const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
+            const notif = adminList[notifIdx];
+            if (!notif || !notif.meta) return;
+            const m = notif.meta;
+
+            const remText = m.type === 'remind_cart'
+                ? (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🛒 <b>C A R T  R E M I N D E R</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `👋 Hello <b>@${String(m.buyerUname || currentUsername).replace('@','')}</b>! You still have reserved digital assets waiting in your shopping cart (<b>${m.itemTitle}</b>).\n\n` +
+                    `⚡ <i>Stock is limited! Complete your checkout or click <b>🤝 Make an Offer</b> in the Web Store before someone else claims it!</i>`
+                  )
+                : (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   ⏰ <b>P A Y M E N T  R E M I N D E R</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🧾 <b>Invoice ID:</b> <code>${m.invId}</code>\n` +
+                    `📦 <b>Order:</b> <b>${m.itemTitle}</b> ($${parseFloat(m.amountUsdt || 0).toFixed(2)} USDT)\n` +
+                    `⏳ <i>Your invoice is still awaiting payment confirmation. Please complete your transfer or upload your payment screenshot in the Web Store!</i>`
+                  );
+
+            pushInWebNotification('buyer', m.type === 'remind_cart' ? '🛒 CART REMINDER FROM ADMIN' : '⏰ PAYMENT REMINDER FROM ADMIN', remText);
+            await sendTelegramSilentPush(m.buyerId, remText, true);
+
+            if (m.tgMsgIds) {
+                await syncEditTelegramAdminMessages(m.tgMsgIds, notif.body, '🔔 <b>[REMINDER SENT VIA WEB STORE]</b>', false);
+            }
+
+            const newTitle = `🔔 REMINDED (${m.itemTitle.slice(0, 22)})`;
+            markActionResolvedEverywhere(m.actionKey, newTitle);
+            notif.title = newTitle;
+            delete notif.meta;
+            localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+            renderNotificationsList();
+            showToast('🔔 Reminder sent to Buyer Web & Telegram!');
         }
 
         function clearWebNotifications() {
@@ -1185,9 +1389,10 @@
             showToast('Notifications cleared!');
         }
 
-        // Fire complete Notification Flow for ADD_TO_CART (100% English + Order by Web)
-        function triggerCartAlertNotifications(itemTitle, priceUsdt) {
+        // Fire complete Notification Flow for ADD_TO_CART with Admin Reminder Button (Web & Telegram Bot)
+        async function triggerCartAlertNotifications(itemTitle, priceUsdt) {
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const actionKey = `REM_CART_${Date.now()}`;
             const cartAlertHtml = (
                 `🛒 <b>[ REAL-TIME CART ALERT • ORDER BY WEB ]</b>\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
@@ -1200,12 +1405,31 @@
                 `⏳ <i>Status: Waiting for client checkout on Web Store...</i>`
             );
 
-            pushInWebNotification('admin', '🛒 REAL-TIME CART ALERT (WEB)', cartAlertHtml);
+            const remMeta = {
+                type: 'remind_cart',
+                actionKey: actionKey,
+                buyerId: currentUserId,
+                buyerUname: dispUser,
+                itemTitle: itemTitle,
+                priceUsdt: priceUsdt
+            };
+
+            const notifId = pushInWebNotification('admin', '🛒 REAL-TIME CART ALERT (WEB)', cartAlertHtml, remMeta);
             pushInWebNotification('buyer', '🛒 ADDED TO CART (WEB)', cartAlertHtml);
 
-            ADMIN_IDS.forEach(admId => {
-                sendTelegramSilentPush(admId, cartAlertHtml, true);
-            });
+            const safeRef = String(itemTitle).replace(/[^a-zA-Z0-9\-]/g, '').slice(0, 18) || 'CART';
+            const remInlineKb = {
+                inline_keyboard: [
+                    [{ text: '🔔 Remind Buyer to Checkout', callback_data: `admrem_cart_${currentUserId}_${safeRef}` }]
+                ]
+            };
+
+            const tgMsgIdsMap = {};
+            for (const admId of ADMIN_IDS) {
+                const mid = await sendTelegramSilentPush(admId, cartAlertHtml, true, remInlineKb);
+                if (mid) tgMsgIdsMap[admId] = mid;
+            }
+            attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
         }
 
         // Fire complete Notification Flow for ORDER / CHECKOUT (Identical to XianBee-TechStore.py + Order by Web)
@@ -1441,28 +1665,29 @@
             '2021': 10.0, '2022': 8.5, '2023': 7.5, '2024': 6.5, '2025': 5.5, '2026': 4.5
         };
 
+        // YEARS 2011 -> 2026 AT THE VERY TOP (PAIRED LEFT-RIGHT: 2011|2012, 2013|2014, ...), SPECIAL BADGES BELOW
         const GITHUB_VAULT_CATEGORIES = [
-            { yr: 'Arctic', icon: '❄️', tag: 'RARE VAULT', title: 'GitHub Arctic Code Vault Badge', desc: 'Authentic 2020 Arctic Vault Contributor + 6 Achievements • Full 2FA', usdt: 25.00 },
+            { yr: '2011', icon: '11', tag: 'VINTAGE 2011', title: 'GitHub Account — Year 2011', desc: '15-Year Vintage Profile • Maximum Trust + 2FA Key', usdt: 30.00 },
+            { yr: '2012', icon: '12', tag: 'VINTAGE 2012', title: 'GitHub Account — Year 2012', desc: '14-Year Vintage Profile • Anti-Flagged + 2FA Key', usdt: 28.00 },
+            { yr: '2013', icon: '13', tag: 'VINTAGE 2013', title: 'GitHub Account — Year 2013', desc: '13-Year Vintage Profile • Web3 & Open Source Ready', usdt: 26.00 },
+            { yr: '2014', icon: '14', tag: 'VINTAGE 2014', title: 'GitHub Account — Year 2014', desc: '12-Year Aged Profile • Verified Healthy (200 OK)', usdt: 24.00 },
+            { yr: '2015', icon: '15', tag: 'VINTAGE 2015', title: 'GitHub Account — Year 2015', desc: '11-Year Aged Profile • Clean History + 2FA Key', usdt: 22.00 },
+            { yr: '2016', icon: '16', tag: 'AGED 2016', title: 'GitHub Account — Year 2016', desc: '10-Year Aged Profile • High Authority Standing', usdt: 20.00 },
+            { yr: '2017', icon: '17', tag: 'AGED 2017', title: 'GitHub Account — Year 2017', desc: '9-Year Aged Profile • Full Username, Pass & 2FA', usdt: 18.00 },
+            { yr: '2018', icon: '18', tag: 'AGED 2018', title: 'GitHub Account — Year 2018', desc: '8-Year Aged Profile • Ready for Org & CI/CD', usdt: 16.00 },
+            { yr: '2019', icon: '19', tag: 'AGED 2019', title: 'GitHub Account — Year 2019', desc: '7-Year Aged Profile • High Standing + 2FA Key', usdt: 15.00 },
+            { yr: '2020', icon: '20', tag: 'AGED 2020', title: 'GitHub Account — Year 2020', desc: '6-Year Aged Profile • Verified Public Visibility', usdt: 12.00 },
+            { yr: '2021', icon: '21', tag: 'AGED 2021', title: 'GitHub Account — Year 2021', desc: '5-Year Aged Profile • Clean & Dev Ready', usdt: 10.00 },
+            { yr: '2022', icon: '22', tag: 'AGED 2022', title: 'GitHub Account — Year 2022', desc: '4-Year Aged Profile • Pre-warmed with Repos', usdt: 8.50 },
+            { yr: '2023', icon: '23', tag: 'AGED 2023', title: 'GitHub Account — Year 2023', desc: '3-Year Aged Profile • Full Login + 2FA Key', usdt: 7.50 },
+            { yr: '2024', icon: '24', tag: 'AGED 2024', title: 'GitHub Account — Year 2024', desc: '2-Year Aged Profile • High Availability Stock', usdt: 6.50 },
+            { yr: '2025', icon: '25', tag: 'AGED 2025', title: 'GitHub Account — Year 2025', desc: '1-Year Profile • Pre-populated with Code Repos', usdt: 5.50 },
+            { yr: '2026', icon: '26', tag: 'BEST VALUE', title: 'GitHub Account — Year 2026', desc: 'Ready-to-Use Profile • Public Repos + 2FA Key', usdt: 4.50 },
+            { yr: 'Arctic', icon: '❄️', tag: 'RARE BADGE', title: 'GitHub Arctic Code Vault Badge', desc: 'Authentic 2020 Arctic Vault Contributor + Full 2FA', usdt: 25.00 },
             { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges Account', desc: 'Unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usdt: 10.00 },
             { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Account', desc: 'Aged GitHub profiles pre-warmed with 50+ organic followers', usdt: 10.00 },
             { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Developer Pack', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
-            { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub High Green Contributions', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 },
-            { yr: '2011', icon: '11', tag: 'VINTAGE 2011', title: 'Aged GitHub Account (Year 2011)', desc: '15-Year-Old Vintage Account • Maximum Trust Score + Full 2FA', usdt: 30.00 },
-            { yr: '2012', icon: '12', tag: 'VINTAGE 2012', title: 'Aged GitHub Account (Year 2012)', desc: '14-Year-Old Vintage Account • Anti-Flagged • Full 2FA Key', usdt: 28.00 },
-            { yr: '2013', icon: '13', tag: 'VINTAGE 2013', title: 'Aged GitHub Account (Year 2013)', desc: '13-Year-Old Vintage Account • Ideal for Web3 & Open Source', usdt: 26.00 },
-            { yr: '2014', icon: '14', tag: 'VINTAGE 2014', title: 'Aged GitHub Account (Year 2014)', desc: '12-Year-Old Aged Account • Verified Healthy (200 OK)', usdt: 24.00 },
-            { yr: '2015', icon: '15', tag: 'VINTAGE 2015', title: 'Aged GitHub Account (Year 2015)', desc: '11-Year-Old Aged Account • Clean Commit History + 2FA', usdt: 22.00 },
-            { yr: '2016', icon: '16', tag: 'AGED 2016', title: 'Aged GitHub Account (Year 2016)', desc: '10-Year-Old Aged Account • High Authority Profile', usdt: 20.00 },
-            { yr: '2017', icon: '17', tag: 'AGED 2017', title: 'Aged GitHub Account (Year 2017)', desc: '9-Year-Old Aged Account • Full Credentials & Recovery', usdt: 18.00 },
-            { yr: '2018', icon: '18', tag: 'AGED 2018', title: 'Aged GitHub Account (Year 2018)', desc: '8-Year-Old Aged Account • Ready for Organization & CI/CD', usdt: 16.00 },
-            { yr: '2019', icon: '19', tag: 'AGED 2019', title: 'Aged GitHub Account (Year 2019)', desc: '7-Year-Old Aged Account • High Standing & 2FA Included', usdt: 15.00 },
-            { yr: '2020', icon: '20', tag: 'AGED 2020', title: 'Aged GitHub Account (Year 2020)', desc: '6-Year-Old Aged Account • Verified Public Visibility', usdt: 12.00 },
-            { yr: '2021', icon: '21', tag: 'WARMED 2021', title: 'Aged GitHub Account (Year 2021)', desc: '5-Year-Old Account • Clean & Ready for Development', usdt: 10.00 },
-            { yr: '2022', icon: '22', tag: 'WARMED 2022', title: 'Aged GitHub Account (Year 2022)', desc: '4-Year-Old Account • Pre-warmed with Public Repos', usdt: 8.50 },
-            { yr: '2023', icon: '23', tag: 'WARMED 2023', title: 'Aged GitHub Account (Year 2023)', desc: '3-Year-Old Account • Full Login + 2FA Authenticator', usdt: 7.50 },
-            { yr: '2024', icon: '24', tag: 'WARMED 2024', title: 'Aged GitHub Account (Year 2024)', desc: '2-Year-Old Account • High Availability Stock', usdt: 6.50 },
-            { yr: '2025', icon: '25', tag: 'WARMED 2025', title: 'Warmed GitHub Account (Year 2025)', desc: '1-Year-Old Account • Pre-populated with Code Repos', usdt: 5.50 },
-            { yr: '2026', icon: '26', tag: 'BEST VALUE', title: 'Fresh Warmed GitHub Account (Year 2026)', desc: 'Warmed Account with Public Repositories & Clean IP History', usdt: 4.50 }
+            { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub High Green Contributions', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 }
         ];
 
         const CATALOG_ITEMS = [
@@ -1523,6 +1748,8 @@
             return baseYr + catExtra + follExtra;
         }
 
+        let cachedSheetVipHolders = [];
+
         async function syncGoogleSheetInventory(notify = false) {
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
@@ -1532,8 +1759,14 @@
                 });
                 const json = await res.json();
                 if (json && json.result && Array.isArray(json.data)) {
+                    const prevKnownRaw = localStorage.getItem('xb_known_stock_unames');
+                    const prevKnownSet = prevKnownRaw ? new Set(JSON.parse(prevKnownRaw)) : null;
+                    const newAddedPerCat = {};
+
                     const grouped = {};
                     const flat = [];
+                    const currentUnames = [];
+
                     json.data.forEach(acc => {
                         const cat = String(acc.category || acc.year || '2026');
                         acc._computed_usdt = computeAccountPrice(acc, cat);
@@ -1541,12 +1774,46 @@
                         if (!grouped[cat]) grouped[cat] = [];
                         grouped[cat].push(acc);
                         flat.push(acc);
+                        const uLow = String(acc.username || '').toLowerCase().trim();
+                        if (uLow) {
+                            currentUnames.push(uLow);
+                            if (prevKnownSet && !prevKnownSet.has(uLow)) {
+                                newAddedPerCat[cat] = (newAddedPerCat[cat] || 0) + 1;
+                            }
+                        }
                     });
                     grouped['Followers'] = flat.filter(a => (parseInt(a.followers || 0) || 0) >= 50);
+
+                    localStorage.setItem('xb_known_stock_unames', JSON.stringify(currentUnames));
+
+                    // FEATURE 9: AUTO-NOTIFY ALL BUYERS IN WEB WHEN NEW STOCK IS ADDED
+                    const addedCats = Object.keys(newAddedPerCat);
+                    if (addedCats.length > 0) {
+                        const totalAdded = addedCats.reduce((s, k) => s + newAddedPerCat[k], 0);
+                        const summaryStr = addedCats.map(k => `<b>GitHub ${k}</b> (+${newAddedPerCat[k]})`).join(', ');
+                        const stockAlertHtml = (
+                            `🔥 <b>[ NEW STOCK ARRIVED! ]</b> 🔥\n` +
+                            `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                            `📦 <b>Restocked Catalogs:</b> ${summaryStr}\n` +
+                            `✨ <b>Total New Assets:</b> <b>+${totalAdded} Verified Accounts</b>\n` +
+                            `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                            `🛍️ <i>Open the GitHub Catalog now — first come, first served!</i>`
+                        );
+                        pushInWebNotification('buyer', '🔥 NEW STOCK ALERT!', stockAlertHtml);
+                        showToast(`🔥 +${totalAdded} New GitHub Account(s) Restocked!`);
+                    }
+
+                    // Capture Sheet4 CRM / VIP Holders if returned by GSheet
+                    const crmCandidates = json.crm_users || json.leaderboard || json.users || json.sheet4 || [];
+                    if (Array.isArray(crmCandidates) && crmCandidates.length > 0) {
+                        cachedSheetVipHolders = crmCandidates;
+                        localStorage.setItem('xb_cached_vip_holders', JSON.stringify(crmCandidates));
+                    }
 
                     liveGithubStock = grouped;
                     allLiveAccountsFlat = flat;
                     totalLiveAccounts = flat.length;
+                    cleanupExpiredOrSoldFlashAccounts();
                     if (activeTab === 'home' || activeTab === 'github') renderViewport();
                     if (notify) showToast(`Synced ${totalLiveAccounts} live accounts from Google Sheet!`);
                 }
@@ -1555,6 +1822,23 @@
             }
         }
         syncGoogleSheetInventory(false);
+        setInterval(() => syncGoogleSheetInventory(false), 45000);
+
+        // Remove Flash Sale accounts automatically when expired or sold out
+        function cleanupExpiredOrSoldFlashAccounts() {
+            const list = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
+            if (!list.length) return;
+            const now = Date.now();
+            const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
+            const valid = list.filter(item => {
+                if (item.expiresAt && now >= item.expiresAt) return false;
+                if (liveSet.size > 0 && item.username && !liveSet.has(String(item.username).toLowerCase())) return false;
+                return true;
+            });
+            if (valid.length !== list.length) {
+                localStorage.setItem('xb_admin_flash_accs', JSON.stringify(valid));
+            }
+        }
 
         async function markAccountSoldInGSheet(username, priceUsdt, invoiceId) {
             if (!username) return;
@@ -1566,7 +1850,48 @@
                         action: 'update_status',
                         username: username,
                         status: 'SOLD OUT',
-                        date: `${new Date().toLocaleString('en-GB')} | $${parseFloat(priceUsdt).toFixed(2)} | ${invoiceId}`
+                        date: `${new Date().toLocaleString('en-GB')} | $${parseFloat(priceUsdt).toFixed(2)} | ${invoiceId} [WEB]`
+                    })
+                });
+            } catch (e) {}
+            // Also remove from Flash Sale if it was listed in Flash Sale
+            const flashList = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
+            const filteredFlash = flashList.filter(x => String(x.username || '').toLowerCase() !== String(username).toLowerCase());
+            if (filteredFlash.length !== flashList.length) {
+                localStorage.setItem('xb_admin_flash_accs', JSON.stringify(filteredFlash));
+            }
+        }
+
+        // Sync every Web Order & Top-Up to Google Sheet4 (User Loyalty CRM)
+        async function syncUserCrmToGSheetFromWeb(eventType, amountUsdt) {
+            try {
+                const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+                const outList = history.filter(x => x.type === 'OUT');
+                const inList = history.filter(x => x.type === 'IN');
+                const totSpent = outList.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+                const totTopup = inList.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+                const dispUname = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'sync_user_crm',
+                        user_id: String(currentUserId),
+                        username: dispUname,
+                        balance: parseFloat(userBalanceUsdt.toFixed(2)),
+                        acc_tx: outList.length,
+                        acc_total: parseFloat(totSpent.toFixed(2)),
+                        acc_cycle: parseFloat((totSpent % 500).toFixed(2)),
+                        svc_tx: 0,
+                        svc_total: 0,
+                        svc_cycle: 0,
+                        topup_tx: inList.length,
+                        topup_total: parseFloat(totTopup.toFixed(2)),
+                        topup_cycle: parseFloat((totTopup % 500).toFixed(2)),
+                        bonus_count: 0,
+                        bonus_total: 0,
+                        status: '🟢 ACTIVE TRACKING (WEB)'
                     })
                 });
             } catch (e) {}
@@ -1620,92 +1945,108 @@
                 });
 
                 const hero = document.createElement('div');
-                hero.style.cssText = 'background:var(--grad-subtle);border:1px solid var(--border-focus);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow-card);';
+                hero.style.cssText = 'background:var(--grad-subtle);border:1px solid var(--border-focus);border-radius:20px;padding:22px;margin-bottom:18px;box-shadow:var(--shadow-card);';
                 hero.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
-                        <div>
-                            <span class="item-tag">⚡ STANDALONE WEB STORE • REAL-TIME TELEGRAM & WEB NOTIFICATIONS</span>
-                            <h2 style="margin:4px 0 6px 0;font-size:1.38rem;font-weight:800;">Welcome, @${currentUsername}</h2>
-                            <p style="margin:0;font-size:0.8rem;color:var(--text-secondary);max-width:640px;">
-                                Click <b>📂 Inspect Vault</b> on any GitHub year to filter & pick your exact <code>@username</code>, make a price offer (<b>🤝 Nego</b>), or checkout via <b>Instant Balance</b> & <b>OxaPay Crypto</b>!
+                    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px;">
+                        <div style="flex:1;min-width:260px;">
+                            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:6px;">
+                                <span class="item-tag" style="margin:0;background:rgba(16,185,129,0.15);color:var(--success);border-color:rgba(16,185,129,0.4);">🟢 VERIFIED INSTANT DELIVERY VAULT</span>
+                                <span class="item-tag" style="margin:0;">⚡ 24/7 AUTOMATED DISPATCH</span>
+                            </div>
+                            <h2 style="margin:0 0 6px 0;font-size:1.35rem;font-weight:800;letter-spacing:-0.3px;">XianBee-Tech Digital Marketplace — Welcome, @${currentUsername}</h2>
+                            <p style="margin:0;font-size:0.8rem;color:var(--text-secondary);line-height:1.5;max-width:680px;">
+                                Browse authentic Aged GitHub Accounts (<b>2011–2026</b>), inspect live profiles before buying, submit a custom price with <b>🤝 Make an Offer</b>, or checkout instantly via <b>Wallet Balance</b>, <b>USDT (OxaPay)</b>, & <b>IDR (QRIS / SeaBank / DANA)</b>.
                             </p>
                         </div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button class="btn-ui primary" onclick="switchTab('github')">🐙 Browse GitHub (${totalLiveAccounts || 'Live'})</button>
-                            <button class="btn-ui buy-now" onclick="switchTab('profile'); activeSub='🔐 Purchased Vault'; renderViewport();">🔐 My Purchased Vault</button>
+                            <button class="btn-ui primary" onclick="switchTab('github')">🐙 Explore GitHub (${totalLiveAccounts || 'Live'})</button>
+                            <button class="btn-ui buy-now" onclick="switchTab('profile'); activeSub='🔐 Purchased Vault'; renderViewport();">🔐 Purchased Vault</button>
                         </div>
                     </div>
                 `;
                 vp.appendChild(hero);
 
-                // CHECK ADMIN FLASH SALE CONFIG SETTINGS (ON/OFF & CUSTOM ACCOUNTS)
-                const flashConfig = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true, "title":"GitHub 100 Followers + 100 Stars Bundle", "usdt":63.75, "orig":85}');
+                // FEATURE 10: DYNAMIC FLASH SALE (AUTO-HIDES WHEN OFF, SOLD OUT, OR EXPIRED)
+                cleanupExpiredOrSoldFlashAccounts();
+                const flashConfig = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true}');
                 const customFlashAccs = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
 
-                if (flashConfig.active) {
+                if (flashConfig.active && customFlashAccs.length > 0) {
                     const megaStrip = document.createElement('div');
-                    megaStrip.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-bottom:20px;';
+                    megaStrip.style.cssText = 'margin-bottom:20px;padding:16px;border-radius:18px;border:1.5px solid var(--warning);background:linear-gradient(135deg,rgba(245,158,11,0.12) 0%,rgba(239,68,68,0.06) 100%);box-shadow:var(--shadow-card);';
                     
-                    let flashInnerHtml = `
-                        <!-- FLASH SALE BOX -->
-                        <div class="item-card" style="border-color:var(--warning);background:linear-gradient(135deg,rgba(245,158,11,0.12) 0%,rgba(239,68,68,0.08) 100%);">
+                    constcardsHtml = customFlashAccs.map(fItem => {
+                        const remMs = Math.max(0, (fItem.expiresAt || (Date.now() + 3600000)) - Date.now());
+                        const remHrs = Math.floor(remMs / 3600000);
+                        const remMins = Math.floor((remMs % 3600000) / 60000);
+                        const accId = `${fItem.yearKey || '2026'}-${fItem.username}`;
+                        ACCOUNT_CACHE_MAP[accId] = {
+                            acc: Object.assign({}, fItem.accountData || fItem, { _computed_usdt: parseFloat(fItem.flashUsdt), price_usd: parseFloat(fItem.flashUsdt) }),
+                            yrKey: fItem.yearKey || '2026'
+                        };
+                        return `
+                            <div class="item-card" style="border-color:var(--warning);background:var(--bg-card);">
+                                <div class="item-top">
+                                    <div>
+                                        <span class="item-tag" style="color:var(--warning);border-color:var(--warning);">🔥 FLASH DEAL • ⏳ ${remHrs}h ${remMins}m Left</span>
+                                        <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:1rem;">@${fItem.username} (Year ${fItem.yearKey || 'GitHub'})</h4>
+                                        <p class="item-desc">👥 Followers: <b>${fItem.followers || 0}</b> • 📁 Repos: <b>${fItem.repos || 0}</b> • Normal: <s>${fmtPrice(fItem.origUsdt)}</s></p>
+                                    </div>
+                                    <div class="price-chip" style="border-color:var(--warning);color:var(--warning);">${fmtPrice(fItem.flashUsdt)}</div>
+                                </div>
+                                <div class="item-actions">
+                                    <a href="https://github.com/${fItem.username}" target="_blank" class="btn-ui secondary">🌐 Profile</a>
+                                    <button class="btn-ui buy-now" onclick="buySpecificAccountById('${accId}')">⚡ Claim Flash Deal (${fmtPrice(fItem.flashUsdt)})</button>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    megaStrip.innerHTML = `
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;flex-wrap:wrap;gap:8px;">
                             <div>
-                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                                    <span class="item-tag" style="color:var(--warning);border-color:var(--warning);background:rgba(245,158,11,0.15);margin:0;">🔥 LIMITED FLASH DEAL</span>
-                                    <span id="flashTimerDisplay" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--danger);">⏳ 02:14:55</span>
-                                </div>
-                                <h3 class="item-title" style="font-size:1rem;">${flashConfig.title}</h3>
-                                <p class="item-desc" style="margin-bottom:8px;">Exclusive flash deal item • Special discount applied automatically!</p>
-                                <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-weight:800;color:var(--warning);">
-                                    <span>🔥 Quota Left: 3 / 10 Slots</span>
-                                    <span><s>${fmtPrice(flashConfig.orig)}</s> ➔ <b style="color:var(--success);">${fmtPrice(flashConfig.usdt)}</b></span>
-                                </div>
-                                <div class="progress-track"><div class="progress-fill" style="width:30%;background:linear-gradient(90deg,#f59e0b,#ef4444);"></div></div>
+                                <span class="item-tag" style="color:var(--warning);border-color:var(--warning);margin:0;">⚡ LIMITED TIME FLASH SALE</span>
+                                <h3 style="margin:2px 0 0 0;font-size:1.05rem;">🔥 Special Discounted GitHub Accounts (${customFlashAccs.length} Active)</h3>
                             </div>
-                            <div class="item-actions" style="padding-top:8px;">
-                                <button class="btn-ui buy-now" onclick='openDirectOrderModal({id:"flash_deal_item",tag:"FLASH SALE",title:"${flashConfig.title}",desc:"Special flash sale item.",usdt:${flashConfig.usdt},prompt:"Enter Target Username or Details:"})'>⚡ Claim Flash Deal (${fmtPrice(flashConfig.usdt)})</button>
-                            </div>
+                            <span style="font-size:0.74rem;font-weight:800;color:var(--warning);">Auto-expires when timer ends or account is sold</span>
                         </div>
+                        <div class="grid-cards">${constcardsHtml}</div>
                     `;
-
-                    // If admin added specific GitHub accounts to flash sale
-                    if (customFlashAccs.length > 0) {
-                        flashInnerHtml += `<div class="grid-cards" style="grid-column: 1 / -1;">`;
-                        customFlashAccs.forEach(acc => {
-                            flashInnerHtml += `
-                                <div class="item-card" style="border-color:var(--warning);">
-                                    <div class="item-top">
-                                        <div>
-                                            <span class="item-tag" style="color:var(--warning);border-color:var(--warning);">⚡ FLASH SALE ACCOUNT</span>
-                                            <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;">@${acc.username} (${acc.year || 'GitHub'})</h4>
-                                            <p class="item-desc">👥 Followers: <b>${acc.followers || 0}</b> • Special Flash Price!</p>
-                                        </div>
-                                        <div class="price-chip">${fmtPrice(acc._computed_usdt * 0.85)}</div>
-                                    </div>
-                                    <div class="item-actions">
-                                        <button class="btn-ui buy-now" onclick='buySpecificAccountNow(${JSON.stringify(acc)}, "${acc.year || '2026'}")'>⚡ Buy Flash Account</button>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                        flashInnerHtml += `</div>`;
-                    }
-
-                    megaStrip.innerHTML = flashInnerHtml;
                     vp.appendChild(megaStrip);
+                }
+
+                if (activeSub.includes('GitHub Accounts')) {
+                    const yrHeader = document.createElement('div');
+                    yrHeader.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--accent-cyan);margin:4px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
+                    yrHeader.innerText = '📅 Aged GitHub Accounts by Year (2011 – 2026)';
+                    vp.appendChild(yrHeader);
+
+                    const yrGrid = document.createElement('div');
+                    yrGrid.className = 'grid-years-2col';
+                    GITHUB_VAULT_CATEGORIES.filter(y => !isNaN(parseInt(y.yr))).forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
+                    vp.appendChild(yrGrid);
+
+                    const spHeader = document.createElement('div');
+                    spHeader.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:20px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
+                    spHeader.innerText = '🏆 Special Badge & High-Stat GitHub Accounts';
+                    vp.appendChild(spHeader);
+
+                    const spGrid = document.createElement('div');
+                    spGrid.className = 'grid-cards';
+                    GITHUB_VAULT_CATEGORIES.filter(y => isNaN(parseInt(y.yr))).forEach(y => spGrid.appendChild(createGithubYearCard(y)));
+                    vp.appendChild(spGrid);
+                    return;
                 }
 
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
 
                 if (activeSub.includes('Featured')) {
-                    ['Arctic', '2012', '2016', '2026'].forEach(k => {
+                    ['2011', '2012', '2016', '2026', 'Arctic', '6Badge'].forEach(k => {
                         const yObj = GITHUB_VAULT_CATEGORIES.find(x => x.yr === k);
                         if (yObj) grid.appendChild(createGithubYearCard(yObj));
                     });
                     CATALOG_ITEMS.filter(i => i.hot).forEach(i => grid.appendChild(createCatalogCard(i)));
-                } else if (activeSub.includes('GitHub Accounts')) {
-                    GITHUB_VAULT_CATEGORIES.forEach(y => grid.appendChild(createGithubYearCard(y)));
                 } else if (activeSub.includes('Boost')) {
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else {
@@ -1715,19 +2056,19 @@
                 return;
             }
 
-            // 2. GITHUB ENTERPRISE HUB (8 BUYER-FRIENDLY SYMMETRICAL SUB-TABS: 2x4 GRID)
+            // 2. GITHUB ENTERPRISE HUB (CLEAR BUYER-FRIENDLY SUB-TABS & 2-COLUMN LEFT-RIGHT YEAR PAIRS)
             if (activeTab === 'github') {
                 const ghSubs = [
-                    '📂 Accounts by Year',
-                    '📦 All Ready Accounts',
-                    '❄️ Rare Badge Accounts',
-                    '🏛️ Vintage (2011–2016)',
-                    '🛡️ Aged (2017–2026)',
-                    '🚀 Followers & Stars Boost',
-                    '🔑 2FA Code Generator',
-                    '🛡️ Account Health Checker'
+                    '📅 Choose by Year (2011–2026)',
+                    '⚡ Ready-to-Buy Accounts',
+                    '🏆 Special Badge Accounts',
+                    '💎 Oldest Accounts (2011–2016)',
+                    '🛡️ Aged Accounts (2017–2026)',
+                    '🚀 Buy Followers & Stars',
+                    '🔑 Get 2FA Login Code',
+                    '🔍 Check Account Status'
                 ];
-                if (activeSub === 'ALL') activeSub = ghSubs[0];
+                if (activeSub === 'ALL' || !ghSubs.includes(activeSub)) activeSub = ghSubs[0];
                 subContainer.style.display = 'grid';
                 ghSubs.forEach(st => {
                     const b = document.createElement('button');
@@ -1741,19 +2082,18 @@
                     subContainer.appendChild(b);
                 });
 
-                if (activeSub.includes('2FA Code')) {
+                if (activeSub.includes('2FA Login Code')) {
                     render2faTool(vp);
                     return;
                 }
-                if (activeSub.includes('Health Checker')) {
+                if (activeSub.includes('Check Account Status')) {
                     renderDiagnosticTools(vp);
                     return;
                 }
 
-                const grid = document.createElement('div');
-                grid.className = 'grid-cards';
-
-                if (activeSub.includes('All Ready Accounts')) {
+                if (activeSub.includes('Ready-to-Buy Accounts')) {
+                    const grid = document.createElement('div');
+                    grid.className = 'grid-cards';
                     if (allLiveAccountsFlat.length === 0) {
                         vp.innerHTML = `<div class="inpage-drawer" style="text-align:center;">⏳ Syncing live accounts from Google Sheet...</div>`;
                     } else {
@@ -1763,18 +2103,55 @@
                     return;
                 }
 
-                if (activeSub.includes('Boost')) {
+                if (activeSub.includes('Buy Followers & Stars')) {
+                    const grid = document.createElement('div');
+                    grid.className = 'grid-cards';
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
-                } else {
+                    vp.appendChild(grid);
+                    return;
+                }
+
+                if (activeSub.includes('Special Badge')) {
+                    const grid = document.createElement('div');
+                    grid.className = 'grid-cards';
+                    GITHUB_VAULT_CATEGORIES.filter(y => isNaN(parseInt(y.yr))).forEach(y => grid.appendChild(createGithubYearCard(y)));
+                    vp.appendChild(grid);
+                    return;
+                }
+
+                if (activeSub.includes('Oldest Accounts') || activeSub.includes('Aged Accounts')) {
+                    const yrGrid = document.createElement('div');
+                    yrGrid.className = 'grid-years-2col';
                     GITHUB_VAULT_CATEGORIES.filter(y => {
                         const n = parseInt(y.yr);
-                        if (activeSub.includes('Rare Badge')) return isNaN(n);
-                        if (activeSub.includes('Vintage')) return n >= 2011 && n <= 2016;
-                        if (activeSub.includes('Aged (2017')) return n >= 2017 && n <= 2026;
-                        return true;
-                    }).forEach(y => grid.appendChild(createGithubYearCard(y)));
+                        if (isNaN(n)) return false;
+                        if (activeSub.includes('Oldest')) return n >= 2011 && n <= 2016;
+                        return n >= 2017 && n <= 2026;
+                    }).forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
+                    vp.appendChild(yrGrid);
+                    return;
                 }
-                vp.appendChild(grid);
+
+                // Default: Choose by Year (2011-2026 at the very top in 2 left-right columns, Special Badges below)
+                const yrTitle = document.createElement('div');
+                yrTitle.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--accent-cyan);margin:2px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
+                yrTitle.innerText = '📅 Select GitHub Year (2011 – 2026 Paired Left & Right)';
+                vp.appendChild(yrTitle);
+
+                const yrGrid = document.createElement('div');
+                yrGrid.className = 'grid-years-2col';
+                GITHUB_VAULT_CATEGORIES.filter(y => !isNaN(parseInt(y.yr))).forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
+                vp.appendChild(yrGrid);
+
+                const badgeTitle = document.createElement('div');
+                badgeTitle.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:22px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
+                badgeTitle.innerText = '🏆 Special Badge & High-Follower Vaults';
+                vp.appendChild(badgeTitle);
+
+                const badgeGrid = document.createElement('div');
+                badgeGrid.className = 'grid-cards';
+                GITHUB_VAULT_CATEGORIES.filter(y => isNaN(parseInt(y.yr))).forEach(y => badgeGrid.appendChild(createGithubYearCard(y)));
+                vp.appendChild(badgeGrid);
                 return;
             }
 
@@ -2237,6 +2614,13 @@
             showToast(`Wallet synced! Balance: ${fmtPrice(userBalanceUsdt)}`);
         }
 
+        let selectedWalletDepMode = 'USDT';
+
+        function switchWalletDepMode(mode) {
+            selectedWalletDepMode = mode;
+            renderViewport();
+        }
+
         function renderWalletTab(container) {
             container.innerHTML = `
                 <div style="display:flex;flex-direction:column;gap:18px;max-width:860px;margin:0 auto;">
@@ -2260,37 +2644,48 @@
                         </div>
                     </div>
 
-                    <!-- 2. DEPOSIT USDT BALANCE (DIRECTLY BELOW CARD SO BUYERS SEE IT IMMEDIATELY) -->
+                    <!-- 2. DEPOSIT WALLET BALANCE (DUAL CURRENCY: USDT OXAPAY OR IDR QRIS/SEABANK/DANA) -->
                     <div class="item-card">
                         <div>
-                            <span class="item-tag">INSTANT AUTO-PILOT TOP-UP</span>
-                            <h3 class="item-title" style="font-size:1.15rem;">➕ Deposit USDT Balance</h3>
-                            <p class="item-desc" style="margin-bottom:14px;">Select an amount below to top up instantly via OxaPay Crypto, Binance Pay, QRIS/E-Wallet, or SeaBank.</p>
+                            <span class="item-tag">INSTANT WALLET TOP-UP GATEWAY</span>
+                            <h3 class="item-title" style="font-size:1.15rem;">➕ Select Deposit Currency (USDT or IDR)</h3>
+                            <p class="item-desc" style="margin-bottom:12px;">Choose <b>🪙 USDT (OxaPay Crypto)</b> for automated blockchain settlement, or <b>🇮🇩 IDR (QRIS / SeaBank / DANA)</b> with instant screenshot verification.</p>
+
+                            <!-- CURRENCY MODE SELECTOR -->
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
+                                <button class="subtab-pill ${selectedWalletDepMode === 'USDT' ? 'active' : ''}" onclick="switchWalletDepMode('USDT')">
+                                    🪙 USDT (OxaPay Instant)
+                                </button>
+                                <button class="subtab-pill ${selectedWalletDepMode === 'IDR' ? 'active' : ''}" onclick="switchWalletDepMode('IDR')">
+                                    🇮🇩 IDR (QRIS / Bank / DANA)
+                                </button>
+                            </div>
 
                             <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;">
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;" onclick="initiateTopUp(5)">
-                                    <span style="font-size:1.1rem;font-weight:800;color:var(--text-primary);">5.00 USDT</span>
-                                    <span style="font-size:0.7rem;color:var(--text-muted);">Rp ${Math.round(5 * liveUsdtIdrRate).toLocaleString('id-ID')}</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;" onclick="initiateTopUp(5, '${selectedWalletDepMode}')">
+                                    <span style="font-size:1.05rem;font-weight:800;color:var(--text-primary);">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(5 * liveUsdtIdrRate).toLocaleString('id-ID') : '5.00 USDT'}</span>
+                                    <span style="font-size:0.7rem;color:var(--text-muted);">Credit: +5.00 USDT</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;" onclick="initiateTopUp(25)">
-                                    <span style="font-size:1.1rem;font-weight:800;color:var(--text-primary);">25.00 USDT</span>
-                                    <span style="font-size:0.7rem;color:var(--text-muted);">Rp ${Math.round(25 * liveUsdtIdrRate).toLocaleString('id-ID')}</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;" onclick="initiateTopUp(25, '${selectedWalletDepMode}')">
+                                    <span style="font-size:1.05rem;font-weight:800;color:var(--text-primary);">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(25 * liveUsdtIdrRate).toLocaleString('id-ID') : '25.00 USDT'}</span>
+                                    <span style="font-size:0.7rem;color:var(--text-muted);">Credit: +25.00 USDT</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(50)">
-                                    <span style="font-size:1.1rem;font-weight:800;color:var(--success);">50.00 USDT</span>
-                                    <span style="font-size:0.7rem;color:var(--success);">🔥 +5% Bonus USDT!</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(50, '${selectedWalletDepMode}')">
+                                    <span style="font-size:1.05rem;font-weight:800;color:var(--success);">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(50 * liveUsdtIdrRate).toLocaleString('id-ID') : '50.00 USDT'}</span>
+                                    <span style="font-size:0.7rem;color:var(--success);">🔥 +50.00 USDT (+5% Bonus)</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(100)">
-                                    <span style="font-size:1.1rem;font-weight:800;color:var(--success);">100.00 USDT</span>
-                                    <span style="font-size:0.7rem;color:var(--success);">💎 +10% Bonus USDT!</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(100, '${selectedWalletDepMode}')">
+                                    <span style="font-size:1.05rem;font-weight:800;color:var(--success);">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(100 * liveUsdtIdrRate).toLocaleString('id-ID') : '100.00 USDT'}</span>
+                                    <span style="font-size:0.7rem;color:var(--success);">💎 +100.00 USDT (+10% Bonus)</span>
                                 </button>
                             </div>
 
                             <div class="form-group" style="margin-bottom:0;">
-                                <label>Or Enter Custom Deposit Amount (Min 5 USDT):</label>
-                                <div style="display:flex;gap:8px;">
-                                    <input type="number" class="form-input" id="customDepositAmt" value="15" min="5" step="1">
-                                    <button class="btn-ui primary" style="flex:0 0 auto;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value))">🪙 Deposit Now</button>
+                                <label>Or Enter Custom Deposit Amount in USDT (Min 5 USDT):</label>
+                                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                                    <input type="number" class="form-input" id="customDepositAmt" value="15" min="5" step="1" style="flex:1;min-width:140px;">
+                                    <button class="btn-ui primary" style="flex:0 0 auto;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), 'USDT')">🪙 Deposit via USDT</button>
+                                    <button class="btn-ui buy-now" style="flex:0 0 auto;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), 'IDR')">🇮🇩 Deposit via IDR</button>
                                 </div>
                             </div>
                         </div>
@@ -2470,12 +2865,14 @@
                 return;
             }
 
+            cleanupExpiredOrSoldFlashAccounts();
             const isFlashOn = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true}').active;
+            const activeFlashCount = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]').length;
             const admActions = [
-                { icon: isFlashOn ? '🟢' : '🔴', title: isFlashOn ? 'Turn Flash Sale OFF (Hide Banner)' : 'Turn Flash Sale ON (Show Banner)', desc: 'Toggle main page Flash Sale banner visibility instantly', cmd: 'toggle_flash' },
-                { icon: '⚡', title: 'Configure Flash Sale Item & Price', desc: 'Set custom title, discount price, and original price', cmd: 'config_flash' },
-                { icon: '🔔', title: 'Open Live Admin Telemetry Feed', desc: 'View incoming Cart Alerts, Secret Admin Logs & Boost Tasks', cmd: 'open_admin_notifs' },
-                { icon: '📥', title: 'Sync GSheet Stock (Sheet1)', desc: 'Pull latest Available accounts & Prices from Sheet1', cmd: 'sync_gsheet' },
+                { icon: '⚡', title: `Manage Flash Sale Accounts (${activeFlashCount} Active)`, desc: 'Search stock by @username or year, set Flash Price & Duration hours', cmd: 'manage_flash_stock' },
+                { icon: isFlashOn ? '🟢' : '🔴', title: isFlashOn ? 'Turn Flash Sale OFF (Hide Section)' : 'Turn Flash Sale ON (Show Section)', desc: 'Toggle main page Flash Sale visibility on or off', cmd: 'toggle_flash' },
+                { icon: '🔔', title: 'Open Live Admin Telemetry Feed', desc: 'View incoming Cart Alerts, Price Offers, IDR Proofs & Reminders', cmd: 'open_admin_notifs' },
+                { icon: '📥', title: 'Sync GSheet Stock (Sheet1)', desc: 'Pull latest Available accounts & trigger New Stock Alert for buyers', cmd: 'sync_gsheet' },
                 { icon: '🧹', title: 'Test Admin Telegram Push', desc: 'Send a test diagnostic notification to Admin DM, Group & Channel', cmd: 'test_tg_push' },
                 { icon: '💳', title: 'Set Local Test Balance (USDT)', desc: 'Add test USDT balance in browser to test Instant Balance Checkout', cmd: 'set_test_bal' }
             ];
@@ -2521,6 +2918,14 @@
         function execAdminCmd(cmd) {
             if (cmd === 'sync_gsheet') {
                 syncGoogleSheetInventory(true);
+            } else if (cmd === 'toggle_flash') {
+                const cfg = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true}');
+                cfg.active = !cfg.active;
+                localStorage.setItem('xb_admin_flash_cfg', JSON.stringify(cfg));
+                showToast(`Flash Sale section is now ${cfg.active ? 'ONLINE (ON)' : 'OFFLINE (OFF)'}!`);
+                renderViewport();
+            } else if (cmd === 'manage_flash_stock') {
+                openAdminFlashSaleManagerModal();
             } else if (cmd === 'open_admin_notifs') {
                 openNotificationsModal();
                 switchNotifFeed('admin');
@@ -2540,6 +2945,143 @@
             }
         }
 
+        // FEATURE 10: ADMIN FLASH SALE STOCK PICKER MODAL (SEARCH BY USERNAME OR YEAR, SET PRICE & DURATION HOURS)
+        function openAdminFlashSaleManagerModal() {
+            cleanupExpiredOrSoldFlashAccounts();
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;color:var(--warning);border-color:var(--warning);">⚡ FLASH SALE STOCK MANAGER</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 6px 0;">🔥 Add GitHub Accounts to Flash Sale</h3>
+                <p style="font-size:0.76rem;color:var(--text-secondary);margin:0 0 12px 0;">
+                    Search your live stock by <code>@username</code> or <code>year (e.g. 2012, 2026)</code>, set a Flash Sale price & duration hours. Items automatically vanish once sold or expired!
+                </p>
+
+                <div id="adminActiveFlashListBox" style="margin-bottom:12px;"></div>
+
+                <div class="form-group" style="margin-bottom:10px;">
+                    <input type="text" class="form-input" id="adminFlashSearchInput" placeholder="🔍 Search @username or year (e.g. 2012, 2016, Arctic)..." oninput="renderAdminFlashStockCandidates()">
+                </div>
+
+                <div id="adminFlashCandidatesBox" style="max-height:260px;overflow-y:auto;display:flex;flex-direction:column;gap:8px;"></div>
+            `;
+            renderAdminActiveFlashList();
+            renderAdminFlashStockCandidates();
+        }
+
+        function renderAdminActiveFlashList() {
+            const box = document.getElementById('adminActiveFlashListBox');
+            if (!box) return;
+            const currentFlash = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
+            if (currentFlash.length === 0) {
+                box.innerHTML = `<div style="padding:10px;border-radius:10px;background:var(--bg-soft);font-size:0.75rem;color:var(--text-muted);text-align:center;">No active Flash Sale accounts currently listed.</div>`;
+                return;
+            }
+            box.innerHTML = `
+                <div style="font-size:0.72rem;font-weight:800;color:var(--warning);margin-bottom:6px;">ACTIVE FLASH SALE ITEMS (${currentFlash.length}):</div>
+                ${currentFlash.map((f, i) => {
+                    const remHrs = Math.max(0, ((f.expiresAt - Date.now()) / 3600000)).toFixed(1);
+                    return `
+                        <div class="cred-field-row" style="border-color:var(--warning);">
+                            <span style="flex:1;"><b>@${f.username}</b> (${f.yearKey}) • <s>$${parseFloat(f.origUsdt).toFixed(2)}</s> ➔ <b style="color:var(--success);">$${parseFloat(f.flashUsdt).toFixed(2)}</b> (${remHrs}h left)</span>
+                            <button class="top-pill" style="color:var(--danger);padding:4px 8px;" onclick="removeAccountFromFlashSale(${i})">🗑️ Remove</button>
+                        </div>
+                    `;
+                }).join('')}
+            `;
+        }
+
+        function removeAccountFromFlashSale(idx) {
+            const list = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
+            list.splice(idx, 1);
+            localStorage.setItem('xb_admin_flash_accs', JSON.stringify(list));
+            renderAdminActiveFlashList();
+            renderAdminFlashStockCandidates();
+            if (activeTab === 'home' || activeTab === 'admin') renderViewport();
+            showToast('Removed from Flash Sale!');
+        }
+
+        function renderAdminFlashStockCandidates() {
+            const box = document.getElementById('adminFlashCandidatesBox');
+            if (!box) return;
+            const q = (document.getElementById('adminFlashSearchInput')?.value || '').trim().toLowerCase();
+            const currentFlash = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
+            const activeSet = new Set(currentFlash.map(x => String(x.username || '').toLowerCase()));
+
+            const matches = allLiveAccountsFlat.filter(a => {
+                if (activeSet.has(String(a.username || '').toLowerCase())) return false;
+                if (!q) return true;
+                const uMatch = String(a.username || '').toLowerCase().includes(q);
+                const yMatch = String(a._cat_key || a.year || '').toLowerCase().includes(q);
+                return uMatch || yMatch;
+            }).slice(0, 40);
+
+            if (matches.length === 0) {
+                box.innerHTML = `<div style="padding:14px;text-align:center;color:var(--text-muted);font-size:0.78rem;">No matching available accounts found in stock.</div>`;
+                return;
+            }
+
+            box.innerHTML = matches.map(a => {
+                const yrKey = a._cat_key || a.year || '2026';
+                const prc = a._computed_usdt || computeAccountPrice(a, yrKey);
+                const accId = `${yrKey}-${a.username}`;
+                ACCOUNT_CACHE_MAP[accId] = { acc: a, yrKey: yrKey };
+                return `
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 12px;border-radius:10px;background:var(--bg-soft);border:1px solid var(--border-subtle);gap:8px;">
+                        <div style="min-width:0;flex:1;">
+                            <div style="font-size:0.82rem;font-weight:800;font-family:'JetBrains Mono',monospace;">@${a.username} <span style="color:var(--accent-cyan);font-size:0.7rem;">(Year ${yrKey})</span></div>
+                            <div style="font-size:0.7rem;color:var(--text-muted);">👥 ${a.followers || 0} Flw • 📁 ${a.repos || 0} Repos • Normal: <b>$${prc.toFixed(2)} USDT</b></div>
+                        </div>
+                        <button class="top-pill" style="border-color:var(--warning);color:var(--warning);flex-shrink:0;" onclick="promptAddAccountToFlashSale('${accId}')">⚡ +Flash Sale</button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function promptAddAccountToFlashSale(accId) {
+            const entry = ACCOUNT_CACHE_MAP[accId];
+            if (!entry) return;
+            const acc = entry.acc;
+            const yrKey = entry.yrKey;
+            const origUsdt = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+
+            const priceStr = prompt(`Enter Flash Sale Price in USDT for @${acc.username} (Normal Price: $${origUsdt.toFixed(2)} USDT):`, Math.max(1, (origUsdt * 0.8)).toFixed(2));
+            if (priceStr === null) return;
+            const flashUsdt = parseFloat(priceStr.replace(',', '.'));
+            if (isNaN(flashUsdt) || flashUsdt <= 0) return showToast('Invalid Flash Sale price!');
+
+            const durStr = prompt(`Enter how many HOURS this Flash Sale should stay active (e.g. 2, 6, 12, 24):`, '6');
+            if (durStr === null) return;
+            const hours = parseFloat(durStr.replace(',', '.'));
+            if (isNaN(hours) || hours <= 0) return showToast('Invalid duration hours!');
+
+            const list = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
+            list.unshift({
+                username: acc.username,
+                yearKey: yrKey,
+                followers: acc.followers || 0,
+                repos: acc.repos || 0,
+                origUsdt: origUsdt,
+                flashUsdt: flashUsdt,
+                expiresAt: Date.now() + Math.round(hours * 3600 * 1000),
+                accountData: acc
+            });
+            localStorage.setItem('xb_admin_flash_accs', JSON.stringify(list));
+
+            // Make sure Flash Sale visibility is turned ON
+            localStorage.setItem('xb_admin_flash_cfg', JSON.stringify({ active: true }));
+
+            renderAdminActiveFlashList();
+            renderAdminFlashStockCandidates();
+            if (activeTab === 'home' || activeTab === 'admin') renderViewport();
+            showToast(`🔥 @${acc.username} added to Flash Sale at $${flashUsdt.toFixed(2)} USDT for ${hours}h!`);
+        }
+
         // =========================================================
         // ⚡ 12. DIRECT PAYMENT ENGINE + PERSISTENT CART
         // =========================================================
@@ -2555,8 +3097,20 @@
             localStorage.setItem('xb_saved_cart', JSON.stringify(cart));
             const badgeEl = document.getElementById('cartCountBadge');
             if (badgeEl) badgeEl.innerText = cart.length;
+
+            const floatBar = document.getElementById('floatingCartBar');
+            if (floatBar) {
+                if (cart.length > 0) {
+                    const sumUsdt = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0) * (1 - cartDiscountPct / 100);
+                    document.getElementById('floatingCartTitle').innerText = `${cart.length} Item(s) Ready in Cart`;
+                    document.getElementById('floatingCartTotal').innerText = `Total: ${fmtPrice(sumUsdt)}`;
+                    floatBar.style.display = 'flex';
+                } else {
+                    floatBar.style.display = 'none';
+                }
+            }
         }
-        updateCartUI();
+        setTimeout(updateCartUI, 50);
 
         function openDirectOrderModal(item) {
             modalProduct = item;
@@ -2971,18 +3525,344 @@
                 return;
             }
 
-            // B. PAY WITH CRYPTO (INSTANT OXAPAY API GATEWAY)
+            syncUserCrmToGSheetFromWeb('acc', totalUsdt);
+
+            // B. PAY WITH USDT CRYPTO (INSTANT OXAPAY API GATEWAY)
             if (method === 'crypto') {
                 openOxaPayInstantGateway(invId, summaryTitle, targetStr, totalUsdt, false, isFromCart, itemsList);
+                return;
+            }
+
+            // C. PAY WITH IDR (QRIS.JPG / SEABANK 901016712730 / DANA 089638423184 + SCREENSHOT UPLOAD)
+            if (method === 'idr') {
+                openIdrPaymentGatewayModal(invId, summaryTitle, targetStr, totalUsdt, false, isFromCart, itemsList);
+                return;
             }
         }
 
-        function initiateTopUp(amountUsdt) {
+        function initiateTopUp(amountUsdt, currencyMode = 'USDT') {
             if (isNaN(amountUsdt) || amountUsdt < 5) {
                 return showToast('Minimum deposit amount is 5.00 USDT!');
             }
             const invId = 'INV-TOPUP-' + Math.floor(10000 + Math.random() * 90000);
-            openOxaPayInstantGateway(invId, `Wallet Balance Deposit (${amountUsdt.toFixed(2)} USDT)`, `@${currentUsername}`, amountUsdt, true, false, []);
+            if (currencyMode === 'IDR') {
+                openIdrPaymentGatewayModal(invId, `Wallet Balance Deposit (${amountUsdt.toFixed(2)} USDT)`, `@${currentUsername}`, amountUsdt, true, false, []);
+            } else {
+                openOxaPayInstantGateway(invId, `Wallet Balance Deposit (${amountUsdt.toFixed(2)} USDT)`, `@${currentUsername}`, amountUsdt, true, false, []);
+            }
+        }
+
+        // FEATURE 11: IDR PAYMENT GATEWAY (QRIS.JPG, SEABANK 901016712730, DANA 089638423184 + SCREENSHOT UPLOAD TO ADMIN BOT & WEB)
+        let _activeIdrMethod = 'QRIS';
+        let _pendingIdrOrderCtx = null;
+
+        async function openIdrPaymentGatewayModal(invId, title, targetStr, amountUsdt, isTopup = false, clearCartOnInit = false, pendingItems = []) {
+            _pendingIdrOrderCtx = { invId, title, targetStr, amountUsdt, isTopup, clearCartOnInit, pendingItems };
+            const idrAmount = Math.round(amountUsdt * liveUsdtIdrRate);
+            const idrFmt = 'Rp ' + idrAmount.toLocaleString('id-ID');
+            const actionKey = `REM_TOPUP_${invId}`;
+
+            const adminIdrCreatedMsg = (
+                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                `   🇮🇩 <b>N E W  I D R  I N V O I C E  (W E B)</b>\n` +
+                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                `👤 <b>Client:</b> ${currentFullName} (@${currentUsername.replace('@','')} | <code>${currentUserId}</code>)\n` +
+                `🧾 <b>Invoice ID:</b> <code>${invId}</code>\n` +
+                `📦 <b>Item:</b> <b>${title}</b>\n` +
+                `💰 <b>Amount Due:</b> <b>${idrFmt}</b> ($${amountUsdt.toFixed(2)} USDT)\n` +
+                `⏳ <i>Status: Awaiting IDR Transfer & Screenshot Upload...</i>`
+            );
+
+            const remMeta = {
+                type: 'remind_topup',
+                actionKey: actionKey,
+                invId: invId,
+                buyerId: currentUserId,
+                buyerUname: currentUsername,
+                itemTitle: title,
+                amountUsdt: amountUsdt
+            };
+            const notifId = pushInWebNotification('admin', `🇮🇩 PENDING IDR INVOICE (${invId})`, adminIdrCreatedMsg, remMeta);
+            pushInWebNotification('buyer', `🇮🇩 IDR INVOICE (${invId})`, `Please transfer <b>${idrFmt}</b> ($${amountUsdt.toFixed(2)} USDT) via QRIS, SeaBank, or DANA and upload your payment screenshot.`);
+
+            const remKb = {
+                inline_keyboard: [
+                    [{ text: '🔔 Remind Buyer to Pay', callback_data: `admrem_topup_${currentUserId}_${invId}` }]
+                ]
+            };
+            const tgMsgIdsMap = {};
+            for (const admId of ADMIN_IDS) {
+                const mid = await sendTelegramSilentPush(admId, adminIdrCreatedMsg, true, remKb);
+                if (mid) tgMsgIdsMap[admId] = mid;
+            }
+            attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
+
+            renderIdrGatewayView('QRIS');
+        }
+
+        function renderIdrGatewayView(methodType) {
+            _activeIdrMethod = methodType;
+            if (!_pendingIdrOrderCtx) return;
+            const { invId, title, targetStr, amountUsdt } = _pendingIdrOrderCtx;
+            const idrAmount = Math.round(amountUsdt * liveUsdtIdrRate);
+            const idrFmt = 'Rp ' + idrAmount.toLocaleString('id-ID');
+
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            let paymentInstructionHtml = '';
+            if (methodType === 'QRIS') {
+                paymentInstructionHtml = `
+                    <div style="text-align:center;background:var(--bg-input);border:1px solid var(--border-focus);padding:14px;border-radius:14px;margin-bottom:14px;">
+                        <div style="font-size:0.74rem;font-weight:800;color:var(--accent-cyan);margin-bottom:8px;">📸 SCAN OFFICIAL QRIS (SUPPORTS ALL E-WALLETS & M-BANKING)</div>
+                        <img src="QRIS.JPG" alt="QRIS Payment" style="max-width:250px;width:100%;border-radius:12px;border:2px solid var(--border-subtle);background:#fff;padding:6px;" onerror="this.outerHTML='<div style=\\'padding:18px;color:var(--warning);font-weight:700;\\'>⚠️ Make sure QRIS.JPG is uploaded in the root of your GitHub Pages repository!</div>'">
+                        <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:8px;">Transfer Exact Amount: <b style="color:var(--success);font-family:'JetBrains Mono',monospace;">${idrFmt}</b></div>
+                    </div>
+                `;
+            } else if (methodType === 'BANK') {
+                paymentInstructionHtml = `
+                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:14px;border-radius:14px;margin-bottom:14px;">
+                        <div style="font-size:0.74rem;font-weight:800;color:var(--accent-cyan);margin-bottom:8px;">🏦 BANK TRANSFER — SEABANK INDONESIA</div>
+                        <div class="cred-field-row">
+                            <span class="lbl">BANK</span>
+                            <span class="val">SeaBank</span>
+                        </div>
+                        <div class="cred-field-row">
+                            <span class="lbl">NO. REK</span>
+                            <span class="val" style="color:var(--success);font-size:0.95rem;">901016712730</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('901016712730'); showToast('SeaBank account 901016712730 copied!');">📋 Copy</button>
+                        </div>
+                        <div class="cred-field-row" style="margin-bottom:0;">
+                            <span class="lbl">AMOUNT</span>
+                            <span class="val" style="color:var(--warning);">${idrFmt}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${idrAmount}'); showToast('Nominal IDR copied!');">📋 Copy</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                paymentInstructionHtml = `
+                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:14px;border-radius:14px;margin-bottom:14px;">
+                        <div style="font-size:0.74rem;font-weight:800;color:var(--accent-cyan);margin-bottom:8px;">🔵 E-WALLET TRANSFER — DANA</div>
+                        <div class="cred-field-row">
+                            <span class="lbl">PROVIDER</span>
+                            <span class="val">DANA Indonesia</span>
+                        </div>
+                        <div class="cred-field-row">
+                            <span class="lbl">DANA NO.</span>
+                            <span class="val" style="color:var(--success);font-size:0.95rem;">089638423184</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('089638423184'); showToast('DANA number 089638423184 copied!');">📋 Copy</button>
+                        </div>
+                        <div class="cred-field-row" style="margin-bottom:0;">
+                            <span class="lbl">AMOUNT</span>
+                            <span class="val" style="color:var(--warning);">${idrFmt}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${idrAmount}'); showToast('Nominal IDR copied!');">📋 Copy</button>
+                        </div>
+                    </div>
+                `;
+            }
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <span class="item-tag" style="margin:0;">🇮🇩 IDR PAYMENT GATEWAY (QRIS / SEABANK / DANA)</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 4px 0;font-family:'JetBrains Mono',monospace;">${invId}</h3>
+                <p style="margin:0 0 12px 0;font-size:0.78rem;color:var(--text-secondary);">${title} • <b style="color:var(--success);">${idrFmt}</b> (${amountUsdt.toFixed(2)} USDT)</p>
+
+                <!-- 3 IDR CHANNEL TABS -->
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;">
+                    <button class="subtab-pill ${methodType === 'QRIS' ? 'active' : ''}" style="padding:9px 6px;font-size:0.72rem;" onclick="renderIdrGatewayView('QRIS')">📸 QRIS</button>
+                    <button class="subtab-pill ${methodType === 'BANK' ? 'active' : ''}" style="padding:9px 6px;font-size:0.72rem;" onclick="renderIdrGatewayView('BANK')">🏦 SeaBank</button>
+                    <button class="subtab-pill ${methodType === 'DANA' ? 'active' : ''}" style="padding:9px 6px;font-size:0.72rem;" onclick="renderIdrGatewayView('DANA')">🔵 DANA</button>
+                </div>
+
+                ${paymentInstructionHtml}
+
+                <!-- UPLOAD PAYMENT SCREENSHOT DIRECTLY IN WEB -->
+                <div class="form-group" style="background:var(--bg-soft);border:1px dashed var(--border-focus);padding:12px;border-radius:12px;">
+                    <label>📤 Upload Payment Screenshot / Receipt (Required):</label>
+                    <input type="file" id="idrProofFileInput" accept="image/*" class="form-input" style="padding:8px;" onchange="previewIdrProofImage(this)">
+                    <div id="idrProofPreviewBox" style="display:none;margin-top:8px;text-align:center;">
+                        <img id="idrProofPreviewImg" style="max-height:150px;border-radius:8px;border:1px solid var(--success);">
+                    </div>
+                </div>
+
+                <button class="btn-ui buy-now" id="btnSubmitIdrProof" style="width:100%;padding:13px;font-size:0.86rem;" onclick="submitIdrPaymentProofToAdmin()">
+                    ✅ Submit Payment Screenshot to Admin
+                </button>
+            `;
+        }
+
+        function previewIdrProofImage(inputEl) {
+            const file = inputEl.files && inputEl.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const box = document.getElementById('idrProofPreviewBox');
+                const img = document.getElementById('idrProofPreviewImg');
+                if (box && img) {
+                    img.src = e.target.result;
+                    box.style.display = 'block';
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function submitIdrPaymentProofToAdmin() {
+            if (!_pendingIdrOrderCtx) return;
+            const fileInput = document.getElementById('idrProofFileInput');
+            const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+            if (!file) {
+                return showToast('⚠️ Please select/upload your payment screenshot image first!');
+            }
+
+            const btn = document.getElementById('btnSubmitIdrProof');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Uploading Screenshot to Admin Bot...'; }
+
+            const { invId, title, targetStr, amountUsdt, isTopup, clearCartOnInit, pendingItems } = _pendingIdrOrderCtx;
+            const idrFmt = 'Rp ' + Math.round(amountUsdt * liveUsdtIdrRate).toLocaleString('id-ID');
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const actionKey = `IDR_PROOF_${invId}`;
+
+            const dataUrl = document.getElementById('idrProofPreviewImg')?.src || '';
+
+            const captionHtml = (
+                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                `   📸 <b>I D R  P A Y M E N T  P R O O F  (W E B)</b>\n` +
+                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                `👤 <b>Client:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
+                `📦 <b>Order:</b> <b>${title}</b>\n` +
+                `🎯 <b>Target:</b> <code>${targetStr}</code>\n` +
+                `💳 <b>Method:</b> IDR (${_activeIdrMethod})\n` +
+                `💰 <b>Amount:</b> <b>${idrFmt}</b> ($${amountUsdt.toFixed(2)} USDT)\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                `👇 <i>Verify this transfer receipt below:</i>`
+            );
+
+            const inlineKb = {
+                inline_keyboard: [
+                    [
+                        { text: `✅ Approve (+$${amountUsdt.toFixed(2)})`, callback_data: `webidr_app_${currentUserId}_${amountUsdt.toFixed(2)}_${invId}` },
+                        { text: `❌ Reject`, callback_data: `webidr_rej_${currentUserId}_${amountUsdt.toFixed(2)}_${invId}` }
+                    ]
+                ]
+            };
+
+            const tgMsgIdsMap = {};
+            for (const admId of ADMIN_IDS) {
+                try {
+                    const formData = new FormData();
+                    formData.append('chat_id', String(admId));
+                    formData.append('photo', file);
+                    formData.append('caption', captionHtml + FOOTER_BRANDING);
+                    formData.append('parse_mode', 'HTML');
+                    formData.append('reply_markup', JSON.stringify(inlineKb));
+
+                    const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const d = await r.json();
+                    if (d && d.ok && d.result) {
+                        tgMsgIdsMap[admId] = d.result.message_id;
+                    }
+                } catch (err) {
+                    console.log('Upload photo error:', err);
+                }
+            }
+
+            const proofMeta = {
+                type: 'idr_proof',
+                actionKey: actionKey,
+                invId: invId,
+                buyerId: currentUserId,
+                buyerUname: dispUser,
+                title: title,
+                targetStr: targetStr,
+                amountUsdt: amountUsdt,
+                isTopup: isTopup,
+                pendingItems: pendingItems,
+                proofDataUrl: dataUrl,
+                tgMsgIds: tgMsgIdsMap
+            };
+
+            pushInWebNotification('admin', `📸 IDR PAYMENT PROOF (${invId})`, captionHtml, proofMeta);
+            pushInWebNotification('buyer', `✅ PAYMENT PROOF SUBMITTED (${invId})`, `Your screenshot for <b>${title}</b> (${idrFmt}) has been sent to Admin for verification.`);
+            sendTelegramSilentPush(currentUserId, `🎉 <b>[IDR PAYMENT PROOF RECEIVED]</b>\nInvoice: <code>${invId}</code>\nAmount: <b>${idrFmt}</b> ($${amountUsdt.toFixed(2)} USDT)\n⏳ <i>Our Executive Admin is verifying your payment screenshot.</i>`, true);
+
+            if (clearCartOnInit) {
+                cart = [];
+                cartDiscountPct = 0;
+                updateCartUI();
+            }
+
+            closeModal('paymentGatewayModal');
+            showToast('✅ Payment screenshot uploaded to Admin Bot & Web Feed!');
+        }
+
+        async function adminWebIdrDecision(notifIdx, decision) {
+            const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
+            const notif = adminList[notifIdx];
+            if (!notif || !notif.meta) return;
+            const m = notif.meta;
+
+            if (decision === 'approve') {
+                const amt = parseFloat(m.amountUsdt || 0);
+                if (String(m.buyerId) === String(currentUserId)) {
+                    userBalanceUsdt += amt;
+                    localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
+                    updateTopBalance();
+                    recordWebTransaction(m.invId, m.title, m.targetStr, amt, 'IN', 'IDR Payment (Approved)');
+                    syncUserCrmToGSheetFromWeb('topup', amt);
+                }
+                const okMsg = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🎉 <b>I D R  P A Y M E N T  A P P R O V E D</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🧾 <b>Invoice:</b> <code>${m.invId}</code>\n` +
+                    `📦 <b>Order:</b> <b>${m.title}</b>\n` +
+                    `💰 <b>Credited Amount:</b> <b>+$${amt.toFixed(2)} USDT</b>\n` +
+                    `✅ <i>Your IDR payment proof has been verified and credited!</i>`
+                );
+                pushInWebNotification('buyer', `🎉 IDR PAYMENT APPROVED (${m.invId})`, okMsg);
+                await sendTelegramSilentPush(m.buyerId, okMsg, true);
+
+                if (m.tgMsgIds) {
+                    await syncEditTelegramAdminMessages(m.tgMsgIds, notif.body, `✅ <b>STATUS: APPROVED VIA WEB (+$${amt.toFixed(2)} USDT)</b>`, true);
+                }
+
+                const newTitle = `✅ APPROVED IDR (${m.invId} • $${amt.toFixed(2)})`;
+                markActionResolvedEverywhere(m.actionKey, newTitle);
+                notif.title = newTitle;
+                delete notif.meta;
+                localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+                renderNotificationsList();
+                showToast(`✅ Approved ${m.invId} (+$${amt.toFixed(2)} USDT)!`);
+            } else {
+                const rejMsg = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   ❌ <b>I D R  P A Y M E N T  R E J E C T E D</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🧾 <b>Invoice:</b> <code>${m.invId}</code>\n` +
+                    `⚠️ <i>Your uploaded payment screenshot could not be verified. Please contact Live Support.</i>`
+                );
+                pushInWebNotification('buyer', `❌ IDR PAYMENT REJECTED (${m.invId})`, rejMsg);
+                await sendTelegramSilentPush(m.buyerId, rejMsg, true);
+
+                if (m.tgMsgIds) {
+                    await syncEditTelegramAdminMessages(m.tgMsgIds, notif.body, `❌ <b>STATUS: REJECTED VIA WEB</b>`, true);
+                }
+
+                const newTitle = `❌ REJECTED IDR (${m.invId})`;
+                markActionResolvedEverywhere(m.actionKey, newTitle);
+                notif.title = newTitle;
+                delete notif.meta;
+                localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+                renderNotificationsList();
+                showToast(`❌ Rejected ${m.invId}!`);
+            }
         }
 
         async function openOxaPayInstantGateway(invId, title, targetStr, amountUsdt, isTopup = false, clearCartOnInit = false, pendingItems = []) {
@@ -3026,7 +3906,7 @@
                 console.log("Direct OxaPay fallback mode.");
             }
 
-            // Send Invoice Created Alert to Buyer Web Feed, Buyer Telegram DM, Admin Web Feed & Admin Telegram Bot DM!
+            const actionKey = `REM_TOPUP_${invId}`;
             const buyerInvMsg = (
                 `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                 `   🧾 <b>I N V O I C E  G E N E R A T E D</b>\n` +
@@ -3049,10 +3929,30 @@
                 `💰 <b>Amount:</b> <b>$${amountUsdt.toFixed(2)} USDT</b> (~Rp ${Math.round(amountUsdt * liveUsdtIdrRate).toLocaleString('id-ID')})\n` +
                 `⏳ <i>Status: Pending Payment on Web Store</i>`
             );
+            const remMeta = {
+                type: 'remind_topup',
+                actionKey: actionKey,
+                invId: invId,
+                buyerId: currentUserId,
+                buyerUname: currentUsername,
+                itemTitle: title,
+                amountUsdt: amountUsdt
+            };
             pushInWebNotification('buyer', isTopup ? '💳 DEPOSIT INVOICE CREATED' : '🪙 CRYPTO INVOICE CREATED', buyerInvMsg);
-            pushInWebNotification('admin', isTopup ? '💳 NEW DEPOSIT REQUEST' : '🪙 NEW CRYPTO INVOICE', adminInvMsg);
+            const notifId = pushInWebNotification('admin', isTopup ? '💳 NEW DEPOSIT REQUEST' : '🪙 NEW CRYPTO INVOICE', adminInvMsg, remMeta);
             sendTelegramSilentPush(currentUserId, buyerInvMsg, true);
-            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminInvMsg, true));
+
+            const remKb = {
+                inline_keyboard: [
+                    [{ text: '🔔 Remind Buyer to Complete Payment', callback_data: `admrem_topup_${currentUserId}_${invId}` }]
+                ]
+            };
+            const tgMsgIdsMap = {};
+            for (const admId of ADMIN_IDS) {
+                const mid = await sendTelegramSilentPush(admId, adminInvMsg, true, remKb);
+                if (mid) tgMsgIdsMap[admId] = mid;
+            }
+            attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
 
             const idrEquiv = Math.round(amountUsdt * liveUsdtIdrRate).toLocaleString('id-ID');
 
@@ -3631,14 +4531,16 @@
         }
 
         // =========================================================
-        // 🤝 FEATURE 2: LIVE PRICE NEGOTIATION (NEGO) -> ADMIN BOT & BUYER NOTIF
+        // 🤝 FEATURE 2 & 3: MAKE AN OFFER (SINGLE ACCOUNT & ALL CART ITEMS) + 2-WAY BOT SYNC
         // =========================================================
         let _negoTargetEntry = null;
+        let _isCartMakeOfferMode = false;
 
         function openNegoModalById(accId) {
             const entry = ACCOUNT_CACHE_MAP[accId];
             if (!entry) return;
             _negoTargetEntry = entry;
+            _isCartMakeOfferMode = false;
             const acc = entry.acc;
             const yrKey = entry.yrKey;
             const origPrice = acc._computed_usdt || computeAccountPrice(acc, yrKey);
@@ -3654,47 +4556,96 @@
                 </div>
                 <h3 style="margin:0 0 4px 0;font-family:'JetBrains Mono',monospace;">@${acc.username} (GitHub ${yrKey})</h3>
                 <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">
-                    Standard Price: <b style="color:var(--success);">${fmtPrice(origPrice)}</b> (${origPrice.toFixed(2)} USDT) • Propose your custom price below for executive review.
+                    Standard Price: <b style="color:var(--success);">${fmtPrice(origPrice)}</b> (${origPrice.toFixed(2)} USDT) • Submit your offer below for executive review.
                 </p>
                 <div class="form-group">
                     <label>Your Offer Amount (in USDT):</label>
                     <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origPrice - 0.5).toFixed(2)}" value="${Math.max(1, (origPrice * 0.85)).toFixed(1)}">
                 </div>
                 <div class="form-group">
-                    <label>Note / Reason for Admin (Optional):</label>
-                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Ready to settle instantly via balance!">
+                    <label>Note / Message for Admin (Optional):</label>
+                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Ready to checkout immediately via balance!">
                 </div>
                 <div style="display:flex;gap:8px;">
                     <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
-                    <button class="btn-ui primary" onclick="submitWebNegoOffer()">🚀 Send Offer</button>
+                    <button class="btn-ui primary" onclick="submitWebNegoOffer()">🚀 Submit Offer</button>
                 </div>
             `;
         }
 
-        function submitWebNegoOffer() {
-            if (!_negoTargetEntry) return;
-            const acc = _negoTargetEntry.acc;
-            const yrKey = _negoTargetEntry.yrKey;
-            const accId = `${yrKey}-${acc.username}`;
-            const origPrice = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+        // FEATURE 2: MAKE AN OFFER FOR ALL ITEMS IN SHOPPING CART
+        function openCartMakeOfferModal() {
+            if (cart.length === 0) return showToast('Your shopping cart is empty!');
+            closeModal('cartModal');
+            _isCartMakeOfferMode = true;
+            const origTotal = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+            const itemsLabel = cart.map(c => c.title).join(', ');
+
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;">🤝 MAKE AN OFFER (ALL CART ITEMS)</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 4px 0;">🛒 Bundle Offer — ${cart.length} Selected Item(s)</h3>
+                <p style="font-size:0.76rem;color:var(--text-secondary);margin:0 0 12px 0;">
+                    Items: <code>${itemsLabel}</code><br>
+                    Standard Cart Total: <b style="color:var(--success);">${fmtPrice(origTotal)}</b> (${origTotal.toFixed(2)} USDT)
+                </p>
+                <div class="form-group">
+                    <label>Your Bundle Offer Amount for All ${cart.length} Item(s) (in USDT):</label>
+                    <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origTotal - 0.5).toFixed(2)}" value="${Math.max(1, (origTotal * 0.85)).toFixed(1)}">
+                </div>
+                <div class="form-group">
+                    <label>Note / Message for Admin (Optional):</label>
+                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Taking all ${cart.length} accounts right now!">
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal'); openCartModal();">Back to Cart</button>
+                    <button class="btn-ui primary" onclick="submitWebNegoOffer()">🚀 Submit Cart Offer</button>
+                </div>
+            `;
+        }
+
+        async function submitWebNegoOffer() {
             const offerUsdt = parseFloat(document.getElementById('negoOfferUsdt').value);
             const note = document.getElementById('negoBuyerNote').value.trim() || '-';
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const negoId = 'NEG' + Math.floor(10000 + Math.random() * 90000);
+            const actionKey = `OFFER_${negoId}`;
+
+            let origPrice = 0;
+            let accId = '';
+            let itemSummary = '';
+
+            if (_isCartMakeOfferMode) {
+                if (cart.length === 0) return;
+                origPrice = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+                accId = 'CART_BUNDLE';
+                itemSummary = `Cart Bundle (${cart.length} Items: ${cart.map(c => c.id).slice(0, 4).join(', ')}) [${accId}]`;
+            } else {
+                if (!_negoTargetEntry) return;
+                const acc = _negoTargetEntry.acc;
+                const yrKey = _negoTargetEntry.yrKey;
+                accId = `${yrKey}-${acc.username}`;
+                origPrice = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+                itemSummary = `GitHub Account (Year ${yrKey}) [${accId}]`;
+            }
 
             if (isNaN(offerUsdt) || offerUsdt <= 0.5 || offerUsdt >= origPrice) {
                 return showToast(`Please enter an offer lower than ${origPrice.toFixed(2)} USDT!`);
             }
 
-            // Gunakan format ID tanpa tanda strip tambahan agar callback_dataadmnego_acc_NEGxxxxx kompatibel 100% dengan XianBee-TechStore.py
-            const negoId = 'NEG' + Math.floor(10000 + Math.random() * 90000);
             const discPct = (((origPrice - offerUsdt) / origPrice) * 100).toFixed(1);
-            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
-            const itemSummary = `GitHub Account (Year ${yrKey}) [${accId}]`;
 
-            const buyerNegoMsg = (
+            const buyerOfferMsg = (
                 `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                 `   🤝 <b>O F F E R  S U B M I T T E D</b>\n` +
                 `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                `<blockquote>🔸 <b>Nego ID:</b> <code>${negoId}</code>\n` +
+                `<blockquote>🔸 <b>Offer ID:</b> <code>${negoId}</code>\n` +
                 `🔸 <b>Item:</b> ${itemSummary}\n` +
                 `🔸 <b>Normal Price:</b> <s>$${origPrice.toFixed(2)} USDT</s>\n` +
                 `🔸 <b>Your Offer:</b> <b>$${offerUsdt.toFixed(2)} USDT</b> (-${discPct}%)\n` +
@@ -3703,12 +4654,11 @@
                 `⏳ <i>Your offer has been sent to the Executive Admin. You will be notified automatically once approved or counter-offered!</i>`
             );
 
-            // 100% English Admin Nego Message & Inline Keyboard
-            const adminNegoMsg = (
+            const adminOfferMsg = (
                 `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                `   🤝 <b>I N C O M I N G  N E G O T I A T I O N</b>\n` +
+                `   🤝 <b>I N C O M I N G  P R I C E  O F F E R</b>\n` +
                 `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                `<blockquote>🔸 <b>Nego ID:</b> <code>${negoId}</code>\n` +
+                `<blockquote>🔸 <b>Offer ID:</b> <code>${negoId}</code>\n` +
                 `👤 <b>Buyer:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
                 `📦 <b>Target Item:</b> <b>${itemSummary}</b>\n` +
                 `💰 <b>Normal Price:</b> $${origPrice.toFixed(2)} USDT\n` +
@@ -3730,31 +4680,37 @@
                 ]
             };
 
-            const negoMeta = {
+            const offerMeta = {
                 type: 'nego',
+                actionKey: actionKey,
                 negoId: negoId,
+                isCartOffer: _isCartMakeOfferMode,
                 buyerId: currentUserId,
                 buyerUname: dispUser,
                 accId: accId,
-                yrKey: yrKey,
-                username: acc.username,
                 itemSummary: itemSummary,
                 origPrice: origPrice,
                 offerUsdt: offerUsdt,
                 note: note
             };
 
-            pushInWebNotification('buyer', '🤝 OFFER SUBMITTED (WEB)', buyerNegoMsg);
-            pushInWebNotification('admin', `🤝 INCOMING OFFER (${negoId})`, adminNegoMsg, negoMeta);
-            sendTelegramSilentPush(currentUserId, buyerNegoMsg, true);
-            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminNegoMsg, true, adminInlineKeyboard));
+            pushInWebNotification('buyer', '🤝 OFFER SUBMITTED (WEB)', buyerOfferMsg);
+            const notifId = pushInWebNotification('admin', `🤝 INCOMING OFFER (${negoId})`, adminOfferMsg, offerMeta);
+            sendTelegramSilentPush(currentUserId, buyerOfferMsg, true);
+
+            const tgMsgIdsMap = {};
+            for (const admId of ADMIN_IDS) {
+                const mid = await sendTelegramSilentPush(admId, adminOfferMsg, true, adminInlineKeyboard);
+                if (mid) tgMsgIdsMap[admId] = mid;
+            }
+            attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
 
             closeModal('paymentGatewayModal');
-            showToast(`Offer ${negoId} ($${offerUsdt.toFixed(2)} USDT) sent to Admin Bot!`);
+            showToast(`Offer ${negoId} ($${offerUsdt.toFixed(2)} USDT) sent to Admin!`);
         }
 
-        // Handler when Admin clicks Accept / Counter / Decline from Web Admin Logs (100% English)
-        function adminWebNegoDecision(notifIdx, decision) {
+        // Handler when Admin clicks Accept / Counter / Decline from Web Admin Logs (Syncs & Disables Telegram Bot Buttons!)
+        async function adminWebNegoDecision(notifIdx, decision) {
             const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
             const notif = adminList[notifIdx];
             if (!notif || !notif.meta) return;
@@ -3766,20 +4722,27 @@
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   🎉 <b>O F F E R  A P P R O V E D !</b>\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `<blockquote>🔸 <b>Nego ID:</b> <code>${m.negoId}</code>\n` +
+                    `<blockquote>🔸 <b>Offer ID:</b> <code>${m.negoId}</code>\n` +
                     `🔸 <b>Item:</b> ${m.itemSummary}\n` +
-                    `🔸 <b>Normal Price:</b> <s>$${ parseFloat(m.origPrice).toFixed(2) } USDT</s>\n` +
-                    `🔥 <b>Approved Deal Price:</b> <b>$${dealUsdt.toFixed(2)} USDT</b></blockquote>\n` +
-                    `👇 <i>Click below to checkout immediately with your Admin-approved special deal!</i>`
+                    `🔸 <b>Normal Price:</b> <s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>\n` +
+                    `🔥 <b>Approved Offer Price:</b> <b>$${dealUsdt.toFixed(2)} USDT</b></blockquote>\n` +
+                    `👇 <i>Click below to checkout immediately at your approved price!</i>`
                 );
                 const buyerKb = {
                     inline_keyboard: [
                         [{ text: `💳 Accept & Checkout ($${dealUsdt.toFixed(2)})`, callback_data: `nav_to_checkout` }]
                     ]
                 };
-                pushInWebNotification('buyer', '🎉 OFFER APPROVED BY ADMIN', msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: dealUsdt });
-                sendTelegramSilentPush(m.buyerId, msgBuyer, true, buyerKb);
-                notif.title = `✅ ACCEPTED (${m.negoId} • $${dealUsdt.toFixed(2)})`;
+                pushInWebNotification('buyer', '🎉 OFFER APPROVED BY ADMIN', msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: dealUsdt, isCartOffer: !!m.isCartOffer });
+                await sendTelegramSilentPush(m.buyerId, msgBuyer, true, buyerKb);
+
+                if (m.tgMsgIds) {
+                    await syncEditTelegramAdminMessages(m.tgMsgIds, notif.body, `✅ <b>STATUS: APPROVED VIA WEB ($${dealUsdt.toFixed(2)} USDT)</b>`, false);
+                }
+
+                const newTitle = `✅ ACCEPTED (${m.negoId} • $${dealUsdt.toFixed(2)})`;
+                markActionResolvedEverywhere(m.actionKey, newTitle);
+                notif.title = newTitle;
                 delete notif.meta;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
                 renderNotificationsList();
@@ -3795,21 +4758,28 @@
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   ⚡ <b>A D M I N  C O U N T E R  O F F E R</b>\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `<blockquote>🔸 <b>Nego ID:</b> <code>${m.negoId}</code>\n` +
+                    `<blockquote>🔸 <b>Offer ID:</b> <code>${m.negoId}</code>\n` +
                     `🔸 <b>Item:</b> ${m.itemSummary}\n` +
                     `🔸 <b>Normal Price:</b> <s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>\n` +
                     `🔸 <b>Your Offer:</b> <s>$${parseFloat(m.offerUsdt).toFixed(2)} USDT</s>\n` +
-                    `🔥 <b>Admin Special Deal:</b> <b>$${cntUsdt.toFixed(2)} USDT</b></blockquote>\n` +
-                    `👇 <i>Click the button below to claim this special deal immediately:</i>`
+                    `🔥 <b>Admin Counter Offer:</b> <b>$${cntUsdt.toFixed(2)} USDT</b></blockquote>\n` +
+                    `👇 <i>Click the button below to accept this counter offer and checkout immediately:</i>`
                 );
                 const buyerKb = {
                     inline_keyboard: [
                         [{ text: `💳 Accept & Checkout ($${cntUsdt.toFixed(2)})`, callback_data: `nav_to_checkout` }]
                     ]
                 };
-                pushInWebNotification('buyer', '⚡ ADMIN COUNTER OFFER', msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: cntUsdt });
-                sendTelegramSilentPush(m.buyerId, msgBuyer, true, buyerKb);
-                notif.title = `⚡ COUNTERED (${m.negoId} • $${cntUsdt.toFixed(2)})`;
+                pushInWebNotification('buyer', '⚡ ADMIN COUNTER OFFER', msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: cntUsdt, isCartOffer: !!m.isCartOffer });
+                await sendTelegramSilentPush(m.buyerId, msgBuyer, true, buyerKb);
+
+                if (m.tgMsgIds) {
+                    await syncEditTelegramAdminMessages(m.tgMsgIds, notif.body, `⚡ <b>STATUS: COUNTERED VIA WEB ($${cntUsdt.toFixed(2)} USDT)</b>`, false);
+                }
+
+                const newTitle = `⚡ COUNTERED (${m.negoId} • $${cntUsdt.toFixed(2)})`;
+                markActionResolvedEverywhere(m.actionKey, newTitle);
+                notif.title = newTitle;
                 delete notif.meta;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
                 renderNotificationsList();
@@ -3820,14 +4790,21 @@
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   ❌ <b>O F F E R  D E C L I N E D</b>\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `<blockquote>🔸 <b>Nego ID:</b> <code>${m.negoId}</code>\n` +
+                    `<blockquote>🔸 <b>Offer ID:</b> <code>${m.negoId}</code>\n` +
                     `🔸 <b>Item:</b> ${m.itemSummary}\n` +
                     `🔸 <b>Your Offer:</b> $${parseFloat(m.offerUsdt).toFixed(2)} USDT</blockquote>\n` +
-                    `⚠️ <i>Sorry, your offer could not be accepted by the Admin. Please submit a more reasonable offer.</i>`
+                    `⚠️ <i>Sorry, your offer could not be accepted. Feel free to submit a higher offer in the store.</i>`
                 );
                 pushInWebNotification('buyer', '❌ OFFER DECLINED', msgBuyer);
-                sendTelegramSilentPush(m.buyerId, msgBuyer, true);
-                notif.title = `❌ DECLINED (${m.negoId})`;
+                await sendTelegramSilentPush(m.buyerId, msgBuyer, true);
+
+                if (m.tgMsgIds) {
+                    await syncEditTelegramAdminMessages(m.tgMsgIds, notif.body, `❌ <b>STATUS: DECLINED VIA WEB</b>`, false);
+                }
+
+                const newTitle = `❌ DECLINED (${m.negoId})`;
+                markActionResolvedEverywhere(m.actionKey, newTitle);
+                notif.title = newTitle;
                 delete notif.meta;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
                 renderNotificationsList();
@@ -3835,8 +4812,20 @@
             }
         }
 
-        function claimApprovedWebNego(accId, dealUsdt) {
+        function claimApprovedWebNego(accId, dealUsdt, isCartOffer = false) {
             closeModal('notificationsModal');
+            if (isCartOffer || accId === 'CART_BUNDLE') {
+                if (cart.length > 0) {
+                    const origSum = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+                    const ratio = origSum > 0 ? (parseFloat(dealUsdt) / origSum) : 1;
+                    cart = cart.map(c => Object.assign({}, c, { usdt: parseFloat((c.usdt * ratio).toFixed(2)) }));
+                    cartDiscountPct = 0;
+                    updateCartUI();
+                    openCartModal();
+                    showToast(`🎉 Cart total updated to approved offer: $${parseFloat(dealUsdt).toFixed(2)} USDT!`);
+                    return;
+                }
+            }
             const entry = ACCOUNT_CACHE_MAP[accId];
             if (entry) {
                 const customAcc = Object.assign({}, entry.acc, { _computed_usdt: parseFloat(dealUsdt), price_usd: parseFloat(dealUsdt) });
@@ -3844,9 +4833,9 @@
             } else {
                 openDirectOrderModal({
                     id: accId,
-                    tag: 'APPROVED NEGO DEAL',
+                    tag: 'APPROVED OFFER',
                     title: `Approved Special Offer (${accId})`,
-                    desc: 'Special negotiated price approved by Executive Admin.',
+                    desc: 'Special offer price approved by Executive Admin.',
                     usdt: parseFloat(dealUsdt),
                     prompt: 'Target Account:'
                 });
@@ -3857,7 +4846,7 @@
         }
 
         // =========================================================
-        // 🏆 FEATURE 4: 100% REAL TOP VIP HOLDERS LEADERBOARD MODAL
+        // 🏆 FEATURE 4: 100% REAL TOP VIP HOLDERS SYNCED WITH GOOGLE SHEET & REPO
         // =========================================================
         async function openLeaderboardModal() {
             const modal = document.getElementById('paymentGatewayModal');
@@ -3867,25 +4856,27 @@
             body.innerHTML = `
                 <div style="text-align:center;padding:24px 10px;">
                     <div style="font-size:1.8rem;margin-bottom:8px;">👑</div>
-                    <div style="font-weight:800;">Syncing Real-Time VIP Holders from Database...</div>
-                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">Fetching verified balances & transaction volumes...</div>
+                    <div style="font-weight:800;">Syncing Real-Time VIP Holders from Google Sheet...</div>
+                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">Fetching verified balances, top-ups & purchase volumes...</div>
                 </div>
             `;
 
             const holdersMap = {};
 
-            function addHolderMetric(uidOrName, balanceVal, spentVal, txCountVal) {
-                const key = String(uidOrName || '').trim();
+            function addHolderMetric(uidOrName, balanceVal, spentVal, topupVal, txCountVal) {
+                let key = String(uidOrName || '').trim();
                 if (!key || key === 'undefined' || key === 'null') return;
+                if (ADMIN_IDS.includes(key.replace('ID:', ''))) return;
                 if (!holdersMap[key]) {
-                    holdersMap[key] = { label: key, balance: 0, spent: 0, txCount: 0 };
+                    holdersMap[key] = { label: key, balance: 0, spent: 0, topup: 0, txCount: 0 };
                 }
                 holdersMap[key].balance = Math.max(holdersMap[key].balance, parseFloat(balanceVal) || 0);
-                holdersMap[key].spent += (parseFloat(spentVal) || 0);
-                holdersMap[key].txCount += (parseInt(txCountVal) || 0);
+                holdersMap[key].spent = Math.max(holdersMap[key].spent, parseFloat(spentVal) || 0);
+                holdersMap[key].topup = Math.max(holdersMap[key].topup, parseFloat(topupVal) || 0);
+                holdersMap[key].txCount = Math.max(holdersMap[key].txCount, parseInt(txCountVal) || 0);
             }
 
-            // 1. Tarik data real dari Google Sheet Webhook (Sheet4 User Loyalty CRM / Sheet1 Sold Data)
+            // 1. Try pulling from Google Sheet Webhook (pull_stock / get_vip_holders / Sheet4 CRM)
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -3894,63 +4885,77 @@
                 });
                 const json = await res.json();
                 if (json) {
-                    // Jika webhook mengirimkan array crm_users / leaderboard dari Sheet4
-                    const crmList = json.crm_users || json.leaderboard || json.users || [];
+                    const crmList = json.crm_users || json.leaderboard || json.users || json.sheet4 || cachedSheetVipHolders || [];
                     if (Array.isArray(crmList)) {
                         crmList.forEach(u => {
                             const uname = u.username || (u.user_id ? `ID:${u.user_id}` : '');
                             const bal = parseFloat(u.balance || 0);
-                            const totSpent = (parseFloat(u.acc_total || 0) + parseFloat(u.svc_total || 0));
-                            const totTx = (parseInt(u.acc_tx || 0) + parseInt(u.svc_tx || 0));
-                            if (bal > 0 || totSpent > 0 || totTx > 0) {
-                                addHolderMetric(uname, bal, totSpent, totTx);
+                            const totSpent = (parseFloat(u.acc_total || u.spent || 0) + parseFloat(u.svc_total || 0));
+                            const totTopup = parseFloat(u.topup_total || u.topup || u.total_volume || 0);
+                            const totTx = (parseInt(u.acc_tx || u.tx || 0) + parseInt(u.svc_tx || 0) + parseInt(u.topup_tx || 0));
+                            if (bal > 0 || totSpent > 0 || totTopup > 0 || totTx > 0) {
+                                addHolderMetric(uname, bal, totSpent, totTopup, totTx);
                             }
                         });
                     }
                 }
             } catch (e) {}
 
-            // 2. Hitung juga data real dari riwayat transaksi & saldo aktual user yang sedang login
+            // 2. Also check stock_akun.json / stock.json in Web Repo (pushed by sync_github_stock_background in XianBee-TechStore.py)
+            for (const fileCandidate of ['stock_akun.json', 'stock.json']) {
+                try {
+                    const r2 = await fetch(`${fileCandidate}?t=${Date.now()}`);
+                    if (r2.ok) {
+                        const d2 = await r2.json();
+                        const vipArr = d2 && d2._vip_holders ? d2._vip_holders : [];
+                        if (Array.isArray(vipArr)) {
+                            vipArr.forEach(u => {
+                                addHolderMetric(u.username || `ID:${u.uid}`, u.balance || 0, u.spent || 0, u.topup || u.total_volume || 0, u.tx || 1);
+                            });
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            // 3. Also include current logged-in buyer's real balance & local transaction history
             const localHistory = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-            let myOutVol = 0;
-            let myTxCnt = 0;
+            let myOutVol = 0, myInVol = 0, myTxCnt = 0;
             localHistory.forEach(h => {
-                if (h.type === 'OUT') {
-                    myOutVol += (parseFloat(h.usdt) || 0);
-                    myTxCnt += 1;
-                }
+                if (h.type === 'OUT') { myOutVol += (parseFloat(h.usdt) || 0); myTxCnt += 1; }
+                if (h.type === 'IN') { myInVol += (parseFloat(h.usdt) || 0); myTxCnt += 1; }
             });
-            if (userBalanceUsdt > 0 || myOutVol > 0) {
+            if (userBalanceUsdt > 0 || myOutVol > 0 || myInVol > 0) {
                 const myDisp = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
-                addHolderMetric(myDisp, userBalanceUsdt, myOutVol, myTxCnt);
+                addHolderMetric(myDisp, userBalanceUsdt, myOutVol, myInVol, myTxCnt);
             }
 
             const sortedLeaders = Object.values(holdersMap)
                 .map(h => {
-                    const totalPower = h.balance + h.spent;
+                    const totalVolume = Math.max(h.topup, h.balance + h.spent);
                     let tierBadge = '🪵 Member';
-                    if (h.txCount >= 100 || totalPower >= 500) tierBadge = '💎 Diamond';
-                    else if (h.txCount >= 50 || totalPower >= 200) tierBadge = '🥇 Gold';
-                    else if (h.txCount >= 20 || totalPower >= 50) tierBadge = '🥈 Silver';
-                    else if (h.txCount >= 5 || totalPower >= 10) tierBadge = '🥉 Bronze';
+                    if (h.txCount >= 100 || totalVolume >= 500) tierBadge = '💎 Diamond VIP';
+                    else if (h.txCount >= 50 || totalVolume >= 200) tierBadge = '🥇 Gold VIP';
+                    else if (h.txCount >= 20 || totalVolume >= 50) tierBadge = '🥈 Silver VIP';
+                    else if (h.txCount >= 5 || totalVolume >= 10) tierBadge = '🥉 Bronze VIP';
                     return {
                         maskedUser: maskData(h.label, h.label.startsWith('ID:') ? 'userid' : 'username'),
                         balance: h.balance,
                         spent: h.spent,
-                        totalPower: totalPower,
+                        topup: h.topup,
+                        totalVolume: totalVolume,
                         txCount: h.txCount,
                         tier: tierBadge
                     };
                 })
-                .filter(x => x.totalPower > 0)
-                .sort((a, b) => b.totalPower - a.totalPower)
+                .filter(x => x.totalVolume > 0)
+                .sort((a, b) => b.totalVolume - a.totalVolume)
                 .slice(0, 10);
 
             const medals = ['🥇 1', '🥈 2', '🥉 3', '4', '5', '6', '7', '8', '9', '10'];
 
             const rowsHtml = sortedLeaders.length === 0
                 ? `<div style="padding:20px;text-align:center;color:var(--text-muted);font-weight:700;font-size:0.8rem;">
-                    No verified holder records found yet, or Sheet4 CRM synchronization has not been triggered from the Admin Command Center.
+                    No verified holder records found yet. Click <b>👑 Sync Data User & Loyalty (Sheet4)</b> in the Telegram Bot Admin Menu to push all historical user records to Google Sheet!
                    </div>`
                 : sortedLeaders.map((l, idx) => `
                     <div class="cred-field-row" style="padding:10px 12px;">
@@ -3959,17 +4964,17 @@
                             <div style="font-weight:800;color:var(--text-primary);">${l.maskedUser} <span style="font-size:0.68rem;color:var(--accent-cyan);margin-left:4px;">${l.tier}</span></div>
                             <div style="font-size:0.68rem;color:var(--text-muted);">💳 Bal: $${l.balance.toFixed(2)} • 🛒 Spent: $${l.spent.toFixed(2)} (${l.txCount} TX)</div>
                         </div>
-                        <span style="color:var(--success);font-weight:800;">$${l.totalPower.toFixed(2)} USDT</span>
+                        <span style="color:var(--success);font-weight:800;">$${l.totalVolume.toFixed(2)} USDT</span>
                     </div>
                 `).join('');
 
             body.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">👑 HALL OF FAME (100% REAL DATA)</span>
+                    <span class="item-tag" style="margin:0;">👑 HALL OF FAME (REAL-TIME GSHEET SYNC)</span>
                     <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
                 <h3 style="margin:0 0 6px 0;">🏆 Real-Time Top VIP Holders</h3>
-                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">Ranked strictly from real client balances and verified transaction history (Zero fake/dummy data).</p>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">Ranked automatically from verified Top-Up Volume, Active Balance, and Total Store Purchases.</p>
                 <div>${rowsHtml}</div>
                 <button class="btn-ui primary" style="width:100%;margin-top:10px;" onclick="closeModal('paymentGatewayModal')">Close Leaderboard</button>
             `;
