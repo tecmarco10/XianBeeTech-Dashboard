@@ -15,9 +15,9 @@
         [data-theme="obsidian"] {
             --bg-base: #07080d;
             --bg-surface: #0f111a;
-            --bg-elevated: rgba(17, 20, 31, 0.92);
-            --bg-card: rgba(22, 26, 40, 0.80);
-            --bg-card-hover: rgba(31, 36, 56, 0.96);
+            --bg-elevated: rgba(17, 20, 31, 0.94);
+            --bg-card: rgba(22, 26, 40, 0.82);
+            --bg-card-hover: rgba(31, 36, 56, 0.98);
             --bg-subtab: rgba(13, 15, 24, 0.94);
             --bg-input: #0b0d14;
             --bg-soft: rgba(255, 255, 255, 0.045);
@@ -46,7 +46,7 @@
         [data-theme="platinum"] {
             --bg-base: #f1f5f9;
             --bg-surface: #ffffff;
-            --bg-elevated: rgba(255, 255, 255, 0.94);
+            --bg-elevated: rgba(255, 255, 255, 0.95);
             --bg-card: #ffffff;
             --bg-card-hover: #f8fafc;
             --bg-subtab: #e2e8f0;
@@ -222,50 +222,28 @@
             padding-bottom: 84px;
         }
 
-        /* TOPBAR */
+        /* TOPBAR (CLEAN & SPACIOUS FOR MOBILE) */
         .topbar {
             position: sticky;
             top: 0;
             z-index: 30;
-            height: 64px;
+            height: 62px;
             background: var(--bg-elevated);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-subtle);
-            padding: 0 16px;
+            padding: 0 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
+            gap: 8px;
         }
 
-        .search-bar {
-            flex: 1;
-            max-width: 420px;
-            position: relative;
-        }
-
-        .search-bar input {
-            width: 100%;
-            background: var(--bg-input);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-            padding: 9px 12px 9px 34px;
-            border-radius: 10px;
-            font-family: inherit;
-            font-size: 0.82rem;
-            font-weight: 600;
-            outline: none;
-        }
-
-        .search-bar input:focus { border-color: var(--border-focus); }
-        .search-bar .s-ic {
-            position: absolute;
-            left: 11px;
-            top: 50%;
-            transform: translateY(-50%);
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            pointer-events: none;
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            flex-shrink: 0;
         }
 
         .topbar-right {
@@ -279,7 +257,7 @@
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             color: var(--text-primary);
-            padding: 7px 11px;
+            padding: 8px 11px;
             border-radius: 10px;
             font-size: 0.75rem;
             font-weight: 800;
@@ -289,6 +267,7 @@
             gap: 5px;
             font-family: inherit;
             transition: 0.18s;
+            white-space: nowrap;
         }
 
         .top-pill:hover { border-color: var(--border-focus); }
@@ -305,75 +284,70 @@
             color: #fff;
             border: none;
             box-shadow: var(--shadow-glow);
+            padding: 8px 13px;
         }
 
-        .cart-count-badge {
-            background: rgba(0, 0, 0, 0.35);
+        .notif-top-pill {
+            position: relative;
+            background: var(--bg-card);
+            border: 1px solid var(--border-focus);
+        }
+
+        .badge-dot {
+            background: #ef4444;
             color: #fff;
             padding: 1px 6px;
             border-radius: 99px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
+            font-weight: 800;
         }
 
         .container {
             width: 100%;
             max-width: 1220px;
             margin: 0 auto;
-            padding: 20px 16px;
+            padding: 18px 14px;
         }
 
         /* =========================================================
-           🗂️ NESTED SUB-TABS (SYMMETRICAL GRID) & FLOATING CART
+           🗂️ SYMMETRICAL SUB-TABS GRID (ALIGNED LEFT & RIGHT)
            ========================================================= */
-        .subtabs-wrap {
-            background: var(--bg-subtab);
-            border: 1px solid var(--border-subtle);
-            padding: 8px;
-            border-radius: 14px;
+        .subtabs-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 8px;
             margin-bottom: 18px;
         }
 
+        @media (min-width: 640px) {
+            .subtabs-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
         .subtab-pill {
-            width: 100%;
-            min-height: 40px;
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
-            padding: 8px 10px;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            font-weight: 700;
+            padding: 11px 10px;
+            border-radius: 11px;
+            font-size: 0.76rem;
+            font-weight: 800;
             cursor: pointer;
             font-family: inherit;
             transition: 0.18s;
+            text-align: center;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            line-height: 1.25;
-        }
-
-        /* Jika jumlah tombol ganjil di HP, tombol terakhir otomatis rata penuh kiri-kanan */
-        @media (max-width: 767px) {
-            .subtabs-wrap > .subtab-pill:last-child:nth-child(odd) {
-                grid-column: 1 / -1;
-            }
-        }
-
-        @media (min-width: 768px) {
-            .subtabs-wrap {
-                grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-            }
+            gap: 6px;
+            box-shadow: var(--shadow-card);
         }
 
         .subtab-pill:hover {
             color: var(--text-primary);
             border-color: var(--border-focus);
-            background: var(--bg-card-hover);
         }
 
         .subtab-pill.active {
@@ -381,44 +355,6 @@
             color: #ffffff;
             border-color: transparent;
             box-shadow: var(--shadow-glow);
-        }
-
-        /* FLOATING BOTTOM CART BAR */
-        .floating-cart-bar {
-            position: fixed;
-            left: 50%;
-            bottom: 76px;
-            transform: translateX(-50%) translateY(150px);
-            width: calc(100% - 28px);
-            max-width: 520px;
-            background: var(--grad-primary);
-            color: #ffffff;
-            padding: 12px 16px;
-            border-radius: 16px;
-            box-shadow: 0 14px 34px rgba(79, 70, 229, 0.45);
-            border: 1px solid rgba(255, 255, 255, 0.22);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            z-index: 95;
-            cursor: pointer;
-            opacity: 0;
-            pointer-events: none;
-            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
-        }
-
-        .floating-cart-bar.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-            pointer-events: auto;
-        }
-
-        @media (min-width: 1100px) {
-            .floating-cart-bar {
-                bottom: 24px;
-                margin-left: 132px;
-            }
         }
 
         .inpage-drawer {
@@ -608,6 +544,28 @@
             word-break: break-all;
         }
 
+        /* TELEGRAM-STYLE NOTIFICATION CARD IN WEB */
+        .tg-notif-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-focus);
+            border-left: 4px solid var(--accent-cyan);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
+            font-size: 0.8rem;
+            line-height: 1.55;
+            box-shadow: var(--shadow-card);
+        }
+
+        .tg-notif-card pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--text-primary);
+        }
+
         /* 3D VIP WALLET CARD */
         .vip-card {
             background: var(--grad-primary);
@@ -676,7 +634,7 @@
             border: 1px solid var(--border-focus);
             border-radius: 20px;
             width: 100%;
-            max-width: 500px;
+            max-width: 520px;
             max-height: 90vh;
             overflow-y: auto;
             padding: 22px;
@@ -795,7 +753,7 @@
                 <button class="side-btn" data-tab="catalog" onclick="switchTab('catalog')">🌐 All Store Catalogs</button>
                 <button class="side-btn" data-tab="wallet" onclick="switchTab('wallet')">💳 Wallet & Deposit</button>
                 <button class="side-btn" data-tab="profile" onclick="switchTab('profile')">👤 Profile & Purchased Vault</button>
-                <button class="side-btn" id="sideAdminBtn" data-tab="admin" onclick="switchTab('admin')" style="color:var(--warning);display:none;">👑 Command Center</button>
+                <button class="side-btn" id="sidebarAdminBtn" data-tab="admin" onclick="switchTab('admin')" style="color:var(--warning);display:none;">👑 Command Center</button>
             </nav>
 
             <div class="sidebar-footer">
@@ -808,63 +766,55 @@
 
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area">
-            <header class="topbar" style="padding: 0 14px;">
-                <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="switchTab('home')">
+            <header class="topbar">
+                <div class="topbar-left" onclick="switchTab('home')">
                     <div class="brand-orb" style="width:34px;height:34px;font-size:1.05rem;border-radius:9px;">🐝</div>
                     <span style="font-weight:800;font-size:0.92rem;letter-spacing:-0.3px;">XianBee</span>
                 </div>
 
-                <div class="topbar-right" style="gap:7px;padding-right:4px;">
-                    <!-- WALLET BALANCE PILL -->
-                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="padding:8px 10px;">
+                <div class="topbar-right">
+                    <!-- 1. WALLET BALANCE PILL -->
+                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')">
                         <span>💳</span>
                         <span id="topBalanceText">0.00 USDT</span>
                     </button>
 
-                    <!-- REAL-TIME USDT <-> IDR SWITCHER -->
-                    <button class="top-pill" onclick="toggleCurrency()" title="Switch between USDT and Real-Time IDR" style="padding:8px 10px;">
+                    <!-- 2. CART BUTTON RIGHT NEXT TO USDT BALANCE -->
+                    <button class="top-pill cart-top-pill" onclick="openCartModal()">
+                        <span>🛒 Cart</span>
+                        <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);">0</span>
+                    </button>
+
+                    <!-- 3. LIVE NOTIFICATION FEED BELL (BUYER & ADMIN ALERTS) -->
+                    <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications">
+                        <span>🔔</span>
+                        <span class="badge-dot" id="notifCountBadge">0</span>
+                    </button>
+
+                    <!-- 4. REAL-TIME USDT <-> IDR SWITCHER -->
+                    <button class="top-pill" onclick="toggleCurrency()" title="Switch between USDT and Real-Time IDR">
                         <span id="currSwitchText">USDT</span>
                     </button>
 
-                    <!-- CART BUTTON RIGHT NEXT TO USDT -->
-                    <button class="top-pill cart-top-pill" onclick="openCartModal()" style="padding:8px 12px;font-size:0.78rem;">
-                        <span>🛒 Cart</span>
-                        <span class="cart-count-badge" id="cartCountBadge">0</span>
-                    </button>
-
-                    <!-- ADMIN QUICK ACCESS (HIDDEN FOR REGULAR USERS) -->
-                    <button class="top-pill" id="topAdminBtn" onclick="switchTab('admin')" title="Command Center" style="padding:8px 10px;display:none;">👑</button>
-
-                    <!-- THEME SWITCHER (DI POJOK KANAN) -->
-                    <button class="top-pill" onclick="toggleTheme()" style="padding:8px 10px;">
+                    <!-- 5. THEME SWITCHER -->
+                    <button class="top-pill" onclick="toggleTheme()" title="Switch Theme">
                         <span id="themeIcon">☀️</span>
                     </button>
+
+                    <!-- 6. ADMIN BUTTON (HIDDEN FROM REGULAR USERS, ONLY SHOWN TO ADMIN_IDS) -->
+                    <button class="top-pill" id="topAdminBtn" onclick="switchTab('admin')" title="Command Center" style="display:none;border-color:var(--warning);color:var(--warning);">👑</button>
                 </div>
             </header>
 
             <div class="container">
-                <!-- NESTED SUB-TABS BAR (LEVEL 2) -->
-                <div class="subtabs-wrap" id="subTabsContainer"></div>
+                <!-- NESTED SUB-TABS BAR (LEVEL 2 — SYMMETRICAL LEFT-RIGHT GRID) -->
+                <div class="subtabs-grid" id="subTabsContainer"></div>
 
                 <!-- IN-PAGE VAULT DRAWER (LEVEL 3 — FOR INSPECTING SPECIFIC GITHUB ACCOUNTS) -->
                 <div id="inPageVaultDrawer" style="display:none;"></div>
 
                 <!-- MAIN DYNAMIC VIEWPORT -->
                 <div id="mainViewport"></div>
-            </div>
-        </div>
-
-        <!-- 🛒 FLOATING CART BAR (MUNCUL SAAT ADA ITEM DI CART) -->
-        <div class="floating-cart-bar" id="floatingCartBar" onclick="openCartModal()">
-            <div style="display:flex;align-items:center;gap:10px;">
-                <div style="background:rgba(0,0,0,0.28);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;">🛒</div>
-                <div>
-                    <div style="font-size:0.82rem;font-weight:800;" id="floatingCartCount">0 Items in Cart</div>
-                    <div style="font-size:0.72rem;opacity:0.9;font-family:'JetBrains Mono',monospace;" id="floatingCartTotal">Total: 0.00 USDT</div>
-                </div>
-            </div>
-            <div style="background:#ffffff;color:#0f172a;padding:8px 13px;border-radius:10px;font-size:0.76rem;font-weight:800;white-space:nowrap;">
-                Checkout ➔
             </div>
         </div>
 
@@ -908,7 +858,7 @@
             <!-- Speed / Variant Selector -->
             <div class="form-group" id="ordVariantBox" style="display:none;">
                 <label>Select Service Tier / Speed:</label>
-                <div class="subtabs-wrap" id="ordVariantPills" style="margin-bottom:0;"></div>
+                <div class="subtabs-grid" id="ordVariantPills" style="margin-bottom:0;"></div>
             </div>
 
             <!-- Target Input -->
@@ -954,7 +904,7 @@
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 2: SHOPPING CART (PAY WITH BALANCE OR CRYPTO INSTANT)
+         🪟 MODAL 2: SHOPPING CART (PERSISTENT IN LOCALSTORAGE)
          ========================================================= -->
     <div class="modal-overlay" id="cartModal">
         <div class="modal-box">
@@ -963,7 +913,7 @@
                 <button class="top-pill" onclick="closeModal('cartModal')">✕</button>
             </div>
 
-            <div id="cartItemsContainer" style="max-height:220px;overflow-y:auto;margin-bottom:14px;"></div>
+            <div id="cartItemsContainer" style="max-height:240px;overflow-y:auto;margin-bottom:14px;"></div>
 
             <div class="form-group">
                 <label>Promo / Voucher Code:</label>
@@ -996,7 +946,32 @@
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 3: OXAPAY CRYPTO GATEWAY / UNLOCKED CREDENTIALS VAULT MODAL
+         🪟 MODAL 3: LIVE NOTIFICATION CENTER (TELEGRAM-STYLE ALERTS IN WEB)
+         ========================================================= -->
+    <div class="modal-overlay" id="notificationsModal">
+        <div class="modal-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <div>
+                    <span class="item-tag" style="margin:0;">REAL-TIME TELEMETRY & ALERTS</span>
+                    <h3 style="margin:2px 0 0 0;font-size:1.15rem;">🔔 Live Notification Center</h3>
+                </div>
+                <div style="display:flex;gap:6px;">
+                    <button class="top-pill" style="color:var(--danger);" onclick="clearWebNotifications()">🗑️ Clear</button>
+                    <button class="top-pill" onclick="closeModal('notificationsModal')">✕</button>
+                </div>
+            </div>
+
+            <div class="subtabs-grid" id="notifModeTabs" style="margin-bottom:12px;grid-template-columns:1fr 1fr;display:none;">
+                <button class="subtab-pill active" id="tabNotifBuyer" onclick="switchNotifFeed('buyer')">📩 Buyer Alerts</button>
+                <button class="subtab-pill" id="tabNotifAdmin" onclick="switchNotifFeed('admin')">🕵️ Admin Logs</button>
+            </div>
+
+            <div id="notificationsListContainer" style="max-height:62vh;overflow-y:auto;"></div>
+        </div>
+    </div>
+
+    <!-- =========================================================
+         🪟 MODAL 4: OXAPAY CRYPTO GATEWAY / UNLOCKED CREDENTIALS VAULT
          ========================================================= -->
     <div class="modal-overlay" id="paymentGatewayModal">
         <div class="modal-box" id="paymentGatewayBody"></div>
@@ -1004,109 +979,31 @@
 
     <script>
         // =========================================================
-        // ⚙️ 1. INITIALIZATION, USER IDENTITY & REAL-TIME USDT/IDR RATE
+        // ⚙️ 1. CORE SYSTEM CONFIG (SYNCED WITH XianBee-TechStore.py)
         // =========================================================
         const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
         if (tg) { try { tg.expand(); tg.ready(); } catch(e){} }
 
+        const BOT_TOKEN = "8761865866:AAFeQtCfqnQa9zX8tJ9JvqNYkDQHLkVoPlQ";
+        const ADMIN_IDS = ["6740043923", "7095661271"];
+        const CHANNEL_ID = "-1002983831228";
+        const GROUP_ID = "-1002609111408";
         const GSHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwakQrIn6zsKZLyvLnIklk6cXNRVOHSgsD3UNM5ApQrRVXpLXxT6X4tW1pMQIvGdnlx/exec";
         const OXAPAY_MERCHANT_KEY = "Y91KE8-V6HAJV-464FIB-Y4PQTL";
-        const ADMIN_IDS = ["6740043923", "7095661271"];
-        const TELEGRAM_BOT_TOKEN = "ISI_TOKEN_BOT_TELEGRAM_KAMU_DISINI"; // Wajib isi token bot kamu
 
-        async function notifyAdminBot(eventTitle, detailsObj = {}) {
-            const cartCount = (typeof cart !== 'undefined' && Array.isArray(cart)) ? cart.length : 0;
-            const cartSum = (typeof cart !== 'undefined' && Array.isArray(cart))
-                ? cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0)
-                : 0;
-            const usdtVal = parseFloat(detailsObj.usdt || 0);
-            const idrVal = Math.round(usdtVal * liveUsdtIdrRate).toLocaleString('id-ID');
-
-            // Susun rincian multi-item (jika checkout keranjang atau single order)
-            let itemsBreakdown = '';
-            if (Array.isArray(detailsObj.items) && detailsObj.items.length > 0) {
-                itemsBreakdown = detailsObj.items.map((it, i) => {
-                    const spdInfo = it.speed ? ` [Speed: ${String(it.speed).toUpperCase()}]` : '';
-                    const qtyInfo = it.qty ? `${it.qty}x ` : '';
-                    return `   ${i + 1}. <b>${qtyInfo}${it.title}</b>${spdInfo}\n      🎯 Target: <code>${it.target || '-'}</code> ($${parseFloat(it.usdt || 0).toFixed(2)})`;
-                }).join('\n');
-            }
-
-            const msgLines = [
-                `🐝 <b>XIANBEE WEB STORE NOTIFICATION</b>`,
-                `🔔 <b>Status:</b> ${eventTitle}`,
-                `━━━━━━━━━━━━━━━━━━━━`,
-                `👤 <b>Buyer:</b> @${currentUsername} (ID: <code>${currentUserId}</code>)`,
-                `💳 <b>Sisa Saldo Buyer:</b> ${userBalanceUsdt.toFixed(2)} USDT`
-            ];
-
-            if (detailsObj.invoice) msgLines.push(`🧾 <b>Invoice ID:</b> <code>${detailsObj.invoice}</code>`);
-            if (detailsObj.method) msgLines.push(`🏦 <b>Metode Bayar:</b> ${detailsObj.method}`);
-            if (detailsObj.trackId) msgLines.push(`🔗 <b>OxaPay Track ID:</b> <code>${detailsObj.trackId}</code>`);
-
-            if (itemsBreakdown) {
-                msgLines.push(`📦 <b>Rincian Pesanan (${detailsObj.items.length} Item):</b>\n${itemsBreakdown}`);
-            } else {
-                const qtyStr = detailsObj.qty && detailsObj.qty > 1 ? `${detailsObj.qty} Units • ` : '';
-                const spdStr = detailsObj.speed ? ` (${String(detailsObj.speed).toUpperCase()})` : '';
-                msgLines.push(`📦 <b>Produk:</b> ${qtyStr}${detailsObj.title || '-'}${spdStr}`);
-                msgLines.push(`🎯 <b>Target / Akun:</b> <code>${detailsObj.target || '-'}</code>`);
-            }
-
-            if (detailsObj.unlockedCreds && detailsObj.unlockedCreds.length > 0) {
-                const credList = detailsObj.unlockedCreds.map(c => `   • <code>@${c.username}</code> (Kat: ${c.category} | Email: <code>${c.email}</code>)`).join('\n');
-                msgLines.push(`🔐 <b>Akun Terkirim ke Buyer:</b>\n${credList}`);
-            }
-
-            msgLines.push(`💰 <b>Total Nominal:</b> <b>${usdtVal.toFixed(2)} USDT</b> (~Rp ${idrVal})`);
-            msgLines.push(`🛒 <b>Status Keranjang:</b> ${cartCount} Item (${cartSum.toFixed(2)} USDT)`);
-            msgLines.push(`⏰ <b>Waktu:</b> ${new Date().toLocaleString('id-ID')}`);
-
-            const textMsg = msgLines.join('\n');
-
-            // 1. Kirim langsung ke Telegram Admin
-            if (TELEGRAM_BOT_TOKEN && !TELEGRAM_BOT_TOKEN.includes("ISI_TOKEN")) {
-                ADMIN_IDS.forEach(adminId => {
-                    fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            chat_id: adminId,
-                            text: textMsg,
-                            parse_mode: 'HTML',
-                            disable_web_page_preview: true
-                        })
-                    }).catch(() => {});
-                });
-            }
-
-            // 2. Kirim log ke Google Apps Script Webhook (Kode.gs)
-            fetch(GSHEET_WEBHOOK_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                body: JSON.stringify({
-                    action: 'web_notification',
-                    event: eventTitle,
-                    invoice: detailsObj.invoice || '-',
-                    buyer_id: currentUserId,
-                    buyer_username: currentUsername,
-                    item_title: detailsObj.title || '-',
-                    target: detailsObj.target || '-',
-                    price_usdt: usdtVal.toFixed(2),
-                    method: detailsObj.method || '-',
-                    message_html: textMsg
-                })
-            }).catch(() => {});
-        }
+        const FOOTER_BRANDING = (
+            "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "🛡️ <b>Engineered by Abie Haryatmo</b>\n" +
+            "🤝 <b>Powered by XianBee-Tech</b>\n" +
+            "🤖 <b>Ordered via: @XianBeeTechStore_Bot</b>\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        );
 
         const urlParams = new URLSearchParams(window.location.search);
         const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
-        let savedUid = localStorage.getItem('xb_uid');
-        if (savedUid === '6740043923' && !tgUser && !urlParams.get('uid')) {
-            savedUid = null; // Reset fallback admin lama pada browser publik
-        }
-        let currentUserId = urlParams.get('uid') || (tgUser ? String(tgUser.id) : (savedUid || ('GUEST-' + Math.floor(100000 + Math.random() * 900000))));
+        let currentUserId = urlParams.get('uid') || (tgUser ? String(tgUser.id) : (localStorage.getItem('xb_uid') || 'Client-Web'));
         let currentUsername = urlParams.get('uname') || (tgUser ? (tgUser.username || tgUser.first_name) : (localStorage.getItem('xb_uname') || 'XianBeeClient'));
+        let currentFullName = (tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : currentUsername) || 'Client';
         let userBalanceUsdt = urlParams.get('bal') !== null && !isNaN(parseFloat(urlParams.get('bal')))
             ? parseFloat(urlParams.get('bal'))
             : parseFloat(localStorage.getItem('xb_bal_usdt') || '0.00');
@@ -1115,19 +1012,309 @@
         localStorage.setItem('xb_uname', currentUsername);
         localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
 
-        function isUserAdmin() {
-            return ADMIN_IDS.includes(String(currentUserId));
-        }
-
-        function syncAdminElementsVisibility() {
-            const showAdm = isUserAdmin();
-            const sideAdm = document.getElementById('sideAdminBtn');
+        // Strictly hide Admin buttons from non-admin users!
+        function checkAdminVisibility() {
+            const isAdmin = ADMIN_IDS.includes(String(currentUserId));
             const topAdm = document.getElementById('topAdminBtn');
-            if (sideAdm) sideAdm.style.display = showAdm ? 'flex' : 'none';
-            if (topAdm) topAdm.style.display = showAdm ? 'inline-flex' : 'none';
+            const sideAdm = document.getElementById('sidebarAdminBtn');
+            const notifTabs = document.getElementById('notifModeTabs');
+            if (topAdm) topAdm.style.display = isAdmin ? 'inline-flex' : 'none';
+            if (sideAdm) sideAdm.style.display = isAdmin ? 'flex' : 'none';
+            if (notifTabs) notifTabs.style.display = isAdmin ? 'grid' : 'none';
         }
-        syncAdminElementsVisibility();
+        checkAdminVisibility();
 
+        // =========================================================
+        // 🔔 2. SILENT TELEGRAM PUSH + IN-WEB NOTIFICATION ENGINE
+        // =========================================================
+        let activeNotifFeed = 'buyer';
+
+        function maskData(text, mode = "username") {
+            if (!text) return "<i>N/A</i>";
+            const s = String(text).trim().replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            if (mode === "username") {
+                const clean = s.replace("@", "");
+                if (clean.length <= 4) return `@****${clean.slice(-1)}`;
+                return `@****${clean.slice(-4)}`;
+            } else if (mode === "name") {
+                return s.split(" ").map(w => w.length > 2 ? w.slice(0, 2) + "***" : w + "***").join(" ");
+            } else if (mode === "userid") {
+                if (s.length <= 4) return `${s.slice(0, 1)}***`;
+                return `${s.slice(0, 2)}****${s.slice(-2)}`;
+            } else if (mode === "target") {
+                if (s.includes("/")) {
+                    const pts = s.split("/");
+                    const o = pts[0], r = pts[1] || "";
+                    const mo = o.length > 4 ? `${o.slice(0,2)}****${o.slice(-2)}` : `${o.slice(0,1)}***`;
+                    const mr = r.length > 4 ? `${r.slice(0,2)}****${r.slice(-2)}` : `${r.slice(0,1)}***`;
+                    return `${mo}/${mr}`;
+                } else if (s.includes("-")) {
+                    const pts = s.split("-");
+                    const yr = pts[0], un = pts.slice(1).join("-");
+                    const mun = un.length > 4 ? `****${un.slice(-4)}` : `****${un.slice(-1)}`;
+                    return `${yr}-${mun}`;
+                }
+                return s.length > 4 ? `${s.slice(0,2)}****${s.slice(-2)}` : `${s.slice(0,1)}***`;
+            }
+            return s;
+        }
+
+        // Send message directly via Telegram Bot HTTP API in the background (NEVER closes the WebApp!)
+        async function sendTelegramSilentPush(chatId, htmlText, withFooter = true) {
+            if (!chatId || !String(chatId).match(/^-?\d+$/)) return;
+            const finalHtml = (withFooter && !htmlText.includes("Engineered by Abie Haryatmo"))
+                ? (htmlText + FOOTER_BRANDING)
+                : htmlText;
+            try {
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: String(chatId),
+                        text: finalHtml,
+                        parse_mode: 'HTML',
+                        disable_web_page_preview: true
+                    })
+                });
+            } catch (e) {
+                console.log("Background TG Push error:", e);
+            }
+        }
+
+        function pushInWebNotification(role, title, htmlBody) {
+            const storageKey = role === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
+            const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            list.unshift({
+                id: 'NTF-' + Date.now() + '-' + Math.floor(Math.random()*999),
+                time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
+                title: title,
+                body: htmlBody
+            });
+            localStorage.setItem(storageKey, JSON.stringify(list.slice(0, 50)));
+            updateNotifBadgeCount();
+        }
+
+        function updateNotifBadgeCount() {
+            const buyerList = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
+            const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
+            const isAdmin = ADMIN_IDS.includes(String(currentUserId));
+            const total = isAdmin ? (buyerList.length + adminList.length) : buyerList.length;
+            const el = document.getElementById('notifCountBadge');
+            if (el) el.innerText = total;
+        }
+
+        function openNotificationsModal() {
+            checkAdminVisibility();
+            renderNotificationsList();
+            document.getElementById('notificationsModal').classList.add('active');
+        }
+
+        function switchNotifFeed(mode) {
+            activeNotifFeed = mode;
+            document.getElementById('tabNotifBuyer').classList.toggle('active', mode === 'buyer');
+            document.getElementById('tabNotifAdmin').classList.toggle('active', mode === 'admin');
+            renderNotificationsList();
+        }
+
+        function renderNotificationsList() {
+            const storageKey = activeNotifFeed === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
+            const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const container = document.getElementById('notificationsListContainer');
+            if (list.length === 0) {
+                container.innerHTML = `<div style="padding:26px;text-align:center;color:var(--text-muted);font-weight:700;">No notifications in this feed yet.</div>`;
+                return;
+            }
+            container.innerHTML = list.map(n => `
+                <div class="tg-notif-card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <span class="item-tag" style="margin:0;">${n.title}</span>
+                        <span style="font-size:0.7rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">🕒 ${n.time}</span>
+                    </div>
+                    <div>${n.body.replace(/\n/g, '<br>')}</div>
+                </div>
+            `).join('');
+        }
+
+        function clearWebNotifications() {
+            const storageKey = activeNotifFeed === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
+            localStorage.setItem(storageKey, '[]');
+            updateNotifBadgeCount();
+            renderNotificationsList();
+            showToast('Notifications cleared!');
+        }
+
+        // Fire complete Notification Flow for ADD_TO_CART (Matches XianBee-TechStore.py)
+        function triggerCartAlertNotifications(itemTitle, priceUsdt) {
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const cartAlertHtml = (
+                `🛒 <b>[ REAL-TIME CART ALERT ]</b>\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                `👤 <b>Client:</b> ${currentFullName} (${dispUser})\n` +
+                `🆔 <b>User ID:</b> <code>${currentUserId}</code>\n` +
+                `📦 <b>Item Added:</b> ${itemTitle}\n` +
+                `💰 <b>Price:</b> $${parseFloat(priceUsdt).toFixed(2)} USDT\n` +
+                `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                `⏳ <i>Status: Waiting for client checkout on Web Store...</i>`
+            );
+
+            // 1. Save to Admin Web Notification Feed + Buyer Web Feed
+            pushInWebNotification('admin', '🛒 REAL-TIME CART ALERT', cartAlertHtml);
+            pushInWebNotification('buyer', '🛒 ADDED TO CART', `You added <b>${itemTitle}</b> (<b>$${parseFloat(priceUsdt).toFixed(2)} USDT</b>) to your shopping cart.`);
+
+            // 2. Push silently to Admin Telegram DMs (ADMIN_IDS) without closing WebApp!
+            ADMIN_IDS.forEach(admId => {
+                sendTelegramSilentPush(admId, cartAlertHtml, true);
+            });
+        }
+
+        // Fire complete Notification Flow for ORDER / CHECKOUT (Buyer DM, Admin DM, Channel & Group)
+        function triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, paymentMethodLabel, unlockedAccounts = []) {
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const mName = maskData(currentFullName, "name");
+            const mUser = maskData(currentUsername, "username");
+            const mId = maskData(String(currentUserId), "userid");
+            const summaryTitle = itemsList.map(x => x.title).join(' + ');
+            const targetStr = itemsList.map(x => x.target).join(', ');
+
+            const isBoostOrder = itemsList.length === 1 && itemsList[0].isUnit;
+
+            if (isBoostOrder) {
+                const itm = itemsList[0];
+                const svcUp = String(itm.ghType || 'BOOST').toUpperCase();
+                const spdUp = String(itm.speed || 'REG').toUpperCase();
+                const cleanTarget = String(itm.target).replace('https://github.com/', '').replace('@', '').replace(/\/$/, '');
+                const targetUrl = `https://github.com/${cleanTarget}`;
+
+                // 1. Buyer Notification (Web Feed + Telegram DM)
+                const buyerBoostMsg = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🚀 <b>G I T H U B  B O O S T  A C T I V A T E D</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🧾 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `📦 <b>Service:</b> <b>${itm.title}</b>\n` +
+                    `🔗 <b>Target:</b> <code>${cleanTarget}</code>\n` +
+                    `➕ <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
+                    `💳 <b>Payment:</b> ${paymentMethodLabel} ($${totalUsdt.toFixed(2)} USDT)\n` +
+                    `📡 <b>Tracker Status:</b> 🟢 <b>ACTIVE (Real-Time Monitoring)</b>`
+                );
+                pushInWebNotification('buyer', '🚀 BOOST ORDER ACTIVATED', buyerBoostMsg);
+                sendTelegramSilentPush(currentUserId, buyerBoostMsg, true);
+
+                // 2. Admin DM Task Card (Web Admin Feed + ADMIN_IDS DM)
+                const adminBoostMsg = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   💻 <b>N E W  G I T H U B  B O O S T  T A S K</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🧾 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `👤 <b>Buyer:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
+                    `🚀 <b>Action:</b> <b>${svcUp} (${spdUp} TRACK)</b>\n` +
+                    `🔢 <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
+                    `💰 <b>Paid:</b> <b>$${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})</b>\n` +
+                    `🎯 <b>Target:</b> <code>${cleanTarget}</code>\n` +
+                    `🔗 <b>Full Link:</b> ${targetUrl}`
+                );
+                pushInWebNotification('admin', '💻 NEW BOOST TASK', adminBoostMsg);
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminBoostMsg, true));
+
+                // 3. Public Channel & Group Processing Log (Masked!)
+                const publicBoostLog = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   ⚙️ <b>O R D E R  P R O C E S S I N G</b> ⚙️\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
+                    `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${itm.title}</b>\n` +
+                    `🔸 <b>Target:</b> <code>${maskData(cleanTarget, 'target')}</code>\n` +
+                    `🔸 <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `⏳ <i>Status: Order dispatched to XianBee Auto-Tracker.</i>`
+                );
+                sendTelegramSilentPush(CHANNEL_ID, publicBoostLog, true);
+                sendTelegramSilentPush(GROUP_ID, publicBoostLog, true);
+
+                // 4. Log to Google Sheet3 (Boost CRM)
+                try {
+                    fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'log_boost_order',
+                            invoice_id: invId,
+                            buyer_username: `${dispUser} (${currentUserId})`,
+                            target_url: targetUrl,
+                            service_type: String(itm.ghType || 'followers').toLowerCase(),
+                            qty: itm.qty,
+                            start_count: 0,
+                            target_count: itm.qty,
+                            price_usd: totalUsdt
+                        })
+                    });
+                } catch (e) {}
+
+            } else {
+                // ACCOUNT / CART / PRO APP CHECKOUT NOTIFICATIONS
+                let credsBlock = '';
+                if (unlockedAccounts.length > 0) {
+                    credsBlock = unlockedAccounts.map(a =>
+                        `\n🔐 <b>UNLOCKED CREDENTIALS (@${a.username}):</b>\n` +
+                        `🔸 <b>Username:</b> <code>${a.username}</code>\n` +
+                        `🔸 <b>Password:</b> <code>${a.password}</code>\n` +
+                        `🔸 <b>Email:</b> <code>${a.email}</code>\n` +
+                        `🔸 <b>2FA Secret:</b> <code>${a.twofa}</code>`
+                    ).join('\n');
+                }
+
+                // 1. Buyer Notification (Web Feed + Telegram DM)
+                const buyerAccMsg = (
+                    `📦 <b>ORDER DISPATCHED & CONFIRMED</b>\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Order:</b> <b>${summaryTitle}</b>\n` +
+                    `🔸 <b>Total Paid:</b> <b>$${totalUsdt.toFixed(2)} USDT</b> (${paymentMethodLabel})` +
+                    credsBlock
+                );
+                pushInWebNotification('buyer', '📦 ACCOUNT / ORDER DISPATCHED', buyerAccMsg);
+                sendTelegramSilentPush(currentUserId, buyerAccMsg, true);
+
+                // 2. Secret Admin Log (Web Admin Feed + ADMIN_IDS DM)
+                const secretAdminLog = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🕵️ <b>S E C R E T  A D M I N  L O G</b> 🕵️\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Client:</b> ${currentFullName} (${dispUser})\n` +
+                    `🔸 <b>User ID:</b> <code>${currentUserId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${summaryTitle} (${itemsList.length} Items)</b>\n` +
+                    `🔸 <b>Target / ID:</b> <code>${targetStr}</code>\n` +
+                    `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `✅ <i>Status: Auto-Dispatched to Client on Web Store & Vault.</i>`
+                );
+                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG', secretAdminLog);
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretAdminLog, true));
+
+                // 3. Public Channel & Group Sold Out Log (Masked!)
+                const publicSoldLog = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   🛒 <b>M A S S I V E  A S S E T S  S O L D  O U T</b> 🛒\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
+                    `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${summaryTitle}</b>\n` +
+                    `🔸 <b>Total Items:</b> <b>${itemsList.length} Digital Asset(s)</b>\n` +
+                    `🔸 <b>Total Price:</b> <b>$${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `✅ <i>Status: Assets sold out & Credentials dispatched to Vault.</i>`
+                );
+                sendTelegramSilentPush(CHANNEL_ID, publicSoldLog, true);
+                sendTelegramSilentPush(GROUP_ID, publicSoldLog, true);
+            }
+        }
+
+        // =========================================================
+        // 💱 3. REAL-TIME USDT <-> IDR CURRENCY & THEME ENGINE
+        // =========================================================
         let liveUsdtIdrRate = parseFloat(localStorage.getItem('xb_live_idr_rate')) || 16250;
         let currentCurrency = localStorage.getItem('xb_curr_mode') || 'USDT';
         let currentTheme = localStorage.getItem('xb_theme_mode') || 'obsidian';
@@ -1175,16 +1362,15 @@
 
         function updateTopBalance() {
             document.getElementById('topBalanceText').innerText = fmtPrice(userBalanceUsdt);
-            document.getElementById('currSwitchText').innerText = currentCurrency === 'USDT' ? 'USDT' : 'IDR (Rp)';
+            document.getElementById('currSwitchText').innerText = currentCurrency === 'USDT' ? 'USDT' : 'IDR';
         }
 
         function toggleCurrency() {
             currentCurrency = currentCurrency === 'USDT' ? 'IDR' : 'USDT';
             localStorage.setItem('xb_curr_mode', currentCurrency);
             updateTopBalance();
-            updateCartUI();
             renderViewport();
-            showToast(`Display currency: ${currentCurrency} (1 USDT = Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')})`);
+            showToast(`Currency: ${currentCurrency} (1 USDT = Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')})`);
         }
 
         function applyTheme(t) {
@@ -1200,9 +1386,10 @@
         applyTheme(currentTheme);
         updateRateDisplays();
         fetchRealTimeUsdtIdrRate();
+        updateNotifBadgeCount();
 
         // =========================================================
-        // 📦 2. COMPLETE STORE CATALOG (GITHUB CATEGORIES = INSPECT ONLY!)
+        // 📦 4. COMPLETE STORE CATALOG (GITHUB CATEGORIES = INSPECT ONLY)
         // =========================================================
         const BASE_YEAR_PRICES = {
             'Arctic': 25.0, '6Badge': 10.0, 'Followers': 10.0, 'StudentPack': 5.0, 'Contrib': 10.0,
@@ -1251,35 +1438,36 @@
             { id: 'vip_stream', hub: 'pro_apps', sub: 'Pro Apps & AI', hot: false, icon: '🍿', tag: 'VIP STREAMING', title: 'VIP Streaming (Prime / Bstation / iQIYI / Vidio / Viu / WeTV)', desc: 'Official 1-Month Ad-Free 4K Ultra HD Streaming Account.', usdt: 3.50, tiers: [{ name: 'Amazon Prime Video', p: 3.50 }, { name: 'Bstation Premium', p: 3.50 }, { name: 'iQIYI / WeTV / Viu', p: 3.50 }, { name: 'Vidio / Vision+', p: 4.50 }], prompt: 'Your Email / WhatsApp for Delivery:' },
 
             // --- AGED SOCIAL MEDIA & EMAIL ACCOUNTS ---
-            { id: 'tw_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: true, icon: '🐦', tag: 'AGED X', title: 'Twitter (X) Aged / Crypto Account', desc: 'Aged X account with 2FA secret key & recovery email.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }, { name: 'Crypto Ready ($35)', p: 35.00 }], prompt: 'Order Notes / Delivery Email:' },
-            { id: 'ig_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '📸', tag: 'INSTAGRAM', title: 'Instagram Aged / High Followers Account', desc: 'High-trust aged Instagram profile with full credentials.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }, { name: 'Crypto Ready ($35)', p: 35.00 }], prompt: 'Order Notes:' },
-            { id: 'tt_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '🎵', tag: 'TIKTOK', title: 'TikTok Aged / High Followers Account', desc: 'Pre-warmed TikTok account ready for live & affiliate.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }], prompt: 'Order Notes:' },
-            { id: 'fb_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '📘', tag: 'FACEBOOK', title: 'Facebook Aged Account (Marketplace / Ads Ready)', desc: 'Aged Facebook profile with strong trust score.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }], prompt: 'Order Notes:' },
-            { id: 'dc_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '🎮', tag: 'DISCORD', title: 'Discord Aged Account (2016–2021)', desc: 'Includes auth token, email credentials & 2FA secret.', usdt: 15.00, prompt: 'Order Notes:' },
-            { id: 'tg_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '✈️', tag: 'TELEGRAM', title: 'Telegram Aged Account / Aged Bot Account', desc: 'High-trust aged Telegram account resistant to limits.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'Aged Bot Account ($20)', p: 20.00 }], prompt: 'Order Notes:' },
-            { id: 'rd_aged', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '👽', tag: 'REDDIT', title: 'Reddit Aged / High Karma Account', desc: 'Aged Reddit profile ready for crypto & tech subreddits.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Karma ($25)', p: 25.00 }], prompt: 'Order Notes:' },
-            { id: 'mail_gmail', hub: 'social_accs', sub: 'Aged Social & Emails', hot: false, icon: '📧', tag: 'EMAIL VAULT', title: 'Aged Email Accounts (Gmail / Outlook / Proton / MailRU)', desc: 'Verified aged email accounts for secure bindings.', usdt: 5.00, tiers: [{ name: 'Gmail ($5)', p: 5.00 }, { name: 'Outlook ($5)', p: 5.00 }, { name: 'ProtonMail ($5)', p: 5.00 }, { name: 'MailRU ($5)', p: 5.00 }], prompt: 'Preferred Email Provider:' },
+            { id: 'tw_aged', hub: 'social_accs', sub: 'Aged Socials', hot: true, icon: '🐦', tag: 'AGED X', title: 'Twitter (X) Aged / Crypto Account', desc: 'Aged X account with 2FA secret key & recovery email.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }, { name: 'Crypto Ready ($35)', p: 35.00 }], prompt: 'Order Notes / Delivery Email:' },
+            { id: 'ig_aged', hub: 'social_accs', sub: 'Aged Socials', hot: false, icon: '📸', tag: 'INSTAGRAM', title: 'Instagram Aged / High Followers Account', desc: 'High-trust aged Instagram profile with full credentials.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }, { name: 'Crypto Ready ($35)', p: 35.00 }], prompt: 'Order Notes:' },
+            { id: 'tt_aged', hub: 'social_accs', sub: 'Aged Socials', hot: false, icon: '🎵', tag: 'TIKTOK', title: 'TikTok Aged / High Followers Account', desc: 'Pre-warmed TikTok account ready for live & affiliate.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }], prompt: 'Order Notes:' },
+            { id: 'fb_aged', hub: 'social_accs', sub: 'Aged Socials', hot: false, icon: '📘', tag: 'FACEBOOK', title: 'Facebook Aged Account (Marketplace / Ads Ready)', desc: 'Aged Facebook profile with strong trust score.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }], prompt: 'Order Notes:' },
+            { id: 'dc_aged', hub: 'social_accs', sub: 'Aged Socials', hot: false, icon: '🎮', tag: 'DISCORD', title: 'Discord Aged Account (2016–2021)', desc: 'Includes auth token, email credentials & 2FA secret.', usdt: 15.00, prompt: 'Order Notes:' },
+            { id: 'tg_aged', hub: 'social_accs', sub: 'Aged Socials', hot: false, icon: '✈️', tag: 'TELEGRAM', title: 'Telegram Aged Account / Aged Bot Account', desc: 'High-trust aged Telegram account resistant to limits.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'Aged Bot Account ($20)', p: 20.00 }], prompt: 'Order Notes:' },
+            { id: 'rd_aged', hub: 'social_accs', sub: 'Aged Socials', hot: false, icon: '👽', tag: 'REDDIT', title: 'Reddit Aged / High Karma Account', desc: 'Aged Reddit profile ready for crypto & tech subreddits.', usdt: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Karma ($25)', p: 25.00 }], prompt: 'Order Notes:' },
+            { id: 'mail_gmail', hub: 'social_accs', sub: 'Aged Socials', hot: false, icon: '📧', tag: 'EMAIL VAULT', title: 'Aged Email Accounts (Gmail / Outlook / Proton / MailRU)', desc: 'Verified aged email accounts for secure bindings.', usdt: 5.00, tiers: [{ name: 'Gmail ($5)', p: 5.00 }, { name: 'Outlook ($5)', p: 5.00 }, { name: 'ProtonMail ($5)', p: 5.00 }, { name: 'MailRU ($5)', p: 5.00 }], prompt: 'Preferred Email Provider:' },
 
             // --- XIANBEE CRYPTO EXCHANGE & RETAIL GAS ---
             { id: 'exc_binance_kyc', hub: 'crypto_hub', sub: 'Crypto & Exchange', hot: true, icon: '🔶', tag: 'EXCHANGE KYC', title: 'Binance / OKX / Bybit / Bitget / Gate.io / MEXC Account', desc: 'Aged crypto exchange accounts (With KYC $35 / No KYC $25).', usdt: 35.00, tiers: [{ name: 'Binance KYC ($35)', p: 35.00 }, { name: 'OKX KYC ($35)', p: 35.00 }, { name: 'Bybit / Bitget KYC ($35)', p: 35.00 }, { name: 'MEXC No-KYC ($25)', p: 25.00 }], prompt: 'Preferred Exchange & Delivery Email:' },
             { id: 'gas_eth', hub: 'crypto_hub', sub: 'Crypto & Exchange', hot: true, icon: '⛽', tag: 'INSTANT GAS', title: 'Instant Retail Crypto & L2 Gas (ETH / BNB / SOL / TON / SUI)', desc: 'Instant retail gas delivery to your personal wallet via OxaPay.', usdt: 2.00, tiers: [{ name: 'Starter Gas (2 USDT)', p: 2.00 }, { name: 'Standard Gas (5 USDT)', p: 5.00 }, { name: 'Whale Gas (15 USDT)', p: 15.00 }], prompt: 'Network (e.g. Base/Arb/BSC/SOL/TON) + Wallet Address:' },
 
             // --- SMM BOOST SERVICES ---
-            { id: 'ig_svc', hub: 'smm_hub', sub: 'SMM Traffic Boost', hot: false, isUnit: true, icon: '📸', tag: 'SMM BOOST', title: 'Instagram / TikTok / YouTube / X Followers & Views', desc: 'High-speed social media engagement boost.', usdt: 0.15, prompt: 'Target Profile or Post Link:' },
-            { id: 'tg_svc', hub: 'smm_hub', sub: 'SMM Traffic Boost', hot: false, isUnit: true, icon: '✈️', tag: 'COMMUNITY SMM', title: 'Telegram Members / Discord Members / Reddit Upvotes', desc: 'Grow your Web3 community server and channel metrics.', usdt: 0.15, prompt: 'Target Channel or Invite Link:' },
-            { id: 'cmc', hub: 'smm_hub', sub: 'SMM Traffic Boost', hot: false, isUnit: true, icon: '🪙', tag: 'WEB3 & SEO', title: 'CoinMarketCap Watchlist, Shopee/Tokopedia & Web Traffic', desc: 'Organic website traffic and e-commerce store metrics.', usdt: 0.25, prompt: 'Target Website or Store Link:' },
+            { id: 'ig_svc', hub: 'smm_hub', sub: 'SMM Boost', hot: false, isUnit: true, icon: '📸', tag: 'SMM BOOST', title: 'Instagram / TikTok / YouTube / X Followers & Views', desc: 'High-speed social media engagement boost.', usdt: 0.15, prompt: 'Target Profile or Post Link:' },
+            { id: 'tg_svc', hub: 'smm_hub', sub: 'SMM Boost', hot: false, isUnit: true, icon: '✈️', tag: 'COMMUNITY SMM', title: 'Telegram Members / Discord Members / Reddit Upvotes', desc: 'Grow your Web3 community server and channel metrics.', usdt: 0.15, prompt: 'Target Channel or Invite Link:' },
+            { id: 'cmc', hub: 'smm_hub', sub: 'SMM Boost', hot: false, isUnit: true, icon: '🪙', tag: 'WEB3 & SEO', title: 'CoinMarketCap Watchlist, Shopee/Tokopedia & Web Traffic', desc: 'Organic website traffic and e-commerce store metrics.', usdt: 0.25, prompt: 'Target Website or Store Link:' },
 
             // --- PPOB BILLS, E-WALLET & GAMES ---
-            { id: 'ppob_games', hub: 'ppob_hub', sub: 'PPOB & Top-Up Games', hot: true, icon: '🎮', tag: 'INSTANT GAME', title: 'Top-Up Games (Mobile Legends / Free Fire / Valorant / Genshin / Steam)', desc: 'Real-time game diamond & voucher top-up via main server.', usdt: 2.00, tiers: [{ name: 'Small Pack (2 USDT)', p: 2.00 }, { name: 'Medium Pack (5 USDT)', p: 5.00 }, { name: 'Large Pack (12 USDT)', p: 12.00 }, { name: 'Sultan Pack (25 USDT)', p: 25.00 }], prompt: 'Game Name + User ID (and Server ID):' },
-            { id: 'ppob_ewallet', hub: 'ppob_hub', sub: 'PPOB & Top-Up Games', hot: false, icon: '📱', tag: 'E-WALLET & PLN', title: 'E-Wallet Top-Up (DANA / OVO / GoPay / ShopeePay) & PLN Token', desc: 'Instant Indonesian E-Wallet balance & electricity token.', usdt: 2.00, tiers: [{ name: 'Rp 25.000 (~1.65 USDT)', p: 1.65 }, { name: 'Rp 50.000 (~3.25 USDT)', p: 3.25 }, { name: 'Rp 100.000 (~6.40 USDT)', p: 6.40 }, { name: 'Rp 250.000 (~15.80 USDT)', p: 15.80 }], prompt: 'Provider (DANA/OVO/GoPay/PLN/Pulsa) + Phone/Meter No:' }
+            { id: 'ppob_games', hub: 'ppob_hub', sub: 'PPOB & Games', hot: true, icon: '🎮', tag: 'INSTANT GAME', title: 'Top-Up Games (Mobile Legends / Free Fire / Valorant / Genshin / Steam)', desc: 'Real-time game diamond & voucher top-up via main server.', usdt: 2.00, tiers: [{ name: 'Small Pack (2 USDT)', p: 2.00 }, { name: 'Medium Pack (5 USDT)', p: 5.00 }, { name: 'Large Pack (12 USDT)', p: 12.00 }, { name: 'Sultan Pack (25 USDT)', p: 25.00 }], prompt: 'Game Name + User ID (and Server ID):' },
+            { id: 'ppob_ewallet', hub: 'ppob_hub', sub: 'PPOB & Games', hot: false, icon: '📱', tag: 'E-WALLET & PLN', title: 'E-Wallet Top-Up (DANA / OVO / GoPay / ShopeePay) & PLN Token', desc: 'Instant Indonesian E-Wallet balance & electricity token.', usdt: 2.00, tiers: [{ name: 'Rp 25.000 (~1.65 USDT)', p: 1.65 }, { name: 'Rp 50.000 (~3.25 USDT)', p: 3.25 }, { name: 'Rp 100.000 (~6.40 USDT)', p: 6.40 }, { name: 'Rp 250.000 (~15.80 USDT)', p: 15.80 }], prompt: 'Provider (DANA/OVO/GoPay/PLN/Pulsa) + Phone/Meter No:' }
         ];
 
         // =========================================================
-        // 🔄 3. LIVE INVENTORY FETCH FROM GOOGLE SHEETS (SHEET1)
+        // 🔄 5. LIVE INVENTORY FETCH FROM GOOGLE SHEETS (SHEET1)
         // =========================================================
         let liveGithubStock = {};
         let allLiveAccountsFlat = [];
         let totalLiveAccounts = 0;
+        const ACCOUNT_CACHE_MAP = {};
 
         function computeAccountPrice(acc, catKey) {
             if (acc.price_usd && parseFloat(acc.price_usd) > 0) {
@@ -1311,7 +1499,6 @@
                         grouped[cat].push(acc);
                         flat.push(acc);
                     });
-                    // Populate special "Followers" virtual category (accounts with >= 50 followers)
                     grouped['Followers'] = flat.filter(a => (parseInt(a.followers || 0) || 0) >= 50);
 
                     liveGithubStock = grouped;
@@ -1343,21 +1530,15 @@
         }
 
         // =========================================================
-        // 🧭 4. NAVIGATION & MULTI-LEVEL SUB-TABS ENGINE
+        // 🧭 6. NAVIGATION & SYMMETRICAL SUB-TABS ROUTER
         // =========================================================
         let activeTab = 'home';
         let activeSub = 'ALL';
 
         function switchTab(tabName) {
-            if (tabName === 'admin' && !isUserAdmin()) {
-                showToast('⛔ Access restricted to Administrator only!');
-                return;
-            }
             activeTab = tabName;
             activeSub = 'ALL';
             document.getElementById('inPageVaultDrawer').style.display = 'none';
-            const gs = document.getElementById('globalSearch');
-            if (gs) gs.value = '';
 
             document.querySelectorAll('.side-btn, .bnav-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
@@ -1367,43 +1548,19 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function handleSearch(q) {
-            renderViewport(q.trim().toLowerCase());
-        }
-
-        function renderViewport(searchQuery = '') {
+        function renderViewport() {
             const subContainer = document.getElementById('subTabsContainer');
             const vp = document.getElementById('mainViewport');
             subContainer.innerHTML = '';
             vp.innerHTML = '';
 
-            // Global Search Filter
-            if (searchQuery) {
-                subContainer.style.display = 'none';
-                const grid = document.createElement('div');
-                grid.className = 'grid-cards';
-
-                allLiveAccountsFlat.filter(a => String(a.username || '').toLowerCase().includes(searchQuery) || String(a._cat_key || '').toLowerCase().includes(searchQuery))
-                    .slice(0, 18)
-                    .forEach(acc => grid.appendChild(createSpecificAccountCard(acc, acc._cat_key)));
-
-                GITHUB_VAULT_CATEGORIES.filter(y => y.title.toLowerCase().includes(searchQuery) || y.yr.toLowerCase().includes(searchQuery))
-                    .forEach(y => grid.appendChild(createGithubYearCard(y)));
-                CATALOG_ITEMS.filter(i => i.title.toLowerCase().includes(searchQuery) || i.desc.toLowerCase().includes(searchQuery))
-                    .forEach(i => grid.appendChild(createCatalogCard(i)));
-                vp.appendChild(grid);
-                return;
-            }
-
-            // 1. HOME TAB (6 TOMBOL SIMETRIS KIRI-KANAN)
+            // 1. HOME TAB (4 SYMMETRICAL PILLARS ALIGNED LEFT & RIGHT)
             if (activeTab === 'home') {
                 const homeSubs = [
-                    '🔥 Bestsellers',
+                    '🔥 Featured Bestsellers',
                     '🐙 GitHub Accounts',
-                    '🚀 GitHub Boost',
-                    '👑 Pro Apps & AI',
-                    '📱 Social & Emails',
-                    '🪙 Crypto & Top-Up'
+                    '🚀 Followers & Stars Boost',
+                    '👑 Pro Apps & Crypto'
                 ];
                 if (activeSub === 'ALL') activeSub = homeSubs[0];
                 subContainer.style.display = 'grid';
@@ -1420,19 +1577,19 @@
                 });
 
                 const hero = document.createElement('div');
-                hero.style.cssText = 'background:var(--grad-subtle);border:1px solid var(--border-focus);border-radius:20px;padding:22px;margin-bottom:20px;box-shadow:var(--shadow-card);';
+                hero.style.cssText = 'background:var(--grad-subtle);border:1px solid var(--border-focus);border-radius:20px;padding:20px;margin-bottom:20px;box-shadow:var(--shadow-card);';
                 hero.innerHTML = `
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
                         <div>
-                            <span class="item-tag">⚡ 100% STANDALONE WEB STORE • LIVE USDT/IDR</span>
-                            <h2 style="margin:4px 0 6px 0;font-size:1.45rem;font-weight:800;">Welcome, @${currentUsername}</h2>
-                            <p style="margin:0;font-size:0.82rem;color:var(--text-secondary);max-width:640px;">
-                                Click <b>📂 Inspect Vault</b> on any GitHub year to pick your exact <code>@username</code>, pay with <b>Instant Balance</b> or <b>OxaPay Crypto</b>, and save your Email, Password & 2FA directly on the web!
+                            <span class="item-tag">⚡ STANDALONE WEB STORE • REAL-TIME TELEGRAM & WEB NOTIFICATIONS</span>
+                            <h2 style="margin:4px 0 6px 0;font-size:1.38rem;font-weight:800;">Welcome, @${currentUsername}</h2>
+                            <p style="margin:0;font-size:0.8rem;color:var(--text-secondary);max-width:640px;">
+                                Click <b>📂 Inspect Vault</b> on any GitHub year to pick your exact <code>@username</code>, checkout with <b>Instant Balance</b> or <b>OxaPay Crypto</b>, and save your credentials directly on the web!
                             </p>
                         </div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button class="btn-ui primary" onclick="switchTab('github')">🐙 Browse GitHub Accounts (${totalLiveAccounts || 'Live'})</button>
-                            <button class="btn-ui buy-now" onclick="switchTab('profile'); activeSub='🔐 Purchased Accounts Vault'; renderViewport();">🔐 My Purchased Vault</button>
+                            <button class="btn-ui primary" onclick="switchTab('github')">🐙 Browse GitHub (${totalLiveAccounts || 'Live'})</button>
+                            <button class="btn-ui buy-now" onclick="switchTab('profile'); activeSub='🔐 Purchased Vault'; renderViewport();">🔐 My Purchased Vault</button>
                         </div>
                     </div>
                 `;
@@ -1441,7 +1598,7 @@
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
 
-                if (activeSub.includes('Bestsellers')) {
+                if (activeSub.includes('Featured')) {
                     ['Arctic', '2012', '2016', '2026'].forEach(k => {
                         const yObj = GITHUB_VAULT_CATEGORIES.find(x => x.yr === k);
                         if (yObj) grid.appendChild(createGithubYearCard(yObj));
@@ -1449,30 +1606,26 @@
                     CATALOG_ITEMS.filter(i => i.hot).forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else if (activeSub.includes('GitHub Accounts')) {
                     GITHUB_VAULT_CATEGORIES.forEach(y => grid.appendChild(createGithubYearCard(y)));
-                } else if (activeSub.includes('GitHub Boost')) {
+                } else if (activeSub.includes('Boost')) {
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
-                } else if (activeSub.includes('Pro Apps')) {
-                    CATALOG_ITEMS.filter(i => i.hub === 'pro_apps').forEach(i => grid.appendChild(createCatalogCard(i)));
-                } else if (activeSub.includes('Social & Emails')) {
-                    CATALOG_ITEMS.filter(i => i.hub === 'social_accs').forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else {
-                    CATALOG_ITEMS.filter(i => i.hub === 'crypto_hub' || i.hub === 'ppob_hub').forEach(i => grid.appendChild(createCatalogCard(i)));
+                    CATALOG_ITEMS.filter(i => i.hub !== 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
                 }
                 vp.appendChild(grid);
                 return;
             }
 
-            // 2. GITHUB ENTERPRISE HUB (8 TOMBOL SIMETRIS & MUDAH DIPAHAMI BUYER)
+            // 2. GITHUB ENTERPRISE HUB (8 BUYER-FRIENDLY SYMMETRICAL SUB-TABS: 2x4 GRID)
             if (activeTab === 'github') {
                 const ghSubs = [
-                    '📂 All GitHub Years',
-                    '👤 Ready Usernames',
-                    '🏅 Rare Badge Accounts',
-                    '💎 Old Accounts (2011–2016)',
-                    '⚡ Fresh & Aged (2017–2026)',
+                    '📂 Accounts by Year',
+                    '📦 All Ready Accounts',
+                    '❄️ Rare Badge Accounts',
+                    '🏛️ Vintage (2011–2016)',
+                    '🛡️ Aged (2017–2026)',
                     '🚀 Followers & Stars Boost',
-                    '🔑 Get 2FA Login Code',
-                    '🔍 Check Account Health'
+                    '🔑 2FA Code Generator',
+                    '🛡️ Account Health Checker'
                 ];
                 if (activeSub === 'ALL') activeSub = ghSubs[0];
                 subContainer.style.display = 'grid';
@@ -1488,11 +1641,11 @@
                     subContainer.appendChild(b);
                 });
 
-                if (activeSub.includes('2FA Login Code')) {
+                if (activeSub.includes('2FA Code')) {
                     render2faTool(vp);
                     return;
                 }
-                if (activeSub.includes('Check Account Health')) {
+                if (activeSub.includes('Health Checker')) {
                     renderDiagnosticTools(vp);
                     return;
                 }
@@ -1500,7 +1653,7 @@
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
 
-                if (activeSub.includes('Ready Usernames')) {
+                if (activeSub.includes('All Ready Accounts')) {
                     if (allLiveAccountsFlat.length === 0) {
                         vp.innerHTML = `<div class="inpage-drawer" style="text-align:center;">⏳ Syncing live accounts from Google Sheet...</div>`;
                     } else {
@@ -1510,14 +1663,14 @@
                     return;
                 }
 
-                if (activeSub.includes('Followers & Stars Boost')) {
+                if (activeSub.includes('Boost')) {
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else {
                     GITHUB_VAULT_CATEGORIES.filter(y => {
                         const n = parseInt(y.yr);
                         if (activeSub.includes('Rare Badge')) return isNaN(n);
-                        if (activeSub.includes('Old Accounts')) return n >= 2011 && n <= 2016;
-                        if (activeSub.includes('Fresh & Aged')) return n >= 2017 && n <= 2026;
+                        if (activeSub.includes('Vintage')) return n >= 2011 && n <= 2016;
+                        if (activeSub.includes('Aged (2017')) return n >= 2017 && n <= 2026;
                         return true;
                     }).forEach(y => grid.appendChild(createGithubYearCard(y)));
                 }
@@ -1525,16 +1678,9 @@
                 return;
             }
 
-            // 3. ALL STORE CATALOGS (6 TOMBOL SIMETRIS KIRI-KANAN)
+            // 3. ALL STORE CATALOGS (6 SYMMETRICAL SUB-TABS)
             if (activeTab === 'catalog') {
-                const catSubs = [
-                    '🌐 All Products',
-                    '👑 Pro Apps & AI',
-                    '📱 Aged Social & Emails',
-                    '🪙 Crypto & Exchange',
-                    '📈 SMM Traffic Boost',
-                    '🎮 PPOB & Top-Up Games'
-                ];
+                const catSubs = ['📦 All Products', '👑 Pro Apps & AI', '📱 Aged Socials', '🪙 Crypto & Exchange', '🚀 SMM Boost', '🎮 PPOB & Games'];
                 if (activeSub === 'ALL') activeSub = catSubs[0];
                 subContainer.style.display = 'grid';
                 catSubs.forEach(cs => {
@@ -1550,7 +1696,8 @@
                 CATALOG_ITEMS.filter(i => {
                     if (i.hub === 'github_boost') return false;
                     if (activeSub.includes('All Products')) return true;
-                    return activeSub.includes(i.sub);
+                    const cleanSub = activeSub.replace(/^[^\s]+\s/, '');
+                    return i.sub === cleanSub;
                 }).forEach(i => grid.appendChild(createCatalogCard(i)));
                 vp.appendChild(grid);
                 return;
@@ -1563,21 +1710,19 @@
                 return;
             }
 
-            // 5. MY PROFILE, PURCHASED CREDENTIALS VAULT, HISTORY & TRACKER
+            // 5. MY PROFILE, PURCHASED CREDENTIALS VAULT, HISTORY & TRACKER (4 SYMMETRICAL SUB-TABS)
             if (activeTab === 'profile') {
-                const vaultCount = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]').length;
                 const profSubs = [
-                    `🔐 Purchased Accounts Vault (${vaultCount})`,
-                    '👤 Profile & Loyalty CRM',
-                    '🧾 Transaction History',
-                    '📡 Live Boost Tracker',
-                    '🤝 5% Affiliate & Support'
+                    '🔐 Purchased Vault',
+                    '👤 Profile & Loyalty',
+                    '🧾 Order History',
+                    '📡 Live Boost Tracker'
                 ];
                 if (activeSub === 'ALL') activeSub = profSubs[0];
                 subContainer.style.display = 'grid';
                 profSubs.forEach(ps => {
                     const b = document.createElement('button');
-                    b.className = 'subtab-pill' + (activeSub.split(' (')[0] === ps.split(' (')[0] ? ' active' : '');
+                    b.className = 'subtab-pill' + (activeSub === ps ? ' active' : '');
                     b.innerText = ps;
                     b.onclick = () => { activeSub = ps; renderViewport(); };
                     subContainer.appendChild(b);
@@ -1586,12 +1731,8 @@
                 return;
             }
 
-            // 6. ADMIN COMMAND CENTER (HANYA ADMIN)
+            // 6. ADMIN COMMAND CENTER
             if (activeTab === 'admin') {
-                if (!isUserAdmin()) {
-                    switchTab('home');
-                    return;
-                }
                 subContainer.style.display = 'none';
                 renderAdminTab(vp);
                 return;
@@ -1599,7 +1740,7 @@
         }
 
         // =========================================================
-        // 🃏 5. GITHUB CATEGORY CARD (ONLY "📂 INSPECT") vs SPECIFIC ACCOUNT CARD ("🛒 +CART" & "⚡ BUY NOW")
+        // 🃏 7. GITHUB CATEGORY CARD (ONLY "📂 INSPECT") vs SPECIFIC ACCOUNT CARD ("🛒 +CART" & "⚡ BUY NOW")
         // =========================================================
         function createGithubYearCard(yObj) {
             const list = liveGithubStock[yObj.yr] || [];
@@ -1619,7 +1760,7 @@
                             <p class="item-desc">${yObj.desc}</p>
                         </div>
                     </div>
-                    <div class="price-chip" title="Starting base price for this category">From ${fmtPrice(minPrice)}</div>
+                    <div class="price-chip">From ${fmtPrice(minPrice)}</div>
                 </div>
                 <div class="item-actions">
                     <button class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usdt})">
@@ -1629,8 +1770,6 @@
             `;
             return card;
         }
-
-        const ACCOUNT_CACHE_MAP = {};
 
         function createSpecificAccountCard(acc, yrKey) {
             const prc = acc._computed_usdt || computeAccountPrice(acc, yrKey);
@@ -1693,7 +1832,6 @@
             return card;
         }
 
-        // LEVEL-3 IN-PAGE VAULT INSPECTOR (SHOWS ALL INDIVIDUAL ACCOUNTS WITH +CART & BUY NOW)
         function openInPageYearVault(yrKey, title, defaultUsdt) {
             const drawer = document.getElementById('inPageVaultDrawer');
             const accounts = liveGithubStock[yrKey] || [];
@@ -1727,7 +1865,7 @@
                 emptyBox.innerHTML = `
                     <div style="font-size:1.4rem;margin-bottom:6px;">📭</div>
                     <div style="font-weight:800;margin-bottom:4px;">No Accounts Currently Listed in ${title}</div>
-                    <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">This year/badge category is currently out of stock (0 available). Please inspect another year (such as 2012, 2013, 2016, 2017, 2018, 2019, 2023–2026) or request a custom restock from Admin.</p>
+                    <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">This category is currently out of stock (0 available). Please inspect another year or request a restock alert from Admin.</p>
                     <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Hello Admin, please notify me when GitHub ${title} (${yrKey}) is restocked!`)}" target="_blank" class="btn-ui primary" style="max-width:260px;">🔔 Request Restock Alert</a>
                 `;
                 wrapper.appendChild(emptyBox);
@@ -1743,20 +1881,22 @@
             if (cart.some(c => c.id === accId)) {
                 return showToast(`@${acc.username} is already in your Cart!`);
             }
-            const newItem = {
+            const itemTitle = `GitHub ${yrKey} (@${acc.username})`;
+            cart.push({
                 id: accId,
                 yearKey: yrKey,
                 isAccount: true,
                 qty: 1,
-                title: `GitHub ${yrKey} (@${acc.username})`,
+                title: itemTitle,
                 target: `@${acc.username} (https://github.com/${acc.username})`,
                 usdt: prc,
                 accountData: acc
-            };
-            cart.push(newItem);
+            });
             updateCartUI();
             showToast(`@${acc.username} added to Cart!`);
-            notifyAdminBot('🛒 BUYER TAMBAH AKUN KE CART', newItem);
+
+            // Silently send Real-Time Cart Alert to Telegram Admin DM + Web Notification Feed!
+            triggerCartAlertNotifications(itemTitle, prc);
         }
 
         function buySpecificAccountNow(acc, yrKey) {
@@ -1779,7 +1919,7 @@
         }
 
         // =========================================================
-        // 🔐 6. IN-WEB CREDENTIAL VAULT SAVER, DOWNLOAD .TXT & LIVE 2FA
+        // 🔐 8. IN-WEB CREDENTIAL VAULT SAVER, DOWNLOAD .TXT & LIVE 2FA
         // =========================================================
         function savePurchasedAccountsToWebVault(itemsList, invId) {
             const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
@@ -1804,7 +1944,6 @@
                     vault.unshift(entry);
                     unlockedAccounts.push(entry);
 
-                    // Mark SOLD OUT in Google Sheet immediately & remove from local available pool
                     markAccountSoldInGSheet(acc.username, item.usdt, invId);
                     allLiveAccountsFlat = allLiveAccountsFlat.filter(a => a.username.toLowerCase() !== acc.username.toLowerCase());
                     Object.keys(liveGithubStock).forEach(k => {
@@ -1939,7 +2078,7 @@
         }
 
         // =========================================================
-        // 💳 7. WALLET & DEPOSIT TAB
+        // 💳 9. WALLET & DEPOSIT TAB
         // =========================================================
         function renderWalletTab(container) {
             container.innerHTML = `
@@ -1957,7 +2096,7 @@
                             </div>
                             <div style="display:flex;justify-content:space-between;align-items:center;">
                                 <span style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:700;">@${currentUsername} (ID: ${currentUserId})</span>
-                                <button class="top-pill" style="background:rgba(0,0,0,0.3);color:#fff;border-color:rgba(255,255,255,0.3);" onclick="syncBalanceWithBot()">🔄 Sync Bot</button>
+                                <button class="top-pill" style="background:rgba(0,0,0,0.3);color:#fff;border-color:rgba(255,255,255,0.3);" onclick="openNotificationsModal()">🔔 Alerts</button>
                             </div>
                         </div>
 
@@ -2010,7 +2149,7 @@
         }
 
         // =========================================================
-        // 👤 8. PROFILE, PURCHASED ACCOUNTS VAULT & HISTORY TAB
+        // 👤 10. PROFILE, PURCHASED VAULT & HISTORY TAB
         // =========================================================
         function renderProfileTab(container, subSection) {
             const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
@@ -2019,7 +2158,7 @@
             const totalDep = history.filter(x => x.type === 'IN').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
             const tierName = totalSpent >= 500 ? '💎 Diamond VIP' : (totalSpent >= 200 ? '🥇 Gold VIP' : (totalSpent >= 50 ? '🥈 Silver VIP' : '🥉 Bronze Member'));
 
-            if (subSection.includes('Purchased Accounts Vault')) {
+            if (subSection.includes('Purchased Vault')) {
                 const vaultHtml = vault.length === 0
                     ? `<div style="padding:24px;text-align:center;color:var(--text-muted);font-weight:700;">You haven't purchased any GitHub accounts in this browser yet. Click <b>🐙 GitHub ➔ 📂 Inspect Vault</b> to choose an account!</div>`
                     : vault.map((entry, idx) => renderCredentialCardHtml(entry, idx)).join('');
@@ -2039,7 +2178,7 @@
                 return;
             }
 
-            if (subSection.includes('Transaction History')) {
+            if (subSection.includes('Order History')) {
                 const rowsHtml = history.length === 0
                     ? `<div style="padding:22px;text-align:center;color:var(--text-muted);font-weight:700;">No transactions recorded yet.</div>`
                     : history.map(h => `
@@ -2076,35 +2215,6 @@
                 return;
             }
 
-            if (subSection.includes('Affiliate')) {
-                const refUrl = `https://t.me/XianBeeTechStore_Bot?start=ref_${currentUserId}`;
-                container.innerHTML = `
-                    <div class="grid-cards" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));">
-                        <div class="item-card">
-                            <div>
-                                <span class="item-tag">5% LIFETIME COMMISSION</span>
-                                <h3 class="item-title">🤝 XianBee Affiliate Program</h3>
-                                <p class="item-desc" style="margin-bottom:12px;">Earn 5% USDT commission automatically every time your referred client tops up their balance.</p>
-                                <input type="text" class="form-input" value="${refUrl}" readonly onclick="this.select()">
-                            </div>
-                            <button class="btn-ui primary" onclick="navigator.clipboard.writeText('${refUrl}'); showToast('Referral link copied!');">📋 Copy Referral Link</button>
-                        </div>
-                        <div class="item-card">
-                            <div>
-                                <span class="item-tag">24/7 EXECUTIVE DESK</span>
-                                <h3 class="item-title">📞 Live Support & Custom B2B Orders</h3>
-                                <p class="item-desc">Need bulk aged GitHub accounts, custom API integration, or manual order assistance? Contact our executive desk directly.</p>
-                            </div>
-                            <div class="item-actions">
-                                <a href="https://t.me/XianBeeTechStore" target="_blank" class="btn-ui primary">✈️ @XianBeeTechStore</a>
-                                <a href="https://t.me/abieharyatmo" target="_blank" class="btn-ui secondary">🛡️ @abieharyatmo</a>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-
             const accCycle = (totalSpent % 500);
             const boostCycle = (totalSpent % 200);
             const topCycle = (totalDep % 500);
@@ -2129,7 +2239,7 @@
                         </div>
                         <div class="item-actions">
                             <button class="btn-ui buy-now" onclick="switchTab('wallet')">➕ Deposit Balance</button>
-                            <button class="btn-ui primary" onclick="activeSub='🔐 Purchased Accounts Vault'; renderViewport();">🔐 View Purchased Vault</button>
+                            <button class="btn-ui primary" onclick="activeSub='🔐 Purchased Vault'; renderViewport();">🔐 View Purchased Vault</button>
                         </div>
                     </div>
 
@@ -2163,13 +2273,17 @@
                                 <div class="progress-track"><div class="progress-fill" style="width:${Math.min(100, (topCycle/500)*100)}%;"></div></div>
                             </div>
                         </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:8px;border-top:1px solid var(--border-subtle);">
+                            <a href="https://t.me/XianBeeTechStore" target="_blank" style="font-size:0.75rem;color:var(--accent-cyan);text-decoration:none;font-weight:700;">📞 Contact Live Support</a>
+                            <button onclick="switchTab('admin')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.72rem;opacity:0.35;cursor:pointer;" title="Executive Admin Access">🔒</button>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
         // =========================================================
-        // 👑 9. CLEAN EXECUTIVE ADMIN COMMAND CENTER
+        // 👑 11. EXECUTIVE ADMIN COMMAND CENTER (RESTRICTED TO ADMIN_IDS)
         // =========================================================
         function renderAdminTab(container) {
             const isAuthorized = ADMIN_IDS.includes(String(currentUserId));
@@ -2177,9 +2291,9 @@
                 container.innerHTML = `
                     <div class="inpage-drawer" style="border-color:var(--danger);text-align:center;padding:30px;">
                         <h3 style="color:var(--danger);margin:0 0 8px 0;">⛔ RESTRICTED EXECUTIVE AREA</h3>
-                        <p class="item-desc" style="margin-bottom:16px;">Your current session ID (<code>${currentUserId}</code>) is not in the Executive Admin list.</p>
+                        <p class="item-desc" style="margin-bottom:16px;">Enter your authorized Executive Admin Telegram UID to unlock Command Center.</p>
                         <div style="max-width:320px;margin:0 auto;display:flex;gap:8px;">
-                            <input type="text" class="form-input" id="adminAuthInput" placeholder="Enter Admin Telegram UID...">
+                            <input type="password" class="form-input" id="adminAuthInput" placeholder="Enter Admin UID...">
                             <button class="btn-ui primary" onclick="unlockAdminSession()">Unlock</button>
                         </div>
                     </div>
@@ -2188,14 +2302,10 @@
             }
 
             const admActions = [
+                { icon: '🔔', title: 'Open Live Admin Telemetry Feed', desc: 'View incoming Cart Alerts, Secret Admin Logs & Boost Tasks', cmd: 'open_admin_notifs' },
                 { icon: '📥', title: 'Sync GSheet Stock (Sheet1)', desc: 'Pull latest Available accounts & Prices from Sheet1', cmd: 'sync_gsheet' },
-                { icon: '👑', title: 'Sync User Loyalty CRM (Sheet4)', desc: 'Export all historical user TX & trigger 10% bonus alerts', cmd: 'admin_view_sold' },
-                { icon: '📡', title: 'View Active Boost Orders (Sheet3)', desc: 'Inspect live GitHub Boost queue & push progress', cmd: 'admin_view_history' },
-                { icon: '🧹', title: 'Cleanup 404 & Flagged Stock', desc: 'Scan specific year or ALL inventory for dead nodes', cmd: 'admin_cleanup', prompt: 'Enter Year (e.g. 2012) or ALL:' },
-                { icon: '💰', title: 'Update Account Price', desc: 'Update price per category year or specific username', cmd: 'admin_update_price', prompt: 'Format: 2012 28.0 or username 35.0' },
-                { icon: '💸', title: 'Update Boost Service Price', desc: 'Modify Regular / Fast / Ultra unit rates', cmd: 'admin_svc_price', prompt: 'Format: followers reg 0.50' },
-                { icon: '📢', title: 'Send Mass Broadcast', desc: 'Dispatch announcement to all registered bot users', cmd: 'admin_broadcast', prompt: 'Enter broadcast message (HTML supported):' },
-                { icon: '🚨', title: 'View 404 Suspended Log', desc: 'Check recently isolated 404 / Flagged accounts', cmd: 'admin_view_suspend' }
+                { icon: '🧹', title: 'Test Admin Telegram Push', desc: 'Send a test diagnostic notification to Admin DM, Group & Channel', cmd: 'test_tg_push' },
+                { icon: '💳', title: 'Set Local Test Balance (USDT)', desc: 'Add test USDT balance in browser to test Instant Balance Checkout', cmd: 'set_test_bal' }
             ];
 
             const grid = document.createElement('div');
@@ -2208,14 +2318,14 @@
                         <div style="display:flex;gap:12px;">
                             <div class="item-icon" style="border-color:var(--warning);">${a.icon}</div>
                             <div>
-                                <span class="item-tag" style="color:var(--warning);">ADMIN COMMAND</span>
+                                <span class="item-tag" style="color:var(--warning);">EXECUTIVE CONTROL</span>
                                 <h4 class="item-title">${a.title}</h4>
                                 <p class="item-desc">${a.desc}</p>
                             </div>
                         </div>
                     </div>
                     <div class="item-actions">
-                        <button class="btn-ui primary" onclick='execAdminCmd(${JSON.stringify(a)})'>⚡ Execute Command</button>
+                        <button class="btn-ui primary" onclick="execAdminCmd('${a.cmd}')">⚡ Execute</button>
                     </div>
                 `;
                 grid.appendChild(card);
@@ -2228,31 +2338,38 @@
             if (ADMIN_IDS.includes(val)) {
                 currentUserId = val;
                 localStorage.setItem('xb_uid', val);
+                checkAdminVisibility();
                 showToast('Executive Admin Session Unlocked!');
                 renderViewport();
             } else {
-                showToast('Invalid Admin User ID!');
+                showToast('Unauthorized UID!');
             }
         }
 
-        function execAdminCmd(a) {
-            if (a.cmd === 'sync_gsheet') {
+        function execAdminCmd(cmd) {
+            if (cmd === 'sync_gsheet') {
                 syncGoogleSheetInventory(true);
-                return;
-            }
-            if (a.prompt) {
-                const inputVal = prompt(a.prompt);
-                if (!inputVal) return;
-                sendPayloadToBot('ADMIN_CMD_DATA', { command: a.cmd, data: inputVal });
-                showToast(`Dispatched ${a.title} to Bot!`);
-            } else {
-                sendPayloadToBot('ADMIN_CMD', { command: a.cmd });
-                showToast(`Requested ${a.title}!`);
+            } else if (cmd === 'open_admin_notifs') {
+                openNotificationsModal();
+                switchNotifFeed('admin');
+            } else if (cmd === 'test_tg_push') {
+                const testMsg = `🟢 <b>[WEB STORE TELEMETRY TEST]</b>\nConnected to Admin DM, Group & Channel from XianBee Web Store!`;
+                ADMIN_IDS.forEach(id => sendTelegramSilentPush(id, testMsg, true));
+                pushInWebNotification('admin', '🟢 TELEMETRY TEST', testMsg);
+                showToast('Test notification sent to Admin Telegram DM & Web Feed!');
+            } else if (cmd === 'set_test_bal') {
+                const amt = prompt('Enter USDT balance for testing:', '250');
+                if (amt !== null && !isNaN(parseFloat(amt))) {
+                    userBalanceUsdt = parseFloat(amt);
+                    localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
+                    updateTopBalance();
+                    showToast(`Wallet balance set to ${userBalanceUsdt.toFixed(2)} USDT!`);
+                }
             }
         }
 
         // =========================================================
-        // ⚡ 10. DIRECT PAYMENT ENGINE + CREDENTIAL VAULT UNLOCKER
+        // ⚡ 12. DIRECT PAYMENT ENGINE + PERSISTENT CART
         // =========================================================
         let modalProduct = null;
         let modalUnitPrice = 0;
@@ -2261,6 +2378,13 @@
         let cart = JSON.parse(localStorage.getItem('xb_saved_cart') || '[]');
         let cartDiscountPct = 0;
         let oxaPollTimer = null;
+
+        function updateCartUI() {
+            localStorage.setItem('xb_saved_cart', JSON.stringify(cart));
+            const badgeEl = document.getElementById('cartCountBadge');
+            if (badgeEl) badgeEl.innerText = cart.length;
+        }
+        updateCartUI();
 
         function openDirectOrderModal(item) {
             modalProduct = item;
@@ -2366,7 +2490,7 @@
                 title = `${modalProduct.title} [${modalTierLabel}]`;
             }
             return {
-                id: modalProduct.id,
+                id: modalProduct.id + '-' + Date.now(),
                 yearKey: modalProduct.yearKey || '2026',
                 isAccount: !!modalProduct.isAccount,
                 accountData: modalProduct.accountData || null,
@@ -2389,30 +2513,8 @@
             updateCartUI();
             closeModal('directOrderModal');
             showToast('Added to Shopping Cart!');
-            notifyAdminBot('🛒 BUYER TAMBAH PRODUK KE CART', ord);
+            triggerCartAlertNotifications(ord.title, ord.usdt);
         }
-
-        function updateCartUI() {
-            localStorage.setItem('xb_saved_cart', JSON.stringify(cart));
-            const badgeEl = document.getElementById('cartCountBadge');
-            if (badgeEl) badgeEl.innerText = cart.length;
-
-            const floatBar = document.getElementById('floatingCartBar');
-            const floatCount = document.getElementById('floatingCartCount');
-            const floatTotal = document.getElementById('floatingCartTotal');
-            if (floatBar) {
-                if (cart.length > 0) {
-                    const sumUsdt = cart.reduce((acc, item) => acc + (parseFloat(item.usdt) || 0), 0);
-                    const finalUsdt = sumUsdt * (1 - (typeof cartDiscountPct !== 'undefined' ? cartDiscountPct : 0) / 100);
-                    floatCount.innerText = `${cart.length} ${cart.length === 1 ? 'Item' : 'Items'} in Cart`;
-                    floatTotal.innerText = `Total: ${fmtPrice(finalUsdt)}`;
-                    floatBar.classList.add('show');
-                } else {
-                    floatBar.classList.remove('show');
-                }
-            }
-        }
-        updateCartUI();
 
         function executeDirectPayment(method) {
             if (modalProduct.isUnit && !document.getElementById('ordTargetInput').value.trim()) {
@@ -2420,12 +2522,12 @@
             }
             const ord = buildCurrentModalOrderObj();
             closeModal('directOrderModal');
-            processPaymentFlow([ord], ord.usdt, method);
+            processPaymentFlow([ord], ord.usdt, method, false);
         }
 
         function checkoutCartWith(method) {
             if (cart.length === 0) return showToast('Your cart is empty!');
-            const rawSum = cart.reduce((a, b) => a + b.usdt, 0);
+            const rawSum = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
             const finalUsdt = rawSum * (1 - cartDiscountPct / 100);
             const itemsCopy = [...cart];
             closeModal('cartModal');
@@ -2436,12 +2538,6 @@
             const invId = 'INV-XIAN-' + Math.floor(10000 + Math.random() * 90000);
             const summaryTitle = itemsList.map(x => x.title).join(' + ');
             const targetStr = itemsList.map(x => x.target).join(', ');
-
-            notifyAdminBot(`⚡ BUYER CHECKOUT (${method.toUpperCase()} • ${invId})`, {
-                title: summaryTitle,
-                target: targetStr,
-                usdt: totalUsdt
-            });
 
             // A. PAY WITH BALANCE (INSTANT)
             if (method === 'balance') {
@@ -2456,10 +2552,12 @@
                 updateTopBalance();
                 recordWebTransaction(invId, summaryTitle, targetStr, totalUsdt, 'OUT', 'Wallet Balance (Instant)');
 
-                // Unlock & Save any purchased GitHub accounts to Web Vault + mark SOLD OUT in GSheet!
                 const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
 
                 if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
+
+                // Dispatch all notifications to Web Feed + Buyer Telegram DM + Admin DM + Channel + Group!
+                triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, 'Balance', unlockedAccounts);
 
                 renderViewport();
                 showInstantReceiptModal(invId, summaryTitle, targetStr, totalUsdt, 'Wallet Balance (Instant Settled)', unlockedAccounts);
@@ -2521,8 +2619,9 @@
                 console.log("Direct OxaPay fallback mode.");
             }
 
-            if (clearCartOnInit) { cart = []; cartDiscountPct = 0; updateCartUI(); }
-            recordWebTransaction(invId, title, targetStr, amountUsdt, isTopup ? 'IN' : 'OUT', 'OxaPay Crypto (Instant)');
+            // Send Invoice Created Alert to Buyer Web Feed & Admin Feed
+            pushInWebNotification('buyer', '🪙 CRYPTO INVOICE GENERATED', `Invoice <code>${invId}</code> created for <b>${title}</b> (<b>$${amountUsdt.toFixed(2)} USDT</b>).`);
+            pushInWebNotification('admin', '🪙 NEW CRYPTO INVOICE', `Client <b>@${currentUsername}</b> (<code>${currentUserId}</code>) generated Crypto Invoice <code>${invId}</code> for <b>${title}</b> ($${amountUsdt.toFixed(2)} USDT).`);
 
             const idrEquiv = Math.round(amountUsdt * liveUsdtIdrRate).toLocaleString('id-ID');
 
@@ -2553,21 +2652,23 @@
                 </div>
 
                 <div style="display:flex;gap:8px;">
-                    ${trackId ? `<button class="btn-ui buy-now" onclick='checkOxaPayInvoiceNow("${trackId}", "${invId}", "${title}", "${targetStr}", ${amountUsdt}, ${isTopup}, ${JSON.stringify(pendingItems)})'>🔄 Check Payment Status</button>` : ''}
+                    ${trackId ? `<button class="btn-ui buy-now" onclick='checkOxaPayInvoiceNow("${trackId}", "${invId}", "${title}", "${targetStr}", ${amountUsdt}, ${isTopup}, ${clearCartOnInit})'>🔄 Check Payment Status</button>` : ''}
                     <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Hello Admin, I have paid Invoice ${invId}\nOrder: ${title}\nTarget: ${targetStr}\nAmount: ${amountUsdt.toFixed(2)} USDT`)}" target="_blank" class="btn-ui secondary">
                         💬 Support
                     </a>
                 </div>
             `;
 
+            window._pendingCryptoOrderItems = pendingItems;
+
             if (trackId) {
                 oxaPollTimer = setInterval(() => {
-                    checkOxaPayInvoiceNow(trackId, invId, title, targetStr, amountUsdt, isTopup, pendingItems, true);
+                    checkOxaPayInvoiceNow(trackId, invId, title, targetStr, amountUsdt, isTopup, clearCartOnInit, true);
                 }, 8000);
             }
         }
 
-        async function checkOxaPayInvoiceNow(trackId, invId, title, targetStr, amountUsdt, isTopup, pendingItems, silent = false) {
+        async function checkOxaPayInvoiceNow(trackId, invId, title, targetStr, amountUsdt, isTopup, clearCartOnPaid, silent = false) {
             try {
                 const res = await fetch(`https://api.oxapay.com/v1/payment/${trackId}`, {
                     headers: { 'merchant_api_key': OXAPAY_MERCHANT_KEY }
@@ -2579,13 +2680,48 @@
 
                 if (st === 'paid') {
                     if (oxaPollTimer) clearInterval(oxaPollTimer);
+                    recordWebTransaction(invId, title, targetStr, amountUsdt, isTopup ? 'IN' : 'OUT', 'OxaPay Crypto (Confirmed)');
+
                     if (isTopup) {
+                        const oldBal = userBalanceUsdt;
                         userBalanceUsdt += parseFloat(amountUsdt);
                         localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
                         updateTopBalance();
+
+                        // Push Deposit Confirmed Notifications (Matches XianBee-TechStore.py)
+                        const depMsg = (
+                            `⚡ <b>DEPOSIT CONFIRMED SUCCESSFULLY</b>\n` +
+                            `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                            `🧾 <b>Invoice:</b> <code>${invId}</code>\n` +
+                            `💳 <b>Gateway:</b> OxaPay Crypto\n` +
+                            `💰 <b>Old Balance:</b> $${oldBal.toFixed(2)}\n` +
+                            `➕ <b>Top-Up:</b> <b>$${parseFloat(amountUsdt).toFixed(2)} USDT</b>\n` +
+                            `💵 <b>New Balance:</b> <b>$${userBalanceUsdt.toFixed(2)} USDT</b>`
+                        );
+                        pushInWebNotification('buyer', '⚡ DEPOSIT CONFIRMED', depMsg);
+                        pushInWebNotification('admin', '💎 CRYPTO DEPOSIT PAID', `Client <b>@${currentUsername}</b> deposited <b>$${parseFloat(amountUsdt).toFixed(2)} USDT</b> (${invId}).`);
+                        sendTelegramSilentPush(currentUserId, depMsg, true);
+                        ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, depMsg, true));
+
+                        const pubDepLog = (
+                            `┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┓\n` +
+                            `     💎  <b>X I A N B E E  -  P A Y M E N T</b>  💎\n` +
+                            `┗━━━━━━━━━━━━━━━━━━━━━━━━━━━┛\n` +
+                            `🔹 <b>Client:</b> ${maskData(currentFullName, 'name')} (${maskData(currentUsername, 'username')})\n` +
+                            `🔹 <b>Invoice:</b> <code>${invId}</code>\n` +
+                            `🔹 <b>Type:</b> Balance Top-Up (Crypto)\n` +
+                            `🔹 <b>Received:</b> <b>$${parseFloat(amountUsdt).toFixed(2)} USDT</b>\n` +
+                            `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                            `✨ <i>Status: Settled & Credited (Blockchain Verified)</i>`
+                        );
+                        sendTelegramSilentPush(CHANNEL_ID, pubDepLog, true);
+
                         showInstantReceiptModal(invId, title, targetStr, amountUsdt, 'OxaPay Crypto (Confirmed)', []);
                     } else {
-                        const unlocked = savePurchasedAccountsToWebVault(pendingItems || [], invId);
+                        const pItems = window._pendingCryptoOrderItems || [];
+                        if (clearCartOnPaid) { cart = []; cartDiscountPct = 0; updateCartUI(); }
+                        const unlocked = savePurchasedAccountsToWebVault(pItems, invId);
+                        triggerOrderCompletedNotifications(invId, pItems, amountUsdt, 'OxaPay Crypto', unlocked);
                         renderViewport();
                         showInstantReceiptModal(invId, title, targetStr, amountUsdt, 'OxaPay Crypto (Confirmed)', unlocked);
                     }
@@ -2602,10 +2738,6 @@
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
-            const vaultIdxMap = {};
-            const allVault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
-            unlockedAccounts.forEach((u, i) => { vaultIdxMap[u.username] = i; });
-
             const credsHtml = unlockedAccounts.length > 0
                 ? `<div style="margin-bottom:14px;">
                        <div style="font-size:0.78rem;font-weight:800;color:var(--success);margin-bottom:8px;">🔐 UNLOCKED ACCOUNT CREDENTIALS (SAVED TO YOUR WEB VAULT):</div>
@@ -2619,7 +2751,7 @@
             body.innerHTML = `
                 <div style="text-align:center;margin-bottom:14px;">
                     <div style="font-size:2.1rem;margin-bottom:4px;">🎉</div>
-                    <span class="item-tag">ORDER COMPLETED & VERIFIED</span>
+                    <span class="item-tag">ORDER COMPLETED & NOTIFICATIONS DISPATCHED</span>
                     <h3 style="margin:6px 0 2px 0;font-family:'JetBrains Mono',monospace;">${invId}</h3>
                 </div>
                 <div style="background:var(--bg-soft);border:1px solid var(--success);padding:14px;border-radius:12px;font-size:0.8rem;line-height:1.6;margin-bottom:14px;">
@@ -2630,7 +2762,7 @@
                 </div>
                 ${credsHtml}
                 <div style="display:flex;gap:8px;">
-                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal'); switchTab('profile'); activeSub='🔐 Purchased Accounts Vault'; renderViewport();">
+                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal'); switchTab('profile'); activeSub='🔐 Purchased Vault'; renderViewport();">
                         🔐 Open Purchased Vault
                     </button>
                     <button class="btn-ui primary" onclick="closeModal('paymentGatewayModal')">
@@ -2655,7 +2787,7 @@
         }
 
         // =========================================================
-        // 🛠️ 11. IN-BROWSER 2FA OTP & DIAGNOSTIC TOOLS
+        // 🛠️ 13. IN-BROWSER 2FA OTP & DIAGNOSTIC TOOLS
         // =========================================================
         let otpIntervalId = null;
 
@@ -2804,7 +2936,7 @@
         }
 
         // =========================================================
-        // 🛒 12. CART MODAL & BOT BRIDGE HELPERS
+        // 🛒 14. CART MODAL HELPERS (PERSISTENT IN LOCALSTORAGE)
         // =========================================================
         function removeItemFromCart(idx) {
             cart.splice(idx, 1);
@@ -2884,14 +3016,9 @@
             }
         }
 
-        function syncBalanceWithBot() {
-            sendPayloadToBot('REFRESH_BALANCE', {}, false);
-            showToast('Balance sync signal sent!');
-        }
-
         function sendPayloadToBot(action, extra = {}) {
-            // Disabled tg.sendData() so the website NEVER closes or redirects to the Telegram Bot
-            console.log("[STANDALONE WEB MODE]", action, extra);
+            // Disabled tg.sendData() so the web store never closes or redirects
+            console.log("[STANDALONE WEB ACTION]", action, extra);
         }
 
         function closeModal(id) {
