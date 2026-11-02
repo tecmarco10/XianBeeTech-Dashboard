@@ -1012,6 +1012,92 @@
         const GSHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwakQrIn6zsKZLyvLnIklk6cXNRVOHSgsD3UNM5ApQrRVXpLXxT6X4tW1pMQIvGdnlx/exec";
         const OXAPAY_MERCHANT_KEY = "Y91KE8-V6HAJV-464FIB-Y4PQTL";
         const ADMIN_IDS = ["6740043923", "7095661271"];
+        const TELEGRAM_BOT_TOKEN = "ISI_TOKEN_BOT_TELEGRAM_KAMU_DISINI"; // Wajib isi token bot kamu
+
+        async function notifyAdminBot(eventTitle, detailsObj = {}) {
+            const cartCount = (typeof cart !== 'undefined' && Array.isArray(cart)) ? cart.length : 0;
+            const cartSum = (typeof cart !== 'undefined' && Array.isArray(cart))
+                ? cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0)
+                : 0;
+            const usdtVal = parseFloat(detailsObj.usdt || 0);
+            const idrVal = Math.round(usdtVal * liveUsdtIdrRate).toLocaleString('id-ID');
+
+            // Susun rincian multi-item (jika checkout keranjang atau single order)
+            let itemsBreakdown = '';
+            if (Array.isArray(detailsObj.items) && detailsObj.items.length > 0) {
+                itemsBreakdown = detailsObj.items.map((it, i) => {
+                    const spdInfo = it.speed ? ` [Speed: ${String(it.speed).toUpperCase()}]` : '';
+                    const qtyInfo = it.qty ? `${it.qty}x ` : '';
+                    return `   ${i + 1}. <b>${qtyInfo}${it.title}</b>${spdInfo}\n      🎯 Target: <code>${it.target || '-'}</code> ($${parseFloat(it.usdt || 0).toFixed(2)})`;
+                }).join('\n');
+            }
+
+            const msgLines = [
+                `🐝 <b>XIANBEE WEB STORE NOTIFICATION</b>`,
+                `🔔 <b>Status:</b> ${eventTitle}`,
+                `━━━━━━━━━━━━━━━━━━━━`,
+                `👤 <b>Buyer:</b> @${currentUsername} (ID: <code>${currentUserId}</code>)`,
+                `💳 <b>Sisa Saldo Buyer:</b> ${userBalanceUsdt.toFixed(2)} USDT`
+            ];
+
+            if (detailsObj.invoice) msgLines.push(`🧾 <b>Invoice ID:</b> <code>${detailsObj.invoice}</code>`);
+            if (detailsObj.method) msgLines.push(`🏦 <b>Metode Bayar:</b> ${detailsObj.method}`);
+            if (detailsObj.trackId) msgLines.push(`🔗 <b>OxaPay Track ID:</b> <code>${detailsObj.trackId}</code>`);
+
+            if (itemsBreakdown) {
+                msgLines.push(`📦 <b>Rincian Pesanan (${detailsObj.items.length} Item):</b>\n${itemsBreakdown}`);
+            } else {
+                const qtyStr = detailsObj.qty && detailsObj.qty > 1 ? `${detailsObj.qty} Units • ` : '';
+                const spdStr = detailsObj.speed ? ` (${String(detailsObj.speed).toUpperCase()})` : '';
+                msgLines.push(`📦 <b>Produk:</b> ${qtyStr}${detailsObj.title || '-'}${spdStr}`);
+                msgLines.push(`🎯 <b>Target / Akun:</b> <code>${detailsObj.target || '-'}</code>`);
+            }
+
+            if (detailsObj.unlockedCreds && detailsObj.unlockedCreds.length > 0) {
+                const credList = detailsObj.unlockedCreds.map(c => `   • <code>@${c.username}</code> (Kat: ${c.category} | Email: <code>${c.email}</code>)`).join('\n');
+                msgLines.push(`🔐 <b>Akun Terkirim ke Buyer:</b>\n${credList}`);
+            }
+
+            msgLines.push(`💰 <b>Total Nominal:</b> <b>${usdtVal.toFixed(2)} USDT</b> (~Rp ${idrVal})`);
+            msgLines.push(`🛒 <b>Status Keranjang:</b> ${cartCount} Item (${cartSum.toFixed(2)} USDT)`);
+            msgLines.push(`⏰ <b>Waktu:</b> ${new Date().toLocaleString('id-ID')}`);
+
+            const textMsg = msgLines.join('\n');
+
+            // 1. Kirim langsung ke Telegram Admin
+            if (TELEGRAM_BOT_TOKEN && !TELEGRAM_BOT_TOKEN.includes("ISI_TOKEN")) {
+                ADMIN_IDS.forEach(adminId => {
+                    fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            chat_id: adminId,
+                            text: textMsg,
+                            parse_mode: 'HTML',
+                            disable_web_page_preview: true
+                        })
+                    }).catch(() => {});
+                });
+            }
+
+            // 2. Kirim log ke Google Apps Script Webhook (Kode.gs)
+            fetch(GSHEET_WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                body: JSON.stringify({
+                    action: 'web_notification',
+                    event: eventTitle,
+                    invoice: detailsObj.invoice || '-',
+                    buyer_id: currentUserId,
+                    buyer_username: currentUsername,
+                    item_title: detailsObj.title || '-',
+                    target: detailsObj.target || '-',
+                    price_usdt: usdtVal.toFixed(2),
+                    method: detailsObj.method || '-',
+                    message_html: textMsg
+                })
+            }).catch(() => {});
+        }
 
         const urlParams = new URLSearchParams(window.location.search);
         const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
@@ -1657,7 +1743,7 @@
             if (cart.some(c => c.id === accId)) {
                 return showToast(`@${acc.username} is already in your Cart!`);
             }
-            cart.push({
+            const newItem = {
                 id: accId,
                 yearKey: yrKey,
                 isAccount: true,
@@ -1666,9 +1752,11 @@
                 target: `@${acc.username} (https://github.com/${acc.username})`,
                 usdt: prc,
                 accountData: acc
-            });
+            };
+            cart.push(newItem);
             updateCartUI();
             showToast(`@${acc.username} added to Cart!`);
+            notifyAdminBot('🛒 BUYER TAMBAH AKUN KE CART', newItem);
         }
 
         function buySpecificAccountNow(acc, yrKey) {
@@ -2301,6 +2389,7 @@
             updateCartUI();
             closeModal('directOrderModal');
             showToast('Added to Shopping Cart!');
+            notifyAdminBot('🛒 BUYER TAMBAH PRODUK KE CART', ord);
         }
 
         function updateCartUI() {
@@ -2347,6 +2436,12 @@
             const invId = 'INV-XIAN-' + Math.floor(10000 + Math.random() * 90000);
             const summaryTitle = itemsList.map(x => x.title).join(' + ');
             const targetStr = itemsList.map(x => x.target).join(', ');
+
+            notifyAdminBot(`⚡ BUYER CHECKOUT (${method.toUpperCase()} • ${invId})`, {
+                title: summaryTitle,
+                target: targetStr,
+                usdt: totalUsdt
+            });
 
             // A. PAY WITH BALANCE (INSTANT)
             if (method === 'balance') {
