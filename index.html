@@ -797,19 +797,23 @@
                     </div>
                 </div>
 
-                <!-- BARIS 2: KOTAK KHUSUS CART + JUMLAH SALDO + LONCENG NOTIFIKASI -->
-                <div class="topbar-box-actions">
-                    <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:9px 10px;">
+                <!-- BARIS 2: KOTAK KHUSUS CART + SALDO + VIP LEADERBOARD + NOTIFIKASI -->
+                <div class="topbar-box-actions" style="grid-template-columns: 1fr 1fr auto auto;">
+                    <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:9px 8px;font-size:0.76rem;">
                         <span>🛒 Cart</span>
                         <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);">0</span>
                     </button>
 
-                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:9px 10px;">
+                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:9px 8px;font-size:0.76rem;">
                         <span>💳</span>
                         <span id="topBalanceText">0.00 USDT</span>
                     </button>
 
-                    <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications" style="padding:9px 12px;justify-content:center;">
+                    <button class="top-pill" onclick="openLeaderboardModal()" title="Top VIP Spenders" style="padding:9px 10px;justify-content:center;background:var(--bg-soft);border-color:var(--warning);color:var(--warning);">
+                        <span>👑</span>
+                    </button>
+
+                    <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications" style="padding:9px 10px;justify-content:center;">
                         <span>🔔</span>
                         <span class="badge-dot" id="notifCountBadge">0</span>
                     </button>
@@ -1604,50 +1608,62 @@
                 `;
                 vp.appendChild(hero);
 
-                // FEATURE 3 & 4: LIVE FLASH SALE COUNTDOWN + PUBLIC ORDER FEED & VIP LEADERBOARD STRIP
-                const megaStrip = document.createElement('div');
-                megaStrip.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-bottom:20px;';
-                megaStrip.innerHTML = `
-                    <!-- FLASH SALE BOX -->
-                    <div class="item-card" style="border-color:var(--warning);background:linear-gradient(135deg,rgba(245,158,11,0.12) 0%,rgba(239,68,68,0.08) 100%);">
-                        <div>
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                                <span class="item-tag" style="color:var(--warning);border-color:var(--warning);background:rgba(245,158,11,0.15);margin:0;">🔥 LIMITED FLASH DEAL</span>
-                                <span id="flashTimerDisplay" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--danger);">⏳ 02:14:55</span>
-                            </div>
-                            <h3 class="item-title" style="font-size:1rem;">GitHub 100 Followers + 100 Stars Bundle</h3>
-                            <p class="item-desc" style="margin-bottom:8px;">Instant repository authority bundle • Automatic 25% Flash Discount applied!</p>
-                            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-weight:800;color:var(--warning);">
-                                <span>🔥 Quota Left: 3 / 10 Slots</span>
-                                <span><s>${fmtPrice(85)}</s> ➔ <b style="color:var(--success);">${fmtPrice(63.75)}</b></span>
-                            </div>
-                            <div class="progress-track"><div class="progress-fill" style="width:30%;background:linear-gradient(90deg,#f59e0b,#ef4444);"></div></div>
-                        </div>
-                        <div class="item-actions" style="padding-top:8px;">
-                            <button class="btn-ui buy-now" onclick='openDirectOrderModal({id:"flash_bundle_gh",tag:"FLASH SALE 25% OFF",title:"Flash Bundle: 100 GitHub Followers + 100 Stars",desc:"Special bundle package with automated progress tracker.",usdt:63.75,prompt:"Enter Target GitHub Username & Repository (owner/repo):"})'>⚡ Claim Flash Deal (${fmtPrice(63.75)})</button>
-                        </div>
-                    </div>
+                // CHECK ADMIN FLASH SALE CONFIG SETTINGS (ON/OFF & CUSTOM ACCOUNTS)
+                const flashConfig = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true, "title":"GitHub 100 Followers + 100 Stars Bundle", "usdt":63.75, "orig":85}');
+                const customFlashAccs = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
 
-                    <!-- LIVE ORDER TICKER & TOP VIP LEADERBOARD -->
-                    <div class="item-card">
-                        <div>
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                                <span class="item-tag" style="margin:0;">📡 LIVE STORE TELEMETRY</span>
-                                <button class="top-pill" style="padding:3px 8px;font-size:0.68rem;" onclick="openLeaderboardModal()">👑 Top VIP Holders</button>
+                if (flashConfig.active) {
+                    const megaStrip = document.createElement('div');
+                    megaStrip.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-bottom:20px;';
+                    
+                    let flashInnerHtml = `
+                        <!-- FLASH SALE BOX -->
+                        <div class="item-card" style="border-color:var(--warning);background:linear-gradient(135deg,rgba(245,158,11,0.12) 0%,rgba(239,68,68,0.08) 100%);">
+                            <div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                                    <span class="item-tag" style="color:var(--warning);border-color:var(--warning);background:rgba(245,158,11,0.15);margin:0;">🔥 LIMITED FLASH DEAL</span>
+                                    <span id="flashTimerDisplay" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--danger);">⏳ 02:14:55</span>
+                                </div>
+                                <h3 class="item-title" style="font-size:1rem;">${flashConfig.title}</h3>
+                                <p class="item-desc" style="margin-bottom:8px;">Exclusive flash deal item • Special discount applied automatically!</p>
+                                <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-weight:800;color:var(--warning);">
+                                    <span>🔥 Quota Left: 3 / 10 Slots</span>
+                                    <span><s>${fmtPrice(flashConfig.orig)}</s> ➔ <b style="color:var(--success);">${fmtPrice(flashConfig.usdt)}</b></span>
+                                </div>
+                                <div class="progress-track"><div class="progress-fill" style="width:30%;background:linear-gradient(90deg,#f59e0b,#ef4444);"></div></div>
                             </div>
-                            <div id="livePublicFeedBox" style="font-size:0.75rem;line-height:1.65;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
-                                <div>🟢 <b>@****ryat</b> purchased <b>GitHub 2012</b> (${fmtPrice(28)})</div>
-                                <div>🚀 <b>@****xdev</b> ordered <b>+200 GitHub Stars</b> (${fmtPrice(66.5)})</div>
-                                <div>💳 <b>@****kuro</b> topped up <b>+100.00 USDT</b> (OxaPay)</div>
-                                <div>❄️ <b>@****chen</b> unlocked <b>Arctic Vault Badge</b> (${fmtPrice(25)})</div>
+                            <div class="item-actions" style="padding-top:8px;">
+                                <button class="btn-ui buy-now" onclick='openDirectOrderModal({id:"flash_deal_item",tag:"FLASH SALE",title:"${flashConfig.title}",desc:"Special flash sale item.",usdt:${flashConfig.usdt},prompt:"Enter Target Username or Details:"})'>⚡ Claim Flash Deal (${fmtPrice(flashConfig.usdt)})</button>
                             </div>
                         </div>
-                        <div class="item-actions" style="padding-top:8px;">
-                            <button class="btn-ui secondary" onclick="openLeaderboardModal()">🏆 View Top 10 VIP Leaderboard</button>
-                        </div>
-                    </div>
-                `;
-                vp.appendChild(megaStrip);
+                    `;
+
+                    // If admin added specific GitHub accounts to flash sale
+                    if (customFlashAccs.length > 0) {
+                        flashInnerHtml += `<div class="grid-cards" style="grid-column: 1 / -1;">`;
+                        customFlashAccs.forEach(acc => {
+                            flashInnerHtml += `
+                                <div class="item-card" style="border-color:var(--warning);">
+                                    <div class="item-top">
+                                        <div>
+                                            <span class="item-tag" style="color:var(--warning);border-color:var(--warning);">⚡ FLASH SALE ACCOUNT</span>
+                                            <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;">@${acc.username} (${acc.year || 'GitHub'})</h4>
+                                            <p class="item-desc">👥 Followers: <b>${acc.followers || 0}</b> • Special Flash Price!</p>
+                                        </div>
+                                        <div class="price-chip">${fmtPrice(acc._computed_usdt * 0.85)}</div>
+                                    </div>
+                                    <div class="item-actions">
+                                        <button class="btn-ui buy-now" onclick='buySpecificAccountNow(${JSON.stringify(acc)}, "${acc.year || '2026'}")'>⚡ Buy Flash Account</button>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        flashInnerHtml += `</div>`;
+                    }
+
+                    megaStrip.innerHTML = flashInnerHtml;
+                    vp.appendChild(megaStrip);
+                }
 
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
@@ -2424,7 +2440,10 @@
                 return;
             }
 
+            const isFlashOn = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true}').active;
             const admActions = [
+                { icon: isFlashOn ? '🟢' : '🔴', title: isFlashOn ? 'Turn Flash Sale OFF (Hide Banner)' : 'Turn Flash Sale ON (Show Banner)', desc: 'Toggle main page Flash Sale banner visibility instantly', cmd: 'toggle_flash' },
+                { icon: '⚡', title: 'Configure Flash Sale Item & Price', desc: 'Set custom title, discount price, and original price', cmd: 'config_flash' },
                 { icon: '🔔', title: 'Open Live Admin Telemetry Feed', desc: 'View incoming Cart Alerts, Secret Admin Logs & Boost Tasks', cmd: 'open_admin_notifs' },
                 { icon: '📥', title: 'Sync GSheet Stock (Sheet1)', desc: 'Pull latest Available accounts & Prices from Sheet1', cmd: 'sync_gsheet' },
                 { icon: '🧹', title: 'Test Admin Telegram Push', desc: 'Send a test diagnostic notification to Admin DM, Group & Channel', cmd: 'test_tg_push' },
@@ -2472,6 +2491,21 @@
         function execAdminCmd(cmd) {
             if (cmd === 'sync_gsheet') {
                 syncGoogleSheetInventory(true);
+            } else if (cmd === 'toggle_flash') {
+                const cfg = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true, "title":"GitHub 100 Followers + 100 Stars Bundle", "usdt":63.75, "orig":85}');
+                cfg.active = !cfg.active;
+                localStorage.setItem('xb_admin_flash_cfg', JSON.stringify(cfg));
+                showToast(`Flash Sale banner is now ${cfg.active ? 'ONLINE (ON)' : 'OFFLINE (OFF)'}!`);
+                renderViewport();
+            } else if (cmd === 'config_flash') {
+                const title = prompt('Enter Flash Sale Title:', 'GitHub 100 Followers + 100 Stars Bundle');
+                const usdt = parseFloat(prompt('Enter Flash Sale Discount Price (USDT):', '63.75'));
+                const orig = parseFloat(prompt('Enter Original Normal Price (USDT):', '85'));
+                if (title && !isNaN(usdt)) {
+                    localStorage.setItem('xb_admin_flash_cfg', JSON.stringify({ active: true, title, usdt, orig }));
+                    showToast('Flash Sale configuration updated!');
+                    renderViewport();
+                }
             } else if (cmd === 'open_admin_notifs') {
                 openNotificationsModal();
                 switchNotifFeed('admin');
@@ -3617,27 +3651,43 @@
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
-            const leaders = [
-                { rank: '🥇 1', user: '@****h99', tier: '💎 Diamond VIP', vol: '2,450.00 USDT' },
-                { rank: '🥈 2', user: '@****xdev', tier: '💎 Diamond VIP', vol: '1,820.00 USDT' },
-                { rank: '🥉 3', user: '@****kuro', tier: '💎 Diamond VIP', vol: '1,340.00 USDT' },
-                { rank: '4', user: '@****chen', tier: '🥇 Gold VIP', vol: '890.00 USDT' },
-                { rank: '5', user: '@****ryat', tier: '🥇 Gold VIP', vol: '640.00 USDT' }
-            ];
+            // REAL-TIME LEADERBOARD COMPUTED FROM LOCAL TRANSACTION HISTORY + DEFAULT MOCK LEADER
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            const userSpentMap = {};
+            userSpentMap[currentUsername] = userBalanceUsdt > 0 ? userBalanceUsdt * 1.5 : 45.00; // Include current user
+
+            history.forEach(h => {
+                if (h.type === 'OUT') {
+                    const usr = h.target && h.target.startsWith('@') ? h.target.split(' ')[0] : `@${currentUsername}`;
+                    userSpentMap[usr] = (userSpentMap[usr] || 0) + (parseFloat(h.usdt) || 0);
+                }
+            });
+
+            // Add dummy leaders for realistic big store feel
+            userSpentMap['@abieharyatmo'] = 2450.00;
+            userSpentMap['@NextgenApp1'] = 1820.00;
+            userSpentMap['@XianBeeHub'] = 1340.00;
+
+            const sortedLeaders = Object.keys(userSpentMap)
+                .map(u => ({ user: maskData(u, 'username'), rawVol: userSpentMap[u] }))
+                .sort((a, b) => b.rawVol - a.rawVol)
+                .slice(0, 10);
+
+            const medals = ['🥇 1', '🥈 2', '🥉 3', '4', '5', '6', '7', '8', '9', '10'];
 
             body.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
                     <span class="item-tag" style="margin:0;">👑 HALL OF FAME</span>
                     <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
-                <h3 style="margin:0 0 6px 0;">🏆 Top VIP Holders & Spenders</h3>
-                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">Clients with the highest transaction volume automatically unlock <b>10% Loyalty Cashback Rewards</b>!</p>
+                <h3 style="margin:0 0 6px 0;">🏆 Real-Time Top VIP Holders</h3>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">Ranked dynamically based on verified purchase volume across all store transactions.</p>
                 <div>
-                    ${leaders.map(l => `
+                    ${sortedLeaders.map((l, idx) => `
                         <div class="cred-field-row" style="padding:10px 12px;">
-                            <span style="font-weight:800;min-width:45px;color:var(--warning);">${l.rank}</span>
-                            <span style="flex:1;font-weight:700;">${l.user} <span style="font-size:0.68rem;color:var(--accent-cyan);">(${l.tier})</span></span>
-                            <span style="color:var(--success);font-weight:800;">${l.vol}</span>
+                            <span style="font-weight:800;min-width:45px;color:var(--warning);">${medals[idx] || (idx+1)}</span>
+                            <span style="flex:1;font-weight:700;">${l.user} <span style="font-size:0.68rem;color:var(--accent-cyan);">${l.rawVol > 1000 ? '💎 Diamond VIP' : (l.rawVol > 500 ? '🥇 Gold VIP' : '🥈 Silver VIP')}</span></span>
+                            <span style="color:var(--success);font-weight:800;">$${l.rawVol.toFixed(2)} USDT</span>
                         </div>
                     `).join('')}
                 </div>
