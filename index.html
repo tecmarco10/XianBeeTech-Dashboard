@@ -219,7 +219,7 @@
             display: flex;
             flex-direction: column;
             min-width: 0;
-            padding-bottom: 84px;
+            padding-bottom: 175px;
         }
 
         /* 2-ROW BOXED TOPBAR (100% FIT ON MOBILE SCREENS) */
@@ -2052,7 +2052,7 @@
 
                     const spHeader = document.createElement('div');
                     spHeader.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:20px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
-                    spHeader.innerText = '🏆 Special Badge & High-Follower GitHub Accounts';
+                    spHeader.innerText = '🗂️ GitHub Special Categories (Arctic, 6 Badges, Followers, Student Pack & Contributions)';
                     vp.appendChild(spHeader);
 
                     const spGrid = document.createElement('div');
@@ -2085,7 +2085,7 @@
                 const ghSubs = [
                     '📅 Choose by Year (2011–2026)',
                     '⚡ Ready-to-Buy Accounts',
-                    '🏆 Special Badge Accounts',
+                    '🗂️ GitHub Categories',
                     '👥 GitHub High Followers Account',
                     '🚀 Buy Followers & Stars',
                     '🔍 Check Account Status',
@@ -2152,7 +2152,12 @@
                     return;
                 }
 
-                if (activeSub.includes('Special Badge')) {
+                if (activeSub.includes('GitHub Categories')) {
+                    const catHeader = document.createElement('div');
+                    catHeader.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:2px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
+                    catHeader.innerText = '🗂️ GitHub Special Categories (Arctic, 6 Badges, High Followers, Student Pack & Contributions)';
+                    vp.appendChild(catHeader);
+
                     const grid = document.createElement('div');
                     grid.className = 'grid-cards';
                     GITHUB_VAULT_CATEGORIES.filter(y => !/^\d{4}$/.test(y.yr)).forEach(y => grid.appendChild(createGithubYearCard(y)));
@@ -2160,7 +2165,7 @@
                     return;
                 }
 
-                // Default: Choose by Year (Murni 2011-2026 berpasangan 2 kolom kiri-kanan, lalu Special Badges di bawahnya)
+                // Default: Choose by Year (Murni 2011-2026 berpasangan 2 kolom kiri-kanan, lalu GitHub Special Categories di bawahnya)
                 const yrTitle = document.createElement('div');
                 yrTitle.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--accent-cyan);margin:2px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
                 yrTitle.innerText = '📅 Select GitHub Year (2011 – 2026 Paired Left & Right)';
@@ -2173,7 +2178,7 @@
 
                 const badgeTitle = document.createElement('div');
                 badgeTitle.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:22px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
-                badgeTitle.innerText = '🏆 Special Badge & High-Follower Vaults';
+                badgeTitle.innerText = '🗂️ GitHub Special Categories (Arctic, 6 Badges, High Followers, Student Pack & Contributions)';
                 vp.appendChild(badgeTitle);
 
                 const badgeGrid = document.createElement('div');
