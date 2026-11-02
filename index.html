@@ -3301,19 +3301,31 @@
             const out = document.getElementById('profBoostOutput');
             out.innerHTML = `<div style="font-weight:700;padding:10px;">🔄 Fetching live metrics and avatar from GitHub...</div>`;
             try {
+                let metricsHtml = '';
+                let titleHeading = '';
+                let avatarImg = '';
+                let profileUrl = '';
+
                 if (clean.includes('/')) {
                     const r = await fetch(`https://api.github.com/repos/${clean}`);
                     if (!r.ok) throw new Error('404');
                     const d = await r.json();
-                    const avatarUrl = d.owner ? d.owner.avatar_url : '';
-                    out.innerHTML = `
-                        <div style="padding:16px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--success);display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-                            ${avatarUrl ? `<img src="${avatarUrl}" style="width:52px;height:52px;border-radius:12px;border:2px solid var(--success);object-fit:cover;">` : ''}
-                            <div style="flex:1;">
-                                <div style="font-weight:800;color:var(--success);font-size:0.95rem;">📦 REPOSITORY LIVE TRACKER — ${d.full_name}</div>
-                                <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">
-                                    ⭐ Stars: <b>${d.stargazers_count.toLocaleString()}</b> &nbsp;•&nbsp; ⎇ Forks: <b>${d.forks_count.toLocaleString()}</b> &nbsp;•&nbsp; 👁️ Watchers: <b>${(d.subscribers_count || d.watchers_count).toLocaleString()}</b> • Lang: <b>${d.language || 'Multi'}</b>
-                                </div>
+                    avatarImg = d.owner ? d.owner.avatar_url : '';
+                    titleHeading = `REPOSITORY TELEMETRY • ${d.full_name}`;
+                    profileUrl = d.html_url;
+                    metricsHtml = `
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:10px;">
+                            <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
+                                <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">STARS</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:var(--warning);">${d.stargazers_count.toLocaleString()}</div>
+                            </div>
+                            <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
+                                <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">FORKS</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:var(--accent-cyan);">${d.forks_count.toLocaleString()}</div>
+                            </div>
+                            <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
+                                <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">WATCHERS</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:var(--success);">${(d.subscribers_count || d.watchers_count).toLocaleString()}</div>
                             </div>
                         </div>
                     `;
@@ -3325,20 +3337,57 @@
                     }
                     if (!r.ok) throw new Error('404');
                     const d = await r.json();
-                    out.innerHTML = `
-                        <div style="padding:16px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--success);display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-                            <img src="${d.avatar_url}" style="width:54px;height:54px;border-radius:50%;border:2px solid var(--success);object-fit:cover;">
-                            <div style="flex:1;">
-                                <div style="font-weight:800;color:var(--success);font-size:0.95rem;">👤 PROFILE LIVE TRACKER — @${d.login} ${d.name ? `(${d.name})` : ''}</div>
-                                <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">
-                                    👥 Live Followers: <b style="color:var(--success);">${d.followers.toLocaleString()} Followers</b> &nbsp;•&nbsp; 📁 Public Repos: <b>${d.public_repos}</b> &nbsp;•&nbsp; 🏢 Company: <b>${d.company || 'Independent'}</b>
-                                </div>
+                    avatarImg = d.avatar_url;
+                    titleHeading = `PROFILE TELEMETRY • @${d.login} ${d.name ? `(${d.name})` : ''}`;
+                    profileUrl = d.html_url;
+                    metricsHtml = `
+                        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin-top:10px;">
+                            <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
+                                <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">FOLLOWERS</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:var(--success);">${d.followers.toLocaleString()}</div>
+                            </div>
+                            <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
+                                <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">PUBLIC REPOS</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.1rem;font-weight:800;color:var(--accent-cyan);">${d.public_repos}</div>
+                            </div>
+                            <div style="background:var(--bg-input);padding:10px;border-radius:10px;border:1px solid var(--border-subtle);text-align:center;">
+                                <div style="font-size:0.68rem;color:var(--text-muted);font-weight:700;">EST. VALUATION</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:800;color:var(--warning);">${fmtPrice(15 + d.followers * 0.15)}</div>
                             </div>
                         </div>
                     `;
                 }
+
+                out.innerHTML = `
+                    <div style="padding:18px;border-radius:16px;background:var(--bg-soft);border:1.5px solid var(--success);box-shadow:var(--shadow-card);">
+                        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;border-bottom:1px solid var(--border-subtle);padding-bottom:10px;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                ${avatarImg ? `<img src="${avatarImg}" style="width:48px;height:48px;border-radius:50%;border:2px solid var(--success);object-fit:cover;">` : ''}
+                                <div>
+                                    <div style="display:flex;align-items:center;gap:6px;">
+                                        <span class="status-dot"></span>
+                                        <span style="font-size:0.7rem;font-weight:800;color:var(--success);letter-spacing:0.8px;">LIVE POLLING ACTIVE</span>
+                                    </div>
+                                    <h4 style="margin:2px 0 0 0;font-size:0.92rem;font-weight:800;">${titleHeading}</h4>
+                                </div>
+                            </div>
+                            <a href="${profileUrl}" target="_blank" class="top-pill" style="font-size:0.75rem;">🌐 Open on GitHub ↗</a>
+                        </div>
+                        ${metricsHtml}
+                        <div style="margin-top:12px;background:var(--bg-input);border:1px solid var(--border-subtle);padding:10px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--text-muted);line-height:1.5;">
+                            <div>[${new Date().toLocaleTimeString()}] Target successfully acquired from GitHub REST API.</div>
+                            <div>[${new Date().toLocaleTimeString()}] Status: <b>Public & Fully Operational (200 OK)</b></div>
+                        </div>
+                    </div>
+                `;
             } catch (e) {
-                out.innerHTML = `<div style="color:var(--danger);font-weight:700;padding:10px;">❌ Target not found on GitHub or network error!</div>`;
+                out.innerHTML = `
+                    <div style="padding:16px;border-radius:14px;background:rgba(239,68,68,0.1);border:1px solid var(--danger);text-align:center;">
+                        <div style="font-size:1.5rem;margin-bottom:4px;">❌</div>
+                        <div style="font-weight:800;color:var(--danger);">Target Not Found or Rate Limited</div>
+                        <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:2px;">Make sure the username or owner/repo is public and valid.</div>
+                    </div>
+                `;
             }
         }
 
