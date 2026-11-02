@@ -1,120 +1,74 @@
 <!DOCTYPE html>
-<html lang="id" data-theme="brutal">
+<html lang="en" data-theme="obsidian">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>XianBee-Tech — Official Digital Store</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <title>XianBee-Tech — Enterprise Digital Asset Marketplace</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Space+Grotesk:wght@700;800&family=JetBrains+Mono:wght@600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
 
         /* =========================================================
-           🎨 3-THEME ENGINE:
-           1. BRUTAL (Neo-Brutalism seperti Brilliant Digital)
-           2. NEBULA (Cyber Dark)
-           3. PLATINUM (Clean Light)
+           🎨 ENTERPRISE DUAL THEME ENGINE (OBSIDIAN DARK & PLATINUM LIGHT)
            ========================================================= */
         :root,
-        [data-theme="brutal"] {
-            --bg-base: #f6f3e8;
-            --bg-grid: rgba(17, 24, 39, 0.055);
-            --bg-elevated: #ffffff;
-            --topbar-bg: #fffdf7;
-            --panel-bg: #ffffff;
-            --panel-hover: #fffbeb;
-            --soft-surface: #f1ede0;
-            --input-bg: #ffffff;
+        [data-theme="obsidian"] {
+            --bg-base: #090a0f;
+            --bg-surface: #11131c;
+            --bg-elevated: rgba(20, 23, 34, 0.88);
+            --bg-card: rgba(22, 26, 39, 0.75);
+            --bg-card-hover: rgba(30, 35, 52, 0.95);
+            --bg-subtab: rgba(15, 17, 26, 0.9);
+            --bg-input: #0d0f17;
+            --bg-soft: rgba(255, 255, 255, 0.04);
 
-            --text-main: #111827;
-            --text-muted: #4b5563;
-            --accent-yellow: #ffe600;
-            --accent-blue: #2563eb;
-            --accent-pink: #ec4899;
-            --accent-green: #10b981;
-            --accent-purple: #8b5cf6;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
 
-            --border-width: 2.5px;
-            --border-color: #111827;
-            --shadow-card: 4px 4px 0px #111827;
-            --shadow-hover: 6px 6px 0px #111827;
-            --shadow-btn: 3px 3px 0px #111827;
-            --radius-card: 12px;
-            --radius-btn: 8px;
+            --accent-primary: #6366f1;
+            --accent-secondary: #8b5cf6;
+            --accent-cyan: #06b6d4;
+            --grad-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #06b6d4 100%);
+            --grad-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.14) 0%, rgba(6, 182, 212, 0.10) 100%);
 
-            --price-bg: #e6007a;
-            --price-text: #ffffff;
-            --primary-btn-bg: #2563eb;
-            --primary-btn-text: #ffffff;
-            --badge-bg: #ffe600;
-            --badge-text: #111827;
-        }
+            --border-subtle: rgba(255, 255, 255, 0.08);
+            --border-focus: rgba(99, 102, 241, 0.55);
+            --shadow-card: 0 8px 30px rgba(0, 0, 0, 0.35);
+            --shadow-glow: 0 8px 25px rgba(99, 102, 241, 0.28);
 
-        [data-theme="nebula"] {
-            --bg-base: #070510;
-            --bg-grid: rgba(139, 92, 246, 0.07);
-            --bg-elevated: #110d22;
-            --topbar-bg: rgba(15, 11, 29, 0.92);
-            --panel-bg: #16112b;
-            --panel-hover: #1f183d;
-            --soft-surface: rgba(255, 255, 255, 0.06);
-            --input-bg: #0c0918;
-
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --accent-yellow: #facc15;
-            --accent-blue: #3b82f6;
-            --accent-pink: #f43f5e;
-            --accent-green: #10b981;
-            --accent-purple: #a78bfa;
-
-            --border-width: 1.5px;
-            --border-color: rgba(167, 139, 250, 0.38);
-            --shadow-card: 0 8px 24px rgba(0, 0, 0, 0.45);
-            --shadow-hover: 0 12px 28px rgba(139, 92, 246, 0.28);
-            --shadow-btn: 0 4px 14px rgba(37, 99, 235, 0.35);
-            --radius-card: 16px;
-            --radius-btn: 10px;
-
-            --price-bg: #ec4899;
-            --price-text: #ffffff;
-            --primary-btn-bg: #6d28d9;
-            --primary-btn-text: #ffffff;
-            --badge-bg: #facc15;
-            --badge-text: #0f172a;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
         }
 
         [data-theme="platinum"] {
             --bg-base: #f8fafc;
-            --bg-grid: rgba(15, 23, 42, 0.035);
-            --bg-elevated: #ffffff;
-            --topbar-bg: rgba(255, 255, 255, 0.92);
-            --panel-bg: #ffffff;
-            --panel-hover: #f1f5f9;
-            --soft-surface: #f1f5f9;
-            --input-bg: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-elevated: rgba(255, 255, 255, 0.92);
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --bg-subtab: #f1f5f9;
+            --bg-input: #f8fafc;
+            --bg-soft: rgba(15, 23, 42, 0.04);
 
-            --text-main: #0f172a;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
             --text-muted: #64748b;
-            --accent-yellow: #fde047;
-            --accent-blue: #2563eb;
-            --accent-pink: #db2777;
-            --accent-green: #059669;
-            --accent-purple: #7c3aed;
 
-            --border-width: 1.5px;
-            --border-color: #cbd5e1;
-            --shadow-card: 0 4px 16px rgba(15, 23, 42, 0.06);
-            --shadow-hover: 0 10px 25px rgba(37, 99, 235, 0.14);
-            --shadow-btn: 0 4px 10px rgba(37, 99, 235, 0.2);
-            --radius-card: 16px;
-            --radius-btn: 10px;
+            --accent-primary: #4f46e5;
+            --accent-secondary: #7c3aed;
+            --accent-cyan: #0284c7;
+            --grad-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #0284c7 100%);
+            --grad-subtle: linear-gradient(135deg, rgba(79, 70, 229, 0.08) 0%, rgba(2, 132, 199, 0.06) 100%);
 
-            --price-bg: #db2777;
-            --price-text: #ffffff;
-            --primary-btn-bg: #2563eb;
-            --primary-btn-text: #ffffff;
-            --badge-bg: #fde047;
-            --badge-text: #0f172a;
+            --border-subtle: #e2e8f0;
+            --border-focus: #6366f1;
+            --shadow-card: 0 4px 20px rgba(15, 23, 42, 0.05);
+            --shadow-glow: 0 8px 20px rgba(79, 70, 229, 0.20);
+
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
         }
 
         * {
@@ -126,471 +80,597 @@
             margin: 0;
             padding: 0;
             width: 100%;
-            min-height: 100%;
+            min-height: 100vh;
             background-color: var(--bg-base);
-            background-image:
-                linear-gradient(to right, var(--bg-grid) 1px, transparent 1px),
-                linear-gradient(to bottom, var(--bg-grid) 1px, transparent 1px);
-            background-size: 28px 28px;
-            color: var(--text-main);
-            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: var(--text-primary);
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             transition: background-color 0.25s ease, color 0.25s ease;
+            overflow-x: hidden;
         }
 
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 99px; }
+
         /* =========================================================
-           📐 LAYOUT SHELL (SIDEBAR PC + TOPBAR + BOTTOM NAV MOBILE)
+           📐 APPLICATION SHELL (SIDEBAR + MAIN WORKSPACE)
            ========================================================= */
-        .app-shell {
+        .app-layout {
             display: flex;
-            flex-direction: column;
             min-height: 100vh;
             width: 100%;
         }
 
-        .app-sidebar {
+        .sidebar {
             display: none;
             flex-direction: column;
-            width: 270px;
-            background: var(--bg-elevated);
-            border-right: var(--border-width) solid var(--border-color);
+            width: 260px;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--border-subtle);
             position: fixed;
             top: 0;
             bottom: 0;
             left: 0;
             z-index: 40;
-            padding: 20px 16px;
+            padding: 22px 16px;
         }
 
-        .brand-box {
-            display: inline-flex;
+        .brand-header {
+            display: flex;
             align-items: center;
-            gap: 10px;
-            background: var(--badge-bg);
-            color: var(--badge-text);
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: var(--shadow-btn);
-            padding: 8px 14px;
-            font-family: 'Space Grotesk', sans-serif;
-            font-weight: 800;
-            font-size: 0.95rem;
-            letter-spacing: 0.8px;
-            text-transform: uppercase;
-            border-radius: 6px;
+            gap: 12px;
+            padding: 4px 8px 20px 8px;
+            border-bottom: 1px solid var(--border-subtle);
             cursor: pointer;
         }
 
-        .sidebar-nav {
-            margin-top: 24px;
+        .brand-logo {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: var(--grad-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: #fff;
+            box-shadow: var(--shadow-glow);
+            flex-shrink: 0;
+        }
+
+        .brand-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 1.05rem;
+            letter-spacing: -0.3px;
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            display: block;
+        }
+
+        .sidebar-menu {
+            margin-top: 20px;
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 6px;
             flex: 1;
         }
 
-        .side-tab-btn {
+        .nav-btn {
             display: flex;
             align-items: center;
             gap: 12px;
             width: 100%;
-            padding: 12px 14px;
-            border-radius: var(--radius-btn);
-            border: var(--border-width) solid transparent;
+            padding: 11px 14px;
+            border-radius: 10px;
+            border: 1px solid transparent;
             background: transparent;
-            color: var(--text-main);
+            color: var(--text-secondary);
             font-family: inherit;
-            font-weight: 800;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
+            font-weight: 600;
             cursor: pointer;
+            transition: all 0.18s ease;
             text-align: left;
-            transition: 0.15s;
         }
 
-        .side-tab-btn:hover {
-            background: var(--soft-surface);
-            border-color: var(--border-color);
+        .nav-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-soft);
         }
 
-        .side-tab-btn.active {
-            background: var(--primary-btn-bg);
-            color: var(--primary-btn-text);
-            border-color: var(--border-color);
-            box-shadow: var(--shadow-btn);
+        .nav-btn.active {
+            color: #ffffff;
+            background: var(--grad-primary);
+            box-shadow: var(--shadow-glow);
+            font-weight: 700;
         }
 
-        .app-main {
+        .sidebar-footer {
+            padding-top: 16px;
+            border-top: 1px solid var(--border-subtle);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .status-Chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            padding: 6px 12px;
+            border-radius: 99px;
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--success);
+            box-shadow: 0 0 8px var(--success);
+        }
+
+        /* Subtle, minimal admin lock icon */
+        .admin-lock-mini {
+            background: transparent;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-muted);
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.78rem;
+            cursor: pointer;
+            opacity: 0.45;
+            transition: 0.2s;
+        }
+        .admin-lock-mini:hover { opacity: 1; color: var(--text-primary); border-color: var(--border-focus); }
+
+        /* MAIN WORKSPACE */
+        .main-workspace {
             flex: 1;
             display: flex;
             flex-direction: column;
-            width: 100%;
-            padding-bottom: 85px;
+            min-width: 0;
+            padding-bottom: 84px;
         }
 
         /* TOPBAR */
         .topbar {
             position: sticky;
             top: 0;
-            z-index: 35;
-            background: var(--topbar-bg);
-            border-bottom: var(--border-width) solid var(--border-color);
-            padding: 12px 16px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
-            backdrop-filter: blur(10px);
-        }
-
-        .topbar-actions {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .ctrl-btn {
-            background: var(--panel-bg);
-            color: var(--text-main);
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: var(--shadow-btn);
-            padding: 7px 11px;
-            border-radius: var(--radius-btn);
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.76rem;
-            font-weight: 800;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            transition: transform 0.12s;
-        }
-
-        .ctrl-btn:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0px var(--border-color);
-        }
-
-        .ctrl-btn.cart-btn {
-            background: var(--accent-yellow);
-            color: #111827;
-            position: relative;
-        }
-
-        .cart-count {
-            background: #e6007a;
-            color: #ffffff;
-            padding: 1px 6px;
-            border-radius: 20px;
-            font-size: 0.7rem;
-            border: 1.5px solid #111827;
-        }
-
-        /* CONTAINER UTAMA */
-        .container {
-            width: 100%;
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 20px 16px;
-        }
-
-        /* =========================================================
-           🏷️ POSTER HERO (GAYA BRILLIANT DIGITAL)
-           ========================================================= */
-        .poster-header {
-            background: var(--panel-bg);
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: var(--shadow-card);
-            border-radius: var(--radius-card);
-            padding: 22px 20px;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .poster-tag {
-            display: inline-block;
-            background: var(--badge-bg);
-            color: var(--badge-text);
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: 3px 3px 0px #111827;
-            padding: 5px 12px;
-            font-weight: 900;
-            font-size: 0.76rem;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-            margin-bottom: 12px;
-        }
-
-        .poster-title {
-            font-family: 'Space Grotesk', sans-serif;
-            font-size: 2rem;
-            font-weight: 900;
-            line-height: 1.05;
-            margin: 0 0 8px 0;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
-        }
-
-        .poster-title .highlight-blue {
-            color: var(--accent-blue);
-            display: block;
-        }
-
-        .poster-sub {
-            font-size: 0.86rem;
-            font-weight: 700;
-            color: var(--text-muted);
-            margin: 0 0 16px 0;
-        }
-
-        /* SEARCH & QUICK BAR */
-        .search-wrap {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
-
-        .search-input {
-            flex: 1;
-            min-width: 210px;
-            padding: 12px 14px;
-            border: var(--border-width) solid var(--border-color);
-            border-radius: var(--radius-btn);
-            background: var(--input-bg);
-            color: var(--text-main);
-            font-family: inherit;
-            font-weight: 700;
-            font-size: 0.88rem;
-            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.04);
-            outline: none;
-        }
-
-        /* =========================================================
-           🗂️ SISTEM TAB DI DALAM TAB (NESTED SUB-TABS)
-           ========================================================= */
-        .main-tabs-bar {
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            padding-bottom: 8px;
-            margin-bottom: 14px;
-        }
-
-        .main-tab-pill {
-            background: var(--panel-bg);
-            color: var(--text-main);
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: var(--shadow-btn);
-            padding: 10px 16px;
-            border-radius: var(--radius-btn);
-            font-weight: 800;
-            font-size: 0.82rem;
-            white-space: nowrap;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.15s;
-        }
-
-        .main-tab-pill.active {
-            background: var(--primary-btn-bg);
-            color: var(--primary-btn-text);
-            transform: translate(-1px, -1px);
-        }
-
-        /* SUB-TAB LEVEL 2 & LEVEL 3 (DI DALAM TAB) */
-        .sub-tabs-container {
-            background: var(--soft-surface);
-            border: var(--border-width) solid var(--border-color);
-            border-radius: var(--radius-card);
-            padding: 10px;
-            margin-bottom: 18px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .sub-tab-btn {
-            background: var(--panel-bg);
-            color: var(--text-main);
-            border: 2px solid var(--border-color);
-            padding: 7px 13px;
-            border-radius: 6px;
-            font-weight: 800;
-            font-size: 0.76rem;
-            cursor: pointer;
-            font-family: inherit;
-            transition: 0.12s;
-        }
-
-        .sub-tab-btn.active {
-            background: var(--accent-yellow);
-            color: #111827;
-            box-shadow: 2px 2px 0px #111827;
-        }
-
-        /* =========================================================
-           📦 KARTU PRODUK (GAYA BRILLIANT DIGITAL + TOMBOL AKSI)
-           ========================================================= */
-        .product-list-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
-        }
-
-        .brutal-card {
-            background: var(--panel-bg);
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: var(--shadow-card);
-            border-radius: var(--radius-card);
-            padding: 16px 18px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            gap: 14px;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-        }
-
-        .brutal-card:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: var(--shadow-hover);
-        }
-
-        .brutal-card-row {
+            z-index: 30;
+            height: 64px;
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border-bottom: 1px solid var(--border-subtle);
+            padding: 0 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 12px;
         }
 
-        .prod-info {
+        .topbar-search {
             flex: 1;
-            min-width: 0;
+            max-width: 460px;
+            position: relative;
         }
 
-        .prod-badge-mini {
-            display: inline-block;
-            font-size: 0.66rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            padding: 2px 8px;
-            border: 1.5px solid var(--border-color);
-            border-radius: 4px;
-            background: var(--soft-surface);
-            color: var(--text-main);
-            margin-bottom: 5px;
-        }
-
-        .prod-title {
-            font-size: 1.05rem;
-            font-weight: 800;
-            margin: 0 0 4px 0;
-            color: var(--text-main);
-            line-height: 1.25;
-        }
-
-        .prod-desc {
-            font-size: 0.76rem;
-            font-weight: 600;
-            color: var(--text-muted);
-            margin: 0;
-            line-height: 1.35;
-        }
-
-        /* KOTAK HARGA PINK MAGENTA PERSIS GAMBAR BRILLIANT DIGITAL */
-        .pink-price-box {
-            background: var(--price-bg);
-            color: var(--price-text);
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: 3px 3px 0px #111827;
-            padding: 8px 14px;
-            font-family: 'JetBrains Mono', monospace;
-            font-weight: 800;
-            font-size: 0.92rem;
-            border-radius: 6px;
-            white-space: nowrap;
-            flex-shrink: 0;
-        }
-
-        .card-footer-btns {
-            display: flex;
-            gap: 8px;
-            border-top: 1.5px dashed rgba(100, 116, 139, 0.35);
-            padding-top: 12px;
-        }
-
-        .btn-brutal {
-            flex: 1;
-            padding: 10px 12px;
-            border: var(--border-width) solid var(--border-color);
-            border-radius: var(--radius-btn);
-            box-shadow: var(--shadow-btn);
+        .topbar-search input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 9px 14px 9px 36px;
+            border-radius: 10px;
             font-family: inherit;
-            font-weight: 800;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .topbar-search input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+        }
+
+        .topbar-search .search-ic {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .topbar-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .top-pill {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 8px 12px;
+            border-radius: 10px;
+            font-size: 0.78rem;
+            font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            justify-content: center;
             gap: 6px;
-            transition: transform 0.1s;
-            text-decoration: none;
+            font-family: inherit;
+            transition: 0.2s;
         }
 
-        .btn-brutal:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0px var(--border-color);
+        .top-pill:hover {
+            border-color: var(--border-focus);
         }
 
-        .btn-brutal.primary {
-            background: var(--primary-btn-bg);
-            color: var(--primary-btn-text);
+        .top-pill.cart-trigger {
+            background: var(--grad-primary);
+            color: #ffffff;
+            border: none;
+            box-shadow: var(--shadow-glow);
         }
 
-        .btn-brutal.yellow {
-            background: var(--accent-yellow);
-            color: #111827;
+        .badge-counter {
+            background: rgba(0, 0, 0, 0.35);
+            color: #fff;
+            padding: 1px 7px;
+            border-radius: 99px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
         }
 
-        .btn-brutal.secondary {
-            background: var(--soft-surface);
-            color: var(--text-main);
+        /* CONTENT CONTAINER */
+        .page-container {
+            width: 100%;
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 24px 20px;
         }
 
         /* =========================================================
-           🪟 PANEL DETAIL DALAM TAB (IN-PAGE DRAWER / SUB-VIEW)
+           🌟 HERO BANNER & STATS STRIP
            ========================================================= */
-        .inpage-subview {
-            background: var(--panel-bg);
-            border: var(--border-width) solid var(--border-color);
+        .hero-card {
+            background: var(--grad-subtle);
+            border: 1px solid var(--border-focus);
+            border-radius: 20px;
+            padding: 28px 26px;
+            margin-bottom: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            position: relative;
+            overflow: hidden;
             box-shadow: var(--shadow-card);
-            border-radius: var(--radius-card);
-            padding: 20px;
-            margin-bottom: 20px;
-            animation: fadeIn 0.2s ease;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            width: fit-content;
+            padding: 5px 12px;
+            border-radius: 99px;
+            background: rgba(99, 102, 241, 0.18);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            color: var(--accent-cyan);
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+        }
+
+        .hero-headline {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.75rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin: 0;
+            letter-spacing: -0.4px;
+        }
+
+        .hero-subtext {
+            margin: 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            max-width: 680px;
+            line-height: 1.5;
+        }
+
+        .hero-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            padding-top: 8px;
+        }
+
+        .metric-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 12px 14px;
+            border-radius: 12px;
+        }
+
+        .metric-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .metric-lbl {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            margin-top: 2px;
+        }
+
+        /* =========================================================
+           🗂️ MULTI-LEVEL NESTED TABS ("TAB DI DALAM TAB")
+           ========================================================= */
+        /* Level 1 Horizontal Tabs (Mobile & Tablet Quick Bar) */
+        .level1-tabs {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .l1-tab {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            white-space: nowrap;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.2s;
+        }
+
+        .l1-tab.active {
+            background: var(--grad-primary);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: var(--shadow-glow);
+        }
+
+        /* Level 2 Sub-Tabs (Nested inside the active Main Tab) */
+        .level2-subtabs {
+            background: var(--bg-subtab);
+            border: 1px solid var(--border-subtle);
+            padding: 8px;
+            border-radius: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 20px;
+        }
+
+        .l2-subtab {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-secondary);
+            padding: 7px 13px;
+            border-radius: 8px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+            transition: 0.18s;
+        }
+
+        .l2-subtab:hover {
+            color: var(--text-primary);
+            background: var(--bg-soft);
+        }
+
+        .l2-subtab.active {
+            background: var(--bg-card);
+            color: var(--text-primary);
+            border-color: var(--border-focus);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        /* Level 3 In-Page Vault Drawer (Opens inside the tab when clicking a GitHub Year) */
+        .level3-drawer {
+            background: var(--bg-surface);
+            border: 1px solid var(--border-focus);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+            box-shadow: var(--shadow-glow);
+            animation: slideDown 0.22s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .subview-topbar {
+        .drawer-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
             gap: 10px;
-            border-bottom: var(--border-width) solid var(--border-color);
             padding-bottom: 14px;
             margin-bottom: 16px;
+            border-bottom: 1px solid var(--border-subtle);
         }
 
         /* =========================================================
-           🧾 MODAL CHECKOUT & INVOICE MANDIRI DI DALAM WEB
+           🃏 PRODUCT CARDS & GRID
            ========================================================= */
-        .modal-overlay {
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: var(--shadow-card);
+            transition: all 0.2s ease;
+        }
+
+        .product-card:hover {
+            background: var(--bg-card-hover);
+            border-color: var(--border-focus);
+            transform: translateY(-2px);
+        }
+
+        .card-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .card-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--grad-subtle);
+            border: 1px solid var(--border-focus);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            font-weight: 800;
+            flex-shrink: 0;
+            color: var(--text-primary);
+        }
+
+        .card-meta {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .card-tag {
+            display: inline-block;
+            font-size: 0.65rem;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.1);
+            border: 1px solid rgba(6, 182, 212, 0.25);
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .card-title {
+            margin: 0 0 4px 0;
+            font-size: 0.98rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.3;
+        }
+
+        .card-desc {
+            margin: 0;
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .price-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.92rem;
+            font-weight: 800;
+            color: var(--success);
+            background: rgba(16, 185, 129, 0.12);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 6px 11px;
+            border-radius: 10px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .card-actions {
+            display: flex;
+            gap: 8px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .btn-action {
+            flex: 1;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            transition: 0.18s;
+            text-decoration: none;
+        }
+
+        .btn-action.primary {
+            background: var(--grad-primary);
+            color: #ffffff;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .btn-action.secondary {
+            background: var(--bg-soft);
+            color: var(--text-primary);
+            border-color: var(--border-subtle);
+        }
+
+        .btn-action.secondary:hover {
+            border-color: var(--border-focus);
+        }
+
+        /* =========================================================
+           🪟 MODALS (PRODUCT CONFIGURATOR, CART & WEB INVOICE)
+           ========================================================= */
+        .modal-backdrop {
             position: fixed;
             inset: 0;
-            background: rgba(0, 0, 0, 0.72);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
             z-index: 1000;
             display: flex;
             align-items: center;
@@ -598,1143 +678,1309 @@
             padding: 16px;
             opacity: 0;
             pointer-events: none;
-            transition: 0.2s;
+            transition: 0.22s ease;
         }
 
-        .modal-overlay.active {
+        .modal-backdrop.active {
             opacity: 1;
             pointer-events: auto;
         }
 
-        .modal-card {
-            background: var(--panel-bg);
-            color: var(--text-main);
-            border: var(--border-width) solid var(--border-color);
-            box-shadow: 8px 8px 0px #111827;
-            border-radius: var(--radius-card);
+        .modal-window {
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border: 1px solid var(--border-focus);
+            border-radius: 20px;
             width: 100%;
             max-width: 480px;
             max-height: 90vh;
             overflow-y: auto;
-            padding: 22px;
+            padding: 24px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.6);
         }
 
-        .form-group {
-            margin-bottom: 14px;
-        }
-
-        .form-group label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin-bottom: 6px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px 14px;
-            border: var(--border-width) solid var(--border-color);
-            border-radius: var(--radius-btn);
-            background: var(--input-bg);
-            color: var(--text-main);
-            font-family: inherit;
-            font-weight: 700;
-            font-size: 0.9rem;
-            outline: none;
-        }
-
-        .pay-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 10px;
+        .field-group {
             margin-bottom: 16px;
         }
 
-        .pay-option {
-            padding: 12px;
-            border: var(--border-width) solid var(--border-color);
-            border-radius: var(--radius-btn);
-            background: var(--soft-surface);
+        .field-group label {
+            display: block;
+            font-size: 0.74rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            margin-bottom: 6px;
+        }
+
+        .field-input {
+            width: 100%;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            padding: 12px 14px;
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 0.88rem;
+            font-weight: 600;
+            outline: none;
+        }
+
+        .field-input:focus {
+            border-color: var(--border-focus);
+        }
+
+        .gateway-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .gateway-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
+            padding: 11px;
+            border-radius: 10px;
             cursor: pointer;
             text-align: center;
-            font-weight: 800;
-            font-size: 0.8rem;
-            transition: 0.12s;
+            font-size: 0.78rem;
+            font-weight: 700;
+            transition: 0.15s;
         }
 
-        .pay-option.selected {
-            background: var(--accent-yellow);
-            color: #111827;
-            box-shadow: 3px 3px 0px #111827;
+        .gateway-card.selected {
+            border-color: var(--accent-cyan);
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--text-primary);
         }
 
-        /* BOTTOM NAV MOBILE */
-        .bottom-nav {
+        /* MOBILE BOTTOM BAR */
+        .mobile-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             right: 0;
-            height: 68px;
-            background: var(--topbar-bg);
-            border-top: var(--border-width) solid var(--border-color);
+            height: 66px;
+            background: var(--bg-elevated);
+            backdrop-filter: blur(16px);
+            border-top: 1px solid var(--border-subtle);
             display: flex;
             justify-content: space-around;
             align-items: center;
             z-index: 50;
-            padding: 0 6px;
         }
 
-        .bnav-btn {
+        .mnav-item {
             flex: 1;
             background: transparent;
             border: none;
             color: var(--text-muted);
             font-family: inherit;
-            font-weight: 800;
             font-size: 0.68rem;
+            font-weight: 700;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 3px;
+            gap: 4px;
             cursor: pointer;
-            padding: 6px 2px;
         }
 
-        .bnav-btn.active {
-            color: var(--text-main);
+        .mnav-item.active {
+            color: var(--accent-cyan);
         }
 
-        .bnav-btn.active .bnav-icon {
-            background: var(--accent-yellow);
-            color: #111827;
-            border: 1.5px solid #111827;
-            padding: 2px 10px;
-            border-radius: 14px;
-            box-shadow: 2px 2px 0px #111827;
-        }
-
-        .toast-pop {
+        .toast-banner {
             position: fixed;
-            top: 18px;
+            top: 20px;
             left: 50%;
-            transform: translateX(-50%) translateY(-120px);
-            background: var(--accent-yellow);
-            color: #111827;
-            border: 2.5px solid #111827;
-            box-shadow: 4px 4px 0px #111827;
-            padding: 10px 20px;
-            border-radius: 8px;
-            font-weight: 900;
+            transform: translateX(-50%) translateY(-100px);
+            background: var(--grad-primary);
+            color: #ffffff;
+            padding: 11px 22px;
+            border-radius: 99px;
             font-size: 0.84rem;
+            font-weight: 700;
+            box-shadow: var(--shadow-glow);
             z-index: 9999;
-            transition: 0.3s;
+            transition: 0.3s ease;
         }
 
-        .toast-pop.show {
+        .toast-banner.show {
             transform: translateX(-50%) translateY(0);
         }
 
         @media (min-width: 768px) {
-            .product-list-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            .poster-title {
-                font-size: 2.4rem;
-            }
+            .catalog-grid { grid-template-columns: repeat(2, 1fr); }
+            .hero-metrics { grid-template-columns: repeat(4, 1fr); }
         }
 
-        @media (min-width: 1080px) {
-            .app-sidebar {
-                display: flex;
-            }
-            .app-main {
-                margin-left: 270px;
-                padding-bottom: 40px;
-            }
-            .bottom-nav {
-                display: none;
-            }
-            .product-list-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+        @media (min-width: 1100px) {
+            .sidebar { display: flex; }
+            .main-workspace { margin-left: 260px; padding-bottom: 40px; }
+            .mobile-nav { display: none; }
+            .level1-tabs { display: none; }
+            .catalog-grid { grid-template-columns: repeat(3, 1fr); }
         }
     </style>
 </head>
 <body>
 
-    <div class="toast-pop" id="toastPop">✅ Berhasil ditambahkan!</div>
+    <div class="toast-banner" id="toastBanner">✅ Item added to cart</div>
 
-    <div class="app-shell">
-        <!-- 🖥️ SIDEBAR DESKTOP -->
-        <aside class="app-sidebar">
-            <div class="brand-box" onclick="switchTab('best')">
-                <span>🐝</span>
-                <span>XIANBEE DIGITAL</span>
+    <div class="app-layout">
+        <!-- 🖥️ DESKTOP SIDEBAR -->
+        <aside class="sidebar">
+            <div class="brand-header" onclick="switchMainTab('featured')">
+                <div class="brand-logo">🐝</div>
+                <div>
+                    <h1 class="brand-title">XianBee-Tech</h1>
+                    <span class="brand-subtitle">Enterprise Store</span>
+                </div>
             </div>
 
-            <nav class="sidebar-nav">
-                <button class="side-tab-btn active" data-tab="best" onclick="switchTab('best')">🔥 Produk Terlaris</button>
-                <button class="side-tab-btn" data-tab="github" onclick="switchTab('github')">🐙 GitHub Enterprise</button>
-                <button class="side-tab-btn" data-tab="pro" onclick="switchTab('pro')">👑 Aplikasi Pro & AI</button>
-                <button class="side-tab-btn" data-tab="social" onclick="switchTab('social')">📱 Aged Social & Exchange</button>
-                <button class="side-tab-btn" data-tab="smm" onclick="switchTab('smm')">🚀 SMM & Traffic Boost</button>
-                <button class="side-tab-btn" data-tab="orders" onclick="switchTab('orders')">🧾 Cek Pesanan & Tracker</button>
+            <nav class="sidebar-menu">
+                <button class="nav-btn active" data-tab="featured" onclick="switchMainTab('featured')">🔥 Featured & Bestsellers</button>
+                <button class="nav-btn" data-tab="github" onclick="switchMainTab('github')">🐙 GitHub Enterprise Hub</button>
+                <button class="nav-btn" data-tab="boost" onclick="switchMainTab('boost')">🚀 Boost & SMM Services</button>
+                <button class="nav-btn" data-tab="accounts" onclick="switchMainTab('accounts')">🔑 Pro Apps & Aged Socials</button>
+                <button class="nav-btn" data-tab="tools" onclick="switchMainTab('tools')">🛠️ Web Developer Tools</button>
+                <button class="nav-btn" data-tab="orders" onclick="switchMainTab('orders')">🧾 Orders & Live Tracker</button>
             </nav>
 
-            <div style="border-top:2px solid var(--border-color);padding-top:14px;font-size:0.75rem;font-weight:800;">
-                <div style="margin-bottom:6px;">🟢 STATUS: STOK READY</div>
-                <div style="color:var(--text-muted);">Order langsung di Website atau via Bot @XianBeeTechStore_Bot</div>
+            <div class="sidebar-footer">
+                <div class="status-Chip">
+                    <span class="status-dot"></span>
+                    <span>VAULT ONLINE</span>
+                </div>
+                <button class="admin-lock-mini" title="Admin Settings" onclick="openAdminModal()">🔒</button>
             </div>
         </aside>
 
-        <!-- 📱 MAIN AREA -->
-        <div class="app-main">
+        <!-- 📱 MAIN CONTENT WORKSPACE -->
+        <div class="main-workspace">
             <header class="topbar">
-                <div class="brand-box" onclick="switchTab('best')">
-                    <span>🐝</span>
-                    <span>XIANBEE STORE</span>
+                <div class="topbar-search">
+                    <span class="search-ic">🔍</span>
+                    <input type="text" id="searchInput" placeholder="Search GitHub 2012, Arctic Vault, Stars, Canva Pro, ChatGPT..." oninput="handleSearch(this.value)">
                 </div>
 
-                <div class="topbar-actions">
-                    <!-- TOMBOL GANTI MATA UANG (IDR ⇄ USDT) -->
-                    <button class="ctrl-btn" id="currBtn" onclick="toggleCurrency()">
+                <div class="topbar-controls">
+                    <button class="top-pill" onclick="toggleCurrency()">
                         <span>💱</span>
-                        <span id="currLabel">IDR (Rp)</span>
+                        <span id="currencyLabel">USD ($)</span>
                     </button>
 
-                    <!-- TOMBOL GANTI TEMA (BRUTAL / NEBULA / PLATINUM) -->
-                    <button class="ctrl-btn" onclick="cycleTheme()">
-                        <span id="themeIcon">🎨</span>
-                        <span id="themeText">Brutal</span>
+                    <button class="top-pill" onclick="toggleTheme()">
+                        <span id="themeIcon">☀️</span>
+                        <span id="themeName">Light</span>
                     </button>
 
-                    <!-- TOMBOL KERANJANG -->
-                    <button class="ctrl-btn cart-btn" onclick="openCartModal()">
-                        <span>🛒</span>
-                        <span class="cart-count" id="cartCount">0</span>
+                    <button class="top-pill cart-trigger" onclick="openCartModal()">
+                        <span>🛒 Cart</span>
+                        <span class="badge-counter" id="cartBadge">0</span>
                     </button>
                 </div>
             </header>
 
-            <div class="container">
-                <!-- BANNER UTAMA PERSIS GAYA BRILLIANT DIGITAL -->
-                <div class="poster-header">
-                    <div class="poster-tag">XIANBEE DIGITAL STORE</div>
-                    <h1 class="poster-title" id="mainBannerTitle">
-                        PRODUK <span class="highlight-blue">TERLARIS</span>
-                    </h1>
-                    <p class="poster-sub" id="mainBannerSub">
-                        Paling dicari • Stok ready • Pilih & Checkout langsung di Website tanpa ribet!
-                    </p>
+            <div class="page-container">
+                <!-- HERO BANNER -->
+                <div class="hero-card">
+                    <div>
+                        <div class="hero-badge">⚡ INSTANT WEB CHECKOUT • NO BOT REDIRECT REQUIRED</div>
+                        <h2 class="hero-headline" id="heroTitle">Enterprise Digital Asset & GitHub Ecosystem</h2>
+                        <p class="hero-subtext" id="heroSub">Browse live aged GitHub accounts (2011–2026), configure repository metric boosts, generate 2FA codes, and complete your order directly on the web.</p>
+                    </div>
 
-                    <div class="search-wrap">
-                        <input type="text" class="search-input" id="globalSearch" placeholder="🔍 Cari akun GitHub 2012, Canva Pro, Gemini, Followers, CapCut..." oninput="handleGlobalSearch(this.value)">
-                        <button class="btn-brutal yellow" style="flex:0 0 auto;padding:10px 16px;" onclick="switchTab('orders')">
-                            📡 Track Order / Cek Pesanan
-                        </button>
+                    <div class="hero-metrics">
+                        <div class="metric-box">
+                            <div class="metric-val" id="statStockCount">2011 – 2026</div>
+                            <div class="metric-lbl">Aged GitHub Vault</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-val">100% Live</div>
+                            <div class="metric-lbl">In-Web Boost Tracker</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-val">Instant</div>
+                            <div class="metric-lbl">2FA & Creds Delivery</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-val">24/7</div>
+                            <div class="metric-lbl">Automated Verification</div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- BARIS TAB UTAMA (LEVEL 1) -->
-                <div class="main-tabs-bar">
-                    <button class="main-tab-pill active" data-tab="best" onclick="switchTab('best')">🔥 Produk Terlaris</button>
-                    <button class="main-tab-pill" data-tab="github" onclick="switchTab('github')">🐙 GitHub Vault (2011–2026)</button>
-                    <button class="main-tab-pill" data-tab="pro" onclick="switchTab('pro')">👑 Pro Apps & AI</button>
-                    <button class="main-tab-pill" data-tab="social" onclick="switchTab('social')">📱 Aged Social & Crypto</button>
-                    <button class="main-tab-pill" data-tab="smm" onclick="switchTab('smm')">🚀 SMM & GitHub Boost</button>
-                    <button class="main-tab-pill" data-tab="orders" onclick="switchTab('orders')">🧾 Pesanan & Tracker</button>
+                <!-- LEVEL 1 TABS (FOR MOBILE/TABLET) -->
+                <div class="level1-tabs">
+                    <button class="l1-tab active" data-tab="featured" onclick="switchMainTab('featured')">🔥 Featured</button>
+                    <button class="l1-tab" data-tab="github" onclick="switchMainTab('github')">🐙 GitHub Hub</button>
+                    <button class="l1-tab" data-tab="boost" onclick="switchMainTab('boost')">🚀 Boost & SMM</button>
+                    <button class="l1-tab" data-tab="accounts" onclick="switchMainTab('accounts')">🔑 Apps & Socials</button>
+                    <button class="l1-tab" data-tab="tools" onclick="switchMainTab('tools')">🛠️ Web Tools</button>
+                    <button class="l1-tab" data-tab="orders" onclick="switchMainTab('orders')">🧾 My Orders</button>
                 </div>
 
-                <!-- BARIS SUB-TAB DI DALAM TAB (LEVEL 2 — DINAMIS SESUAI TAB UTAMA) -->
-                <div class="sub-tabs-container" id="subTabsBar"></div>
+                <!-- LEVEL 2 SUB-TABS (DYNAMIC NESTED TABS INSIDE EACH MAIN TAB) -->
+                <div class="level2-subtabs" id="subTabsBar"></div>
 
-                <!-- AREA SUB-VIEW LEVEL 3 (MUNCUL SAAT KLIK TAHUN GITHUB ATAU PAKET TERTENTU DI DALAM TAB) -->
-                <div id="nestedSubView" style="display:none;"></div>
+                <!-- LEVEL 3 IN-PAGE VAULT DRAWER (OPENS WHEN INSPECTING SPECIFIC GITHUB YEAR ACCOUNTS) -->
+                <div id="nestedVaultDrawer" style="display:none;"></div>
 
-                <!-- GRID DAFTAR PRODUK -->
-                <div class="product-list-grid" id="mainProductGrid"></div>
-
-                <!-- FOOTER ALA POSTER BRILLIANT DIGITAL -->
-                <div class="poster-header" style="margin-top:28px;text-align:center;">
-                    <button class="btn-brutal primary" style="width:100%;max-width:340px;font-size:1rem;padding:14px 20px;margin-bottom:12px;" onclick="openCartModal()">
-                        🛒 ORDER SEKARANG (CHECKOUT WEB)
-                    </button>
-                    <div style="font-family:'Space Grotesk',sans-serif;font-size:1.25rem;font-weight:900;">
-                        xianbee-tech.store
-                    </div>
-                    <div style="font-size:0.82rem;font-weight:700;color:var(--text-muted);margin-top:4px;">
-                        Transaksi Otomatis di Website atau via Bot <b>@XianBeeTechStore_Bot</b>
-                    </div>
-                </div>
+                <!-- PRODUCT CATALOG / TOOL VIEWPORT -->
+                <div class="catalog-grid" id="catalogViewport"></div>
             </div>
         </div>
 
-        <!-- 📱 BOTTOM NAVIGATION (MOBILE) -->
-        <nav class="bottom-nav">
-            <button class="bnav-btn active" data-tab="best" onclick="switchTab('best')">
-                <span class="bnav-icon">🔥</span>
-                <span>Terlaris</span>
+        <!-- 📱 MOBILE BOTTOM NAVIGATION -->
+        <nav class="mobile-nav">
+            <button class="mnav-item active" data-tab="featured" onclick="switchMainTab('featured')">
+                <span style="font-size:1.15rem;">🔥</span>
+                <span>Featured</span>
             </button>
-            <button class="bnav-btn" data-tab="github" onclick="switchTab('github')">
-                <span class="bnav-icon">🐙</span>
+            <button class="mnav-item" data-tab="github" onclick="switchMainTab('github')">
+                <span style="font-size:1.15rem;">🐙</span>
                 <span>GitHub</span>
             </button>
-            <button class="bnav-btn" data-tab="pro" onclick="switchTab('pro')">
-                <span class="bnav-icon">👑</span>
-                <span>Pro Apps</span>
-            </button>
-            <button class="bnav-btn" data-tab="smm" onclick="switchTab('smm')">
-                <span class="bnav-icon">🚀</span>
+            <button class="mnav-item" data-tab="boost" onclick="switchMainTab('boost')">
+                <span style="font-size:1.15rem;">🚀</span>
                 <span>Boost</span>
             </button>
-            <button class="bnav-btn" data-tab="orders" onclick="switchTab('orders')">
-                <span class="bnav-icon">🧾</span>
-                <span>Pesanan</span>
+            <button class="mnav-item" data-tab="accounts" onclick="switchMainTab('accounts')">
+                <span style="font-size:1.15rem;">🔑</span>
+                <span>Accounts</span>
+            </button>
+            <button class="mnav-item" data-tab="orders" onclick="switchMainTab('orders')">
+                <span style="font-size:1.15rem;">🧾</span>
+                <span>Orders</span>
             </button>
         </nav>
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 1: KONFIGURASI ORDER LANGSUNG DI WEB
+         🪟 MODAL 1: IN-WEB PRODUCT CONFIGURATOR
          ========================================================= -->
-    <div class="modal-overlay" id="itemOrderModal">
-        <div class="modal-card">
+    <div class="modal-backdrop" id="configModal">
+        <div class="modal-window">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <span class="poster-tag" style="margin:0;" id="modItemBadge">INSTANT ORDER</span>
-                <button class="ctrl-btn" onclick="closeModal('itemOrderModal')">✕</button>
+                <span class="card-tag" id="cfgBadge" style="margin:0;">CONFIGURE ORDER</span>
+                <button class="top-pill" onclick="closeModal('configModal')">✕</button>
             </div>
-            <h2 style="margin:0 0 6px 0;font-size:1.25rem;font-weight:900;" id="modItemTitle">Nama Produk</h2>
-            <p style="margin:0 0 16px 0;font-size:0.8rem;color:var(--text-muted);font-weight:600;" id="modItemDesc"></p>
+            <h3 style="margin:0 0 6px 0;font-size:1.2rem;" id="cfgTitle">Product Name</h3>
+            <p style="margin:0 0 16px 0;font-size:0.82rem;color:var(--text-secondary);" id="cfgDesc"></p>
 
-            <!-- PILIHAN VARIAN / DURASI / TRACK SPEED DI DALAM MODAL -->
-            <div class="form-group" id="modVariantGroup" style="display:none;">
-                <label>Pilih Varian / Kecepatan:</label>
-                <div class="sub-tabs-container" id="modVariantPills" style="margin-bottom:0;"></div>
-            </div>
-
-            <div class="form-group" id="modTargetGroup">
-                <label id="modTargetLabel">Masukkan Email / Username / Link Target:</label>
-                <input type="text" class="form-control" id="modTargetInput" placeholder="Contoh: email@gmail.com atau https://github.com/username">
-                <div id="modGithubPreview" style="display:none;margin-top:8px;padding:10px;border:2px solid var(--border-color);border-radius:8px;background:var(--soft-surface);font-size:0.78rem;font-weight:700;"></div>
+            <!-- Nested Speed/Variant Tabs inside Modal -->
+            <div class="field-group" id="cfgVariantBox" style="display:none;">
+                <label>Select Service Tier / Speed:</label>
+                <div class="level2-subtabs" id="cfgVariantPills" style="margin-bottom:0;"></div>
             </div>
 
-            <div class="form-group" id="modQtyGroup" style="display:none;">
-                <label>Jumlah Unit (Minimal 10):</label>
-                <input type="number" class="form-control" id="modQtyInput" value="100" min="10" oninput="recalcModalPrice()">
+            <div class="field-group">
+                <label id="cfgTargetLabel">Target Username / Repository Link / Email:</label>
+                <input type="text" class="field-input" id="cfgTargetInput" placeholder="e.g. https://github.com/username or email@domain.com">
+                <div id="cfgLivePreview" style="display:none;margin-top:8px;padding:10px;border-radius:10px;background:var(--bg-soft);border:1px solid var(--border-focus);font-size:0.78rem;"></div>
             </div>
 
-            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--soft-surface);border:var(--border-width) solid var(--border-color);padding:12px 14px;border-radius:8px;margin-bottom:16px;">
-                <span style="font-weight:800;font-size:0.85rem;">Total Harga:</span>
-                <span class="pink-price-box" id="modTotalPrice">Rp 0</span>
+            <div class="field-group" id="cfgQtyBox" style="display:none;">
+                <label>Quantity (Min 10 Units • 5% Off for 200+ Units):</label>
+                <input type="number" class="field-input" id="cfgQtyInput" value="100" min="10" oninput="updateCfgPrice()">
+            </div>
+
+            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-soft);border:1px solid var(--border-subtle);padding:12px 16px;border-radius:12px;margin-bottom:18px;">
+                <span style="font-size:0.84rem;font-weight:700;color:var(--text-secondary);">Total Payable:</span>
+                <span class="price-badge" id="cfgTotalPrice">$0.00</span>
             </div>
 
             <div style="display:flex;gap:10px;">
-                <button class="btn-brutal secondary" onclick="addModalItemToCart()">🛒 +Keranjang</button>
-                <button class="btn-brutal primary" onclick="buyNowDirect()">⚡ Beli Sekarang</button>
+                <button class="btn-action secondary" onclick="confirmCfgToCart(false)">🛒 Add to Cart</button>
+                <button class="btn-action primary" onclick="confirmCfgToCart(true)">⚡ Buy Now</button>
             </div>
         </div>
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 2: KERANJANG & CHECKOUT PEMBAYARAN MANDIRI DI WEB
+         🪟 MODAL 2: SHOPPING CART & DIRECT WEB CHECKOUT
          ========================================================= -->
-    <div class="modal-overlay" id="cartCheckoutModal">
-        <div class="modal-card">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <span class="poster-tag" style="margin:0;">🛒 KERANJANG & CHECKOUT WEB</span>
-                <button class="ctrl-btn" onclick="closeModal('cartCheckoutModal')">✕</button>
+    <div class="modal-backdrop" id="cartModal">
+        <div class="modal-window">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <h3 style="margin:0;font-size:1.15rem;">🛒 Shopping Cart & Web Checkout</h3>
+                <button class="top-pill" onclick="closeModal('cartModal')">✕</button>
             </div>
 
-            <div id="cartListContainer" style="max-height:210px;overflow-y:auto;margin-bottom:14px;"></div>
+            <div id="cartItemsList" style="max-height:220px;overflow-y:auto;margin-bottom:16px;"></div>
 
-            <div class="form-group">
-                <label>Username Telegram / WhatsApp Anda (Untuk Konfirmasi & Garansi):</label>
-                <input type="text" class="form-control" id="buyerContactInput" placeholder="Contoh: @username atau 08123456789">
+            <div class="field-group">
+                <label>Your Telegram @Username or Email (For Delivery & Order Updates):</label>
+                <input type="text" class="field-input" id="checkoutContact" placeholder="e.g. @username or client@email.com">
             </div>
 
-            <div class="form-group">
-                <label>Pilih Metode Pembayaran Instant:</label>
-                <div class="pay-grid" id="payMethodGrid">
-                    <div class="pay-option selected" data-pay="QRIS / E-Wallet" onclick="selectPayMethod(this)">📱 QRIS / DANA / GoPay</div>
-                    <div class="pay-option" data-pay="SeaBank / Transfer Bank" onclick="selectPayMethod(this)">🏦 SeaBank / Bank</div>
-                    <div class="pay-option" data-pay="OxaPay Crypto (USDT)" onclick="selectPayMethod(this)">🪙 Crypto USDT</div>
-                    <div class="pay-option" data-pay="Binance Pay" onclick="selectPayMethod(this)">🔶 Binance Pay</div>
+            <div class="field-group">
+                <label>Promo / Discount Code (Optional):</label>
+                <div style="display:flex;gap:8px;">
+                    <input type="text" class="field-input" id="promoInput" placeholder="Enter promo code (e.g. XIANBEE5)">
+                    <button class="top-pill" onclick="applyPromoCode()">Apply</button>
                 </div>
             </div>
 
-            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--soft-surface);border:var(--border-width) solid var(--border-color);padding:12px 14px;border-radius:8px;margin-bottom:16px;">
-                <span style="font-weight:800;font-size:0.86rem;">Total Tagihan:</span>
-                <span class="pink-price-box" id="cartGrandTotal">Rp 0</span>
+            <div class="field-group">
+                <label>Select Payment Gateway:</label>
+                <div class="gateway-grid" id="gatewaySelector">
+                    <div class="gateway-card selected" data-gw="USDT Crypto (BEP20 / TRC20)" onclick="selectGateway(this)">🪙 USDT Crypto</div>
+                    <div class="gateway-card" data-gw="Binance Pay" onclick="selectGateway(this)">🔶 Binance Pay</div>
+                    <div class="gateway-card" data-gw="QRIS / E-Wallet (DANA/OVO/GoPay)" onclick="selectGateway(this)">📱 QRIS / E-Wallet</div>
+                    <div class="gateway-card" data-gw="Bank Transfer (SeaBank)" onclick="selectGateway(this)">🏦 Bank Transfer</div>
+                </div>
             </div>
 
-            <div style="display:flex;gap:10px;">
-                <button class="btn-brutal yellow" onclick="createWebInvoice()">🧾 Buat Invoice di Web</button>
-                <button class="btn-brutal primary" onclick="checkoutViaTelegramBot()">🤖 Proses via Bot</button>
+            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-soft);border:1px solid var(--border-subtle);padding:12px 16px;border-radius:12px;margin-bottom:18px;">
+                <span style="font-size:0.86rem;font-weight:700;">Grand Total:</span>
+                <span class="price-badge" id="cartTotalDisplay">$0.00</span>
             </div>
+
+            <button class="btn-action primary" style="width:100%;padding:13px;" onclick="generateStandaloneInvoice()">
+                🧾 Generate Official Web Invoice
+            </button>
         </div>
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 3: INVOICE PEMBAYARAN RESMI DI DALAM WEB
+         🪟 MODAL 3: STANDALONE PAYMENT INVOICE
          ========================================================= -->
-    <div class="modal-overlay" id="invoiceResultModal">
-        <div class="modal-card" id="invoiceResultBody"></div>
+    <div class="modal-backdrop" id="invoiceModal">
+        <div class="modal-window" id="invoiceModalBody"></div>
+    </div>
+
+    <!-- =========================================================
+         🪟 MODAL 4: MINIMALIST ADMIN SETTINGS
+         ========================================================= -->
+    <div class="modal-backdrop" id="adminModal">
+        <div class="modal-window">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                <span class="card-tag" style="color:var(--warning);">🔒 ADMIN DIAGNOSTICS</span>
+                <button class="top-pill" onclick="closeModal('adminModal')">✕</button>
+            </div>
+            <h3 style="margin:0 0 8px 0;font-size:1.1rem;">Storefront Sync Status</h3>
+            <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">This web store automatically fetches live GitHub inventory from your Google Sheet webhook.</p>
+            <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:12px;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;margin-bottom:14px;">
+                <div>🟢 Webhook Status: CONNECTED</div>
+                <div id="adminSyncCount" style="margin-top:4px;">📦 Synced Categories: Checking...</div>
+            </div>
+            <button class="btn-action primary" style="width:100%;" onclick="fetchLiveSheetStock(true)">🔄 Force Refresh Inventory from Google Sheet</button>
+        </div>
     </div>
 
     <script>
-        const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
-        if (tg) { try { tg.expand(); tg.ready(); } catch(e){} }
-
-        // URL Webhook Google Sheet dari XianBee-TechStore_4.py untuk narik stok akun GitHub live!
+        // =========================================================
+        // ⚙️ CORE CONFIGURATION & STATE
+        // =========================================================
         const GSHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwakQrIn6zsKZLyvLnIklk6cXNRVOHSgsD3UNM5ApQrRVXpLXxT6X4tW1pMQIvGdnlx/exec";
-        const IDR_RATE = 16000;
+        const EXCHANGE_RATE_IDR = 16000;
 
-        let currentCurrency = localStorage.getItem('xb_curr') || 'IDR'; // Default IDR seperti gambar referensi
-        let currentTheme = localStorage.getItem('xb_theme_v2') || 'brutal';
-        let activeMainTab = 'best';
+        let currentTheme = localStorage.getItem('xb_ent_theme') || 'obsidian';
+        let currentCurrency = localStorage.getItem('xb_ent_curr') || 'USD';
+        let activeMainTab = 'featured';
         let activeSubTab = 'ALL';
-        let liveGithubStock = {}; // Menyimpan stok akun asli dari Google Sheet
+        let liveSheetInventory = {};
+        let cart = [];
+        let discountPercent = 0;
+        let selectedGateway = 'USDT Crypto (BEP20 / TRC20)';
 
-        // =========================================================
-        // 💰 FORMATTER HARGA (OTOMATIS IDR Rp ⇄ USDT $)
-        // =========================================================
-        function fmtPrice(usdAmount) {
-            const usd = parseFloat(usdAmount) || 0;
+        function applyTheme(theme) {
+            currentTheme = theme;
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem('xb_ent_theme', theme);
+            document.getElementById('themeIcon').innerText = theme === 'obsidian' ? '☀️' : '🌌';
+            document.getElementById('themeName').innerText = theme === 'obsidian' ? 'Light' : 'Dark';
+        }
+        function toggleTheme() {
+            applyTheme(currentTheme === 'obsidian' ? 'platinum' : 'obsidian');
+        }
+        applyTheme(currentTheme);
+
+        function formatMoney(usdVal) {
+            const num = parseFloat(usdVal) || 0;
             if (currentCurrency === 'IDR') {
-                const idr = Math.round(usd * IDR_RATE);
-                return 'Rp' + idr.toLocaleString('id-ID');
+                return 'Rp ' + Math.round(num * EXCHANGE_RATE_IDR).toLocaleString('id-ID');
             }
-            return '$' + usd.toFixed(2);
+            return '$' + num.toFixed(2);
         }
 
         function toggleCurrency() {
-            currentCurrency = (currentCurrency === 'IDR') ? 'USD' : 'IDR';
-            localStorage.setItem('xb_curr', currentCurrency);
-            document.getElementById('currLabel').innerText = (currentCurrency === 'IDR') ? 'IDR (Rp)' : 'USDT ($)';
-            renderActiveView();
-            showToast(`Mata uang diubah ke ${currentCurrency}`);
+            currentCurrency = currentCurrency === 'USD' ? 'IDR' : 'USD';
+            localStorage.setItem('xb_ent_curr', currentCurrency);
+            document.getElementById('currencyLabel').innerText = currentCurrency === 'USD' ? 'USD ($)' : 'IDR (Rp)';
+            renderViewport();
+            showToast(`Currency switched to ${currentCurrency}`);
         }
-
-        function cycleTheme() {
-            const order = ['brutal', 'nebula', 'platinum'];
-            const idx = (order.indexOf(currentTheme) + 1) % order.length;
-            currentTheme = order[idx];
-            document.documentElement.setAttribute('data-theme', currentTheme);
-            localStorage.setItem('xb_theme_v2', currentTheme);
-            const names = { brutal: '🎨 Brutal', nebula: '🌌 Nebula', platinum: '☀️ Light' };
-            document.getElementById('themeText').innerText = names[currentTheme].split(' ')[1];
-            document.getElementById('themeIcon').innerText = names[currentTheme].split(' ')[0];
-            showToast(`Tema: ${names[currentTheme]}`);
-        }
-
-        // Set initial state
-        document.documentElement.setAttribute('data-theme', currentTheme);
-        document.getElementById('currLabel').innerText = (currentCurrency === 'IDR') ? 'IDR (Rp)' : 'USDT ($)';
+        document.getElementById('currencyLabel').innerText = currentCurrency === 'USD' ? 'USD ($)' : 'IDR (Rp)';
 
         // =========================================================
-        // 📦 DATABASE KATALOG LENGKAP (TERMASUK PRODUK TERLARIS GAMBAR REFERENSI)
+        // 📦 COMPLETE PRODUCT & SERVICE DATABASE (100% ENGLISH)
         // =========================================================
-        const CATALOG_PRODUCTS = [
-            // --- PRODUK TERLARIS & PRO APPS (PERSIS REFERENSI GAMBAR + KATALOG XIANBEE) ---
-            { id: 'gemini_18m', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '🔥 PALING DICARI', title: 'Gemini Pro / Advanced 18 Bulan', desc: 'Akses Google AI Ultra + Cloud Storage 2TB • Garansi Full', usd: 1.925, needTarget: 'Masukkan Email Google Anda:' },
-            { id: 'muse_ai', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '⚡ STOK READY', title: 'Muse AI Pro Subscription', desc: 'Full Akses AI Generator & Creative Tools • Aktivasi Instan', usd: 1.13125, needTarget: 'Masukkan Email Aktif Anda:' },
-            { id: 'duolingo_12m', tab: 'pro', sub: 'Edukasi & Bahasa', bestSeller: true, badge: '🔥 TERLARIS', title: 'Super Duolingo 12 Bulan (1 Tahun)', desc: 'Bebas Iklan, Unlimited Hearts & Personalized Practice', usd: 1.3125, needTarget: 'Masukkan Username / Email Duolingo:' },
-            { id: 'notion_12m', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '💼 WORKSPACE PRO', title: 'Notion Plus 12 Bulan (1 Tahun)', desc: 'Unlimited Blocks, File Uploads & Workspace Collaboration', usd: 1.8125, needTarget: 'Masukkan Email Akun Notion Anda:' },
-            { id: 'office_365_1y', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '💎 HARGA PROMO', title: 'Microsoft Office 365 Plus 1 Tahun', desc: 'Word, Excel, PowerPoint, Outlook + 1TB OneDrive Cloud', usd: 0.6125, needTarget: 'Masukkan Email / Catatan Order:' },
-            { id: 'canva_1y', tab: 'pro', sub: 'Desain & Video', bestSeller: true, badge: '🎨 DESAINER WAJIB', title: 'Canva Pro 1 Tahun (Official Invite)', desc: 'Akses Semua Template Premium, Magic Resize & Brand Kit', usd: 5.00, needTarget: 'Masukkan Email Canva Free Anda:' },
-            { id: 'capcut_1m', tab: 'pro', sub: 'Desain & Video', bestSeller: true, badge: '✂️ EDITOR PRO', title: 'CapCut Pro 1 Bulan (Private Account)', desc: 'Full Efek Pro, Cloud Backup & Auto Captions Tanpa Watermark', usd: 3.00, needTarget: 'Masukkan Email Aktif Anda:' },
-            { id: 'chatgpt_1m', tab: 'pro', sub: 'AI & Produktivitas', bestSeller: true, badge: '🤖 OPEN-AI PLUS', title: 'ChatGPT Plus 1 Bulan (GPT-4o)', desc: 'Akses Penuh Model Tercepat, DALL-E & Analisis File', usd: 15.00, needTarget: 'Masukkan Email Anda:' },
-
-            // --- AGED SOCIAL MEDIA, EMAIL & CRYPTO EXCHANGE ---
-            { id: 'tw_aged', tab: 'social', sub: 'Twitter (X)', bestSeller: true, badge: '🐦 AGED X', title: 'Twitter (X) Aged Account (2011–2019)', desc: 'Akun Tua Trust Score Tinggi + 2FA & Email Recovery', usd: 15.00, needTarget: 'Catatan Tahun / Spesifikasi (Opsional):' },
-            { id: 'tw_crypto', tab: 'social', sub: 'Twitter (X)', bestSeller: false, badge: '🪙 WEB3 READY', title: 'Twitter (X) Crypto & Airdrop Ready', desc: 'Sudah Di-warmup & Aman untuk Kampanye Web3', usd: 30.00, needTarget: 'Catatan Order (Opsional):' },
-            { id: 'ig_aged', tab: 'social', sub: 'Instagram & TikTok', bestSeller: false, badge: '📸 AGED IG', title: 'Instagram Aged Account (2013–2020)', desc: 'Akun Lawas Tahan Banting untuk Marketing / Bisnis', usd: 15.00, needTarget: 'Catatan Order (Opsional):' },
-            { id: 'tt_foll', tab: 'social', sub: 'Instagram & TikTok', bestSeller: false, badge: '🎵 TIKTOK', title: 'TikTok High Followers Account', desc: 'Siap Live & TikTok Affiliate • Follower Organik', usd: 25.00, needTarget: 'Catatan Order (Opsional):' },
-            { id: 'dc_aged', tab: 'social', sub: 'Discord & Telegram', bestSeller: false, badge: '🎮 DISCORD', title: 'Discord Aged Account (2016–2021)', desc: 'Full Token & Email • Anti-Captcha untuk Whitelist/Server', usd: 15.00, needTarget: 'Catatan Order (Opsional):' },
-            { id: 'tg_aged', tab: 'social', sub: 'Discord & Telegram', bestSeller: false, badge: '✈️ TELEGRAM', title: 'Telegram Aged Account (TData / Session)', desc: 'Akun Tua Tahan Limit & Broadcast', usd: 15.00, needTarget: 'Catatan Order (Opsional):' },
-            { id: 'exc_binance', tab: 'social', sub: 'Crypto Exchange', bestSeller: false, badge: '🔶 BINANCE', title: 'Binance Aged Verified Account', desc: 'Akun Exchange Terverifikasi siap Spot & Futures', usd: 35.00, needTarget: 'Catatan Order (Opsional):' },
-            { id: 'exc_okx', tab: 'social', sub: 'Crypto Exchange', bestSeller: false, badge: '⚫ OKX', title: 'OKX Aged Verified Account', desc: 'Limit Tinggi & Siap Transaksi Web3', usd: 35.00, needTarget: 'Catatan Order (Opsional):' },
-            { id: 'exc_mexc', tab: 'social', sub: 'Crypto Exchange', bestSeller: false, badge: '🟢 MEXC', title: 'MEXC Aged Account (No KYC / KYC)', desc: 'Bebas Trading Altcoin & Futures', usd: 25.00, needTarget: 'Ketik No-KYC atau With-KYC:' },
-            { id: 'mail_pack', tab: 'social', sub: 'Email Tua', bestSeller: false, badge: '📧 EMAIL', title: 'Aged Gmail / Outlook / Protonmail', desc: 'Email Tua Terverifikasi Anti- Nonaktif', usd: 5.00, needTarget: 'Pilih: Gmail / Outlook / Protonmail:' },
-
-            // --- GITHUB BOOST & SMM SERVICES ---
-            { id: 'gh_followers', tab: 'smm', sub: 'GitHub Boost', bestSeller: true, isBoost: true, svcKey: 'followers', badge: '🐙 GITHUB BOOST', title: 'Jasa Tambah GitHub Followers (Auto-Track)', desc: 'Follower GitHub Permanen + Live Progress Tracker Otomatis', usd: 0.50, needTarget: 'Masukkan Username / Link Profil GitHub:' },
-            { id: 'gh_stars', tab: 'smm', sub: 'GitHub Boost', bestSeller: true, isBoost: true, svcKey: 'stars', badge: '⭐ REPO STARS', title: 'Jasa Tambah GitHub Repository Stars', desc: 'Naikkan Reputasi & Trending Repo GitHub Anda', usd: 0.35, needTarget: 'Masukkan Link Repository (owner/repo):' },
-            { id: 'gh_forks', tab: 'smm', sub: 'GitHub Boost', bestSeller: false, isBoost: true, svcKey: 'forks', badge: '⎇ REPO FORKS', title: 'Jasa Tambah GitHub Repository Forks', desc: 'Forks Akun Developer Aktif + Live Tracker', usd: 0.40, needTarget: 'Masukkan Link Repository (owner/repo):' },
-            { id: 'gh_watch', tab: 'smm', sub: 'GitHub Boost', bestSeller: false, isBoost: true, svcKey: 'watch', badge: '👁️ REPO WATCH', title: 'Jasa Tambah GitHub Watchers', desc: 'Tambah Subscribers/Watchers Repository', usd: 0.30, needTarget: 'Masukkan Link Repository (owner/repo):' },
-            { id: 'smm_ig', tab: 'smm', sub: 'Sosmed Boost', bestSeller: false, isBoost: true, svcKey: 'ig_svc', badge: '📸 INSTAGRAM', title: 'Instagram Followers / Likes / Views Boost', desc: 'Proses Instan Server SMM High-Speed', usd: 0.15, needTarget: 'Masukkan Link Profil / Postingan Instagram:' },
-            { id: 'smm_tt', tab: 'smm', sub: 'Sosmed Boost', bestSeller: false, isBoost: true, svcKey: 'tiktok_svc', badge: '🎵 TIKTOK', title: 'TikTok Followers / Views / Likes Boost', desc: 'FYP Booster & Penambah Interaksi Video', usd: 0.15, needTarget: 'Masukkan Link Video / Profil TikTok:' },
-            { id: 'smm_web', tab: 'smm', sub: 'Web & Crypto Traffic', bestSeller: false, isBoost: true, svcKey: 'traffic', badge: '🌐 WEB TRAFFIC', title: 'Organic Website Traffic (Global / ID)', desc: 'Trafik Pengunjung Asli untuk SEO & Analytics', usd: 0.05, needTarget: 'Masukkan URL Website Anda:' },
-            { id: 'smm_cmc', tab: 'smm', sub: 'Web & Crypto Traffic', bestSeller: false, isBoost: true, svcKey: 'cmc', badge: '🪙 COINMARKETCAP', title: 'CoinMarketCap Watchlist & Upvotes', desc: 'Boost Sentimen Positif Token/Koin Web3 Anda', usd: 0.25, needTarget: 'Masukkan Link Token CoinMarketCap:' }
+        const GITHUB_VAULT_YEARS = [
+            { yr: 'Arctic', icon: '❄️', tag: 'RARE BADGE', title: 'GitHub Arctic Code Vault Contributor', desc: 'Authentic 2020 Arctic Vault Badge + 6 Achievements • Full Credentials', usd: 25.00 },
+            { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges Account', desc: 'Pre-unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usd: 10.00 },
+            { yr: 'Followers', icon: '👥', tag: 'HIGH FOLLOWERS', title: 'GitHub High Followers Account (50+ Flw)', desc: 'Aged GitHub profile pre-warmed with 50+ organic followers', usd: 10.00 },
+            { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Developer Pack', desc: 'Verified developer pack with cloud & pro tool benefits', usd: 5.00 },
+            { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub High Green Contributions', desc: 'Full green commit history matrix & active repositories', usd: 10.00 },
+            { yr: '2011', icon: '11', tag: 'VINTAGE 2011', title: 'Aged GitHub Account — Year 2011', desc: '15-Year-Old Vintage Account • Maximum Trust Score + Full 2FA', usd: 30.00 },
+            { yr: '2012', icon: '12', tag: 'VINTAGE 2012', title: 'Aged GitHub Account — Year 2012', desc: '14-Year-Old Vintage Account • Anti-Flagged + Email & 2FA', usd: 28.00 },
+            { yr: '2013', icon: '13', tag: 'VINTAGE 2013', title: 'Aged GitHub Account — Year 2013', desc: '13-Year-Old Vintage Account • Ideal for Web3 & Open Source', usd: 26.00 },
+            { yr: '2014', icon: '14', tag: 'VINTAGE 2014', title: 'Aged GitHub Account — Year 2014', desc: '12-Year-Old Aged Account • Verified Healthy (200 OK)', usd: 24.00 },
+            { yr: '2015', icon: '15', tag: 'VINTAGE 2015', title: 'Aged GitHub Account — Year 2015', desc: '11-Year-Old Aged Account • Clean Commit History + 2FA', usd: 22.00 },
+            { yr: '2016', icon: '16', tag: 'AGED 2016', title: 'Aged GitHub Account — Year 2016', desc: '10-Year-Old Aged Account • High Authority Profile', usd: 20.00 },
+            { yr: '2017', icon: '17', tag: 'AGED 2017', title: 'Aged GitHub Account — Year 2017', desc: '9-Year-Old Aged Account • Full Credentials & Recovery', usd: 18.00 },
+            { yr: '2018', icon: '18', tag: 'AGED 2018', title: 'Aged GitHub Account — Year 2018', desc: '8-Year-Old Aged Account • Ready for Organization & CI/CD', usd: 16.00 },
+            { yr: '2019', icon: '19', tag: 'AGED 2019', title: 'Aged GitHub Account — Year 2019', desc: '7-Year-Old Aged Account • High Standing & 2FA Included', usd: 15.00 },
+            { yr: '2020', icon: '20', tag: 'AGED 2020', title: 'Aged GitHub Account — Year 2020', desc: '6-Year-Old Aged Account • Verified Public Visibility', usd: 12.00 },
+            { yr: '2021', icon: '21', tag: 'WARMED 2021', title: 'Aged GitHub Account — Year 2021', desc: '5-Year-Old Account • Clean & Ready for Development', usd: 10.00 },
+            { yr: '2022', icon: '22', tag: 'WARMED 2022', title: 'Aged GitHub Account — Year 2022', desc: '4-Year-Old Account • Pre-warmed with Public Repos', usd: 8.50 },
+            { yr: '2023', icon: '23', tag: 'WARMED 2023', title: 'Aged GitHub Account — Year 2023', desc: '3-Year-Old Account • Full Login + 2FA Authenticator', usd: 7.50 },
+            { yr: '2024', icon: '24', tag: 'WARMED 2024', title: 'Aged GitHub Account — Year 2024', desc: '2-Year-Old Account • High Availability Stock', usd: 6.50 },
+            { yr: '2025', icon: '25', tag: 'WARMED 2025', title: 'Warmed GitHub Account — Year 2025', desc: '1-Year-Old Account • Pre-populated with Code Repos', usd: 5.50 },
+            { yr: '2026', icon: '26', tag: 'BEST VALUE', title: 'Fresh Warmed GitHub Account — Year 2026', desc: 'Warmed Account with Public Repositories & Clean IP History', usd: 4.50 }
         ];
 
-        const GITHUB_YEARS = [
-            { yr: 'Arctic', title: 'GitHub Arctic Code Vault Badge', badge: '❄️ RARE BADGE', usd: 25.0, desc: 'Akun Langka Kontributor Arctic Vault 2020 + 6 Achievements' },
-            { yr: '2011', title: 'Aged GitHub Account — Tahun 2011', badge: '🏛️ VINTAGE 2011', usd: 30.0, desc: 'Akun GitHub 15 Tahun Silam • Kredensial Lengkap + 2FA' },
-            { yr: '2012', title: 'Aged GitHub Account — Tahun 2012', badge: '🏛️ VINTAGE 2012', usd: 28.0, desc: 'Akun GitHub Berumur 14 Tahun • High Trust Score' },
-            { yr: '2013', title: 'Aged GitHub Account — Tahun 2013', badge: '🏛️ VINTAGE 2013', usd: 26.0, desc: 'Akun GitHub Berumur 13 Tahun • Siap Developer & Web3' },
-            { yr: '2014', title: 'Aged GitHub Account — Tahun 2014', badge: '🏛️ VINTAGE 2014', usd: 24.0, desc: 'Akun GitHub Berumur 12 Tahun • Clean History' },
-            { yr: '2015', title: 'Aged GitHub Account — Tahun 2015', badge: '🏛️ VINTAGE 2015', usd: 22.0, desc: 'Akun GitHub Berumur 11 Tahun • Anti-Shadowban' },
-            { yr: '2016', title: 'Aged GitHub Account — Tahun 2016', badge: '🛡️ AGED 2016', usd: 20.0, desc: 'Akun GitHub 10 Tahun • Full Akses Email & 2FA' },
-            { yr: '2017', title: 'Aged GitHub Account — Tahun 2017', badge: '🛡️ AGED 2017', usd: 18.0, desc: 'Akun GitHub Tahun 2017 • Cocok untuk Airdrop & Dev' },
-            { yr: '2018', title: 'Aged GitHub Account — Tahun 2018', badge: '🛡️ AGED 2018', usd: 16.0, desc: 'Akun GitHub Tahun 2018 • Terverifikasi Sehat (200 OK)' },
-            { yr: '2019', title: 'Aged GitHub Account — Tahun 2019', badge: '🛡️ AGED 2019', usd: 15.0, desc: 'Akun GitHub Tahun 2019 • Full 2FA Authenticator' },
-            { yr: '2020', title: 'Aged GitHub Account — Tahun 2020', badge: '🛡️ AGED 2020', usd: 12.0, desc: 'Akun GitHub Tahun 2020 • Siap Pakai' },
-            { yr: '2021', title: 'Aged GitHub Account — Tahun 2021', badge: '✨ WARMED 2021', usd: 10.0, desc: 'Akun GitHub Tahun 2021 • Aman & Terawat' },
-            { yr: '2022', title: 'Aged GitHub Account — Tahun 2022', badge: '✨ WARMED 2022', usd: 8.5, desc: 'Akun GitHub Tahun 2022 • Full Kredensial' },
-            { yr: '2023', title: 'Aged GitHub Account — Tahun 2023', badge: '✨ WARMED 2023', usd: 7.5, desc: 'Akun GitHub Tahun 2023 • Harga Ekonomis' },
-            { yr: '2024', title: 'Aged GitHub Account — Tahun 2024', badge: '✨ WARMED 2024', usd: 6.5, desc: 'Akun GitHub Tahun 2024 • Ready Banyak Stok' },
-            { yr: '2025', title: 'Aged GitHub Account — Tahun 2025', badge: '✨ WARMED 2025', usd: 5.5, desc: 'Akun GitHub Tahun 2025 • Sudah Warmup' },
-            { yr: '2026', title: 'Fresh Warmed GitHub — Tahun 2026', badge: '🔥 BEST VALUE', usd: 4.5, desc: 'Stok Melimpah • Sudah Ada Repo & Aktivitas' }
+        const STORE_ITEMS = [
+            // --- GITHUB BOOST SERVICES ---
+            { id: 'gh_followers', main: 'boost', sub: 'GitHub Metrics', featured: true, isBoost: true, ghType: 'followers', icon: '👥', tag: 'AUTO-TRACKED', title: 'GitHub Profile Followers Boost', desc: 'Permanent developer followers with real-time progress tracking.', usd: 0.50, tiers: [{ name: 'Regular Track', p: 0.50 }, { name: 'Fast Track', p: 0.55 }, { name: 'Ultra Track', p: 0.60 }], prompt: 'Target GitHub Username or Profile Link:' },
+            { id: 'gh_stars', main: 'boost', sub: 'GitHub Metrics', featured: true, isBoost: true, ghType: 'stars', icon: '⭐', tag: 'TRENDING BOOST', title: 'GitHub Repository Stars Boost', desc: 'Increase repository credibility and GitHub search ranking.', usd: 0.35, tiers: [{ name: 'Regular Track', p: 0.35 }, { name: 'Fast Track', p: 0.40 }, { name: 'Ultra Track', p: 0.45 }], prompt: 'Target Repository (owner/repo or URL):' },
+            { id: 'gh_forks', main: 'boost', sub: 'GitHub Metrics', featured: true, isBoost: true, ghType: 'forks', icon: '⎇', tag: 'REPO FORKS', title: 'GitHub Repository Forks Boost', desc: 'Organic repository forks from aged developer profiles.', usd: 0.40, tiers: [{ name: 'Regular Track', p: 0.40 }, { name: 'Fast Track', p: 0.45 }, { name: 'Ultra Track', p: 0.50 }], prompt: 'Target Repository (owner/repo or URL):' },
+            { id: 'gh_watch', main: 'boost', sub: 'GitHub Metrics', featured: false, isBoost: true, ghType: 'watch', icon: '👁️', tag: 'WATCHERS', title: 'GitHub Repository Watchers Boost', desc: 'Add active subscribers/watchers to any public repository.', usd: 0.30, tiers: [{ name: 'Regular Track', p: 0.30 }, { name: 'Fast Track', p: 0.35 }, { name: 'Ultra Track', p: 0.40 }], prompt: 'Target Repository (owner/repo or URL):' },
+
+            // --- PRO APPS & AI SUBSCRIPTIONS ---
+            { id: 'app_chatgpt', main: 'accounts', sub: 'Pro & AI Apps', featured: true, icon: '🤖', tag: 'AI flagship', title: 'ChatGPT Plus (1 Month Subscription)', desc: 'Full access to GPT-4o, DALL-E, and advanced data analysis.', usd: 15.00, prompt: 'Your Registered Email Address:' },
+            { id: 'app_gemini', main: 'accounts', sub: 'Pro & AI Apps', featured: true, icon: '✨', tag: 'GOOGLE AI', title: 'Gemini Advanced (1 Month Subscription)', desc: 'Google Ultra AI model + 2TB Google One Cloud Storage.', usd: 15.00, prompt: 'Your Google Account Email:' },
+            { id: 'app_canva', main: 'accounts', sub: 'Pro & AI Apps', featured: true, icon: '🎨', tag: '1 YEAR PRO', title: 'Canva Pro (1 Year Official Invite)', desc: 'Unlock all premium templates, Brand Kit & Magic Studio on your email.', usd: 5.00, prompt: 'Your Canva Account Email:' },
+            { id: 'app_capcut', main: 'accounts', sub: 'Pro & AI Apps', featured: true, icon: '✂️', tag: 'PRIVATE PRO', title: 'CapCut Pro (1 Month Private Account)', desc: 'Full premium transitions, 4K export, and AI effects without watermark.', usd: 3.00, prompt: 'Your Email for Credential Delivery:' },
+
+            // --- CRYPTO EXCHANGES ---
+            { id: 'exc_binance', main: 'accounts', sub: 'Crypto Exchanges', featured: true, icon: '🔶', tag: 'EXCHANGE', title: 'Binance Aged Account (Verified / No-KYC)', desc: 'High-trust aged exchange account ready for Spot & Futures.', usd: 35.00, tiers: [{ name: 'With KYC ($35)', p: 35.00 }, { name: 'No KYC ($25)', p: 25.00 }], prompt: 'Order Notes / Delivery Email:' },
+            { id: 'exc_okx', main: 'accounts', sub: 'Crypto Exchanges', featured: false, icon: '⚫', tag: 'EXCHANGE', title: 'OKX Aged Account (Verified / No-KYC)', desc: 'Aged OKX account with high withdrawal limits & Web3 wallet.', usd: 35.00, tiers: [{ name: 'With KYC ($35)', p: 35.00 }, { name: 'No KYC ($25)', p: 25.00 }], prompt: 'Order Notes / Delivery Email:' },
+            { id: 'exc_mexc', main: 'accounts', sub: 'Crypto Exchanges', featured: false, icon: '🟢', tag: 'EXCHANGE', title: 'MEXC Global Aged Account', desc: 'Aged account ready for altcoin spot and perpetual futures.', usd: 25.00, tiers: [{ name: 'No KYC ($25)', p: 25.00 }, { name: 'With KYC ($35)', p: 35.00 }], prompt: 'Order Notes / Delivery Email:' },
+            { id: 'exc_bybit', main: 'accounts', sub: 'Crypto Exchanges', featured: false, icon: '🟡', tag: 'EXCHANGE', title: 'Bybit Aged Account (Verified / No-KYC)', desc: 'High-trust Bybit account with full security credentials.', usd: 35.00, tiers: [{ name: 'With KYC ($35)', p: 35.00 }, { name: 'No KYC ($25)', p: 25.00 }], prompt: 'Order Notes / Delivery Email:' },
+
+            // --- AGED SOCIAL MEDIA & EMAIL ACCOUNTS ---
+            { id: 'soc_tw', main: 'accounts', sub: 'Twitter (X)', featured: true, icon: '🐦', tag: 'AGED X', title: 'Twitter (X) Aged / Crypto Account', desc: 'Aged X account with full 2FA token and email recovery.', usd: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }, { name: 'Crypto Ready ($35)', p: 35.00 }], prompt: 'Preferred Tier Notes (Optional):' },
+            { id: 'soc_ig', main: 'accounts', sub: 'Instagram & TikTok', featured: false, icon: '📸', tag: 'AGED IG', title: 'Instagram Aged / High-Follower Account', desc: 'Aged Instagram account resistant to automation restrictions.', usd: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }], prompt: 'Order Notes (Optional):' },
+            { id: 'soc_tt', main: 'accounts', sub: 'Instagram & TikTok', featured: false, icon: '🎵', tag: 'TIKTOK', title: 'TikTok Aged / High-Follower Account', desc: 'Pre-warmed TikTok account ready for content & live streaming.', usd: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Followers ($25)', p: 25.00 }], prompt: 'Order Notes (Optional):' },
+            { id: 'soc_dc', main: 'accounts', sub: 'Discord & Telegram', featured: false, icon: '🎮', tag: 'DISCORD', title: 'Discord Aged Account (2016–2021)', desc: 'Includes auth token, email access, and 2FA secret key.', usd: 15.00, prompt: 'Order Notes (Optional):' },
+            { id: 'soc_tg', main: 'accounts', sub: 'Discord & Telegram', featured: false, icon: '✈️', tag: 'TELEGRAM', title: 'Telegram Aged Account / Aged Bot', desc: 'High-trust aged Telegram account with anti-ban history.', usd: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'Aged Bot Account ($20)', p: 20.00 }], prompt: 'Order Notes (Optional):' },
+            { id: 'soc_rd', main: 'accounts', sub: 'Reddit & Emails', featured: false, icon: '👽', tag: 'REDDIT', title: 'Reddit Aged / High-Karma Account', desc: 'Aged Reddit profile capable of posting in strict subreddits.', usd: 15.00, tiers: [{ name: 'Aged Account ($15)', p: 15.00 }, { name: 'High Karma ($25)', p: 25.00 }], prompt: 'Order Notes (Optional):' },
+            { id: 'soc_mail', main: 'accounts', sub: 'Reddit & Emails', featured: false, icon: '📧', tag: 'AGED EMAIL', title: 'Aged Email Account (Gmail / Outlook / Proton)', desc: 'Phone-verified aged email accounts for secure bindings.', usd: 5.00, tiers: [{ name: 'Gmail ($5)', p: 5.00 }, { name: 'Outlook ($5)', p: 5.00 }, { name: 'ProtonMail ($5)', p: 5.00 }], prompt: 'Preferred Provider:' },
+
+            // --- SMM & WEB3 TRAFFIC BOOST ---
+            { id: 'smm_ig', main: 'boost', sub: 'Social Media SMM', featured: false, isBoost: true, icon: '📸', tag: 'INSTAGRAM SMM', title: 'Instagram Followers / Likes / Views', desc: 'High-retention Instagram engagement delivery.', usd: 0.15, prompt: 'Target Instagram Profile or Post URL:' },
+            { id: 'smm_tt', main: 'boost', sub: 'Social Media SMM', featured: false, isBoost: true, icon: '🎵', tag: 'TIKTOK SMM', title: 'TikTok Followers / Views / Likes', desc: 'Instant TikTok engagement and viral reach boost.', usd: 0.15, prompt: 'Target TikTok Video or Profile Link:' },
+            { id: 'smm_tg', main: 'boost', sub: 'Social Media SMM', featured: false, isBoost: true, icon: '✈️', tag: 'TELEGRAM SMM', title: 'Telegram Channel Members & Post Views', desc: 'Boost your crypto or community channel authority.', usd: 0.15, prompt: 'Target Telegram Channel Link:' },
+            { id: 'smm_dc', main: 'boost', sub: 'Streaming & Gaming', featured: false, isBoost: true, icon: '🎮', tag: 'DISCORD SMM', title: 'Discord Server Members Boost', desc: 'Online & offline members for Web3 and gaming servers.', usd: 0.15, prompt: 'Permanent Discord Invite Link:' },
+            { id: 'smm_twitch', main: 'boost', sub: 'Streaming & Gaming', featured: false, isBoost: true, icon: '🟪', tag: 'TWITCH / KICK', title: 'Twitch & Kick Followers / Channel Views', desc: 'Grow your streaming channel towards affiliate/partner.', usd: 0.15, prompt: 'Target Channel URL:' },
+            { id: 'smm_cmc', main: 'boost', sub: 'Web3 & Traffic', featured: false, isBoost: true, icon: '🪙', tag: 'WEB3 MARKETING', title: 'CoinMarketCap Watchlist & Upvotes', desc: 'Boost token sentiment and trending visibility on CMC.', usd: 0.25, prompt: 'Target CoinMarketCap Token URL:' },
+            { id: 'smm_web', main: 'boost', sub: 'Web3 & Traffic', featured: false, isBoost: true, icon: '🌐', tag: 'SEO TRAFFIC', title: 'Global & Targeted Organic Web Traffic', desc: 'Real human browser sessions with low bounce rate.', usd: 0.05, prompt: 'Target Website URL:' }
         ];
 
         // =========================================================
-        // 🔄 TARIK STOK REAL-TIME DARI GOOGLE SHEET LU (SHEET1)
+        // 🔄 LIVE INVENTORY FETCH FROM GOOGLE SHEETS
         // =========================================================
-        async function fetchLiveStockFromGSheet() {
+        async function fetchLiveSheetStock(showNotification = false) {
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
                     body: JSON.stringify({ action: 'pull_stock' })
                 });
-                const data = await res.json();
-                if (data && data.result && Array.isArray(data.data)) {
-                    const grouped = {};
-                    data.data.forEach(acc => {
-                        const cat = String(acc.category || acc.year || '2026');
-                        if (!grouped[cat]) grouped[cat] = [];
-                        grouped[cat].push(acc);
+                const json = await res.json();
+                if (json && json.result && Array.isArray(json.data)) {
+                    const map = {};
+                    json.data.forEach(item => {
+                        const key = String(item.category || item.year || '2026');
+                        if (!map[key]) map[key] = [];
+                        map[key].push(item);
                     });
-                    liveGithubStock = grouped;
-                    if (activeMainTab === 'github') renderActiveView();
+                    liveSheetInventory = map;
+                    document.getElementById('statStockCount').innerText = `${json.data.length} Ready`;
+                    const admEl = document.getElementById('adminSyncCount');
+                    if (admEl) admEl.innerText = `📦 Synced Accounts: ${json.data.length} Live Nodes`;
+                    if (activeMainTab === 'github' || activeMainTab === 'featured') renderViewport();
+                    if (showNotification) showToast(`Synced ${json.data.length} live accounts from Google Sheet!`);
                 }
             } catch (e) {
-                console.log("GSheet live preview fallback mode:", e);
+                console.log("Live sheet sync fallback active.");
             }
         }
-        fetchLiveStockFromGSheet();
+        fetchLiveSheetStock(false);
 
         // =========================================================
-        // 🧭 NAVIGASI TAB UTAMA & SUB-TAB DI DALAM TAB
+        // 🧭 MULTI-LEVEL TAB ROUTER
         // =========================================================
-        function switchTab(tabName) {
-            activeMainTab = tabName;
+        function switchMainTab(tabId) {
+            activeMainTab = tabId;
             activeSubTab = 'ALL';
-            document.getElementById('nestedSubView').style.display = 'none';
-            document.getElementById('globalSearch').value = '';
+            document.getElementById('nestedVaultDrawer').style.display = 'none';
+            document.getElementById('searchInput').value = '';
 
-            document.querySelectorAll('.main-tab-pill, .side-tab-btn, .bnav-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
+            document.querySelectorAll('.nav-btn, .l1-tab, .mnav-item').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-tab') === tabId);
             });
 
-            const titles = {
-                best: ['PRODUK', 'TERLARIS', 'Paling dicari • Stok ready • Harga resmi website'],
-                github: ['GITHUB', 'ENTERPRISE VAULT', 'Pilih tahun akun (2011–2026) & lihat daftar username langsung di dalam tab ini!'],
-                pro: ['APLIKASI PRO', '& AI PREMIUM', 'Langganan resmi bergaransi penuh • Klik produk untuk pilih paket'],
-                social: ['AGED SOCIAL', '& CRYPTO EXCHANGE', 'Akun sosmed tua & exchange terverifikasi siap pakai'],
-                smm: ['GITHUB BOOST', '& SMM TRAFFIC', 'Tambah Followers, Stars, Forks & Traffic dengan Live Tracker'],
-                orders: ['CEK PESANAN', '& LIVE TRACKER', 'Pantau status invoice & progres penambahan Followers/Stars GitHub Anda secara live']
+            const headers = {
+                featured: ['Enterprise Digital Asset & GitHub Ecosystem', 'Explore our highest-demand aged GitHub accounts, repository metric boosts, and pro subscriptions.'],
+                github: ['GitHub Enterprise Vault (2011 – 2026)', 'Select any year or badge category below to inspect live usernames and repositories directly inside this tab.'],
+                boost: ['Automated GitHub & SMM Metric Boost', 'Configure Followers, Stars, Forks, Watchers, and Web3 marketing packages with live tracking.'],
+                accounts: ['Pro Subscriptions, Crypto Exchanges & Aged Socials', 'Instant delivery of verified aged social accounts, KYC exchanges, and AI subscriptions.'],
+                tools: ['Interactive Web Developer Utilities', 'Generate live 30-second 2FA OTP codes, scan GitHub profiles for shadowbans, and audit repositories in-browser.'],
+                orders: ['My Orders & Live GitHub Boost Tracker', 'Review your generated invoices and monitor real-time GitHub metric growth.']
             };
-            const t = titles[tabName] || titles.best;
-            document.getElementById('mainBannerTitle').innerHTML = `${t[0]} <span class="highlight-blue">${t[1]}</span>`;
-            document.getElementById('mainBannerSub').innerText = t[2];
+            if (headers[tabId]) {
+                document.getElementById('heroTitle').innerText = headers[tabId][0];
+                document.getElementById('heroSub').innerText = headers[tabId][1];
+            }
 
-            renderActiveView();
+            renderViewport();
         }
 
-        function renderActiveView(searchQuery = '') {
-            const subBar = document.getElementById('subTabsBar');
-            const grid = document.getElementById('mainProductGrid');
-            subBar.innerHTML = '';
-            grid.innerHTML = '';
+        function handleSearch(query) {
+            renderViewport(query.trim().toLowerCase());
+        }
 
-            if (activeMainTab === 'orders') {
+        function renderViewport(searchQuery = '') {
+            const subBar = document.getElementById('subTabsBar');
+            const viewport = document.getElementById('catalogViewport');
+            subBar.innerHTML = '';
+            viewport.innerHTML = '';
+            viewport.style.gridTemplateColumns = '';
+
+            if (searchQuery) {
                 subBar.style.display = 'none';
-                renderOrdersAndTrackerTab(grid);
+                GITHUB_VAULT_YEARS.filter(y => y.title.toLowerCase().includes(searchQuery) || y.yr.toLowerCase().includes(searchQuery))
+                    .forEach(y => viewport.appendChild(buildGithubYearCard(y)));
+                STORE_ITEMS.filter(i => i.title.toLowerCase().includes(searchQuery) || i.desc.toLowerCase().includes(searchQuery))
+                    .forEach(i => viewport.appendChild(buildStoreItemCard(i)));
                 return;
             }
 
-            if (activeMainTab === 'github') {
+            // 1. TAB: TOOLS (2FA GENERATOR + SHADOWBAN SCANNER + REPO AUDITOR)
+            if (activeMainTab === 'tools') {
+                const toolSubTabs = ['🔑 Live 2FA OTP Generator', '🛡️ Shadowban & Trust Scanner', '📊 Repository Auditor'];
+                if (activeSubTab === 'ALL') activeSubTab = toolSubTabs[0];
                 subBar.style.display = 'flex';
-                const ghSubTabs = ['Semua Tahun (2011–2026)', 'Vintage (2011–2016)', 'Mid-Aged (2017–2021)', 'Warmed (2022–2026)', '🚀 Jasa Boost GitHub', '🛡️ Scanner Shadowban'];
-                ghSubTabs.forEach(st => {
+                toolSubTabs.forEach(t => {
                     const b = document.createElement('button');
-                    b.className = 'sub-tab-btn' + (activeSubTab === st || (activeSubTab === 'ALL' && st.startsWith('Semua')) ? ' active' : '');
+                    b.className = 'l2-subtab' + (activeSubTab === t ? ' active' : '');
+                    b.innerText = t;
+                    b.onclick = () => { activeSubTab = t; renderViewport(); };
+                    subBar.appendChild(b);
+                });
+                viewport.style.gridTemplateColumns = '1fr';
+                renderBrowserTool(viewport, activeSubTab);
+                return;
+            }
+
+            // 2. TAB: ORDERS & LIVE TRACKER
+            if (activeMainTab === 'orders') {
+                subBar.style.display = 'none';
+                viewport.style.gridTemplateColumns = '1fr';
+                renderOrdersView(viewport);
+                return;
+            }
+
+            // 3. TAB: GITHUB ENTERPRISE VAULT
+            if (activeMainTab === 'github') {
+                const ghSubs = ['All Vaults', 'Special Badges', 'Vintage (2011–2015)', 'Aged (2016–2020)', 'Warmed (2021–2026)', '🚀 GitHub Boost'];
+                if (activeSubTab === 'ALL') activeSubTab = 'All Vaults';
+                subBar.style.display = 'flex';
+                ghSubs.forEach(st => {
+                    const b = document.createElement('button');
+                    b.className = 'l2-subtab' + (activeSubTab === st ? ' active' : '');
                     b.innerText = st;
                     b.onclick = () => {
                         activeSubTab = st;
-                        document.getElementById('nestedSubView').style.display = 'none';
-                        renderActiveView();
+                        document.getElementById('nestedVaultDrawer').style.display = 'none';
+                        renderViewport();
                     };
                     subBar.appendChild(b);
                 });
 
-                if (activeSubTab === '🛡️ Scanner Shadowban') {
-                    renderInPageScanner(grid);
-                    return;
-                }
-                if (activeSubTab === '🚀 Jasa Boost GitHub') {
-                    const boostItems = CATALOG_PRODUCTS.filter(p => p.sub === 'GitHub Boost');
-                    boostItems.forEach(item => grid.appendChild(createProductCard(item)));
+                if (activeSubTab === '🚀 GitHub Boost') {
+                    STORE_ITEMS.filter(x => x.sub === 'GitHub Metrics').forEach(x => viewport.appendChild(buildStoreItemCard(x)));
                     return;
                 }
 
-                GITHUB_YEARS.filter(yObj => {
-                    if (searchQuery && !yObj.title.toLowerCase().includes(searchQuery)) return false;
-                    const yNum = parseInt(yObj.yr);
-                    if (activeSubTab.startsWith('Vintage')) return yObj.yr === 'Arctic' || (yNum >= 2011 && yNum <= 2016);
-                    if (activeSubTab.startsWith('Mid-Aged')) return yNum >= 2017 && yNum <= 2021;
-                    if (activeSubTab.startsWith('Warmed')) return yNum >= 2022 && yNum <= 2026;
+                GITHUB_VAULT_YEARS.filter(y => {
+                    const n = parseInt(y.yr);
+                    if (activeSubTab === 'Special Badges') return isNaN(n);
+                    if (activeSubTab === 'Vintage (2011–2015)') return n >= 2011 && n <= 2015;
+                    if (activeSubTab === 'Aged (2016–2020)') return n >= 2016 && n <= 2020;
+                    if (activeSubTab === 'Warmed (2021–2026)') return n >= 2021 && n <= 2026;
                     return true;
-                }).forEach(yObj => {
-                    grid.appendChild(createGithubYearCard(yObj));
-                });
+                }).forEach(y => viewport.appendChild(buildGithubYearCard(y)));
                 return;
             }
 
-            // Untuk Tab Best, Pro, Social, SMM -> Buat Sub-Tab otomatis dari properti `sub`
-            let pool = [];
-            if (searchQuery) {
-                pool = CATALOG_PRODUCTS.filter(p => p.title.toLowerCase().includes(searchQuery) || p.desc.toLowerCase().includes(searchQuery));
-                subBar.style.display = 'none';
-            } else if (activeMainTab === 'best') {
-                pool = CATALOG_PRODUCTS.filter(p => p.bestSeller);
-                const subCats = ['ALL', ...new Set(pool.map(p => p.sub))];
+            // 4. TAB: FEATURED
+            if (activeMainTab === 'featured') {
+                const featSubs = ['All Bestsellers', 'Aged GitHub', 'GitHub Boost', 'Pro & AI Apps', 'Aged Social & Exchanges'];
+                if (activeSubTab === 'ALL') activeSubTab = 'All Bestsellers';
                 subBar.style.display = 'flex';
-                subCats.forEach(sc => {
+                featSubs.forEach(fs => {
                     const b = document.createElement('button');
-                    b.className = 'sub-tab-btn' + (activeSubTab === sc ? ' active' : '');
-                    b.innerText = sc === 'ALL' ? '🔥 Semua Terlaris' : sc;
-                    b.onclick = () => { activeSubTab = sc; renderActiveView(); };
+                    b.className = 'l2-subtab' + (activeSubTab === fs ? ' active' : '');
+                    b.innerText = fs;
+                    b.onclick = () => { activeSubTab = fs; renderViewport(); };
                     subBar.appendChild(b);
                 });
-                if (activeSubTab !== 'ALL') pool = pool.filter(p => p.sub === activeSubTab);
-            } else {
-                pool = CATALOG_PRODUCTS.filter(p => p.tab === activeMainTab);
-                const subCats = ['ALL', ...new Set(pool.map(p => p.sub))];
-                subBar.style.display = 'flex';
-                subCats.forEach(sc => {
-                    const b = document.createElement('button');
-                    b.className = 'sub-tab-btn' + (activeSubTab === sc ? ' active' : '');
-                    b.innerText = sc === 'ALL' ? '📦 Semua Kategori' : sc;
-                    b.onclick = () => { activeSubTab = sc; renderActiveView(); };
-                    subBar.appendChild(b);
-                });
-                if (activeSubTab !== 'ALL') pool = pool.filter(p => p.sub === activeSubTab);
+
+                if (activeSubTab === 'All Bestsellers' || activeSubTab === 'Aged GitHub') {
+                    ['Arctic', '2012', '2016', '2026'].forEach(yrKey => {
+                        const found = GITHUB_VAULT_YEARS.find(x => x.yr === yrKey);
+                        if (found) viewport.appendChild(buildGithubYearCard(found));
+                    });
+                }
+                if (activeSubTab !== 'Aged GitHub') {
+                    STORE_ITEMS.filter(i => {
+                        if (!i.featured) return false;
+                        if (activeSubTab === 'GitHub Boost') return i.sub === 'GitHub Metrics';
+                        if (activeSubTab === 'Pro & AI Apps') return i.sub === 'Pro & AI Apps';
+                        if (activeSubTab === 'Aged Social & Exchanges') return i.main === 'accounts' && i.sub !== 'Pro & AI Apps';
+                        return true;
+                    }).forEach(i => viewport.appendChild(buildStoreItemCard(i)));
+                }
+                return;
             }
 
-            pool.forEach(item => grid.appendChild(createProductCard(item)));
-        }
+            // 5. TAB: BOOST & SMM OR ACCOUNTS & PRO APPS
+            const tabPool = STORE_ITEMS.filter(i => i.main === activeMainTab);
+            const subCategories = ['ALL', ...new Set(tabPool.map(i => i.sub))];
+            subBar.style.display = 'flex';
+            subCategories.forEach(sc => {
+                const b = document.createElement('button');
+                b.className = 'l2-subtab' + (activeSubTab === sc ? ' active' : '');
+                b.innerText = sc === 'ALL' ? 'All Categories' : sc;
+                b.onclick = () => { activeSubTab = sc; renderViewport(); };
+                subBar.appendChild(b);
+            });
 
-        function handleGlobalSearch(val) {
-            const q = val.trim().toLowerCase();
-            renderActiveView(q);
+            tabPool.filter(i => activeSubTab === 'ALL' || i.sub === activeSubTab)
+                .forEach(i => viewport.appendChild(buildStoreItemCard(i)));
         }
 
         // =========================================================
-        // 🃏 PEMBUAT KARTU PRODUK & SUB-TAB KATALOG TAHUN GITHUB
+        // 🃏 CARD BUILDERS & LEVEL-3 IN-PAGE VAULT DRAWER
         // =========================================================
-        function createProductCard(item) {
-            const card = document.createElement('div');
-            card.className = 'brutal-card';
-            const priceLabel = fmtPrice(item.usd) + (item.isBoost ? '/u' : '');
-            card.innerHTML = `
-                <div class="brutal-card-row">
-                    <div class="prod-info">
-                        <span class="prod-badge-mini">${item.badge}</span>
-                        <h3 class="prod-title">${item.title}</h3>
-                        <p class="prod-desc">${item.desc}</p>
+        function buildGithubYearCard(yObj) {
+            const liveList = liveSheetInventory[yObj.yr] || [];
+            const stockBadge = liveList.length > 0 ? `${liveList.length} IN STOCK` : yObj.tag;
+            const el = document.createElement('div');
+            el.className = 'product-card';
+            el.innerHTML = `
+                <div class="card-top">
+                    <div style="display:flex;gap:14px;min-width:0;flex:1;">
+                        <div class="card-icon" style="font-family:'JetBrains Mono',monospace;">${yObj.icon}</div>
+                        <div class="card-meta">
+                            <span class="card-tag">${stockBadge}</span>
+                            <h3 class="card-title">${yObj.title}</h3>
+                            <p class="card-desc">${yObj.desc}</p>
+                        </div>
                     </div>
-                    <div class="pink-price-box">${priceLabel}</div>
+                    <div class="price-badge">${formatMoney(yObj.usd)}</div>
                 </div>
-                <div class="card-footer-btns">
-                    <button class="btn-brutal yellow" onclick='openItemModal(${JSON.stringify(item)})'>⚡ Pilih Paket / Order</button>
+                <div class="card-actions">
+                    <button class="btn-action secondary" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usd})">📂 Inspect Accounts</button>
+                    <button class="btn-action primary" onclick="addDirectAccountToCart('${yObj.yr}-AUTO', '${yObj.title}', ${yObj.usd}, '${yObj.yr}')">🛒 Add to Cart</button>
                 </div>
             `;
-            return card;
+            return el;
         }
 
-        function createGithubYearCard(yObj) {
-            const liveList = liveGithubStock[yObj.yr] || [];
-            const countTxt = liveList.length > 0 ? `🟢 ${liveList.length} Akun Ready` : `⚡ Cek Ketersediaan`;
-            const card = document.createElement('div');
-            card.className = 'brutal-card';
-            card.innerHTML = `
-                <div class="brutal-card-row">
-                    <div class="prod-info">
-                        <span class="prod-badge-mini">${yObj.badge} • ${countTxt}</span>
-                        <h3 class="prod-title">${yObj.title}</h3>
-                        <p class="prod-desc">${yObj.desc}</p>
+        function buildStoreItemCard(item) {
+            const el = document.createElement('div');
+            el.className = 'product-card';
+            const unitSuffix = item.isBoost ? '/unit' : '';
+            el.innerHTML = `
+                <div class="card-top">
+                    <div style="display:flex;gap:14px;min-width:0;flex:1;">
+                        <div class="card-icon">${item.icon}</div>
+                        <div class="card-meta">
+                            <span class="card-tag">${item.tag}</span>
+                            <h3 class="card-title">${item.title}</h3>
+                            <p class="card-desc">${item.desc}</p>
+                        </div>
                     </div>
-                    <div class="pink-price-box">${fmtPrice(yObj.usd)}</div>
+                    <div class="price-badge">${formatMoney(item.usd)}${unitSuffix}</div>
                 </div>
-                <div class="card-footer-btns">
-                    <button class="btn-brutal secondary" onclick="openYearCatalogSubView('${yObj.yr}', '${yObj.title}', ${yObj.usd})">📂 Buka Daftar Akun (Di Sini)</button>
-                    <button class="btn-brutal primary" onclick="quickAddYearToCart('${yObj.yr}', '${yObj.title}', ${yObj.usd})">🛒 +Keranjang</button>
+                <div class="card-actions">
+                    <button class="btn-action primary" onclick='openProductConfigurator(${JSON.stringify(item)})'>⚡ Configure & Order</button>
                 </div>
             `;
-            return card;
+            return el;
         }
 
-        // LEVEL 3 SUB-TAB: BUKA DAFTAR AKUN GITHUB LANGSUNG DI DALAM HALAMAN WEB (TANPA KE BOT!)
-        function openYearCatalogSubView(yearKey, title, defaultUsd) {
-            const box = document.getElementById('nestedSubView');
-            const list = liveGithubStock[yearKey] || [];
-            box.style.display = 'block';
+        // Opens Level-3 Nested Tab right inside the page (Zero Bot Redirect!)
+        function openInPageYearVault(yearKey, title, fallbackUsd) {
+            const drawer = document.getElementById('nestedVaultDrawer');
+            const list = liveSheetInventory[yearKey] || [];
+            drawer.style.display = 'block';
 
-            let accountsHtml = '';
+            let innerHtml = '';
             if (list.length > 0) {
-                accountsHtml = `<div class="product-list-grid">` + list.map((acc, idx) => {
-                    const prc = (acc.price_usd && acc.price_usd > 0) ? parseFloat(acc.price_usd) : (defaultUsd + (parseInt(acc.followers || 0) * 0.15));
-                    const uname = acc.username || `Account-${idx+1}`;
-                    const url = acc.url || `https://github.com/${uname}`;
+                innerHtml = `<div class="catalog-grid">` + list.map((acc, i) => {
+                    const prc = (acc.price_usd && acc.price_usd > 0) ? parseFloat(acc.price_usd) : (fallbackUsd + (parseInt(acc.followers || 0) * 0.15));
+                    const uname = acc.username || `Node-${i + 1}`;
+                    const profileUrl = acc.url || `https://github.com/${uname}`;
                     return `
-                        <div class="brutal-card" style="background:var(--soft-surface);">
-                            <div class="brutal-card-row">
-                                <div class="prod-info">
-                                    <span class="prod-badge-mini">ID: ${yearKey}-${uname}</span>
-                                    <h4 class="prod-title" style="font-family:'JetBrains Mono',monospace;">@${uname}</h4>
-                                    <p class="prod-desc">📊 Followers: <b>${acc.followers || 0}</b> • 📁 Repos: <b>${acc.repos || 0}</b></p>
+                        <div class="product-card" style="background:var(--bg-soft);">
+                            <div class="card-top">
+                                <div class="card-meta">
+                                    <span class="card-tag">ID: ${yearKey}-${uname}</span>
+                                    <h4 class="card-title" style="font-family:'JetBrains Mono',monospace;">@${uname}</h4>
+                                    <p class="card-desc">👥 Followers: <b>${acc.followers || 0}</b> &nbsp;•&nbsp; 📁 Public Repos: <b>${acc.repos || 0}</b></p>
                                 </div>
-                                <div class="pink-price-box">${fmtPrice(prc)}</div>
+                                <div class="price-badge">${formatMoney(prc)}</div>
                             </div>
-                            <div class="card-footer-btns">
-                                <a href="${url}" target="_blank" class="btn-brutal secondary">🔗 Cek Profil GitHub</a>
-                                <button class="btn-brutal primary" onclick="addSpecificAccToCart('${yearKey}-${uname}', 'GitHub ${yearKey} (@${uname})', ${prc}, '${yearKey}')">🛒 Pilih Akun Ini</button>
+                            <div class="card-actions">
+                                <a href="${profileUrl}" target="_blank" class="btn-action secondary">🌐 View GitHub</a>
+                                <button class="btn-action primary" onclick="addDirectAccountToCart('${yearKey}-${uname}', 'GitHub ${yearKey} (@${uname})', ${prc}, '${yearKey}')">🛒 Select Account</button>
                             </div>
                         </div>
                     `;
                 }).join('') + `</div>`;
             } else {
-                accountsHtml = `
-                    <div style="padding:16px;border:2px dashed var(--border-color);border-radius:8px;text-align:center;">
-                        <div style="font-weight:800;margin-bottom:6px;">📦 Pengiriman Otomatis dari Brankas (${title})</div>
-                        <p style="font-size:0.8rem;color:var(--text-muted);margin:0 0 12px 0;">Klik tombol di bawah untuk langsung memesan akun kategori <b>${yearKey}</b> dengan pengiriman kredensial instan (Username + Password + 2FA Key).</p>
-                        <button class="btn-brutal primary" style="max-width:280px;" onclick="quickAddYearToCart('${yearKey}', '${title}', ${defaultUsd})">⚡ Order ${title} Sekarang</button>
+                innerHtml = `
+                    <div style="text-align:center;padding:20px;background:var(--bg-soft);border-radius:12px;border:1px dashed var(--border-subtle);">
+                        <h4 style="margin:0 0 6px 0;">⚡ Automated Vault Dispatch (${title})</h4>
+                        <p style="font-size:0.82rem;color:var(--text-secondary);margin:0 0 14px 0;">Accounts in this category are dispatched from our encrypted vault with full Username, Password, Recovery Email, and 2FA Secret Key.</p>
+                        <button class="btn-action primary" style="max-width:260px;" onclick="addDirectAccountToCart('${yearKey}-VAULT', '${title}', ${fallbackUsd}, '${yearKey}')">🛒 Order from ${yearKey} Vault</button>
                     </div>
                 `;
             }
 
-            box.innerHTML = `
-                <div class="inpage-subview">
-                    <div class="subview-topbar">
+            drawer.innerHTML = `
+                <div class="level3-drawer">
+                    <div class="drawer-header">
                         <div>
-                            <span class="poster-tag" style="margin-bottom:4px;">SUB-KATALOG LIVE</span>
-                            <h3 style="margin:0;font-size:1.15rem;font-weight:900;">📂 ${title}</h3>
+                            <span class="card-tag">LIVE VAULT INSPECTOR</span>
+                            <h3 style="margin:2px 0 0 0;font-size:1.1rem;">📂 ${title} (${list.length} Live Listed)</h3>
                         </div>
-                        <button class="ctrl-btn" onclick="document.getElementById('nestedSubView').style.display='none'">✕ Tutup Sub-Tab</button>
+                        <button class="top-pill" onclick="document.getElementById('nestedVaultDrawer').style.display='none'">✕ Close Inspector</button>
                     </div>
-                    ${accountsHtml}
+                    ${innerHtml}
                 </div>
             `;
-            box.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            drawer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
         // =========================================================
-        // 🛡️ IN-PAGE SHADOWBAN SCANNER (LANGSUNG JALAN DI WEB TANPA KE BOT!)
+        // 🛠️ IN-BROWSER DEVELOPER TOOLS (2FA TOTP, SHADOWBAN, REPO AUDIT)
         // =========================================================
-        function renderInPageScanner(container) {
-            container.style.gridTemplateColumns = '1fr';
-            container.innerHTML = `
-                <div class="inpage-subview">
-                    <span class="poster-tag">LIVE DIAGNOSTIC TOOL</span>
-                    <h3 style="margin:4px 0 8px 0;font-size:1.2rem;font-weight:900;">🛡️ GitHub Shadowban, Trust Score & Repo Scanner</h3>
-                    <p style="font-size:0.82rem;color:var(--text-muted);margin:0 0 14px 0;">Cek kesehatan akun atau repository GitHub langsung di halaman web ini tanpa perlu pindah ke Telegram.</p>
-                    <div class="search-wrap" style="margin-bottom:14px;">
-                        <input type="text" class="search-input" id="webScanInput" placeholder="Ketik username GitHub (contoh: torvalds)...">
-                        <button class="btn-brutal primary" style="flex:0 0 auto;padding:12px 20px;" onclick="runWebShadowbanScan()">🔍 Scan Sekarang</button>
+        let totpInterval = null;
+
+        function renderBrowserTool(container, toolName) {
+            if (totpInterval) clearInterval(totpInterval);
+
+            if (toolName.includes('2FA')) {
+                container.innerHTML = `
+                    <div class="level3-drawer" style="margin:0;">
+                        <span class="card-tag">CLIENT-SIDE TOTP AUTHENTICATOR</span>
+                        <h3 style="margin:4px 0 8px 0;">🔑 Live 2FA OTP Code Generator (30s Cycle)</h3>
+                        <p style="font-size:0.84rem;color:var(--text-secondary);margin:0 0 16px 0;">Paste your Base32 2FA Secret Key below to generate live 6-digit login codes directly in your browser.</p>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+                            <input type="text" class="field-input" id="totpSecretInput" style="flex:1;min-width:240px;font-family:'JetBrains Mono',monospace;" placeholder="Enter 2FA Secret Key (e.g. JBSWY3DPEHPK3PXP)...">
+                            <button class="btn-action primary" style="flex:0 0 auto;padding:12px 22px;" onclick="startLiveTotp()">🔑 Generate OTP</button>
+                        </div>
+                        <div id="totpOutputBox" style="display:none;padding:18px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--border-focus);text-align:center;">
+                            <div style="font-size:0.75rem;color:var(--text-secondary);font-weight:700;">CURRENT 6-DIGIT OTP CODE (CLICK TO COPY)</div>
+                            <div id="totpCodeDisplay" style="font-family:'JetBrains Mono',monospace;font-size:2.4rem;font-weight:800;letter-spacing:6px;color:var(--success);margin:8px 0;cursor:pointer;" onclick="copyTotpCode()">------</div>
+                            <div id="totpTimerDisplay" style="font-size:0.78rem;color:var(--text-muted);font-weight:700;">Refreshing in 30s</div>
+                        </div>
                     </div>
-                    <div id="webScanResult"></div>
-                </div>
-            `;
+                `;
+            } else if (toolName.includes('Shadowban')) {
+                container.innerHTML = `
+                    <div class="level3-drawer" style="margin:0;">
+                        <span class="card-tag">ACCOUNT DIAGNOSTICS</span>
+                        <h3 style="margin:4px 0 8px 0;">🛡️ GitHub Shadowban & Trust Score Scanner</h3>
+                        <p style="font-size:0.84rem;color:var(--text-secondary);margin:0 0 16px 0;">Verify whether a GitHub account is publicly visible, healthy, or flagged/404.</p>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+                            <input type="text" class="field-input" id="scanUserInput" style="flex:1;min-width:240px;" placeholder="Enter GitHub username (e.g. torvalds)...">
+                            <button class="btn-action primary" style="flex:0 0 auto;padding:12px 22px;" onclick="execShadowbanScan()">🔍 Run Diagnostic</button>
+                        </div>
+                        <div id="scanUserResult"></div>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <div class="level3-drawer" style="margin:0;">
+                        <span class="card-tag">REPOSITORY ANALYZER</span>
+                        <h3 style="margin:4px 0 8px 0;">📊 GitHub Repository Metric Auditor</h3>
+                        <p style="font-size:0.84rem;color:var(--text-secondary);margin:0 0 16px 0;">Inspect live Stars, Forks, Watchers, Default Branch, and growth recommendations for any public repository.</p>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;">
+                            <input type="text" class="field-input" id="auditRepoInput" style="flex:1;min-width:240px;" placeholder="Enter owner/repo or GitHub repo URL...">
+                            <button class="btn-action primary" style="flex:0 0 auto;padding:12px 22px;" onclick="execRepoAudit()">📊 Audit Repository</button>
+                        </div>
+                        <div id="auditRepoResult"></div>
+                    </div>
+                `;
+            }
         }
 
-        async function runWebShadowbanScan() {
-            const raw = document.getElementById('webScanInput').value.trim();
-            if (!raw) return showToast('Masukkan username GitHub!');
+        // Pure Web-Crypto HMAC-SHA1 TOTP Generator
+        function base32ToBytes(base32) {
+            const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
+            const clean = base32.toUpperCase().replace(/[^A-Z2-7]/g, "");
+            let bits = "";
+            for (let i = 0; i < clean.length; i++) {
+                bits += alphabet.indexOf(clean[i]).toString(2).padStart(5, "0");
+            }
+            const bytes = [];
+            for (let i = 0; i + 8 <= bits.length; i += 8) {
+                bytes.push(parseInt(bits.substring(i, i + 8), 2));
+            }
+            return new Uint8Array(bytes);
+        }
+
+        async function computeTotp(secret) {
+            const keyBytes = base32ToBytes(secret);
+            if (keyBytes.length === 0) throw new Error("Invalid Secret");
+            const epoch = Math.floor(Date.now() / 1000);
+            const counter = Math.floor(epoch / 30);
+            const buf = new ArrayBuffer(8);
+            const view = new DataView(buf);
+            view.setUint32(4, counter, false);
+            const cryptoKey = await crypto.subtle.importKey("raw", keyBytes, { name: "HMAC", hash: "SHA-1" }, false, ["sign"]);
+            const sig = new Uint8Array(await crypto.subtle.sign("HMAC", cryptoKey, buf));
+            const offset = sig[sig.length - 1] & 0x0f;
+            const binary = ((sig[offset] & 0x7f) << 24) | ((sig[offset + 1] & 0xff) << 16) | ((sig[offset + 2] & 0xff) << 8) | (sig[offset + 3] & 0xff);
+            return (binary % 1000000).toString().padStart(6, "0");
+        }
+
+        async function startLiveTotp() {
+            const secret = document.getElementById('totpSecretInput').value.trim();
+            if (!secret) return showToast('Please enter a valid 2FA Secret Key!');
+            const outBox = document.getElementById('totpOutputBox');
+            outBox.style.display = 'block';
+
+            async function tick() {
+                try {
+                    const code = await computeTotp(secret);
+                    const rem = 30 - (Math.floor(Date.now() / 1000) % 30);
+                    document.getElementById('totpCodeDisplay').innerText = code;
+                    document.getElementById('totpTimerDisplay').innerText = `Expires in ${rem} seconds (Auto-refreshing)`;
+                } catch (e) {
+                    document.getElementById('totpCodeDisplay').innerText = 'INVALID';
+                }
+            }
+            await tick();
+            if (totpInterval) clearInterval(totpInterval);
+            totpInterval = setInterval(tick, 1000);
+        }
+
+        function copyTotpCode() {
+            const code = document.getElementById('totpCodeDisplay').innerText;
+            if (code && code !== 'INVALID') {
+                navigator.clipboard.writeText(code);
+                showToast(`OTP Code ${code} copied to clipboard!`);
+            }
+        }
+
+        async function execShadowbanScan() {
+            const raw = document.getElementById('scanUserInput').value.trim();
+            if (!raw) return showToast('Please enter a GitHub username!');
             const uname = raw.replace('https://github.com/', '').replace('@', '').split('/')[0];
-            const resBox = document.getElementById('webScanResult');
-            resBox.innerHTML = `<div style="padding:12px;font-weight:800;">⏳ Mengecek status akun @${uname} langsung ke server GitHub...</div>`;
+            const out = document.getElementById('scanUserResult');
+            out.innerHTML = `<div style="font-weight:700;">⏳ Scanning @${uname} on GitHub...</div>`;
             try {
-                const r = await fetch(`https://api.github.com/users/${uname}`);
-                if (r.status === 404) {
-                    resBox.innerHTML = `<div style="padding:14px;background:#fee2e2;border:2px solid #111;border-radius:8px;color:#991b1b;font-weight:800;">🔴 SUSPENDED / 404 NOT FOUND: Akun <b>@${uname}</b> tidak ditemukan atau terkena suspend!</div>`;
+                const res = await fetch(`https://api.github.com/users/${uname}`);
+                if (res.status === 404) {
+                    out.innerHTML = `<div style="padding:14px;border-radius:12px;background:rgba(239,68,68,0.12);border:1px solid var(--danger);color:var(--danger);font-weight:700;">🔴 SUSPENDED / SHADOWBANNED (HTTP 404): Account @${uname} is not publicly accessible.</div>`;
                     return;
                 }
-                const d = await r.json();
-                const yr = d.created_at ? d.created_at.substring(0, 4) : 'N/A';
-                resBox.innerHTML = `
-                    <div style="padding:16px;background:var(--soft-surface);border:2.5px solid #111;border-radius:10px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-                        <img src="${d.avatar_url}" style="width:56px;height:56px;border-radius:50%;border:2px solid #111;">
+                const d = await res.json();
+                const createdYr = d.created_at ? parseInt(d.created_at.substring(0, 4)) : 2026;
+                const age = Math.max(0, 2026 - createdYr);
+                const score = Math.min(100, 45 + (age * 3) + Math.min(20, d.followers) + Math.min(15, d.public_repos * 2));
+                out.innerHTML = `
+                    <div style="padding:16px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--success);display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                        <img src="${d.avatar_url}" style="width:54px;height:54px;border-radius:50%;border:2px solid var(--success);">
                         <div style="flex:1;">
-                            <div style="font-weight:900;font-size:1rem;">🟢 AKUN SEHAT (PUBLIC 200 OK) — @${d.login}</div>
-                            <div style="font-size:0.8rem;font-weight:700;color:var(--text-muted);margin-top:4px;">
-                                📅 Tahun Pembuatan: <b>${yr}</b> • 👥 Followers: <b>${d.followers}</b> • 📁 Public Repos: <b>${d.public_repos}</b>
+                            <div style="font-weight:800;font-size:1rem;color:var(--success);">🟢 ACCOUNT HEALTHY (PUBLIC 200 OK) — @${d.login}</div>
+                            <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">
+                                Created: <b>${createdYr}</b> • Followers: <b>${d.followers}</b> • Public Repos: <b>${d.public_repos}</b> • Trust Score: <b>${score}/100</b>
                             </div>
                         </div>
-                        <a href="https://github.com/${d.login}" target="_blank" class="btn-brutal yellow" style="flex:0 0 auto;">🌐 Buka Profil</a>
+                        <a href="https://github.com/${d.login}" target="_blank" class="btn-action secondary" style="flex:0 0 auto;">🌐 Open Profile</a>
                     </div>
                 `;
             } catch (e) {
-                resBox.innerHTML = `<div style="padding:12px;color:#dc2626;font-weight:800;">⚠️ Gagal menghubungi API GitHub. Coba beberapa saat lagi.</div>`;
+                out.innerHTML = `<div style="color:var(--danger);font-weight:700;">⚠️ Error connecting to GitHub API.</div>`;
             }
         }
 
-        // =========================================================
-        // 🧾 TAB CEK PESANAN & LIVE GITHUB BOOST TRACKER DI WEB
-        // =========================================================
-        function renderOrdersAndTrackerTab(container) {
-            container.style.gridTemplateColumns = '1fr';
-            const savedOrders = JSON.parse(localStorage.getItem('xb_web_orders') || '[]');
-
-            let historyHtml = '';
-            if (savedOrders.length === 0) {
-                historyHtml = `<div style="padding:16px;border:2px dashed var(--border-color);border-radius:8px;text-align:center;font-weight:700;color:var(--text-muted);">Belum ada riwayat invoice di browser ini. Silakan pilih produk lalu klik Order Sekarang.</div>`;
-            } else {
-                historyHtml = savedOrders.map(o => `
-                    <div class="brutal-card" style="margin-bottom:10px;">
-                        <div class="brutal-card-row">
-                            <div>
-                                <span class="prod-badge-mini">🧾 ${o.invoice} • ${o.date}</span>
-                                <h4 class="prod-title">${o.summary}</h4>
-                                <p class="prod-desc">Metode: <b>${o.payMethod}</b> • Kontak: <b>${o.contact}</b></p>
-                            </div>
-                            <div class="pink-price-box">${fmtPrice(o.totalUsd)}</div>
-                        </div>
-                    </div>
-                `).join('');
-            }
-
-            container.innerHTML = `
-                <div class="inpage-subview">
-                    <span class="poster-tag">📡 LIVE BOOST TRACKER</span>
-                    <h3 style="margin:4px 0 8px 0;font-size:1.2rem;font-weight:900;">Cek Metrik GitHub Real-Time (Followers / Stars / Forks)</h3>
-                    <p style="font-size:0.8rem;color:var(--text-muted);margin:0 0 12px 0;">Masukkan username atau link repository GitHub yang sedang Anda boost untuk melihat jumlah Followers, Stars, dan Forks saat ini secara live.</p>
-                    <div class="search-wrap" style="margin-bottom:14px;">
-                        <input type="text" class="search-input" id="liveTrackInput" placeholder="Contoh: username atau owner/repo">
-                        <button class="btn-brutal primary" style="flex:0 0 auto;padding:12px 18px;" onclick="checkLiveBoostMetric()">📡 Cek Metrik Live</button>
-                    </div>
-                    <div id="liveTrackResult"></div>
-                </div>
-
-                <div class="inpage-subview">
-                    <span class="poster-tag">🧾 RIWAYAT INVOICE WEB ANDA</span>
-                    <h3 style="margin:4px 0 12px 0;font-size:1.15rem;font-weight:900;">Daftar Pesanan Terbaru</h3>
-                    ${historyHtml}
-                </div>
-            `;
-        }
-
-        async function checkLiveBoostMetric() {
-            const raw = document.getElementById('liveTrackInput').value.trim();
-            if (!raw) return showToast('Masukkan username atau owner/repo!');
-            const clean = raw.replace('https://github.com/', '').replace('@', '').replace(/\/$/, '');
-            const box = document.getElementById('liveTrackResult');
-            box.innerHTML = `<div style="font-weight:800;">🔄 Mengambil data live dari GitHub...</div>`;
+        async function execRepoAudit() {
+            const raw = document.getElementById('auditRepoInput').value.trim();
+            if (!raw) return showToast('Enter owner/repo!');
+            const clean = raw.replace('https://github.com/', '').replace(/\/$/, '');
+            const out = document.getElementById('auditRepoResult');
+            out.innerHTML = `<div style="font-weight:700;">⏳ Auditing repository ${clean}...</div>`;
             try {
-                if (clean.includes('/')) {
-                    const r = await fetch(`https://api.github.com/repos/${clean}`);
-                    if (!r.ok) throw new Error('Repo tidak ditemukan');
-                    const d = await r.json();
-                    box.innerHTML = `
-                        <div style="padding:14px;background:var(--soft-surface);border:2.5px solid #111;border-radius:8px;font-weight:800;">
-                            📦 Repo: <b>${d.full_name}</b><br>
-                            ⭐ Stars Saat Ini: <b>${d.stargazers_count}</b> &nbsp;|&nbsp; ⎇ Forks: <b>${d.forks_count}</b> &nbsp;|&nbsp; 👁️ Watchers: <b>${d.subscribers_count || d.watchers_count}</b>
+                const res = await fetch(`https://api.github.com/repos/${clean}`);
+                if (!res.ok) throw new Error('404');
+                const d = await res.json();
+                out.innerHTML = `
+                    <div style="padding:16px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--border-focus);">
+                        <div style="font-weight:800;font-size:1rem;margin-bottom:6px;">📦 ${d.full_name} (${d.language || 'Multi-Language'})</div>
+                        <div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:12px;">
+                            ⭐ Stars: <b>${d.stargazers_count}</b> &nbsp;•&nbsp; ⎇ Forks: <b>${d.forks_count}</b> &nbsp;•&nbsp; 👁️ Watchers: <b>${d.subscribers_count || d.watchers_count}</b> &nbsp;•&nbsp; Branch: <b>${d.default_branch}</b>
                         </div>
-                    `;
-                } else {
-                    const r = await fetch(`https://api.github.com/users/${clean}`);
-                    if (!r.ok) throw new Error('User tidak ditemukan');
-                    const d = await r.json();
-                    box.innerHTML = `
-                        <div style="padding:14px;background:var(--soft-surface);border:2.5px solid #111;border-radius:8px;font-weight:800;">
-                            👤 User: <b>@${d.login}</b><br>
-                            👥 Followers Saat Ini: <b>${d.followers} Followers</b> &nbsp;|&nbsp; 📁 Public Repos: <b>${d.public_repos}</b>
-                        </div>
-                    `;
-                }
+                        <button class="btn-action primary" style="max-width:240px;" onclick="switchMainTab('boost')">🚀 Boost This Repository</button>
+                    </div>
+                `;
             } catch (e) {
-                box.innerHTML = `<div style="color:#dc2626;font-weight:800;">❌ Target tidak ditemukan atau Private!</div>`;
+                out.innerHTML = `<div style="color:var(--danger);font-weight:700;">❌ Repository not found (404) or Private!</div>`;
             }
         }
 
         // =========================================================
-        // 🛒 MODAL ORDER & KERANJANG BELANJA MANDIRI
+        // 🛒 CONFIGURATOR, CART & STANDALONE WEB INVOICE
         // =========================================================
-        let selectedModalItem = null;
-        let selectedSpeedMult = 1.0;
-        let selectedSpeedName = 'Regular';
-        let cart = [];
-        let selectedPayment = 'QRIS / E-Wallet';
+        let activeConfigItem = null;
+        let activeTierPrice = 0;
+        let activeTierName = 'Standard';
 
-        function openItemModal(item) {
-            selectedModalItem = item;
-            selectedSpeedMult = 1.0;
-            selectedSpeedName = 'Regular';
+        function openProductConfigurator(item) {
+            activeConfigItem = item;
+            activeTierPrice = item.usd;
+            activeTierName = item.tiers ? item.tiers[0].name : 'Standard';
 
-            document.getElementById('modItemBadge').innerText = item.badge || 'INSTANT ORDER';
-            document.getElementById('modItemTitle').innerText = item.title;
-            document.getElementById('modItemDesc').innerText = item.desc;
-            document.getElementById('modTargetLabel').innerText = item.needTarget || 'Masukkan Target / Catatan:';
-            document.getElementById('modTargetInput').value = '';
-            document.getElementById('modGithubPreview').style.display = 'none';
+            document.getElementById('cfgBadge').innerText = item.tag;
+            document.getElementById('cfgTitle').innerText = item.title;
+            document.getElementById('cfgDesc').innerText = item.desc;
+            document.getElementById('cfgTargetLabel').innerText = item.prompt || 'Target / Delivery Email:';
+            document.getElementById('cfgTargetInput').value = '';
+            document.getElementById('cfgLivePreview').style.display = 'none';
 
-            const varGroup = document.getElementById('modVariantGroup');
-            const varPills = document.getElementById('modVariantPills');
-            const qtyGroup = document.getElementById('modQtyGroup');
-
-            if (item.isBoost) {
-                qtyGroup.style.display = 'block';
-                document.getElementById('modQtyInput').value = 100;
-                if (['followers', 'stars', 'forks', 'watch'].includes(item.svcKey)) {
-                    varGroup.style.display = 'block';
-                    varPills.innerHTML = '';
-                    const tracks = [
-                        { name: '🐌 Regular Track', mult: 1.0 },
-                        { name: '🚀 Fast Track (+10%)', mult: 1.1 },
-                        { name: '⚡ Ultra Track (+20%)', mult: 1.2 }
-                    ];
-                    tracks.forEach((tr, i) => {
-                        const b = document.createElement('button');
-                        b.className = 'sub-tab-btn' + (i === 0 ? ' active' : '');
-                        b.innerText = tr.name;
-                        b.onclick = () => {
-                            varPills.querySelectorAll('.sub-tab-btn').forEach(x => x.classList.remove('active'));
-                            b.classList.add('active');
-                            selectedSpeedMult = tr.mult;
-                            selectedSpeedName = tr.name.split(' ')[1];
-                            recalcModalPrice();
-                        };
-                        varPills.appendChild(b);
-                    });
-                } else {
-                    varGroup.style.display = 'none';
-                }
+            const varBox = document.getElementById('cfgVariantBox');
+            const varPills = document.getElementById('cfgVariantPills');
+            if (item.tiers && item.tiers.length > 0) {
+                varBox.style.display = 'block';
+                varPills.innerHTML = '';
+                item.tiers.forEach((t, idx) => {
+                    const b = document.createElement('button');
+                    b.className = 'l2-subtab' + (idx === 0 ? ' active' : '');
+                    b.innerText = `${t.name} (${formatMoney(t.p)})`;
+                    b.onclick = () => {
+                        varPills.querySelectorAll('.l2-subtab').forEach(x => x.classList.remove('active'));
+                        b.classList.add('active');
+                        activeTierPrice = t.p;
+                        activeTierName = t.name;
+                        updateCfgPrice();
+                    };
+                    varPills.appendChild(b);
+                });
             } else {
-                qtyGroup.style.display = 'none';
-                varGroup.style.display = 'none';
+                varBox.style.display = 'none';
             }
 
-            recalcModalPrice();
-            document.getElementById('itemOrderModal').classList.add('active');
-        }
-
-        function recalcModalPrice() {
-            if (!selectedModalItem) return;
-            let totalUsd = selectedModalItem.usd;
-            if (selectedModalItem.isBoost) {
-                const q = Math.max(10, parseInt(document.getElementById('modQtyInput').value) || 10);
-                const disc = q >= 200 ? 0.95 : 1.0;
-                totalUsd = q * selectedModalItem.usd * selectedSpeedMult * disc;
+            const qtyBox = document.getElementById('cfgQtyBox');
+            if (item.isBoost) {
+                qtyBox.style.display = 'block';
+                document.getElementById('cfgQtyInput').value = 100;
+            } else {
+                qtyBox.style.display = 'none';
             }
-            document.getElementById('modTotalPrice').innerText = fmtPrice(totalUsd);
+
+            updateCfgPrice();
+            document.getElementById('configModal').classList.add('active');
         }
 
-        function buildCurrentModalCartEntry() {
-            const target = document.getElementById('modTargetInput').value.trim() || '-';
+        function updateCfgPrice() {
+            if (!activeConfigItem) return;
+            let total = activeTierPrice;
+            if (activeConfigItem.isBoost) {
+                const q = Math.max(10, parseInt(document.getElementById('cfgQtyInput').value) || 10);
+                const mult = q >= 200 ? 0.95 : 1.0;
+                total = q * activeTierPrice * mult;
+            }
+            document.getElementById('cfgTotalPrice').innerText = formatMoney(total);
+        }
+
+        // Live GitHub preview inside configurator
+        let cfgTimer = null;
+        document.getElementById('cfgTargetInput').addEventListener('input', function(e) {
+            clearTimeout(cfgTimer);
+            const val = e.target.value.trim();
+            const box = document.getElementById('cfgLivePreview');
+            if (!activeConfigItem || !activeConfigItem.ghType || val.length < 2) {
+                box.style.display = 'none';
+                return;
+            }
+            cfgTimer = setTimeout(async () => {
+                const clean = val.replace('https://github.com/', '').replace('@', '').replace(/\/$/, '');
+                const isRepo = activeConfigItem.ghType !== 'followers' && clean.includes('/');
+                const url = isRepo ? `https://api.github.com/repos/${clean}` : `https://api.github.com/users/${clean.split('/')[0]}`;
+                box.style.display = 'block';
+                box.innerText = '🔄 Verifying target on GitHub...';
+                try {
+                    const r = await fetch(url);
+                    if (!r.ok) throw new Error('404');
+                    const d = await r.json();
+                    box.innerHTML = isRepo
+                        ? `🟢 Verified Repo: <b>${d.full_name}</b> (⭐ ${d.stargazers_count} Stars • ⎇ ${d.forks_count} Forks)`
+                        : `🟢 Verified User: <b>@${d.login}</b> (👥 ${d.followers} Followers • 📁 ${d.public_repos} Repos)`;
+                } catch (err) {
+                    box.innerHTML = `<span style="color:var(--danger);">❌ GitHub target not found (404) or Private!</span>`;
+                }
+            }, 500);
+        });
+
+        function confirmCfgToCart(openCheckoutImmediately) {
+            const target = document.getElementById('cfgTargetInput').value.trim();
+            if (activeConfigItem.isBoost && !target) {
+                return showToast('Please enter a valid target username or link!');
+            }
             let qty = 1;
-            let totalUsd = selectedModalItem.usd;
-            let title = selectedModalItem.title;
-            if (selectedModalItem.isBoost) {
-                qty = Math.max(10, parseInt(document.getElementById('modQtyInput').value) || 10);
-                const disc = qty >= 200 ? 0.95 : 1.0;
-                totalUsd = qty * selectedModalItem.usd * selectedSpeedMult * disc;
-                title = `${selectedModalItem.title} (${qty} Units - ${selectedSpeedName})`;
+            let totalUsd = activeTierPrice;
+            let title = `${activeConfigItem.title} [${activeTierName}]`;
+            if (activeConfigItem.isBoost) {
+                qty = Math.max(10, parseInt(document.getElementById('cfgQtyInput').value) || 10);
+                const mult = qty >= 200 ? 0.95 : 1.0;
+                totalUsd = qty * activeTierPrice * mult;
+                title = `${activeConfigItem.title} (${qty} Units • ${activeTierName})`;
             }
-            return {
-                id: selectedModalItem.id + '-' + Date.now(),
-                title: title,
-                target: target,
-                qty: qty,
-                priceUsd: totalUsd,
-                rawItem: selectedModalItem
-            };
-        }
-
-        function addModalItemToCart() {
-            if (selectedModalItem.isBoost && !document.getElementById('modTargetInput').value.trim()) {
-                return showToast('Harap isi target username/link terlebih dahulu!');
-            }
-            cart.push(buildCurrentModalCartEntry());
-            updateCartCounter();
-            closeModal('itemOrderModal');
-            showToast('Produk ditambahkan ke Keranjang!');
-        }
-
-        function buyNowDirect() {
-            if (selectedModalItem.isBoost && !document.getElementById('modTargetInput').value.trim()) {
-                return showToast('Harap isi target username/link terlebih dahulu!');
-            }
-            cart.push(buildCurrentModalCartEntry());
-            updateCartCounter();
-            closeModal('itemOrderModal');
-            openCartModal();
-        }
-
-        function quickAddYearToCart(yrKey, title, usd) {
             cart.push({
-                id: `gh-${yrKey}-${Date.now()}`,
+                id: activeConfigItem.id + '-' + Date.now(),
                 title: title,
-                target: `Auto-Assign Vault (${yrKey})`,
-                qty: 1,
-                priceUsd: parseFloat(usd),
-                yearKey: yrKey
+                target: target || 'Standard Delivery',
+                priceUsd: totalUsd
             });
-            updateCartCounter();
-            openCartModal();
+            updateCartBadge();
+            closeModal('configModal');
+            if (openCheckoutImmediately) {
+                openCartModal();
+            } else {
+                showToast('Added to Cart!');
+            }
         }
 
-        function addSpecificAccToCart(accId, title, usd, yrKey) {
+        function addDirectAccountToCart(accId, title, usd, yrKey) {
             cart.push({
                 id: accId,
                 title: title,
-                target: `Specific ID: ${accId}`,
-                qty: 1,
+                target: `Vault ID: ${accId}`,
                 priceUsd: parseFloat(usd),
                 yearKey: yrKey
             });
-            updateCartCounter();
+            updateCartBadge();
             openCartModal();
         }
 
-        function updateCartCounter() {
-            document.getElementById('cartCount').innerText = cart.length;
+        function updateCartBadge() {
+            document.getElementById('cartBadge').innerText = cart.length;
         }
 
         function openCartModal() {
-            const listEl = document.getElementById('cartListContainer');
+            const list = document.getElementById('cartItemsList');
             if (cart.length === 0) {
-                listEl.innerHTML = `<div style="padding:18px;text-align:center;color:var(--text-muted);font-weight:700;">Keranjang belanja Anda masih kosong.</div>`;
-                document.getElementById('cartGrandTotal').innerText = fmtPrice(0);
+                list.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-muted);font-weight:600;">Your cart is empty.</div>`;
+                document.getElementById('cartTotalDisplay').innerText = formatMoney(0);
             } else {
-                let sumUsd = 0;
-                listEl.innerHTML = cart.map((c, idx) => {
-                    sumUsd += c.priceUsd;
+                let sum = 0;
+                list.innerHTML = cart.map((item, idx) => {
+                    sum += item.priceUsd;
                     return `
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border:2px solid var(--border-color);border-radius:8px;margin-bottom:8px;background:var(--soft-surface);">
-                            <div style="flex:1;min-width:0;padding-right:8px;">
-                                <div style="font-weight:800;font-size:0.86rem;">${c.title}</div>
-                                <div style="font-size:0.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Target: ${c.target}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;background:var(--bg-soft);border:1px solid var(--border-subtle);margin-bottom:8px;">
+                            <div style="flex:1;min-width:0;padding-right:10px;">
+                                <div style="font-size:0.86rem;font-weight:700;">${item.title}</div>
+                                <div style="font-size:0.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">Target: ${item.target}</div>
                             </div>
                             <div style="display:flex;align-items:center;gap:8px;">
-                                <span style="font-family:'JetBrains Mono',monospace;font-weight:800;">${fmtPrice(c.priceUsd)}</span>
-                                <button class="ctrl-btn" style="background:#fee2e2;color:#991b1b;" onclick="removeCartItem(${idx})">🗑️</button>
+                                <span style="font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--success);">${formatMoney(item.priceUsd)}</span>
+                                <button class="top-pill" style="padding:4px 8px;color:var(--danger);" onclick="removeCartIdx(${idx})">🗑️</button>
                             </div>
                         </div>
                     `;
                 }).join('');
-                document.getElementById('cartGrandTotal').innerText = fmtPrice(sumUsd);
+                const finalUsd = sum * (1 - discountPercent / 100);
+                document.getElementById('cartTotalDisplay').innerText = formatMoney(finalUsd);
             }
-            document.getElementById('cartCheckoutModal').classList.add('active');
+            document.getElementById('cartModal').classList.add('active');
         }
 
-        function removeCartItem(i) {
-            cart.splice(i, 1);
-            updateCartCounter();
+        function removeCartIdx(idx) {
+            cart.splice(idx, 1);
+            updateCartBadge();
             openCartModal();
         }
 
-        function selectPayMethod(el) {
-            document.querySelectorAll('#payMethodGrid .pay-option').forEach(x => x.classList.remove('selected'));
-            el.classList.add('selected');
-            selectedPayment = el.getAttribute('data-pay');
+        function applyPromoCode() {
+            const code = document.getElementById('promoInput').value.trim().toUpperCase();
+            if (code === 'XIANBEE5' || code === 'VIP5') {
+                discountPercent = 5;
+                openCartModal();
+                showToast('5% Promo Discount Applied!');
+            } else {
+                showToast('Invalid or expired promo code');
+            }
         }
 
-        // BUAT INVOICE LANGSUNG DI DALAM WEB (MANDIRI 100%)
-        function createWebInvoice() {
-            if (cart.length === 0) return showToast('Keranjang masih kosong!');
-            const contact = document.getElementById('buyerContactInput').value.trim() || 'Guest-Web';
-            const invCode = 'INV-XB-' + Math.floor(10000 + Math.random() * 90000);
-            const totalUsd = cart.reduce((acc, x) => acc + x.priceUsd, 0);
-            const totalIdr = Math.round(totalUsd * IDR_RATE);
-            const summary = cart.map(x => x.title).join(', ');
+        function selectGateway(el) {
+            document.querySelectorAll('#gatewaySelector .gateway-card').forEach(x => x.classList.remove('selected'));
+            el.classList.add('selected');
+            selectedGateway = el.getAttribute('data-gw');
+        }
 
-            const payInstructions = {
-                'QRIS / E-Wallet': '📱 <b>DANA / OVO / GoPay:</b> <code>089638423184</code> (a/n Admin XianBee-Tech)',
-                'SeaBank / Transfer Bank': '🏦 <b>SeaBank Transfer:</b> <code>901016712730</code> (a/n Admin XianBee-Tech)',
-                'Binance Pay': '🔶 <b>Binance Pay ID:</b> <code>84876607</code>',
-                'OxaPay Crypto (USDT)': '🪙 <b>USDT (BEP-20 / TRC-20):</b> <code>0xA0F03ABeED5e6926F2CF2f91ED9927C143872a1B</code>'
+        function generateStandaloneInvoice() {
+            if (cart.length === 0) return showToast('Your cart is empty!');
+            const contact = document.getElementById('checkoutContact').value.trim() || 'Web-Client';
+            const invId = 'INV-XB-' + Math.floor(100000 + Math.random() * 900000);
+            const rawSum = cart.reduce((a, b) => a + b.priceUsd, 0);
+            const finalUsd = rawSum * (1 - discountPercent / 100);
+            const finalIdr = Math.round(finalUsd * EXCHANGE_RATE_IDR);
+            const summary = cart.map(c => `${c.title} [${c.target}]`).join(' + ');
+
+            const gatewayDetails = {
+                'USDT Crypto (BEP20 / TRC20)': '<b>USDT (BEP-20 / BSC / Arbitrum):</b><br><code>0xA0F03ABeED5e6926F2CF2f91ED9927C143872a1B</code><br><b>USDT (TRC-20):</b><br><code>TA1fH7BU6eKb996cPvG6tRv4zc4Z7sDQcz</code>',
+                'Binance Pay': '<b>Binance Pay Merchant ID:</b><br><code>84876607</code>',
+                'QRIS / E-Wallet (DANA/OVO/GoPay)': '<b>DANA / OVO / GoPayNumber:</b><br><code>089638423184</code>',
+                'Bank Transfer (SeaBank)': '<b>SeaBank Account Number:</b><br><code>901016712730</code>'
             };
 
-            const orders = JSON.parse(localStorage.getItem('xb_web_orders') || '[]');
-            orders.unshift({
-                invoice: invCode,
-                date: new Date().toLocaleString('id-ID'),
+            const history = JSON.parse(localStorage.getItem('xb_ent_orders') || '[]');
+            history.unshift({
+                invoice: invId,
+                date: new Date().toLocaleString('en-US'),
                 summary: summary,
-                totalUsd: totalUsd,
-                payMethod: selectedPayment,
+                usd: finalUsd,
+                gateway: selectedGateway,
                 contact: contact
             });
-            localStorage.setItem('xb_web_orders', JSON.stringify(orders.slice(0, 20)));
+            localStorage.setItem('xb_ent_orders', JSON.stringify(history.slice(0, 25)));
 
-            const body = document.getElementById('invoiceResultBody');
-            body.innerHTML = `
-                <div style="text-align:center;margin-bottom:14px;">
-                    <span class="poster-tag">OFFICIAL WEB INVOICE</span>
-                    <h2 style="margin:6px 0 2px 0;font-family:'JetBrains Mono',monospace;font-size:1.3rem;">${invCode}</h2>
-                    <div style="font-size:0.78rem;color:var(--text-muted);font-weight:700;">Simpan kode invoice ini untuk klaim & garansi</div>
+            document.getElementById('invoiceModalBody').innerHTML = `
+                <div style="text-align:center;margin-bottom:16px;">
+                    <span class="card-tag">OFFICIAL PAYMENT INVOICE</span>
+                    <h2 style="margin:6px 0 2px 0;font-family:'JetBrains Mono',monospace;">${invId}</h2>
+                    <div style="font-size:0.78rem;color:var(--text-secondary);">Order saved to your browser's "Orders & Live Tracker" tab</div>
                 </div>
 
-                <div style="background:var(--soft-surface);border:2px solid var(--border-color);border-radius:8px;padding:14px;margin-bottom:14px;font-size:0.84rem;line-height:1.5;">
-                    <div>📦 <b>Pesanan:</b> ${summary}</div>
-                    <div>👤 <b>Kontak Pembeli:</b> ${contact}</div>
-                    <div>💳 <b>Metode Bayar:</b> ${selectedPayment}</div>
-                    <hr style="border:none;border-top:1.5px dashed var(--border-color);margin:10px 0;">
-                    <div style="font-size:0.95rem;font-weight:900;">💰 Total Bayar: <span style="color:#e6007a;">Rp${totalIdr.toLocaleString('id-ID')}</span> ($${totalUsd.toFixed(2)} USDT)</div>
+                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:14px;border-radius:12px;font-size:0.82rem;line-height:1.55;margin-bottom:14px;">
+                    <div><b>Order Items:</b> ${summary}</div>
+                    <div><b>Client Contact:</b> ${contact}</div>
+                    <div><b>Payment Gateway:</b> ${selectedGateway}</div>
+                    <hr style="border:none;border-top:1px solid var(--border-subtle);margin:10px 0;">
+                    <div style="font-size:0.96rem;font-weight:800;">Total Due: <span style="color:var(--success);">$${finalUsd.toFixed(2)} USDT</span> (Rp ${finalIdr.toLocaleString('id-ID')})</div>
                 </div>
 
-                <div style="background:#fffbeb;color:#111827;border:2px solid #111827;border-radius:8px;padding:12px;margin-bottom:16px;font-size:0.82rem;">
-                    <b>📥 INSTRUKSI PEMBAYARAN:</b><br>
-                    ${payInstructions[selectedPayment]}
+                <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:14px;border-radius:12px;font-size:0.8rem;line-height:1.5;margin-bottom:18px;">
+                    <div style="color:var(--accent-cyan);font-weight:800;margin-bottom:4px;">PAYMENT DESTINATION:</div>
+                    ${gatewayDetails[selectedGateway]}
                 </div>
 
-                <div style="display:flex;flex-direction:column;gap:8px;">
-                    <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Halo Admin XianBee, saya sudah checkout di Web.\nInvoice: ${invCode}\nPesanan: ${summary}\nTotal: Rp${totalIdr.toLocaleString('id-ID')} ($${totalUsd.toFixed(2)})\nMetode: ${selectedPayment}`)}" target="_blank" class="btn-brutal primary">
-                        ✅ Kirim Bukti Bayar ke Admin (@XianBeeTechStore)
-                    </a>
-                    <button class="btn-brutal secondary" onclick="closeModal('invoiceResultModal'); switchTab('orders');">
-                        🧾 Lihat di Tab Riwayat Pesanan Web
-                    </button>
+                <div style="display:flex;gap:10px;">
+                    <button class="btn-action secondary" onclick="closeModal('invoiceModal'); switchMainTab('orders');">🧾 View in Orders Tab</button>
+                    <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Hello Executive Support, I have completed payment for Web Invoice ${invId}.\nItems: ${summary}\nTotal: $${finalUsd.toFixed(2)} USDT\nMethod: ${selectedGateway}`)}" target="_blank" class="btn-action primary">✅ Verify Payment</a>
                 </div>
             `;
 
             cart = [];
-            updateCartCounter();
-            closeModal('cartCheckoutModal');
-            document.getElementById('invoiceResultModal').classList.add('active');
+            discountPercent = 0;
+            updateCartBadge();
+            closeModal('cartModal');
+            document.getElementById('invoiceModal').classList.add('active');
         }
 
-        function checkoutViaTelegramBot() {
-            if (cart.length === 0) return showToast('Keranjang masih kosong!');
-            if (tg && tg.sendData) {
-                const itemsPayload = cart.map(c => ({
-                    id: c.id,
-                    year: c.yearKey || '2026',
-                    title: c.title,
-                    price: c.priceUsd
-                }));
-                tg.sendData(JSON.stringify({ action: 'CHECKOUT_CART', items: itemsPayload }));
-            } else {
-                createWebInvoice();
+        // =========================================================
+        // 🧾 ORDERS & LIVE GITHUB BOOST TRACKER TAB
+        // =========================================================
+        function renderOrdersView(container) {
+            const history = JSON.parse(localStorage.getItem('xb_ent_orders') || '[]');
+            const ordersHtml = history.length === 0
+                ? `<div style="padding:20px;text-align:center;color:var(--text-muted);font-weight:600;">No orders recorded in this browser yet.</div>`
+                : history.map(o => `
+                    <div class="product-card" style="margin-bottom:10px;">
+                        <div class="card-top">
+                            <div>
+                                <span class="card-tag">${o.invoice} • ${o.date}</span>
+                                <h4 class="card-title">${o.summary}</h4>
+                                <p class="card-desc">Gateway: <b>${o.gateway}</b> • Contact: <b>${o.contact}</b></p>
+                            </div>
+                            <div class="price-badge">${formatMoney(o.usd)}</div>
+                        </div>
+                    </div>
+                `).join('');
+
+            container.innerHTML = `
+                <div class="level3-drawer">
+                    <span class="card-tag">REAL-TIME GITHUB TRACKER</span>
+                    <h3 style="margin:4px 0 8px 0;">📡 Live GitHub Boost Metric Tracker</h3>
+                    <p style="font-size:0.84rem;color:var(--text-secondary);margin:0 0 14px 0;">Enter your GitHub username or repository (owner/repo) to check live Followers, Stars, Forks, and Watchers progress directly on the web.</p>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;">
+                        <input type="text" class="field-input" id="trackerInput" style="flex:1;min-width:240px;" placeholder="e.g. username or owner/repo...">
+                        <button class="btn-action primary" style="flex:0 0 auto;padding:12px 22px;" onclick="runLiveBoostTracker()">📡 Track Live Metrics</button>
+                    </div>
+                    <div id="trackerOutput"></div>
+                </div>
+
+                <div class="level3-drawer" style="margin-bottom:0;">
+                    <span class="card-tag">ORDER HISTORY</span>
+                    <h3 style="margin:4px 0 14px 0;">🧾 Recent Web Invoices</h3>
+                    ${ordersHtml}
+                </div>
+            `;
+        }
+
+        async function runLiveBoostTracker() {
+            const val = document.getElementById('trackerInput').value.trim();
+            if (!val) return showToast('Enter a GitHub username or owner/repo!');
+            const clean = val.replace('https://github.com/', '').replace('@', '').replace(/\/$/, '');
+            const out = document.getElementById('trackerOutput');
+            out.innerHTML = `<div style="font-weight:700;">🔄 Fetching live metrics from GitHub...</div>`;
+            try {
+                if (clean.includes('/')) {
+                    const r = await fetch(`https://api.github.com/repos/${clean}`);
+                    if (!r.ok) throw new Error('404');
+                    const d = await r.json();
+                    out.innerHTML = `
+                        <div style="padding:14px;border-radius:12px;background:var(--bg-soft);border:1px solid var(--success);font-weight:700;">
+                            📦 Repository: <b>${d.full_name}</b><br>
+                            ⭐ Live Stars: <b>${d.stargazers_count.toLocaleString()}</b> &nbsp;|&nbsp; ⎇ Live Forks: <b>${d.forks_count.toLocaleString()}</b> &nbsp;|&nbsp; 👁️ Watchers: <b>${(d.subscribers_count || d.watchers_count).toLocaleString()}</b>
+                        </div>
+                    `;
+                } else {
+                    const r = await fetch(`https://api.github.com/users/${clean}`);
+                    if (!r.ok) throw new Error('404');
+                    const d = await r.json();
+                    out.innerHTML = `
+                        <div style="padding:14px;border-radius:12px;background:var(--bg-soft);border:1px solid var(--success);font-weight:700;">
+                            👤 GitHub Profile: <b>@${d.login}</b><br>
+                            👥 Live Followers: <b>${d.followers.toLocaleString()} Followers</b> &nbsp;|&nbsp; 📁 Public Repositories: <b>${d.public_repos}</b>
+                        </div>
+                    `;
+                }
+            } catch (e) {
+                out.innerHTML = `<div style="color:var(--danger);font-weight:700;">❌ Target not found on GitHub!</div>`;
             }
+        }
+
+        function openAdminModal() {
+            document.getElementById('adminModal').classList.add('active');
         }
 
         function closeModal(id) {
             document.getElementById(id).classList.remove('active');
         }
 
-        let toastTimer;
+        let toastTm = null;
         function showToast(msg) {
-            const el = document.getElementById('toastPop');
-            el.innerText = '⚡ ' + msg;
-            el.classList.add('show');
-            clearTimeout(toastTimer);
-            toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+            const t = document.getElementById('toastBanner');
+            t.innerText = '⚡ ' + msg;
+            t.classList.add('show');
+            clearTimeout(toastTm);
+            toastTm = setTimeout(() => t.classList.remove('show'), 2600);
         }
 
-        // Render awal saat halaman dibuka
-        switchTab('best');
+        // Initial Render
+        switchMainTab('featured');
     </script>
 </body>
 </html>
