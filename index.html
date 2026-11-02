@@ -744,36 +744,35 @@
 
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area">
-            <header class="topbar">
-                <div class="search-bar">
-                    <span class="s-ic">🔍</span>
-                    <input type="text" id="globalSearch" placeholder="Search GitHub 2012, @username, Stars, Canva Pro..." oninput="handleSearch(this.value)">
+            <header class="topbar" style="padding: 0 14px;">
+                <div style="display:flex;align-items:center;gap:8px;cursor:pointer;" onclick="switchTab('home')">
+                    <div class="brand-orb" style="width:34px;height:34px;font-size:1.05rem;border-radius:9px;">🐝</div>
+                    <span style="font-weight:800;font-size:0.92rem;letter-spacing:-0.3px;">XianBee</span>
                 </div>
 
-                <div class="topbar-right">
-                    <!-- REAL-TIME USDT <-> IDR SWITCHER -->
-                    <button class="top-pill" onclick="toggleCurrency()" title="Switch between USDT and Real-Time IDR">
-                        <span>💱</span>
-                        <span id="currSwitchText">USDT</span>
-                    </button>
-
+                <div class="topbar-right" style="gap:7px;padding-right:4px;">
                     <!-- WALLET BALANCE PILL -->
-                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')">
+                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="padding:8px 10px;">
                         <span>💳</span>
                         <span id="topBalanceText">0.00 USDT</span>
                     </button>
 
+                    <!-- REAL-TIME USDT <-> IDR SWITCHER -->
+                    <button class="top-pill" onclick="toggleCurrency()" title="Switch between USDT and Real-Time IDR" style="padding:8px 10px;">
+                        <span id="currSwitchText">USDT</span>
+                    </button>
+
                     <!-- THEME SWITCHER -->
-                    <button class="top-pill" onclick="toggleTheme()">
+                    <button class="top-pill" onclick="toggleTheme()" style="padding:8px 10px;">
                         <span id="themeIcon">☀️</span>
                     </button>
 
                     <!-- ADMIN QUICK ACCESS -->
-                    <button class="top-pill" onclick="switchTab('admin')" title="Command Center">👑</button>
+                    <button class="top-pill" onclick="switchTab('admin')" title="Command Center" style="padding:8px 10px;">👑</button>
 
-                    <!-- CART BUTTON -->
-                    <button class="top-pill cart-top-pill" onclick="openCartModal()">
-                        <span>🛒</span>
+                    <!-- SPACIOUS CART BUTTON FOR MOBILE -->
+                    <button class="top-pill cart-top-pill" onclick="openCartModal()" style="padding:8px 14px;font-size:0.8rem;">
+                        <span>🛒 Cart</span>
                         <span class="cart-count-badge" id="cartCountBadge">0</span>
                     </button>
                 </div>
@@ -1171,7 +1170,8 @@
             activeTab = tabName;
             activeSub = 'ALL';
             document.getElementById('inPageVaultDrawer').style.display = 'none';
-            document.getElementById('globalSearch').value = '';
+            const gs = document.getElementById('globalSearch');
+            if (gs) gs.value = '';
 
             document.querySelectorAll('.side-btn, .bnav-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
@@ -1425,12 +1425,14 @@
             return card;
         }
 
+        const ACCOUNT_CACHE_MAP = {};
+
         function createSpecificAccountCard(acc, yrKey) {
             const prc = acc._computed_usdt || computeAccountPrice(acc, yrKey);
             const uname = acc.username;
             const url = acc.url || `https://github.com/${uname}`;
             const accId = `${yrKey}-${uname}`;
-            const accTitle = `GitHub ${yrKey} (@${uname})`;
+            ACCOUNT_CACHE_MAP[accId] = { acc: acc, yrKey: yrKey };
 
             const card = document.createElement('div');
             card.className = 'item-card';
@@ -1446,11 +1448,21 @@
                 </div>
                 <div class="item-actions">
                     <a href="${url}" target="_blank" class="btn-ui secondary">🌐 View GitHub</a>
-                    <button class="btn-ui secondary" onclick='addSpecificAccountToCart(${JSON.stringify(acc)}, "${yrKey}")'>🛒 +Cart</button>
-                    <button class="btn-ui buy-now" onclick='buySpecificAccountNow(${JSON.stringify(acc)}, "${yrKey}")'>⚡ Buy Now</button>
+                    <button class="btn-ui secondary" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
+                    <button class="btn-ui buy-now" onclick="buySpecificAccountById('${accId}')">⚡ Buy Now</button>
                 </div>
             `;
             return card;
+        }
+
+        function addSpecificAccountById(accId) {
+            const entry = ACCOUNT_CACHE_MAP[accId];
+            if (entry) addSpecificAccountToCart(entry.acc, entry.yrKey);
+        }
+
+        function buySpecificAccountById(accId) {
+            const entry = ACCOUNT_CACHE_MAP[accId];
+            if (entry) buySpecificAccountNow(entry.acc, entry.yrKey);
         }
 
         function createCatalogCard(item) {
@@ -2039,7 +2051,7 @@
         let modalUnitPrice = 0;
         let modalTierLabel = 'Standard';
         let modalSpeedCode = 'reg';
-        let cart = [];
+        let cart = JSON.parse(localStorage.getItem('xb_saved_cart') || '[]');
         let cartDiscountPct = 0;
         let oxaPollTimer = null;
 
@@ -2173,8 +2185,11 @@
         }
 
         function updateCartUI() {
-            document.getElementById('cartCountBadge').innerText = cart.length;
+            localStorage.setItem('xb_saved_cart', JSON.stringify(cart));
+            const badgeEl = document.getElementById('cartCountBadge');
+            if (badgeEl) badgeEl.innerText = cart.length;
         }
+        updateCartUI();
 
         function executeDirectPayment(method) {
             if (modalProduct.isUnit && !document.getElementById('ordTargetInput').value.trim()) {
@@ -2562,24 +2577,52 @@
         // =========================================================
         // 🛒 12. CART MODAL & BOT BRIDGE HELPERS
         // =========================================================
+        function removeItemFromCart(idx) {
+            cart.splice(idx, 1);
+            updateCartUI();
+            openCartModal();
+        }
+
+        function clearEntireCart() {
+            cart = [];
+            cartDiscountPct = 0;
+            updateCartUI();
+            openCartModal();
+            showToast('Shopping cart cleared!');
+        }
+
         function openCartModal() {
+            cart = JSON.parse(localStorage.getItem('xb_saved_cart') || '[]');
+            updateCartUI();
             const box = document.getElementById('cartItemsContainer');
             if (cart.length === 0) {
-                box.innerHTML = `<div style="padding:20px;text-align:center;color:var(--text-muted);font-weight:700;">Your shopping cart is empty.</div>`;
+                box.innerHTML = `
+                    <div style="padding:22px 12px;text-align:center;color:var(--text-muted);font-weight:700;">
+                        <div style="font-size:1.6rem;margin-bottom:6px;">🛒</div>
+                        <div>Your shopping cart is empty.</div>
+                        <div style="font-size:0.74rem;font-weight:500;margin-top:4px;">Click <b>📂 Inspect Vault</b> on any GitHub year to pick an account.</div>
+                    </div>
+                `;
                 document.getElementById('cartGrandTotal').innerText = fmtPrice(0);
             } else {
                 let sum = 0;
-                box.innerHTML = cart.map((c, idx) => {
-                    sum += c.usdt;
+                box.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                        <span style="font-size:0.74rem;font-weight:800;color:var(--text-secondary);">SELECTED ITEMS (${cart.length})</span>
+                        <button class="top-pill" style="font-size:0.7rem;color:var(--danger);padding:4px 8px;" onclick="clearEntireCart()">🗑️ Clear All</button>
+                    </div>
+                ` + cart.map((c, idx) => {
+                    const itemPrice = parseFloat(c.usdt) || 0;
+                    sum += itemPrice;
                     return `
                         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;background:var(--bg-soft);border:1px solid var(--border-subtle);margin-bottom:8px;">
                             <div style="flex:1;min-width:0;padding-right:8px;">
                                 <div style="font-size:0.84rem;font-weight:800;">${c.title}</div>
-                                <div style="font-size:0.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">${c.target}</div>
+                                <div style="font-size:0.72rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;word-break:break-all;">${c.target}</div>
                             </div>
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <span style="font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--success);">${fmtPrice(c.usdt)}</span>
-                                <button class="top-pill" style="color:var(--danger);padding:4px 8px;" onclick="cart.splice(${idx},1); updateCartUI(); openCartModal();">🗑️</button>
+                            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--success);">${fmtPrice(itemPrice)}</span>
+                                <button class="top-pill" style="color:var(--danger);padding:5px 9px;" onclick="removeItemFromCart(${idx})">🗑️</button>
                             </div>
                         </div>
                     `;
