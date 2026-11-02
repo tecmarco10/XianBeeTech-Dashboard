@@ -3296,24 +3296,49 @@
 
         async function checkLiveGithubBoost() {
             const raw = document.getElementById('profBoostInput').value.trim();
-            if (!raw) return showToast('Enter a GitHub username or owner/repo!');
+            if (!raw) return showToast('Please enter a GitHub username or owner/repo!');
             const clean = raw.replace('https://github.com/', '').replace('@', '').replace(/\/$/, '');
             const out = document.getElementById('profBoostOutput');
-            out.innerHTML = `<div>🔄 Fetching live metrics from GitHub...</div>`;
+            out.innerHTML = `<div style="font-weight:700;padding:10px;">🔄 Fetching live metrics and avatar from GitHub...</div>`;
             try {
                 if (clean.includes('/')) {
                     const r = await fetch(`https://api.github.com/repos/${clean}`);
                     if (!r.ok) throw new Error('404');
                     const d = await r.json();
-                    out.innerHTML = `<div style="padding:14px;border-radius:12px;background:var(--bg-soft);border:1px solid var(--success);font-weight:700;">📦 Repo: <b>${d.full_name}</b> — ⭐ Stars: <b>${d.stargazers_count}</b> | ⎇ Forks: <b>${d.forks_count}</b> | 👁️ Watchers: <b>${d.subscribers_count || d.watchers_count}</b></div>`;
+                    const avatarUrl = d.owner ? d.owner.avatar_url : '';
+                    out.innerHTML = `
+                        <div style="padding:16px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--success);display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                            ${avatarUrl ? `<img src="${avatarUrl}" style="width:52px;height:52px;border-radius:12px;border:2px solid var(--success);object-fit:cover;">` : ''}
+                            <div style="flex:1;">
+                                <div style="font-weight:800;color:var(--success);font-size:0.95rem;">📦 REPOSITORY LIVE TRACKER — ${d.full_name}</div>
+                                <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">
+                                    ⭐ Stars: <b>${d.stargazers_count.toLocaleString()}</b> &nbsp;•&nbsp; ⎇ Forks: <b>${d.forks_count.toLocaleString()}</b> &nbsp;•&nbsp; 👁️ Watchers: <b>${(d.subscribers_count || d.watchers_count).toLocaleString()}</b> • Lang: <b>${d.language || 'Multi'}</b>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 } else {
                     const r = await fetch(`https://api.github.com/users/${clean}`);
+                    if (r.status === 404) {
+                        out.innerHTML = `<div style="padding:14px;border-radius:12px;background:rgba(239,68,68,0.12);border:1px solid var(--danger);color:var(--danger);font-weight:800;">🔴 SUSPENDED / 404 NOT FOUND: @${clean} is not publicly available!</div>`;
+                        return;
+                    }
                     if (!r.ok) throw new Error('404');
                     const d = await r.json();
-                    out.innerHTML = `<div style="padding:14px;border-radius:12px;background:var(--bg-soft);border:1px solid var(--success);font-weight:700;">👤 User: <b>@${d.login}</b> — 👥 Live Followers: <b>${d.followers} Followers</b> | 📁 Public Repos: <b>${d.public_repos}</b></div>`;
+                    out.innerHTML = `
+                        <div style="padding:16px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--success);display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+                            <img src="${d.avatar_url}" style="width:54px;height:54px;border-radius:50%;border:2px solid var(--success);object-fit:cover;">
+                            <div style="flex:1;">
+                                <div style="font-weight:800;color:var(--success);font-size:0.95rem;">👤 PROFILE LIVE TRACKER — @${d.login} ${d.name ? `(${d.name})` : ''}</div>
+                                <div style="font-size:0.8rem;color:var(--text-secondary);margin-top:4px;">
+                                    👥 Live Followers: <b style="color:var(--success);">${d.followers.toLocaleString()} Followers</b> &nbsp;•&nbsp; 📁 Public Repos: <b>${d.public_repos}</b> &nbsp;•&nbsp; 🏢 Company: <b>${d.company || 'Independent'}</b>
+                                </div>
+                            </div>
+                        </div>
+                    `;
                 }
             } catch (e) {
-                out.innerHTML = `<div style="color:var(--danger);font-weight:700;">❌ Target not found!</div>`;
+                out.innerHTML = `<div style="color:var(--danger);font-weight:700;padding:10px;">❌ Target not found on GitHub or network error!</div>`;
             }
         }
 
