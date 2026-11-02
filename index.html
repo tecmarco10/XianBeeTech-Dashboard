@@ -1586,14 +1586,14 @@
                 });
 
                 const hero = document.createElement('div');
-                hero.style.cssText = 'background:var(--grad-subtle);border:1px solid var(--border-focus);border-radius:20px;padding:20px;margin-bottom:20px;box-shadow:var(--shadow-card);';
+                hero.style.cssText = 'background:var(--grad-subtle);border:1px solid var(--border-focus);border-radius:20px;padding:20px;margin-bottom:16px;box-shadow:var(--shadow-card);';
                 hero.innerHTML = `
                     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:12px;">
                         <div>
                             <span class="item-tag">⚡ STANDALONE WEB STORE • REAL-TIME TELEGRAM & WEB NOTIFICATIONS</span>
                             <h2 style="margin:4px 0 6px 0;font-size:1.38rem;font-weight:800;">Welcome, @${currentUsername}</h2>
                             <p style="margin:0;font-size:0.8rem;color:var(--text-secondary);max-width:640px;">
-                                Click <b>📂 Inspect Vault</b> on any GitHub year to pick your exact <code>@username</code>, checkout with <b>Instant Balance</b> or <b>OxaPay Crypto</b>, and save your credentials directly on the web!
+                                Click <b>📂 Inspect Vault</b> on any GitHub year to filter & pick your exact <code>@username</code>, make a price offer (<b>🤝 Nego</b>), or checkout via <b>Instant Balance</b> & <b>OxaPay Crypto</b>!
                             </p>
                         </div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
@@ -1603,6 +1603,51 @@
                     </div>
                 `;
                 vp.appendChild(hero);
+
+                // FEATURE 3 & 4: LIVE FLASH SALE COUNTDOWN + PUBLIC ORDER FEED & VIP LEADERBOARD STRIP
+                const megaStrip = document.createElement('div');
+                megaStrip.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px;margin-bottom:20px;';
+                megaStrip.innerHTML = `
+                    <!-- FLASH SALE BOX -->
+                    <div class="item-card" style="border-color:var(--warning);background:linear-gradient(135deg,rgba(245,158,11,0.12) 0%,rgba(239,68,68,0.08) 100%);">
+                        <div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                                <span class="item-tag" style="color:var(--warning);border-color:var(--warning);background:rgba(245,158,11,0.15);margin:0;">🔥 LIMITED FLASH DEAL</span>
+                                <span id="flashTimerDisplay" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--danger);">⏳ 02:14:55</span>
+                            </div>
+                            <h3 class="item-title" style="font-size:1rem;">GitHub 100 Followers + 100 Stars Bundle</h3>
+                            <p class="item-desc" style="margin-bottom:8px;">Instant repository authority bundle • Automatic 25% Flash Discount applied!</p>
+                            <div style="display:flex;justify-content:space-between;font-size:0.72rem;font-weight:800;color:var(--warning);">
+                                <span>🔥 Quota Left: 3 / 10 Slots</span>
+                                <span><s>${fmtPrice(85)}</s> ➔ <b style="color:var(--success);">${fmtPrice(63.75)}</b></span>
+                            </div>
+                            <div class="progress-track"><div class="progress-fill" style="width:30%;background:linear-gradient(90deg,#f59e0b,#ef4444);"></div></div>
+                        </div>
+                        <div class="item-actions" style="padding-top:8px;">
+                            <button class="btn-ui buy-now" onclick='openDirectOrderModal({id:"flash_bundle_gh",tag:"FLASH SALE 25% OFF",title:"Flash Bundle: 100 GitHub Followers + 100 Stars",desc:"Special bundle package with automated progress tracker.",usdt:63.75,prompt:"Enter Target GitHub Username & Repository (owner/repo):"})'>⚡ Claim Flash Deal (${fmtPrice(63.75)})</button>
+                        </div>
+                    </div>
+
+                    <!-- LIVE ORDER TICKER & TOP VIP LEADERBOARD -->
+                    <div class="item-card">
+                        <div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                                <span class="item-tag" style="margin:0;">📡 LIVE STORE TELEMETRY</span>
+                                <button class="top-pill" style="padding:3px 8px;font-size:0.68rem;" onclick="openLeaderboardModal()">👑 Top VIP Holders</button>
+                            </div>
+                            <div id="livePublicFeedBox" style="font-size:0.75rem;line-height:1.65;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
+                                <div>🟢 <b>@****ryat</b> purchased <b>GitHub 2012</b> (${fmtPrice(28)})</div>
+                                <div>🚀 <b>@****xdev</b> ordered <b>+200 GitHub Stars</b> (${fmtPrice(66.5)})</div>
+                                <div>💳 <b>@****kuro</b> topped up <b>+100.00 USDT</b> (OxaPay)</div>
+                                <div>❄️ <b>@****chen</b> unlocked <b>Arctic Vault Badge</b> (${fmtPrice(25)})</div>
+                            </div>
+                        </div>
+                        <div class="item-actions" style="padding-top:8px;">
+                            <button class="btn-ui secondary" onclick="openLeaderboardModal()">🏆 View Top 10 VIP Leaderboard</button>
+                        </div>
+                    </div>
+                `;
+                vp.appendChild(megaStrip);
 
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
@@ -1800,9 +1845,10 @@
                     <div class="price-chip">${fmtPrice(prc)}</div>
                 </div>
                 <div class="item-actions">
-                    <a href="${url}" target="_blank" class="btn-ui secondary">🌐 View GitHub</a>
-                    <button class="btn-ui secondary" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
-                    <button class="btn-ui buy-now" onclick="buySpecificAccountById('${accId}')">⚡ Buy Now</button>
+                    <a href="${url}" target="_blank" class="btn-ui secondary" style="min-width:70px;">🌐 Profile</a>
+                    <button class="btn-ui secondary" style="min-width:75px;" onclick="openNegoModalById('${accId}')">🤝 Nego</button>
+                    <button class="btn-ui secondary" style="min-width:75px;" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
+                    <button class="btn-ui buy-now" style="min-width:85px;" onclick="buySpecificAccountById('${accId}')">⚡ Buy Now</button>
                 </div>
             `;
             return card;
@@ -1841,7 +1887,16 @@
             return card;
         }
 
+        // FEATURE 1: SMART FILTER & SORT BAR INSIDE INSPECT VAULT
+        let _activeVaultYr = '';
+        let _activeVaultTitle = '';
+        let _activeVaultDefaultUsdt = 0;
+
         function openInPageYearVault(yrKey, title, defaultUsdt) {
+            _activeVaultYr = yrKey;
+            _activeVaultTitle = title;
+            _activeVaultDefaultUsdt = defaultUsdt;
+
             const drawer = document.getElementById('inPageVaultDrawer');
             const accounts = liveGithubStock[yrKey] || [];
             drawer.style.display = 'block';
@@ -1851,7 +1906,7 @@
             wrapper.className = 'inpage-drawer';
 
             const header = document.createElement('div');
-            header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border-subtle);';
+            header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--border-subtle);';
             header.innerHTML = `
                 <div>
                     <span class="item-tag">SELECT YOUR SPECIFIC GITHUB ACCOUNT</span>
@@ -1862,12 +1917,26 @@
             wrapper.appendChild(header);
 
             if (accounts.length > 0) {
+                const filterBar = document.createElement('div');
+                filterBar.style.cssText = 'display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:8px;margin-bottom:16px;background:var(--bg-input);padding:10px;border-radius:12px;border:1px solid var(--border-subtle);';
+                filterBar.innerHTML = `
+                    <input type="text" class="form-input" id="vaultFilterSearch" placeholder="🔍 Filter @username..." style="padding:9px 12px;font-size:0.8rem;" oninput="renderFilteredVaultAccounts()">
+                    <select class="form-input" id="vaultFilterSort" style="padding:9px 12px;font-size:0.8rem;" onchange="renderFilteredVaultAccounts()">
+                        <option value="default">↕️ Sort: Default Vault Order</option>
+                        <option value="price_asc">💰 Price: Low to High</option>
+                        <option value="price_desc">💎 Price: High to Low</option>
+                        <option value="foll_desc">👥 Followers: Most First</option>
+                        <option value="repo_desc">📁 Repositories: Most First</option>
+                    </select>
+                `;
+                wrapper.appendChild(filterBar);
+
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
-                accounts.forEach(acc => {
-                    grid.appendChild(createSpecificAccountCard(acc, yrKey));
-                });
+                grid.id = 'vaultAccountsGrid';
                 wrapper.appendChild(grid);
+                drawer.appendChild(wrapper);
+                renderFilteredVaultAccounts();
             } else {
                 const emptyBox = document.createElement('div');
                 emptyBox.style.cssText = 'text-align:center;padding:22px;background:var(--bg-soft);border-radius:12px;border:1px dashed var(--border-subtle);';
@@ -1878,10 +1947,37 @@
                     <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Hello Admin, please notify me when GitHub ${title} (${yrKey}) is restocked!`)}" target="_blank" class="btn-ui primary" style="max-width:260px;">🔔 Request Restock Alert</a>
                 `;
                 wrapper.appendChild(emptyBox);
+                drawer.appendChild(wrapper);
             }
 
-            drawer.appendChild(wrapper);
             drawer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        function renderFilteredVaultAccounts() {
+            const grid = document.getElementById('vaultAccountsGrid');
+            if (!grid) return;
+            grid.innerHTML = '';
+            const rawList = [...(liveGithubStock[_activeVaultYr] || [])];
+            const q = (document.getElementById('vaultFilterSearch')?.value || '').trim().toLowerCase();
+            const sortMode = document.getElementById('vaultFilterSort')?.value || 'default';
+
+            let filtered = rawList.filter(a => !q || String(a.username || '').toLowerCase().includes(q));
+
+            if (sortMode === 'price_asc') {
+                filtered.sort((a, b) => (a._computed_usdt || 0) - (b._computed_usdt || 0));
+            } else if (sortMode === 'price_desc') {
+                filtered.sort((a, b) => (b._computed_usdt || 0) - (a._computed_usdt || 0));
+            } else if (sortMode === 'foll_desc') {
+                filtered.sort((a, b) => (parseInt(b.followers || 0) || 0) - (parseInt(a.followers || 0) || 0));
+            } else if (sortMode === 'repo_desc') {
+                filtered.sort((a, b) => (parseInt(b.repos || 0) || 0) - (parseInt(a.repos || 0) || 0));
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:18px;color:var(--text-muted);font-weight:700;">No matching @username found in this vault.</div>`;
+                return;
+            }
+            filtered.forEach(acc => grid.appendChild(createSpecificAccountCard(acc, _activeVaultYr)));
         }
 
         function addSpecificAccountToCart(acc, yrKey) {
@@ -2081,38 +2177,44 @@
         }
 
         // =========================================================
-        // 💳 9. WALLET & DEPOSIT TAB
+        // 💳 9. WALLET & DEPOSIT TAB (DEPOSIT ON TOP, PROMO AT BOTTOM + AUTO-SYNC)
         // =========================================================
+        async function syncWalletBalanceInWeb() {
+            const btn = document.getElementById('btnWebSyncBal');
+            if (btn) btn.innerText = '⏳ Syncing...';
+            await fetchRealTimeUsdtIdrRate();
+            await syncGoogleSheetInventory(false);
+            const savedBal = parseFloat(localStorage.getItem('xb_bal_usdt') || '0.00');
+            userBalanceUsdt = savedBal;
+            updateTopBalance();
+            if (activeTab === 'wallet' || activeTab === 'profile') renderViewport();
+            showToast(`Wallet synced! Balance: ${fmtPrice(userBalanceUsdt)}`);
+        }
+
         function renderWalletTab(container) {
             container.innerHTML = `
-                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:20px;">
-                    <div>
-                        <div class="vip-card">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <div class="vip-chip"></div>
-                                <span style="background:rgba(0,0,0,0.3);padding:4px 10px;border-radius:8px;font-size:0.72rem;font-weight:800;letter-spacing:1px;">XIANBEE VIP WALLET</span>
-                            </div>
-                            <div>
-                                <div style="font-size:0.72rem;opacity:0.85;text-transform:uppercase;font-weight:700;">Available Balance</div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:2.1rem;font-weight:800;margin:4px 0;">${userBalanceUsdt.toFixed(2)} USDT</div>
-                                <div style="font-size:0.8rem;opacity:0.9;font-family:'JetBrains Mono',monospace;">≈ Rp ${Math.round(userBalanceUsdt * liveUsdtIdrRate).toLocaleString('id-ID')}</div>
-                            </div>
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:700;">@${currentUsername} (ID: ${currentUserId})</span>
-                                <button class="top-pill" style="background:rgba(0,0,0,0.3);color:#fff;border-color:rgba(255,255,255,0.3);" onclick="openNotificationsModal()">🔔 Alerts</button>
-                            </div>
+                <div style="display:flex;flex-direction:column;gap:18px;max-width:860px;margin:0 auto;">
+                    <!-- 1. 3D VIP WALLET CARD WITH IN-WEB AUTO-SYNC BUTTON -->
+                    <div class="vip-card" style="margin-bottom:0;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div class="vip-chip"></div>
+                            <span style="background:rgba(0,0,0,0.3);padding:4px 10px;border-radius:8px;font-size:0.72rem;font-weight:800;letter-spacing:1px;">XIANBEE VIP WALLET</span>
                         </div>
-
-                        <div class="item-card">
-                            <span class="item-tag">PROMO VOUCHER</span>
-                            <h3 class="item-title">🎟️ Claim Promo / Discount Code</h3>
-                            <div style="display:flex;gap:8px;margin-top:6px;">
-                                <input type="text" class="form-input" id="walletPromoInput" placeholder="Enter promo code (e.g. XIANBEE5)...">
-                                <button class="btn-ui primary" style="flex:0 0 auto;" onclick="claimWalletVoucher()">Claim</button>
+                        <div>
+                            <div style="font-size:0.72rem;opacity:0.85;text-transform:uppercase;font-weight:700;">Available Balance</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:2.15rem;font-weight:800;margin:4px 0;">${userBalanceUsdt.toFixed(2)} USDT</div>
+                            <div style="font-size:0.8rem;opacity:0.9;font-family:'JetBrains Mono',monospace;">≈ Rp ${Math.round(userBalanceUsdt * liveUsdtIdrRate).toLocaleString('id-ID')}</div>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:700;">@${currentUsername} (ID: ${currentUserId})</span>
+                            <div style="display:flex;gap:6px;">
+                                <button class="top-pill" id="btnWebSyncBal" style="background:rgba(0,0,0,0.35);color:#fff;border-color:rgba(255,255,255,0.35);" onclick="syncWalletBalanceInWeb()">🔄 Sync Balance</button>
+                                <button class="top-pill" style="background:rgba(0,0,0,0.35);color:#fff;border-color:rgba(255,255,255,0.35);" onclick="openNotificationsModal()">🔔 Alerts</button>
                             </div>
                         </div>
                     </div>
 
+                    <!-- 2. DEPOSIT USDT BALANCE (DIRECTLY BELOW CARD SO BUYERS SEE IT IMMEDIATELY) -->
                     <div class="item-card">
                         <div>
                             <span class="item-tag">INSTANT AUTO-PILOT TOP-UP</span>
@@ -2138,12 +2240,25 @@
                                 </button>
                             </div>
 
-                            <div class="form-group">
+                            <div class="form-group" style="margin-bottom:0;">
                                 <label>Or Enter Custom Deposit Amount (Min 5 USDT):</label>
                                 <div style="display:flex;gap:8px;">
                                     <input type="number" class="form-input" id="customDepositAmt" value="15" min="5" step="1">
                                     <button class="btn-ui primary" style="flex:0 0 auto;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value))">🪙 Deposit Now</button>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. PROMO VOUCHER (PLACED AT THE BOTTOM BELOW DEPOSIT) -->
+                    <div class="item-card">
+                        <div>
+                            <span class="item-tag">PROMO VOUCHER</span>
+                            <h3 class="item-title">🎟️ Claim Promo / Discount Code</h3>
+                            <p class="item-desc" style="margin-bottom:10px;">Have a special discount voucher? Activate it here for your next checkout.</p>
+                            <div style="display:flex;gap:8px;">
+                                <input type="text" class="form-input" id="walletPromoInput" placeholder="Enter promo code (e.g. XIANBEE5)...">
+                                <button class="btn-ui primary" style="flex:0 0 auto;" onclick="claimWalletVoucher()">Claim Voucher</button>
                             </div>
                         </div>
                     </div>
@@ -2221,12 +2336,18 @@
             const accCycle = (totalSpent % 500);
             const boostCycle = (totalSpent % 200);
             const topCycle = (totalDep % 500);
+            const hasPin = !!localStorage.getItem('xb_user_pin');
+            const hasPass = !!localStorage.getItem('xb_user_pass');
 
             container.innerHTML = `
                 <div class="grid-cards" style="grid-template-columns:repeat(auto-fit,minmax(310px,1fr));">
+                    <!-- 1. CLIENT IDENTITY & QUICK ACTIONS -->
                     <div class="item-card">
                         <div>
-                            <span class="item-tag">${tierName}</span>
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span class="item-tag">${tierName}</span>
+                                <span style="font-size:0.7rem;font-weight:800;color:${hasPin ? 'var(--success)' : 'var(--warning)'};">${hasPin ? '🔒 PIN Active' : '⚠️ PIN Not Set'}</span>
+                            </div>
                             <h3 class="item-title" style="font-size:1.2rem;">👤 @${currentUsername}</h3>
                             <p class="item-desc" style="font-family:'JetBrains Mono',monospace;margin-bottom:14px;">Client ID: ${currentUserId}</p>
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
@@ -2241,8 +2362,9 @@
                             </div>
                         </div>
                         <div class="item-actions">
-                            <button class="btn-ui buy-now" onclick="switchTab('wallet')">➕ Deposit Balance</button>
-                            <button class="btn-ui primary" onclick="activeSub='🔐 Purchased Vault'; renderViewport();">🔐 View Purchased Vault</button>
+                            <button class="btn-ui secondary" onclick="openChangeUsernameModal()">✏️ Change Username</button>
+                            <button class="btn-ui secondary" onclick="openSecurityPinModal()">🔐 ${hasPin ? 'Reset PIN / Pass' : 'Set Security PIN'}</button>
+                            <button class="btn-ui primary" onclick="activeSub='🔐 Purchased Vault'; renderViewport();">🔐 Vault</button>
                         </div>
                     </div>
 
@@ -2537,12 +2659,133 @@
             processPaymentFlow(itemsCopy, finalUsdt, method, true);
         }
 
+        // =========================================================
+        // 🔐 SECURITY PIN & PROFILE SETTINGS MODALS
+        // =========================================================
+        function openChangeUsernameModal() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;">PROFILE IDENTITY</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 6px 0;">✏️ Change Store Username</h3>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">Update your display username for web orders and Telegram notifications.</p>
+                <div class="form-group">
+                    <label>New Username (Without @):</label>
+                    <input type="text" class="form-input" id="newUnameInput" value="${currentUsername.replace('@','')}" placeholder="e.g. abieharyatmo">
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
+                    <button class="btn-ui primary" onclick="saveNewUsername()">💾 Save Username</button>
+                </div>
+            `;
+        }
+
+        function saveNewUsername() {
+            const val = document.getElementById('newUnameInput').value.trim().replace(/^@/, '');
+            if (!val || val.length < 2) return showToast('Please enter a valid username!');
+            currentUsername = val;
+            localStorage.setItem('xb_uname', val);
+            closeModal('paymentGatewayModal');
+            renderViewport();
+            showToast(`Username updated to @${val}!`);
+        }
+
+        function openSecurityPinModal() {
+            const hasPin = !!localStorage.getItem('xb_user_pin');
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;">SECURITY CREDENTIALS</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 6px 0;">🔐 ${hasPin ? 'Reset Security PIN & Password' : 'Setup 6-Digit Security PIN'}</h3>
+                <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">Your 6-Digit PIN protects your Wallet Balance during instant web checkouts.</p>
+                ${hasPin ? `
+                <div class="form-group">
+                    <label>Current 6-Digit PIN (Or type RESET if forgotten):</label>
+                    <input type="password" class="form-input" id="oldPinInput" maxlength="6" placeholder="Enter current PIN...">
+                </div>` : ''}
+                <div class="form-group">
+                    <label>New 6-Digit Security PIN (Numbers Only):</label>
+                    <input type="password" class="form-input" id="newPinInput" maxlength="6" inputmode="numeric" placeholder="e.g. 123456">
+                </div>
+                <div class="form-group">
+                    <label>Account Password (Optional Backup Password):</label>
+                    <input type="password" class="form-input" id="newPassInput" placeholder="Enter account password...">
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
+                    <button class="btn-ui primary" onclick="saveSecurityPinAndPass()">🔐 Save Security Settings</button>
+                </div>
+            `;
+        }
+
+        function saveSecurityPinAndPass() {
+            const savedPin = localStorage.getItem('xb_user_pin');
+            if (savedPin) {
+                const oldVal = document.getElementById('oldPinInput').value.trim();
+                if (oldVal !== savedPin && oldVal.toUpperCase() !== 'RESET') {
+                    return showToast('Incorrect current PIN! (Type RESET to force reset)');
+                }
+            }
+            const newPin = document.getElementById('newPinInput').value.trim();
+            if (!/^\d{6}$/.test(newPin)) {
+                return showToast('PIN must be exactly 6 digits (numbers only)!');
+            }
+            const newPass = document.getElementById('newPassInput').value.trim();
+            localStorage.setItem('xb_user_pin', newPin);
+            if (newPass) localStorage.setItem('xb_user_pass', newPass);
+            closeModal('paymentGatewayModal');
+            renderViewport();
+            showToast('6-Digit Security PIN & Password saved successfully!');
+        }
+
+        let _pendingBalanceCheckout = null;
+
+        function finalizeBalanceCheckoutAfterPin() {
+            if (!_pendingBalanceCheckout) return;
+            const { invId, summaryTitle, targetStr, totalUsdt, itemsList, isFromCart } = _pendingBalanceCheckout;
+            _pendingBalanceCheckout = null;
+
+            userBalanceUsdt = Math.max(0, userBalanceUsdt - totalUsdt);
+            localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
+            updateTopBalance();
+            recordWebTransaction(invId, summaryTitle, targetStr, totalUsdt, 'OUT', 'Wallet Balance (PIN Verified)');
+
+            const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
+            if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
+
+            triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, 'Balance', unlockedAccounts);
+            renderViewport();
+            showInstantReceiptModal(invId, summaryTitle, targetStr, totalUsdt, 'Wallet Balance (PIN Verified)', unlockedAccounts);
+        }
+
+        function verifyCheckoutPinNow() {
+            const inputPin = document.getElementById('checkoutPinInput').value.trim();
+            const savedPin = localStorage.getItem('xb_user_pin');
+            if (!savedPin) {
+                if (!/^\d{6}$/.test(inputPin)) return showToast('Please enter a 6-digit number to set your PIN!');
+                localStorage.setItem('xb_user_pin', inputPin);
+                showToast('Security PIN created! Processing order...');
+                finalizeBalanceCheckoutAfterPin();
+            } else {
+                if (inputPin !== savedPin) return showToast('❌ Wrong Security PIN! Please try again.');
+                finalizeBalanceCheckoutAfterPin();
+            }
+        }
+
         async function processPaymentFlow(itemsList, totalUsdt, method, isFromCart = false) {
             const invId = 'INV-XIAN-' + Math.floor(10000 + Math.random() * 90000);
             const summaryTitle = itemsList.map(x => x.title).join(' + ');
             const targetStr = itemsList.map(x => x.target).join(', ');
 
-            // A. PAY WITH BALANCE (INSTANT)
+            // A. PAY WITH BALANCE (REQUIRES 6-DIGIT SECURITY PIN)
             if (method === 'balance') {
                 if (userBalanceUsdt < totalUsdt) {
                     showToast(`Insufficient Balance! Need ${fmtPrice(totalUsdt)}. Redirecting to Deposit...`);
@@ -2550,20 +2793,33 @@
                     return;
                 }
 
-                userBalanceUsdt = Math.max(0, userBalanceUsdt - totalUsdt);
-                localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
-                updateTopBalance();
-                recordWebTransaction(invId, summaryTitle, targetStr, totalUsdt, 'OUT', 'Wallet Balance (Instant)');
+                _pendingBalanceCheckout = { invId, summaryTitle, targetStr, totalUsdt, itemsList, isFromCart };
+                const hasPin = !!localStorage.getItem('xb_user_pin');
+                const modal = document.getElementById('paymentGatewayModal');
+                const body = document.getElementById('paymentGatewayBody');
+                modal.classList.add('active');
 
-                const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
-
-                if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
-
-                // Dispatch all notifications to Web Feed + Buyer Telegram DM + Admin DM + Channel + Group!
-                triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, 'Balance', unlockedAccounts);
-
-                renderViewport();
-                showInstantReceiptModal(invId, summaryTitle, targetStr, totalUsdt, 'Wallet Balance (Instant Settled)', unlockedAccounts);
+                body.innerHTML = `
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                        <span class="item-tag" style="margin:0;">🔐 SECURITY VERIFICATION</span>
+                        <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                    </div>
+                    <h3 style="margin:0 0 6px 0;">${hasPin ? '🔑 Enter 6-Digit Security PIN' : '🛡️ Create 6-Digit Security PIN'}</h3>
+                    <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">
+                        ${hasPin
+                            ? `Authorize balance deduction of <b>${fmtPrice(totalUsdt)}</b> for <b>${summaryTitle}</b>.`
+                            : `Set a 6-digit PIN to protect your wallet balance and complete this checkout of <b>${fmtPrice(totalUsdt)}</b>.`}
+                    </p>
+                    <div class="form-group">
+                        <label>6-Digit Security PIN:</label>
+                        <input type="password" class="form-input" id="checkoutPinInput" maxlength="6" inputmode="numeric" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.35rem;letter-spacing:8px;" placeholder="••••••">
+                    </div>
+                    <div style="display:flex;gap:8px;">
+                        <button class="btn-ui secondary" onclick="openSecurityPinModal()">⚙️ Reset PIN</button>
+                        <button class="btn-ui buy-now" onclick="verifyCheckoutPinNow()">✅ Confirm & Pay (${fmtPrice(totalUsdt)})</button>
+                    </div>
+                `;
+                setTimeout(() => { const el = document.getElementById('checkoutPinInput'); if (el) el.focus(); }, 150);
                 return;
             }
 
@@ -2622,9 +2878,33 @@
                 console.log("Direct OxaPay fallback mode.");
             }
 
-            // Send Invoice Created Alert to Buyer Web Feed & Admin Feed
-            pushInWebNotification('buyer', '🪙 CRYPTO INVOICE GENERATED', `Invoice <code>${invId}</code> created for <b>${title}</b> (<b>$${amountUsdt.toFixed(2)} USDT</b>).`);
-            pushInWebNotification('admin', '🪙 NEW CRYPTO INVOICE', `Client <b>@${currentUsername}</b> (<code>${currentUserId}</code>) generated Crypto Invoice <code>${invId}</code> for <b>${title}</b> ($${amountUsdt.toFixed(2)} USDT).`);
+            // Send Invoice Created Alert to Buyer Web Feed, Buyer Telegram DM, Admin Web Feed & Admin Telegram Bot DM!
+            const buyerInvMsg = (
+                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                `   🧾 <b>I N V O I C E  G E N E R A T E D</b>\n` +
+                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                `🔸 <b>Invoice ID:</b> <code>${invId}</code>\n` +
+                `🔸 <b>Order / Type:</b> <b>${title}</b>\n` +
+                `🔸 <b>Target:</b> <code>${targetStr}</code>\n` +
+                `🔸 <b>Amount Due:</b> <b>$${amountUsdt.toFixed(2)} USDT</b>\n` +
+                `${payUrl ? `🔗 <b>Pay Link:</b> ${payUrl}\n` : ''}` +
+                `⏳ <i>Awaiting blockchain payment confirmation...</i>`
+            );
+            const adminInvMsg = (
+                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                `   🪙 <b>N E W  ${isTopup ? 'D E P O S I T' : 'C R Y P T O'}  I N V O I C E</b>\n` +
+                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                `👤 <b>Client:</b> ${currentFullName} (@${currentUsername.replace('@','')} | <code>${currentUserId}</code>)\n` +
+                `🧾 <b>Invoice ID:</b> <code>${invId}</code>\n` +
+                `📦 <b>Item:</b> <b>${title}</b>\n` +
+                `🎯 <b>Target:</b> <code>${targetStr}</code>\n` +
+                `💰 <b>Amount:</b> <b>$${amountUsdt.toFixed(2)} USDT</b> (~Rp ${Math.round(amountUsdt * liveUsdtIdrRate).toLocaleString('id-ID')})\n` +
+                `⏳ <i>Status: Pending Payment on Web Store</i>`
+            );
+            pushInWebNotification('buyer', isTopup ? '💳 DEPOSIT INVOICE CREATED' : '🪙 CRYPTO INVOICE CREATED', buyerInvMsg);
+            pushInWebNotification('admin', isTopup ? '💳 NEW DEPOSIT REQUEST' : '🪙 NEW CRYPTO INVOICE', adminInvMsg);
+            sendTelegramSilentPush(currentUserId, buyerInvMsg, true);
+            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminInvMsg, true));
 
             const idrEquiv = Math.round(amountUsdt * liveUsdtIdrRate).toLocaleString('id-ID');
 
@@ -3035,6 +3315,223 @@
             t.classList.add('show');
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(() => t.classList.remove('show'), 2600);
+        }
+
+        // =========================================================
+        // 🤝 FEATURE 2: LIVE PRICE NEGOTIATION (NEGO) -> ADMIN BOT & BUYER NOTIF
+        // =========================================================
+        let _negoTargetEntry = null;
+
+        function openNegoModalById(accId) {
+            const entry = ACCOUNT_CACHE_MAP[accId];
+            if (!entry) return;
+            _negoTargetEntry = entry;
+            const acc = entry.acc;
+            const yrKey = entry.yrKey;
+            const origPrice = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;">🤝 MAKE AN OFFER (NEGOTIATE)</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 4px 0;font-family:'JetBrains Mono',monospace;">@${acc.username} (GitHub ${yrKey})</h3>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">
+                    Normal Price: <b style="color:var(--success);">${fmtPrice(origPrice)}</b> (${origPrice.toFixed(2)} USDT) • Submit your offer below and it will be sent directly to the Executive Admin!
+                </p>
+                <div class="form-group">
+                    <label>Your Offer Amount (in USDT):</label>
+                    <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origPrice - 0.5).toFixed(2)}" value="${Math.max(1, (origPrice * 0.85)).toFixed(1)}">
+                </div>
+                <div class="form-group">
+                    <label>Message / Note for Admin (Optional):</label>
+                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Ready to pay immediately with balance if approved!">
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
+                    <button class="btn-ui primary" onclick="submitWebNegoOffer()">🚀 Send Offer to Admin</button>
+                </div>
+            `;
+        }
+
+        function submitWebNegoOffer() {
+            if (!_negoTargetEntry) return;
+            const acc = _negoTargetEntry.acc;
+            const yrKey = _negoTargetEntry.yrKey;
+            const origPrice = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+            const offerUsdt = parseFloat(document.getElementById('negoOfferUsdt').value);
+            const note = document.getElementById('negoBuyerNote').value.trim() || '-';
+
+            if (isNaN(offerUsdt) || offerUsdt <= 0.5 || offerUsdt >= origPrice) {
+                return showToast(`Please enter an offer lower than ${origPrice.toFixed(2)} USDT!`);
+            }
+
+            const negoId = 'NEG-' + Math.floor(10000 + Math.random() * 90000);
+            const discPct = (((origPrice - offerUsdt) / origPrice) * 100).toFixed(1);
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+
+            const buyerNegoMsg = (
+                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                `   🤝 <b>O F F E R  S U B M I T T E D</b>\n` +
+                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                `🔸 <b>Nego ID:</b> <code>${negoId}</code>\n` +
+                `🔸 <b>Target Account:</b> <b>GitHub ${yrKey} (@${acc.username})</b>\n` +
+                `🔸 <b>Normal Price:</b> <s>$${origPrice.toFixed(2)} USDT</s>\n` +
+                `🔸 <b>Your Offer:</b> <b>$${offerUsdt.toFixed(2)} USDT (-${discPct}%)</b>\n` +
+                `🔸 <b>Note:</b> ${note}\n` +
+                `⏳ <i>Sent to Executive Admin! You will receive a notification once approved.</i>`
+            );
+
+            const adminNegoMsg = (
+                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                `   🤝 <b>I N C O M I N G  W E B  N E G O T I A T I O N</b>\n` +
+                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                `🔸 <b>Nego ID:</b> <code>${negoId}</code>\n` +
+                `👤 <b>Buyer:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
+                `📦 <b>Account:</b> <b>GitHub ${yrKey} (@${acc.username})</b>\n` +
+                `💰 <b>Normal Price:</b> $${origPrice.toFixed(2)} USDT\n` +
+                `🔥 <b>Buyer Offer:</b> <b>$${offerUsdt.toFixed(2)} USDT (-${discPct}%)</b>\n` +
+                `📝 <b>Buyer Note:</b> ${note}`
+            );
+
+            pushInWebNotification('buyer', '🤝 NEGOTIATION SENT', buyerNegoMsg);
+            pushInWebNotification('admin', '🤝 INCOMING PRICE OFFER', adminNegoMsg);
+            sendTelegramSilentPush(currentUserId, buyerNegoMsg, true);
+            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminNegoMsg, true));
+
+            closeModal('paymentGatewayModal');
+            showToast(`Offer ${negoId} ($${offerUsdt.toFixed(2)} USDT) sent to Admin & logged in 🔔!`);
+        }
+
+        // =========================================================
+        // 🏆 FEATURE 4: TOP 10 VIP HOLDERS LEADERBOARD MODAL
+        // =========================================================
+        function openLeaderboardModal() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            const leaders = [
+                { rank: '🥇 1', user: '@****h99', tier: '💎 Diamond VIP', vol: '2,450.00 USDT' },
+                { rank: '🥈 2', user: '@****xdev', tier: '💎 Diamond VIP', vol: '1,820.00 USDT' },
+                { rank: '🥉 3', user: '@****kuro', tier: '💎 Diamond VIP', vol: '1,340.00 USDT' },
+                { rank: '4', user: '@****chen', tier: '🥇 Gold VIP', vol: '890.00 USDT' },
+                { rank: '5', user: '@****ryat', tier: '🥇 Gold VIP', vol: '640.00 USDT' }
+            ];
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;">👑 HALL OF FAME</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 6px 0;">🏆 Top VIP Holders & Spenders</h3>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">Clients with the highest transaction volume automatically unlock <b>10% Loyalty Cashback Rewards</b>!</p>
+                <div>
+                    ${leaders.map(l => `
+                        <div class="cred-field-row" style="padding:10px 12px;">
+                            <span style="font-weight:800;min-width:45px;color:var(--warning);">${l.rank}</span>
+                            <span style="flex:1;font-weight:700;">${l.user} <span style="font-size:0.68rem;color:var(--accent-cyan);">(${l.tier})</span></span>
+                            <span style="color:var(--success);font-weight:800;">${l.vol}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                <button class="btn-ui primary" style="width:100%;margin-top:10px;" onclick="closeModal('paymentGatewayModal')">Close Leaderboard</button>
+            `;
+        }
+
+        // =========================================================
+        // ⏳ FEATURE 3: FLASH SALE REAL-TIME COUNTDOWN TIMER
+        // =========================================================
+        let flashRemainingSec = 2 * 3600 + 14 * 60 + 55;
+        setInterval(() => {
+            flashRemainingSec = flashRemainingSec > 0 ? flashRemainingSec - 1 : 7200;
+            const el = document.getElementById('flashTimerDisplay');
+            if (el) {
+                const h = String(Math.floor(flashRemainingSec / 3600)).padStart(2, '0');
+                const m = String(Math.floor((flashRemainingSec % 3600) / 60)).padStart(2, '0');
+                const s = String(flashRemainingSec % 60).padStart(2, '0');
+                el.innerText = `⏳ ${h}:${m}:${s}`;
+            }
+        }, 1000);
+
+        // =========================================================
+        // 💬 FEATURE 6: FLOATING LIVE HELPDESK CHAT WIDGET (DIRECT TO ADMIN BOT)
+        // =========================================================
+        const chatFab = document.createElement('button');
+        chatFab.innerHTML = '💬';
+        chatFab.title = 'Live Executive Helpdesk';
+        chatFab.style.cssText = 'position:fixed;bottom:78px;right:16px;width:50px;height:50px;border-radius:50%;background:var(--grad-primary);color:#fff;border:none;font-size:1.35rem;box-shadow:var(--shadow-glow);cursor:pointer;z-index:95;display:flex;align-items:center;justify-content:center;';
+        chatFab.onclick = openLiveHelpdeskModal;
+        document.body.appendChild(chatFab);
+
+        function openLiveHelpdeskModal() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            const chatLogs = JSON.parse(localStorage.getItem('xb_helpdesk_logs') || '[]');
+            const logsHtml = chatLogs.length === 0
+                ? `<div style="padding:14px;text-align:center;color:var(--text-muted);font-size:0.78rem;">👋 Welcome to XianBee Executive Desk! Send a message below and our Admin will receive it in real-time on Telegram.</div>`
+                : chatLogs.map(c => `
+                    <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:9px 12px;border-radius:10px;margin-bottom:8px;font-size:0.78rem;">
+                        <div style="display:flex;justify-content:space-between;color:var(--accent-cyan);font-size:0.68rem;font-weight:800;margin-bottom:3px;">
+                            <span>👤 You (@${currentUsername})</span>
+                            <span>${c.time}</span>
+                        </div>
+                        <div>${c.msg}</div>
+                    </div>
+                `).join('');
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;">💬 LIVE EXECUTIVE HELPDESK</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 6px 0;">Direct Message to Admin</h3>
+                <div id="helpdeskHistoryBox" style="max-height:200px;overflow-y:auto;background:var(--bg-input);border:1px solid var(--border-subtle);padding:10px;border-radius:12px;margin-bottom:12px;">
+                    ${logsHtml}
+                </div>
+                <div class="form-group">
+                    <label>Your Message / Custom Request:</label>
+                    <input type="text" class="form-input" id="helpdeskMsgInput" placeholder="Ask about stock, custom orders, or payment...">
+                </div>
+                <div style="display:flex;gap:8px;">
+                    <a href="https://t.me/XianBeeTechStore" target="_blank" class="btn-ui secondary">✈️ Open TG Chat</a>
+                    <button class="btn-ui primary" onclick="sendHelpdeskMessage()">📨 Send to Admin Bot</button>
+                </div>
+            `;
+        }
+
+        function sendHelpdeskMessage() {
+            const msg = document.getElementById('helpdeskMsgInput').value.trim();
+            if (!msg) return showToast('Please enter a message!');
+            const nowTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+
+            const logs = JSON.parse(localStorage.getItem('xb_helpdesk_logs') || '[]');
+            logs.push({ time: nowTime, msg: msg });
+            localStorage.setItem('xb_helpdesk_logs', JSON.stringify(logs.slice(-20)));
+
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const admChatCard = (
+                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                `   💬 <b>W E B  H E L P D E S K  M E S S A G E</b>\n` +
+                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                `👤 <b>Client:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
+                `📝 <b>Message:</b> ${msg}\n` +
+                `🕒 <b>Time:</b> ${nowTime} WIB`
+            );
+
+            pushInWebNotification('admin', '💬 HELPDESK MESSAGE', admChatCard);
+            pushInWebNotification('buyer', '💬 MESSAGE SENT TO ADMIN', `Your message: <i>"${msg}"</i> has been delivered to Executive Admin.`);
+            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, admChatCard, true));
+            sendTelegramSilentPush(currentUserId, `✅ <b>[HELPDESK SENT]</b>\nYour message has been forwarded to Executive Admin:\n<i>"${msg}"</i>`, true);
+
+            openLiveHelpdeskModal();
+            showToast('Message delivered to Admin Telegram Bot!');
         }
 
         // Initial Render
