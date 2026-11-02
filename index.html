@@ -2047,17 +2047,17 @@
 
                     const yrGrid = document.createElement('div');
                     yrGrid.className = 'grid-years-2col';
-                    GITHUB_VAULT_CATEGORIES.filter(y => !isNaN(parseInt(y.yr))).forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
+                    GITHUB_VAULT_CATEGORIES.filter(y => /^\d{4}$/.test(y.yr)).forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
                     vp.appendChild(yrGrid);
 
                     const spHeader = document.createElement('div');
                     spHeader.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:20px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
-                    spHeader.innerText = '🏆 Special Badge & High-Stat GitHub Accounts';
+                    spHeader.innerText = '🏆 Special Badge & High-Follower GitHub Accounts';
                     vp.appendChild(spHeader);
 
                     const spGrid = document.createElement('div');
                     spGrid.className = 'grid-cards';
-                    GITHUB_VAULT_CATEGORIES.filter(y => isNaN(parseInt(y.yr))).forEach(y => spGrid.appendChild(createGithubYearCard(y)));
+                    GITHUB_VAULT_CATEGORIES.filter(y => !/^\d{4}$/.test(y.yr)).forEach(y => spGrid.appendChild(createGithubYearCard(y)));
                     vp.appendChild(spGrid);
                     return;
                 }
@@ -2080,24 +2080,28 @@
                 return;
             }
 
-            // 2. GITHUB ENTERPRISE HUB (CLEAR BUYER-FRIENDLY SUB-TABS & 2-COLUMN LEFT-RIGHT YEAR PAIRS)
+            // 2. GITHUB ENTERPRISE HUB (7 SUB-TABS: 3 PAIRS + FULL-WIDTH 2FA CODE BUTTON AT THE BOTTOM)
             if (activeTab === 'github') {
                 const ghSubs = [
                     '📅 Choose by Year (2011–2026)',
                     '⚡ Ready-to-Buy Accounts',
                     '🏆 Special Badge Accounts',
-                    '💎 Oldest Accounts (2011–2016)',
-                    '🛡️ Aged Accounts (2017–2026)',
+                    '👥 GitHub High Followers Account',
                     '🚀 Buy Followers & Stars',
-                    '🔑 Get 2FA Login Code',
-                    '🔍 Check Account Status'
+                    '🔍 Check Account Status',
+                    '🔑 Get 2FA Login Code'
                 ];
                 if (activeSub === 'ALL' || !ghSubs.includes(activeSub)) activeSub = ghSubs[0];
                 subContainer.style.display = 'grid';
-                ghSubs.forEach(st => {
+                subContainer.style.gridTemplateColumns = 'repeat(2, minmax(0, 1fr))';
+                ghSubs.forEach((st, idx) => {
                     const b = document.createElement('button');
                     b.className = 'subtab-pill' + (activeSub === st ? ' active' : '');
                     b.innerText = st;
+                    // Tombol terakhir (🔑 Get 2FA Login Code) memanjang penuh sendirian di paling bawah
+                    if (idx === ghSubs.length - 1) {
+                        b.style.gridColumn = '1 / -1';
+                    }
                     b.onclick = () => {
                         activeSub = st;
                         document.getElementById('inPageVaultDrawer').style.display = 'none';
@@ -2135,28 +2139,28 @@
                     return;
                 }
 
-                if (activeSub.includes('Special Badge')) {
+                if (activeSub.includes('High Followers Account')) {
                     const grid = document.createElement('div');
                     grid.className = 'grid-cards';
-                    GITHUB_VAULT_CATEGORIES.filter(y => isNaN(parseInt(y.yr))).forEach(y => grid.appendChild(createGithubYearCard(y)));
+                    const follVaultObj = GITHUB_VAULT_CATEGORIES.find(y => y.yr === 'Followers');
+                    if (follVaultObj) grid.appendChild(createGithubYearCard(follVaultObj));
+                    const highFollList = [...allLiveAccountsFlat]
+                        .filter(a => (parseInt(a.followers || 0) || 0) > 0)
+                        .sort((a, b) => (parseInt(b.followers || 0) || 0) - (parseInt(a.followers || 0) || 0));
+                    highFollList.forEach(acc => grid.appendChild(createSpecificAccountCard(acc, acc._cat_key)));
                     vp.appendChild(grid);
                     return;
                 }
 
-                if (activeSub.includes('Oldest Accounts') || activeSub.includes('Aged Accounts')) {
-                    const yrGrid = document.createElement('div');
-                    yrGrid.className = 'grid-years-2col';
-                    GITHUB_VAULT_CATEGORIES.filter(y => {
-                        const n = parseInt(y.yr);
-                        if (isNaN(n)) return false;
-                        if (activeSub.includes('Oldest')) return n >= 2011 && n <= 2016;
-                        return n >= 2017 && n <= 2026;
-                    }).forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
-                    vp.appendChild(yrGrid);
+                if (activeSub.includes('Special Badge')) {
+                    const grid = document.createElement('div');
+                    grid.className = 'grid-cards';
+                    GITHUB_VAULT_CATEGORIES.filter(y => !/^\d{4}$/.test(y.yr)).forEach(y => grid.appendChild(createGithubYearCard(y)));
+                    vp.appendChild(grid);
                     return;
                 }
 
-                // Default: Choose by Year (2011-2026 at the very top in 2 left-right columns, Special Badges below)
+                // Default: Choose by Year (Murni 2011-2026 berpasangan 2 kolom kiri-kanan, lalu Special Badges di bawahnya)
                 const yrTitle = document.createElement('div');
                 yrTitle.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--accent-cyan);margin:2px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
                 yrTitle.innerText = '📅 Select GitHub Year (2011 – 2026 Paired Left & Right)';
@@ -2164,7 +2168,7 @@
 
                 const yrGrid = document.createElement('div');
                 yrGrid.className = 'grid-years-2col';
-                GITHUB_VAULT_CATEGORIES.filter(y => !isNaN(parseInt(y.yr))).forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
+                GITHUB_VAULT_CATEGORIES.filter(y => /^\d{4}$/.test(y.yr)).forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
                 vp.appendChild(yrGrid);
 
                 const badgeTitle = document.createElement('div');
@@ -2174,7 +2178,7 @@
 
                 const badgeGrid = document.createElement('div');
                 badgeGrid.className = 'grid-cards';
-                GITHUB_VAULT_CATEGORIES.filter(y => isNaN(parseInt(y.yr))).forEach(y => badgeGrid.appendChild(createGithubYearCard(y)));
+                GITHUB_VAULT_CATEGORIES.filter(y => !/^\d{4}$/.test(y.yr)).forEach(y => badgeGrid.appendChild(createGithubYearCard(y)));
                 vp.appendChild(badgeGrid);
                 return;
             }
