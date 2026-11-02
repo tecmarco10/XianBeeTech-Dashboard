@@ -324,37 +324,101 @@
         }
 
         /* =========================================================
-           🗂️ NESTED SUB-TABS & IN-PAGE VAULT INSPECTOR
+           🗂️ NESTED SUB-TABS (SYMMETRICAL GRID) & FLOATING CART
            ========================================================= */
         .subtabs-wrap {
             background: var(--bg-subtab);
             border: 1px solid var(--border-subtle);
-            padding: 7px;
-            border-radius: 13px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 6px;
+            padding: 8px;
+            border-radius: 14px;
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
             margin-bottom: 18px;
         }
 
         .subtab-pill {
-            background: transparent;
-            border: 1px solid transparent;
+            width: 100%;
+            min-height: 40px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-subtle);
             color: var(--text-secondary);
-            padding: 7px 13px;
-            border-radius: 9px;
-            font-size: 0.76rem;
+            padding: 8px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
             font-weight: 700;
             cursor: pointer;
             font-family: inherit;
-            transition: 0.15s;
+            transition: 0.18s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            line-height: 1.25;
         }
 
-        .subtab-pill:hover { color: var(--text-primary); background: var(--bg-soft); }
+        /* Jika jumlah tombol ganjil di HP, tombol terakhir otomatis rata penuh kiri-kanan */
+        @media (max-width: 767px) {
+            .subtabs-wrap > .subtab-pill:last-child:nth-child(odd) {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .subtabs-wrap {
+                grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            }
+        }
+
+        .subtab-pill:hover {
+            color: var(--text-primary);
+            border-color: var(--border-focus);
+            background: var(--bg-card-hover);
+        }
+
         .subtab-pill.active {
             background: var(--grad-primary);
             color: #ffffff;
+            border-color: transparent;
             box-shadow: var(--shadow-glow);
+        }
+
+        /* FLOATING BOTTOM CART BAR */
+        .floating-cart-bar {
+            position: fixed;
+            left: 50%;
+            bottom: 76px;
+            transform: translateX(-50%) translateY(150px);
+            width: calc(100% - 28px);
+            max-width: 520px;
+            background: var(--grad-primary);
+            color: #ffffff;
+            padding: 12px 16px;
+            border-radius: 16px;
+            box-shadow: 0 14px 34px rgba(79, 70, 229, 0.45);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            z-index: 95;
+            cursor: pointer;
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+        }
+
+        .floating-cart-bar.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @media (min-width: 1100px) {
+            .floating-cart-bar {
+                bottom: 24px;
+                margin-left: 132px;
+            }
         }
 
         .inpage-drawer {
@@ -731,7 +795,7 @@
                 <button class="side-btn" data-tab="catalog" onclick="switchTab('catalog')">🌐 All Store Catalogs</button>
                 <button class="side-btn" data-tab="wallet" onclick="switchTab('wallet')">💳 Wallet & Deposit</button>
                 <button class="side-btn" data-tab="profile" onclick="switchTab('profile')">👤 Profile & Purchased Vault</button>
-                <button class="side-btn" data-tab="admin" onclick="switchTab('admin')" style="color:var(--warning);">👑 Command Center</button>
+                <button class="side-btn" id="sideAdminBtn" data-tab="admin" onclick="switchTab('admin')" style="color:var(--warning);display:none;">👑 Command Center</button>
             </nav>
 
             <div class="sidebar-footer">
@@ -762,18 +826,18 @@
                         <span id="currSwitchText">USDT</span>
                     </button>
 
-                    <!-- THEME SWITCHER -->
-                    <button class="top-pill" onclick="toggleTheme()" style="padding:8px 10px;">
-                        <span id="themeIcon">☀️</span>
-                    </button>
-
-                    <!-- ADMIN QUICK ACCESS -->
-                    <button class="top-pill" onclick="switchTab('admin')" title="Command Center" style="padding:8px 10px;">👑</button>
-
-                    <!-- SPACIOUS CART BUTTON FOR MOBILE -->
-                    <button class="top-pill cart-top-pill" onclick="openCartModal()" style="padding:8px 14px;font-size:0.8rem;">
+                    <!-- CART BUTTON RIGHT NEXT TO USDT -->
+                    <button class="top-pill cart-top-pill" onclick="openCartModal()" style="padding:8px 12px;font-size:0.78rem;">
                         <span>🛒 Cart</span>
                         <span class="cart-count-badge" id="cartCountBadge">0</span>
+                    </button>
+
+                    <!-- ADMIN QUICK ACCESS (HIDDEN FOR REGULAR USERS) -->
+                    <button class="top-pill" id="topAdminBtn" onclick="switchTab('admin')" title="Command Center" style="padding:8px 10px;display:none;">👑</button>
+
+                    <!-- THEME SWITCHER (DI POJOK KANAN) -->
+                    <button class="top-pill" onclick="toggleTheme()" style="padding:8px 10px;">
+                        <span id="themeIcon">☀️</span>
                     </button>
                 </div>
             </header>
@@ -787,6 +851,20 @@
 
                 <!-- MAIN DYNAMIC VIEWPORT -->
                 <div id="mainViewport"></div>
+            </div>
+        </div>
+
+        <!-- 🛒 FLOATING CART BAR (MUNCUL SAAT ADA ITEM DI CART) -->
+        <div class="floating-cart-bar" id="floatingCartBar" onclick="openCartModal()">
+            <div style="display:flex;align-items:center;gap:10px;">
+                <div style="background:rgba(0,0,0,0.28);width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.05rem;">🛒</div>
+                <div>
+                    <div style="font-size:0.82rem;font-weight:800;" id="floatingCartCount">0 Items in Cart</div>
+                    <div style="font-size:0.72rem;opacity:0.9;font-family:'JetBrains Mono',monospace;" id="floatingCartTotal">Total: 0.00 USDT</div>
+                </div>
+            </div>
+            <div style="background:#ffffff;color:#0f172a;padding:8px 13px;border-radius:10px;font-size:0.76rem;font-weight:800;white-space:nowrap;">
+                Checkout ➔
             </div>
         </div>
 
@@ -937,7 +1015,11 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const tgUser = (tg && tg.initDataUnsafe && tg.initDataUnsafe.user) ? tg.initDataUnsafe.user : null;
-        let currentUserId = urlParams.get('uid') || (tgUser ? String(tgUser.id) : (localStorage.getItem('xb_uid') || '6740043923'));
+        let savedUid = localStorage.getItem('xb_uid');
+        if (savedUid === '6740043923' && !tgUser && !urlParams.get('uid')) {
+            savedUid = null; // Reset fallback admin lama pada browser publik
+        }
+        let currentUserId = urlParams.get('uid') || (tgUser ? String(tgUser.id) : (savedUid || ('GUEST-' + Math.floor(100000 + Math.random() * 900000))));
         let currentUsername = urlParams.get('uname') || (tgUser ? (tgUser.username || tgUser.first_name) : (localStorage.getItem('xb_uname') || 'XianBeeClient'));
         let userBalanceUsdt = urlParams.get('bal') !== null && !isNaN(parseFloat(urlParams.get('bal')))
             ? parseFloat(urlParams.get('bal'))
@@ -946,6 +1028,19 @@
         localStorage.setItem('xb_uid', currentUserId);
         localStorage.setItem('xb_uname', currentUsername);
         localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
+
+        function isUserAdmin() {
+            return ADMIN_IDS.includes(String(currentUserId));
+        }
+
+        function syncAdminElementsVisibility() {
+            const showAdm = isUserAdmin();
+            const sideAdm = document.getElementById('sideAdminBtn');
+            const topAdm = document.getElementById('topAdminBtn');
+            if (sideAdm) sideAdm.style.display = showAdm ? 'flex' : 'none';
+            if (topAdm) topAdm.style.display = showAdm ? 'inline-flex' : 'none';
+        }
+        syncAdminElementsVisibility();
 
         let liveUsdtIdrRate = parseFloat(localStorage.getItem('xb_live_idr_rate')) || 16250;
         let currentCurrency = localStorage.getItem('xb_curr_mode') || 'USDT';
@@ -1001,6 +1096,7 @@
             currentCurrency = currentCurrency === 'USDT' ? 'IDR' : 'USDT';
             localStorage.setItem('xb_curr_mode', currentCurrency);
             updateTopBalance();
+            updateCartUI();
             renderViewport();
             showToast(`Display currency: ${currentCurrency} (1 USDT = Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')})`);
         }
@@ -1167,6 +1263,10 @@
         let activeSub = 'ALL';
 
         function switchTab(tabName) {
+            if (tabName === 'admin' && !isUserAdmin()) {
+                showToast('⛔ Access restricted to Administrator only!');
+                return;
+            }
             activeTab = tabName;
             activeSub = 'ALL';
             document.getElementById('inPageVaultDrawer').style.display = 'none';
@@ -1191,13 +1291,12 @@
             subContainer.innerHTML = '';
             vp.innerHTML = '';
 
-            // Global Search Filter (Searches Categories, Individual Usernames, and Services)
+            // Global Search Filter
             if (searchQuery) {
                 subContainer.style.display = 'none';
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
 
-                // Search individual live GitHub usernames first!
                 allLiveAccountsFlat.filter(a => String(a.username || '').toLowerCase().includes(searchQuery) || String(a._cat_key || '').toLowerCase().includes(searchQuery))
                     .slice(0, 18)
                     .forEach(acc => grid.appendChild(createSpecificAccountCard(acc, acc._cat_key)));
@@ -1210,11 +1309,18 @@
                 return;
             }
 
-            // 1. HOME TAB
+            // 1. HOME TAB (6 TOMBOL SIMETRIS KIRI-KANAN)
             if (activeTab === 'home') {
-                const homeSubs = ['🔥 Featured & Bestsellers', '🐙 Aged GitHub (2011–2026)', '🚀 GitHub Boost', '👑 Pro Apps & AI', '🪙 Crypto & PPOB'];
+                const homeSubs = [
+                    '🔥 Bestsellers',
+                    '🐙 GitHub Accounts',
+                    '🚀 GitHub Boost',
+                    '👑 Pro Apps & AI',
+                    '📱 Social & Emails',
+                    '🪙 Crypto & Top-Up'
+                ];
                 if (activeSub === 'ALL') activeSub = homeSubs[0];
-                subContainer.style.display = 'flex';
+                subContainer.style.display = 'grid';
                 homeSubs.forEach(hs => {
                     const b = document.createElement('button');
                     b.className = 'subtab-pill' + (activeSub === hs ? ' active' : '');
@@ -1239,7 +1345,7 @@
                             </p>
                         </div>
                         <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                            <button class="btn-ui primary" onclick="switchTab('github')">🐙 Inspect GitHub Vault (${totalLiveAccounts || 'Live'})</button>
+                            <button class="btn-ui primary" onclick="switchTab('github')">🐙 Browse GitHub Accounts (${totalLiveAccounts || 'Live'})</button>
                             <button class="btn-ui buy-now" onclick="switchTab('profile'); activeSub='🔐 Purchased Accounts Vault'; renderViewport();">🔐 My Purchased Vault</button>
                         </div>
                     </div>
@@ -1249,18 +1355,20 @@
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
 
-                if (activeSub.includes('Featured')) {
+                if (activeSub.includes('Bestsellers')) {
                     ['Arctic', '2012', '2016', '2026'].forEach(k => {
                         const yObj = GITHUB_VAULT_CATEGORIES.find(x => x.yr === k);
                         if (yObj) grid.appendChild(createGithubYearCard(yObj));
                     });
                     CATALOG_ITEMS.filter(i => i.hot).forEach(i => grid.appendChild(createCatalogCard(i)));
-                } else if (activeSub.includes('Aged GitHub')) {
+                } else if (activeSub.includes('GitHub Accounts')) {
                     GITHUB_VAULT_CATEGORIES.forEach(y => grid.appendChild(createGithubYearCard(y)));
                 } else if (activeSub.includes('GitHub Boost')) {
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else if (activeSub.includes('Pro Apps')) {
-                    CATALOG_ITEMS.filter(i => i.hub === 'pro_apps' || i.hub === 'social_accs').forEach(i => grid.appendChild(createCatalogCard(i)));
+                    CATALOG_ITEMS.filter(i => i.hub === 'pro_apps').forEach(i => grid.appendChild(createCatalogCard(i)));
+                } else if (activeSub.includes('Social & Emails')) {
+                    CATALOG_ITEMS.filter(i => i.hub === 'social_accs').forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else {
                     CATALOG_ITEMS.filter(i => i.hub === 'crypto_hub' || i.hub === 'ppob_hub').forEach(i => grid.appendChild(createCatalogCard(i)));
                 }
@@ -1268,20 +1376,20 @@
                 return;
             }
 
-            // 2. GITHUB ENTERPRISE HUB
+            // 2. GITHUB ENTERPRISE HUB (8 TOMBOL SIMETRIS & MUDAH DIPAHAMI BUYER)
             if (activeTab === 'github') {
                 const ghSubs = [
-                    '🛒 All Aged Vaults (2011–2026)',
-                    '📦 View All Individual Accounts',
-                    '❄️ Special Badges',
-                    '🏛️ Vintage (2011–2016)',
-                    '🛡️ Warmed (2017–2026)',
-                    '🚀 GitHub Boost Services',
-                    '🔑 Live 2FA OTP Generator',
-                    '🛡️ Shadowban & Repo Tools'
+                    '📂 All GitHub Years',
+                    '👤 Ready Usernames',
+                    '🏅 Rare Badge Accounts',
+                    '💎 Old Accounts (2011–2016)',
+                    '⚡ Fresh & Aged (2017–2026)',
+                    '🚀 Followers & Stars Boost',
+                    '🔑 Get 2FA Login Code',
+                    '🔍 Check Account Health'
                 ];
                 if (activeSub === 'ALL') activeSub = ghSubs[0];
-                subContainer.style.display = 'flex';
+                subContainer.style.display = 'grid';
                 ghSubs.forEach(st => {
                     const b = document.createElement('button');
                     b.className = 'subtab-pill' + (activeSub === st ? ' active' : '');
@@ -1294,11 +1402,11 @@
                     subContainer.appendChild(b);
                 });
 
-                if (activeSub.includes('2FA OTP')) {
+                if (activeSub.includes('2FA Login Code')) {
                     render2faTool(vp);
                     return;
                 }
-                if (activeSub.includes('Shadowban & Repo')) {
+                if (activeSub.includes('Check Account Health')) {
                     renderDiagnosticTools(vp);
                     return;
                 }
@@ -1306,7 +1414,7 @@
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
 
-                if (activeSub.includes('View All Individual Accounts')) {
+                if (activeSub.includes('Ready Usernames')) {
                     if (allLiveAccountsFlat.length === 0) {
                         vp.innerHTML = `<div class="inpage-drawer" style="text-align:center;">⏳ Syncing live accounts from Google Sheet...</div>`;
                     } else {
@@ -1316,14 +1424,14 @@
                     return;
                 }
 
-                if (activeSub.includes('Boost Services')) {
+                if (activeSub.includes('Followers & Stars Boost')) {
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else {
                     GITHUB_VAULT_CATEGORIES.filter(y => {
                         const n = parseInt(y.yr);
-                        if (activeSub.includes('Special Badges')) return isNaN(n);
-                        if (activeSub.includes('Vintage')) return n >= 2011 && n <= 2016;
-                        if (activeSub.includes('Warmed')) return n >= 2017 && n <= 2026;
+                        if (activeSub.includes('Rare Badge')) return isNaN(n);
+                        if (activeSub.includes('Old Accounts')) return n >= 2011 && n <= 2016;
+                        if (activeSub.includes('Fresh & Aged')) return n >= 2017 && n <= 2026;
                         return true;
                     }).forEach(y => grid.appendChild(createGithubYearCard(y)));
                 }
@@ -1331,11 +1439,18 @@
                 return;
             }
 
-            // 3. ALL STORE CATALOGS
+            // 3. ALL STORE CATALOGS (6 TOMBOL SIMETRIS KIRI-KANAN)
             if (activeTab === 'catalog') {
-                const catSubs = ['All Products', 'Pro Apps & AI', 'Aged Social & Emails', 'Crypto & Exchange', 'SMM Traffic Boost', 'PPOB & Top-Up Games'];
+                const catSubs = [
+                    '🌐 All Products',
+                    '👑 Pro Apps & AI',
+                    '📱 Aged Social & Emails',
+                    '🪙 Crypto & Exchange',
+                    '📈 SMM Traffic Boost',
+                    '🎮 PPOB & Top-Up Games'
+                ];
                 if (activeSub === 'ALL') activeSub = catSubs[0];
-                subContainer.style.display = 'flex';
+                subContainer.style.display = 'grid';
                 catSubs.forEach(cs => {
                     const b = document.createElement('button');
                     b.className = 'subtab-pill' + (activeSub === cs ? ' active' : '');
@@ -1348,8 +1463,8 @@
                 grid.className = 'grid-cards';
                 CATALOG_ITEMS.filter(i => {
                     if (i.hub === 'github_boost') return false;
-                    if (activeSub === 'All Products') return true;
-                    return i.sub === activeSub;
+                    if (activeSub.includes('All Products')) return true;
+                    return activeSub.includes(i.sub);
                 }).forEach(i => grid.appendChild(createCatalogCard(i)));
                 vp.appendChild(grid);
                 return;
@@ -1373,7 +1488,7 @@
                     '🤝 5% Affiliate & Support'
                 ];
                 if (activeSub === 'ALL') activeSub = profSubs[0];
-                subContainer.style.display = 'flex';
+                subContainer.style.display = 'grid';
                 profSubs.forEach(ps => {
                     const b = document.createElement('button');
                     b.className = 'subtab-pill' + (activeSub.split(' (')[0] === ps.split(' (')[0] ? ' active' : '');
@@ -1385,8 +1500,12 @@
                 return;
             }
 
-            // 6. ADMIN COMMAND CENTER
+            // 6. ADMIN COMMAND CENTER (HANYA ADMIN)
             if (activeTab === 'admin') {
+                if (!isUserAdmin()) {
+                    switchTab('home');
+                    return;
+                }
                 subContainer.style.display = 'none';
                 renderAdminTab(vp);
                 return;
@@ -2188,6 +2307,21 @@
             localStorage.setItem('xb_saved_cart', JSON.stringify(cart));
             const badgeEl = document.getElementById('cartCountBadge');
             if (badgeEl) badgeEl.innerText = cart.length;
+
+            const floatBar = document.getElementById('floatingCartBar');
+            const floatCount = document.getElementById('floatingCartCount');
+            const floatTotal = document.getElementById('floatingCartTotal');
+            if (floatBar) {
+                if (cart.length > 0) {
+                    const sumUsdt = cart.reduce((acc, item) => acc + (parseFloat(item.usdt) || 0), 0);
+                    const finalUsdt = sumUsdt * (1 - (typeof cartDiscountPct !== 'undefined' ? cartDiscountPct : 0) / 100);
+                    floatCount.innerText = `${cart.length} ${cart.length === 1 ? 'Item' : 'Items'} in Cart`;
+                    floatTotal.innerText = `Total: ${fmtPrice(finalUsdt)}`;
+                    floatBar.classList.add('show');
+                } else {
+                    floatBar.classList.remove('show');
+                }
+            }
         }
         updateCartUI();
 
