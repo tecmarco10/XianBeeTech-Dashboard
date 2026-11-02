@@ -1151,16 +1151,16 @@
                     const m = n.meta;
                     actionBtnsHtml = `
                         <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
-                            <button class="btn-ui buy-now" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Terima ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
+                            <button class="btn-ui buy-now" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Accept ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
                             <button class="btn-ui primary" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'counter')">✍️ Counter Offer</button>
-                            <button class="btn-ui secondary" style="padding:7px 10px;font-size:0.72rem;color:var(--danger);" onclick="adminWebNegoDecision(${idx}, 'reject')">❌ Tolak</button>
+                            <button class="btn-ui secondary" style="padding:7px 10px;font-size:0.72rem;color:var(--danger);" onclick="adminWebNegoDecision(${idx}, 'reject')">❌ Decline</button>
                         </div>
                     `;
                 } else if (activeNotifFeed === 'buyer' && n.meta && n.meta.type === 'nego_approved') {
                     const m = n.meta;
                     actionBtnsHtml = `
                         <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
-                            <button class="btn-ui buy-now" style="width:100%;padding:9px;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt})">💳 Ambil & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
+                            <button class="btn-ui buy-now" style="width:100%;padding:9px;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt})">💳 Accept & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
                         </div>
                     `;
                 }
@@ -1185,7 +1185,7 @@
             showToast('Notifications cleared!');
         }
 
-        // Fire complete Notification Flow for ADD_TO_CART (Identical to XianBee-TechStore.py + Order by Web)
+        // Fire complete Notification Flow for ADD_TO_CART (100% English + Order by Web)
         function triggerCartAlertNotifications(itemTitle, priceUsdt) {
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
             const cartAlertHtml = (
@@ -1197,7 +1197,7 @@
                 `💰 <b>Price:</b> $${parseFloat(priceUsdt).toFixed(2)} USDT\n` +
                 `🌐 <b>Platform:</b> <b>Order by Web (Web App Store)</b>\n` +
                 `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `⏳ <i>Status: Menunggu client melakukan checkout...</i>`
+                `⏳ <i>Status: Waiting for client checkout on Web Store...</i>`
             );
 
             pushInWebNotification('admin', '🛒 REAL-TIME CART ALERT (WEB)', cartAlertHtml);
@@ -3703,7 +3703,7 @@
                 `⏳ <i>Your offer has been sent to the Executive Admin. You will be notified automatically once approved or counter-offered!</i>`
             );
 
-            // Format identik dengan XianBee-TechStore.py agar parser bot & tombol callback bekerja otomatis
+            // 100% English Admin Nego Message & Inline Keyboard
             const adminNegoMsg = (
                 `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                 `   🤝 <b>I N C O M I N G  N E G O T I A T I O N</b>\n` +
@@ -3715,18 +3715,17 @@
                 `🔥 <b>Buyer Offer:</b> <b>$${offerUsdt.toFixed(2)} USDT</b> (-${discPct}%)\n` +
                 `📝 <b>Note:</b> ${note}\n` +
                 `🌐 <b>Platform:</b> <b>Order by Web</b></blockquote>\n` +
-                `👇 <i>Pilih tindakan eksekutif di bawah ini:</i>`
+                `👇 <i>Select an executive action below:</i>`
             );
 
-            // Inline Keyboard identik dengan XianBee-TechStore.py
             const adminInlineKeyboard = {
                 inline_keyboard: [
                     [
-                        { text: `✅ Terima ($${offerUsdt.toFixed(2)})`, callback_data: `admnego_acc_${negoId}` },
-                        { text: `❌ Tolak`, callback_data: `admnego_rej_${negoId}` }
+                        { text: `✅ Accept ($${offerUsdt.toFixed(2)})`, callback_data: `admnego_acc_${negoId}` },
+                        { text: `❌ Decline`, callback_data: `admnego_rej_${negoId}` }
                     ],
                     [
-                        { text: `✍️ Counter Offer (Tawar Balik)`, callback_data: `admnego_cnt_${negoId}` }
+                        { text: `✍️ Counter Offer`, callback_data: `admnego_cnt_${negoId}` }
                     ]
                 ]
             };
@@ -3751,10 +3750,10 @@
             ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminNegoMsg, true, adminInlineKeyboard));
 
             closeModal('paymentGatewayModal');
-            showToast(`Offer ${negoId} ($${offerUsdt.toFixed(2)} USDT) sent to Admin Bot with action buttons!`);
+            showToast(`Offer ${negoId} ($${offerUsdt.toFixed(2)} USDT) sent to Admin Bot!`);
         }
 
-        // Handler ketika Admin klik Terima / Counter / Tolak dari dalam Web Admin Logs
+        // Handler when Admin clicks Accept / Counter / Decline from Web Admin Logs (100% English)
         function adminWebNegoDecision(notifIdx, decision) {
             const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
             const notif = adminList[notifIdx];
@@ -3771,7 +3770,7 @@
                     `🔸 <b>Item:</b> ${m.itemSummary}\n` +
                     `🔸 <b>Normal Price:</b> <s>$${ parseFloat(m.origPrice).toFixed(2) } USDT</s>\n` +
                     `🔥 <b>Approved Deal Price:</b> <b>$${dealUsdt.toFixed(2)} USDT</b></blockquote>\n` +
-                    `👇 <i>Silakan langsung checkout dengan harga spesial yang telah disetujui Admin!</i>`
+                    `👇 <i>Click below to checkout immediately with your Admin-approved special deal!</i>`
                 );
                 const buyerKb = {
                     inline_keyboard: [
@@ -3787,10 +3786,10 @@
                 showToast(`Offer ${m.negoId} accepted at $${dealUsdt.toFixed(2)} USDT!`);
 
             } else if (decision === 'counter') {
-                const cntInput = prompt(`Masukkan harga Counter Offer (USDT) untuk ${m.buyerUname} (Normal: $${m.origPrice}):`, (m.origPrice * 0.9).toFixed(2));
+                const cntInput = prompt(`Enter Counter Offer price (USDT) for ${m.buyerUname} (Normal: $${m.origPrice}):`, (m.origPrice * 0.9).toFixed(2));
                 if (!cntInput) return;
                 const cntUsdt = parseFloat(cntInput.replace(',', '.'));
-                if (isNaN(cntUsdt) || cntUsdt <= 0) return showToast('Nominal USDT tidak valid!');
+                if (isNaN(cntUsdt) || cntUsdt <= 0) return showToast('Invalid USDT amount!');
 
                 const msgBuyer = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
@@ -3801,7 +3800,7 @@
                     `🔸 <b>Normal Price:</b> <s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>\n` +
                     `🔸 <b>Your Offer:</b> <s>$${parseFloat(m.offerUsdt).toFixed(2)} USDT</s>\n` +
                     `🔥 <b>Admin Special Deal:</b> <b>$${cntUsdt.toFixed(2)} USDT</b></blockquote>\n` +
-                    `👇 <i>Klik tombol di bawah untuk langsung mengambil harga spesial ini:</i>`
+                    `👇 <i>Click the button below to claim this special deal immediately:</i>`
                 );
                 const buyerKb = {
                     inline_keyboard: [
@@ -3814,7 +3813,7 @@
                 delete notif.meta;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
                 renderNotificationsList();
-                showToast(`Counter Offer $${cntUsdt.toFixed(2)} USDT dikirim ke ${m.buyerUname}!`);
+                showToast(`Counter Offer $${cntUsdt.toFixed(2)} USDT sent to ${m.buyerUname}!`);
 
             } else if (decision === 'reject') {
                 const msgBuyer = (
@@ -3824,15 +3823,15 @@
                     `<blockquote>🔸 <b>Nego ID:</b> <code>${m.negoId}</code>\n` +
                     `🔸 <b>Item:</b> ${m.itemSummary}\n` +
                     `🔸 <b>Your Offer:</b> $${parseFloat(m.offerUsdt).toFixed(2)} USDT</blockquote>\n` +
-                    `⚠️ <i>Maaf, tawaran Anda belum dapat diterima oleh Admin. Silakan ajukan nominal tawaran yang lebih wajar.</i>`
+                    `⚠️ <i>Sorry, your offer could not be accepted by the Admin. Please submit a more reasonable offer.</i>`
                 );
                 pushInWebNotification('buyer', '❌ OFFER DECLINED', msgBuyer);
                 sendTelegramSilentPush(m.buyerId, msgBuyer, true);
-                notif.title = `❌ REJECTED (${m.negoId})`;
+                notif.title = `❌ DECLINED (${m.negoId})`;
                 delete notif.meta;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
                 renderNotificationsList();
-                showToast(`Offer ${m.negoId} ditolak!`);
+                showToast(`Offer ${m.negoId} declined!`);
             }
         }
 
@@ -3951,7 +3950,7 @@
 
             const rowsHtml = sortedLeaders.length === 0
                 ? `<div style="padding:20px;text-align:center;color:var(--text-muted);font-weight:700;font-size:0.8rem;">
-                    Belum ada data holder yang tercatat atau sinkronisasi Sheet4 CRM belum dijalankan dari menu Admin Bot (<b>👑 Sync Data User & Loyalty Sheet4</b>).
+                    No verified holder records found yet, or Sheet4 CRM synchronization has not been triggered from the Admin Command Center.
                    </div>`
                 : sortedLeaders.map((l, idx) => `
                     <div class="cred-field-row" style="padding:10px 12px;">
