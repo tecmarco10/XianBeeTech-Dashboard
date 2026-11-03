@@ -389,8 +389,9 @@
            ========================================================= */
         .grid-cards {
             display: grid;
-            grid-template-columns: 1fr;
-            gap: 14px;
+            grid-template-columns: minmax(0, 1fr);
+            gap: 12px;
+            width: 100%;
         }
 
         .grid-years-2col {
@@ -474,11 +475,14 @@
             border: 1px solid var(--border-subtle);
             border-left: 4px solid var(--accent-cyan);
             border-radius: 16px;
-            padding: 15px;
+            padding: 13px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 12px;
+            gap: 10px;
+            min-width: 0;
+            width: 100%;
+            overflow: hidden;
             box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.06);
             transition: 0.2s;
         }
@@ -2246,29 +2250,29 @@
             '2021': 10.0, '2022': 8.5, '2023': 7.5, '2024': 6.5, '2025': 5.5, '2026': 4.5
         };
 
-        // YEARS 2011 -> 2026 AT THE VERY TOP (FULL YEAR NUMBERS + HIGH-TRUST 2-LINE COPY)
+        // YEARS 2011 -> 2026 AT THE VERY TOP (CALIBRATED LENGTH SO ZERO TEXT IS CUT OFF ON MOBILE)
         const GITHUB_VAULT_CATEGORIES = [
-            { yr: '2011', icon: '2011', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2011', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 30.00 },
-            { yr: '2012', icon: '2012', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2012', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 28.00 },
-            { yr: '2013', icon: '2013', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2013', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 26.00 },
-            { yr: '2014', icon: '2014', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2014', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 24.00 },
-            { yr: '2015', icon: '2015', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2015', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 22.00 },
-            { yr: '2016', icon: '2016', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2016', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 20.00 },
-            { yr: '2017', icon: '2017', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2017', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 18.00 },
-            { yr: '2018', icon: '2018', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2018', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 16.00 },
-            { yr: '2019', icon: '2019', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2019', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 15.00 },
-            { yr: '2020', icon: '2020', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2020', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 12.00 },
-            { yr: '2021', icon: '2021', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2021', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 10.00 },
-            { yr: '2022', icon: '2022', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2022', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 8.50 },
-            { yr: '2023', icon: '2023', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2023', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 7.50 },
-            { yr: '2024', icon: '2024', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2024', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 6.50 },
-            { yr: '2025', icon: '2025', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2025', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 5.50 },
-            { yr: '2026', icon: '2026', tag: 'BEST VALUE', title: 'GitHub Aged Vault • 2026', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 4.50 },
-            { yr: 'Arctic', icon: '❄️', tag: 'RARE BADGE', title: 'GitHub Arctic Code Vault', line1: '✨ Official 2020 Arctic Badge Unlocked', line2: '🛡️ High Authority Developer Profile + Full 2FA', desc: 'Authentic 2020 Arctic Vault Contributor + Full 2FA', usdt: 25.00 },
-            { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges', line1: '✨ 6 Official GitHub Badges Unlocked', line2: '🛡️ Pull Shark, YOLO, Starstruck & Galaxy Brain', desc: 'Unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usdt: 10.00 },
-            { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Vault', line1: '✨ Aged Profile + 50+ Organic Followers', line2: '🛡️ Instant Authority • Full Credentials & 2FA Key', desc: 'Aged GitHub profiles pre-warmed with 50+ organic followers', usdt: 10.00 },
-            { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Dev Pack', line1: '✨ Verified Developer Pack Benefits', line2: '🛡️ Cloud Credits, Pro Tools & Full Account Access', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
-            { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub Green Contributions', line1: '✨ Active Green Contribution Matrix', line2: '🛡️ Pre-Populated Repositories & Clean History', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 }
+            { yr: '2011', icon: '2011', tag: 'HIGH QUALITY', title: 'GitHub Vault 2011', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 30.00 },
+            { yr: '2012', icon: '2012', tag: 'HIGH QUALITY', title: 'GitHub Vault 2012', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 28.00 },
+            { yr: '2013', icon: '2013', tag: 'HIGH QUALITY', title: 'GitHub Vault 2013', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 26.00 },
+            { yr: '2014', icon: '2014', tag: 'HIGH QUALITY', title: 'GitHub Vault 2014', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 24.00 },
+            { yr: '2015', icon: '2015', tag: 'HIGH QUALITY', title: 'GitHub Vault 2015', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 22.00 },
+            { yr: '2016', icon: '2016', tag: 'HIGH QUALITY', title: 'GitHub Vault 2016', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 20.00 },
+            { yr: '2017', icon: '2017', tag: 'HIGH QUALITY', title: 'GitHub Vault 2017', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 18.00 },
+            { yr: '2018', icon: '2018', tag: 'HIGH QUALITY', title: 'GitHub Vault 2018', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 16.00 },
+            { yr: '2019', icon: '2019', tag: 'HIGH QUALITY', title: 'GitHub Vault 2019', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 15.00 },
+            { yr: '2020', icon: '2020', tag: 'HIGH QUALITY', title: 'GitHub Vault 2020', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 12.00 },
+            { yr: '2021', icon: '2021', tag: 'HIGH QUALITY', title: 'GitHub Vault 2021', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 10.00 },
+            { yr: '2022', icon: '2022', tag: 'HIGH QUALITY', title: 'GitHub Vault 2022', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 8.50 },
+            { yr: '2023', icon: '2023', tag: 'HIGH QUALITY', title: 'GitHub Vault 2023', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 7.50 },
+            { yr: '2024', icon: '2024', tag: 'HIGH QUALITY', title: 'GitHub Vault 2024', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 6.50 },
+            { yr: '2025', icon: '2025', tag: 'HIGH QUALITY', title: 'GitHub Vault 2025', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 5.50 },
+            { yr: '2026', icon: '2026', tag: 'BEST VALUE', title: 'GitHub Vault 2026', line1: '✨ High Quality + 2FA', line2: '🛡️ Full Access • Anti-Flagged', desc: 'High Quality • Full Access & 2FA • Anti-Flagged', usdt: 4.50 },
+            { yr: 'Arctic', icon: '❄️', tag: 'RARE BADGE', title: 'GitHub Arctic Code Vault', line1: '✨ Official 2020 Arctic Badge', line2: '🛡️ High Authority Profile • Full Access & 2FA', desc: 'Authentic 2020 Arctic Vault Contributor + Full 2FA', usdt: 25.00 },
+            { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges', line1: '✨ 6 Official Badges Unlocked', line2: '🛡️ Pull Shark, YOLO, Starstruck & Galaxy Brain', desc: 'Unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usdt: 10.00 },
+            { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Vault', line1: '✨ Aged Profile + 50+ Followers', line2: '🛡️ Instant Developer Authority • Full Access & 2FA', desc: 'Aged GitHub profiles pre-warmed with 50+ organic followers', usdt: 10.00 },
+            { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Dev Pack', line1: '✨ Verified Dev Pack Benefits', line2: '🛡️ Cloud Credits, Pro Tools & Full Account Access', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
+            { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub Green Contributions', line1: '✨ Active Green Matrix Graph', line2: '🛡️ Pre-Populated Repositories & Clean History', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 }
         ];
 
         const CATALOG_ITEMS = [
@@ -2875,34 +2879,33 @@
         function createGithubYearCard(yObj) {
             const list = liveGithubStock[yObj.yr] || [];
             const hasStock = list.length > 0;
+            const isYearCard = /^\d{4}$/.test(yObj.yr);
             const stockTag = hasStock ? `🟢 ${list.length} Ready` : `🔴 0 Stock`;
             const minPrice = hasStock ? Math.min(...list.map(a => a._computed_usdt || yObj.usdt)) : yObj.usdt;
-            const topShortLine = yObj.line1 || '✨ High Quality + 2FA';
-            const bottomLongLine = yObj.line2 || '🛡️ Full Access • Anti-Flagged';
+            const cleanTitle = isYearCard ? `GitHub Vault ${yObj.yr}` : yObj.title;
+            const topShortLine = isYearCard ? '✨ High Quality + 2FA' : (yObj.line1 || '✨ High Quality + 2FA');
+            const bottomLongLine = isYearCard ? '🛡️ Full Access • Anti-Flagged' : (yObj.line2 || '🛡️ Full Access • Anti-Flagged');
 
             const card = document.createElement('div');
             card.className = 'item-card';
             card.style.borderLeft = hasStock ? '4px solid var(--success)' : '4px solid var(--accent-primary)';
             card.innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:7px;min-width:0;">
-                    <!-- BARIS ATAS: ANGKA TAHUN + HARGA DI KANAN -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;flex-wrap:nowrap;">
-                        <div style="display:inline-flex;align-items:center;gap:4px;min-width:0;">
-                            <span style="background:var(--grad-subtle);border:1px solid var(--border-focus);color:var(--text-primary);font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;padding:3px 7px;border-radius:7px;line-height:1.1;flex-shrink:0;">${yObj.icon}</span>
-                            <span style="font-size:0.56rem;font-weight:800;padding:2px 5px;border-radius:5px;white-space:nowrap;border:1px solid ${hasStock ? 'rgba(16,185,129,0.4)' : 'var(--border-subtle)'};background:${hasStock ? 'rgba(16,185,129,0.12)' : 'var(--bg-soft)'};color:${hasStock ? 'var(--success)' : 'var(--text-muted)'};">${stockTag}</span>
-                        </div>
-                        <div class="price-chip" style="padding:3px 6px;font-size:0.64rem;border-radius:7px;letter-spacing:-0.3px;">${fmtPrice(minPrice)}</div>
+                <div style="display:flex;flex-direction:column;gap:7px;min-width:0;width:100%;">
+                    <!-- BARIS ATAS: KIRI STATUS STOK, KANAN HARGA (TIDAK AKAN PERNAH TABRAKAN) -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;width:100%;">
+                        <span style="font-size:0.6rem;font-weight:800;padding:3px 7px;border-radius:6px;white-space:nowrap;border:1px solid ${hasStock ? 'rgba(16,185,129,0.4)' : 'var(--border-subtle)'};background:${hasStock ? 'rgba(16,185,129,0.12)' : 'var(--bg-soft)'};color:${hasStock ? 'var(--success)' : 'var(--text-muted)'};">${!isYearCard ? yObj.icon + ' ' : ''}${stockTag}</span>
+                        <div class="price-chip" style="padding:3px 7px;font-size:0.64rem;border-radius:6px;letter-spacing:-0.2px;">${fmtPrice(minPrice)}</div>
                     </div>
 
-                    <!-- KOTAK 3D DALAM (JUDUL + TEKS ATAS PENDEK + TEKS BAWAH LEBIH PANJANG TANPA KEPOTONG) -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid ${hasStock ? 'var(--success)' : 'var(--accent-cyan)'};border-radius:10px;padding:7px 8px;min-width:0;">
-                        <h3 class="item-title" style="margin:0 0 2px 0;font-size:0.75rem;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${yObj.title}</h3>
+                    <!-- KOTAK 3D DALAM (JUDUL + BARIS PENDEK + BARIS PANJANG UTUH TANPA KEPOTONG) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid ${hasStock ? 'var(--success)' : 'var(--accent-cyan)'};border-radius:10px;padding:7px 8px;min-width:0;width:100%;">
+                        <h3 class="item-title" style="margin:0 0 2px 0;font-size:0.76rem;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTitle}</h3>
                         <div style="font-size:0.61rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;">${topShortLine}</div>
-                        <div style="font-size:0.58rem;font-weight:600;color:var(--text-secondary);letter-spacing:-0.15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;margin-top:1px;">${bottomLongLine}</div>
+                        <div style="font-size:0.57rem;font-weight:600;color:var(--text-secondary);letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3;margin-top:1px;">${bottomLongLine}</div>
                     </div>
                 </div>
                 <div class="item-actions" style="padding-top:6px;">
-                    <button class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;padding:7px 6px;font-size:0.7rem;white-space:nowrap;" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usdt})">
+                    <button class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;padding:7px 6px;font-size:0.7rem;white-space:nowrap;" onclick="openInPageYearVault('${yObj.yr}', '${cleanTitle}', ${yObj.usdt})">
                         📂 Inspect Vault (${list.length})
                     </button>
                 </div>
@@ -2921,20 +2924,22 @@
             card.className = 'item-card';
             card.style.borderLeft = '4px solid var(--success)';
             card.innerHTML = `
-                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-                    <div style="min-width:0;flex:1;">
-                        <span class="item-tag" style="color:var(--success);border-color:rgba(16,185,129,0.4);">ID: ${accId} • YEAR ${acc.year || yrKey}</span>
-                        <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:0.96rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${uname}</h4>
-                        <div style="font-size:0.68rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;">👥 Followers: <b>${acc.followers || 0}</b> • 📁 Repos: <b>${acc.repos || 0}</b></div>
-                        <div style="font-size:0.66rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">🔐 Full Username, Password &amp; 2FA Secret Key Included</div>
+                <div style="display:flex;flex-direction:column;gap:8px;min-width:0;width:100%;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                        <span class="item-tag" style="margin:0;color:var(--success);border-color:rgba(16,185,129,0.4);">ID: ${accId} • YEAR ${acc.year || yrKey}</span>
+                        <div class="price-chip" style="padding:4px 8px;font-size:0.72rem;">${fmtPrice(prc)}</div>
                     </div>
-                    <div class="price-chip">${fmtPrice(prc)}</div>
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:10px;padding:9px 11px;min-width:0;width:100%;">
+                        <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:0.92rem;margin:0 0 3px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${uname}</h4>
+                        <div style="font-size:0.66rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👥 Followers: <b>${acc.followers || 0}</b> • 📁 Public Repos: <b>${acc.repos || 0}</b></div>
+                        <div style="font-size:0.63rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;">🔐 Full Username, Password &amp; 2FA Secret Key Included</div>
+                    </div>
                 </div>
-                <div class="item-actions">
-                    <a href="${url}" target="_blank" class="btn-ui secondary" style="min-width:70px;">🌐 Profile</a>
-                    <button class="btn-ui secondary" style="min-width:75px;" onclick="openNegoModalById('${accId}')">🤝 Make an Offer</button>
-                    <button class="btn-ui secondary" style="min-width:75px;" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
-                    <button class="btn-ui buy-now" style="min-width:85px;" onclick="buySpecificAccountById('${accId}')">⚡ Buy Now</button>
+                <div class="item-actions" style="padding-top:6px;">
+                    <a href="${url}" target="_blank" class="btn-ui secondary" style="min-width:65px;padding:8px 6px;font-size:0.71rem;">🌐 Profile</a>
+                    <button class="btn-ui secondary" style="min-width:70px;padding:8px 6px;font-size:0.71rem;" onclick="openNegoModalById('${accId}')">🤝 Offer</button>
+                    <button class="btn-ui secondary" style="min-width:65px;padding:8px 6px;font-size:0.71rem;" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
+                    <button class="btn-ui buy-now" style="min-width:75px;padding:8px 6px;font-size:0.71rem;" onclick="buySpecificAccountById('${accId}')">⚡ Buy Now</button>
                 </div>
             `;
             return card;
@@ -2955,19 +2960,24 @@
             card.className = 'item-card';
             const suffix = item.isUnit ? '/u' : '';
             card.innerHTML = `
-                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
-                    <div style="display:flex;gap:10px;min-width:0;flex:1;">
-                        <div class="item-icon" style="width:40px;height:40px;font-size:1.1rem;">${item.icon}</div>
-                        <div style="min-width:0;flex:1;">
-                            <span class="item-tag">${item.tag}</span>
-                            <h3 class="item-title" style="font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.title}</h3>
-                            <p class="item-desc" style="font-size:0.71rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</p>
+                <div style="display:flex;flex-direction:column;gap:8px;min-width:0;width:100%;">
+                    <!-- BARIS ATAS: KIRI TAG KATEGORI, KANAN HARGA (PAS 100% DI LAYAR HP) -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;width:100%;">
+                        <span class="item-tag" style="margin:0;">${item.tag}</span>
+                        <div class="price-chip" style="padding:4px 8px;font-size:0.74rem;">${fmtPrice(item.usdt)}${suffix}</div>
+                    </div>
+
+                    <!-- KOTAK 3D DALAM: IKON + JUDUL + DESKRIPSI TIDAK PERNAH MELEBAR KELUAR LAYAR -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:10px;padding:9px 11px;display:flex;align-items:center;gap:10px;min-width:0;width:100%;">
+                        <div class="item-icon" style="width:38px;height:38px;font-size:1.05rem;flex-shrink:0;">${item.icon}</div>
+                        <div style="min-width:0;flex:1;overflow:hidden;">
+                            <h3 class="item-title" style="font-size:0.84rem;margin:0 0 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.title}</h3>
+                            <p class="item-desc" style="font-size:0.66rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</p>
                         </div>
                     </div>
-                    <div class="price-chip">${fmtPrice(item.usdt)}${suffix}</div>
                 </div>
-                <div class="item-actions">
-                    <button class="btn-ui buy-now" onclick='openDirectOrderModal(${JSON.stringify(item)})'>⚡ Buy Now / Configure</button>
+                <div class="item-actions" style="padding-top:6px;">
+                    <button class="btn-ui buy-now" style="width:100%;padding:9px 10px;font-size:0.74rem;" onclick='openDirectOrderModal(${JSON.stringify(item)})'>⚡ Buy Now / Configure</button>
                 </div>
             `;
             return card;
@@ -3227,14 +3237,14 @@
             const accIdStr = `${entry.category}-${entry.username}`;
             return `
                 <div class="item-card" style="border:1.5px solid var(--success);background:var(--bg-card);margin-bottom:14px;padding:16px;gap:12px;">
-                    <!-- TELEGRAM-STYLE CLEAN HEADER WITH ORDER BY WEB BADGE -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--success);border-radius:10px;padding:11px 13px;font-family:'JetBrains Mono',monospace;font-size:0.76rem;line-height:1.6;">
-                        <div style="color:var(--success);font-weight:800;font-size:0.8rem;margin-bottom:4px;">📦 A C C O U N T &nbsp; D I S P A T C H E D</div>
-                        <div>🔸 <b>Invoice:</b> <code>${entry.invoice}</code></div>
-                        <div>🔸 <b>Service:</b> ${formatStandardServiceName(entry.category)}</div>
-                        <div>🔸 <b>Acc ID:</b> <code>${accIdStr}</code></div>
-                        <div>🔸 <b>Price:</b> <b style="color:var(--success);">$${entry.priceUsdt} USDT</b> <span style="color:var(--text-muted);font-size:0.68rem;">(${entry.date})</span></div>
-                        <div>🔸 <b>Source:</b> <b style="color:var(--accent-cyan);">🌐 Order by Web</b></div>
+                    <!-- TELEGRAM-STYLE CLEAN HEADER (1-LINE STRICT, NO WRAPPED LETTERS) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--success);border-radius:10px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:0.71rem;line-height:1.55;overflow:hidden;">
+                        <div style="color:var(--success);font-weight:800;font-size:0.76rem;letter-spacing:1.2px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📦 ACCOUNT DISPATCHED</div>
+                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Invoice:</b> <code>${entry.invoice}</code></div>
+                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Service:</b> ${formatStandardServiceName(entry.category)}</div>
+                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Acc ID:</b> <code>${accIdStr}</code></div>
+                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Price:</b> <b style="color:var(--success);">$${entry.priceUsdt} USDT</b> <span style="color:var(--text-muted);font-size:0.63rem;">(${entry.date})</span></div>
+                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Source:</b> <b style="color:var(--accent-cyan);">🌐 Order by Web</b></div>
                     </div>
 
                     <!-- CLEAN FULL-WIDTH CREDENTIAL ROWS (NEVER SQUISHED VERTICALLY) -->
