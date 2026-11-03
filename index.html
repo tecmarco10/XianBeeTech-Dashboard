@@ -3415,105 +3415,174 @@
             }
         }
 
+        let customDepositDraftAmt = 15;
+
+        function updateCustomDepositPreview(val) {
+            const num = parseFloat(val);
+            if (!isNaN(num) && num > 0) {
+                customDepositDraftAmt = num;
+            }
+            const eqEl = document.getElementById('customDepIdrPreview');
+            if (eqEl) {
+                const validNum = (!isNaN(num) && num > 0) ? num : 0;
+                eqEl.innerText = '≈ Rp ' + Math.round(validNum * liveUsdtIdrRate).toLocaleString('id-ID');
+            }
+            const btnLbl = document.getElementById('btnContinueDepositText');
+            if (btnLbl) {
+                const validNum = (!isNaN(num) && num >= 5) ? num : customDepositDraftAmt;
+                const amtText = selectedWalletDepMode === 'IDR'
+                    ? 'Rp ' + Math.round(validNum * liveUsdtIdrRate).toLocaleString('id-ID')
+                    : validNum.toFixed(2) + ' USDT';
+                btnLbl.innerText = `Continue to Deposit (${amtText}) — ${selectedWalletDepMode}`;
+            }
+        }
+
+        function selectDepositPresetNominal(amtUsdt) {
+            customDepositDraftAmt = amtUsdt;
+            const inp = document.getElementById('customDepositAmt');
+            if (inp) inp.value = amtUsdt;
+            updateCustomDepositPreview(amtUsdt);
+            initiateTopUp(amtUsdt, selectedWalletDepMode);
+        }
+
         function renderWalletTab(container) {
             const vip = getUserVipRankMeta();
             const cleanU = currentUsername.replace(/^@/, '');
+            const activeAmt = (!isNaN(parseFloat(customDepositDraftAmt)) && customDepositDraftAmt >= 5) ? parseFloat(customDepositDraftAmt) : 15;
+            const ctaAmtFormatted = selectedWalletDepMode === 'IDR'
+                ? 'Rp ' + Math.round(activeAmt * liveUsdtIdrRate).toLocaleString('id-ID')
+                : activeAmt.toFixed(2) + ' USDT';
 
             container.innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:18px;max-width:860px;margin:0 auto;">
-                    <!-- 1. PRECISION 3D VIP WALLET CARD (DYNAMIC VIP RANK + SEND & RECEIVE ACTIONS) -->
-                    <div class="vip-card" style="margin-bottom:0;padding:20px;gap:16px;">
-                        <!-- TOP ROW: CHIP & DYNAMIC VIP RANK BADGE WITH DESCRIPTION -->
-                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
-                            <div style="display:flex;align-items:center;gap:10px;">
-                                <div class="vip-chip"></div>
-                                <div>
-                                    <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.1px;opacity:0.85;">ACCOUNT HOLDER</div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:800;">@${cleanU} <span style="opacity:0.75;font-size:0.74rem;">(ID: ${currentUserId})</span></div>
+                <div style="display:flex;flex-direction:column;gap:16px;max-width:860px;margin:0 auto;">
+                    <!-- 1. ULTRA-LUXURY FINTECH WALLET CARD (PHANTOM / REVOLUT ULTRA STYLE) -->
+                    <div style="background:linear-gradient(145deg, #111528 0%, #1e1b4b 52%, #0c1222 100%);border:1px solid rgba(139,92,246,0.42);border-radius:22px;padding:20px;position:relative;overflow:hidden;box-shadow:0 18px 42px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.12);color:#ffffff;display:flex;flex-direction:column;gap:16px;">
+                        <div style="position:absolute;top:-65px;right:-45px;width:190px;height:190px;background:radial-gradient(circle, rgba(99,102,241,0.32) 0%, transparent 70%);pointer-events:none;"></div>
+                        <div style="position:absolute;bottom:-75px;left:-45px;width:190px;height:190px;background:radial-gradient(circle, rgba(6,182,212,0.22) 0%, transparent 70%);pointer-events:none;"></div>
+
+                        <!-- TOP ROW: METALLIC CHIP + HOLDER IDENTITY & QUICK SYNC/ALERTS -->
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:10px;position:relative;z-index:1;">
+                            <div style="display:flex;align-items:center;gap:11px;min-width:0;">
+                                <div class="vip-chip" style="width:38px;height:27px;border-radius:6px;box-shadow:inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 6px rgba(0,0,0,0.35);flex-shrink:0;"></div>
+                                <div style="min-width:0;">
+                                    <div style="font-size:0.62rem;font-weight:800;letter-spacing:1.2px;color:#94a3b8;text-transform:uppercase;">XIANBEE VAULT HOLDER</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.88rem;font-weight:800;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                        @${cleanU} <span style="color:#94a3b8;font-weight:600;font-size:0.74rem;">• #${currentUserId}</span>
+                                    </div>
                                 </div>
                             </div>
 
-                            <div style="background:${vip.badgeBg};border:1px solid ${vip.badgeBorder};color:${vip.badgeColor};padding:6px 11px;border-radius:11px;text-align:right;max-width:100%;">
-                                <div style="display:flex;align-items:center;justify-content:flex-end;gap:5px;font-size:0.74rem;font-weight:800;letter-spacing:0.6px;">
-                                    <span>${vip.emblem}</span>
-                                    <span>${vip.rank}</span>
+                            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                                <button class="top-pill" id="btnWebSyncBal" style="background:rgba(255,255,255,0.07);color:#f8fafc;border:1px solid rgba(255,255,255,0.16);padding:7px 11px;font-size:0.72rem;border-radius:9px;" onclick="syncWalletBalanceInWeb()">↻ Sync</button>
+                                <button class="top-pill" style="background:rgba(255,255,255,0.07);color:#f8fafc;border:1px solid rgba(255,255,255,0.16);padding:7px 11px;font-size:0.72rem;border-radius:9px;" onclick="openNotificationsModal()">🔔 Alerts</button>
+                            </div>
+                        </div>
+
+                        <!-- CENTER ROW: HERO AVAILABLE BALANCE DISPLAY -->
+                        <div style="padding:4px 0;position:relative;z-index:1;">
+                            <div style="font-size:0.68rem;font-weight:800;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px;">Total Available Balance</div>
+                            <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:2.2rem;font-weight:800;letter-spacing:-0.8px;color:#ffffff;line-height:1.1;">${userBalanceUsdt.toFixed(2)}</span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:800;color:#10b981;background:rgba(16,185,129,0.16);border:1px solid rgba(16,185,129,0.38);padding:3px 8px;border-radius:7px;">USDT</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:6px;margin-top:6px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:#cbd5e1;font-weight:600;">
+                                <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;"></span>
+                                <span>≈ Rp ${Math.round(userBalanceUsdt * liveUsdtIdrRate).toLocaleString('id-ID')} IDR</span>
+                            </div>
+                        </div>
+
+                        <!-- VIP RANK & PRIVILEGE STRIP (FULL-WIDTH, LEFT-ALIGNED & SYMMETRICAL) -->
+                        <div style="background:${vip.badgeBg};border:1px solid ${vip.badgeBorder};border-radius:13px;padding:10px 13px;display:flex;align-items:center;gap:11px;position:relative;z-index:1;">
+                            <div style="width:36px;height:36px;border-radius:10px;background:rgba(0,0,0,0.28);border:1px solid ${vip.badgeBorder};display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;">
+                                ${vip.emblem}
+                            </div>
+                            <div style="min-width:0;flex:1;text-align:left;">
+                                <div style="font-size:0.73rem;font-weight:800;color:${vip.badgeColor};letter-spacing:0.7px;text-transform:uppercase;line-height:1.2;">
+                                    ${vip.rank}
                                 </div>
-                                <div style="font-size:0.64rem;font-weight:700;opacity:0.92;margin-top:2px;">${vip.perk}</div>
+                                <div style="font-size:0.68rem;font-weight:600;color:#e2e8f0;opacity:0.92;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ${vip.perk}
+                                </div>
                             </div>
                         </div>
 
-                        <!-- MIDDLE ROW: AVAILABLE BALANCE -->
-                        <div style="background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
-                            <div>
-                                <div style="font-size:0.68rem;opacity:0.85;text-transform:uppercase;font-weight:800;letter-spacing:0.8px;">Available Wallet Balance</div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.95rem;font-weight:800;line-height:1.15;margin:3px 0;">${userBalanceUsdt.toFixed(2)} USDT</div>
-                                <div style="font-size:0.76rem;opacity:0.9;font-family:'JetBrains Mono',monospace;">≈ Rp ${Math.round(userBalanceUsdt * liveUsdtIdrRate).toLocaleString('id-ID')}</div>
-                            </div>
-                            <div style="display:flex;gap:6px;">
-                                <button class="top-pill" id="btnWebSyncBal" style="background:rgba(0,0,0,0.42);color:#fff;border-color:rgba(255,255,255,0.32);padding:8px 11px;font-size:0.72rem;" onclick="syncWalletBalanceInWeb()">🔄 Sync</button>
-                                <button class="top-pill" style="background:rgba(0,0,0,0.42);color:#fff;border-color:rgba(255,255,255,0.32);padding:8px 11px;font-size:0.72rem;" onclick="openNotificationsModal()">🔔 Alerts</button>
-                            </div>
-                        </div>
-
-                        <!-- BOTTOM ROW: PRECISION SEND (KIRIM) & RECEIVE (TERIMA) BUTTONS -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-                            <button class="top-pill" style="justify-content:center;padding:11px 10px;background:rgba(255,255,255,0.16);color:#ffffff;border:1px solid rgba(255,255,255,0.38);border-radius:11px;font-size:0.78rem;font-weight:800;" onclick="openWalletSendModal()">
-                                <span>📤 Send Balance</span>
+                        <!-- BOTTOM ROW: FINTECH SEND & RECEIVE ACTION DOCK WITH CRISP SVG ICONS -->
+                        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;position:relative;z-index:1;">
+                            <button type="button" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 10px;border-radius:12px;background:rgba(255,255,255,0.09);border:1px solid rgba(255,255,255,0.22);color:#ffffff;font-family:inherit;font-size:0.8rem;font-weight:800;cursor:pointer;transition:0.18s;white-space:nowrap;" onclick="openWalletSendModal()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                                <span>Send Balance</span>
                             </button>
-                            <button class="top-pill" style="justify-content:center;padding:11px 10px;background:rgba(16,185,129,0.28);color:#ffffff;border:1px solid rgba(16,185,129,0.65);border-radius:11px;font-size:0.78rem;font-weight:800;" onclick="openWalletReceiveModal()">
-                                <span>📥 Receive Balance</span>
+                            <button type="button" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 10px;border-radius:12px;background:linear-gradient(135deg, #4f46e5 0%, #06b6d4 100%);border:1px solid rgba(255,255,255,0.28);color:#ffffff;font-family:inherit;font-size:0.8rem;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(79,70,229,0.35);transition:0.18s;white-space:nowrap;" onclick="openWalletReceiveModal()">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="7" x2="7" y2="17"></line><polyline points="17 17 7 17 7 7"></polyline></svg>
+                                <span>Receive Balance</span>
                             </button>
                         </div>
                     </div>
 
-                    <!-- 2. DEPOSIT WALLET BALANCE (WITH DEDICATED 1-LINE CURRENCY SELECTOR BOX WITHOUT SYMBOLS) -->
-                    <div class="item-card">
+                    <!-- 2. DEPOSIT WALLET BALANCE (PRESETS ON TOP -> CUSTOM INPUT -> SELECT CURRENCY AT BOTTOM) -->
+                    <div class="item-card" style="padding:18px;gap:14px;">
                         <div>
-                            <span class="item-tag">INSTANT WALLET TOP-UP GATEWAY</span>
-                            <h3 class="item-title" style="font-size:1.1rem;">Deposit Wallet Balance</h3>
-                            <p class="item-desc" style="margin-bottom:12px;">Select your preferred deposit currency below for instant automated or verified balance credit.</p>
-
-                            <!-- DEDICATED PRECISION BOX FOR SELECT DEPOSIT CURRENCY (1 LINE, NO SYMBOLS) -->
-                            <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:14px;padding:11px 12px;margin-bottom:16px;">
-                                <div style="font-size:0.68rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                    SELECT DEPOSIT CURRENCY
-                                </div>
-                                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-                                    <button class="subtab-pill ${selectedWalletDepMode === 'USDT' ? 'active' : ''}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:10px 8px;font-size:0.75rem;" onclick="switchWalletDepMode('USDT')">
-                                        USDT (OxaPay)
-                                    </button>
-                                    <button class="subtab-pill ${selectedWalletDepMode === 'IDR' ? 'active' : ''}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:10px 8px;font-size:0.75rem;" onclick="switchWalletDepMode('IDR')">
-                                        IDR (QRIS / Bank)
-                                    </button>
-                                </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:4px;">
+                                <span class="item-tag" style="margin:0;">INSTANT WALLET TOP-UP GATEWAY</span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:700;color:var(--text-muted);">Min: 5.00 USDT</span>
                             </div>
+                            <h3 class="item-title" style="font-size:1.12rem;margin-bottom:2px;">Deposit Wallet Balance</h3>
+                            <p class="item-desc" style="margin-bottom:14px;">Choose a quick deposit package or enter a custom nominal below.</p>
 
+                            <!-- STEP 1: QUICK NOMINAL PRESETS (2x2 SYMMETRICAL GRID) -->
                             <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px;">
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 8px;" onclick="initiateTopUp(5, '${selectedWalletDepMode}')">
-                                    <span style="font-size:0.98rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(5 * liveUsdtIdrRate).toLocaleString('id-ID') : '5.00 USDT'}</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 10px;border-radius:12px;gap:3px;" onclick="selectDepositPresetNominal(5)">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.96rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(5 * liveUsdtIdrRate).toLocaleString('id-ID') : '5.00 USDT'}</span>
                                     <span style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;">Credit: +5.00 USDT</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 8px;" onclick="initiateTopUp(25, '${selectedWalletDepMode}')">
-                                    <span style="font-size:0.98rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(25 * liveUsdtIdrRate).toLocaleString('id-ID') : '25.00 USDT'}</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 10px;border-radius:12px;gap:3px;" onclick="selectDepositPresetNominal(25)">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.96rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(25 * liveUsdtIdrRate).toLocaleString('id-ID') : '25.00 USDT'}</span>
                                     <span style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;">Credit: +25.00 USDT</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 8px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(50, '${selectedWalletDepMode}')">
-                                    <span style="font-size:0.98rem;font-weight:800;color:var(--success);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(50 * liveUsdtIdrRate).toLocaleString('id-ID') : '50.00 USDT'}</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 10px;border-radius:12px;gap:3px;border-color:rgba(16,185,129,0.4);" onclick="selectDepositPresetNominal(50)">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.96rem;font-weight:800;color:var(--success);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(50 * liveUsdtIdrRate).toLocaleString('id-ID') : '50.00 USDT'}</span>
                                     <span style="font-size:0.68rem;color:var(--success);white-space:nowrap;">+50.00 USDT (+5% Bonus)</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 8px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(100, '${selectedWalletDepMode}')">
-                                    <span style="font-size:0.98rem;font-weight:800;color:var(--success);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(100 * liveUsdtIdrRate).toLocaleString('id-ID') : '100.00 USDT'}</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 10px;border-radius:12px;gap:3px;border-color:rgba(16,185,129,0.4);" onclick="selectDepositPresetNominal(100)">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.96rem;font-weight:800;color:var(--success);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(100 * liveUsdtIdrRate).toLocaleString('id-ID') : '100.00 USDT'}</span>
                                     <span style="font-size:0.68rem;color:var(--success);white-space:nowrap;">+100.00 USDT (+10% Bonus)</span>
                                 </button>
                             </div>
 
-                            <div class="form-group" style="margin-bottom:0;">
-                                <label>Or Enter Custom Deposit Amount in USDT (Min 5 USDT):</label>
-                                <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;">
-                                    <input type="number" class="form-input" id="customDepositAmt" value="15" min="5" step="1" style="min-width:90px;">
-                                    <button class="btn-ui primary" style="white-space:nowrap;padding:10px 12px;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), 'USDT')">Deposit USDT</button>
-                                    <button class="btn-ui buy-now" style="white-space:nowrap;padding:10px 12px;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), 'IDR')">Deposit IDR</button>
+                            <!-- STEP 2: CLEAN FULL-WIDTH CUSTOM DEPOSIT INPUT (NO REDUNDANT USDT/IDR BUTTONS) -->
+                            <div class="form-group" style="margin-bottom:14px;">
+                                <label style="margin-bottom:6px;">Enter Custom Deposit Amount in USDT (Min 5 USDT):</label>
+                                <div style="position:relative;display:flex;align-items:center;">
+                                    <input type="number" class="form-input" id="customDepositAmt" value="${activeAmt}" min="5" step="1" style="padding-right:135px;font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:800;" oninput="updateCustomDepositPreview(this.value)">
+                                    <span id="customDepIdrPreview" style="position:absolute;right:12px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;color:var(--accent-cyan);background:var(--bg-soft);border:1px solid var(--border-subtle);padding:4px 8px;border-radius:7px;pointer-events:none;white-space:nowrap;">
+                                        ≈ Rp ${Math.round(activeAmt * liveUsdtIdrRate).toLocaleString('id-ID')}
+                                    </span>
                                 </div>
+                            </div>
+
+                            <!-- STEP 3: DEDICATED SELECT DEPOSIT CURRENCY BOX AT THE BOTTOM (1 LINE, NO SYMBOLS) -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span style="font-size:0.68rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap;">
+                                        SELECT DEPOSIT CURRENCY
+                                    </span>
+                                    <span style="font-size:0.68rem;font-weight:700;color:var(--text-muted);white-space:nowrap;">
+                                        Active: <b style="color:var(--text-primary);">${selectedWalletDepMode}</b>
+                                    </span>
+                                </div>
+
+                                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                                    <button type="button" class="subtab-pill ${selectedWalletDepMode === 'USDT' ? 'active' : ''}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:10px 8px;font-size:0.76rem;border-radius:10px;" onclick="switchWalletDepMode('USDT')">
+                                        USDT (OxaPay)
+                                    </button>
+                                    <button type="button" class="subtab-pill ${selectedWalletDepMode === 'IDR' ? 'active' : ''}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:10px 8px;font-size:0.76rem;border-radius:10px;" onclick="switchWalletDepMode('IDR')">
+                                        IDR (QRIS / Bank)
+                                    </button>
+                                </div>
+
+                                <button type="button" class="btn-ui primary" style="width:100%;padding:12px;font-size:0.82rem;border-radius:10px;white-space:nowrap;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), selectedWalletDepMode)">
+                                    <span id="btnContinueDepositText">Continue to Deposit (${ctaAmtFormatted}) — ${selectedWalletDepMode}</span>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -3522,7 +3591,7 @@
                     <div class="item-card">
                         <div>
                             <span class="item-tag">PROMO VOUCHER</span>
-                            <h3 class="item-title">🎟️ Claim Promo / Discount Code</h3>
+                            <h3 class="item-title">Claim Promo / Discount Code</h3>
                             <p class="item-desc" style="margin-bottom:10px;">Have a special discount voucher? Activate it here for your next checkout.</p>
                             <div style="display:flex;gap:8px;">
                                 <input type="text" class="form-input" id="walletPromoInput" placeholder="Enter promo code (e.g. XIANBEE5)...">
@@ -4794,35 +4863,35 @@
 
             body.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">🪙 OXAPAY INSTANT CRYPTO GATEWAY</span>
+                    <span class="item-tag" style="margin:0;">🪙 OXAPAY AUTO-PILOT GATEWAY</span>
                     <button class="top-pill" onclick="if(oxaPollTimer) clearInterval(oxaPollTimer); closeModal('paymentGatewayModal');">✕</button>
                 </div>
                 <h3 style="margin:0 0 4px 0;font-family:'JetBrains Mono',monospace;">${invId}</h3>
                 <p style="margin:0 0 14px 0;font-size:0.78rem;color:var(--text-secondary);">${title}</p>
 
-                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:14px;border-radius:12px;margin-bottom:14px;font-size:0.82rem;line-height:1.55;">
+                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:14px;border-radius:12px;margin-bottom:14px;font-size:0.82rem;line-height:1.6;">
                     <div><b>Target / Account:</b> <code>${targetStr}</code></div>
                     <div><b>Amount Due:</b> <span style="color:var(--success);font-weight:800;font-family:'JetBrains Mono',monospace;">${amountUsdt.toFixed(2)} USDT</span> (~Rp ${idrEquiv})</div>
                     ${trackId ? `<div><b>OxaPay Track ID:</b> <code>${trackId}</code> <span id="oxaLiveStatusBadge" style="color:var(--warning);font-weight:800;">(⏳ Waiting Blockchain Confirmation...)</span></div>` : ''}
                 </div>
 
                 ${payUrl ? `
-                    <a href="${payUrl}" target="_blank" class="btn-ui primary" style="width:100%;padding:13px;font-size:0.88rem;margin-bottom:10px;">
-                        💳 Pay ${amountUsdt.toFixed(2)} USDT on OxaPay Now
+                    <a href="${payUrl}" target="_blank" class="btn-ui primary" style="width:100%;padding:13px;font-size:0.88rem;margin-bottom:12px;">
+                        💳 Pay ${amountUsdt.toFixed(2)} USDT on OxaPay (Instant)
                     </a>
-                ` : ''}
+                ` : `
+                    <button class="btn-ui primary" style="width:100%;padding:13px;font-size:0.86rem;margin-bottom:12px;" onclick='openOxaPayInstantGateway("${invId}", "${title}", "${targetStr}", ${amountUsdt}, ${isTopup}, ${clearCartOnInit}, window._pendingCryptoOrderItems || [])'>
+                        🔄 Reconnect OxaPay Gateway
+                    </button>
+                `}
 
-                <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:12px;border-radius:12px;font-size:0.76rem;line-height:1.5;margin-bottom:14px;">
-                    <div style="color:var(--accent-cyan);font-weight:800;margin-bottom:4px;">OR DIRECT TRANSFER TO MERCHANT WALLET:</div>
-                    <div><b>USDT (BEP-20 / Arbitrum / Base):</b><br><code style="word-break:break-all;">0xA0F03ABeED5e6926F2CF2f91ED9927C143872a1B</code></div>
-                    <div style="margin-top:6px;"><b>USDT (TRC-20):</b><br><code style="word-break:break-all;">TA1fH7BU6eKb996cPvG6tRv4zc4Z7sDQcz</code></div>
+                <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:12px 14px;border-radius:12px;font-size:0.75rem;line-height:1.5;margin-bottom:14px;color:var(--text-secondary);">
+                    <div style="color:var(--success);font-weight:800;margin-bottom:3px;">⚡ 100% AUTOMATED BLOCKCHAIN DETECTION</div>
+                    <div>Click the payment button above and choose any supported network (TRC-20, BEP-20, Arbitrum, Base, Polygon, or TON) on the OxaPay checkout page. Your balance or account credentials will be unlocked automatically once confirmed.</div>
                 </div>
 
                 <div style="display:flex;gap:8px;">
-                    ${trackId ? `<button class="btn-ui buy-now" onclick='checkOxaPayInvoiceNow("${trackId}", "${invId}", "${title}", "${targetStr}", ${amountUsdt}, ${isTopup}, ${clearCartOnInit})'>🔄 Check Payment Status</button>` : ''}
-                    <a href="https://t.me/XianBeeTechStore?text=${encodeURIComponent(`Hello Admin, I have paid Invoice ${invId}\nOrder: ${title}\nTarget: ${targetStr}\nAmount: ${amountUsdt.toFixed(2)} USDT`)}" target="_blank" class="btn-ui secondary">
-                        💬 Support
-                    </a>
+                    ${trackId ? `<button class="btn-ui buy-now" style="width:100%;padding:11px;" onclick='checkOxaPayInvoiceNow("${trackId}", "${invId}", "${title}", "${targetStr}", ${amountUsdt}, ${isTopup}, ${clearCartOnInit})'>🔄 Check Payment Status</button>` : ''}
                 </div>
             `;
 
