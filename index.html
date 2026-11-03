@@ -1182,7 +1182,10 @@
 
             <nav class="sidebar-nav">
                 <button class="side-btn active" data-tab="home" onclick="switchTab('home')">🏠 Dashboard Home</button>
-                <button class="side-btn" data-tab="github" onclick="switchTab('github')">🐙 GitHub Enterprise Hub</button>
+                <button class="side-btn" data-tab="github" onclick="switchTab('github')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span>GitHub Enterprise Hub</span>
+                </button>
                 <button class="side-btn" data-tab="catalog" onclick="switchTab('catalog')">🌐 All Store Catalogs</button>
                 <button class="side-btn" data-tab="wallet" onclick="switchTab('wallet')">💳 Wallet & Deposit</button>
                 <button class="side-btn" data-tab="profile" onclick="switchTab('profile')">👤 Profile & Purchased Vault</button>
@@ -1269,11 +1272,13 @@
         <!-- 📱 MOBILE BOTTOM NAVIGATION -->
         <nav class="bottom-nav">
             <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')">
-                <span style="font-size:1.18rem;">🏠</span>
+                <span style="font-size:1.18rem;line-height:1;">🏠</span>
                 <span>Home</span>
             </button>
             <button class="bnav-btn" data-tab="github" onclick="switchTab('github')">
-                <span style="font-size:1.18rem;">🐙</span>
+                <span style="display:inline-flex;align-items:center;justify-content:center;height:21px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                </span>
                 <span>GitHub</span>
             </button>
             <button class="bnav-btn" data-tab="catalog" onclick="switchTab('catalog')">
@@ -2645,8 +2650,8 @@
 
                 if (activeSub.includes('GitHub Accounts')) {
                     const yrHeader = document.createElement('div');
-                    yrHeader.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--accent-cyan);margin:4px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
-                    yrHeader.innerText = '📅 Aged GitHub Accounts by Year (2011 – 2026)';
+                    yrHeader.style.cssText = 'padding:7px 10px;margin:4px 0 12px 0;border-top:1.5px solid var(--border-focus);border-bottom:1.5px solid var(--border-focus);background:var(--bg-soft);text-align:center;font-size:0.65rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                    yrHeader.innerHTML = '━━ ◆ AGED GITHUB ACCOUNTS BY YEAR (2011 – 2026) ◆ ━━';
                     vp.appendChild(yrHeader);
 
                     const yrGrid = document.createElement('div');
@@ -2655,8 +2660,8 @@
                     vp.appendChild(yrGrid);
 
                     const spHeader = document.createElement('div');
-                    spHeader.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:20px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
-                    spHeader.innerText = '🗂️ GitHub Special Categories (Arctic, 6 Badges, Followers, Student Pack & Contributions)';
+                    spHeader.style.cssText = 'padding:7px 10px;margin:18px 0 12px 0;border-top:1.5px solid rgba(245,158,11,0.5);border-bottom:1.5px solid rgba(245,158,11,0.5);background:var(--bg-soft);text-align:center;font-size:0.64rem;font-weight:800;color:var(--warning);text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                    spHeader.innerHTML = '━━ ★ GITHUB SPECIAL CATEGORIES (ARCTIC • BADGES • PACK) ★ ━━';
                     vp.appendChild(spHeader);
 
                     const spGrid = document.createElement('div');
@@ -2778,8 +2783,8 @@
 
                 if (activeSub.includes('GitHub Categories')) {
                     const catHeader = document.createElement('div');
-                    catHeader.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:2px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
-                    catHeader.innerText = '🗂️ GitHub Special Categories (Arctic, 6 Badges, High Followers, Student Pack & Contributions)';
+                    catHeader.style.cssText = 'padding:7px 10px;margin:2px 0 12px 0;border-top:1.5px solid rgba(245,158,11,0.5);border-bottom:1.5px solid rgba(245,158,11,0.5);background:var(--bg-soft);text-align:center;font-size:0.64rem;font-weight:800;color:var(--warning);text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                    catHeader.innerHTML = '━━ ★ GITHUB SPECIAL CATEGORIES (ARCTIC • BADGES • PACK) ★ ━━';
                     vp.appendChild(catHeader);
 
                     const grid = document.createElement('div');
@@ -2791,8 +2796,8 @@
 
                 // Default: Choose by Year (Murni 2011-2026 berpasangan 2 kolom kiri-kanan, lalu GitHub Special Categories di bawahnya)
                 const yrTitle = document.createElement('div');
-                yrTitle.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--accent-cyan);margin:2px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
-                yrTitle.innerText = '📅 Select GitHub Year (2011 – 2026 Paired Left & Right)';
+                yrTitle.style.cssText = 'padding:7px 10px;margin:2px 0 12px 0;border-top:1.5px solid var(--border-focus);border-bottom:1.5px solid var(--border-focus);background:var(--bg-soft);text-align:center;font-size:0.65rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                yrTitle.innerHTML = '━━ ◆ SELECT GITHUB YEAR (2011 – 2026 PAIRED) ◆ ━━';
                 vp.appendChild(yrTitle);
 
                 const yrGrid = document.createElement('div');
@@ -2801,8 +2806,8 @@
                 vp.appendChild(yrGrid);
 
                 const badgeTitle = document.createElement('div');
-                badgeTitle.style.cssText = 'font-size:0.82rem;font-weight:800;color:var(--warning);margin:22px 0 10px 0;text-transform:uppercase;letter-spacing:0.7px;';
-                badgeTitle.innerText = '🗂️ GitHub Special Categories (Arctic, 6 Badges, High Followers, Student Pack & Contributions)';
+                badgeTitle.style.cssText = 'padding:7px 10px;margin:18px 0 12px 0;border-top:1.5px solid rgba(245,158,11,0.5);border-bottom:1.5px solid rgba(245,158,11,0.5);background:var(--bg-soft);text-align:center;font-size:0.64rem;font-weight:800;color:var(--warning);text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                badgeTitle.innerHTML = '━━ ★ GITHUB SPECIAL CATEGORIES (ARCTIC • BADGES • PACK) ★ ━━';
                 vp.appendChild(badgeTitle);
 
                 const badgeGrid = document.createElement('div');
@@ -3236,56 +3241,62 @@
             const otpDomId = `inline_otp_${idx}_${Math.floor(Math.random()*9999)}`;
             const accIdStr = `${entry.category}-${entry.username}`;
             return `
-                <div class="item-card" style="border:1.5px solid var(--success);background:var(--bg-card);margin-bottom:14px;padding:16px;gap:12px;">
-                    <!-- TELEGRAM-STYLE CLEAN HEADER (1-LINE STRICT, NO WRAPPED LETTERS) -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--success);border-radius:10px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:0.71rem;line-height:1.55;overflow:hidden;">
-                        <div style="color:var(--success);font-weight:800;font-size:0.76rem;letter-spacing:1.2px;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📦 ACCOUNT DISPATCHED</div>
-                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Invoice:</b> <code>${entry.invoice}</code></div>
-                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Service:</b> ${formatStandardServiceName(entry.category)}</div>
-                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Acc ID:</b> <code>${accIdStr}</code></div>
-                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Price:</b> <b style="color:var(--success);">$${entry.priceUsdt} USDT</b> <span style="color:var(--text-muted);font-size:0.63rem;">(${entry.date})</span></div>
-                        <div style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔸 <b>Source:</b> <b style="color:var(--accent-cyan);">🌐 Order by Web</b></div>
+                <div class="item-card" style="border:1px solid var(--border-focus);border-left:4px solid var(--success);background:var(--bg-card);margin-bottom:10px;padding:11px 12px;gap:8px;">
+                    <!-- COMPACT TOP BAR: INVOICE & ACC ID ON LEFT, PRICE ON RIGHT -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;border-bottom:1px solid var(--border-subtle);padding-bottom:6px;">
+                        <div style="min-width:0;flex:1;">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--success);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                📦 ${entry.invoice} • ID: ${accIdStr}
+                            </div>
+                            <div style="font-size:0.6rem;color:var(--text-muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                🕒 ${entry.date} • 🌐 Order by Web
+                            </div>
+                        </div>
+                        <div class="price-chip" style="padding:3px 7px;font-size:0.66rem;">$${entry.priceUsdt} USDT</div>
                     </div>
 
-                    <!-- CLEAN FULL-WIDTH CREDENTIAL ROWS (NEVER SQUISHED VERTICALLY) -->
-                    <div style="display:flex;flex-direction:column;gap:8px;">
-                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:9px 12px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                                <span style="font-size:0.68rem;font-weight:800;color:var(--text-muted);letter-spacing:0.6px;">🔸 USERNAME / EMAIL</span>
-                                <button class="top-pill" style="padding:4px 9px;font-size:0.68rem;" onclick="navigator.clipboard.writeText('${entry.username}'); showToast('Username copied!');">📋 Copy</button>
+                    <!-- COMPACT 3D CREDENTIAL BOX (ALIGNED COLONS ":" FOR USERNAME, PASSWORD, 2FA) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
+                            <div style="min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;">Username</span>
+                                <span style="color:var(--text-muted);font-weight:700;">: </span>
+                                <span style="color:var(--text-primary);font-weight:800;">${entry.username}</span>
                             </div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--text-primary);word-break:break-all;">${entry.username}</div>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.62rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.username}'); showToast('Username copied!');">📋</button>
                         </div>
 
-                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:9px 12px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                                <span style="font-size:0.68rem;font-weight:800;color:var(--text-muted);letter-spacing:0.6px;">🔸 PASSWORD</span>
-                                <button class="top-pill" style="padding:4px 9px;font-size:0.68rem;" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋 Copy</button>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
+                            <div style="min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;">Password</span>
+                                <span style="color:var(--text-muted);font-weight:700;">: </span>
+                                <span style="color:var(--text-primary);font-weight:800;">${entry.password}</span>
                             </div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--text-primary);word-break:break-all;">${entry.password}</div>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.62rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋</button>
                         </div>
 
-                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:9px 12px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                                <span style="font-size:0.68rem;font-weight:800;color:var(--text-muted);letter-spacing:0.6px;">🔸 2FA / RECOVERY KEY</span>
-                                <button class="top-pill" style="padding:4px 9px;font-size:0.68rem;" onclick="navigator.clipboard.writeText('${entry.twofa}'); showToast('2FA Secret copied!');">📋 Copy</button>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
+                            <div style="min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;">2FA Key</span>
+                                <span style="color:var(--text-muted);font-weight:700;">: </span>
+                                <span style="color:var(--accent-cyan);font-weight:800;">${entry.twofa}</span>
                             </div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:800;color:var(--accent-cyan);word-break:break-all;">${entry.twofa}</div>
-                            ${safeSecret.length >= 8 ? `
-                                <button class="btn-ui primary" id="${otpDomId}" style="width:100%;margin-top:8px;padding:8px 10px;font-size:0.75rem;" onclick="showInline2faOtp('${safeSecret}', '${otpDomId}')">
-                                    🔑 Get Live 6-Digit 2FA OTP Code (30s)
-                                </button>
-                            ` : ''}
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.62rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.twofa}'); showToast('2FA Key copied!');">📋</button>
                         </div>
                     </div>
 
-                    <!-- SYMMETRICAL ACTION BUTTONS -->
-                    <div style="display:flex;flex-direction:column;gap:7px;padding-top:6px;border-top:1px solid var(--border-subtle);">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                            <button class="btn-ui secondary" style="padding:9px;" onclick="copyFullCredentialBlock(${idx})">📋 Copy All Data</button>
-                            <a href="${entry.url}" target="_blank" class="btn-ui secondary" style="padding:9px;">🌐 Open GitHub</a>
+                    <!-- COMPACT ACTION ROW -->
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        ${safeSecret.length >= 8 ? `
+                            <button class="btn-ui primary" id="${otpDomId}" style="width:100%;padding:7px 8px;font-size:0.69rem;border-radius:8px;" onclick="showInline2faOtp('${safeSecret}', '${otpDomId}')">
+                                🔑 Get Live 6-Digit 2FA OTP (30s)
+                            </button>
+                        ` : ''}
+                        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;">
+                            <button class="btn-ui secondary" style="padding:7px 4px;font-size:0.67rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="copyFullCredentialBlock(${idx})">📋 Copy All</button>
+                            <button class="btn-ui buy-now" style="padding:7px 4px;font-size:0.67rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="downloadCredentialTxt(${idx})">💾 Save .TXT</button>
+                            <a href="${entry.url}" target="_blank" class="btn-ui secondary" style="padding:7px 4px;font-size:0.67rem;min-width:0;border-radius:8px;white-space:nowrap;">🌐 GitHub</a>
                         </div>
-                        <button class="btn-ui buy-now" style="width:100%;padding:10px;" onclick="downloadCredentialTxt(${idx})">💾 Save / Download Credentials (.TXT)</button>
                     </div>
                 </div>
             `;
@@ -3726,29 +3737,32 @@
 
             container.innerHTML = `
                 <div style="display:flex;flex-direction:column;gap:12px;max-width:860px;margin:0 auto;">
-                    <!-- 1. DYNAMIC VIP COLOR-THEMED WALLET CARD (RED=FOUNDER, BLUE=DIAMOND, GOLD=GOLD, SILVER=SILVER, BRONZE=BRONZE) -->
-                    <div style="background:${vip.cardBg};border:1.5px solid ${vip.cardBorder};border-radius:20px;padding:14px 16px;position:relative;overflow:hidden;box-shadow:0 14px 34px rgba(0,0,0,0.55), inset 0 1px 0 rgba(255,255,255,0.18);color:#ffffff;display:flex;flex-direction:column;gap:10px;">
-                        <div style="position:absolute;top:-65px;right:-45px;width:190px;height:190px;background:radial-gradient(circle, ${vip.glowTop} 0%, transparent 70%);pointer-events:none;"></div>
-                        <div style="position:absolute;bottom:-75px;left:-45px;width:190px;height:190px;background:radial-gradient(circle, ${vip.glowBottom} 0%, transparent 70%);pointer-events:none;"></div>
+                    <!-- 1. EXCLUSIVE 2D LUXURY METALLIC VIP CARD (DOUBLE-FRAME 2D AESTHETIC + VIP GOLD CHIP) -->
+                    <div style="background:${vip.cardBg};border:1.5px solid ${vip.cardBorder};outline:1px solid rgba(255,255,255,0.14);outline-offset:-5px;border-radius:18px;padding:14px 15px;position:relative;overflow:hidden;color:#ffffff;display:flex;flex-direction:column;gap:10px;">
+                        <!-- 2D GEOMETRIC LUXURY LINE PATTERN OVERLAY -->
+                        <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);background-size:22px 22px;pointer-events:none;"></div>
 
                         <!-- TOP ROW: SYNC (LEFT) + VIP RANK BADGE (CENTER) + ALERTS (RIGHT) -->
                         <div style="display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;position:relative;z-index:1;">
-                            <button type="button" id="btnWebSyncBal" style="background:rgba(0,0,0,0.28);color:#f8fafc;border:1px solid rgba(255,255,255,0.2);padding:5px 9px;font-size:0.68rem;border-radius:7px;font-weight:800;cursor:pointer;white-space:nowrap;" onclick="syncWalletBalanceInWeb()">↻ Sync</button>
+                            <button type="button" id="btnWebSyncBal" style="background:rgba(0,0,0,0.35);color:#f8fafc;border:1px solid ${vip.cardBorder};padding:5px 9px;font-size:0.66rem;border-radius:7px;font-weight:800;cursor:pointer;white-space:nowrap;" onclick="syncWalletBalanceInWeb()">↻ Sync</button>
                             
                             <div style="display:flex;justify-content:center;min-width:0;">
-                                <div style="background:${vip.badgeBg};border:1px solid ${vip.badgeBorder};padding:3px 10px;border-radius:99px;font-size:0.63rem;font-weight:800;color:${vip.badgeColor};letter-spacing:0.6px;text-transform:uppercase;box-shadow:0 3px 10px rgba(0,0,0,0.35);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <div style="background:rgba(0,0,0,0.42);border:1px solid ${vip.badgeBorder};padding:3px 10px;border-radius:6px;font-size:0.62rem;font-weight:800;color:${vip.badgeColor};letter-spacing:0.7px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                     ${vip.emblem} ${vip.rank}
                                 </div>
                             </div>
 
-                            <button type="button" style="background:rgba(0,0,0,0.28);color:#f8fafc;border:1px solid rgba(255,255,255,0.2);padding:5px 9px;font-size:0.68rem;border-radius:7px;font-weight:800;cursor:pointer;white-space:nowrap;" onclick="openNotificationsModal()">🔔 Alerts</button>
+                            <button type="button" style="background:rgba(0,0,0,0.35);color:#f8fafc;border:1px solid ${vip.cardBorder};padding:5px 9px;font-size:0.66rem;border-radius:7px;font-weight:800;cursor:pointer;white-space:nowrap;" onclick="openNotificationsModal()">🔔 Alerts</button>
                         </div>
 
-                        <!-- CENTER SECTION: CENTERED CHIP & USERNAME -->
-                        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;position:relative;z-index:1;padding-bottom:4px;border-bottom:1px solid rgba(255,255,255,0.12);">
-                            <div class="vip-chip" style="width:34px;height:23px;border-radius:5px;box-shadow:inset 0 1px 2px rgba(255,255,255,0.6), 0 2px 5px rgba(0,0,0,0.35);"></div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:800;color:#ffffff;">
-                                @${cleanU} <span style="color:rgba(255,255,255,0.72);font-weight:600;font-size:0.7rem;">(#${currentUserId})</span>
+                        <!-- CENTER SECTION: GOLD EMBOSSED VIP CHIP & USERNAME -->
+                        <div style="display:flex;flex-direction:column;align-items:center;text-align:center;gap:5px;position:relative;z-index:1;padding-bottom:6px;border-bottom:1px dashed rgba(255,255,255,0.18);">
+                            <div class="vip-chip" style="width:52px;height:25px;border-radius:6px;background:linear-gradient(135deg, #fef08a 0%, #eab308 50%, #a16207 100%);border:1px solid #fef9c3;display:flex;align-items:center;justify-content:center;gap:3px;padding:0 5px;">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="#422006"><path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14v2H5v-2z"/></svg>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:900;color:#422006;letter-spacing:0.6px;line-height:1;">VIP</span>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:800;color:#ffffff;">
+                                @${cleanU} <span style="color:rgba(255,255,255,0.72);font-weight:600;font-size:0.68rem;">(#${currentUserId})</span>
                             </div>
                         </div>
 
@@ -3891,17 +3905,24 @@
 
             if (subSection.includes('Purchased Vault')) {
                 const vaultHtml = vault.length === 0
-                    ? `<div style="padding:24px;text-align:center;color:var(--text-muted);font-weight:700;">You haven't purchased any GitHub accounts in this browser yet. Click <b>🐙 GitHub ➔ 📂 Inspect Vault</b> to choose an account!</div>`
+                    ? `<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.75rem;font-weight:700;">You haven't purchased any GitHub accounts yet. Click <b>GitHub ➔ 📂 Inspect Vault</b> to choose an account!</div>`
                     : vault.map((entry, idx) => renderCredentialCardHtml(entry, idx)).join('');
 
                 container.innerHTML = `
-                    <div class="inpage-drawer">
-                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:16px;">
-                            <div>
-                                <span class="item-tag">ENCRYPTED LOCAL CREDENTIAL STORAGE</span>
-                                <h3 style="margin:2px 0 0 0;">🔐 My Purchased Accounts Vault (${vault.length} Saved)</h3>
+                    <div class="inpage-drawer" style="padding:13px 14px;">
+                        <!-- COMPACT 3D CENTERED HEADER BOX FOR PURCHASED VAULT -->
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:11px;padding:9px 12px;text-align:center;margin-bottom:12px;">
+                            <div style="font-size:0.56rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.9px;text-transform:uppercase;">
+                                ENCRYPTED CREDENTIAL VAULT
                             </div>
-                            ${vault.length > 0 ? `<button class="btn-ui buy-now" style="flex:0 0 auto;" onclick='downloadBatchCredentialsTxt(${JSON.stringify(vault)}, "ALL-VAULT")'>💾 Download All (.TXT)</button>` : ''}
+                            <h3 style="margin:2px 0 0 0;font-size:0.86rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                🔐 My Purchased Vault (${vault.length} Saved)
+                            </h3>
+                            ${vault.length > 0 ? `
+                                <button class="btn-ui buy-now" style="width:100%;max-width:220px;margin:7px auto 0 auto;padding:6px 10px;font-size:0.68rem;border-radius:8px;" onclick='downloadBatchCredentialsTxt(${JSON.stringify(vault)}, "ALL-VAULT")'>
+                                    💾 Download All (${vault.length} .TXT)
+                                </button>
+                            ` : ''}
                         </div>
                         ${vaultHtml}
                     </div>
@@ -3911,22 +3932,42 @@
 
             if (subSection.includes('Order History')) {
                 const rowsHtml = history.length === 0
-                    ? `<div style="padding:22px;text-align:center;color:var(--text-muted);font-weight:700;">No transactions recorded yet.</div>`
+                    ? `<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:0.75rem;font-weight:700;">No transactions recorded yet.</div>`
                     : history.map(h => `
-                        <div class="item-card" style="margin-bottom:10px;">
-                            <div class="item-top">
-                                <div>
-                                    <span class="item-tag">${h.invoice} • ${h.date}</span>
-                                    <h4 class="item-title">${h.title}</h4>
-                                    <p class="item-desc">Method: <b>${h.method}</b> • Target: <code>${h.target || '-'}</code></p>
-                                </div>
-                                <div class="price-chip" style="color:${h.type === 'IN' ? 'var(--success)' : 'var(--accent-cyan)'};">
+                        <div class="item-card" style="margin-bottom:10px;padding:11px 12px;gap:7px;border-left:4px solid ${h.type === 'IN' ? 'var(--success)' : 'var(--accent-cyan)'};">
+                            <!-- ROW 1: INVOICE ID ON LEFT + PRICE CHIP LOCKED INSIDE BOX ON RIGHT -->
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;min-width:0;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:800;color:var(--accent-cyan);background:rgba(6,182,212,0.12);border:1px solid rgba(6,182,212,0.3);padding:3px 8px;border-radius:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    🧾 ${h.invoice}
+                                </span>
+                                <div class="price-chip" style="padding:3px 8px;font-size:0.68rem;border-radius:7px;flex-shrink:0;color:${h.type === 'IN' ? 'var(--success)' : 'var(--accent-cyan)'};border-color:${h.type === 'IN' ? 'rgba(16,185,129,0.38)' : 'rgba(6,182,212,0.38)'};">
                                     ${h.type === 'IN' ? '+' : '-'}${fmtPrice(h.usdt)}
+                                </div>
+                            </div>
+
+                            <!-- ROW 2: COMPLETE DATE & TIME -->
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;font-weight:700;color:var(--text-muted);padding-left:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                🕒 Date: <span style="color:var(--text-secondary);">${h.date}</span>
+                            </div>
+
+                            <!-- ROW 3: COMPACT 3D INNER DETAILS BOX -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid ${h.type === 'IN' ? 'var(--success)' : 'var(--accent-primary)'};border-radius:9px;padding:7px 10px;min-width:0;width:100%;">
+                                <h4 class="item-title" style="margin:0 0 2px 0;font-size:0.78rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${h.title}</h4>
+                                <div style="font-size:0.64rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    Method: <b>${h.method}</b> • Target: <code>${h.target || '-'}</code>
                                 </div>
                             </div>
                         </div>
                     `).join('');
-                container.innerHTML = `<div class="inpage-drawer"><h3 style="margin:0 0 14px 0;">🧾 Complete Transaction History</h3>${rowsHtml}</div>`;
+                container.innerHTML = `
+                    <div class="inpage-drawer" style="padding:13px 14px;">
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:11px;padding:9px 12px;text-align:center;margin-bottom:12px;">
+                            <div style="font-size:0.56rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.9px;text-transform:uppercase;">VERIFIED LEDGER</div>
+                            <h3 style="margin:2px 0 0 0;font-size:0.86rem;font-weight:800;color:var(--text-primary);">🧾 Complete Transaction History (${history.length})</h3>
+                        </div>
+                        ${rowsHtml}
+                    </div>
+                `;
                 return;
             }
 
@@ -5400,10 +5441,12 @@
 
         function renderDiagnosticTools(vp) {
             vp.innerHTML = `
-                <div class="inpage-drawer">
-                    <span class="item-tag">SHADOWBAN & VALUATION SCANNER</span>
-                    <h3 style="margin:4px 0 8px 0;">🛡️ GitHub Account Health, Valuation & Repo Scanner</h3>
-                    <p class="item-desc" style="margin-bottom:14px;">Enter a GitHub username or repository (owner/repo) to check shadowban status, account valuation in USDT, and repository metrics.</p>
+                <div class="inpage-drawer" style="padding:14px;">
+                    <div style="padding:7px 10px;margin-bottom:10px;border-top:1.5px solid var(--border-focus);border-bottom:1.5px solid var(--border-focus);background:var(--bg-input);text-align:center;">
+                        <div style="font-size:0.56rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.9px;text-transform:uppercase;">SHADOWBAN &amp; VALUATION SCANNER</div>
+                        <h3 style="margin:2px 0 0 0;font-size:0.76rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">━━ 🛡️ GitHub Health, Valuation &amp; Repo Scanner ━━</h3>
+                    </div>
+                    <p class="item-desc" style="margin-bottom:12px;font-size:0.71rem;text-align:center;">Enter a GitHub username or repository (owner/repo) to inspect shadowban status &amp; live valuation.</p>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;">
                         <input type="text" class="form-input" id="diagInput" style="flex:1;min-width:220px;" placeholder="Enter GitHub username or owner/repo...">
                         <button class="btn-ui primary" style="flex:0 0 auto;padding:12px 20px;" onclick="runWebDiagnostic()">🔍 Scan Target</button>
