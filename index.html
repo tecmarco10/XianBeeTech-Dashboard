@@ -2306,7 +2306,36 @@
 
         let cachedSheetVipHolders = [];
 
-        async function syncGoogleSheetInventory(notify = false) {
+        function applyStockArrayToMemory(stockArray) {
+            if (!Array.isArray(stockArray)) return;
+            const grouped = {};
+            const flat = [];
+            stockArray.forEach(acc => {
+                const cat = String(acc.category || acc.year || '2026');
+                acc._computed_usdt = computeAccountPrice(acc, cat);
+                acc._cat_key = cat;
+                if (!grouped[cat]) grouped[cat] = [];
+                grouped[cat].push(acc);
+                flat.push(acc);
+            });
+            grouped['Followers'] = flat.filter(a => (parseInt(a.followers || 0) || 0) >= 50);
+            liveGithubStock = grouped;
+            allLiveAccountsFlat = flat;
+            totalLiveAccounts = flat.length;
+        }
+
+        // Load cached stock immediately on startup so UI is never 0 while waiting for network
+        try {
+            const cachedRaw = localStorage.getItem('xb_cached_live_stock_arr');
+            if (cachedRaw) {
+                const parsedCache = JSON.parse(cachedRaw);
+                if (Array.isArray(parsedCache) && parsedCache.length > 0) {
+                    applyStockArrayToMemory(parsedCache);
+                }
+            }
+        } catch (e) {}
+
+        async function syncGoogleSheetInventory(notify = false, isRetry = false) {
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -2318,18 +2347,10 @@
                     const prevKnownRaw = localStorage.getItem('xb_known_stock_unames');
                     const prevKnownSet = prevKnownRaw ? new Set(JSON.parse(prevKnownRaw)) : null;
                     const newAddedPerCat = {};
-
-                    const grouped = {};
-                    const flat = [];
                     const currentUnames = [];
 
                     json.data.forEach(acc => {
                         const cat = String(acc.category || acc.year || '2026');
-                        acc._computed_usdt = computeAccountPrice(acc, cat);
-                        acc._cat_key = cat;
-                        if (!grouped[cat]) grouped[cat] = [];
-                        grouped[cat].push(acc);
-                        flat.push(acc);
                         const uLow = String(acc.username || '').toLowerCase().trim();
                         if (uLow) {
                             currentUnames.push(uLow);
@@ -2338,11 +2359,12 @@
                             }
                         }
                     });
-                    grouped['Followers'] = flat.filter(a => (parseInt(a.followers || 0) || 0) >= 50);
 
-                    localStorage.setItem('xb_known_stock_unames', JSON.stringify(currentUnames));
+                    if (json.data.length > 0) {
+                        localStorage.setItem('xb_known_stock_unames', JSON.stringify(currentUnames));
+                        localStorage.setItem('xb_cached_live_stock_arr', JSON.stringify(json.data));
+                    }
 
-                    // FEATURE 9: AUTO-NOTIFY ALL BUYERS IN WEB WHEN NEW STOCK IS ADDED
                     const addedCats = Object.keys(newAddedPerCat);
                     if (addedCats.length > 0) {
                         const totalAdded = addedCats.reduce((s, k) => s + newAddedPerCat[k], 0);
@@ -2359,22 +2381,25 @@
                         showToast(`🔥 +${totalAdded} New GitHub Account(s) Restocked!`);
                     }
 
-                    // Capture Sheet4 CRM / VIP Holders if returned by GSheet
                     const crmCandidates = json.crm_users || json.leaderboard || json.users || json.sheet4 || [];
                     if (Array.isArray(crmCandidates) && crmCandidates.length > 0) {
                         cachedSheetVipHolders = crmCandidates;
                         localStorage.setItem('xb_cached_vip_holders', JSON.stringify(crmCandidates));
                     }
 
-                    liveGithubStock = grouped;
-                    allLiveAccountsFlat = flat;
-                    totalLiveAccounts = flat.length;
+                    applyStockArrayToMemory(json.data);
                     cleanupExpiredOrSoldFlashAccounts();
+                    updateAuthPortalTickers();
                     if (activeTab === 'home' || activeTab === 'github') renderViewport();
                     if (notify) showToast(`Synced ${totalLiveAccounts} live accounts from Google Sheet!`);
+                } else if (!isRetry) {
+                    setTimeout(() => syncGoogleSheetInventory(notify, true), 2200);
                 }
             } catch (e) {
                 console.log("GSheet live sync fallback:", e);
+                if (!isRetry) {
+                    setTimeout(() => syncGoogleSheetInventory(notify, true), 2500);
+                }
             }
         }
         syncGoogleSheetInventory(false);
