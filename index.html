@@ -371,10 +371,11 @@
         .inpage-drawer {
             background: var(--bg-surface);
             border: 1.5px solid var(--border-focus);
+            border-left: 5px solid var(--accent-cyan);
             border-radius: 18px;
             padding: 20px;
             margin-bottom: 24px;
-            box-shadow: var(--shadow-glow);
+            box-shadow: var(--shadow-card), var(--shadow-glow);
             animation: fadeIn 0.22s ease;
         }
 
@@ -384,7 +385,7 @@
         }
 
         /* =========================================================
-           🃏 CARDS, WALLET 3D CARD & GRIDS
+           🃏 CARDS, WALLET 3D CARD & GRIDS (WITH 3D LEFT ACCENT)
            ========================================================= */
         .grid-cards {
             display: grid;
@@ -410,36 +411,32 @@
                 gap: 8px;
             }
             .grid-years-2col .item-card {
-                padding: 11px;
+                padding: 10px;
                 gap: 8px;
                 border-radius: 14px;
             }
             .grid-years-2col .item-icon {
-                width: 32px;
-                height: 32px;
-                font-size: 0.85rem;
-                border-radius: 9px;
+                height: 28px;
+                padding: 0 7px;
+                font-size: 0.74rem;
+                border-radius: 8px;
             }
             .grid-years-2col .item-title {
-                font-size: 0.84rem;
+                font-size: 0.8rem;
                 line-height: 1.25;
             }
             .grid-years-2col .item-desc {
-                font-size: 0.7rem;
+                font-size: 0.65rem;
                 line-height: 1.35;
-                display: -webkit-box;
-                -webkit-line-clamp: 2;
-                -webkit-box-orient: vertical;
-                overflow: hidden;
             }
             .grid-years-2col .price-chip {
-                font-size: 0.7rem;
-                padding: 4px 7px;
+                font-size: 0.68rem;
+                padding: 3px 6px;
                 border-radius: 7px;
             }
             .grid-years-2col .btn-ui {
                 padding: 8px 6px;
-                font-size: 0.72rem;
+                font-size: 0.71rem;
                 min-width: 0;
             }
         }
@@ -475,19 +472,21 @@
         .item-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
+            border-left: 4px solid var(--accent-cyan);
             border-radius: 16px;
-            padding: 16px;
+            padding: 15px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            gap: 14px;
-            box-shadow: var(--shadow-card);
+            gap: 12px;
+            box-shadow: var(--shadow-card), inset 0 1px 0 rgba(255, 255, 255, 0.06);
             transition: 0.2s;
         }
 
         .item-card:hover {
             background: var(--bg-card-hover);
             border-color: var(--border-focus);
+            border-left: 4px solid var(--accent-primary);
             transform: translateY(-2px);
         }
 
@@ -1173,7 +1172,7 @@
                 </div>
                 <div style="text-align:center;flex:1;">
                     <h2 class="brand-name" style="background:linear-gradient(90deg, #38bdf8 0%, #6366f1 48%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.1rem;">XianBee-Tech</h2>
-                    <span class="brand-tag" style="text-transform:none;letter-spacing:0.4px;font-size:0.68rem;color:var(--text-secondary);font-weight:700;">Digital Marketplace</span>
+                    <span class="brand-tag" style="text-transform:none;letter-spacing:0.4px;font-size:0.66rem;color:var(--text-secondary);font-weight:700;">Enterprise Asset Vault</span>
                 </div>
             </div>
 
@@ -1197,21 +1196,23 @@
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area">
             <header class="topbar">
-                <!-- BARIS 1: LOGO BULAT UTUH TANPA KEPOTONG + BRAND RATA TENGAH + TOMBOL LAMBANG USDT, TEMA & GEAR ADMIN -->
-                <div class="topbar-box-brand" style="padding:6px 10px;gap:8px;">
+                <!-- BARIS 1: LOGO BULAT UTUH + ENTERPRISE ASSET VAULT + TOMBOL KURS DINAMIS (USDT/IDR) -->
+                <div class="topbar-box-brand" style="padding:6px 10px;gap:8px;border-left:4px solid var(--accent-primary);">
                     <div style="display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;" onclick="switchTab('home')">
                         <div class="brand-orb" style="width:52px;height:52px;background:#07080d;border:1.5px solid rgba(99,102,241,0.6);box-shadow:0 3px 12px rgba(99,102,241,0.32);padding:4px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
                             <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
                         </div>
                         <div style="min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
                             <div style="font-weight:800;font-size:0.98rem;letter-spacing:-0.2px;line-height:1.15;background:linear-gradient(90deg, #38bdf8 0%, #6366f1 48%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;">XianBee-Tech</div>
-                            <div style="font-size:0.62rem;font-weight:700;color:var(--text-secondary);letter-spacing:0.3px;line-height:1.15;white-space:nowrap;">Digital Marketplace</div>
+                            <div style="font-size:0.6rem;font-weight:700;color:var(--text-secondary);letter-spacing:0.35px;line-height:1.15;white-space:nowrap;">Enterprise Asset Vault</div>
                         </div>
                     </div>
 
                     <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
                         <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 9px;font-size:0.68rem;gap:5px;">
-                            <svg width="14" height="14" viewBox="0 0 32 32" fill="none" style="flex-shrink:0;"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
+                            <span id="currSwitchIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
+                            </span>
                             <span id="currSwitchText">USDT</span>
                         </button>
                         <button class="top-pill" type="button" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 8px;font-size:0.7rem;">
@@ -1224,15 +1225,17 @@
                 </div>
 
                 <!-- BARIS 2: DIBAGI 4 KOLOM SAMA RATA (CART | SALDO RINGKAS | VIP | NOTIFIKASI) -->
-                <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:6px 8px;">
+                <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:6px 8px;border-left:4px solid var(--accent-cyan);">
                     <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.68rem;border-radius:9px;min-width:0;gap:4px;">
                         <span>🛒 Cart</span>
                         <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);font-size:0.6rem;padding:1px 5px;">0</span>
                     </button>
 
                     <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.64rem;border-radius:9px;min-width:0;gap:4px;overflow:hidden;">
-                        <svg width="12" height="12" viewBox="0 0 32 32" fill="none" style="flex-shrink:0;"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
-                        <span id="topBalanceText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.3px;">0.00 USDT</span>
+                        <span id="topBalCurrIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+                            <svg width="12" height="12" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
+                        </span>
+                        <span id="topBalanceText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.3px;">0.00</span>
                     </button>
 
                     <button class="top-pill" onclick="openLeaderboardModal()" title="VIP Rank Hall of Fame" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;background:linear-gradient(135deg, rgba(250,204,21,0.18) 0%, rgba(217,119,6,0.12) 100%);border:1px solid rgba(250,204,21,0.55);color:#fde047;font-size:0.68rem;font-weight:800;border-radius:9px;min-width:0;">
@@ -2189,12 +2192,25 @@
             return val.toFixed(2) + ' USDT';
         }
 
+        function getCurrencySvgBadge(mode, size = 14) {
+            if (mode === 'IDR') {
+                return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#0284c7"/><text x="16" y="21" text-anchor="middle" fill="#ffffff" font-family="Plus Jakarta Sans, sans-serif" font-weight="800" font-size="13">Rp</text></svg>`;
+            }
+            return `<svg width="${size}" height="${size}" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>`;
+        }
+
         function updateTopBalance() {
             const val = parseFloat(userBalanceUsdt) || 0;
-            document.getElementById('topBalanceText').innerText = currentCurrency === 'IDR'
-                ? 'Rp ' + Math.round(val * liveUsdtIdrRate).toLocaleString('id-ID')
+            const isIdr = currentCurrency === 'IDR';
+            document.getElementById('topBalanceText').innerText = isIdr
+                ? Math.round(val * liveUsdtIdrRate).toLocaleString('id-ID')
                 : val.toFixed(2);
-            document.getElementById('currSwitchText').innerText = currentCurrency === 'USDT' ? 'USDT' : 'IDR';
+            document.getElementById('currSwitchText').innerText = isIdr ? 'IDR' : 'USDT';
+
+            const swIcon = document.getElementById('currSwitchIcon');
+            if (swIcon) swIcon.innerHTML = getCurrencySvgBadge(currentCurrency, 14);
+            const balIcon = document.getElementById('topBalCurrIcon');
+            if (balIcon) balIcon.innerHTML = getCurrencySvgBadge(currentCurrency, 12);
         }
 
         function toggleCurrency() {
@@ -2230,29 +2246,29 @@
             '2021': 10.0, '2022': 8.5, '2023': 7.5, '2024': 6.5, '2025': 5.5, '2026': 4.5
         };
 
-        // YEARS 2011 -> 2026 AT THE VERY TOP (PAIRED LEFT-RIGHT: 2011|2012, 2013|2014, ...), SPECIAL BADGES BELOW
+        // YEARS 2011 -> 2026 AT THE VERY TOP (FULL YEAR NUMBERS + HIGH-TRUST 2-LINE COPY)
         const GITHUB_VAULT_CATEGORIES = [
-            { yr: '2011', icon: '11', tag: 'VINTAGE 2011', title: 'GitHub Account — Year 2011', desc: '15-Year Vintage Profile • Maximum Trust + 2FA Key', usdt: 30.00 },
-            { yr: '2012', icon: '12', tag: 'VINTAGE 2012', title: 'GitHub Account — Year 2012', desc: '14-Year Vintage Profile • Anti-Flagged + 2FA Key', usdt: 28.00 },
-            { yr: '2013', icon: '13', tag: 'VINTAGE 2013', title: 'GitHub Account — Year 2013', desc: '13-Year Vintage Profile • Web3 & Open Source Ready', usdt: 26.00 },
-            { yr: '2014', icon: '14', tag: 'VINTAGE 2014', title: 'GitHub Account — Year 2014', desc: '12-Year Aged Profile • Verified Healthy (200 OK)', usdt: 24.00 },
-            { yr: '2015', icon: '15', tag: 'VINTAGE 2015', title: 'GitHub Account — Year 2015', desc: '11-Year Aged Profile • Clean History + 2FA Key', usdt: 22.00 },
-            { yr: '2016', icon: '16', tag: 'AGED 2016', title: 'GitHub Account — Year 2016', desc: '10-Year Aged Profile • High Authority Standing', usdt: 20.00 },
-            { yr: '2017', icon: '17', tag: 'AGED 2017', title: 'GitHub Account — Year 2017', desc: '9-Year Aged Profile • Full Username, Pass & 2FA', usdt: 18.00 },
-            { yr: '2018', icon: '18', tag: 'AGED 2018', title: 'GitHub Account — Year 2018', desc: '8-Year Aged Profile • Ready for Org & CI/CD', usdt: 16.00 },
-            { yr: '2019', icon: '19', tag: 'AGED 2019', title: 'GitHub Account — Year 2019', desc: '7-Year Aged Profile • High Standing + 2FA Key', usdt: 15.00 },
-            { yr: '2020', icon: '20', tag: 'AGED 2020', title: 'GitHub Account — Year 2020', desc: '6-Year Aged Profile • Verified Public Visibility', usdt: 12.00 },
-            { yr: '2021', icon: '21', tag: 'AGED 2021', title: 'GitHub Account — Year 2021', desc: '5-Year Aged Profile • Clean & Dev Ready', usdt: 10.00 },
-            { yr: '2022', icon: '22', tag: 'AGED 2022', title: 'GitHub Account — Year 2022', desc: '4-Year Aged Profile • Pre-warmed with Repos', usdt: 8.50 },
-            { yr: '2023', icon: '23', tag: 'AGED 2023', title: 'GitHub Account — Year 2023', desc: '3-Year Aged Profile • Full Login + 2FA Key', usdt: 7.50 },
-            { yr: '2024', icon: '24', tag: 'AGED 2024', title: 'GitHub Account — Year 2024', desc: '2-Year Aged Profile • High Availability Stock', usdt: 6.50 },
-            { yr: '2025', icon: '25', tag: 'AGED 2025', title: 'GitHub Account — Year 2025', desc: '1-Year Profile • Pre-populated with Code Repos', usdt: 5.50 },
-            { yr: '2026', icon: '26', tag: 'BEST VALUE', title: 'GitHub Account — Year 2026', desc: 'Ready-to-Use Profile • Public Repos + 2FA Key', usdt: 4.50 },
-            { yr: 'Arctic', icon: '❄️', tag: 'RARE BADGE', title: 'GitHub Arctic Code Vault Badge', desc: 'Authentic 2020 Arctic Vault Contributor + Full 2FA', usdt: 25.00 },
-            { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges Account', desc: 'Unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usdt: 10.00 },
-            { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Account', desc: 'Aged GitHub profiles pre-warmed with 50+ organic followers', usdt: 10.00 },
-            { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Developer Pack', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
-            { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub High Green Contributions', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 }
+            { yr: '2011', icon: '2011', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2011', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 30.00 },
+            { yr: '2012', icon: '2012', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2012', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 28.00 },
+            { yr: '2013', icon: '2013', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2013', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 26.00 },
+            { yr: '2014', icon: '2014', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2014', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 24.00 },
+            { yr: '2015', icon: '2015', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2015', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 22.00 },
+            { yr: '2016', icon: '2016', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2016', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 20.00 },
+            { yr: '2017', icon: '2017', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2017', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 18.00 },
+            { yr: '2018', icon: '2018', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2018', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 16.00 },
+            { yr: '2019', icon: '2019', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2019', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 15.00 },
+            { yr: '2020', icon: '2020', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2020', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 12.00 },
+            { yr: '2021', icon: '2021', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2021', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 10.00 },
+            { yr: '2022', icon: '2022', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2022', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 8.50 },
+            { yr: '2023', icon: '2023', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2023', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 7.50 },
+            { yr: '2024', icon: '2024', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2024', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 6.50 },
+            { yr: '2025', icon: '2025', tag: 'HIGH QUALITY', title: 'GitHub Aged Vault • 2025', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 5.50 },
+            { yr: '2026', icon: '2026', tag: 'BEST VALUE', title: 'GitHub Aged Vault • 2026', line1: '✨ High Quality • Full Access & 2FA', line2: '🛡️ Maximum Trust Score • Instant Delivery', desc: 'High Quality • Full Access & 2FA • Instant Delivery', usdt: 4.50 },
+            { yr: 'Arctic', icon: '❄️', tag: 'RARE BADGE', title: 'GitHub Arctic Code Vault', line1: '✨ Official 2020 Arctic Badge Unlocked', line2: '🛡️ High Authority Developer Profile + Full 2FA', desc: 'Authentic 2020 Arctic Vault Contributor + Full 2FA', usdt: 25.00 },
+            { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges', line1: '✨ 6 Official GitHub Badges Unlocked', line2: '🛡️ Pull Shark, YOLO, Starstruck & Galaxy Brain', desc: 'Unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usdt: 10.00 },
+            { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Vault', line1: '✨ Aged Profile + 50+ Organic Followers', line2: '🛡️ Instant Authority • Full Credentials & 2FA Key', desc: 'Aged GitHub profiles pre-warmed with 50+ organic followers', usdt: 10.00 },
+            { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Dev Pack', line1: '✨ Verified Developer Pack Benefits', line2: '🛡️ Cloud Credits, Pro Tools & Full Account Access', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
+            { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub Green Contributions', line1: '✨ Active Green Contribution Matrix', line2: '🛡️ Pre-Populated Repositories & Clean History', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 }
         ];
 
         const CATALOG_ITEMS = [
@@ -2642,16 +2658,36 @@
                     return;
                 }
 
+                if (activeSub.includes('Featured')) {
+                    // 1. GITHUB 2011 SAMPAI 2016 (2 KOTAK KIRI & KANAN)
+                    const featYrGrid = document.createElement('div');
+                    featYrGrid.className = 'grid-years-2col';
+                    ['2011', '2012', '2013', '2014', '2015', '2016'].forEach(k => {
+                        const yObj = GITHUB_VAULT_CATEGORIES.find(x => x.yr === k);
+                        if (yObj) featYrGrid.appendChild(createGithubYearCard(yObj));
+                    });
+                    vp.appendChild(featYrGrid);
+
+                    // 2. HIGH FOLLOWERS DI BAWAHNYA (1 KOTAK PANJANG PENUH)
+                    const follObj = GITHUB_VAULT_CATEGORIES.find(x => x.yr === 'Followers');
+                    if (follObj) {
+                        const follLongWrap = document.createElement('div');
+                        follLongWrap.style.cssText = 'margin:12px 0 14px 0;width:100%;';
+                        follLongWrap.appendChild(createGithubYearCard(follObj));
+                        vp.appendChild(follLongWrap);
+                    }
+
+                    // 3. PRODUK POPULER LAINNYA DI BAWAH
+                    const hotGrid = document.createElement('div');
+                    hotGrid.className = 'grid-cards';
+                    CATALOG_ITEMS.filter(i => i.hot).forEach(i => hotGrid.appendChild(createCatalogCard(i)));
+                    vp.appendChild(hotGrid);
+                    return;
+                }
+
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
-
-                if (activeSub.includes('Featured')) {
-                    ['2011', '2012', '2016', '2026', 'Arctic', '6Badge'].forEach(k => {
-                        const yObj = GITHUB_VAULT_CATEGORIES.find(x => x.yr === k);
-                        if (yObj) grid.appendChild(createGithubYearCard(yObj));
-                    });
-                    CATALOG_ITEMS.filter(i => i.hot).forEach(i => grid.appendChild(createCatalogCard(i)));
-                } else if (activeSub.includes('Boost')) {
+                if (activeSub.includes('Boost')) {
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
                 } else {
                     CATALOG_ITEMS.filter(i => i.hub !== 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
@@ -2837,25 +2873,31 @@
             const hasStock = list.length > 0;
             const stockTag = hasStock ? `🟢 ${list.length} READY` : `🔴 0 STOCK`;
             const minPrice = hasStock ? Math.min(...list.map(a => a._computed_usdt || yObj.usdt)) : yObj.usdt;
+            const topShortLine = yObj.line1 || '✨ High Quality • Full Access & 2FA';
+            const bottomLongLine = yObj.line2 || '🛡️ Maximum Trust Score • Instant Delivery';
 
             const card = document.createElement('div');
             card.className = 'item-card';
+            card.style.borderLeft = hasStock ? '4px solid var(--success)' : '4px solid var(--accent-primary)';
             card.innerHTML = `
                 <div style="display:flex;flex-direction:column;gap:8px;min-width:0;">
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap;">
-                        <div style="display:flex;align-items:center;gap:7px;min-width:0;">
-                            <div class="item-icon" style="font-family:'JetBrains Mono',monospace;">${yObj.icon}</div>
-                            <span class="item-tag" style="margin:0;${!hasStock ? 'color:var(--text-muted);border-color:var(--border-subtle);background:var(--bg-soft);' : ''}">${stockTag}</span>
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:5px;flex-wrap:nowrap;">
+                        <div style="display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden;">
+                            <div class="item-icon" style="width:auto;min-width:38px;height:30px;padding:0 8px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;border-radius:8px;">${yObj.icon}</div>
+                            <span class="item-tag" style="margin:0;white-space:nowrap;${!hasStock ? 'color:var(--text-muted);border-color:var(--border-subtle);background:var(--bg-soft);' : 'color:var(--success);border-color:rgba(16,185,129,0.4);background:rgba(16,185,129,0.12);'}">${stockTag}</span>
                         </div>
-                        <div class="price-chip">${fmtPrice(minPrice)}</div>
+                        <div class="price-chip" style="padding:4px 8px;font-size:0.72rem;">${fmtPrice(minPrice)}</div>
                     </div>
-                    <div style="min-width:0;">
-                        <h3 class="item-title">${yObj.title}</h3>
-                        <p class="item-desc">${yObj.desc}</p>
+
+                    <!-- KOTAK 3D DALAM SEPERTI DI PURCHASED VAULT (BARIS ATAS PENDEK, BARIS BAWAH PANJANG) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid ${hasStock ? 'var(--success)' : 'var(--accent-cyan)'};border-radius:10px;padding:8px 10px;min-width:0;">
+                        <h3 class="item-title" style="margin:0 0 3px 0;font-size:0.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${yObj.title}</h3>
+                        <div style="font-size:0.65rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;">${topShortLine}</div>
+                        <div style="font-size:0.64rem;font-weight:600;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.35;margin-top:1px;">${bottomLongLine}</div>
                     </div>
                 </div>
-                <div class="item-actions" style="padding-top:8px;">
-                    <button class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usdt})">
+                <div class="item-actions" style="padding-top:6px;">
+                    <button class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;white-space:nowrap;" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usdt})">
                         📂 Inspect Vault (${list.length})
                     </button>
                 </div>
@@ -2872,13 +2914,14 @@
 
             const card = document.createElement('div');
             card.className = 'item-card';
-            card.style.background = 'var(--bg-soft)';
+            card.style.borderLeft = '4px solid var(--success)';
             card.innerHTML = `
-                <div class="item-top">
-                    <div>
-                        <span class="item-tag">ID: ${accId} • YEAR ${acc.year || yrKey}</span>
-                        <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:1rem;">@${uname}</h4>
-                        <p class="item-desc">👥 Followers: <b>${acc.followers || 0}</b> &nbsp;•&nbsp; 📁 Public Repos: <b>${acc.repos || 0}</b> &nbsp;•&nbsp; 🔐 Username, Pass & 2FA</p>
+                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+                    <div style="min-width:0;flex:1;">
+                        <span class="item-tag" style="color:var(--success);border-color:rgba(16,185,129,0.4);">ID: ${accId} • YEAR ${acc.year || yrKey}</span>
+                        <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:0.96rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${uname}</h4>
+                        <div style="font-size:0.68rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;">👥 Followers: <b>${acc.followers || 0}</b> • 📁 Repos: <b>${acc.repos || 0}</b></div>
+                        <div style="font-size:0.66rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">🔐 Full Username, Password &amp; 2FA Secret Key Included</div>
                     </div>
                     <div class="price-chip">${fmtPrice(prc)}</div>
                 </div>
@@ -2907,13 +2950,13 @@
             card.className = 'item-card';
             const suffix = item.isUnit ? '/u' : '';
             card.innerHTML = `
-                <div class="item-top">
-                    <div style="display:flex;gap:12px;min-width:0;flex:1;">
-                        <div class="item-icon">${item.icon}</div>
+                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:flex-start;gap:10px;">
+                    <div style="display:flex;gap:10px;min-width:0;flex:1;">
+                        <div class="item-icon" style="width:40px;height:40px;font-size:1.1rem;">${item.icon}</div>
                         <div style="min-width:0;flex:1;">
                             <span class="item-tag">${item.tag}</span>
-                            <h3 class="item-title">${item.title}</h3>
-                            <p class="item-desc">${item.desc}</p>
+                            <h3 class="item-title" style="font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.title}</h3>
+                            <p class="item-desc" style="font-size:0.71rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</p>
                         </div>
                     </div>
                     <div class="price-chip">${fmtPrice(item.usdt)}${suffix}</div>
