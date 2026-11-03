@@ -1574,6 +1574,97 @@
             }
         }
 
+        // Unified Sync Key: Jika Admin membuka dari 2 akun Telegram Admin di HP & PC, otomatis menyatu!
+        function getCloudSyncAccountKey() {
+            if (ADMIN_IDS.includes(String(currentUserId))) return 'executive_admin_shared';
+            const cleanU = String(currentUsername || '').trim().replace(/^@/, '').toLowerCase();
+            if (cleanU && cleanU !== 'xianbeeclient' && cleanU !== 'guestpreview' && cleanU !== 'guestclient') {
+                return 'user_' + cleanU;
+            }
+            return 'uid_' + String(currentUserId || 'default').trim().toLowerCase();
+        }
+
+        let _cloudSyncTimer = null;
+        function scheduleCloudStatePush(extraPayload = {}) {
+            clearTimeout(_cloudSyncTimer);
+            _cloudSyncTimer = setTimeout(() => {
+                syncCloudStateWithGSheet('push', extraPayload);
+            }, 250);
+        }
+
+        async function syncCloudStateWithGSheet(mode = 'pull', extraPayload = {}) {
+            try {
+                const isAdmin = ADMIN_IDS.includes(String(currentUserId));
+                const localCart = JSON.parse(localStorage.getItem('xb_saved_cart') || '[]');
+                const localCartTs = parseInt(localStorage.getItem('xb_cart_updated_ts') || '0');
+                const localBuyerNotifs = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
+                const localAdminNotifs = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
+                const localResolved = JSON.parse(localStorage.getItem('xb_resolved_actions') || '{}');
+                const localVault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+                const localTx = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+
+                const bodyObj = Object.assign({
+                    action: 'web_cloud_sync_state',
+                    mode: mode,
+                    sync_key: getCloudSyncAccountKey(),
+                    user_id: String(currentUserId),
+                    username: String(currentUsername),
+                    is_admin: isAdmin,
+                    cart: localCart,
+                    cart_ts: localCartTs,
+                    buyer_notifs: localBuyerNotifs,
+                    admin_notifs: isAdmin ? localAdminNotifs : [],
+                    resolved_actions: isAdmin ? localResolved : {},
+                    vault: localVault,
+                    tx_history: localTx,
+                    balance: userBalanceUsdt
+                }, extraPayload);
+
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify(bodyObj)
+                });
+                const data = await res.json();
+                if (!data || !data.result) return;
+
+                if (data.user_state) {
+                    const us = data.user_state;
+                    const cloudCartTs = parseInt(us.cart_ts || 0);
+                    if (cloudCartTs > localCartTs && Array.isArray(us.cart)) {
+                        cart = us.cart;
+                        localStorage.setItem('xb_saved_cart', JSON.stringify(cart));
+                        localStorage.setItem('xb_cart_updated_ts', String(cloudCartTs));
+                        updateCartUI(true);
+                    }
+                    if (Array.isArray(us.buyer_notifs)) {
+                        localStorage.setItem('xb_buyer_notifs', JSON.stringify(us.buyer_notifs));
+                    }
+                    if (Array.isArray(us.vault) && us.vault.length > localVault.length) {
+                        localStorage.setItem('xb_purchased_vault', JSON.stringify(us.vault));
+                    }
+                    if (Array.isArray(us.tx_history) && us.tx_history.length > localTx.length) {
+                        localStorage.setItem('xb_tx_history', JSON.stringify(us.tx_history));
+                    }
+                }
+
+                if (isAdmin && data.admin_state) {
+                    const as = data.admin_state;
+                    if (as.resolved_actions && typeof as.resolved_actions === 'object') {
+                        localStorage.setItem('xb_resolved_actions', JSON.stringify(as.resolved_actions));
+                    }
+                    if (Array.isArray(as.admin_notifs)) {
+                        localStorage.setItem('xb_admin_notifs', JSON.stringify(as.admin_notifs));
+                    }
+                }
+
+                updateNotifBadgeCount();
+                if (document.getElementById('notificationsModal')?.classList.contains('active')) {
+                    renderNotificationsList();
+                }
+            } catch (e) {}
+        }
+
         function pushInWebNotification(role, title, htmlBody, extraMeta = null) {
             const storageKey = role === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
             const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -1587,6 +1678,7 @@
             });
             localStorage.setItem(storageKey, JSON.stringify(list.slice(0, 50)));
             updateNotifBadgeCount();
+            scheduleCloudStatePush();
             return newId;
         }
 
@@ -1596,6 +1688,7 @@
             if (item && item.meta) {
                 item.meta.tgMsgIds = tgMsgIdsMap;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(list));
+                scheduleCloudStatePush();
             }
         }
 
@@ -1610,9 +1703,10 @@
 
         async function openNotificationsModal() {
             checkAdminVisibility();
+            document.getElementById('notificationsModal').classList.add('active');
+            renderNotificationsList();
             await syncSharedActionStatesFromCloud();
             renderNotificationsList();
-            document.getElementById('notificationsModal').classList.add('active');
         }
 
         function switchNotifFeed(mode) {
@@ -1622,8 +1716,9 @@
             renderNotificationsList();
         }
 
-        // Sync decisions made in Telegram Bot so Web Notification buttons lock automatically
+        // Sync decisions & notifications across HP and PC from Cloud
         async function syncSharedActionStatesFromCloud() {
+            await syncCloudStateWithGSheet('pull');
             try {
                 const resolvedMap = JSON.parse(localStorage.getItem('xb_resolved_actions') || '{}');
                 const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
@@ -1644,6 +1739,7 @@
             const resolvedMap = JSON.parse(localStorage.getItem('xb_resolved_actions') || '{}');
             resolvedMap[actionKey] = statusTitle;
             localStorage.setItem('xb_resolved_actions', JSON.stringify(resolvedMap));
+            scheduleCloudStatePush();
         }
 
         function renderNotificationsList() {
@@ -1747,11 +1843,13 @@
         }
 
         function clearWebNotifications() {
-            const storageKey = activeNotifFeed === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
+            const isAdmFeed = activeNotifFeed === 'admin';
+            const storageKey = isAdmFeed ? 'xb_admin_notifs' : 'xb_buyer_notifs';
             localStorage.setItem(storageKey, '[]');
             updateNotifBadgeCount();
             renderNotificationsList();
-            showToast('Notifications cleared!');
+            syncCloudStateWithGSheet('push', isAdmFeed ? { clear_admin_notifs_ts: Date.now() } : { clear_buyer_notifs_ts: Date.now() });
+            showToast('Notifications cleared across all devices!');
         }
 
         // Fire complete Notification Flow for ADD_TO_CART with Admin Reminder Button (Web & Telegram Bot)
@@ -3109,71 +3207,312 @@
             renderViewport();
         }
 
+        function getUserVipRankMeta() {
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            const totalSpent = history.filter(x => x.type === 'OUT').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+            const totalTopup = history.filter(x => x.type === 'IN').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+            const txCount = history.length;
+            const totalVol = Math.max(totalTopup, userBalanceUsdt + totalSpent);
+
+            if (ADMIN_IDS.includes(String(currentUserId))) {
+                return {
+                    emblem: '👑',
+                    rank: 'ROYAL FOUNDER VIP',
+                    perk: 'Executive Store Owner • Full Vault & Zero Fee Transfer',
+                    badgeBg: 'linear-gradient(135deg, rgba(250,204,21,0.28) 0%, rgba(234,179,8,0.18) 100%)',
+                    badgeBorder: 'rgba(250,204,21,0.65)',
+                    badgeColor: '#fef08a'
+                };
+            }
+            if (txCount >= 100 || totalVol >= 500) {
+                return {
+                    emblem: '💎',
+                    rank: 'DIAMOND VIP HOLDER',
+                    perk: `10% Loyalty Cashback Unlocked • Vol: $${totalVol.toFixed(2)} USDT (${txCount} TX)`,
+                    badgeBg: 'rgba(56, 189, 248, 0.22)',
+                    badgeBorder: 'rgba(56, 189, 248, 0.6)',
+                    badgeColor: '#e0f2fe'
+                };
+            }
+            if (txCount >= 50 || totalVol >= 200) {
+                return {
+                    emblem: '🥇',
+                    rank: 'GOLD VIP HOLDER',
+                    perk: `Priority Vault & 10% Milestone • Vol: $${totalVol.toFixed(2)} USDT (${txCount} TX)`,
+                    badgeBg: 'rgba(250, 204, 21, 0.22)',
+                    badgeBorder: 'rgba(250, 204, 21, 0.6)',
+                    badgeColor: '#fef9c3'
+                };
+            }
+            if (txCount >= 20 || totalVol >= 50) {
+                return {
+                    emblem: '🥈',
+                    rank: 'SILVER VIP MEMBER',
+                    perk: `Verified VIP Tier • Vol: $${totalVol.toFixed(2)} USDT (${txCount} TX)`,
+                    badgeBg: 'rgba(226, 232, 240, 0.2)',
+                    badgeBorder: 'rgba(226, 232, 240, 0.5)',
+                    badgeColor: '#f8fafc'
+                };
+            }
+            return {
+                emblem: '🥉',
+                rank: 'BRONZE VIP MEMBER',
+                perk: `Active Tier • Vol: $${totalVol.toFixed(2)} USDT ($${Math.max(0, 50 - totalVol).toFixed(0)} to Silver VIP)`,
+                badgeBg: 'rgba(15, 23, 42, 0.38)',
+                badgeBorder: 'rgba(255, 255, 255, 0.28)',
+                badgeColor: '#f1f5f9'
+            };
+        }
+
+        function openWalletReceiveModal() {
+            const vip = getUserVipRankMeta();
+            const cleanU = currentUsername.replace(/^@/, '');
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;color:var(--success);border-color:var(--success);">📥 RECEIVE USDT BALANCE</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 4px 0;">Receive Balance from Another User</h3>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">
+                    Share your <b>Username</b> or <b>User ID</b> below with any XianBee-Tech user so they can send USDT balance directly to your wallet.
+                </p>
+
+                <div style="background:var(--grad-subtle);border:1.5px solid var(--border-focus);border-radius:16px;padding:16px;margin-bottom:14px;text-align:center;">
+                    <div style="font-size:1.85rem;margin-bottom:4px;">${vip.emblem}</div>
+                    <div style="font-size:0.72rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.8px;">${vip.rank}</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;color:var(--text-primary);margin:4px 0;">@${cleanU}</div>
+                    <div style="font-size:0.72rem;color:var(--text-secondary);">${vip.perk}</div>
+                </div>
+
+                <div class="cred-field-row" style="padding:11px 13px;">
+                    <span class="lbl">USERNAME</span>
+                    <span class="val" style="color:var(--success);font-size:0.9rem;">@${cleanU}</span>
+                    <button class="top-pill" onclick="navigator.clipboard.writeText('${cleanU}'); showToast('Username @${cleanU} copied!');">📋 Copy</button>
+                </div>
+                <div class="cred-field-row" style="padding:11px 13px;margin-bottom:14px;">
+                    <span class="lbl">USER ID</span>
+                    <span class="val" style="font-size:0.88rem;">${currentUserId}</span>
+                    <button class="top-pill" onclick="navigator.clipboard.writeText('${currentUserId}'); showToast('User ID ${currentUserId} copied!');">📋 Copy</button>
+                </div>
+
+                <button class="btn-ui primary" style="width:100%;padding:12px;" onclick="closeModal('paymentGatewayModal')">✅ Done</button>
+            `;
+        }
+
+        function openWalletSendModal() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;">📤 SEND USDT BALANCE</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 4px 0;">Transfer Balance to Another User</h3>
+                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">
+                    Available Balance: <b style="color:var(--success);font-family:'JetBrains Mono',monospace;">${userBalanceUsdt.toFixed(2)} USDT</b> (~Rp ${Math.round(userBalanceUsdt * liveUsdtIdrRate).toLocaleString('id-ID')})
+                </p>
+
+                <div class="form-group">
+                    <label>Recipient Username (or User ID):</label>
+                    <input type="text" class="form-input" id="sendTargetUsername" placeholder="Enter recipient @username...">
+                </div>
+                <div class="form-group">
+                    <label>Amount to Send (USDT • Min 1.00 USDT):</label>
+                    <input type="number" class="form-input" id="sendAmountUsdt" min="1" step="0.5" value="5.00">
+                </div>
+                <div class="form-group">
+                    <label>6-Digit Security PIN:</label>
+                    <input type="password" class="form-input" id="sendSecurityPin" maxlength="6" inputmode="numeric" style="letter-spacing:6px;font-family:'JetBrains Mono',monospace;text-align:center;" placeholder="••••••">
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:8px;margin-top:6px;">
+                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
+                    <button class="btn-ui buy-now" id="btnExecSendUsdt" onclick="executeWalletSendTransfer()">📤 Send Balance Now</button>
+                </div>
+            `;
+        }
+
+        async function executeWalletSendTransfer() {
+            const rawTarget = (document.getElementById('sendTargetUsername')?.value || '').trim().replace(/^@/, '');
+            const amt = parseFloat(document.getElementById('sendAmountUsdt')?.value || '0');
+            const pin = (document.getElementById('sendSecurityPin')?.value || '').trim();
+
+            if (!rawTarget || rawTarget.length < 2) return showToast('Please enter a valid recipient @username!');
+            if (rawTarget.toLowerCase() === currentUsername.replace(/^@/, '').toLowerCase()) {
+                return showToast('You cannot transfer balance to your own username!');
+            }
+            if (isNaN(amt) || amt < 1) return showToast('Minimum transfer amount is 1.00 USDT!');
+            if (amt > userBalanceUsdt) return showToast('Insufficient USDT balance in your wallet!');
+            if (!/^\d{6}$/.test(pin) || !isPinValidWithBot(pin)) {
+                return showToast('❌ Invalid 6-Digit Security PIN!');
+            }
+
+            const btn = document.getElementById('btnExecSendUsdt');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Processing Transfer...'; }
+
+            const newSenderBal = Math.max(0, userBalanceUsdt - amt);
+            const trfId = 'TRF-' + Math.floor(10000 + Math.random() * 90000);
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_transfer_balance',
+                        sender_uid: String(currentUserId),
+                        sender_uname: currentUsername.replace(/^@/, ''),
+                        sender_new_bal: newSenderBal,
+                        receiver_query: rawTarget,
+                        amount_usdt: amt
+                    })
+                });
+                const data = await res.json();
+                if (!data || !data.result) {
+                    if (btn) { btn.disabled = false; btn.innerText = '📤 Send Balance Now'; }
+                    return showToast('❌ ' + ((data && data.error) ? data.error : 'Recipient username not found!'));
+                }
+
+                userBalanceUsdt = newSenderBal;
+                localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
+                updateTopBalance();
+                recordWebTransaction(trfId, `Sent Balance to @${data.receiver_uname}`, `@${data.receiver_uname}`, amt, 'OUT', 'P2P Wallet Transfer');
+
+                const senderMsg = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   📤 <b>B A L A N C E  T R A N S F E R  S E N T</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Transfer ID:</b> <code>${trfId}</code>\n` +
+                    `🔸 <b>Recipient:</b> <b>@${data.receiver_uname}</b>\n` +
+                    `🔸 <b>Amount Sent:</b> <b>-$${amt.toFixed(2)} USDT</b>\n` +
+                    `🔸 <b>Remaining Balance:</b> <b>$${userBalanceUsdt.toFixed(2)} USDT</b>`
+                );
+                const receiverMsg = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   📥 <b>B A L A N C E  R E C E I V E D</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Transfer ID:</b> <code>${trfId}</code>\n` +
+                    `🔸 <b>From Sender:</b> <b>@${currentUsername.replace(/^@/, '')}</b>\n` +
+                    `🔸 <b>Amount Received:</b> <b>+$${amt.toFixed(2)} USDT</b>\n` +
+                    `🔸 <b>Updated Balance:</b> <b>$${parseFloat(data.receiver_new_bal).toFixed(2)} USDT</b>`
+                );
+
+                pushInWebNotification('buyer', `📤 TRANSFER SENT (@${data.receiver_uname})`, senderMsg);
+                sendTelegramSilentPush(currentUserId, senderMsg, true);
+                if (data.receiver_uid) sendTelegramSilentPush(data.receiver_uid, receiverMsg, true);
+
+                closeModal('paymentGatewayModal');
+                renderViewport();
+                showToast(`✅ Sent $${amt.toFixed(2)} USDT to @${data.receiver_uname}!`);
+            } catch (e) {
+                if (btn) { btn.disabled = false; btn.innerText = '📤 Send Balance Now'; }
+                showToast('⚠️ Network error while transferring balance. Please try again.');
+            }
+        }
+
         function renderWalletTab(container) {
+            const vip = getUserVipRankMeta();
+            const cleanU = currentUsername.replace(/^@/, '');
+
             container.innerHTML = `
                 <div style="display:flex;flex-direction:column;gap:18px;max-width:860px;margin:0 auto;">
-                    <!-- 1. 3D VIP WALLET CARD WITH IN-WEB AUTO-SYNC BUTTON -->
-                    <div class="vip-card" style="margin-bottom:0;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <div class="vip-chip"></div>
-                            <span style="background:rgba(0,0,0,0.3);padding:4px 10px;border-radius:8px;font-size:0.72rem;font-weight:800;letter-spacing:1px;">XIANBEE VIP WALLET</span>
-                        </div>
-                        <div>
-                            <div style="font-size:0.72rem;opacity:0.85;text-transform:uppercase;font-weight:700;">Available Balance</div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:2.15rem;font-weight:800;margin:4px 0;">${userBalanceUsdt.toFixed(2)} USDT</div>
-                            <div style="font-size:0.8rem;opacity:0.9;font-family:'JetBrains Mono',monospace;">≈ Rp ${Math.round(userBalanceUsdt * liveUsdtIdrRate).toLocaleString('id-ID')}</div>
-                        </div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;">
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:700;">@${currentUsername} (ID: ${currentUserId})</span>
-                            <div style="display:flex;gap:6px;">
-                                <button class="top-pill" id="btnWebSyncBal" style="background:rgba(0,0,0,0.35);color:#fff;border-color:rgba(255,255,255,0.35);" onclick="syncWalletBalanceInWeb()">🔄 Sync Balance</button>
-                                <button class="top-pill" style="background:rgba(0,0,0,0.35);color:#fff;border-color:rgba(255,255,255,0.35);" onclick="openNotificationsModal()">🔔 Alerts</button>
+                    <!-- 1. PRECISION 3D VIP WALLET CARD (DYNAMIC VIP RANK + SEND & RECEIVE ACTIONS) -->
+                    <div class="vip-card" style="margin-bottom:0;padding:20px;gap:16px;">
+                        <!-- TOP ROW: CHIP & DYNAMIC VIP RANK BADGE WITH DESCRIPTION -->
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap;">
+                            <div style="display:flex;align-items:center;gap:10px;">
+                                <div class="vip-chip"></div>
+                                <div>
+                                    <div style="font-size:0.65rem;font-weight:800;letter-spacing:1.1px;opacity:0.85;">ACCOUNT HOLDER</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:800;">@${cleanU} <span style="opacity:0.75;font-size:0.74rem;">(ID: ${currentUserId})</span></div>
+                                </div>
                             </div>
+
+                            <div style="background:${vip.badgeBg};border:1px solid ${vip.badgeBorder};color:${vip.badgeColor};padding:6px 11px;border-radius:11px;text-align:right;max-width:100%;">
+                                <div style="display:flex;align-items:center;justify-content:flex-end;gap:5px;font-size:0.74rem;font-weight:800;letter-spacing:0.6px;">
+                                    <span>${vip.emblem}</span>
+                                    <span>${vip.rank}</span>
+                                </div>
+                                <div style="font-size:0.64rem;font-weight:700;opacity:0.92;margin-top:2px;">${vip.perk}</div>
+                            </div>
+                        </div>
+
+                        <!-- MIDDLE ROW: AVAILABLE BALANCE -->
+                        <div style="background:rgba(0,0,0,0.22);border:1px solid rgba(255,255,255,0.14);border-radius:14px;padding:13px 15px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;">
+                            <div>
+                                <div style="font-size:0.68rem;opacity:0.85;text-transform:uppercase;font-weight:800;letter-spacing:0.8px;">Available Wallet Balance</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.95rem;font-weight:800;line-height:1.15;margin:3px 0;">${userBalanceUsdt.toFixed(2)} USDT</div>
+                                <div style="font-size:0.76rem;opacity:0.9;font-family:'JetBrains Mono',monospace;">≈ Rp ${Math.round(userBalanceUsdt * liveUsdtIdrRate).toLocaleString('id-ID')}</div>
+                            </div>
+                            <div style="display:flex;gap:6px;">
+                                <button class="top-pill" id="btnWebSyncBal" style="background:rgba(0,0,0,0.42);color:#fff;border-color:rgba(255,255,255,0.32);padding:8px 11px;font-size:0.72rem;" onclick="syncWalletBalanceInWeb()">🔄 Sync</button>
+                                <button class="top-pill" style="background:rgba(0,0,0,0.42);color:#fff;border-color:rgba(255,255,255,0.32);padding:8px 11px;font-size:0.72rem;" onclick="openNotificationsModal()">🔔 Alerts</button>
+                            </div>
+                        </div>
+
+                        <!-- BOTTOM ROW: PRECISION SEND (KIRIM) & RECEIVE (TERIMA) BUTTONS -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                            <button class="top-pill" style="justify-content:center;padding:11px 10px;background:rgba(255,255,255,0.16);color:#ffffff;border:1px solid rgba(255,255,255,0.38);border-radius:11px;font-size:0.78rem;font-weight:800;" onclick="openWalletSendModal()">
+                                <span>📤 Send Balance</span>
+                            </button>
+                            <button class="top-pill" style="justify-content:center;padding:11px 10px;background:rgba(16,185,129,0.28);color:#ffffff;border:1px solid rgba(16,185,129,0.65);border-radius:11px;font-size:0.78rem;font-weight:800;" onclick="openWalletReceiveModal()">
+                                <span>📥 Receive Balance</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- 2. DEPOSIT WALLET BALANCE (DUAL CURRENCY: USDT OXAPAY OR IDR QRIS/SEABANK/DANA) -->
+                    <!-- 2. DEPOSIT WALLET BALANCE (WITH DEDICATED 1-LINE CURRENCY SELECTOR BOX WITHOUT SYMBOLS) -->
                     <div class="item-card">
                         <div>
                             <span class="item-tag">INSTANT WALLET TOP-UP GATEWAY</span>
-                            <h3 class="item-title" style="font-size:1.15rem;">➕ Select Deposit Currency (USDT or IDR)</h3>
-                            <p class="item-desc" style="margin-bottom:12px;">Choose <b>🪙 USDT (OxaPay Crypto)</b> for automated blockchain settlement, or <b>🇮🇩 IDR (QRIS / SeaBank / DANA)</b> with instant screenshot verification.</p>
+                            <h3 class="item-title" style="font-size:1.1rem;">Deposit Wallet Balance</h3>
+                            <p class="item-desc" style="margin-bottom:12px;">Select your preferred deposit currency below for instant automated or verified balance credit.</p>
 
-                            <!-- CURRENCY MODE SELECTOR -->
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;">
-                                <button class="subtab-pill ${selectedWalletDepMode === 'USDT' ? 'active' : ''}" onclick="switchWalletDepMode('USDT')">
-                                    🪙 USDT (OxaPay Instant)
-                                </button>
-                                <button class="subtab-pill ${selectedWalletDepMode === 'IDR' ? 'active' : ''}" onclick="switchWalletDepMode('IDR')">
-                                    🇮🇩 IDR (QRIS / Bank / DANA)
-                                </button>
+                            <!-- DEDICATED PRECISION BOX FOR SELECT DEPOSIT CURRENCY (1 LINE, NO SYMBOLS) -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:14px;padding:11px 12px;margin-bottom:16px;">
+                                <div style="font-size:0.68rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    SELECT DEPOSIT CURRENCY
+                                </div>
+                                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
+                                    <button class="subtab-pill ${selectedWalletDepMode === 'USDT' ? 'active' : ''}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:10px 8px;font-size:0.75rem;" onclick="switchWalletDepMode('USDT')">
+                                        USDT (OxaPay)
+                                    </button>
+                                    <button class="subtab-pill ${selectedWalletDepMode === 'IDR' ? 'active' : ''}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:10px 8px;font-size:0.75rem;" onclick="switchWalletDepMode('IDR')">
+                                        IDR (QRIS / Bank)
+                                    </button>
+                                </div>
                             </div>
 
-                            <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:14px;">
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;" onclick="initiateTopUp(5, '${selectedWalletDepMode}')">
-                                    <span style="font-size:1.05rem;font-weight:800;color:var(--text-primary);">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(5 * liveUsdtIdrRate).toLocaleString('id-ID') : '5.00 USDT'}</span>
-                                    <span style="font-size:0.7rem;color:var(--text-muted);">Credit: +5.00 USDT</span>
+                            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-bottom:14px;">
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 8px;" onclick="initiateTopUp(5, '${selectedWalletDepMode}')">
+                                    <span style="font-size:0.98rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(5 * liveUsdtIdrRate).toLocaleString('id-ID') : '5.00 USDT'}</span>
+                                    <span style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;">Credit: +5.00 USDT</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;" onclick="initiateTopUp(25, '${selectedWalletDepMode}')">
-                                    <span style="font-size:1.05rem;font-weight:800;color:var(--text-primary);">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(25 * liveUsdtIdrRate).toLocaleString('id-ID') : '25.00 USDT'}</span>
-                                    <span style="font-size:0.7rem;color:var(--text-muted);">Credit: +25.00 USDT</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 8px;" onclick="initiateTopUp(25, '${selectedWalletDepMode}')">
+                                    <span style="font-size:0.98rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(25 * liveUsdtIdrRate).toLocaleString('id-ID') : '25.00 USDT'}</span>
+                                    <span style="font-size:0.68rem;color:var(--text-muted);white-space:nowrap;">Credit: +25.00 USDT</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(50, '${selectedWalletDepMode}')">
-                                    <span style="font-size:1.05rem;font-weight:800;color:var(--success);">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(50 * liveUsdtIdrRate).toLocaleString('id-ID') : '50.00 USDT'}</span>
-                                    <span style="font-size:0.7rem;color:var(--success);">🔥 +50.00 USDT (+5% Bonus)</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 8px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(50, '${selectedWalletDepMode}')">
+                                    <span style="font-size:0.98rem;font-weight:800;color:var(--success);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(50 * liveUsdtIdrRate).toLocaleString('id-ID') : '50.00 USDT'}</span>
+                                    <span style="font-size:0.68rem;color:var(--success);white-space:nowrap;">+50.00 USDT (+5% Bonus)</span>
                                 </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:14px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(100, '${selectedWalletDepMode}')">
-                                    <span style="font-size:1.05rem;font-weight:800;color:var(--success);">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(100 * liveUsdtIdrRate).toLocaleString('id-ID') : '100.00 USDT'}</span>
-                                    <span style="font-size:0.7rem;color:var(--success);">💎 +100.00 USDT (+10% Bonus)</span>
+                                <button class="btn-ui secondary" style="flex-direction:column;padding:13px 8px;border-color:rgba(16,185,129,0.4);" onclick="initiateTopUp(100, '${selectedWalletDepMode}')">
+                                    <span style="font-size:0.98rem;font-weight:800;color:var(--success);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(100 * liveUsdtIdrRate).toLocaleString('id-ID') : '100.00 USDT'}</span>
+                                    <span style="font-size:0.68rem;color:var(--success);white-space:nowrap;">+100.00 USDT (+10% Bonus)</span>
                                 </button>
                             </div>
 
                             <div class="form-group" style="margin-bottom:0;">
                                 <label>Or Enter Custom Deposit Amount in USDT (Min 5 USDT):</label>
-                                <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                                    <input type="number" class="form-input" id="customDepositAmt" value="15" min="5" step="1" style="flex:1;min-width:140px;">
-                                    <button class="btn-ui primary" style="flex:0 0 auto;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), 'USDT')">🪙 Deposit via USDT</button>
-                                    <button class="btn-ui buy-now" style="flex:0 0 auto;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), 'IDR')">🇮🇩 Deposit via IDR</button>
+                                <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;">
+                                    <input type="number" class="form-input" id="customDepositAmt" value="15" min="5" step="1" style="min-width:90px;">
+                                    <button class="btn-ui primary" style="white-space:nowrap;padding:10px 12px;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), 'USDT')">Deposit USDT</button>
+                                    <button class="btn-ui buy-now" style="white-space:nowrap;padding:10px 12px;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), 'IDR')">Deposit IDR</button>
                                 </div>
                             </div>
                         </div>
@@ -3187,7 +3526,7 @@
                             <p class="item-desc" style="margin-bottom:10px;">Have a special discount voucher? Activate it here for your next checkout.</p>
                             <div style="display:flex;gap:8px;">
                                 <input type="text" class="form-input" id="walletPromoInput" placeholder="Enter promo code (e.g. XIANBEE5)...">
-                                <button class="btn-ui primary" style="flex:0 0 auto;" onclick="claimWalletVoucher()">Claim Voucher</button>
+                                <button class="btn-ui primary" style="flex:0 0 auto;white-space:nowrap;" onclick="claimWalletVoucher()">Claim Voucher</button>
                             </div>
                         </div>
                     </div>
@@ -3581,8 +3920,12 @@
         let cartDiscountPct = 0;
         let oxaPollTimer = null;
 
-        function updateCartUI() {
+        function updateCartUI(skipCloudPush = false) {
             localStorage.setItem('xb_saved_cart', JSON.stringify(cart));
+            if (!skipCloudPush) {
+                localStorage.setItem('xb_cart_updated_ts', String(Date.now()));
+                scheduleCloudStatePush();
+            }
             const badgeEl = document.getElementById('cartCountBadge');
             if (badgeEl) badgeEl.innerText = cart.length;
 
@@ -3601,7 +3944,9 @@
                 }
             }
         }
-        setTimeout(updateCartUI, 50);
+        setTimeout(() => { updateCartUI(true); syncCloudStateWithGSheet('pull'); }, 80);
+        setInterval(() => syncCloudStateWithGSheet('pull'), 10000);
+        window.addEventListener('focus', () => syncCloudStateWithGSheet('pull'));
 
         function openDirectOrderModal(item) {
             modalProduct = item;
