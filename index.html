@@ -5980,6 +5980,9 @@
             }
             attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
 
+            // Dorong status notifikasi admin terbaru ke Cloud Google Sheet agar muncul di semua perangkat (HP & PC)
+            scheduleCloudStatePush();
+
             closeModal('paymentGatewayModal');
             showToast(`Offer ${negoId} ($${offerUsdt.toFixed(2)} USDT) sent to Admin!`);
         }
