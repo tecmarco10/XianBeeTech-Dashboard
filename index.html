@@ -1807,13 +1807,17 @@
                         </div>
                     `;
                 }
+                const cleanBodyHtml = String(n.body || '')
+                    .replace(/<\/?blockquote>/gi, '')
+                    .replace(/<code>(.*?)<\/code>/g, (m, p1) => `<code style="font-family:'JetBrains Mono',monospace;white-space:pre;color:var(--accent-cyan);font-weight:700;">${p1}</code>`)
+                    .replace(/\n/g, '<br>');
                 return `
-                    <div class="tg-notif-card">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                            <span class="item-tag" style="margin:0;">${n.title}</span>
-                            <span style="font-size:0.7rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">🕒 ${n.time}</span>
+                    <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid var(--accent-cyan);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
+                            <span class="item-tag" style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.title}</span>
+                            <span style="font-size:0.64rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0;">🕒 ${n.time}</span>
                         </div>
-                        <div>${n.body.replace(/\n/g, '<br>')}</div>
+                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-primary);border-radius:9px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:0.71rem;line-height:1.65;overflow-x:auto;">${cleanBodyHtml}</div>
                         ${imgPreviewHtml}
                         ${actionBtnsHtml}
                     </div>
@@ -2749,10 +2753,19 @@
                 }
 
                 if (activeSub.includes('Ready-to-Buy Accounts')) {
+                    const rtbHeader = document.createElement('div');
+                    rtbHeader.style.cssText = 'padding:7px 10px;margin:2px 0 12px 0;border-top:1.5px solid var(--success);border-bottom:1.5px solid var(--success);background:var(--bg-soft);text-align:center;font-size:0.64rem;font-weight:800;color:var(--success);text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                    rtbHeader.innerHTML = `━━ ⚡ READY-TO-BUY GITHUB ACCOUNTS (${allLiveAccountsFlat.length}) ⚡ ━━`;
+                    vp.appendChild(rtbHeader);
+
                     const grid = document.createElement('div');
                     grid.className = 'grid-cards';
                     if (allLiveAccountsFlat.length === 0) {
-                        vp.innerHTML = `<div class="inpage-drawer" style="text-align:center;">⏳ Syncing live accounts from Google Sheet...</div>`;
+                        const emptyRtb = document.createElement('div');
+                        emptyRtb.className = 'inpage-drawer';
+                        emptyRtb.style.textAlign = 'center';
+                        emptyRtb.innerHTML = '⏳ Syncing live accounts from Google Sheet...';
+                        vp.appendChild(emptyRtb);
                     } else {
                         allLiveAccountsFlat.forEach(acc => grid.appendChild(createSpecificAccountCard(acc, acc._cat_key)));
                         vp.appendChild(grid);
@@ -2761,6 +2774,11 @@
                 }
 
                 if (activeSub.includes('Buy Followers & Stars')) {
+                    const boostHeader = document.createElement('div');
+                    boostHeader.style.cssText = 'padding:7px 10px;margin:2px 0 12px 0;border-top:1.5px solid var(--border-focus);border-bottom:1.5px solid var(--border-focus);background:var(--bg-soft);text-align:center;font-size:0.64rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                    boostHeader.innerHTML = '━━ 🚀 GITHUB FOLLOWERS, STARS & REPO BOOST 🚀 ━━';
+                    vp.appendChild(boostHeader);
+
                     const grid = document.createElement('div');
                     grid.className = 'grid-cards';
                     CATALOG_ITEMS.filter(i => i.hub === 'github_boost').forEach(i => grid.appendChild(createCatalogCard(i)));
@@ -2769,6 +2787,11 @@
                 }
 
                 if (activeSub.includes('High Followers Account')) {
+                    const hfHeader = document.createElement('div');
+                    hfHeader.style.cssText = 'padding:7px 10px;margin:2px 0 12px 0;border-top:1.5px solid rgba(245,158,11,0.55);border-bottom:1.5px solid rgba(245,158,11,0.55);background:var(--bg-soft);text-align:center;font-size:0.64rem;font-weight:800;color:var(--warning);text-transform:uppercase;letter-spacing:0.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;';
+                    hfHeader.innerHTML = '━━ 👥 GITHUB HIGH FOLLOWERS VAULT 👥 ━━';
+                    vp.appendChild(hfHeader);
+
                     const grid = document.createElement('div');
                     grid.className = 'grid-cards';
                     const follVaultObj = GITHUB_VAULT_CATEGORIES.find(y => y.yr === 'Followers');
@@ -3260,15 +3283,25 @@
             const accIdStr = `${entry.category}-${entry.username}`;
             return `
                 <div class="item-card" style="border:1px solid var(--border-focus);border-left:4px solid var(--success);background:var(--bg-card);margin-bottom:10px;padding:11px 12px;gap:8px;">
-                    <!-- COMPACT TOP BAR: INVOICE & ACC ID ON LEFT, PRICE ON RIGHT -->
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;border-bottom:1px solid var(--border-subtle);padding-bottom:6px;">
-                        <div style="min-width:0;flex:1;">
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--success);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                📦 ${entry.invoice} • ID: ${accIdStr}
+                    <!-- COMPACT 2-LINE TOP BAR: BARIS 1 = INV, BARIS 2 = ID, KANAN = HARGA & TANGGAL -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--border-subtle);padding-bottom:7px;min-width:0;width:100%;">
+                        <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);border-left:3px solid var(--success);border-radius:8px;padding:4px 9px;min-width:0;flex:1;font-family:'JetBrains Mono',monospace;line-height:1.35;">
+                            <div style="font-size:0.65rem;font-weight:800;color:var(--success);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="display:inline-block;width:28px;color:var(--text-muted);">INV</span>: ${entry.invoice}
                             </div>
-                            <div style="font-size:0.6rem;color:var(--text-muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                🕒 ${entry.date} • 🌐 Order by Web
+                            <div style="font-size:0.63rem;font-weight:800;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="display:inline-block;width:28px;color:var(--text-muted);">ID</span>: ${accIdStr}
                             </div>
+                        </div>
+                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+                            <div class="price-chip" style="padding:3px 8px;font-size:0.66rem;">$${entry.priceUsdt} USDT</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:var(--text-muted);font-weight:700;white-space:nowrap;">
+                                🕒 ${entry.date}
+                            </div>
+                        </div>
+                    </div>
+                        </div>
+                    </div>
                         </div>
                         <div class="price-chip" style="padding:3px 7px;font-size:0.66rem;">$${entry.priceUsdt} USDT</div>
                     </div>
@@ -5885,6 +5918,11 @@
             `;
         }
 
+        function fmtAlignedNotifRow(label, valueHtml) {
+            const padded = String(label).padEnd(9, '\u00A0');
+            return `<code>${padded}:</code> ${valueHtml}`;
+        }
+
         async function submitWebNegoOffer() {
             const offerUsdt = parseFloat(document.getElementById('negoOfferUsdt').value);
             const note = document.getElementById('negoBuyerNote').value.trim() || '-';
@@ -5894,20 +5932,23 @@
 
             let origPrice = 0;
             let accId = '';
+            let cleanItemName = '';
             let itemSummary = '';
 
             if (_isCartMakeOfferMode) {
                 if (cart.length === 0) return;
                 origPrice = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
                 accId = 'CART_BUNDLE';
-                itemSummary = `Cart Bundle (${cart.length} Items: ${cart.map(c => c.id).slice(0, 4).join(', ')}) [${accId}]`;
+                cleanItemName = `Cart Bundle (${cart.length} Items)`;
+                itemSummary = `${cleanItemName} [${accId}]`;
             } else {
                 if (!_negoTargetEntry) return;
                 const acc = _negoTargetEntry.acc;
                 const yrKey = _negoTargetEntry.yrKey;
                 accId = `${yrKey}-${acc.username}`;
                 origPrice = acc._computed_usdt || computeAccountPrice(acc, yrKey);
-                itemSummary = `GitHub Account (Year ${yrKey}) [${accId}]`;
+                cleanItemName = `GitHub Vault ${yrKey}`;
+                itemSummary = `${cleanItemName} [${accId}]`;
             }
 
             if (isNaN(offerUsdt) || offerUsdt <= 0.5 || offerUsdt >= origPrice) {
@@ -5916,33 +5957,35 @@
 
             const discPct = (((origPrice - offerUsdt) / origPrice) * 100).toFixed(1);
 
-            const buyerOfferMsg = (
-                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                `   🤝 <b>O F F E R  S U B M I T T E D</b>\n` +
-                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                `<b>Offer ID</b>      : <code>${negoId}</code>\n` +
-                `<b>Item</b>          : ${itemSummary}\n` +
-                `<b>Normal Price</b>  : <s>$${origPrice.toFixed(2)} USDT</s>\n` +
-                `<b>Your Offer</b>    : <b>$${offerUsdt.toFixed(2)} USDT</b> (-${discPct}%)\n` +
-                `<b>Note</b>          : ${note}\n` +
-                `<b>Source</b>        : Web Store\n\n` +
-                `⏳ <i>Your offer has been sent to Executive Admin. You will be notified once reviewed!</i>`
-            );
+            const buyerOfferMsg = [
+                `🤝 <b>PRICE OFFER SUBMITTED</b>`,
+                `━━━━━━━━━━━━━━━━━━━━`,
+                fmtAlignedNotifRow('Offer ID', `<code>${negoId}</code>`),
+                fmtAlignedNotifRow('Item', `<b>${cleanItemName}</b>`),
+                fmtAlignedNotifRow('Acc ID', `<code>${accId}</code>`),
+                fmtAlignedNotifRow('Normal', `<s>$${origPrice.toFixed(2)} USDT</s>`),
+                fmtAlignedNotifRow('Offer', `<b>$${offerUsdt.toFixed(2)} USDT (-${discPct}%)</b>`),
+                fmtAlignedNotifRow('Note', note),
+                fmtAlignedNotifRow('Source', `🌐 Web Store`),
+                `━━━━━━━━━━━━━━━━━━━━`,
+                `⏳ <i>Sent to Executive Admin for review.</i>`
+            ].join('\n');
 
-            const adminOfferMsg = (
-                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                `   🤝 <b>I N C O M I N G  P R I C E  O F F E R</b>\n` +
-                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                `<b>Offer ID</b>      : <code>${negoId}</code>\n` +
-                `<b>Buyer</b>         : ${currentFullName} (${dispUser})\n` +
-                `<b>User ID</b>       : <code>${currentUserId}</code>\n` +
-                `<b>Target Item</b>   : <b>${itemSummary}</b>\n` +
-                `<b>Normal Price</b>  : $${origPrice.toFixed(2)} USDT\n` +
-                `<b>Buyer Offer</b>   : <b>$${offerUsdt.toFixed(2)} USDT</b> (-${discPct}%)\n` +
-                `<b>Note</b>          : ${note}\n` +
-                `<b>Platform</b>      : Web Store\n\n` +
+            const adminOfferMsg = [
+                `🤝 <b>INCOMING PRICE OFFER</b>`,
+                `━━━━━━━━━━━━━━━━━━━━`,
+                fmtAlignedNotifRow('Offer ID', `<code>${negoId}</code>`),
+                fmtAlignedNotifRow('Buyer', `<b>${dispUser}</b>`),
+                fmtAlignedNotifRow('User ID', `<code>${currentUserId}</code>`),
+                fmtAlignedNotifRow('Item', `<b>${cleanItemName}</b>`),
+                fmtAlignedNotifRow('Acc ID', `<code>${accId}</code>`),
+                fmtAlignedNotifRow('Normal', `$${origPrice.toFixed(2)} USDT`),
+                fmtAlignedNotifRow('Offer', `<b>$${offerUsdt.toFixed(2)} USDT (-${discPct}%)</b>`),
+                fmtAlignedNotifRow('Note', note),
+                fmtAlignedNotifRow('Source', `🌐 Web Store`),
+                `━━━━━━━━━━━━━━━━━━━━`,
                 `👇 <i>Select an executive action below:</i>`
-            );
+            ].join('\n');
 
             const adminInlineKeyboard = {
                 inline_keyboard: [
@@ -5964,13 +6007,14 @@
                 buyerId: currentUserId,
                 buyerUname: dispUser,
                 accId: accId,
+                cleanItemName: cleanItemName,
                 itemSummary: itemSummary,
                 origPrice: origPrice,
                 offerUsdt: offerUsdt,
                 note: note
             };
 
-            pushInWebNotification('buyer', '🤝 OFFER SUBMITTED (WEB)', buyerOfferMsg);
+            pushInWebNotification('buyer', `🤝 OFFER SUBMITTED (${negoId})`, buyerOfferMsg);
             const notifId = pushInWebNotification('admin', `🤝 INCOMING OFFER (${negoId})`, adminOfferMsg, offerMeta);
             sendTelegramSilentPush(currentUserId, buyerOfferMsg, true);
 
@@ -5980,8 +6024,6 @@
                 if (mid) tgMsgIdsMap[admId] = mid;
             }
             attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
-
-            // Dorong status notifikasi admin terbaru ke Cloud Google Sheet agar muncul di semua perangkat (HP & PC)
             scheduleCloudStatePush();
 
             closeModal('paymentGatewayModal');
@@ -5994,25 +6036,27 @@
             const notif = adminList[notifIdx];
             if (!notif || !notif.meta) return;
             const m = notif.meta;
+            const itemLbl = m.cleanItemName || String(m.itemSummary || 'GitHub Vault').split('[')[0].trim();
 
             if (decision === 'accept') {
                 const dealUsdt = parseFloat(m.offerUsdt);
-                const msgBuyer = (
-                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   🎉 <b>O F F E R  A P P R O V E D !</b>\n` +
-                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `<blockquote>🔸 <b>Offer ID:</b> <code>${m.negoId}</code>\n` +
-                    `🔸 <b>Item:</b> ${m.itemSummary}\n` +
-                    `🔸 <b>Normal Price:</b> <s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>\n` +
-                    `🔥 <b>Approved Offer Price:</b> <b>$${dealUsdt.toFixed(2)} USDT</b></blockquote>\n` +
-                    `👇 <i>Click below to checkout immediately at your approved price!</i>`
-                );
+                const msgBuyer = [
+                    `🎉 <b>PRICE OFFER APPROVED</b>`,
+                    `━━━━━━━━━━━━━━━━━━━━`,
+                    fmtAlignedNotifRow('Offer ID', `<code>${m.negoId}</code>`),
+                    fmtAlignedNotifRow('Item', `<b>${itemLbl}</b>`),
+                    fmtAlignedNotifRow('Acc ID', `<code>${m.accId}</code>`),
+                    fmtAlignedNotifRow('Normal', `<s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>`),
+                    fmtAlignedNotifRow('Approved', `<b>$${dealUsdt.toFixed(2)} USDT</b>`),
+                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `👇 <i>Click below to checkout at your approved price!</i>`
+                ].join('\n');
                 const buyerKb = {
                     inline_keyboard: [
                         [{ text: `💳 Accept & Checkout ($${dealUsdt.toFixed(2)})`, callback_data: `nav_to_checkout` }]
                     ]
                 };
-                pushInWebNotification('buyer', '🎉 OFFER APPROVED BY ADMIN', msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: dealUsdt, isCartOffer: !!m.isCartOffer });
+                pushInWebNotification('buyer', `🎉 OFFER APPROVED (${m.negoId})`, msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: dealUsdt, isCartOffer: !!m.isCartOffer });
                 await sendTelegramSilentPush(m.buyerId, msgBuyer, true, buyerKb);
 
                 if (m.tgMsgIds) {
@@ -6024,6 +6068,7 @@
                 notif.title = newTitle;
                 delete notif.meta;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+                scheduleCloudStatePush();
                 renderNotificationsList();
                 showToast(`Offer ${m.negoId} accepted at $${dealUsdt.toFixed(2)} USDT!`);
 
@@ -6033,23 +6078,24 @@
                 const cntUsdt = parseFloat(cntInput.replace(',', '.'));
                 if (isNaN(cntUsdt) || cntUsdt <= 0) return showToast('Invalid USDT amount!');
 
-                const msgBuyer = (
-                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   ⚡ <b>A D M I N  C O U N T E R  O F F E R</b>\n` +
-                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `<blockquote>🔸 <b>Offer ID:</b> <code>${m.negoId}</code>\n` +
-                    `🔸 <b>Item:</b> ${m.itemSummary}\n` +
-                    `🔸 <b>Normal Price:</b> <s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>\n` +
-                    `🔸 <b>Your Offer:</b> <s>$${parseFloat(m.offerUsdt).toFixed(2)} USDT</s>\n` +
-                    `🔥 <b>Admin Counter Offer:</b> <b>$${cntUsdt.toFixed(2)} USDT</b></blockquote>\n` +
-                    `👇 <i>Click the button below to accept this counter offer and checkout immediately:</i>`
-                );
+                const msgBuyer = [
+                    `⚡ <b>ADMIN COUNTER OFFER</b>`,
+                    `━━━━━━━━━━━━━━━━━━━━`,
+                    fmtAlignedNotifRow('Offer ID', `<code>${m.negoId}</code>`),
+                    fmtAlignedNotifRow('Item', `<b>${itemLbl}</b>`),
+                    fmtAlignedNotifRow('Acc ID', `<code>${m.accId}</code>`),
+                    fmtAlignedNotifRow('Normal', `<s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>`),
+                    fmtAlignedNotifRow('Your Bid', `<s>$${parseFloat(m.offerUsdt).toFixed(2)} USDT</s>`),
+                    fmtAlignedNotifRow('Counter', `<b>$${cntUsdt.toFixed(2)} USDT</b>`),
+                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `👇 <i>Click below to accept and checkout immediately!</i>`
+                ].join('\n');
                 const buyerKb = {
                     inline_keyboard: [
                         [{ text: `💳 Accept & Checkout ($${cntUsdt.toFixed(2)})`, callback_data: `nav_to_checkout` }]
                     ]
                 };
-                pushInWebNotification('buyer', '⚡ ADMIN COUNTER OFFER', msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: cntUsdt, isCartOffer: !!m.isCartOffer });
+                pushInWebNotification('buyer', `⚡ COUNTER OFFER (${m.negoId})`, msgBuyer, { type: 'nego_approved', accId: m.accId, dealUsdt: cntUsdt, isCartOffer: !!m.isCartOffer });
                 await sendTelegramSilentPush(m.buyerId, msgBuyer, true, buyerKb);
 
                 if (m.tgMsgIds) {
@@ -6061,20 +6107,22 @@
                 notif.title = newTitle;
                 delete notif.meta;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+                scheduleCloudStatePush();
                 renderNotificationsList();
                 showToast(`Counter Offer $${cntUsdt.toFixed(2)} USDT sent to ${m.buyerUname}!`);
 
             } else if (decision === 'reject') {
-                const msgBuyer = (
-                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   ❌ <b>O F F E R  D E C L I N E D</b>\n` +
-                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `<blockquote>🔸 <b>Offer ID:</b> <code>${m.negoId}</code>\n` +
-                    `🔸 <b>Item:</b> ${m.itemSummary}\n` +
-                    `🔸 <b>Your Offer:</b> $${parseFloat(m.offerUsdt).toFixed(2)} USDT</blockquote>\n` +
-                    `⚠️ <i>Sorry, your offer could not be accepted. Feel free to submit a higher offer in the store.</i>`
-                );
-                pushInWebNotification('buyer', '❌ OFFER DECLINED', msgBuyer);
+                const msgBuyer = [
+                    `❌ <b>PRICE OFFER DECLINED</b>`,
+                    `━━━━━━━━━━━━━━━━━━━━`,
+                    fmtAlignedNotifRow('Offer ID', `<code>${m.negoId}</code>`),
+                    fmtAlignedNotifRow('Item', `<b>${itemLbl}</b>`),
+                    fmtAlignedNotifRow('Acc ID', `<code>${m.accId}</code>`),
+                    fmtAlignedNotifRow('Your Bid', `$${parseFloat(m.offerUsdt).toFixed(2)} USDT`),
+                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `⚠️ <i>Sorry, your offer could not be accepted. Feel free to submit a higher offer!</i>`
+                ].join('\n');
+                pushInWebNotification('buyer', `❌ OFFER DECLINED (${m.negoId})`, msgBuyer);
                 await sendTelegramSilentPush(m.buyerId, msgBuyer, true);
 
                 if (m.tgMsgIds) {
@@ -6086,6 +6134,7 @@
                 notif.title = newTitle;
                 delete notif.meta;
                 localStorage.setItem('xb_admin_notifs', JSON.stringify(adminList));
+                scheduleCloudStatePush();
                 renderNotificationsList();
                 showToast(`Offer ${m.negoId} declined!`);
             }
