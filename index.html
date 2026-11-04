@@ -4258,7 +4258,9 @@
             cleanupExpiredOrSoldFlashAccounts();
             const isFlashOn = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true}').active;
             const activeFlashCount = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]').length;
+            const customVouchers = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
             const admActions = [
+                { icon: '🎟️', title: `Manage & Create Promo Vouchers (${customVouchers.length} Active)`, desc: 'Create custom discount codes, set percentage/fixed cut, & once-off vs reusable rules', cmd: 'manage_vouchers' },
                 { icon: '⚡', title: `Manage Flash Sale Accounts (${activeFlashCount} Active)`, desc: 'Search stock by @username or year, set Flash Price & Duration hours', cmd: 'manage_flash_stock' },
                 { icon: isFlashOn ? '🟢' : '🔴', title: isFlashOn ? 'Turn Flash Sale OFF (Hide Section)' : 'Turn Flash Sale ON (Show Section)', desc: 'Toggle main page Flash Sale visibility on or off', cmd: 'toggle_flash' },
                 { icon: '🔔', title: 'Open Live Admin Telemetry Feed', desc: 'View incoming Cart Alerts, Price Offers, IDR Proofs & Reminders', cmd: 'open_admin_notifs' },
@@ -4314,6 +4316,8 @@
                 localStorage.setItem('xb_admin_flash_cfg', JSON.stringify(cfg));
                 showToast(`Flash Sale section is now ${cfg.active ? 'ONLINE (ON)' : 'OFFLINE (OFF)'}!`);
                 renderViewport();
+            } else if (cmd === 'manage_vouchers') {
+                openAdminVouchersManagerModal();
             } else if (cmd === 'manage_flash_stock') {
                 openAdminFlashSaleManagerModal();
             } else if (cmd === 'open_admin_notifs') {
@@ -4333,6 +4337,126 @@
                     showToast(`Wallet balance set to ${userBalanceUsdt.toFixed(2)} USDT!`);
                 }
             }
+        }
+
+        // --- ADMIN VOUCHER MANAGER MODAL ---
+        function openAdminVouchersManagerModal() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+                    <span class="item-tag" style="margin:0;color:var(--warning);border-color:var(--warning);">🎟️ PROMO VOUCHER MANAGER</span>
+                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 6px 0;">🎫 Create & Manage Store Vouchers</h3>
+                <p style="font-size:0.76rem;color:var(--text-secondary);margin:0 0 14px 0;">
+                    Create discount codes, set percentage discount, and configure whether the voucher is <b>Once-off (Sekali Pakai)</b> or <b>Reusable (Bisa Dipakai Terus)</b>.
+                </p>
+
+                <div id="adminVouchersListBox" style="margin-bottom:14px;"></div>
+
+                <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:10px;">
+                    <div style="font-size:0.72rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;">✨ Create New Voucher:</div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Voucher Code (e.g. SPECIAL50):</label>
+                        <input type="text" class="form-input" id="newVoucherCode" placeholder="e.g. XIANBEE50" style="text-transform:uppercase;font-family:'JetBrains Mono',monospace;">
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Discount (%):</label>
+                            <input type="number" class="form-input" id="newVoucherDisc" min="1" max="100" value="10">
+                        </div>
+                        <div class="form-group" style="margin-bottom:0;">
+                            <label>Usage Rule:</label>
+                            <select class="form-input" id="newVoucherType">
+                                <option value="reusable">🔄 Reusable (Bisa Berkali-kali)</option>
+                                <option value="once">⚡ Once-off (Sekali Pakai Saja)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn-ui primary" style="width:100%;padding:11px;" onclick="adminSaveNewVoucher()">➕ Add Voucher to Store</button>
+                </div>
+            `;
+            renderAdminVouchersList();
+        }
+
+        function renderAdminVouchersList() {
+            const box = document.getElementById('adminVouchersListBox');
+            if (!box) return;
+            const list = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
+            if (list.length === 0) {
+                box.innerHTML = `<div style="padding:12px;border-radius:10px;background:var(--bg-soft);font-size:0.75rem;color:var(--text-muted);text-align:center;">No custom vouchers created yet. Default XIANBEE5 (5%) is active.</div>`;
+                return;
+            }
+            box.innerHTML = `
+                <div style="font-size:0.72rem;font-weight:800;color:var(--warning);margin-bottom:6px;">ACTIVE VOUCHER LIST (${list.length}):</div>
+                ${list.map((v, i) => `
+                    <div class="cred-field-row" style="border-color:var(--warning);">
+                        <span style="flex:1;"><b>${v.code}</b> • <b>${v.disc}% Off</b> • <span style="color:${v.type === 'once' ? 'var(--danger)' : 'var(--success)'};">${v.type === 'once' ? '⚡ Once-off' : '🔄 Reusable'}</span> ${v.used ? '(<b>USED UP</b>)' : ''}</span>
+                        <button class="top-pill" style="color:var(--danger);padding:4px 8px;" onclick="adminDeleteVoucher(${i})">🗑️ Delete</button>
+                    </div>
+                `).join('')}
+            `;
+        }
+
+        function adminSaveNewVoucher() {
+            const code = (document.getElementById('newVoucherCode')?.value || '').trim().toUpperCase();
+            const disc = parseFloat(document.getElementById('newVoucherDisc')?.value || '10');
+            const type = document.getElementById('newVoucherType')?.value || 'reusable';
+
+            if (!code || code.length < 2) return showToast('Please enter a valid voucher code!');
+            if (isNaN(disc) || disc <= 0 || disc > 100) return showToast('Discount must be between 1% and 100%!');
+
+            const list = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
+            if (list.some(x => x.code === code)) return showToast('Voucher code already exists!');
+
+            list.unshift({ code: code, disc: disc, type: type, used: false });
+            localStorage.setItem('xb_custom_vouchers', JSON.stringify(list));
+            renderAdminVouchersList();
+            showToast(`✅ Voucher ${code} (${disc}%, ${type}) created successfully!`);
+        }
+
+        function adminDeleteVoucher(idx) {
+            const list = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
+            list.splice(idx, 1);
+            localStorage.setItem('xb_custom_vouchers', JSON.stringify(list));
+            renderAdminVouchersList();
+            showToast('Voucher deleted!');
+        }
+
+        // Perbarui fungsi applyCartVoucher agar mengecek database voucher (Reusable vs Once-off)
+        function applyCartVoucher() {
+            const code = (document.getElementById('cartPromoInput')?.value || '').trim().toUpperCase();
+            if (!code) return showToast('Please enter a voucher code!');
+
+            // Default system vouchers
+            if (code === 'XIANBEE5' || code === 'VIP5') {
+                cartDiscountPct = 5;
+                openCartModal();
+                showToast('5% Discount Voucher Applied!');
+                return;
+            }
+
+            // Check custom admin vouchers
+            const list = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
+            const found = list.find(x => x.code === code);
+            if (!found) {
+                return showToast('❌ Invalid or expired voucher code!');
+            }
+            if (found.type === 'once' && found.used) {
+                return showToast('❌ This once-off voucher has already been used!');
+            }
+
+            cartDiscountPct = found.disc;
+            if (found.type === 'once') {
+                found.used = true;
+                localStorage.setItem('xb_custom_vouchers', JSON.stringify(list));
+            }
+
+            openCartModal();
+            showToast(`✅ Success! ${found.disc}% Discount Voucher Applied (${found.type === 'once' ? 'Once-off used' : 'Reusable'}).`);
         }
 
         // FEATURE 10: ADMIN FLASH SALE STOCK PICKER MODAL (SEARCH BY USERNAME OR YEAR, SET PRICE & DURATION HOURS)
@@ -6029,14 +6153,20 @@
                     <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
 
-                <!-- KOTAK 3D RAPI BERISI RINCIAN TARGET & HARGA STANDARD -->
-                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);padding:11px 13px;border-radius:11px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+                <!-- KOTAK 3D RAPI BERISI KETERANGAN LENGKAP USERNAME, FOLLOWERS, REPOS & HARGA STANDARD -->
+                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);padding:11px 13px;border-radius:11px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;">
                     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
                         <span style="color:var(--text-muted);font-weight:700;">Standard Price :</span>
                         <span class="price-chip" style="padding:3px 8px;font-size:0.72rem;">${fmtPrice(origPrice)}</span>
                     </div>
-                    <div style="color:var(--accent-cyan);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                        Target : @${acc.username} (GitHub ${yrKey})
+                    <div style="font-size:0.82rem;font-weight:800;color:var(--text-primary);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        @${acc.username}
+                    </div>
+                    <div style="font-size:0.67rem;color:var(--accent-cyan);font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        📂 GitHub Vault ${yrKey} • ID: ${accId}
+                    </div>
+                    <div style="font-size:0.65rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        👥 Followers: <b>${acc.followers || 0}</b> • 📁 Public Repos: <b>${acc.repos || 0}</b>
                     </div>
                 </div>
 
