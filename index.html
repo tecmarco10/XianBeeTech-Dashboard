@@ -1270,48 +1270,33 @@
             </div>
         </aside>
 
-        
-
-            <div class="container">
-                <!-- NESTED SUB-TABS BAR (LEVEL 2 — SYMMETRICAL LEFT-RIGHT GRID) -->
-                <div class="subtabs-grid" id="subTabsContainer"></div>
-
-                <!-- IN-PAGE VAULT DRAWER (LEVEL 3 — FOR INSPECTING SPECIFIC GITHUB ACCOUNTS) -->
-                <div id="inPageVaultDrawer" style="display:none;"></div>
-
-                <!-- MAIN DYNAMIC VIEWPORT -->
-                <div id="mainViewport"></div>
-            </div>
-        </div>
-
         <!-- 📱 MAIN WORKSPACE -->
-        <div class="main-area">
+        <div class="main-area" style="padding-top:128px;">
             <header class="topbar" style="background:var(--bg-base);padding:6px 10px;border-bottom:none;">
-                <!-- 1 KOTAK 3D UTUH 4 SISI (ATAS, BAWAH, KIRI, KANAN) DENGAN BASE 3D TEBAL DI BAWAH (TIDAK KOSONG) -->
+                <!-- 1 KOTAK 3D UTUH 4 SISI (ATAS, BAWAH, KIRI, KANAN) DENGAN BASE 3D TEBAL DI BAWAH -->
                 <div style="width:100%;background:linear-gradient(135deg, #24164a 0%, #11224a 50%, #2f174c 100%);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #a855f7;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:18px;box-shadow:0 6px 0 #1e1b4b, 0 12px 30px rgba(0,0,0,0.75), inset 0 2px 0 rgba(255,255,255,0.28), inset 0 -3px 0 rgba(168,85,247,0.4);overflow:hidden;display:flex;flex-direction:column;">
                     
-                    <!-- BARIS 1: LOGO BULAT + BRAND + ANALYTICS 3D + SWITCH KURS/TEMA -->
-                    <div class="topbar-box-brand" style="padding:7px 10px;gap:8px;background:transparent;border:none;box-shadow:none;">
-                        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;" onclick="switchTab('home')">
-                            <div class="brand-orb" style="width:50px;height:50px;background:#07080d;border:1.5px solid rgba(56,189,248,0.7);box-shadow:0 3px 12px rgba(56,189,248,0.3);padding:4px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+                    <!-- BARIS 1: LOGO + NAMA TOKO (KIRI) + SIMBOL 📊 (TENGAH) + USDT, TEMA & ADMIN (KANAN) -->
+                    <div class="topbar-box-brand" style="padding:7px 10px;gap:6px;background:transparent;border:none;box-shadow:none;display:flex;align-items:center;justify-content:space-between;">
+                        <div style="display:flex;align-items:center;gap:8px;cursor:pointer;min-width:0;flex:1;" onclick="switchTab('home')">
+                            <div class="brand-orb" style="width:38px;height:38px;background:#07080d;border:1.5px solid rgba(56,189,248,0.7);box-shadow:0 3px 10px rgba(56,189,248,0.3);padding:3px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
                                 <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
                             </div>
-                            <div style="min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                                <div style="font-weight:800;font-size:0.98rem;letter-spacing:-0.2px;line-height:1.15;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 48%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;">XianBee-Tech</div>
-                                <div style="font-size:0.6rem;font-weight:700;color:#cbd5e1;letter-spacing:0.35px;line-height:1.15;white-space:nowrap;">Enterprise Asset Vault</div>
+                            <div style="min-width:0;flex:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;">
+                                <div style="font-weight:800;font-size:0.88rem;letter-spacing:-0.2px;line-height:1.15;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 48%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">XianBee-Tech</div>
+                                <div style="font-size:0.55rem;font-weight:700;color:#cbd5e1;letter-spacing:0.25px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Enterprise Asset Vault</div>
                             </div>
                         </div>
 
-                        <!-- TOMBOL ANALYTICS 3D -->
-                        <button class="top-pill" type="button" onclick="openLiveAnalytics3DModal()" style="background:linear-gradient(135deg, rgba(6,182,212,0.22) 0%, rgba(168,85,247,0.22) 100%);border:1px solid rgba(56,189,248,0.65);color:#38bdf8;padding:6px 9px;font-size:0.66rem;font-weight:800;border-radius:9px;gap:4px;">
-                            <span>📊</span>
-                            <span>Analytics 3D</span>
-                        </button>
-
                         <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
-                            <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 9px;font-size:0.68rem;gap:5px;background:rgba(15,23,42,0.8);border-color:rgba(56,189,248,0.4);color:#f8fafc;">
+                            <!-- TOMBOL SIMBOL ANALYTICS 3D DI TENGAH NAMA TOKO & USDT -->
+                            <button class="top-pill" type="button" onclick="openLiveAnalytics3DModal()" title="Live 3D Store Analytics" style="background:linear-gradient(135deg, rgba(6,182,212,0.24) 0%, rgba(168,85,247,0.24) 100%);border:1px solid rgba(56,189,248,0.65);color:#38bdf8;padding:6px 8px;font-size:0.74rem;font-weight:800;border-radius:9px;">
+                                <span>📊</span>
+                            </button>
+
+                            <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 8px;font-size:0.68rem;gap:4px;background:rgba(15,23,42,0.8);border-color:rgba(56,189,248,0.4);color:#f8fafc;">
                                 <span id="currSwitchIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
+                                    <svg width="13" height="13" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
                                 </span>
                                 <span id="currSwitchText">USDT</span>
                             </button>
@@ -6230,6 +6215,77 @@
         }
 
         // =========================================================
+        // 📊 LIVE 3D STORE ANALYTICS MODAL (SAAT SIMBOL 📊 DIKLIK)
+        // =========================================================
+        function openLiveAnalytics3DModal() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            const yrKeys = ['2011','2012','2013','2014','2015','2016','2017','2018','2019','2020','2021','2022','2023','2024','2025','2026'];
+            const yrCounts = yrKeys.map(y => (liveGithubStock[y] || []).length);
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            const totalVol = history.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+
+            body.innerHTML = `
+                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:9px 12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:0.86rem;font-weight:800;color:var(--accent-cyan);">📊 Live 3D Vault Telemetry</span>
+                    <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+
+                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;">
+                    <div class="stat-badge-box">
+                        <div style="font-size:0.6rem;color:var(--text-muted);font-weight:700;">LIVE STOCK</div>
+                        <div style="font-size:1.05rem;font-weight:800;color:var(--success);margin-top:2px;">${totalLiveAccounts}</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div style="font-size:0.6rem;color:var(--text-muted);font-weight:700;">1 USDT RATE</div>
+                        <div style="font-size:0.85rem;font-weight:800;color:var(--accent-cyan);margin-top:4px;">Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')}</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div style="font-size:0.6rem;color:var(--text-muted);font-weight:700;">YOUR VOLUME</div>
+                        <div style="font-size:0.9rem;font-weight:800;color:var(--warning);margin-top:3px;">$${totalVol.toFixed(1)}</div>
+                    </div>
+                </div>
+
+                <div class="analytics-3d-card" style="padding:12px;">
+                    <div style="font-size:0.68rem;font-weight:800;color:var(--accent-cyan);margin-bottom:8px;text-transform:uppercase;">📈 Aged GitHub Stock Distribution (2011–2026)</div>
+                    <canvas id="xbAnalytics3dCanvas" height="175"></canvas>
+                </div>
+
+                <button class="btn-ui primary" style="width:100%;padding:11px;" onclick="closeModal('paymentGatewayModal')">✅ Close Analytics</button>
+            `;
+
+            setTimeout(() => {
+                const ctx = document.getElementById('xbAnalytics3dCanvas');
+                if (ctx && window.Chart) {
+                    new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: yrKeys.map(y => "'" + y.slice(2)),
+                            datasets: [{
+                                label: 'Ready Stock',
+                                data: yrCounts,
+                                backgroundColor: 'rgba(56, 189, 248, 0.65)',
+                                borderColor: '#38bdf8',
+                                borderWidth: 1.5,
+                                borderRadius: 5
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: { legend: { display: false } },
+                            scales: {
+                                x: { ticks: { color: '#94a3b8', font: { size: 9 } }, grid: { display: false } },
+                                y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 9 }, precision: 0 }, grid: { color: 'rgba(148,163,184,0.12)' } }
+                            }
+                        }
+                    });
+                }
+            }, 80);
+        }
+
+        // =========================================================
         // 📱 SWIPE GESTURE ENGINE (SLIDE LEFT / RIGHT BETWEEN TABS)
         // =========================================================
         const APP_TAB_SEQUENCE = ['home', 'github', 'catalog', 'wallet', 'profile'];
@@ -6237,23 +6293,29 @@
         let touchStartY = 0;
         let touchEndX = 0;
         let touchEndY = 0;
+        let _isSwipingTab = false;
 
-        const shellArea = document.querySelector('.main-area') || document.body;
+        function isTouchIgnoredForSwipe(target) {
+            if (!target || !target.closest) return false;
+            if (document.querySelector('.modal-overlay.active') || document.querySelector('.auth-gate-overlay.active')) return true;
+            if (target.closest('.topbar, .bottom-nav, .floating-cart-bar, input, textarea, select, canvas')) return true;
+            return false;
+        }
 
-        shellArea.addEventListener('touchstart', function(e) {
-            if (document.querySelector('.modal-overlay.active') || document.getElementById('inPageVaultDrawer').style.display === 'block') {
+        document.addEventListener('touchstart', function(e) {
+            if (_isSwipingTab || isTouchIgnoredForSwipe(e.target)) {
+                touchStartX = 0;
+                touchStartY = 0;
                 return;
             }
-            touchStartX = e.changedTouches[0].screenX;
-            touchStartY = e.changedTouches[0].screenY;
+            touchStartX = e.changedTouches[0].clientX;
+            touchStartY = e.changedTouches[0].clientY;
         }, { passive: true });
 
-        shellArea.addEventListener('touchend', function(e) {
-            if (document.querySelector('.modal-overlay.active') || document.getElementById('inPageVaultDrawer').style.display === 'block') {
-                return;
-            }
-            touchEndX = e.changedTouches[0].screenX;
-            touchEndY = e.changedTouches[0].screenY;
+        document.addEventListener('touchend', function(e) {
+            if (_isSwipingTab || (!touchStartX && !touchStartY) || isTouchIgnoredForSwipe(e.target)) return;
+            touchEndX = e.changedTouches[0].clientX;
+            touchEndY = e.changedTouches[0].clientY;
             handleGestureSwipe();
         }, { passive: true });
 
@@ -6261,31 +6323,41 @@
             const xDiff = touchEndX - touchStartX;
             const yDiff = touchEndY - touchStartY;
 
-            if (Math.abs(xDiff) > Math.abs(yDiff) && Math.abs(xDiff) > 65) {
+            // Pastikan gerakan murni horizontal (geser kiri/kanan) dan bukan sedang scroll atas/bawah
+            if (Math.abs(xDiff) > Math.abs(yDiff) * 1.35 && Math.abs(xDiff) > 55) {
                 const currentIndex = APP_TAB_SEQUENCE.indexOf(activeTab);
                 if (currentIndex === -1) return;
 
                 const vp = document.getElementById('mainViewport');
                 if (!vp) return;
 
+                _isSwipingTab = true;
                 if (xDiff < 0) {
                     const nextIndex = (currentIndex + 1) % APP_TAB_SEQUENCE.length;
+                    vp.classList.remove('page-slide-left', 'page-slide-right', 'page-slide-in-left', 'page-slide-in-right');
                     vp.classList.add('page-slide-left');
                     setTimeout(() => {
                         switchTab(APP_TAB_SEQUENCE[nextIndex]);
                         vp.classList.remove('page-slide-left');
                         vp.classList.add('page-slide-in-left');
-                        setTimeout(() => vp.classList.remove('page-slide-in-left'), 280);
-                    }, 180);
+                        setTimeout(() => {
+                            vp.classList.remove('page-slide-in-left');
+                            _isSwipingTab = false;
+                        }, 260);
+                    }, 150);
                 } else {
                     const prevIndex = (currentIndex - 1 + APP_TAB_SEQUENCE.length) % APP_TAB_SEQUENCE.length;
+                    vp.classList.remove('page-slide-left', 'page-slide-right', 'page-slide-in-left', 'page-slide-in-right');
                     vp.classList.add('page-slide-right');
                     setTimeout(() => {
                         switchTab(APP_TAB_SEQUENCE[prevIndex]);
                         vp.classList.remove('page-slide-right');
                         vp.classList.add('page-slide-in-right');
-                        setTimeout(() => vp.classList.remove('page-slide-in-right'), 280);
-                    }, 180);
+                        setTimeout(() => {
+                            vp.classList.remove('page-slide-in-right');
+                            _isSwipingTab = false;
+                        }, 260);
+                    }, 150);
                 }
             }
         }
