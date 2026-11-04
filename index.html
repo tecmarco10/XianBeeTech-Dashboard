@@ -6220,13 +6220,13 @@
         }
 
         // =========================================================
-        // 📊 GLOBAL STORE SALES 3D TELEMETRY (2 GRAFIK 3D: AKUN TERJUAL & GITHUB SERVICE + TOTAL USDT HARIAN, MINGGUAN, TAHUNAN, ALL-TIME)
+        // 📊 100% ENGLISH GLOBAL STORE SALES 3D TELEMETRY (2 3D CHARTS: ACCOUNTS SOLD & GITHUB SERVICES + DAILY, WEEKLY, YEARLY, ALL-TIME USDT)
         // =========================================================
         let _storeAccChart3D = null;
         let _storeSvcChart3D = null;
         let _storeTelemetryRange = 'ALL';
 
-        // Plugin 3D Isometrik Prisma + Label Angka di Atas Batang 3D
+        // Isometric 3D Prism Bar Plugin + Value Labels Above 3D Bars
         const xbPrism3DPlugin = {
             id: 'xbPrism3DPlugin',
             afterDatasetsDraw(chart) {
@@ -6250,7 +6250,7 @@
                         if (base - y <= 1) return;
 
                         ctx.save();
-                        // 1. Atap Prisma 3D (Top Bevel)
+                        // 1. 3D Top Bevel Face
                         ctx.beginPath();
                         ctx.moveTo(left, y);
                         ctx.lineTo(left + dx, y + dy);
@@ -6260,7 +6260,7 @@
                         ctx.fillStyle = dataset.top3dColor || '#a7f3d0';
                         ctx.fill();
 
-                        // 2. Dinding Samping Kanan 3D (Right Extrusion Wall)
+                        // 2. 3D Right Extrusion Wall
                         ctx.beginPath();
                         ctx.moveTo(right, y);
                         ctx.lineTo(right + dx, y + dy);
@@ -6270,7 +6270,7 @@
                         ctx.fillStyle = dataset.side3dColor || '#047857';
                         ctx.fill();
 
-                        // 3. Angka di Atas Atap 3D
+                        // 3. Value Label on Top of 3D Roof
                         ctx.font = '800 8px "JetBrains Mono", monospace';
                         ctx.fillStyle = dataset.labelColor || '#f8fafc';
                         ctx.textAlign = 'center';
@@ -6325,7 +6325,6 @@
                 totalBoostUsdt    = parseFloat(rawTel.totalBoostUsdt || svcRevs.reduce((a, b) => a + b, 0));
             }
 
-            // Skala filter jika tombol periode Harian / Mingguan / Tahunan / All-Time diklik
             const scale = _storeTelemetryRange === 'DAY'
                 ? (allTimeUsdt > 0 && dailyUsdt > 0 ? Math.max(0.08, dailyUsdt / allTimeUsdt) : 0.12)
                 : (_storeTelemetryRange === 'WEEK'
@@ -6385,12 +6384,12 @@
             body.style.padding = '11px 12px';
             body.style.maxWidth = '540px';
             body.innerHTML = `
-                <!-- HEADER GLOBAL STORE SALES 3D -->
+                <!-- HEADER GLOBAL STORE SALES 3D (100% ENGLISH) -->
                 <div style="background:linear-gradient(135deg, #16113a 0%, #0d1f3d 55%, #23113b 100%);border:1.5px solid #38bdf8;border-left:4.5px solid #10b981;border-radius:12px;padding:7px 10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;box-shadow:0 6px 18px rgba(0,0,0,0.5);">
                     <div style="display:flex;align-items:center;gap:7px;min-width:0;">
                         <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 8px #10b981;flex-shrink:0;"></span>
                         <div style="min-width:0;">
-                            <div style="font-size:0.74rem;font-weight:800;background:linear-gradient(90deg, #38bdf8 0%, #a855f7 55%, #f472b6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📊 XIANBEE-TECH — STORE GLOBAL SALES 3D</div>
+                            <div style="font-size:0.74rem;font-weight:800;background:linear-gradient(90deg, #38bdf8 0%, #a855f7 55%, #f472b6 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📊 XIANBEE-TECH — GLOBAL STORE SALES 3D</div>
                             <div style="font-size:0.52rem;font-weight:700;color:#94a3b8;letter-spacing:0.4px;">ALL-TIME STORE REVENUE • ACCOUNTS SOLD &amp; GITHUB SERVICES</div>
                         </div>
                     </div>
@@ -6400,22 +6399,22 @@
                     </div>
                 </div>
 
-                <!-- 4 KOTAK TOTAL OMZET PENJUALAN TOKO (HARIAN, MINGGUAN, TAHUNAN, ALL-TIME) -->
+                <!-- 4 STORE REVENUE BOXES (DAILY, WEEKLY, YEARLY, ALL-TIME) — 100% ENGLISH -->
                 <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:8px;">
                     <div onclick="switchStoreTelemetryRange('DAY')" style="cursor:pointer;background:${r === 'DAY' ? 'linear-gradient(145deg,rgba(16,185,129,0.26),rgba(6,182,212,0.16))' : 'var(--bg-input)'};border:1px solid ${r === 'DAY' ? '#10b981' : 'var(--border-subtle)'};border-top:3px solid #10b981;border-radius:9px;padding:5px 3px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.4);">
-                        <div style="font-size:0.48rem;font-weight:800;color:#a7f3d0;letter-spacing:0.3px;">HARIAN (24H)</div>
+                        <div style="font-size:0.48rem;font-weight:800;color:#a7f3d0;letter-spacing:0.3px;">DAILY (24H)</div>
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#10b981;margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">$${st.dailyUsdt.toFixed(2)}</div>
                         <div style="font-size:0.46rem;color:#cbd5e1;font-weight:700;">USDT • ${st.dailyTx} TX</div>
                     </div>
 
                     <div onclick="switchStoreTelemetryRange('WEEK')" style="cursor:pointer;background:${r === 'WEEK' ? 'linear-gradient(145deg,rgba(56,189,248,0.26),rgba(99,102,241,0.16))' : 'var(--bg-input)'};border:1px solid ${r === 'WEEK' ? '#38bdf8' : 'var(--border-subtle)'};border-top:3px solid #38bdf8;border-radius:9px;padding:5px 3px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.4);">
-                        <div style="font-size:0.48rem;font-weight:800;color:#bae6fd;letter-spacing:0.3px;">MINGGUAN (7D)</div>
+                        <div style="font-size:0.48rem;font-weight:800;color:#bae6fd;letter-spacing:0.3px;">WEEKLY (7D)</div>
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#38bdf8;margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">$${st.weeklyUsdt.toFixed(2)}</div>
                         <div style="font-size:0.46rem;color:#cbd5e1;font-weight:700;">USDT • ${st.weeklyTx} TX</div>
                     </div>
 
                     <div onclick="switchStoreTelemetryRange('YEAR')" style="cursor:pointer;background:${r === 'YEAR' ? 'linear-gradient(145deg,rgba(168,85,247,0.26),rgba(236,72,153,0.16))' : 'var(--bg-input)'};border:1px solid ${r === 'YEAR' ? '#c084fc' : 'var(--border-subtle)'};border-top:3px solid #c084fc;border-radius:9px;padding:5px 3px;text-align:center;box-shadow:0 4px 10px rgba(0,0,0,0.4);">
-                        <div style="font-size:0.48rem;font-weight:800;color:#e9d5ff;letter-spacing:0.3px;">TAHUNAN (1Y)</div>
+                        <div style="font-size:0.48rem;font-weight:800;color:#e9d5ff;letter-spacing:0.3px;">YEARLY (1Y)</div>
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#c084fc;margin:1px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">$${st.yearlyUsdt.toFixed(1)}</div>
                         <div style="font-size:0.46rem;color:#cbd5e1;font-weight:700;">USDT • ${st.yearlyTx} TX</div>
                     </div>
@@ -6427,7 +6426,7 @@
                     </div>
                 </div>
 
-                <!-- GRAFIK 1 (ATAS): KHUSUS PENJUALAN AKUN GITHUB TOKO (3D PRISM BAR + REVENUE LINE) -->
+                <!-- CHART 1 (TOP): GLOBAL STORE GITHUB ACCOUNTS SOLD (3D PRISM BAR + REVENUE LINE) -->
                 <div style="background:linear-gradient(145deg, #090d16 0%, #111a2e 100%);border:1.5px solid rgba(16,185,129,0.5);border-left:4px solid #10b981;border-radius:12px;padding:7px 9px;margin-bottom:7px;box-shadow:0 6px 16px rgba(0,0,0,0.5);">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;margin-bottom:3px;">
                         <span style="font-size:0.6rem;font-weight:800;color:#34d399;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">📦 1. GITHUB ACCOUNTS SOLD (3D STORE SALES)</span>
@@ -6440,7 +6439,7 @@
                     </div>
                 </div>
 
-                <!-- GRAFIK 2 (BAWAH): KHUSUS PENJUALAN GITHUB SERVICE / BOOST TOKO (3D PRISM BAR + REVENUE WAVE) -->
+                <!-- CHART 2 (BOTTOM): GLOBAL STORE GITHUB BOOST & SERVICES SOLD (3D PRISM BAR + REVENUE WAVE) -->
                 <div style="background:linear-gradient(145deg, #0b0917 0%, #1c1132 100%);border:1.5px solid rgba(168,85,247,0.55);border-left:4px solid #c084fc;border-radius:12px;padding:7px 9px;margin-bottom:8px;box-shadow:0 6px 16px rgba(0,0,0,0.5);">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;margin-bottom:3px;">
                         <span style="font-size:0.6rem;font-weight:800;color:#e879f9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🚀 2. GITHUB BOOST &amp; SERVICES SOLD (3D STORE SALES)</span>
@@ -6463,7 +6462,7 @@
                 if (_storeAccChart3D) { try { _storeAccChart3D.destroy(); } catch (e) {} }
                 if (_storeSvcChart3D) { try { _storeSvcChart3D.destroy(); } catch (e) {} }
 
-                // RENDER CHART 1: 3D ACCOUNTS SOLD
+                // RENDER CHART 1: 3D ACCOUNTS SOLD (100% ENGLISH LABELS)
                 const elAcc = document.getElementById('xbStoreAccSoldCanvas3D');
                 if (elAcc) {
                     const ctx1 = elAcc.getContext('2d');
@@ -6480,7 +6479,7 @@
                             datasets: [
                                 {
                                     type: 'line',
-                                    label: 'Omzet ($ USDT)',
+                                    label: 'Revenue ($ USDT)',
                                     data: st.accRevData,
                                     borderColor: '#fde047',
                                     backgroundColor: 'rgba(250, 204, 21, 0.14)',
@@ -6492,7 +6491,7 @@
                                 },
                                 {
                                     type: 'bar',
-                                    label: 'Akun Terjual',
+                                    label: 'Accounts Sold',
                                     data: st.accSoldData,
                                     backgroundColor: grad1,
                                     top3dColor: '#a7f3d0',
@@ -6520,7 +6519,7 @@
                     });
                 }
 
-                // RENDER CHART 2: 3D GITHUB SERVICES SOLD
+                // RENDER CHART 2: 3D GITHUB SERVICES SOLD (100% ENGLISH LABELS)
                 const elSvc = document.getElementById('xbStoreSvcSoldCanvas3D');
                 if (elSvc) {
                     const ctx2 = elSvc.getContext('2d');
@@ -6537,7 +6536,7 @@
                             datasets: [
                                 {
                                     type: 'line',
-                                    label: 'Omzet ($ USDT)',
+                                    label: 'Revenue ($ USDT)',
                                     data: st.svcRevData,
                                     borderColor: '#38bdf8',
                                     backgroundColor: 'rgba(56, 189, 248, 0.16)',
@@ -6550,7 +6549,7 @@
                                 },
                                 {
                                     type: 'bar',
-                                    label: 'Order Service',
+                                    label: 'Service Orders',
                                     data: st.svcCountData,
                                     backgroundColor: grad2,
                                     top3dColor: '#f5d0fe',
@@ -6581,9 +6580,11 @@
         }
 
         // =========================================================
-        // 👤 USER PERSONAL 3D ANALYTICS MODAL (KHUSUS TOMBOL DI MENU PROFILE)
+        // 👤 BUYER PERSONAL 3D ANALYTICS MODAL (2 3D CHARTS IN 1 SCREEN FOR BUYER IN PROFILE)
         // =========================================================
-        let _userPersonalChart3D = null;
+        let _userPersonalAccChart3D = null;
+        let _userPersonalSvcChart3D = null;
+
         function openUserPersonal3DAnalyticsModal() {
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
@@ -6591,75 +6592,208 @@
 
             const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
             const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
-            const outTx = history.filter(x => x.type === 'OUT');
-            const inTx  = history.filter(x => x.type === 'IN');
-            const totalSpent = outTx.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-            const totalTopup = inTx.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+            const now = new Date();
+            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            const startOfWeek = now.getTime() - (7 * 86400000);
+            const startOfYear = new Date(now.getFullYear(), 0, 1).getTime();
 
-            body.style.padding = '13px 14px';
+            let myDaily = 0, myWeekly = 0, myYearly = 0, myAllTime = 0;
+            const accLabels = ['11-13', '14-16', '17-19', '20-22', '23-25', '2026', 'Arctic', '6Badge+'];
+            const myAccCnt = [0, 0, 0, 0, 0, 0, 0, 0];
+            const myAccUsd = [0, 0, 0, 0, 0, 0, 0, 0];
+
+            const svcLabels = ['Followers', 'Stars', 'Forks', 'Watchers'];
+            const mySvcCnt = [0, 0, 0, 0];
+            const mySvcUsd = [0, 0, 0, 0];
+
+            vault.forEach(v => {
+                const p = parseFloat(v.priceUsdt || 0);
+                const cat = String(v.category || '2026');
+                const yr = parseInt(cat);
+                let idx = 5;
+                if (cat === 'Arctic') idx = 6;
+                else if (cat === '6Badge' || cat === 'Contrib' || cat === 'StudentPack') idx = 7;
+                else if (!isNaN(yr)) {
+                    if (yr <= 2013) idx = 0;
+                    else if (yr <= 2016) idx = 1;
+                    else if (yr <= 2019) idx = 2;
+                    else if (yr <= 2022) idx = 3;
+                    else if (yr <= 2025) idx = 4;
+                    else idx = 5;
+                }
+                myAccCnt[idx]++;
+                myAccUsd[idx] += Math.round(p * 10) / 10;
+            });
+
+            history.forEach(t => {
+                if (t.type !== 'OUT') return;
+                const amt = parseFloat(t.usdt || 0);
+                if (amt <= 0) return;
+                const ts = Date.parse(t.date + ', ' + now.getFullYear()) || now.getTime();
+                if (ts >= startOfDay) myDaily += amt;
+                if (ts >= startOfWeek) myWeekly += amt;
+                if (ts >= startOfYear) myYearly += amt;
+                myAllTime += amt;
+
+                const tl = String(t.title || '').toLowerCase();
+                if (tl.includes('follower') && !tl.includes('vault')) { mySvcCnt[0]++; mySvcUsd[0] += amt; }
+                else if (tl.includes('star')) { mySvcCnt[1]++; mySvcUsd[1] += amt; }
+                else if (tl.includes('fork')) { mySvcCnt[2]++; mySvcUsd[2] += amt; }
+                else if (tl.includes('watch')) { mySvcCnt[3]++; mySvcUsd[3] += amt; }
+            });
+
+            const totalMySvcOrders = mySvcCnt.reduce((a, b) => a + b, 0);
+
+            body.style.padding = '11px 12px';
+            body.style.maxWidth = '540px';
             body.innerHTML = `
-                <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-left:4px solid var(--accent-cyan);border-radius:11px;padding:8px 11px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:0.78rem;font-weight:800;color:var(--accent-cyan);">👤 @${currentUsername.replace(/^@/,'')} — Personal 3D Analytics</span>
-                    <button class="top-pill" style="padding:3px 8px;font-size:0.68rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
+                <div style="background:linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);border:1.5px solid #38bdf8;border-left:4.5px solid #38bdf8;border-radius:12px;padding:7px 10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
+                    <div>
+                        <div style="font-size:0.74rem;font-weight:800;color:#38bdf8;">📊 @${currentUsername.replace(/^@/,'')} — PERSONAL 3D ANALYTICS</div>
+                        <div style="font-size:0.52rem;font-weight:700;color:#94a3b8;">MY PURCHASED ACCOUNTS &amp; GITHUB SERVICE ORDERS</div>
+                    </div>
+                    <button type="button" class="top-pill" style="padding:4px 8px;font-size:0.66rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
 
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:10px;">
-                    <div class="stat-badge-box" style="padding:7px 6px;">
-                        <div style="font-size:0.54rem;color:var(--text-muted);font-weight:800;">MY BALANCE</div>
-                        <div style="font-size:0.82rem;font-weight:800;color:var(--success);margin-top:2px;">$${userBalanceUsdt.toFixed(2)}</div>
+                <!-- 4 PERSONAL SPENDING BOXES (100% ENGLISH) -->
+                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:8px;">
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:3px solid #10b981;border-radius:9px;padding:5px 3px;text-align:center;">
+                        <div style="font-size:0.48rem;font-weight:800;color:#a7f3d0;">DAILY (24H)</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#10b981;margin:1px 0;">$${myDaily.toFixed(2)}</div>
+                        <div style="font-size:0.46rem;color:#94a3b8;font-weight:700;">USDT SPENT</div>
                     </div>
-                    <div class="stat-badge-box" style="padding:7px 6px;">
-                        <div style="font-size:0.54rem;color:var(--text-muted);font-weight:800;">TOTAL SPENT</div>
-                        <div style="font-size:0.82rem;font-weight:800;color:var(--accent-cyan);margin-top:2px;">$${totalSpent.toFixed(2)}</div>
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:3px solid #38bdf8;border-radius:9px;padding:5px 3px;text-align:center;">
+                        <div style="font-size:0.48rem;font-weight:800;color:#bae6fd;">WEEKLY (7D)</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#38bdf8;margin:1px 0;">$${myWeekly.toFixed(2)}</div>
+                        <div style="font-size:0.46rem;color:#94a3b8;font-weight:700;">USDT SPENT</div>
                     </div>
-                    <div class="stat-badge-box" style="padding:7px 6px;">
-                        <div style="font-size:0.54rem;color:var(--text-muted);font-weight:800;">VAULT SAVED</div>
-                        <div style="font-size:0.82rem;font-weight:800;color:var(--warning);margin-top:2px;">${vault.length} Accs</div>
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:3px solid #c084fc;border-radius:9px;padding:5px 3px;text-align:center;">
+                        <div style="font-size:0.48rem;font-weight:800;color:#e9d5ff;">YEARLY (1Y)</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#c084fc;margin:1px 0;">$${myYearly.toFixed(2)}</div>
+                        <div style="font-size:0.46rem;color:#94a3b8;font-weight:700;">USDT SPENT</div>
+                    </div>
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:3px solid #fde047;border-radius:9px;padding:5px 3px;text-align:center;">
+                        <div style="font-size:0.48rem;font-weight:800;color:#fef08a;">ALL-TIME</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#fde047;margin:1px 0;">$${myAllTime.toFixed(2)}</div>
+                        <div style="font-size:0.46rem;color:#94a3b8;font-weight:700;">USDT SPENT</div>
                     </div>
                 </div>
 
-                <div class="analytics-3d-card" style="padding:10px;">
-                    <div style="font-size:0.64rem;font-weight:800;color:var(--accent-cyan);margin-bottom:6px;text-transform:uppercase;">📊 My Activity Breakdown (USDT)</div>
-                    <div style="height:135px;position:relative;width:100%;">
-                        <canvas id="xbUserPersonalCanvas3D"></canvas>
+                <!-- BUYER CHART 1: MY PURCHASED ACCOUNTS -->
+                <div style="background:linear-gradient(145deg, #090d16 0%, #111a2e 100%);border:1.5px solid rgba(16,185,129,0.5);border-left:4px solid #10b981;border-radius:12px;padding:7px 9px;margin-bottom:7px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                        <span style="font-size:0.6rem;font-weight:800;color:#34d399;">📦 1. MY PURCHASED GITHUB ACCOUNTS (3D)</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#fde047;">${vault.length} Saved in Vault</span>
+                    </div>
+                    <div style="height:106px;position:relative;width:100%;">
+                        <canvas id="xbBuyerPersonalAccCanvas3D"></canvas>
                     </div>
                 </div>
 
-                <button class="btn-ui primary" style="width:100%;padding:9px;font-size:0.74rem;" onclick="closeModal('paymentGatewayModal')">✅ Close My Analytics</button>
+                <!-- BUYER CHART 2: MY GITHUB BOOST SERVICES -->
+                <div style="background:linear-gradient(145deg, #0b0917 0%, #1c1132 100%);border:1.5px solid rgba(168,85,247,0.55);border-left:4px solid #c084fc;border-radius:12px;padding:7px 9px;margin-bottom:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
+                        <span style="font-size:0.6rem;font-weight:800;color:#e879f9;">🚀 2. MY GITHUB SERVICES &amp; BOOST ORDERS (3D)</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#38bdf8;">${totalMySvcOrders} Boost Orders</span>
+                    </div>
+                    <div style="height:106px;position:relative;width:100%;">
+                        <canvas id="xbBuyerPersonalSvcCanvas3D"></canvas>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-ui primary" style="width:100%;padding:8px;font-size:0.72rem;border-radius:9px;" onclick="closeModal('paymentGatewayModal')">✅ Close My Personal Analytics</button>
             `;
 
             setTimeout(() => {
-                const c = document.getElementById('xbUserPersonalCanvas3D');
-                if (c && window.Chart) {
-                    if (_userPersonalChart3D) { try { _userPersonalChart3D.destroy(); } catch (e) {} }
-                    _userPersonalChart3D = new Chart(c.getContext('2d'), {
+                if (!window.Chart) return;
+                if (_userPersonalAccChart3D) { try { _userPersonalAccChart3D.destroy(); } catch (e) {} }
+                if (_userPersonalSvcChart3D) { try { _userPersonalSvcChart3D.destroy(); } catch (e) {} }
+
+                const c1 = document.getElementById('xbBuyerPersonalAccCanvas3D');
+                if (c1) {
+                    _userPersonalAccChart3D = new Chart(c1.getContext('2d'), {
                         type: 'bar',
                         plugins: [xbPrism3DPlugin],
                         data: {
-                            labels: ['Wallet Bal', 'Total Spent', 'Total Top-Up', 'Vault Value'],
-                            datasets: [{
-                                label: 'USDT',
-                                data: [
-                                    Math.round(userBalanceUsdt),
-                                    Math.round(totalSpent),
-                                    Math.round(totalTopup),
-                                    Math.round(vault.reduce((a, b) => a + (parseFloat(b.priceUsdt) || 0), 0))
-                                ],
-                                backgroundColor: 'rgba(56, 189, 248, 0.8)',
-                                top3dColor: '#bae6fd',
-                                side3dColor: '#0284c7',
-                                borderRadius: 4,
-                                barPercentage: 0.5
-                            }]
+                            labels: accLabels,
+                            datasets: [
+                                {
+                                    type: 'line',
+                                    label: 'Spent ($ USDT)',
+                                    data: myAccUsd,
+                                    borderColor: '#fde047',
+                                    borderWidth: 1.8,
+                                    pointRadius: 2.5,
+                                    tension: 0.35,
+                                    yAxisID: 'y1'
+                                },
+                                {
+                                    type: 'bar',
+                                    label: 'My Accounts',
+                                    data: myAccCnt,
+                                    backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                                    top3dColor: '#a7f3d0',
+                                    side3dColor: '#047857',
+                                    borderRadius: 3,
+                                    barPercentage: 0.55,
+                                    yAxisID: 'y'
+                                }
+                            ]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            layout: { padding: { top: 14 } },
-                            plugins: { legend: { display: false } },
+                            layout: { padding: { top: 12, right: 6 } },
+                            plugins: { legend: { display: true, labels: { color: '#cbd5e1', font: { size: 7.5, weight: 'bold' }, boxWidth: 8, padding: 4 } } },
+                            scales: {
+                                x: { ticks: { color: '#cbd5e1', font: { size: 7.5, weight: 'bold' } }, grid: { display: false } },
+                                y: { beginAtZero: true, position: 'left', ticks: { color: '#34d399', font: { size: 7.5 }, maxTicksLimit: 4, precision: 0 }, grid: { color: 'rgba(148,163,184,0.1)' } },
+                                y1: { beginAtZero: true, position: 'right', ticks: { color: '#fde047', font: { size: 7.5 }, maxTicksLimit: 4, callback: v => '$' + v }, grid: { display: false } }
+                            }
+                        }
+                    });
+                }
+
+                const c2 = document.getElementById('xbBuyerPersonalSvcCanvas3D');
+                if (c2) {
+                    _userPersonalSvcChart3D = new Chart(c2.getContext('2d'), {
+                        type: 'bar',
+                        plugins: [xbPrism3DPlugin],
+                        data: {
+                            labels: svcLabels,
+                            datasets: [
+                                {
+                                    type: 'line',
+                                    label: 'Spent ($ USDT)',
+                                    data: mySvcUsd,
+                                    borderColor: '#38bdf8',
+                                    borderWidth: 1.8,
+                                    pointRadius: 2.5,
+                                    tension: 0.35,
+                                    yAxisID: 'y1'
+                                },
+                                {
+                                    type: 'bar',
+                                    label: 'My Orders',
+                                    data: mySvcCnt,
+                                    backgroundColor: 'rgba(168, 85, 247, 0.85)',
+                                    top3dColor: '#f5d0fe',
+                                    side3dColor: '#7e22ce',
+                                    borderRadius: 3,
+                                    barPercentage: 0.48,
+                                    yAxisID: 'y'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            layout: { padding: { top: 12, right: 6 } },
+                            plugins: { legend: { display: true, labels: { color: '#cbd5e1', font: { size: 7.5, weight: 'bold' }, boxWidth: 8, padding: 4 } } },
                             scales: {
                                 x: { ticks: { color: '#cbd5e1', font: { size: 8, weight: 'bold' } }, grid: { display: false } },
-                                y: { beginAtZero: true, ticks: { color: '#94a3b8', font: { size: 8 }, callback: v => '$' + v }, grid: { color: 'rgba(148,163,184,0.1)' } }
+                                y: { beginAtZero: true, position: 'left', ticks: { color: '#e879f9', font: { size: 7.5 }, maxTicksLimit: 4, precision: 0 }, grid: { color: 'rgba(148,163,184,0.1)' } },
+                                y1: { beginAtZero: true, position: 'right', ticks: { color: '#38bdf8', font: { size: 7.5 }, maxTicksLimit: 4, callback: v => '$' + v }, grid: { display: false } }
                             }
                         }
                     });
@@ -6667,7 +6801,7 @@
             }, 60);
         }
 
-        // Paksa override fungsi lama di paling bawah script agar selalu memanggil Global Store 3D Telemetry
+        // Force override any old openLiveAnalytics3DModal function at the bottom of the file
         window.openLiveAnalytics3DModal = openStoreGlobal3DTelemetry;
         setTimeout(() => { window.openLiveAnalytics3DModal = openStoreGlobal3DTelemetry; }, 100);
 
