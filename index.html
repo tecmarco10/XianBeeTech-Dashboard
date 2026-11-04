@@ -450,23 +450,49 @@
             }
         }
 
+        :root,
+        [data-theme="obsidian"] {
+            --cockpit-bg: linear-gradient(135deg, #24164a 0%, #11224a 50%, #2f174c 100%);
+            --cockpit-row2-bg: rgba(7, 8, 13, 0.38);
+            --cockpit-pill-bg: rgba(15, 23, 42, 0.82);
+            --cockpit-text: #f8fafc;
+            --cockpit-subtext: #cbd5e1;
+            --cockpit-ledge: #1e1b4b;
+            --cockpit-shadow: rgba(0, 0, 0, 0.72);
+            --cockpit-vip-color: #fde047;
+            --cockpit-orb-bg: #07080d;
+        }
+
+        [data-theme="platinum"] {
+            --cockpit-bg: linear-gradient(135deg, #ffffff 0%, #eef2ff 52%, #e0f2fe 100%);
+            --cockpit-row2-bg: rgba(226, 232, 240, 0.55);
+            --cockpit-pill-bg: #ffffff;
+            --cockpit-text: #0f172a;
+            --cockpit-subtext: #475569;
+            --cockpit-ledge: #c7d2fe;
+            --cockpit-shadow: rgba(15, 23, 42, 0.12);
+            --cockpit-vip-color: #b45309;
+            --cockpit-orb-bg: #ffffff;
+        }
+
         .floating-cart-bar {
             position: fixed;
-            bottom: 74px;
+            bottom: 92px;
             left: 50%;
             transform: translateX(-50%);
-            width: calc(100% - 24px);
+            width: calc(100% - 20px);
             max-width: 620px;
             background: var(--bg-elevated);
             backdrop-filter: blur(18px);
             border: 1.5px solid var(--border-focus);
-            border-radius: 16px;
-            padding: 10px 14px;
+            border-bottom: 3.5px solid var(--accent-primary);
+            border-radius: 15px;
+            padding: 8px 12px;
             display: none;
             align-items: center;
             justify-content: space-between;
-            gap: 10px;
-            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.65), var(--shadow-glow);
+            gap: 8px;
+            box-shadow: var(--shadow-card), var(--shadow-glow);
             z-index: 90;
             animation: fadeIn 0.22s ease;
         }
@@ -1273,65 +1299,65 @@
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area" style="padding-top:128px;">
             <header class="topbar" style="background:var(--bg-base);padding:6px 10px;border-bottom:none;">
-                <!-- 1 KOTAK 3D UTUH 4 SISI (ATAS, BAWAH, KIRI, KANAN) DENGAN BASE 3D TEBAL DI BAWAH -->
-                <div style="width:100%;background:linear-gradient(135deg, #24164a 0%, #11224a 50%, #2f174c 100%);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #a855f7;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:18px;box-shadow:0 6px 0 #1e1b4b, 0 12px 30px rgba(0,0,0,0.75), inset 0 2px 0 rgba(255,255,255,0.28), inset 0 -3px 0 rgba(168,85,247,0.4);overflow:hidden;display:flex;flex-direction:column;">
+                <!-- 1 KOTAK 3D UTUH 4 SISI (OTOMATIS ADAPTIF MODE TERANG & GELAP) -->
+                <div style="width:100%;background:var(--cockpit-bg);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #a855f7;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:18px;box-shadow:0 5px 0 var(--cockpit-ledge), 0 10px 24px var(--cockpit-shadow), inset 0 2px 0 rgba(255,255,255,0.28), inset 0 -3px 0 rgba(168,85,247,0.35);overflow:hidden;display:flex;flex-direction:column;transition:background 0.25s ease, box-shadow 0.25s ease;">
                     
                     <!-- BARIS 1: LOGO + NAMA TOKO (KIRI) + SIMBOL 📊 (TENGAH) + USDT, TEMA & ADMIN (KANAN) -->
                     <div class="topbar-box-brand" style="padding:7px 10px;gap:6px;background:transparent;border:none;box-shadow:none;display:flex;align-items:center;justify-content:space-between;">
                         <div style="display:flex;align-items:center;gap:8px;cursor:pointer;min-width:0;flex:1;" onclick="switchTab('home')">
-                            <div class="brand-orb" style="width:38px;height:38px;background:#07080d;border:1.5px solid rgba(56,189,248,0.7);box-shadow:0 3px 10px rgba(56,189,248,0.3);padding:3px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+                            <div class="brand-orb" style="width:38px;height:38px;background:var(--cockpit-orb-bg);border:1.5px solid rgba(56,189,248,0.7);box-shadow:0 3px 10px rgba(56,189,248,0.3);padding:3px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
                                 <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
                             </div>
                             <div style="min-width:0;flex:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;">
-                                <div style="font-weight:800;font-size:0.88rem;letter-spacing:-0.2px;line-height:1.15;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 48%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">XianBee-Tech</div>
-                                <div style="font-size:0.55rem;font-weight:700;color:#cbd5e1;letter-spacing:0.25px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Enterprise Asset Vault</div>
+                                <div style="font-weight:800;font-size:0.88rem;letter-spacing:-0.2px;line-height:1.15;background:linear-gradient(90deg, #0284c7 0%, #6366f1 48%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">XianBee-Tech</div>
+                                <div style="font-size:0.55rem;font-weight:700;color:var(--cockpit-subtext);letter-spacing:0.25px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Enterprise Asset Vault</div>
                             </div>
                         </div>
 
                         <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
                             <!-- TOMBOL SIMBOL ANALYTICS 3D GLOBAL PENJUALAN TOKO DI TENGAH NAMA TOKO & USDT -->
-                            <button class="top-pill" type="button" onclick="openStoreGlobal3DTelemetry()" title="Global Store Sales 3D Telemetry" style="background:linear-gradient(135deg, rgba(6,182,212,0.24) 0%, rgba(168,85,247,0.24) 100%);border:1px solid rgba(56,189,248,0.65);color:#38bdf8;padding:6px 8px;font-size:0.74rem;font-weight:800;border-radius:9px;">
+                            <button class="top-pill" type="button" onclick="openStoreGlobal3DTelemetry()" title="Global Store Sales 3D Telemetry" style="background:linear-gradient(135deg, rgba(6,182,212,0.2) 0%, rgba(168,85,247,0.2) 100%);border:1px solid rgba(56,189,248,0.65);color:var(--accent-cyan);padding:6px 8px;font-size:0.74rem;font-weight:800;border-radius:9px;">
                                 <span>📊</span>
                             </button>
 
-                            <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 8px;font-size:0.68rem;gap:4px;background:rgba(15,23,42,0.8);border-color:rgba(56,189,248,0.4);color:#f8fafc;">
+                            <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 8px;font-size:0.68rem;gap:4px;background:var(--cockpit-pill-bg);border-color:rgba(56,189,248,0.45);color:var(--cockpit-text);">
                                 <span id="currSwitchIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
                                     <svg width="13" height="13" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
                                 </span>
                                 <span id="currSwitchText">USDT</span>
                             </button>
-                            <button class="top-pill" type="button" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 8px;font-size:0.7rem;background:rgba(15,23,42,0.8);border-color:rgba(168,85,247,0.4);color:#f8fafc;">
+                            <button class="top-pill" type="button" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 8px;font-size:0.7rem;background:var(--cockpit-pill-bg);border-color:rgba(168,85,247,0.45);color:var(--cockpit-text);">
                                 <span id="themeIcon">☀️</span>
                             </button>
-                            <button class="top-pill" type="button" id="topAdminBtn" onclick="switchTab('admin')" title="Admin Command Center" style="display:none;padding:6px 8px;background:rgba(99,102,241,0.22);border-color:#38bdf8;color:#38bdf8;">
+                            <button class="top-pill" type="button" id="topAdminBtn" onclick="switchTab('admin')" title="Admin Command Center" style="display:none;padding:6px 8px;background:rgba(99,102,241,0.18);border-color:var(--accent-cyan);color:var(--accent-cyan);">
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                             </button>
                         </div>
                     </div>
 
                     <!-- GARIS PEMISAH PANJANG BERCAHAYA DI TENGAH -->
-                    <div style="width:100%;height:2.5px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);box-shadow:0 1px 8px rgba(56,189,248,0.65);"></div>
+                    <div style="width:100%;height:2.5px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);box-shadow:0 1px 8px rgba(56,189,248,0.5);"></div>
 
                     <!-- BARIS 2: 4 TOMBOL SAMA RATA (CART | SALDO | VIP | NOTIFIKASI) -->
-                    <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:8px 10px;background:rgba(7,8,13,0.38);border:none;border-radius:0;box-shadow:none;">
+                    <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:8px 10px;background:var(--cockpit-row2-bg);border:none;border-radius:0;box-shadow:none;">
                         <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.68rem;border-radius:9px;min-width:0;gap:4px;">
                             <span>🛒 Cart</span>
                             <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);font-size:0.6rem;padding:1px 5px;">0</span>
                         </button>
 
-                        <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.64rem;border-radius:9px;min-width:0;gap:4px;overflow:hidden;background:rgba(16,185,129,0.18);border-color:rgba(16,185,129,0.55);color:#34d399;">
+                        <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.64rem;border-radius:9px;min-width:0;gap:4px;overflow:hidden;background:rgba(16,185,129,0.16);border-color:rgba(16,185,129,0.55);color:var(--success);">
                             <span id="topBalCurrIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
                                 <svg width="12" height="12" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
                             </span>
                             <span id="topBalanceText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.3px;">0.00</span>
                         </button>
 
-                        <button class="top-pill" onclick="openLeaderboardModal()" title="VIP Rank Hall of Fame" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;background:linear-gradient(135deg, rgba(245,158,11,0.25) 0%, rgba(217,119,6,0.18) 100%);border:1px solid rgba(250,204,21,0.7);color:#fde047;font-size:0.68rem;font-weight:800;border-radius:9px;min-width:0;">
+                        <button class="top-pill" onclick="openLeaderboardModal()" title="VIP Rank Hall of Fame" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;background:linear-gradient(135deg, rgba(245,158,11,0.22) 0%, rgba(217,119,6,0.15) 100%);border:1px solid rgba(245,158,11,0.65);color:var(--cockpit-vip-color);font-size:0.68rem;font-weight:800;border-radius:9px;min-width:0;">
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
                             <span>VIP</span>
                         </button>
 
-                        <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;font-size:0.68rem;border-radius:9px;min-width:0;background:rgba(15,23,42,0.8);border-color:rgba(56,189,248,0.5);color:#f8fafc;">
+                        <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;font-size:0.68rem;border-radius:9px;min-width:0;background:var(--cockpit-pill-bg);border-color:rgba(56,189,248,0.5);color:var(--cockpit-text);">
                             <span>🔔</span>
                             <span class="badge-dot" id="notifCountBadge" style="font-size:0.6rem;padding:1px 5px;">0</span>
                         </button>
@@ -1351,9 +1377,9 @@
             </div>
         </div>
 
-        <!-- 📱 MOBILE BOTTOM NAVIGATION (3D 4 SISI UTUH + BAWAHNYA 3D MENYALA + LOGO GITHUB SELALU MENYALA TERANG) -->
-        <nav class="bottom-nav" style="height:80px;background:var(--bg-base);border-top:none;padding:6px 10px 12px 10px;box-shadow:0 -12px 32px rgba(0,0,0,0.7);">
-            <div style="width:100%;height:100%;background:linear-gradient(135deg, #24164a 0%, #11224a 50%, #2f174c 100%);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #a855f7;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:18px;box-shadow:0 6px 0 #1e1b4b, 0 12px 30px rgba(0,0,0,0.75), inset 0 2px 0 rgba(255,255,255,0.28), inset 0 -3px 0 rgba(168,85,247,0.4);display:flex;justify-content:space-around;align-items:center;padding:0 4px;">
+        <!-- 📱 MOBILE BOTTOM NAVIGATION (OTOMATIS ADAPTIF MODE TERANG & GELAP + 3D 4 SISI) -->
+        <nav class="bottom-nav" style="height:80px;background:var(--bg-base);border-top:none;padding:6px 10px 12px 10px;box-shadow:0 -10px 26px var(--cockpit-shadow);">
+            <div style="width:100%;height:100%;background:var(--cockpit-bg);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #a855f7;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:18px;box-shadow:0 5px 0 var(--cockpit-ledge), 0 10px 24px var(--cockpit-shadow), inset 0 2px 0 rgba(255,255,255,0.28), inset 0 -3px 0 rgba(168,85,247,0.35);display:flex;justify-content:space-around;align-items:center;padding:0 4px;transition:background 0.25s ease, box-shadow 0.25s ease;">
                 <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')" style="padding:4px 2px;">
                     <span style="font-size:1.1rem;line-height:1;">🏠</span>
                     <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Home</span>
@@ -5890,18 +5916,24 @@
         function render2faTool(vp) {
             if (otpIntervalId) clearInterval(otpIntervalId);
             vp.innerHTML = `
-                <div class="inpage-drawer" style="margin:0;">
-                    <span class="item-tag">LIVE 30-SECOND TOTP AUTHENTICATOR</span>
-                    <h3 style="margin:4px 0 8px 0;">🔑 Live 2FA OTP Code Generator</h3>
-                    <p class="item-desc" style="margin-bottom:14px;">Enter your Base32 2FA Secret Key from your purchased GitHub account to generate live 6-digit OTP login codes directly in your browser.</p>
-                    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
-                        <input type="text" class="form-input" id="web2faSecret" style="flex:1;min-width:220px;font-family:'JetBrains Mono',monospace;" placeholder="Paste Base32 2FA Secret Key here...">
-                        <button class="btn-ui primary" style="flex:0 0 auto;padding:12px 20px;" onclick="start2faGenerator()">🔑 Generate Live OTP</button>
+                <div class="item-card" style="padding:11px 12px;gap:8px;border-left:4px solid var(--accent-cyan);margin:0;">
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-bottom:3px solid rgba(0,0,0,0.45);border-radius:10px;padding:7px 10px;text-align:center;">
+                        <div style="font-size:0.54rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.8px;text-transform:uppercase;">LIVE 30-SECOND TOTP AUTHENTICATOR</div>
+                        <h3 style="margin:2px 0 0 0;font-size:0.82rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔑 Live 2FA OTP Code Generator</h3>
                     </div>
-                    <div id="web2faBox" style="display:none;text-align:center;padding:18px;border-radius:14px;background:var(--bg-soft);border:1px solid var(--border-focus);">
-                        <div style="font-size:0.72rem;font-weight:800;color:var(--text-secondary);">6-DIGIT OTP CODE (CLICK TO COPY)</div>
-                        <div id="web2faCode" style="font-family:'JetBrains Mono',monospace;font-size:2.3rem;font-weight:800;letter-spacing:6px;color:var(--success);margin:8px 0;cursor:pointer;" onclick="navigator.clipboard.writeText(this.innerText); showToast('OTP Copied!');">------</div>
-                        <div id="web2faTimer" style="font-size:0.76rem;color:var(--text-muted);font-weight:700;">Refreshing in 30s</div>
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:10px;padding:8px 9px;display:flex;flex-direction:column;gap:6px;">
+                        <div style="font-size:0.63rem;color:var(--text-secondary);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            Paste your Base32 2FA Secret Key to get a 6-digit login code
+                        </div>
+                        <div style="display:flex;gap:6px;">
+                            <input type="text" class="form-input" id="web2faSecret" style="flex:1;min-width:0;padding:8px 10px;font-size:0.76rem;font-family:'JetBrains Mono',monospace;border-radius:8px;" placeholder="Paste Base32 2FA Secret Key...">
+                            <button class="btn-ui primary" style="flex:0 0 auto;padding:8px 12px;font-size:0.71rem;border-radius:8px;white-space:nowrap;" onclick="start2faGenerator()">🔑 Get OTP</button>
+                        </div>
+                    </div>
+                    <div id="web2faBox" style="display:none;text-align:center;padding:10px 12px;border-radius:10px;background:var(--bg-input);border:1px solid var(--border-focus);border-left:4px solid var(--success);">
+                        <div style="font-size:0.6rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.6px;">6-DIGIT OTP CODE (TAP TO COPY)</div>
+                        <div id="web2faCode" style="font-family:'JetBrains Mono',monospace;font-size:1.55rem;font-weight:800;letter-spacing:5px;color:var(--success);margin:3px 0;cursor:pointer;" onclick="navigator.clipboard.writeText(this.innerText); showToast('OTP Copied!');">------</div>
+                        <div id="web2faTimer" style="font-size:0.64rem;color:var(--text-muted);font-weight:700;">Refreshing in 30s</div>
                     </div>
                 </div>
             `;
