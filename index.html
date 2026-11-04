@@ -4902,23 +4902,54 @@
                 const body = document.getElementById('paymentGatewayBody');
                 modal.classList.add('active');
 
+                const hasExistingPin = Boolean(localStorage.getItem('xb_bot_pin_hash') || localStorage.getItem('xb_user_pin'));
+
+                const itemsListHtml = itemsList.map(item => `
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:0.75rem;padding:3px 0;border-bottom:1px dashed var(--border-subtle);">
+                        <span style="font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">• ${item.title}</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--success);flex-shrink:0;">${fmtPrice(item.usdt)}</span>
+                    </div>
+                `).join('');
+
                 body.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                        <span class="item-tag" style="margin:0;">🔐 SECURITY PIN VERIFICATION</span>
-                        <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                        <div></div>
+                        <h3 style="margin:0;font-size:0.9rem;font-weight:800;color:var(--text-primary);">🔐 Security PIN Verification</h3>
+                        <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
                     </div>
-                    <h3 style="margin:0 0 6px 0;">🔑 Enter Your 6-Digit Security PIN</h3>
-                    <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">
-                        Enter your 6-digit Telegram Bot PIN to authorize balance payment of <b>${fmtPrice(totalUsdt)}</b> for <b>${summaryTitle}</b>.
-                    </p>
-                    <div class="form-group">
-                        <label>6-Digit Telegram Bot PIN:</label>
-                        <input type="password" class="form-input" id="checkoutPinInput" maxlength="6" inputmode="numeric" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.35rem;letter-spacing:8px;" placeholder="••••••">
+
+                    <!-- KOTAK 3D RAPI BERISI JUMLAH HARGA & LIST AKUN -->
+                    <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:11px;padding:11px 13px;margin-bottom:14px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
+                            <span style="font-size:0.75rem;font-weight:800;color:var(--text-secondary);">Total Payment:</span>
+                            <span class="price-chip" style="padding:4px 8px;font-size:0.76rem;">${fmtPrice(totalUsdt)}</span>
+                        </div>
+                        <div style="font-size:0.68rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;margin-bottom:4px;letter-spacing:0.6px;">
+                            Purchased Assets (${itemsList.length} Items):
+                        </div>
+                        <div style="display:flex;flex-direction:column;gap:3px;max-height:120px;overflow-y:auto;">
+                            ${itemsListHtml}
+                        </div>
                     </div>
-                    <div style="display:flex;gap:8px;">
-                        <button class="btn-ui secondary" onclick="openSecurityPinModal()">🔐 Change PIN</button>
-                        <button class="btn-ui buy-now" onclick="verifyCheckoutPinNow()">✅ Confirm & Pay (${fmtPrice(totalUsdt)})</button>
-                    </div>
+
+                    ${!hasExistingPin ? `
+                        <div style="background:rgba(239,68,68,0.12);border:1px solid var(--danger);border-radius:11px;padding:12px;text-align:center;margin-bottom:14px;">
+                            <div style="font-size:0.82rem;font-weight:800;color:var(--danger);margin-bottom:4px;">⚠️ PIN Not Set Yet!</div>
+                            <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:10px;">You haven't set your 6-digit security PIN in the Telegram Bot. Please create your PIN first.</div>
+                            <a href="https://t.me/XianBeeTechStore_Bot?start=setpin" target="_blank" class="btn-ui buy-now" style="width:100%;padding:10px;font-size:0.76rem;">
+                                🔐 Set PIN via Telegram Bot Now
+                            </a>
+                        </div>
+                    ` : `
+                        <div class="form-group" style="margin-bottom:14px;">
+                            <label style="text-align:center;font-size:0.68rem;color:var(--accent-cyan);">ENTER 6-DIGIT TELEGRAM BOT PIN:</label>
+                            <input type="password" class="form-input" id="checkoutPinInput" maxlength="6" inputmode="numeric" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.35rem;letter-spacing:8px;" placeholder="••••••">
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                            <button class="btn-ui secondary" style="padding:11px 8px;font-size:0.72rem;" onclick="openSecurityPinModal()">🔐 Change PIN</button>
+                            <button class="btn-ui buy-now" style="padding:11px 8px;font-size:0.72rem;" onclick="verifyCheckoutPinNow()">✅ Confirm & Pay</button>
+                        </div>
+                    `}
                 `;
                 setTimeout(() => { const el = document.getElementById('checkoutPinInput'); if (el) el.focus(); }, 150);
                 return;
