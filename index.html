@@ -1398,22 +1398,25 @@
 
             <!-- TOMBOL PEMBAYARAN BERSIH TANPA TEKS BERLEBIHAN -->
             <div style="display:flex;flex-direction:column;gap:7px;">
+                <!-- BARIS 1: PAY WITH BALANCE (PANJANG PENUH) -->
+                <button class="btn-ui buy-now" style="width:100%;padding:11px 12px;font-size:0.76rem;" onclick="checkoutCartWith('balance')">
+                    ⚡ Pay with Balance
+                </button>
+
+                <!-- BARIS 2: PAY WITH USDT & PAY WITH IDR (BERDAMPINGAN KIRI-KANAN) -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                    <button class="btn-ui buy-now" style="padding:11px 8px;font-size:0.74rem;" onclick="checkoutCartWith('balance')">
-                        ⚡ Pay with Balance
-                    </button>
-                    <button class="btn-ui primary" style="padding:11px 8px;font-size:0.74rem;" onclick="checkoutCartWith('crypto')">
+                    <button class="btn-ui primary" style="padding:10px 8px;font-size:0.72rem;" onclick="checkoutCartWith('crypto')">
                         🪙 Pay with USDT
                     </button>
-                </div>
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
                     <button class="btn-ui secondary" style="padding:10px 8px;font-size:0.72rem;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="checkoutCartWith('idr')">
                         🇮🇩 Pay with IDR
                     </button>
-                    <button class="btn-ui secondary" style="padding:10px 8px;font-size:0.72rem;border-color:var(--warning);color:var(--warning);" onclick="openCartMakeOfferModal()">
-                        🤝 Make an Offer
-                    </button>
                 </div>
+
+                <!-- BARIS 3: MAKE AN OFFER (PANJANG PENUH DI PALING BAWAH) -->
+                <button class="btn-ui secondary" style="width:100%;padding:10px 12px;font-size:0.74rem;border-color:var(--warning);color:var(--warning);" onclick="openCartMakeOfferModal()">
+                    🤝 Make an Offer
+                </button>
             </div>
         </div>
     </div>
@@ -5904,11 +5907,16 @@
                     sum += itemPrice;
                     const cleanTitle = String(c.title || '').split('(')[0].trim() || 'GitHub Asset';
                     const cleanTarget = String(c.target || '').split('(')[0].trim() || '@client';
+                    const accData = c.accountData || {};
+                    const follCnt = accData.followers !== undefined ? accData.followers : (c.followers || 0);
+                    const repoCnt = accData.repos !== undefined ? accData.repos : (c.repos || 0);
+                    const metaInfo = c.isAccount ? `👥 ${follCnt} • 📁 ${repoCnt} Repos` : cleanTarget;
                     return `
                         <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);margin-bottom:8px;gap:8px;">
                             <div style="flex:1;min-width:0;">
                                 <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTitle}</div>
-                                <div style="font-size:0.72rem;color:var(--accent-cyan);font-family:'JetBrains Mono',monospace;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTarget}</div>
+                                <div style="font-size:0.7rem;color:var(--accent-cyan);font-family:'JetBrains Mono',monospace;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTarget}</div>
+                                ${c.isAccount ? `<div style="font-size:0.62rem;color:var(--text-secondary);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${metaInfo}</div>` : ''}
                             </div>
                             <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
                                 <span style="font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--success);">${fmtPrice(itemPrice)}</span>
