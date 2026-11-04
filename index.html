@@ -1606,9 +1606,30 @@
         let currentUserId = urlParams.get('uid') || (tgUser ? String(tgUser.id) : (localStorage.getItem('xb_uid') || 'Client-Web'));
         let currentUsername = urlParams.get('uname') || (tgUser ? (tgUser.username || tgUser.first_name) : (localStorage.getItem('xb_uname') || 'XianBeeClient'));
         let currentFullName = (tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : currentUsername) || 'Client';
-        let userBalanceUsdt = urlParams.get('bal') !== null && !isNaN(parseFloat(urlParams.get('bal')))
-            ? parseFloat(urlParams.get('bal'))
-            : parseFloat(localStorage.getItem('xb_bal_usdt') || '0.00');
+        const _urlBalRaw = urlParams.get('bal');
+        const _lastUrlBalLoaded = sessionStorage.getItem('xb_loaded_url_bal');
+        const _localBalTs = parseInt(localStorage.getItem('xb_bal_updated_ts') || '0');
+        const _savedLocalBal = parseFloat(localStorage.getItem('xb_bal_usdt') || '0.00');
+
+        let userBalanceUsdt = _savedLocalBal;
+        if (_urlBalRaw !== null && !isNaN(parseFloat(_urlBalRaw))) {
+            const parsedUrlBal = parseFloat(_urlBalRaw);
+            // Hanya gunakan ?bal= dari URL jika sesi baru dan belum ada transaksi lokal yang lebih baru
+            if (_localBalTs === 0 || _lastUrlBalLoaded !== _urlBalRaw) {
+                userBalanceUsdt = parsedUrlBal;
+                sessionStorage.setItem('xb_loaded_url_bal', _urlBalRaw);
+            }
+        }
+
+        function setAuthoritativeBalance(newBalUsdt, markTimestamp = true) {
+            const cleanBal = Math.max(0, parseFloat(newBalUsdt) || 0);
+            userBalanceUsdt = cleanBal;
+            localStorage.setItem('xb_bal_usdt', cleanBal.toFixed(2));
+            if (markTimestamp) {
+                localStorage.setItem('xb_bal_updated_ts', String(Date.now()));
+            }
+            if (typeof updateTopBalance === 'function') updateTopBalance();
+        }
 
         localStorage.setItem('xb_uid', currentUserId);
         localStorage.setItem('xb_uname', currentUsername);
@@ -1661,9 +1682,18 @@
             return s;
         }
 
-        // Send message directly via Telegram Bot HTTP API and return message_id for 2-Way Web <-> Bot State Sync
+        const _recentTgPushCache = {};
+
+        // Send message directly via Telegram Bot HTTP API with Anti-Duplicate Guard
         async function sendTelegramSilentPush(chatId, htmlText, withFooter = true, replyMarkup = null) {
             if (!chatId || !String(chatId).match(/^-?\d+$/)) return null;
+            const cleanSig = String(chatId) + '|' + String(htmlText).replace(/\s+/g, ' ').slice(0, 180);
+            const nowMs = Date.now();
+            if (_recentTgPushCache[cleanSig] && (nowMs - _recentTgPushCache[cleanSig] < 8000)) {
+                return null;
+            }
+            _recentTgPushCache[cleanSig] = nowMs;
+
             const finalHtml = (withFooter && !htmlText.includes("Engineered by Abie Haryatmo"))
                 ? (htmlText + FOOTER_BRANDING)
                 : htmlText;
@@ -1728,11 +1758,92 @@
             }, 250);
         }
 
+        function extractMyBalanceFromCrmArray(crmArr) {
+            if (!Array.isArray(crmArr) || crmArr.length === 0) return null;
+            const myUid = String(currentUserId || '').trim();
+            const myUname = String(currentUsername || '').trim().replace(/^@/, '').toLowerCase();
+            for (const u of crmArr) {
+                const rowUid = String(u.user_id || u.uid || u.id || '').trim();
+                const rowUname = String(u.username || u.uname || '').trim().replace(/^@/, '').toLowerCase();
+                if ((myUid && myUid !== 'Client-Web' && rowUid === myUid) || (myUname && myUname !== 'xianbeeclient' && rowUname === myUname)) {
+                    const parsed = parseFloat(u.balance);
+                    if (!isNaN(parsed) && parsed >= 0) return parsed;
+                }
+            }
+            return null;
+        }
+
+        async function pushDirectCloudStateToTargetUser(targetUid, targetUname, newBalUsdt, newNotifObj = null, newTxObj = null) {
+            const cleanTargetUname = String(targetUname || '').trim().replace(/^@/, '').toLowerCase();
+            const keysToPush = [];
+            if (cleanTargetUname) keysToPush.push('user_' + cleanTargetUname);
+            if (targetUid && String(targetUid).trim() !== '') keysToPush.push('uid_' + String(targetUid).trim().toLowerCase());
+            if (ADMIN_IDS.includes(String(targetUid))) keysToPush.push('executive_admin_shared');
+
+            const nowTs = Date.now();
+            for (const sKey of keysToPush) {
+                try {
+                    const pullRes = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'web_cloud_sync_state',
+                            mode: 'pull',
+                            sync_key: sKey,
+                            user_id: String(targetUid || ''),
+                            username: cleanTargetUname
+                        })
+                    });
+                    const pullData = await pullRes.json();
+                    const existingState = (pullData && pullData.user_state) ? pullData.user_state : {};
+                    const bNotifs = Array.isArray(existingState.buyer_notifs) ? existingState.buyer_notifs : [];
+                    const txList = Array.isArray(existingState.tx_history) ? existingState.tx_history : [];
+
+                    if (newNotifObj) bNotifs.unshift(newNotifObj);
+                    if (newTxObj) txList.unshift(newTxObj);
+
+                    await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'web_cloud_sync_state',
+                            mode: 'push',
+                            sync_key: sKey,
+                            user_id: String(targetUid || ''),
+                            username: cleanTargetUname,
+                            cart: Array.isArray(existingState.cart) ? existingState.cart : [],
+                            cart_ts: parseInt(existingState.cart_ts || 0),
+                            buyer_notifs: bNotifs.slice(0, 50),
+                            vault: Array.isArray(existingState.vault) ? existingState.vault : [],
+                            tx_history: txList.slice(0, 40),
+                            balance: parseFloat(newBalUsdt.toFixed(2)),
+                            bal_ts: nowTs
+                        })
+                    });
+                } catch (e) {}
+            }
+
+            try {
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'sync_user_crm',
+                        user_id: String(targetUid || cleanTargetUname),
+                        username: `@${cleanTargetUname}`,
+                        balance: parseFloat(newBalUsdt.toFixed(2)),
+                        status: '🟢 ACTIVE TRACKING (WEB)'
+                    })
+                });
+            } catch (e) {}
+        }
+
         async function syncCloudStateWithGSheet(mode = 'pull', extraPayload = {}) {
             try {
                 const isAdmin = ADMIN_IDS.includes(String(currentUserId));
                 const localCart = JSON.parse(localStorage.getItem('xb_saved_cart') || '[]');
                 const localCartTs = parseInt(localStorage.getItem('xb_cart_updated_ts') || '0');
+                const localBalTs = parseInt(localStorage.getItem('xb_bal_updated_ts') || '0');
                 const localBuyerNotifs = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
                 const localAdminNotifs = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
                 const localResolved = JSON.parse(localStorage.getItem('xb_resolved_actions') || '{}');
@@ -1753,7 +1864,8 @@
                     resolved_actions: isAdmin ? localResolved : {},
                     vault: localVault,
                     tx_history: localTx,
-                    balance: userBalanceUsdt
+                    balance: userBalanceUsdt,
+                    bal_ts: localBalTs
                 }, extraPayload);
 
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
@@ -1772,6 +1884,15 @@
                         localStorage.setItem('xb_saved_cart', JSON.stringify(cart));
                         localStorage.setItem('xb_cart_updated_ts', String(cloudCartTs));
                         updateCartUI(true);
+                    }
+                    const cloudBal = parseFloat(us.balance);
+                    const cloudBalTs = parseInt(us.bal_ts || 0);
+                    if (mode === 'pull' && !isNaN(cloudBal) && cloudBal >= 0) {
+                        if (cloudBalTs > localBalTs || (localBalTs === 0 && Math.abs(cloudBal - userBalanceUsdt) > 0.005)) {
+                            setAuthoritativeBalance(cloudBal, false);
+                            if (cloudBalTs > 0) localStorage.setItem('xb_bal_updated_ts', String(cloudBalTs));
+                            if (activeTab === 'wallet' || activeTab === 'profile') renderViewport();
+                        }
                     }
                     if (Array.isArray(us.buyer_notifs)) {
                         localStorage.setItem('xb_buyer_notifs', JSON.stringify(us.buyer_notifs));
@@ -3604,12 +3725,21 @@
             const btn = document.getElementById('btnWebSyncBal');
             if (btn) btn.innerText = '⏳ Syncing...';
             await fetchRealTimeUsdtIdrRate();
+            await syncCloudStateWithGSheet('pull');
             await syncGoogleSheetInventory(false);
-            const savedBal = parseFloat(localStorage.getItem('xb_bal_usdt') || '0.00');
-            userBalanceUsdt = savedBal;
+
+            // Cek juga saldo terbaru user dari tabel Sheet4 CRM (cachedSheetVipHolders) jika belum ada transaksi lokal yang lebih baru
+            const localBalTs = parseInt(localStorage.getItem('xb_bal_updated_ts') || '0');
+            const crmBal = extractMyBalanceFromCrmArray(cachedSheetVipHolders);
+            if (crmBal !== null && (Date.now() - localBalTs > 15000)) {
+                if (Math.abs(crmBal - userBalanceUsdt) > 0.005) {
+                    setAuthoritativeBalance(crmBal, true);
+                }
+            }
+
             updateTopBalance();
             if (activeTab === 'wallet' || activeTab === 'profile') renderViewport();
-            showToast(`Wallet synced! Balance: ${fmtPrice(userBalanceUsdt)}`);
+            showToast(`✅ Cloud Wallet Synced! Balance: ${fmtPrice(userBalanceUsdt)}`);
         }
 
         let selectedWalletDepMode = 'USDT';
@@ -3790,17 +3920,19 @@
                     return showToast('❌ ' + ((data && data.error) ? data.error : 'Recipient username not found!'));
                 }
 
-                userBalanceUsdt = newSenderBal;
-                localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
-                updateTopBalance();
-                recordWebTransaction(trfId, `Sent Balance to @${data.receiver_uname}`, `@${data.receiver_uname}`, amt, 'OUT', 'P2P Wallet Transfer');
+                const cleanRecUname = String(data.receiver_uname || rawTarget).replace(/^@/, '');
+                const recNewBal = !isNaN(parseFloat(data.receiver_new_bal)) ? parseFloat(data.receiver_new_bal) : amt;
+
+                // 1. Kunci saldo baru pengirim + timestamp agar tidak pernah tertimpa balik oleh URL/pull lama
+                setAuthoritativeBalance(newSenderBal, true);
+                recordWebTransaction(trfId, `Sent Balance to @${cleanRecUname}`, `@${cleanRecUname}`, amt, 'OUT', 'P2P Wallet Transfer');
 
                 const senderMsg = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   📤 <b>B A L A N C E  T R A N S F E R  S E N T</b>\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
                     `🔸 <b>Transfer ID:</b> <code>${trfId}</code>\n` +
-                    `🔸 <b>Recipient:</b> <b>@${data.receiver_uname}</b>\n` +
+                    `🔸 <b>Recipient:</b> <b>@${cleanRecUname}</b>\n` +
                     `🔸 <b>Amount Sent:</b> <b>-$${amt.toFixed(2)} USDT</b>\n` +
                     `🔸 <b>Remaining Balance:</b> <b>$${userBalanceUsdt.toFixed(2)} USDT</b>`
                 );
@@ -3811,16 +3943,39 @@
                     `🔸 <b>Transfer ID:</b> <code>${trfId}</code>\n` +
                     `🔸 <b>From Sender:</b> <b>@${currentUsername.replace(/^@/, '')}</b>\n` +
                     `🔸 <b>Amount Received:</b> <b>+$${amt.toFixed(2)} USDT</b>\n` +
-                    `🔸 <b>Updated Balance:</b> <b>$${parseFloat(data.receiver_new_bal).toFixed(2)} USDT</b>`
+                    `🔸 <b>Updated Balance:</b> <b>$${recNewBal.toFixed(2)} USDT</b>`
                 );
 
-                pushInWebNotification('buyer', `📤 TRANSFER SENT (@${data.receiver_uname})`, senderMsg);
+                pushInWebNotification('buyer', `📤 TRANSFER SENT (@${cleanRecUname})`, senderMsg);
                 sendTelegramSilentPush(currentUserId, senderMsg, true);
                 if (data.receiver_uid) sendTelegramSilentPush(data.receiver_uid, receiverMsg, true);
 
+                // 2. Sinkronkan saldo baru pengirim ke Sheet4 CRM & Cloud State
+                syncUserCrmToGSheetFromWeb('transfer_out', amt);
+                await syncCloudStateWithGSheet('push', { balance: userBalanceUsdt, bal_ts: Date.now() });
+
+                // 3. Dorong langsung saldo baru + riwayat transaksi + notifikasi ke Cloud milik Penerima agar saat Penerima klik Sync langsung bertambah!
+                const recNotifObj = {
+                    id: 'NTF-' + Date.now(),
+                    time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
+                    title: `📥 BALANCE RECEIVED (+$${amt.toFixed(2)} USDT)`,
+                    body: receiverMsg,
+                    meta: null
+                };
+                const recTxObj = {
+                    invoice: trfId,
+                    title: `Received Balance from @${currentUsername.replace(/^@/, '')}`,
+                    target: `@${cleanRecUname}`,
+                    usdt: amt.toFixed(2),
+                    type: 'IN',
+                    method: 'P2P Wallet Transfer',
+                    date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+                };
+                pushDirectCloudStateToTargetUser(data.receiver_uid || '', cleanRecUname, recNewBal, recNotifObj, recTxObj);
+
                 closeModal('paymentGatewayModal');
                 renderViewport();
-                showToast(`✅ Sent $${amt.toFixed(2)} USDT to @${data.receiver_uname}!`);
+                showToast(`✅ Sent $${amt.toFixed(2)} USDT to @${cleanRecUname}!`);
             } catch (e) {
                 if (btn) { btn.disabled = false; btn.innerText = '📤 Send Balance Now'; }
                 showToast('⚠️ Network error while transferring balance. Please try again.');
@@ -5182,32 +5337,68 @@
         }
 
         let _pendingBalanceCheckout = null;
+        let _isProcessingBalanceCheckout = false;
 
-        function finalizeBalanceCheckoutAfterPin() {
-            if (!_pendingBalanceCheckout) return;
-            const { invId, summaryTitle, targetStr, totalUsdt, itemsList, isFromCart } = _pendingBalanceCheckout;
-            _pendingBalanceCheckout = null;
+        async function finalizeBalanceCheckoutAfterPin() {
+            if (!_pendingBalanceCheckout || _isProcessingBalanceCheckout) return;
+            _isProcessingBalanceCheckout = true;
 
-            userBalanceUsdt = Math.max(0, userBalanceUsdt - totalUsdt);
-            localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
-            updateTopBalance();
-            recordWebTransaction(invId, summaryTitle, targetStr, totalUsdt, 'OUT', 'Wallet Balance (PIN Verified)');
+            try {
+                const { invId, summaryTitle, targetStr, totalUsdt, itemsList, isFromCart } = _pendingBalanceCheckout;
+                _pendingBalanceCheckout = null;
 
-            const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
-            if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
+                const cleanTotal = parseFloat(totalUsdt);
+                if (isNaN(cleanTotal) || cleanTotal <= 0) {
+                    showToast('❌ Invalid order total!');
+                    return;
+                }
+                if (userBalanceUsdt < cleanTotal) {
+                    closeModal('paymentGatewayModal');
+                    showToast(`❌ Insufficient Balance! Need ${fmtPrice(cleanTotal)}.`);
+                    switchTab('wallet');
+                    return;
+                }
 
-            triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, 'Balance', unlockedAccounts);
-            renderViewport();
-            showInstantReceiptModal(invId, summaryTitle, targetStr, totalUsdt, 'Wallet Balance (PIN Verified)', unlockedAccounts);
+                // Pastikan semua akun GitHub yang dibeli masih tersedia di stok live sebelum potong saldo
+                const accountItems = itemsList.filter(x => x.isAccount && x.accountData);
+                if (accountItems.length > 0 && allLiveAccountsFlat.length > 0) {
+                    const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
+                    const unavailableAccs = accountItems.filter(x => !liveSet.has(String(x.accountData.username || '').toLowerCase()));
+                    if (unavailableAccs.length > 0) {
+                        closeModal('paymentGatewayModal');
+                        showToast(`⚠️ Account @${unavailableAccs[0].accountData.username} was just sold! Refreshing stock...`);
+                        await syncGoogleSheetInventory(false);
+                        return;
+                    }
+                }
+
+                const newBalAfterPay = Math.max(0, parseFloat((userBalanceUsdt - cleanTotal).toFixed(2)));
+                setAuthoritativeBalance(newBalAfterPay, true);
+                recordWebTransaction(invId, summaryTitle, targetStr, cleanTotal, 'OUT', 'Wallet Balance (PIN Verified)');
+
+                const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
+                if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
+
+                // Dorong saldo baru yang sudah dipotong langsung ke Sheet4 CRM & Cloud State
+                await syncUserCrmToGSheetFromWeb('acc', cleanTotal);
+                await syncCloudStateWithGSheet('push', { balance: newBalAfterPay, bal_ts: Date.now() });
+
+                triggerOrderCompletedNotifications(invId, itemsList, cleanTotal, 'Balance', unlockedAccounts);
+                renderViewport();
+                showInstantReceiptModal(invId, summaryTitle, targetStr, cleanTotal, 'Wallet Balance (PIN Verified)', unlockedAccounts);
+            } finally {
+                _isProcessingBalanceCheckout = false;
+            }
         }
 
         function verifyCheckoutPinNow() {
-            const inputPin = document.getElementById('checkoutPinInput').value.trim();
+            if (_isProcessingBalanceCheckout) return;
+            const inputPin = (document.getElementById('checkoutPinInput')?.value || '').trim();
             if (!/^\d{6}$/.test(inputPin)) {
-                return showToast('Please enter your 6-digit Telegram Bot PIN!');
+                return showToast('Please enter your 6-digit Security PIN!');
             }
             if (!isPinValidWithBot(inputPin)) {
-                return showToast('❌ Wrong 6-Digit PIN! Must match your Telegram Bot PIN.');
+                return showToast('❌ Wrong 6-Digit PIN! Must match your Security PIN.');
             }
             finalizeBalanceCheckoutAfterPin();
         }
@@ -5597,13 +5788,6 @@
             const amt = parseFloat(m.amountUsdt || 0);
 
             if (decision === 'approve') {
-                if (String(m.buyerId) === String(currentUserId)) {
-                    userBalanceUsdt += amt;
-                    localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
-                    updateTopBalance();
-                    recordWebTransaction(m.invId, m.title, m.targetStr, amt, 'IN', 'IDR Payment (Approved)');
-                    syncUserCrmToGSheetFromWeb('topup', amt);
-                }
                 const okMsg = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   🎉 <b>I D R  P A Y M E N T  A P P R O V E D</b>\n` +
@@ -5613,7 +5797,42 @@
                     `💰 <b>Credited Amount:</b> <b>+$${amt.toFixed(2)} USDT</b>\n` +
                     `✅ <i>Your IDR payment proof has been verified and credited!</i>`
                 );
-                pushInWebNotification('buyer', `🎉 IDR PAYMENT APPROVED (${m.invId})`, okMsg);
+                if (String(m.buyerId) === String(currentUserId) || String(m.buyerUname || '').replace(/^@/, '').toLowerCase() === String(currentUsername || '').replace(/^@/, '').toLowerCase()) {
+                    setAuthoritativeBalance(userBalanceUsdt + amt, true);
+                    recordWebTransaction(m.invId, m.title, m.targetStr, amt, 'IN', 'IDR Payment (Approved)');
+                    syncUserCrmToGSheetFromWeb('topup', amt);
+                    pushInWebNotification('buyer', `🎉 IDR PAYMENT APPROVED (${m.invId})`, okMsg);
+                    scheduleCloudStatePush({ balance: userBalanceUsdt, bal_ts: Date.now() });
+                } else {
+                    // Kreditkan langsung ke saldo Cloud & Sheet4 milik pembeli yang melakukan Top-Up IDR
+                    const cleanBuyerU = String(m.buyerUname || '').replace(/^@/, '');
+                    let buyerOldBal = 0;
+                    const foundBuyer = (cachedSheetVipHolders || []).find(u =>
+                        String(u.user_id || u.uid || '') === String(m.buyerId) ||
+                        String(u.username || '').replace(/^@/, '').toLowerCase() === cleanBuyerU.toLowerCase()
+                    );
+                    if (foundBuyer && !isNaN(parseFloat(foundBuyer.balance))) {
+                        buyerOldBal = parseFloat(foundBuyer.balance);
+                    }
+                    const buyerNewBal = buyerOldBal + amt;
+                    const buyerNotifObj = {
+                        id: 'NTF-' + Date.now(),
+                        time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
+                        title: `🎉 IDR PAYMENT APPROVED (${m.invId})`,
+                        body: okMsg,
+                        meta: null
+                    };
+                    const buyerTxObj = {
+                        invoice: m.invId,
+                        title: m.title,
+                        target: m.targetStr,
+                        usdt: amt.toFixed(2),
+                        type: 'IN',
+                        method: 'IDR Payment (Approved)',
+                        date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+                    };
+                    await pushDirectCloudStateToTargetUser(m.buyerId, cleanBuyerU, buyerNewBal, buyerNotifObj, buyerTxObj);
+                }
                 await sendTelegramSilentPush(m.buyerId, okMsg, true);
 
                 if (m.tgMsgIds) {
@@ -5802,9 +6021,9 @@
 
                     if (isTopup) {
                         const oldBal = userBalanceUsdt;
-                        userBalanceUsdt += parseFloat(amountUsdt);
-                        localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
-                        updateTopBalance();
+                        setAuthoritativeBalance(userBalanceUsdt + parseFloat(amountUsdt), true);
+                        syncUserCrmToGSheetFromWeb('topup', parseFloat(amountUsdt));
+                        scheduleCloudStatePush({ balance: userBalanceUsdt, bal_ts: Date.now() });
 
                         // Push Deposit Confirmed Notifications (Matches XianBee-TechStore.py)
                         const depMsg = (
