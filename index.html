@@ -4258,6 +4258,15 @@
 
             const vipMeta = getUserVipRankMeta();
             const cleanProfUname = String(currentUsername || '').replace(/^@/, '');
+            const hasPinSet = Boolean(
+                (localStorage.getItem('xb_bot_pin_hash') && localStorage.getItem('xb_bot_pin_hash').length === 32) ||
+                (localStorage.getItem('xb_user_pin') && /^\d{6}$/.test(localStorage.getItem('xb_user_pin')))
+            );
+            const pinBadgeHtml = hasPinSet
+                ? `<span style="font-size:0.58rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);padding:2px 7px;border-radius:6px;white-space:nowrap;">🔒 PIN Active</span>`
+                : `<span style="font-size:0.58rem;font-weight:800;color:var(--warning);background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.4);padding:2px 7px;border-radius:6px;white-space:nowrap;">⚠️ No PIN Set</span>`;
+            const pinBtnLabel = hasPinSet ? '🔐 Change PIN' : '🔐 Create PIN';
+
             const accCycle = (totalSpent % 500);
             const boostCycle = (totalSpent % 200);
             const topCycle = (totalDep % 500);
@@ -4267,112 +4276,118 @@
             const topPct = Math.min(100, (topCycle / 500) * 100);
 
             container.innerHTML = `
-                <div class="grid-cards" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;">
-                    <!-- 1. CLIENT IDENTITY & QUICK ACTIONS (KOTAK 3D RAPI & PRESISI) -->
-                    <div class="item-card" style="padding:13px 14px;gap:10px;border-left:4px solid var(--accent-primary);">
-                        <div style="display:flex;flex-direction:column;gap:9px;">
-                            <!-- BARIS 1: VIP TIER DI KIRI & STATUS PIN DI KANAN -->
-                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                <span class="item-tag" style="margin:0;padding:3px 8px;font-size:0.6rem;white-space:nowrap;">${vipMeta.emblem} ${vipMeta.rank}</span>
-                                <span style="font-size:0.64rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);padding:3px 8px;border-radius:6px;white-space:nowrap;">🔒 PIN Synced</span>
-                            </div>
-
-                            <!-- BARIS 2: KOTAK 3D IDENTITAS USER (USERNAME & CLIENT ID TERPISAH RAPI) -->
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:11px;padding:10px 12px;display:flex;align-items:center;gap:10px;min-width:0;">
-                                <div style="width:40px;height:40px;border-radius:10px;background:var(--grad-subtle);border:1px solid var(--border-focus);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;">
-                                    👤
-                                </div>
-                                <div style="min-width:0;flex:1;">
-                                    <div style="font-size:0.95rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        @${cleanProfUname}
+                <div class="grid-cards" style="grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:9px;">
+                    <!-- 1. COMPACT 3D CLIENT IDENTITY & QUICK ACTIONS (FITS 1 MOBILE SCREEN WITH BOX 2) -->
+                    <div class="item-card" style="padding:10px 11px;gap:7px;border-left:4px solid var(--accent-primary);">
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <!-- COMPACT 3D USER IDENTITY HEADER -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:10px;padding:7px 9px;display:flex;align-items:center;justify-content:space-between;gap:8px;min-width:0;">
+                                <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
+                                    <div style="width:32px;height:32px;border-radius:8px;background:var(--grad-subtle);border:1px solid var(--border-focus);display:flex;align-items:center;justify-content:center;font-size:0.95rem;flex-shrink:0;">
+                                        👤
                                     </div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:700;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        ID: <span style="color:var(--accent-cyan);">${currentUserId}</span> • <span style="color:var(--success);">Cloud Active</span>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.82rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2;">
+                                            @${cleanProfUname}
+                                        </div>
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:700;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">
+                                            ID: <span style="color:var(--accent-cyan);">${currentUserId}</span>
+                                        </div>
                                     </div>
                                 </div>
+                                <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
+                                    <span class="item-tag" style="margin:0;padding:2px 6px;font-size:0.54rem;white-space:nowrap;">${vipMeta.emblem} ${vipMeta.rank}</span>
+                                    ${pinBadgeHtml}
+                                </div>
                             </div>
 
-                            <!-- BARIS 3: 2 KOTAK 3D STATISTIK SALDO & VAULT -->
-                            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-                                <div style="background:var(--bg-input);padding:9px 10px;border-radius:10px;border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);min-width:0;">
-                                    <div style="font-size:0.58rem;color:var(--text-muted);font-weight:800;letter-spacing:0.5px;white-space:nowrap;">WALLET BALANCE</div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--success);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${fmtPrice(userBalanceUsdt)}</div>
+                            <!-- 2 COMPACT 3D STAT BOXES: WALLET BALANCE & SAVED VAULT -->
+                            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
+                                <div style="background:var(--bg-input);padding:6px 9px;border-radius:9px;border:1px solid var(--border-subtle);border-left:3px solid var(--success);display:flex;justify-content:space-between;align-items:center;gap:4px;min-width:0;">
+                                    <div style="min-width:0;">
+                                        <div style="font-size:0.52rem;color:var(--text-muted);font-weight:800;letter-spacing:0.4px;white-space:nowrap;">WALLET BALANCE</div>
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:800;color:var(--success);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${fmtPrice(userBalanceUsdt)}</div>
+                                    </div>
                                 </div>
-                                <div style="background:var(--bg-input);padding:9px 10px;border-radius:10px;border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);min-width:0;">
-                                    <div style="font-size:0.58rem;color:var(--text-muted);font-weight:800;letter-spacing:0.5px;white-space:nowrap;">SAVED IN VAULT</div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--text-primary);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${vault.length} Accounts</div>
+                                <div style="background:var(--bg-input);padding:6px 9px;border-radius:9px;border:1px solid var(--border-subtle);border-left:3px solid var(--accent-cyan);display:flex;justify-content:space-between;align-items:center;gap:4px;min-width:0;">
+                                    <div style="min-width:0;">
+                                        <div style="font-size:0.52rem;color:var(--text-muted);font-weight:800;letter-spacing:0.4px;white-space:nowrap;">SAVED IN VAULT</div>
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:800;color:var(--text-primary);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${vault.length} Accounts</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- BARIS 4: 4 TOMBOL AKSI 2x2 -->
-                        <div class="item-actions" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding-top:8px;">
-                            <button class="btn-ui secondary" style="min-width:0;padding:9px 6px;font-size:0.71rem;white-space:nowrap;" onclick="openChangeUsernameModal()">✏️ Username</button>
-                            <button class="btn-ui secondary" style="min-width:0;padding:9px 6px;font-size:0.71rem;white-space:nowrap;" onclick="openSecurityPinModal()">🔐 Change PIN</button>
-                            <button class="btn-ui secondary" style="min-width:0;padding:9px 6px;font-size:0.71rem;border-color:var(--accent-cyan);color:var(--accent-cyan);white-space:nowrap;" onclick="openUserPersonal3DAnalyticsModal()">📊 My Analytics 3D</button>
-                            <button class="btn-ui primary" style="min-width:0;padding:9px 6px;font-size:0.71rem;white-space:nowrap;" onclick="activeSub='🔐 Purchased Vault'; renderViewport();">🔐 My Vault</button>
+                        <!-- 4 COMPACT ACTION BUTTONS (2x2) -->
+                        <div class="item-actions" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding-top:6px;">
+                            <button class="btn-ui secondary" style="min-width:0;padding:7px 6px;font-size:0.66rem;border-radius:8px;white-space:nowrap;" onclick="openChangeUsernameModal()">✏️ Username</button>
+                            <button class="btn-ui ${hasPinSet ? 'secondary' : 'buy-now'}" style="min-width:0;padding:7px 6px;font-size:0.66rem;border-radius:8px;white-space:nowrap;" onclick="openSecurityPinModal()">${pinBtnLabel}</button>
+                            <button class="btn-ui secondary" style="min-width:0;padding:7px 6px;font-size:0.66rem;border-radius:8px;border-color:var(--accent-cyan);color:var(--accent-cyan);white-space:nowrap;" onclick="openUserPersonal3DAnalyticsModal()">📊 Analytics 3D</button>
+                            <button class="btn-ui primary" style="min-width:0;padding:7px 6px;font-size:0.66rem;border-radius:8px;white-space:nowrap;" onclick="activeSub='🔐 Purchased Vault'; renderViewport();">🔐 My Vault</button>
                         </div>
                     </div>
 
-                    <!-- 2. VIP LOYALTY CASHBACK MILESTONES (SUSUNAN BARIS TERPISAH DI DALAM KOTAK 3D) -->
-                    <div class="item-card" style="padding:13px 14px;gap:10px;border-left:4px solid var(--warning);">
-                        <div style="display:flex;flex-direction:column;gap:8px;">
-                            <!-- HEADER KOTAK 3D RATA TENGAH -->
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--warning);border-radius:11px;padding:8px 10px;text-align:center;">
-                                <div style="font-size:0.55rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                    AUTOMATIC 10% REWARD CYCLES • SHEET4 CRM
+                    <!-- 2. COMPACT 3D VIP LOYALTY CASHBACK (NEAT RIGHT-ALIGNED METRICS IN ENGLISH) -->
+                    <div class="item-card" style="padding:10px 11px;gap:7px;border-left:4px solid var(--warning);">
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <!-- COMPACT 3D HEADER BAR -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--warning);border-radius:9px;padding:6px 9px;display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                <div style="min-width:0;">
+                                    <div style="font-size:0.74rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👑 VIP Loyalty Cashback</div>
+                                    <div style="font-size:0.56rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Auto 10% USDT bonus on every completed cycle</div>
                                 </div>
-                                <h3 class="item-title" style="font-size:0.88rem;margin:2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                    👑 VIP Loyalty Cashback
-                                </h3>
-                                <div style="font-size:0.63rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                    Complete any cycle below to earn a <b style="color:var(--success);">+10% USDT Bonus</b>!
-                                </div>
+                                <span class="item-tag" style="margin:0;padding:2px 6px;font-size:0.54rem;color:var(--warning);border-color:rgba(245,158,11,0.45);background:rgba(245,158,11,0.12);white-space:nowrap;flex-shrink:0;">10% REWARD</span>
                             </div>
 
-                            <!-- SIKLUS 1: ACCOUNT PURCHASE CYCLE -->
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;">
-                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                    <span style="font-size:0.73rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🛒 Account Purchase</span>
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);padding:2px 7px;border-radius:6px;white-space:nowrap;flex-shrink:0;">🎁 +50 USDT Bonus</span>
+                            <!-- CYCLE 1: ACCOUNT PURCHASE -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-cyan);border-radius:9px;padding:6px 9px;display:flex;flex-direction:column;gap:3px;">
+                                <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;">
+                                    <div style="min-width:0;">
+                                        <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🛒 Account Purchase</div>
+                                        <div style="font-size:0.56rem;color:var(--text-muted);font-weight:700;">Cycle Target: $500.00 USDT</div>
+                                    </div>
+                                    <div style="text-align:right;font-family:'JetBrains Mono',monospace;flex-shrink:0;">
+                                        <div style="font-size:0.58rem;font-weight:800;color:var(--success);">🎁 +$50.00 USDT Bonus</div>
+                                        <div style="font-size:0.62rem;font-weight:800;color:var(--accent-cyan);">$${accCycle.toFixed(2)} / $500 (${accPct.toFixed(0)}%)</div>
+                                    </div>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.64rem;">
-                                    <span style="color:var(--text-muted);font-weight:700;">Target: 500 USDT</span>
-                                    <span style="color:var(--accent-cyan);font-weight:800;">${accCycle.toFixed(2)} / 500 USDT (${accPct.toFixed(0)}%)</span>
-                                </div>
-                                <div class="progress-track" style="margin-top:2px;height:7px;"><div class="progress-fill" style="width:${accPct}%;"></div></div>
+                                <div class="progress-track" style="margin-top:1px;height:5px;"><div class="progress-fill" style="width:${accPct}%;"></div></div>
                             </div>
 
-                            <!-- SIKLUS 2: GITHUB BOOST CYCLE -->
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;">
-                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                    <span style="font-size:0.73rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🚀 GitHub Boost Service</span>
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);padding:2px 7px;border-radius:6px;white-space:nowrap;flex-shrink:0;">🎁 +20 USDT Bonus</span>
+                            <!-- CYCLE 2: GITHUB BOOST -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-primary);border-radius:9px;padding:6px 9px;display:flex;flex-direction:column;gap:3px;">
+                                <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;">
+                                    <div style="min-width:0;">
+                                        <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🚀 GitHub Boost Service</div>
+                                        <div style="font-size:0.56rem;color:var(--text-muted);font-weight:700;">Cycle Target: $200.00 USDT</div>
+                                    </div>
+                                    <div style="text-align:right;font-family:'JetBrains Mono',monospace;flex-shrink:0;">
+                                        <div style="font-size:0.58rem;font-weight:800;color:var(--success);">🎁 +$20.00 USDT Bonus</div>
+                                        <div style="font-size:0.62rem;font-weight:800;color:var(--accent-cyan);">$${boostCycle.toFixed(2)} / $200 (${boostPct.toFixed(0)}%)</div>
+                                    </div>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.64rem;">
-                                    <span style="color:var(--text-muted);font-weight:700;">Target: 200 USDT</span>
-                                    <span style="color:var(--accent-cyan);font-weight:800;">${boostCycle.toFixed(2)} / 200 USDT (${boostPct.toFixed(0)}%)</span>
-                                </div>
-                                <div class="progress-track" style="margin-top:2px;height:7px;"><div class="progress-fill" style="width:${boostPct}%;"></div></div>
+                                <div class="progress-track" style="margin-top:1px;height:5px;"><div class="progress-fill" style="width:${boostPct}%;"></div></div>
                             </div>
 
-                            <!-- SIKLUS 3: BALANCE TOP-UP CYCLE -->
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;">
-                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                    <span style="font-size:0.73rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">💳 Balance Top-Up</span>
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);padding:2px 7px;border-radius:6px;white-space:nowrap;flex-shrink:0;">🎁 +50 USDT Bonus</span>
+                            <!-- CYCLE 3: BALANCE TOP-UP -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--success);border-radius:9px;padding:6px 9px;display:flex;flex-direction:column;gap:3px;">
+                                <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:6px;">
+                                    <div style="min-width:0;">
+                                        <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">💳 Balance Top-Up</div>
+                                        <div style="font-size:0.56rem;color:var(--text-muted);font-weight:700;">Cycle Target: $500.00 USDT</div>
+                                    </div>
+                                    <div style="text-align:right;font-family:'JetBrains Mono',monospace;flex-shrink:0;">
+                                        <div style="font-size:0.58rem;font-weight:800;color:var(--success);">🎁 +$50.00 USDT Bonus</div>
+                                        <div style="font-size:0.62rem;font-weight:800;color:var(--accent-cyan);">$${topCycle.toFixed(2)} / $500 (${topPct.toFixed(0)}%)</div>
+                                    </div>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.64rem;">
-                                    <span style="color:var(--text-muted);font-weight:700;">Target: 500 USDT</span>
-                                    <span style="color:var(--accent-cyan);font-weight:800;">${topCycle.toFixed(2)} / 500 USDT (${topPct.toFixed(0)}%)</span>
-                                </div>
-                                <div class="progress-track" style="margin-top:2px;height:7px;"><div class="progress-fill" style="width:${topPct}%;"></div></div>
+                                <div class="progress-track" style="margin-top:1px;height:5px;"><div class="progress-fill" style="width:${topPct}%;"></div></div>
                             </div>
                         </div>
 
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:7px;border-top:1px solid var(--border-subtle);">
-                            <a href="https://t.me/XianBeeTechStore" target="_blank" class="btn-ui secondary" style="flex:1;padding:8px 10px;font-size:0.71rem;border-color:rgba(6,182,212,0.4);color:var(--accent-cyan);">📞 Contact Executive Live Support</a>
-                            <button onclick="switchTab('admin')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.75rem;opacity:0.35;cursor:pointer;padding:4px 8px;" title="Executive Admin Access">🔒</button>
+                        <div style="display:flex;justify-content:space-between;align-items:center;padding-top:5px;border-top:1px solid var(--border-subtle);">
+                            <a href="https://t.me/XianBeeTechStore" target="_blank" class="btn-ui secondary" style="flex:1;padding:6px 8px;font-size:0.65rem;border-radius:8px;border-color:rgba(6,182,212,0.4);color:var(--accent-cyan);">📞 Contact Executive Support</a>
+                            <button onclick="switchTab('admin')" style="background:transparent;border:none;color:var(--text-muted);font-size:0.7rem;opacity:0.35;cursor:pointer;padding:2px 6px;" title="Executive Admin Access">🔒</button>
                         </div>
                     </div>
                 </div>
@@ -5058,45 +5073,64 @@
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
+
+            const hasExistingPin = Boolean(
+                (localStorage.getItem('xb_bot_pin_hash') && localStorage.getItem('xb_bot_pin_hash').length === 32) ||
+                (localStorage.getItem('xb_user_pin') && /^\d{6}$/.test(localStorage.getItem('xb_user_pin')))
+            );
+
             body.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">TELEGRAM BOT PIN SYNC</span>
-                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                    <div></div>
+                    <h3 style="margin:0;font-size:0.9rem;font-weight:800;color:var(--text-primary);">${hasExistingPin ? '🔐 Change 6-Digit Security PIN' : '🔐 Create 6-Digit Security PIN'}</h3>
+                    <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
-                <h3 style="margin:0 0 6px 0;">🔐 Change 6-Digit Security PIN</h3>
-                <p style="font-size:0.8rem;color:var(--text-secondary);margin:0 0 14px 0;">Enter your current 6-digit Telegram Bot PIN to change it to a new 6-digit PIN.</p>
+                <p style="font-size:0.76rem;color:var(--text-secondary);margin:0 0 12px 0;text-align:center;">
+                    ${hasExistingPin
+                        ? 'Enter your current 6-digit PIN below to update your security PIN.'
+                        : 'Set a 6-digit numeric security PIN to protect your wallet balance and instant checkouts.'}
+                </p>
+                ${hasExistingPin ? `
+                    <div class="form-group">
+                        <label>Current 6-Digit Security PIN:</label>
+                        <input type="password" class="form-input" id="oldPinInput" maxlength="6" inputmode="numeric" style="letter-spacing:6px;font-family:'JetBrains Mono',monospace;text-align:center;" placeholder="••••••">
+                    </div>
+                ` : ''}
                 <div class="form-group">
-                    <label>Current 6-Digit PIN (Telegram Bot PIN):</label>
-                    <input type="password" class="form-input" id="oldPinInput" maxlength="6" inputmode="numeric" style="letter-spacing:4px;font-family:'JetBrains Mono',monospace;" placeholder="••••••">
+                    <label>${hasExistingPin ? 'New 6-Digit Security PIN (Numbers Only):' : 'Create 6-Digit Security PIN (Numbers Only):'}</label>
+                    <input type="password" class="form-input" id="newPinInput" maxlength="6" inputmode="numeric" style="letter-spacing:6px;font-family:'JetBrains Mono',monospace;text-align:center;" placeholder="••••••">
                 </div>
                 <div class="form-group">
-                    <label>New 6-Digit PIN (Numbers Only):</label>
-                    <input type="password" class="form-input" id="newPinInput" maxlength="6" inputmode="numeric" style="letter-spacing:4px;font-family:'JetBrains Mono',monospace;" placeholder="••••••">
+                    <label>Confirm 6-Digit Security PIN:</label>
+                    <input type="password" class="form-input" id="confirmNewPinInput" maxlength="6" inputmode="numeric" style="letter-spacing:6px;font-family:'JetBrains Mono',monospace;text-align:center;" placeholder="••••••">
                 </div>
-                <div class="form-group">
-                    <label>Confirm New 6-Digit PIN:</label>
-                    <input type="password" class="form-input" id="confirmNewPinInput" maxlength="6" inputmode="numeric" style="letter-spacing:4px;font-family:'JetBrains Mono',monospace;" placeholder="••••••">
-                </div>
-                <div style="display:flex;gap:8px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                     <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
-                    <button class="btn-ui primary" onclick="saveChangedPinOnly()">🔐 Update PIN</button>
+                    <button class="btn-ui buy-now" onclick="saveChangedPinOnly()">${hasExistingPin ? '🔐 Update PIN' : '✅ Create PIN'}</button>
                 </div>
             `;
         }
 
         function saveChangedPinOnly() {
-            const oldVal = document.getElementById('oldPinInput').value.trim();
-            const newPin = document.getElementById('newPinInput').value.trim();
-            const confPin = document.getElementById('confirmNewPinInput').value.trim();
+            const hasExistingPin = Boolean(
+                (localStorage.getItem('xb_bot_pin_hash') && localStorage.getItem('xb_bot_pin_hash').length === 32) ||
+                (localStorage.getItem('xb_user_pin') && /^\d{6}$/.test(localStorage.getItem('xb_user_pin')))
+            );
+            const oldInputEl = document.getElementById('oldPinInput');
+            const oldVal = oldInputEl ? oldInputEl.value.trim() : '';
+            const newPin = (document.getElementById('newPinInput')?.value || '').trim();
+            const confPin = (document.getElementById('confirmNewPinInput')?.value || '').trim();
 
-            if (!/^\d{6}$/.test(oldVal)) {
-                return showToast('Please enter your current 6-digit PIN!');
-            }
-            if (!isPinValidWithBot(oldVal)) {
-                return showToast('❌ Current 6-digit PIN does not match your Telegram Bot PIN!');
+            if (hasExistingPin) {
+                if (!/^\d{6}$/.test(oldVal)) {
+                    return showToast('Please enter your current 6-digit PIN!');
+                }
+                if (!isPinValidWithBot(oldVal)) {
+                    return showToast('❌ Current 6-digit PIN does not match your Security PIN!');
+                }
             }
             if (!/^\d{6}$/.test(newPin)) {
-                return showToast('New PIN must be exactly 6 digits (numbers only)!');
+                return showToast('Security PIN must be exactly 6 digits (numbers only)!');
             }
             if (newPin !== confPin) {
                 return showToast('❌ New PIN and Confirm PIN do not match!');
@@ -5105,19 +5139,19 @@
             const newHash = md5Hash(newPin);
             localStorage.setItem('xb_bot_pin_hash', newHash);
             localStorage.setItem('xb_user_pin', newPin);
+            scheduleCloudStatePush({ pin_hash: newHash });
 
-            // Notify Admin & Buyer on Telegram that PIN was updated
             const pinChangeMsg = (
-                `🔐 <b>[SECURITY PIN UPDATED]</b>\n` +
+                `🔐 <b>[SECURITY PIN ${hasExistingPin ? 'UPDATED' : 'CREATED'}]</b>\n` +
                 `👤 <b>Client:</b> @${currentUsername.replace('@','')} (<code>${currentUserId}</code>)\n` +
-                `✅ <i>6-Digit Security PIN has been updated via Web Store.</i>`
+                `✅ <i>6-Digit Security PIN has been ${hasExistingPin ? 'updated' : 'created'} via Web Store.</i>`
             );
-            pushInWebNotification('buyer', '🔐 PIN UPDATED', 'Your 6-digit Security PIN has been updated successfully.');
+            pushInWebNotification('buyer', hasExistingPin ? '🔐 PIN UPDATED' : '🔐 PIN CREATED', `Your 6-digit Security PIN has been ${hasExistingPin ? 'updated' : 'created'} successfully.`);
             sendTelegramSilentPush(currentUserId, pinChangeMsg, true);
 
             closeModal('paymentGatewayModal');
             renderViewport();
-            showToast('✅ 6-Digit Security PIN updated successfully!');
+            showToast(`✅ 6-Digit Security PIN ${hasExistingPin ? 'updated' : 'created'} successfully!`);
         }
 
         let _pendingBalanceCheckout = null;
