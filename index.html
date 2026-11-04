@@ -4075,70 +4075,71 @@
                     <!-- PENDING INVOICES RESUME BAR (IF USER CLOSED MODAL BEFORE UPLOADING PROOF) -->
                     ${pendingInvoicesHtml}
 
-                    <!-- 2. COMPACT DEPOSIT WALLET BALANCE (WITH CENTER-ALIGNED HEADER BOX) -->
-                    <div class="item-card" style="padding:13px 14px;gap:10px;">
-                        <div>
-                            <!-- DEDICATED CENTER-ALIGNED HEADER BOX -->
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:11px;padding:8px 10px;text-align:center;margin-bottom:10px;">
-                                <div style="font-size:0.58rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.9px;text-transform:uppercase;">
-                                    INSTANT WALLET TOP-UP GATEWAY • MIN 5.00 USDT
+                    <!-- 2. ULTRA-COMPACT 3D DEPOSIT WALLET BALANCE -->
+                    <div class="item-card" style="padding:10px 11px;gap:7px;border-left:4px solid var(--accent-cyan);">
+                        <div style="display:flex;flex-direction:column;gap:7px;">
+                            <!-- 1-LINE CENTERED 3D HEADER BOX -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-bottom:3px solid rgba(0,0,0,0.55);border-radius:10px;padding:7px 10px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.06);">
+                                <h3 class="item-title" style="font-size:0.84rem;font-weight:800;margin:0;text-align:center;letter-spacing:0.3px;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    💳 Deposit Wallet Balance
+                                </h3>
+                            </div>
+
+                            <!-- STEP 1: CLEAN 3D QUICK NOMINAL PRESETS (10, 25, 50, 100 WITHOUT SUBTEXT) -->
+                            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
+                                <button type="button" class="subtab-pill" style="padding:8px 6px;border-radius:9px;border-left:3.5px solid var(--accent-cyan);font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--text-primary);" onclick="selectDepositPresetNominal(10)">
+                                    ${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(10 * liveUsdtIdrRate).toLocaleString('id-ID') : '10.00 USDT'}
+                                </button>
+                                <button type="button" class="subtab-pill" style="padding:8px 6px;border-radius:9px;border-left:3.5px solid var(--accent-cyan);font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--text-primary);" onclick="selectDepositPresetNominal(25)">
+                                    ${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(25 * liveUsdtIdrRate).toLocaleString('id-ID') : '25.00 USDT'}
+                                </button>
+                                <button type="button" class="subtab-pill" style="padding:8px 6px;border-radius:9px;border-left:3.5px solid var(--success);font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--success);" onclick="selectDepositPresetNominal(50)">
+                                    ${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(50 * liveUsdtIdrRate).toLocaleString('id-ID') : '50.00 USDT'}
+                                </button>
+                                <button type="button" class="subtab-pill" style="padding:8px 6px;border-radius:9px;border-left:3.5px solid var(--success);font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--success);" onclick="selectDepositPresetNominal(100)">
+                                    ${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(100 * liveUsdtIdrRate).toLocaleString('id-ID') : '100.00 USDT'}
+                                </button>
+                            </div>
+
+                            <!-- STEP 2: 3D BOX FOR CUSTOM DEPOSIT AMOUNT -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-bottom:3px solid rgba(0,0,0,0.5);border-radius:10px;padding:7px 9px;display:flex;flex-direction:column;gap:5px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                    <span style="font-size:0.6rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.6px;white-space:nowrap;">
+                                        CUSTOM DEPOSIT AMOUNT
+                                    </span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:700;color:var(--text-muted);white-space:nowrap;">
+                                        Min 5.00 USDT
+                                    </span>
                                 </div>
-                                <h3 class="item-title" style="font-size:0.96rem;margin:2px 0 1px 0;text-align:center;">Deposit Wallet Balance</h3>
-                                <p class="item-desc" style="font-size:0.68rem;margin:0;text-align:center;">Select a quick top-up nominal or enter a custom amount below.</p>
-                            </div>
-
-                            <!-- STEP 1: COMPACT QUICK NOMINAL PRESETS (2x2 SYMMETRICAL GRID) -->
-                            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-bottom:10px;">
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:9px 8px;border-radius:10px;gap:2px;" onclick="selectDepositPresetNominal(5)">
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(5 * liveUsdtIdrRate).toLocaleString('id-ID') : '5.00 USDT'}</span>
-                                    <span style="font-size:0.62rem;color:var(--text-muted);white-space:nowrap;">Credit: +5.00 USDT</span>
-                                </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:9px 8px;border-radius:10px;gap:2px;" onclick="selectDepositPresetNominal(25)">
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(25 * liveUsdtIdrRate).toLocaleString('id-ID') : '25.00 USDT'}</span>
-                                    <span style="font-size:0.62rem;color:var(--text-muted);white-space:nowrap;">Credit: +25.00 USDT</span>
-                                </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:9px 8px;border-radius:10px;gap:2px;border-color:rgba(16,185,129,0.4);" onclick="selectDepositPresetNominal(50)">
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:800;color:var(--success);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(50 * liveUsdtIdrRate).toLocaleString('id-ID') : '50.00 USDT'}</span>
-                                    <span style="font-size:0.62rem;color:var(--success);white-space:nowrap;">+50.00 USDT (+5% Bonus)</span>
-                                </button>
-                                <button class="btn-ui secondary" style="flex-direction:column;padding:9px 8px;border-radius:10px;gap:2px;border-color:rgba(16,185,129,0.4);" onclick="selectDepositPresetNominal(100)">
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:800;color:var(--success);white-space:nowrap;">${selectedWalletDepMode === 'IDR' ? 'Rp ' + Math.round(100 * liveUsdtIdrRate).toLocaleString('id-ID') : '100.00 USDT'}</span>
-                                    <span style="font-size:0.62rem;color:var(--success);white-space:nowrap;">+100.00 USDT (+10% Bonus)</span>
-                                </button>
-                            </div>
-
-                            <!-- STEP 2: COMPACT CUSTOM DEPOSIT INPUT -->
-                            <div class="form-group" style="margin-bottom:10px;">
-                                <label style="margin-bottom:4px;font-size:0.64rem;text-align:center;">Custom Deposit Amount in USDT (Min 5 USDT):</label>
                                 <div style="position:relative;display:flex;align-items:center;">
-                                    <input type="number" class="form-input" id="customDepositAmt" value="${activeAmt}" min="5" step="1" style="padding:9px 125px 9px 12px;font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;" oninput="updateCustomDepositPreview(this.value)">
-                                    <span id="customDepIdrPreview" style="position:absolute;right:8px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:700;color:var(--accent-cyan);background:var(--bg-soft);border:1px solid var(--border-subtle);padding:3px 7px;border-radius:6px;pointer-events:none;white-space:nowrap;">
+                                    <input type="number" class="form-input" id="customDepositAmt" value="${activeAmt}" min="5" step="1" style="padding:7px 115px 7px 10px;font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:800;background:var(--bg-surface);border-radius:8px;" oninput="updateCustomDepositPreview(this.value)">
+                                    <span id="customDepIdrPreview" style="position:absolute;right:6px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:700;color:var(--accent-cyan);background:var(--bg-soft);border:1px solid var(--border-subtle);padding:2px 6px;border-radius:6px;pointer-events:none;white-space:nowrap;">
                                         ≈ Rp ${Math.round(activeAmt * liveUsdtIdrRate).toLocaleString('id-ID')}
                                     </span>
                                 </div>
                             </div>
 
-                            <!-- STEP 3: COMPACT SELECT DEPOSIT CURRENCY BOX AT THE BOTTOM -->
-                            <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;">
+                            <!-- STEP 3: CLEAN 3D SELECT DEPOSIT CURRENCY BOX (USDT & IDR WITHOUT EXTRA TEXT) -->
+                            <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-left:3.5px solid var(--accent-cyan);border-bottom:3px solid rgba(0,0,0,0.55);border-radius:10px;padding:8px 9px;display:flex;flex-direction:column;gap:6px;">
                                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                                    <span style="font-size:0.63rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.7px;white-space:nowrap;">
+                                    <span style="font-size:0.6rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;letter-spacing:0.6px;white-space:nowrap;">
                                         SELECT DEPOSIT CURRENCY
                                     </span>
-                                    <span style="font-size:0.63rem;font-weight:700;color:var(--text-muted);white-space:nowrap;">
+                                    <span style="font-size:0.6rem;font-weight:700;color:var(--text-muted);white-space:nowrap;">
                                         Active: <b style="color:var(--text-primary);">${selectedWalletDepMode}</b>
                                     </span>
                                 </div>
 
-                                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;">
-                                    <button type="button" class="subtab-pill ${selectedWalletDepMode === 'USDT' ? 'active' : ''}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:8px 6px;font-size:0.72rem;border-radius:9px;" onclick="switchWalletDepMode('USDT')">
-                                        USDT (OxaPay)
+                                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
+                                    <button type="button" class="subtab-pill ${selectedWalletDepMode === 'USDT' ? 'active' : ''}" style="padding:7px 6px;font-size:0.72rem;border-radius:8px;" onclick="switchWalletDepMode('USDT')">
+                                        🪙 USDT
                                     </button>
-                                    <button type="button" class="subtab-pill ${selectedWalletDepMode === 'IDR' ? 'active' : ''}" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:8px 6px;font-size:0.72rem;border-radius:9px;" onclick="switchWalletDepMode('IDR')">
-                                        IDR (QRIS / Bank)
+                                    <button type="button" class="subtab-pill ${selectedWalletDepMode === 'IDR' ? 'active' : ''}" style="padding:7px 6px;font-size:0.72rem;border-radius:8px;" onclick="switchWalletDepMode('IDR')">
+                                        🇮🇩 IDR
                                     </button>
                                 </div>
 
-                                <button type="button" class="btn-ui primary" style="width:100%;padding:10px;font-size:0.76rem;border-radius:9px;white-space:nowrap;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), selectedWalletDepMode)">
+                                <button type="button" class="btn-ui primary" style="width:100%;padding:9px;font-size:0.73rem;border-radius:8px;white-space:nowrap;" onclick="initiateTopUp(parseFloat(document.getElementById('customDepositAmt').value), selectedWalletDepMode)">
                                     <span id="btnContinueDepositText">Continue to Deposit (${ctaAmtFormatted}) — ${selectedWalletDepMode}</span>
                                 </button>
                             </div>
