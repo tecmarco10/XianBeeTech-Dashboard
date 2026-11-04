@@ -1210,58 +1210,65 @@
 
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area">
-            <header class="topbar" style="background:var(--bg-base);padding:9px 11px;gap:8px;box-shadow:0 10px 28px rgba(0,0,0,0.6);">
-                <!-- BARIS 1: ROYAL PURPLE-INDIGO 4-SIDED 3D COCKPIT BOX -->
-                <div class="topbar-box-brand" style="padding:7px 11px;gap:8px;background:linear-gradient(135deg, #1d153b 0%, #101935 50%, #27153d 100%);border-top:2.5px solid #a855f7;border-bottom:5px solid #090514;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.6);">
-                    <div style="display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;" onclick="switchTab('home')">
-                        <div class="brand-orb" style="width:52px;height:52px;background:#07080d;border:1.5px solid rgba(99,102,241,0.6);box-shadow:0 3px 12px rgba(99,102,241,0.32);padding:4px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
-                            <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
+            <header class="topbar" style="background:var(--bg-base);padding:8px 10px;border-bottom:none;">
+                <!-- 1 KOTAK 3D UTUH 4 SISI (KIRI, KANAN, ATAS, DAN BAWAH MENYALA 3D) + GARIS PEMISAH PANJANG DI TENGAH -->
+                <div style="width:100%;background:linear-gradient(135deg, #1b1338 0%, #0f1b38 50%, #241338 100%);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #6366f1;border-left:4.5px solid #38bdf8;border-right:4.5px solid #c084fc;border-radius:18px;box-shadow:0 5px 0 #1e1b4b, 0 10px 24px rgba(0,0,0,0.65), inset 0 2px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(56,189,248,0.28);overflow:hidden;display:flex;flex-direction:column;">
+                    
+                    <!-- BARIS 1: LOGO BULAT + BRAND + SWITCH KURS/TEMA -->
+                    <div class="topbar-box-brand" style="background:transparent;border:none;border-radius:0;box-shadow:none;padding:8px 11px;gap:8px;">
+                        <div style="display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;" onclick="switchTab('home')">
+                            <div class="brand-orb" style="width:50px;height:50px;background:#07080d;border:1.5px solid rgba(56,189,248,0.7);box-shadow:0 3px 12px rgba(56,189,248,0.3);padding:4px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
+                                <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
+                            </div>
+                            <div style="min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+                                <div style="font-weight:800;font-size:0.98rem;letter-spacing:-0.2px;line-height:1.15;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 48%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;">XianBee-Tech</div>
+                                <div style="font-size:0.6rem;font-weight:700;color:#cbd5e1;letter-spacing:0.35px;line-height:1.15;white-space:nowrap;">Enterprise Asset Vault</div>
+                            </div>
                         </div>
-                        <div style="min-width:0;text-align:center;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-                            <div style="font-weight:800;font-size:0.98rem;letter-spacing:-0.2px;line-height:1.15;background:linear-gradient(90deg, #38bdf8 0%, #6366f1 48%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;">XianBee-Tech</div>
-                            <div style="font-size:0.6rem;font-weight:700;color:var(--text-secondary);letter-spacing:0.35px;line-height:1.15;white-space:nowrap;">Enterprise Asset Vault</div>
+
+                        <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                            <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 9px;font-size:0.68rem;gap:5px;background:rgba(15,23,42,0.75);border-color:rgba(56,189,248,0.4);color:#f8fafc;">
+                                <span id="currSwitchIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                    <svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
+                                </span>
+                                <span id="currSwitchText">USDT</span>
+                            </button>
+                            <button class="top-pill" type="button" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 8px;font-size:0.7rem;background:rgba(15,23,42,0.75);border-color:rgba(168,85,247,0.4);color:#f8fafc;">
+                                <span id="themeIcon">☀️</span>
+                            </button>
+                            <button class="top-pill" type="button" id="topAdminBtn" onclick="switchTab('admin')" title="Admin Command Center" style="display:none;padding:6px 8px;background:rgba(99,102,241,0.22);border-color:#38bdf8;color:#38bdf8;">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+                            </button>
                         </div>
                     </div>
 
-                    <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
-                        <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 9px;font-size:0.68rem;gap:5px;">
-                            <span id="currSwitchIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                <svg width="14" height="14" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
+                    <!-- GARIS PEMISAH PANJANG ANTARA BARIS 1 & BARIS 2 -->
+                    <div style="width:100%;height:2px;background:linear-gradient(90deg, #38bdf8 0%, #6366f1 50%, #c084fc 100%);box-shadow:0 1px 6px rgba(56,189,248,0.45);opacity:0.85;"></div>
+
+                    <!-- BARIS 2: 4 TOMBOL SAMA RATA (CART | SALDO | VIP | NOTIFIKASI) -->
+                    <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:8px 10px;background:rgba(7,8,13,0.32);border:none;border-radius:0;box-shadow:none;">
+                        <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.68rem;border-radius:9px;min-width:0;gap:4px;">
+                            <span>🛒 Cart</span>
+                            <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);font-size:0.6rem;padding:1px 5px;">0</span>
+                        </button>
+
+                        <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.64rem;border-radius:9px;min-width:0;gap:4px;overflow:hidden;background:rgba(16,185,129,0.16);border-color:rgba(16,185,129,0.5);color:#34d399;">
+                            <span id="topBalCurrIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                <svg width="12" height="12" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
                             </span>
-                            <span id="currSwitchText">USDT</span>
+                            <span id="topBalanceText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.3px;">0.00</span>
                         </button>
-                        <button class="top-pill" type="button" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 8px;font-size:0.7rem;">
-                            <span id="themeIcon">☀️</span>
+
+                        <button class="top-pill" onclick="openLeaderboardModal()" title="VIP Rank Hall of Fame" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;background:linear-gradient(135deg, rgba(245,158,11,0.22) 0%, rgba(217,119,6,0.16) 100%);border:1px solid rgba(250,204,21,0.65);color:#fde047;font-size:0.68rem;font-weight:800;border-radius:9px;min-width:0;">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                            <span>VIP</span>
                         </button>
-                        <button class="top-pill" type="button" id="topAdminBtn" onclick="switchTab('admin')" title="Admin Command Center" style="display:none;padding:6px 8px;background:rgba(99,102,241,0.14);border-color:var(--border-focus);color:var(--accent-cyan);">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+
+                        <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;font-size:0.68rem;border-radius:9px;min-width:0;background:rgba(15,23,42,0.75);border-color:rgba(56,189,248,0.45);color:#f8fafc;">
+                            <span>🔔</span>
+                            <span class="badge-dot" id="notifCountBadge" style="font-size:0.6rem;padding:1px 5px;">0</span>
                         </button>
                     </div>
-                </div>
-
-                <!-- BARIS 2: GOLD-SAPPHIRE 4-SIDED 3D ACTION DOCK -->
-                <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:7px 9px;background:linear-gradient(135deg, #132238 0%, #191638 52%, #291836 100%);border-top:2.5px solid #f59e0b;border-bottom:5px solid #090514;border-left:5px solid #f59e0b;border-right:5px solid #06b6d4;border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.2), inset 0 -2px 0 rgba(0,0,0,0.6);">
-                    <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.68rem;border-radius:9px;min-width:0;gap:4px;">
-                        <span>🛒 Cart</span>
-                        <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);font-size:0.6rem;padding:1px 5px;">0</span>
-                    </button>
-
-                    <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.64rem;border-radius:9px;min-width:0;gap:4px;overflow:hidden;">
-                        <span id="topBalCurrIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
-                            <svg width="12" height="12" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
-                        </span>
-                        <span id="topBalanceText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.3px;">0.00</span>
-                    </button>
-
-                    <button class="top-pill" onclick="openLeaderboardModal()" title="VIP Rank Hall of Fame" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;background:linear-gradient(135deg, rgba(245,158,11,0.18) 0%, rgba(217,119,6,0.12) 100%);border:1px solid rgba(245,158,11,0.55);color:var(--warning);font-size:0.68rem;font-weight:800;border-radius:9px;min-width:0;">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
-                        <span>VIP</span>
-                    </button>
-
-                    <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;font-size:0.68rem;border-radius:9px;min-width:0;">
-                        <span>🔔</span>
-                        <span class="badge-dot" id="notifCountBadge" style="font-size:0.6rem;padding:1px 5px;">0</span>
-                    </button>
                 </div>
             </header>
 
@@ -1277,16 +1284,16 @@
             </div>
         </div>
 
-        <!-- 📱 MOBILE BOTTOM NAVIGATION (ROYAL PURPLE-INDIGO 4-SIDED 3D DOCK SENADA DENGAN HEADER) -->
-        <nav class="bottom-nav" style="height:76px;background:var(--bg-base);border-top:none;padding:6px 11px;box-shadow:0 -10px 28px rgba(0,0,0,0.6);">
-            <div style="width:100%;height:100%;background:linear-gradient(135deg, #1d153b 0%, #101935 50%, #27153d 100%);border-top:2.5px solid #a855f7;border-bottom:5px solid #090514;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:16px;box-shadow:0 8px 20px rgba(0,0,0,0.6), inset 0 2px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(0,0,0,0.6);display:flex;justify-content:space-around;align-items:center;padding:0 4px;">
+        <!-- 📱 MOBILE BOTTOM NAVIGATION (3D 4 SISI UTUH + BAWAHNYA 3D MENYALA + LOGO GITHUB SELALU MENYALA TERANG) -->
+        <nav class="bottom-nav" style="height:78px;background:var(--bg-base);border-top:none;padding:6px 10px 10px 10px;box-shadow:0 -10px 28px rgba(0,0,0,0.6);">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg, #1b1338 0%, #0f1b38 50%, #241338 100%);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #6366f1;border-left:4.5px solid #38bdf8;border-right:4.5px solid #c084fc;border-radius:18px;box-shadow:0 4px 0 #1e1b4b, 0 8px 20px rgba(0,0,0,0.65), inset 0 2px 0 rgba(255,255,255,0.22), inset 0 -2px 0 rgba(56,189,248,0.28);display:flex;justify-content:space-around;align-items:center;padding:0 4px;">
                 <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')" style="padding:4px 2px;">
                     <span style="font-size:1.1rem;line-height:1;">🏠</span>
                     <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Home</span>
                 </button>
                 <button class="bnav-btn" data-tab="github" onclick="switchTab('github')" style="padding:4px 2px;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;height:18px;">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:20px;border-radius:50%;background:rgba(56,189,248,0.16);border:1px solid rgba(56,189,248,0.55);box-shadow:0 0 8px rgba(56,189,248,0.45);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
                     </span>
                     <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">GitHub</span>
                 </button>
