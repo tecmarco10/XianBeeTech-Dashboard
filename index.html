@@ -1760,6 +1760,125 @@
             scheduleCloudStatePush();
         }
 
+        function fmtAlignedNotifRow(label, valueHtml) {
+            const cleanLbl = String(label || '').trim();
+            const padded = cleanLbl.padEnd(10, '\u00A0');
+            return `<code>${padded}:</code> ${valueHtml}`;
+        }
+
+        // Otomatis merapikan SEMUA notifikasi (baru maupun lama) menjadi Garis 2 Atas-Bawah + Titik Dua ":" Lurus Vertikal
+        function formatWebNotifBodyToCleanCard(rawBody, fallbackTitle = '') {
+            const rawLines = String(rawBody || '')
+                .replace(/<\/?blockquote>/gi, '')
+                .split('\n')
+                .map(l => l.trim())
+                .filter(l => l !== '');
+
+            let bannerHeading = '';
+            const kvRows = [];
+            const noteLines = [];
+
+            for (const line of rawLines) {
+                const plain = line.replace(/<[^>]+>/g, '').trim();
+                // Abaikan garis dekorasi ASCII panjang yang bikin berantakan di HP
+                if (/^[╭╰┏┗━─═\-\s]+$/.test(plain)) continue;
+
+                // Deteksi baris judul di dalam pesan (misal O F F E R  S U B M I T T E D atau [ REAL-TIME CART ALERT ])
+                if (!bannerHeading && !plain.includes(':') && (
+                    plain.includes('O F F E R') ||
+                    plain.includes('A L E R T') ||
+                    plain.includes('I N V O I C E') ||
+                    plain.includes('P R O O F') ||
+                    plain.includes('A P P R O V E D') ||
+                    plain.includes('R E J E C T E D') ||
+                    plain.includes('D I S P A T C H E D') ||
+                    plain.includes('A C T I V A T E D') ||
+                    plain.includes('R E M I N D E R') ||
+                    plain.includes('T R A N S F E R') ||
+                    plain.includes('R E C E I V E D') ||
+                    plain.includes('C O N F I R M E D') ||
+                    plain.startsWith('🛒') || plain.startsWith('🤝') || plain.startsWith('🧾') || plain.startsWith('🪙') || plain.startsWith('🇮🇩') || plain.startsWith('📸') || plain.startsWith('🎉') || plain.startsWith('⚡') || plain.startsWith('❌')
+                )) {
+                    bannerHeading = plain
+                        .replace(/\[\s*|\s*\]/g, '')
+                        .replace(/\s{2,}/g, ' ')
+                        .replace(/O F F E R S U B M I T T E D|O F F E R\s+S U B M I T T E D/i, 'OFFER SUBMITTED')
+                        .replace(/I N C O M I N G P R I C E O F F E R|I N C O M I N G\s+P R I C E\s+O F F E R/i, 'INCOMING PRICE OFFER')
+                        .replace(/O F F E R A P P R O V E D|O F F E R\s+A P P R O V E D/i, 'OFFER APPROVED')
+                        .replace(/A D M I N C O U N T E R O F F E R|A D M I N\s+C O U N T E R\s+O F F E R/i, 'ADMIN COUNTER OFFER')
+                        .replace(/O F F E R D E C L I N E D|O F F E R\s+D E C L I N E D/i, 'OFFER DECLINED')
+                        .replace(/I N V O I C E G E N E R A T E D|I N V O I C E\s+G E N E R A T E D/i, 'INVOICE GENERATED')
+                        .replace(/N E W D E P O S I T I N V O I C E|N E W\s+D E P O S I T\s+I N V O I C E/i, 'NEW DEPOSIT INVOICE')
+                        .replace(/N E W C R Y P T O I N V O I C E|N E W\s+C R Y P T O\s+I N V O I C E/i, 'NEW CRYPTO INVOICE')
+                        .replace(/N E W I D R I N V O I C E|N E W\s+I D R\s+I N V O I C E/i, 'NEW IDR INVOICE')
+                        .replace(/I D R P A Y M E N T P R O O F|I D R\s+P A Y M E N T\s+P R O O F/i, 'IDR PAYMENT PROOF')
+                        .replace(/I D R P A Y M E N T A P P R O V E D|I D R\s+P A Y M E N T\s+A P P R O V E D/i, 'IDR PAYMENT APPROVED')
+                        .replace(/I D R P A Y M E N T R E J E C T E D|I D R\s+P A Y M E N T\s+R E J E C T E D/i, 'IDR PAYMENT REJECTED')
+                        .replace(/C A R T R E M I N D E R|C A R T\s+R E M I N D E R/i, 'CART REMINDER')
+                        .replace(/P A Y M E N T R E M I N D E R|P A Y M E N T\s+R E M I N D E R/i, 'PAYMENT REMINDER')
+                        .trim();
+                    continue;
+                }
+
+                // Cek apakah baris adalah pasangan Label : Value
+                const colonIdx = plain.indexOf(':');
+                if (colonIdx > 0 && colonIdx <= 22 && !plain.startsWith('http')) {
+                    let rawKey = plain.slice(0, colonIdx)
+                        .replace(/^[🔸🔹👤🆔📦💰🌐🧾🎯💳🔥📝⏳📡🔐⚠️✅]+/u, '')
+                        .trim();
+                    // Ambil bagian value dalam bentuk HTML agar warna/bold tetap terjaga
+                    const htmlColonIdx = line.indexOf(':');
+                    let valHtml = htmlColonIdx !== -1 ? line.slice(htmlColonIdx + 1).replace(/^<\/b>|^<\/code>/i, '').trim() : plain.slice(colonIdx + 1).trim();
+
+                    if (rawKey.toLowerCase() === 'status' || rawKey.toLowerCase().includes('select an executive')) {
+                        noteLines.push(line);
+                    } else if (rawKey) {
+                        // Singkatkan nama label yang terlalu panjang agar titik dua sejajar presisi
+                        if (rawKey.toLowerCase() === 'normal price') rawKey = 'Normal';
+                        if (rawKey.toLowerCase() === 'your offer' || rawKey.toLowerCase() === 'buyer offer') rawKey = 'Offer';
+                        if (rawKey.toLowerCase() === 'target item' || rawKey.toLowerCase() === 'item added' || rawKey.toLowerCase() === 'order / type') rawKey = 'Item';
+                        if (rawKey.toLowerCase() === 'amount due' || rawKey.toLowerCase() === 'credited amount') rawKey = 'Amount';
+                        if (rawKey.toLowerCase() === 'invoice id') rawKey = 'Invoice';
+                        kvRows.push({ key: rawKey, val: valHtml });
+                    } else {
+                        noteLines.push(line);
+                    }
+                } else {
+                    noteLines.push(line);
+                }
+            }
+
+            if (!bannerHeading) {
+                bannerHeading = String(fallbackTitle || 'NOTIFICATION ALERT').replace(/\s*\(WEB\)/i, '').trim();
+            }
+
+            const headerBoxHtml = `
+                <div style="border-top:3px double var(--accent-cyan);border-bottom:3px double var(--accent-cyan);background:rgba(6,182,212,0.08);padding:5px 8px;margin-bottom:8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    ${bannerHeading}
+                </div>
+            `;
+
+            const kvBoxHtml = kvRows.length > 0 ? `
+                <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;font-family:'JetBrains Mono',monospace;font-size:0.69rem;line-height:1.45;">
+                    ${kvRows.map(r => `
+                        <div style="display:flex;align-items:flex-start;min-width:0;width:100%;">
+                            <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:78px;flex-shrink:0;">${r.key}</span>
+                            <span style="color:var(--text-muted);font-weight:700;margin-right:6px;flex-shrink:0;">:</span>
+                            <span style="color:var(--text-primary);font-weight:700;min-width:0;flex:1;word-break:break-word;">${r.val}</span>
+                        </div>
+                    `).join('')}
+                </div>
+            ` : '';
+
+            const footerNotesHtml = noteLines.length > 0 ? `
+                <div style="margin-top:7px;font-size:0.68rem;color:var(--text-secondary);line-height:1.4;padding-left:2px;">
+                    ${noteLines.join('<br>')}
+                </div>
+            ` : '';
+
+            return headerBoxHtml + kvBoxHtml + footerNotesHtml;
+        }
+
         function renderNotificationsList() {
             const storageKey = activeNotifFeed === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
             const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
@@ -1779,45 +1898,41 @@
                     const m = n.meta;
                     if (m.type === 'nego') {
                         actionBtnsHtml = `
-                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
-                                <button class="btn-ui buy-now" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Accept ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
-                                <button class="btn-ui primary" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebNegoDecision(${idx}, 'counter')">✍️ Counter Offer</button>
-                                <button class="btn-ui secondary" style="padding:7px 10px;font-size:0.72rem;color:var(--danger);" onclick="adminWebNegoDecision(${idx}, 'reject')">❌ Decline</button>
+                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);">
+                                <button class="btn-ui buy-now" style="padding:7px 4px;font-size:0.67rem;min-width:0;white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Accept ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
+                                <button class="btn-ui primary" style="padding:7px 4px;font-size:0.67rem;min-width:0;white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'counter')">✍️ Counter</button>
+                                <button class="btn-ui secondary" style="padding:7px 4px;font-size:0.67rem;min-width:0;color:var(--danger);white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'reject')">❌ Decline</button>
                             </div>
                         `;
                     } else if (m.type === 'remind_cart' || m.type === 'remind_topup') {
                         actionBtnsHtml = `
-                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
-                                <button class="btn-ui primary" style="padding:7px 12px;font-size:0.72rem;" onclick="adminSendBuyerReminder(${idx})">🔔 Remind Buyer Now</button>
+                            <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);">
+                                <button class="btn-ui primary" style="width:100%;padding:8px 10px;font-size:0.7rem;" onclick="adminSendBuyerReminder(${idx})">🔔 Remind Buyer Now</button>
                             </div>
                         `;
                     } else if (m.type === 'idr_proof') {
                         actionBtnsHtml = `
-                            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
-                                <button class="btn-ui buy-now" style="padding:7px 10px;font-size:0.72rem;" onclick="adminWebIdrDecision(${idx}, 'approve')">✅ Approve (+$${parseFloat(m.amountUsdt).toFixed(2)})</button>
-                                <button class="btn-ui secondary" style="padding:7px 10px;font-size:0.72rem;color:var(--danger);" onclick="adminWebIdrDecision(${idx}, 'reject')">❌ Reject Proof</button>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);">
+                                <button class="btn-ui buy-now" style="padding:7px 8px;font-size:0.69rem;min-width:0;" onclick="adminWebIdrDecision(${idx}, 'approve')">✅ Approve (+$${parseFloat(m.amountUsdt).toFixed(2)})</button>
+                                <button class="btn-ui secondary" style="padding:7px 8px;font-size:0.69rem;min-width:0;color:var(--danger);" onclick="adminWebIdrDecision(${idx}, 'reject')">❌ Reject Proof</button>
                             </div>
                         `;
                     }
                 } else if (activeNotifFeed === 'buyer' && n.meta && n.meta.type === 'nego_approved') {
                     const m = n.meta;
                     actionBtnsHtml = `
-                        <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--border-subtle);">
-                            <button class="btn-ui buy-now" style="width:100%;padding:9px;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt}, ${!!m.isCartOffer})">💳 Accept & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
+                        <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);">
+                            <button class="btn-ui buy-now" style="width:100%;padding:9px;font-size:0.72rem;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt}, ${!!m.isCartOffer})">💳 Accept & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
                         </div>
                     `;
                 }
-                const cleanBodyHtml = String(n.body || '')
-                    .replace(/<\/?blockquote>/gi, '')
-                    .replace(/<code>(.*?)<\/code>/g, (m, p1) => `<code style="font-family:'JetBrains Mono',monospace;white-space:pre;color:var(--accent-cyan);font-weight:700;">${p1}</code>`)
-                    .replace(/\n/g, '<br>');
                 return `
                     <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid var(--accent-cyan);">
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;">
                             <span class="item-tag" style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.title}</span>
                             <span style="font-size:0.64rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0;">🕒 ${n.time}</span>
                         </div>
-                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-primary);border-radius:9px;padding:9px 11px;font-family:'JetBrains Mono',monospace;font-size:0.71rem;line-height:1.65;overflow-x:auto;">${cleanBodyHtml}</div>
+                        ${formatWebNotifBodyToCleanCard(n.body, n.title)}
                         ${imgPreviewHtml}
                         ${actionBtnsHtml}
                     </div>
@@ -1832,23 +1947,28 @@
             const m = notif.meta;
 
             const remText = m.type === 'remind_cart'
-                ? (
-                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   🛒 <b>C A R T  R E M I N D E R</b>\n` +
-                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `👋 Hello <b>@${String(m.buyerUname || currentUsername).replace('@','')}</b>! You still have reserved digital assets waiting in your shopping cart (<b>${m.itemTitle}</b>).\n\n` +
-                    `⚡ <i>Stock is limited! Complete your checkout or click <b>🤝 Make an Offer</b> in the Web Store before someone else claims it!</i>`
-                  )
-                : (
-                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   ⏰ <b>P A Y M E N T  R E M I N D E R</b>\n` +
-                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `🧾 <b>Invoice ID:</b> <code>${m.invId}</code>\n` +
-                    `📦 <b>Order:</b> <b>${m.itemTitle}</b> ($${parseFloat(m.amountUsdt || 0).toFixed(2)} USDT)\n` +
-                    `⏳ <i>Your invoice is still awaiting payment confirmation. Please complete your transfer or upload your payment screenshot in the Web Store!</i>`
-                  );
+                ? [
+                    `════════════════════`,
+                    `🛒 <b>CART CHECKOUT REMINDER</b>`,
+                    `════════════════════`,
+                    fmtAlignedNotifRow('Client', `<b>@${String(m.buyerUname || currentUsername).replace('@','')}</b>`),
+                    fmtAlignedNotifRow('Item', `<b>${m.itemTitle}</b>`),
+                    fmtAlignedNotifRow('Price', `<b>$${parseFloat(m.priceUsdt || 0).toFixed(2)} USDT</b>`),
+                    `════════════════════`,
+                    `⚡ <i>Complete your checkout or click <b>🤝 Make an Offer</b> in the Web Store!</i>`
+                  ].join('\n')
+                : [
+                    `════════════════════`,
+                    `⏰ <b>PAYMENT REMINDER</b>`,
+                    `════════════════════`,
+                    fmtAlignedNotifRow('Invoice', `<code>${m.invId}</code>`),
+                    fmtAlignedNotifRow('Order', `<b>${m.itemTitle}</b>`),
+                    fmtAlignedNotifRow('Amount', `<b>$${parseFloat(m.amountUsdt || 0).toFixed(2)} USDT</b>`),
+                    `════════════════════`,
+                    `⏳ <i>Please complete your transfer or upload your payment receipt in the Web Store!</i>`
+                  ].join('\n');
 
-            pushInWebNotification('buyer', m.type === 'remind_cart' ? '🛒 CART REMINDER FROM ADMIN' : '⏰ PAYMENT REMINDER FROM ADMIN', remText);
+            pushInWebNotification('buyer', m.type === 'remind_cart' ? '🛒 CART REMINDER' : '⏰ PAYMENT REMINDER', remText);
             await sendTelegramSilentPush(m.buyerId, remText, true);
 
             if (m.tgMsgIds) {
@@ -1874,21 +1994,22 @@
             showToast('Notifications cleared across all devices!');
         }
 
-        // Fire complete Notification Flow for ADD_TO_CART with Admin Reminder Button (Web & Telegram Bot)
+        // Fire complete Notification Flow for ADD_TO_CART with Double-Line Header & Aligned Colons
         async function triggerCartAlertNotifications(itemTitle, priceUsdt) {
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
             const actionKey = `REM_CART_${Date.now()}`;
-            const cartAlertHtml = (
-                `🛒 <b>[ REAL-TIME CART ALERT • ORDER BY WEB ]</b>\n` +
-                `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `👤 <b>Client:</b> ${currentFullName} (${dispUser})\n` +
-                `🆔 <b>User ID:</b> <code>${currentUserId}</code>\n` +
-                `📦 <b>Item Added:</b> ${itemTitle}\n` +
-                `💰 <b>Price:</b> $${parseFloat(priceUsdt).toFixed(2)} USDT\n` +
-                `🌐 <b>Platform:</b> <b>Order by Web (Web App Store)</b>\n` +
-                `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                `⏳ <i>Status: Waiting for client checkout on Web Store...</i>`
-            );
+            const cartAlertHtml = [
+                `════════════════════`,
+                `🛒 <b>REAL-TIME CART ALERT</b>`,
+                `════════════════════`,
+                fmtAlignedNotifRow('Client', `<b>${dispUser}</b>`),
+                fmtAlignedNotifRow('User ID', `<code>${currentUserId}</code>`),
+                fmtAlignedNotifRow('Item', `<b>${itemTitle}</b>`),
+                fmtAlignedNotifRow('Price', `<b>$${parseFloat(priceUsdt).toFixed(2)} USDT</b>`),
+                fmtAlignedNotifRow('Platform', `🌐 Web Store`),
+                `════════════════════`,
+                `⏳ <i>Waiting for client checkout on Web Store.</i>`
+            ].join('\n');
 
             const remMeta = {
                 type: 'remind_cart',
@@ -3282,71 +3403,68 @@
             const otpDomId = `inline_otp_${idx}_${Math.floor(Math.random()*9999)}`;
             const accIdStr = `${entry.category}-${entry.username}`;
             return `
-                <div class="item-card" style="border:1px solid var(--border-focus);border-left:4px solid var(--success);background:var(--bg-card);margin-bottom:10px;padding:11px 12px;gap:8px;">
-                    <!-- COMPACT 2-LINE TOP BAR: BARIS 1 = INV, BARIS 2 = ID, KANAN = HARGA & TANGGAL -->
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;border-bottom:1px solid var(--border-subtle);padding-bottom:7px;min-width:0;width:100%;">
-                        <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);border-left:3px solid var(--success);border-radius:8px;padding:4px 9px;min-width:0;flex:1;font-family:'JetBrains Mono',monospace;line-height:1.35;">
-                            <div style="font-size:0.65rem;font-weight:800;color:var(--success);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                <span style="display:inline-block;width:28px;color:var(--text-muted);">INV</span>: ${entry.invoice}
-                            </div>
-                            <div style="font-size:0.63rem;font-weight:800;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                <span style="display:inline-block;width:28px;color:var(--text-muted);">ID</span>: ${accIdStr}
-                            </div>
-                        </div>
-                        <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0;">
-                            <div class="price-chip" style="padding:3px 8px;font-size:0.66rem;">$${entry.priceUsdt} USDT</div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:var(--text-muted);font-weight:700;white-space:nowrap;">
-                                🕒 ${entry.date}
-                            </div>
-                        </div>
-                    </div>
-                        </div>
-                    </div>
-                        </div>
-                        <div class="price-chip" style="padding:3px 7px;font-size:0.66rem;">$${entry.priceUsdt} USDT</div>
+                <div class="item-card" style="border:1px solid var(--border-focus);border-left:4px solid var(--success);background:var(--bg-card);margin-bottom:10px;padding:10px 11px;gap:8px;">
+                    <!-- BARIS PALING ATAS: KIRI TANGGAL & BADGE WEB, KANAN HARGA (CUKUP 1 KALI DI ATAS) -->
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;width:100%;min-width:0;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.61rem;font-weight:700;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            🕒 ${entry.date} • <b style="color:var(--accent-cyan);">Web Vault</b>
+                        </span>
+                        <div class="price-chip" style="padding:3px 8px;font-size:0.66rem;border-radius:7px;flex-shrink:0;">$${entry.priceUsdt} USDT</div>
                     </div>
 
-                    <!-- COMPACT 3D CREDENTIAL BOX (ALIGNED COLONS ":" FOR USERNAME, PASSWORD, 2FA) -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;">
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
-                            <div style="min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;">Username</span>
-                                <span style="color:var(--text-muted);font-weight:700;">: </span>
-                                <span style="color:var(--text-primary);font-weight:800;">${entry.username}</span>
+                    <!-- KOTAK DALAM KOTAK 3D MENYATU (INV, ID, USERNAME, PASSWORD, 2FA + TOMBOL COPY/TXT/GITHUB DI DALAMNYA) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:11px;padding:9px 10px;display:flex;flex-direction:column;gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.71rem;box-shadow:inset 0 1px 0 rgba(255,255,255,0.04);">
+                        <div style="display:flex;align-items:center;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">INV</span>
+                            <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
+                            <span style="color:var(--success);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.invoice}</span>
+                        </div>
+
+                        <div style="display:flex;align-items:center;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding-bottom:5px;border-bottom:1px dashed var(--border-subtle);">
+                            <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">ID</span>
+                            <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
+                            <span style="color:var(--accent-cyan);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${accIdStr}</span>
+                        </div>
+
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;padding-top:2px;">
+                            <div style="display:flex;align-items:center;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">Username</span>
+                                <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
+                                <span style="color:var(--text-primary);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.username}</span>
                             </div>
-                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.62rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.username}'); showToast('Username copied!');">📋</button>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.username}'); showToast('Username copied!');">📋</button>
                         </div>
 
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
-                            <div style="min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;">Password</span>
-                                <span style="color:var(--text-muted);font-weight:700;">: </span>
-                                <span style="color:var(--text-primary);font-weight:800;">${entry.password}</span>
+                            <div style="display:flex;align-items:center;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">Password</span>
+                                <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
+                                <span style="color:var(--text-primary);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.password}</span>
                             </div>
-                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.62rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋</button>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋</button>
                         </div>
 
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
-                            <div style="min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;">2FA Key</span>
-                                <span style="color:var(--text-muted);font-weight:700;">: </span>
-                                <span style="color:var(--accent-cyan);font-weight:800;">${entry.twofa}</span>
+                            <div style="display:flex;align-items:center;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">2FA Key</span>
+                                <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
+                                <span style="color:var(--accent-cyan);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.twofa}</span>
                             </div>
-                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.62rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.twofa}'); showToast('2FA Key copied!');">📋</button>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.twofa}'); showToast('2FA Key copied!');">📋</button>
                         </div>
-                    </div>
 
-                    <!-- COMPACT ACTION ROW -->
-                    <div style="display:flex;flex-direction:column;gap:6px;">
-                        ${safeSecret.length >= 8 ? `
-                            <button class="btn-ui primary" id="${otpDomId}" style="width:100%;padding:7px 8px;font-size:0.69rem;border-radius:8px;" onclick="showInline2faOtp('${safeSecret}', '${otpDomId}')">
-                                🔑 Get Live 6-Digit 2FA OTP (30s)
-                            </button>
-                        ` : ''}
-                        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;">
-                            <button class="btn-ui secondary" style="padding:7px 4px;font-size:0.67rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="copyFullCredentialBlock(${idx})">📋 Copy All</button>
-                            <button class="btn-ui buy-now" style="padding:7px 4px;font-size:0.67rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="downloadCredentialTxt(${idx})">💾 Save .TXT</button>
-                            <a href="${entry.url}" target="_blank" class="btn-ui secondary" style="padding:7px 4px;font-size:0.67rem;min-width:0;border-radius:8px;white-space:nowrap;">🌐 GitHub</a>
+                        <!-- TOMBOL OTP, COPY ALL, SAVE .TXT & GITHUB MASUK DI DALAM KOTAK 3D -->
+                        <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;padding-top:7px;border-top:1px solid var(--border-subtle);font-family:'Plus Jakarta Sans',sans-serif;">
+                            ${safeSecret.length >= 8 ? `
+                                <button class="btn-ui primary" id="${otpDomId}" style="width:100%;padding:7px 8px;font-size:0.68rem;border-radius:8px;min-width:0;" onclick="showInline2faOtp('${safeSecret}', '${otpDomId}')">
+                                    🔑 Get Live 6-Digit 2FA OTP (30s)
+                                </button>
+                            ` : ''}
+                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;">
+                                <button class="btn-ui secondary" style="padding:7px 4px;font-size:0.66rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="copyFullCredentialBlock(${idx})">📋 Copy All</button>
+                                <button class="btn-ui buy-now" style="padding:7px 4px;font-size:0.66rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="downloadCredentialTxt(${idx})">💾 Save .TXT</button>
+                                <a href="${entry.url}" target="_blank" class="btn-ui secondary" style="padding:7px 4px;font-size:0.66rem;min-width:0;border-radius:8px;white-space:nowrap;">🌐 GitHub</a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -5958,8 +6076,9 @@
             const discPct = (((origPrice - offerUsdt) / origPrice) * 100).toFixed(1);
 
             const buyerOfferMsg = [
-                `🤝 <b>PRICE OFFER SUBMITTED</b>`,
-                `━━━━━━━━━━━━━━━━━━━━`,
+                `════════════════════`,
+                `🤝 <b>OFFER SUBMITTED</b>`,
+                `════════════════════`,
                 fmtAlignedNotifRow('Offer ID', `<code>${negoId}</code>`),
                 fmtAlignedNotifRow('Item', `<b>${cleanItemName}</b>`),
                 fmtAlignedNotifRow('Acc ID', `<code>${accId}</code>`),
@@ -5967,13 +6086,14 @@
                 fmtAlignedNotifRow('Offer', `<b>$${offerUsdt.toFixed(2)} USDT (-${discPct}%)</b>`),
                 fmtAlignedNotifRow('Note', note),
                 fmtAlignedNotifRow('Source', `🌐 Web Store`),
-                `━━━━━━━━━━━━━━━━━━━━`,
+                `════════════════════`,
                 `⏳ <i>Sent to Executive Admin for review.</i>`
             ].join('\n');
 
             const adminOfferMsg = [
+                `════════════════════`,
                 `🤝 <b>INCOMING PRICE OFFER</b>`,
-                `━━━━━━━━━━━━━━━━━━━━`,
+                `════════════════════`,
                 fmtAlignedNotifRow('Offer ID', `<code>${negoId}</code>`),
                 fmtAlignedNotifRow('Buyer', `<b>${dispUser}</b>`),
                 fmtAlignedNotifRow('User ID', `<code>${currentUserId}</code>`),
@@ -5982,8 +6102,8 @@
                 fmtAlignedNotifRow('Normal', `$${origPrice.toFixed(2)} USDT`),
                 fmtAlignedNotifRow('Offer', `<b>$${offerUsdt.toFixed(2)} USDT (-${discPct}%)</b>`),
                 fmtAlignedNotifRow('Note', note),
-                fmtAlignedNotifRow('Source', `🌐 Web Store`),
-                `━━━━━━━━━━━━━━━━━━━━`,
+                fmtAlignedNotifRow('Platform', `🌐 Web Store`),
+                `════════════════════`,
                 `👇 <i>Select an executive action below:</i>`
             ].join('\n');
 
@@ -6041,14 +6161,15 @@
             if (decision === 'accept') {
                 const dealUsdt = parseFloat(m.offerUsdt);
                 const msgBuyer = [
-                    `🎉 <b>PRICE OFFER APPROVED</b>`,
-                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `════════════════════`,
+                    `🎉 <b>OFFER APPROVED</b>`,
+                    `════════════════════`,
                     fmtAlignedNotifRow('Offer ID', `<code>${m.negoId}</code>`),
                     fmtAlignedNotifRow('Item', `<b>${itemLbl}</b>`),
                     fmtAlignedNotifRow('Acc ID', `<code>${m.accId}</code>`),
                     fmtAlignedNotifRow('Normal', `<s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>`),
                     fmtAlignedNotifRow('Approved', `<b>$${dealUsdt.toFixed(2)} USDT</b>`),
-                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `════════════════════`,
                     `👇 <i>Click below to checkout at your approved price!</i>`
                 ].join('\n');
                 const buyerKb = {
@@ -6079,15 +6200,16 @@
                 if (isNaN(cntUsdt) || cntUsdt <= 0) return showToast('Invalid USDT amount!');
 
                 const msgBuyer = [
+                    `════════════════════`,
                     `⚡ <b>ADMIN COUNTER OFFER</b>`,
-                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `════════════════════`,
                     fmtAlignedNotifRow('Offer ID', `<code>${m.negoId}</code>`),
                     fmtAlignedNotifRow('Item', `<b>${itemLbl}</b>`),
                     fmtAlignedNotifRow('Acc ID', `<code>${m.accId}</code>`),
                     fmtAlignedNotifRow('Normal', `<s>$${parseFloat(m.origPrice).toFixed(2)} USDT</s>`),
                     fmtAlignedNotifRow('Your Bid', `<s>$${parseFloat(m.offerUsdt).toFixed(2)} USDT</s>`),
                     fmtAlignedNotifRow('Counter', `<b>$${cntUsdt.toFixed(2)} USDT</b>`),
-                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `════════════════════`,
                     `👇 <i>Click below to accept and checkout immediately!</i>`
                 ].join('\n');
                 const buyerKb = {
@@ -6113,13 +6235,14 @@
 
             } else if (decision === 'reject') {
                 const msgBuyer = [
-                    `❌ <b>PRICE OFFER DECLINED</b>`,
-                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `════════════════════`,
+                    `❌ <b>OFFER DECLINED</b>`,
+                    `════════════════════`,
                     fmtAlignedNotifRow('Offer ID', `<code>${m.negoId}</code>`),
                     fmtAlignedNotifRow('Item', `<b>${itemLbl}</b>`),
                     fmtAlignedNotifRow('Acc ID', `<code>${m.accId}</code>`),
                     fmtAlignedNotifRow('Your Bid', `$${parseFloat(m.offerUsdt).toFixed(2)} USDT`),
-                    `━━━━━━━━━━━━━━━━━━━━`,
+                    `════════════════════`,
                     `⚠️ <i>Sorry, your offer could not be accepted. Feel free to submit a higher offer!</i>`
                 ].join('\n');
                 pushInWebNotification('buyer', `❌ OFFER DECLINED (${m.negoId})`, msgBuyer);
