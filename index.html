@@ -6193,7 +6193,26 @@
             closeModal('cartModal');
             _isCartMakeOfferMode = true;
             const origTotal = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-            const itemsSummaryText = cart.map(c => `• ${String(c.title || '').split('(')[0].trim()}`).join('<br>');
+
+            const itemsCardsHtml = cart.map((c, i) => {
+                const accData = c.accountData || {};
+                const follCnt = accData.followers !== undefined ? accData.followers : (c.followers || 0);
+                const repoCnt = accData.repos !== undefined ? accData.repos : (c.repos || 0);
+                const cleanTitle = String(c.title || '').split('(')[0].trim() || 'GitHub Asset';
+                const cleanTarget = String(c.target || '').split('(')[0].trim() || '@client';
+                return `
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-cyan);border-radius:8px;padding:7px 9px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                        <div style="min-width:0;flex:1;">
+                            <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i + 1}. ${cleanTitle}</div>
+                            <div style="font-size:0.66rem;color:var(--accent-cyan);font-family:'JetBrains Mono',monospace;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTarget}</div>
+                            ${c.isAccount ? `<div style="font-size:0.59rem;color:var(--text-secondary);margin-top:1px;">👥 ${follCnt} • 📁 ${repoCnt} Repos</div>` : ''}
+                        </div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:var(--success);flex-shrink:0;">
+                            ${fmtPrice(c.usdt)}
+                        </div>
+                    </div>
+                `;
+            }).join('');
 
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
@@ -6209,13 +6228,13 @@
 
                 <!-- KOTAK 3D RAPI BERISI LIST ITEM & TOTAL STANDARD -->
                 <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);padding:11px 13px;border-radius:11px;margin-bottom:14px;font-size:0.72rem;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
-                        <span style="color:var(--text-muted);font-weight:700;">Standard Total :</span>
-                        <span class="price-chip" style="padding:3px 8px;font-size:0.72rem;">${fmtPrice(origTotal)}</span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
+                        <span style="color:var(--text-muted);font-weight:700;font-size:0.75rem;">Standard Total :</span>
+                        <span class="price-chip" style="padding:3px 8px;font-size:0.74rem;">${fmtPrice(origTotal)}</span>
                     </div>
-                    <div style="color:var(--accent-cyan);font-weight:800;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px;font-size:0.62rem;">Selected Cart Items:</div>
-                    <div style="color:var(--text-primary);font-weight:700;line-height:1.4;max-height:80px;overflow-y:auto;">
-                        ${itemsSummaryText}
+                    <div style="color:var(--accent-cyan);font-weight:800;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-size:0.62rem;">Selected Cart Items Details:</div>
+                    <div style="max-height:130px;overflow-y:auto;display:flex;flex-direction:column;">
+                        ${itemsCardsHtml}
                     </div>
                 </div>
 
