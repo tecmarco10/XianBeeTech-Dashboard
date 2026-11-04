@@ -6022,25 +6022,37 @@
             modal.classList.add('active');
 
             body.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">🤝 MAKE AN OFFER</span>
-                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                <!-- KOTAK 3D RATA TENGAH UNTUK JUDUL MODAL -->
+                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--warning);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                    <div></div>
+                    <h3 style="margin:0;font-size:0.9rem;font-weight:800;color:var(--warning);">🤝 Make a Price Offer</h3>
+                    <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
-                <h3 style="margin:0 0 4px 0;font-family:'JetBrains Mono',monospace;">@${acc.username} (GitHub ${yrKey})</h3>
-                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">
-                    Standard Price: <b style="color:var(--success);">${fmtPrice(origPrice)}</b> (${origPrice.toFixed(2)} USDT) • Submit your offer below for executive review.
-                </p>
-                <div class="form-group">
-                    <label>Your Offer Amount (in USDT):</label>
-                    <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origPrice - 0.5).toFixed(2)}" value="${Math.max(1, (origPrice * 0.85)).toFixed(1)}">
+
+                <!-- KOTAK 3D RAPI BERISI RINCIAN TARGET & HARGA STANDARD -->
+                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);padding:11px 13px;border-radius:11px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:0.75rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
+                        <span style="color:var(--text-muted);font-weight:700;">Standard Price :</span>
+                        <span class="price-chip" style="padding:3px 8px;font-size:0.72rem;">${fmtPrice(origPrice)}</span>
+                    </div>
+                    <div style="color:var(--accent-cyan);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        Target : @${acc.username} (GitHub ${yrKey})
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Note / Message for Admin (Optional):</label>
-                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Ready to checkout immediately via balance!">
+
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label style="font-size:0.64rem;color:var(--accent-cyan);letter-spacing:0.8px;">YOUR OFFER AMOUNT (IN USDT):</label>
+                    <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origPrice - 0.5).toFixed(2)}" value="${Math.max(1, (origPrice * 0.85)).toFixed(1)}" style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.95rem;">
                 </div>
-                <div style="display:flex;gap:8px;">
-                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
-                    <button class="btn-ui primary" onclick="submitWebNegoOffer()">🚀 Submit Offer</button>
+
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label style="font-size:0.64rem;color:var(--text-muted);letter-spacing:0.8px;">NOTE / MESSAGE FOR ADMIN (OPTIONAL):</label>
+                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Ready to checkout immediately via balance!" style="font-size:0.78rem;">
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                    <button class="btn-ui secondary" style="padding:10px 8px;font-size:0.74rem;" onclick="closeModal('paymentGatewayModal')">Cancel</button>
+                    <button class="btn-ui buy-now" style="padding:10px 8px;font-size:0.74rem;" onclick="submitWebNegoOffer()">🚀 Submit Offer</button>
                 </div>
             `;
         }
@@ -6051,33 +6063,45 @@
             closeModal('cartModal');
             _isCartMakeOfferMode = true;
             const origTotal = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-            const itemsLabel = cart.map(c => c.title).join(', ');
+            const itemsSummaryText = cart.map(c => `• ${String(c.title || '').split('(')[0].trim()}`).join('<br>');
 
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
             body.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">🤝 MAKE AN OFFER (ALL CART ITEMS)</span>
-                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                <!-- KOTAK 3D RATA TENGAH UNTUK JUDUL BUNDLE OFFER -->
+                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--warning);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                    <div></div>
+                    <h3 style="margin:0;font-size:0.9rem;font-weight:800;color:var(--warning);">🤝 Bundle Offer (${cart.length} Items)</h3>
+                    <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal'); openCartModal();">✕</button>
                 </div>
-                <h3 style="margin:0 0 4px 0;">🛒 Bundle Offer — ${cart.length} Selected Item(s)</h3>
-                <p style="font-size:0.76rem;color:var(--text-secondary);margin:0 0 12px 0;">
-                    Items: <code>${itemsLabel}</code><br>
-                    Standard Cart Total: <b style="color:var(--success);">${fmtPrice(origTotal)}</b> (${origTotal.toFixed(2)} USDT)
-                </p>
-                <div class="form-group">
-                    <label>Your Bundle Offer Amount for All ${cart.length} Item(s) (in USDT):</label>
-                    <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origTotal - 0.5).toFixed(2)}" value="${Math.max(1, (origTotal * 0.85)).toFixed(1)}">
+
+                <!-- KOTAK 3D RAPI BERISI LIST ITEM & TOTAL STANDARD -->
+                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);padding:11px 13px;border-radius:11px;margin-bottom:14px;font-size:0.72rem;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
+                        <span style="color:var(--text-muted);font-weight:700;">Standard Total :</span>
+                        <span class="price-chip" style="padding:3px 8px;font-size:0.72rem;">${fmtPrice(origTotal)}</span>
+                    </div>
+                    <div style="color:var(--accent-cyan);font-weight:800;margin-bottom:2px;text-transform:uppercase;letter-spacing:0.5px;font-size:0.62rem;">Selected Cart Items:</div>
+                    <div style="color:var(--text-primary);font-weight:700;line-height:1.4;max-height:80px;overflow-y:auto;">
+                        ${itemsSummaryText}
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Note / Message for Admin (Optional):</label>
-                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Taking all ${cart.length} accounts right now!">
+
+                <div class="form-group" style="margin-bottom:12px;">
+                    <label style="font-size:0.64rem;color:var(--accent-cyan);letter-spacing:0.8px;">YOUR BUNDLE OFFER AMOUNT (IN USDT):</label>
+                    <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origTotal - 0.5).toFixed(2)}" value="${Math.max(1, (origTotal * 0.85)).toFixed(1)}" style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.95rem;">
                 </div>
-                <div style="display:flex;gap:8px;">
-                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal'); openCartModal();">Back to Cart</button>
-                    <button class="btn-ui primary" onclick="submitWebNegoOffer()">🚀 Submit Cart Offer</button>
+
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label style="font-size:0.64rem;color:var(--text-muted);letter-spacing:0.8px;">NOTE / MESSAGE FOR ADMIN (OPTIONAL):</label>
+                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Taking all ${cart.length} accounts right now!" style="font-size:0.78rem;">
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                    <button class="btn-ui secondary" style="padding:10px 8px;font-size:0.74rem;" onclick="closeModal('paymentGatewayModal'); openCartModal();">Back to Cart</button>
+                    <button class="btn-ui buy-now" style="padding:10px 8px;font-size:0.74rem;" onclick="submitWebNegoOffer()">🚀 Submit Bundle Offer</button>
                 </div>
             `;
         }
