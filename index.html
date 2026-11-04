@@ -1202,9 +1202,9 @@
 
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area">
-            <header class="topbar">
-                <!-- BARIS 1: LOGO BULAT UTUH + ENTERPRISE ASSET VAULT + TOMBOL KURS DINAMIS (USDT/IDR) -->
-                <div class="topbar-box-brand" style="padding:6px 10px;gap:8px;border-left:4px solid var(--accent-primary);">
+            <header class="topbar" style="background:var(--bg-base);padding:10px 12px;box-shadow:0 8px 30px rgba(0,0,0,0.5);">
+                <!-- BARIS 1: KOTAK 3D EKSKLUSIF ATAS -->
+                <div class="topbar-box-brand" style="padding:7px 11px;gap:8px;background:var(--bg-card);border:1.5px solid var(--border-focus);border-left:5px solid var(--accent-primary);border-top:2px solid var(--border-focus);border-right:2px solid var(--border-focus);border-bottom:3px solid rgba(0,0,0,0.4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);">
                     <div style="display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0;" onclick="switchTab('home')">
                         <div class="brand-orb" style="width:52px;height:52px;background:#07080d;border:1.5px solid rgba(99,102,241,0.6);box-shadow:0 3px 12px rgba(99,102,241,0.32);padding:4px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
                             <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
@@ -1231,8 +1231,8 @@
                     </div>
                 </div>
 
-                <!-- BARIS 2: DIBAGI 4 KOLOM SAMA RATA (CART | SALDO RINGKAS | VIP | NOTIFIKASI) -->
-                <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:6px 8px;border-left:4px solid var(--accent-cyan);">
+                <!-- BARIS 2: KOTAK 3D EKSKLUSIF BAWAH (DIBAGI 4 KOLOM SAMA RATA) -->
+                <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:7px 9px;background:var(--bg-card);border:1.5px solid var(--border-focus);border-left:5px solid var(--accent-cyan);border-top:2px solid var(--border-focus);border-right:2px solid var(--border-focus);border-bottom:3px solid rgba(0,0,0,0.4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);">
                     <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.68rem;border-radius:9px;min-width:0;gap:4px;">
                         <span>🛒 Cart</span>
                         <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);font-size:0.6rem;padding:1px 5px;">0</span>
@@ -1269,30 +1269,32 @@
             </div>
         </div>
 
-        <!-- 📱 MOBILE BOTTOM NAVIGATION -->
-        <nav class="bottom-nav">
-            <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')">
-                <span style="font-size:1.18rem;line-height:1;">🏠</span>
-                <span>Home</span>
-            </button>
-            <button class="bnav-btn" data-tab="github" onclick="switchTab('github')">
-                <span style="display:inline-flex;align-items:center;justify-content:center;height:21px;">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                </span>
-                <span>GitHub</span>
-            </button>
-            <button class="bnav-btn" data-tab="catalog" onclick="switchTab('catalog')">
-                <span style="font-size:1.18rem;">🌐</span>
-                <span>Catalog</span>
-            </button>
-            <button class="bnav-btn" data-tab="wallet" onclick="switchTab('wallet')">
-                <span style="font-size:1.18rem;">💳</span>
-                <span>Wallet</span>
-            </button>
-            <button class="bnav-btn" data-tab="profile" onclick="switchTab('profile')">
-                <span style="font-size:1.18rem;">👤</span>
-                <span>Profile</span>
-            </button>
+        <!-- 📱 MOBILE BOTTOM NAVIGATION (3D EKSKLUSIF MENYERUPAI HEADER) -->
+        <nav class="bottom-nav" style="height:72px;background:var(--bg-base);border-top:none;padding:6px 10px;box-shadow:0 -8px 30px rgba(0,0,0,0.5);">
+            <div style="width:100%;height:100%;background:var(--bg-card);border:1.5px solid var(--border-focus);border-left:5px solid var(--accent-primary);border-top:2px solid var(--border-focus);border-right:2px solid var(--border-focus);border-bottom:3px solid rgba(0,0,0,0.4);border-radius:14px;box-shadow:0 6px 20px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);display:flex;justify-content:space-around;align-items:center;padding:0 4px;">
+                <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')" style="padding:4px 2px;">
+                    <span style="font-size:1.1rem;line-height:1;">🏠</span>
+                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Home</span>
+                </button>
+                <button class="bnav-btn" data-tab="github" onclick="switchTab('github')" style="padding:4px 2px;">
+                    <span style="display:inline-flex;align-items:center;justify-content:center;height:18px;">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    </span>
+                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">GitHub</span>
+                </button>
+                <button class="bnav-btn" data-tab="catalog" onclick="switchTab('catalog')" style="padding:4px 2px;">
+                    <span style="font-size:1.1rem;line-height:1;">🌐</span>
+                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Catalog</span>
+                </button>
+                <button class="bnav-btn" data-tab="wallet" onclick="switchTab('wallet')" style="padding:4px 2px;">
+                    <span style="font-size:1.1rem;line-height:1;">💳</span>
+                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Wallet</span>
+                </button>
+                <button class="bnav-btn" data-tab="profile" onclick="switchTab('profile')" style="padding:4px 2px;">
+                    <span style="font-size:1.1rem;line-height:1;">👤</span>
+                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Profile</span>
+                </button>
+            </div>
         </nav>
     </div>
 
@@ -2845,13 +2847,13 @@
             // 2. GITHUB ENTERPRISE HUB (7 SUB-TABS: 3 PAIRS + FULL-WIDTH 2FA CODE BUTTON AT THE BOTTOM)
             if (activeTab === 'github') {
                 const ghSubs = [
-                    '📅 Choose by Year (2011–2026)',
-                    '⚡ Ready-to-Buy Accounts',
-                    '🗂️ GitHub Categories',
-                    '👥 GitHub High Followers Account',
-                    '🚀 Buy Followers & Stars',
-                    '🔍 Check Account Status',
-                    '🔑 Get 2FA Login Code'
+                    '📅 Vault by Year',
+                    '⚡ Instant Ready',
+                    '🗂️ Special Vaults',
+                    '👥 High Followers',
+                    '🚀 Repo Boost',
+                    '🔍 Account Health',
+                    '🔑 Live 2FA Code'
                 ];
                 if (activeSub === 'ALL' || !ghSubs.includes(activeSub)) activeSub = ghSubs[0];
                 subContainer.style.display = 'grid';
