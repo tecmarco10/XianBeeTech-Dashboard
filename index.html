@@ -1832,19 +1832,7 @@
                 } catch (e) {}
             }
 
-            try {
-                await fetch(GSHEET_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({
-                        action: 'sync_user_crm',
-                        user_id: String(targetUid || cleanTargetUname),
-                        username: `@${cleanTargetUname}`,
-                        balance: parseFloat(newBalUsdt.toFixed(2)),
-                        status: '🟢 ACTIVE TRACKING (WEB)'
-                    })
-                });
-            } catch (e) {}
+            // Jangan panggil sync_user_crm tanpa data order agar statistik Loyalty penerima di Sheet4 tetap utuh
         }
 
         function markCreditIdApplied(creditId) {
@@ -2984,14 +2972,91 @@
             }
         }
 
-        // Sync every Web Order & Top-Up to Google Sheet4 (User Loyalty CRM)
+        // Deteksi mutlak apakah transaksi adalah P2P Transfer (Send / Receive Balance antar user)
+        function isP2pTransferTx(tx) {
+            if (!tx) return false;
+            const inv = String(tx.invoice || '').trim().toUpperCase();
+            const method = String(tx.method || '').toLowerCase();
+            const title = String(tx.title || '').toLowerCase();
+            return (
+                inv.startsWith('TRF-') ||
+                method.includes('p2p') ||
+                method.includes('wallet transfer') ||
+                title.includes('sent balance') ||
+                title.includes('received balance') ||
+                title.includes('received p2p') ||
+                title.includes('transfer to') ||
+                title.includes('transfer from')
+            );
+        }
+
+        // Deteksi apakah transaksi OUT adalah order layanan GitHub Boost / SMM
+        function isBoostServiceOrderTx(tx) {
+            if (!tx || tx.type !== 'OUT' || isP2pTransferTx(tx)) return false;
+            const title = String(tx.title || '').toLowerCase();
+            return (
+                (title.includes('followers') && !title.includes('vault')) ||
+                title.includes('stars service') ||
+                title.includes('repository stars') ||
+                title.includes('forks service') ||
+                title.includes('repository forks') ||
+                title.includes('watchers service') ||
+                title.includes('repository watchers') ||
+                title.includes('smm') ||
+                title.includes(' units')
+            );
+        }
+
+        // Hitung statistik Loyalty murni (100% BEBAS dari P2P Send/Receive Balance & memisahkan Account vs Boost vs Top-Up)
+        function computeVerifiedLoyaltyStats() {
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            let accTx = 0, accTotal = 0;
+            let svcTx = 0, svcTotal = 0;
+            let topupTx = 0, topupTotal = 0;
+
+            for (const tx of history) {
+                if (!tx || isP2pTransferTx(tx)) continue; // Blokir mutlak P2P Send & Receive!
+                const amt = parseFloat(tx.usdt || 0);
+                if (isNaN(amt) || amt <= 0) continue;
+                const titleLow = String(tx.title || '').toLowerCase();
+
+                if (tx.type === 'OUT') {
+                    if (isBoostServiceOrderTx(tx)) {
+                        svcTx += 1;
+                        svcTotal += amt;
+                    } else {
+                        accTx += 1;
+                        accTotal += amt;
+                    }
+                } else if (tx.type === 'IN') {
+                    // Hanya hitung Top-Up resmi (OxaPay / QRIS / Bank / DANA), abaikan refund/bonus
+                    if (!titleLow.includes('refund') && !titleLow.includes('bonus') && !titleLow.includes('cashback') && !titleLow.includes('reward')) {
+                        topupTx += 1;
+                        topupTotal += amt;
+                    }
+                }
+            }
+
+            return {
+                accTx: accTx,
+                accTotal: accTotal,
+                accCycle: accTotal % 500,
+                svcTx: svcTx,
+                svcTotal: svcTotal,
+                svcCycle: svcTotal % 200,
+                topupTx: topupTx,
+                topupTotal: topupTotal,
+                topupCycle: topupTotal % 500,
+                totalRealSpent: accTotal + svcTotal,
+                totalRealTxCount: accTx + svcTx + topupTx
+            };
+        }
+
+        // Sync every Web Order & Top-Up to Google Sheet4 (User Loyalty CRM — P2P Transfers Excluded)
         async function syncUserCrmToGSheetFromWeb(eventType, amountUsdt) {
             try {
-                const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-                const outList = history.filter(x => x.type === 'OUT');
-                const inList = history.filter(x => x.type === 'IN');
-                const totSpent = outList.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-                const totTopup = inList.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+                if (eventType === 'transfer_out' || eventType === 'transfer_in') return;
+                const st = computeVerifiedLoyaltyStats();
                 const dispUname = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
 
                 await fetch(GSHEET_WEBHOOK_URL, {
@@ -3002,15 +3067,15 @@
                         user_id: String(currentUserId),
                         username: dispUname,
                         balance: parseFloat(userBalanceUsdt.toFixed(2)),
-                        acc_tx: outList.length,
-                        acc_total: parseFloat(totSpent.toFixed(2)),
-                        acc_cycle: parseFloat((totSpent % 500).toFixed(2)),
-                        svc_tx: 0,
-                        svc_total: 0,
-                        svc_cycle: 0,
-                        topup_tx: inList.length,
-                        topup_total: parseFloat(totTopup.toFixed(2)),
-                        topup_cycle: parseFloat((totTopup % 500).toFixed(2)),
+                        acc_tx: st.accTx,
+                        acc_total: parseFloat(st.accTotal.toFixed(2)),
+                        acc_cycle: parseFloat(st.accCycle.toFixed(2)),
+                        svc_tx: st.svcTx,
+                        svc_total: parseFloat(st.svcTotal.toFixed(2)),
+                        svc_cycle: parseFloat(st.svcCycle.toFixed(2)),
+                        topup_tx: st.topupTx,
+                        topup_total: parseFloat(st.topupTotal.toFixed(2)),
+                        topup_cycle: parseFloat(st.topupCycle.toFixed(2)),
                         bonus_count: 0,
                         bonus_total: 0,
                         status: '🟢 ACTIVE TRACKING (WEB)'
@@ -3882,10 +3947,10 @@
         }
 
         function getUserVipRankMeta() {
-            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-            const totalSpent = history.filter(x => x.type === 'OUT').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-            const totalTopup = history.filter(x => x.type === 'IN').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-            const txCount = history.length;
+            const st = computeVerifiedLoyaltyStats();
+            const totalSpent = st.totalRealSpent;
+            const totalTopup = st.topupTotal;
+            const txCount = st.totalRealTxCount;
             const totalVol = Math.max(totalTopup, userBalanceUsdt + totalSpent);
 
             if (ADMIN_IDS.includes(String(currentUserId))) {
@@ -4483,8 +4548,9 @@
         function renderProfileTab(container, subSection) {
             const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
             const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-            const totalSpent = history.filter(x => x.type === 'OUT').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-            const totalDep = history.filter(x => x.type === 'IN').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
+            const loyaltyStats = computeVerifiedLoyaltyStats();
+            const totalSpent = loyaltyStats.totalRealSpent;
+            const totalDep = loyaltyStats.topupTotal;
             const tierName = totalSpent >= 500 ? '💎 Diamond VIP' : (totalSpent >= 200 ? '🥇 Gold VIP' : (totalSpent >= 50 ? '🥈 Silver VIP' : '🥉 Bronze Member'));
 
             if (subSection.includes('Purchased Vault')) {
@@ -4582,9 +4648,9 @@
                 : `<span style="font-size:0.58rem;font-weight:800;color:var(--warning);background:rgba(245,158,11,0.14);border:1px solid rgba(245,158,11,0.4);padding:2px 7px;border-radius:6px;white-space:nowrap;">⚠️ No PIN Set</span>`;
             const pinBtnLabel = hasPinSet ? '🔐 Change PIN' : '🔐 Create PIN';
 
-            const accCycle = (totalSpent % 500);
-            const boostCycle = (totalSpent % 200);
-            const topCycle = (totalDep % 500);
+            const accCycle = loyaltyStats.accCycle;
+            const boostCycle = loyaltyStats.svcCycle;
+            const topCycle = loyaltyStats.topupCycle;
 
             const accPct = Math.min(100, (accCycle / 500) * 100);
             const boostPct = Math.min(100, (boostCycle / 200) * 100);
@@ -7095,7 +7161,7 @@
             });
 
             history.forEach(t => {
-                if (t.type !== 'OUT') return;
+                if (t.type !== 'OUT' || isP2pTransferTx(t)) return;
                 const amt = parseFloat(t.usdt || 0);
                 if (amt <= 0) return;
                 const ts = Date.parse(t.date + ', ' + now.getFullYear()) || now.getTime();
@@ -8210,12 +8276,10 @@
             }
 
             // 3. Also include current logged-in buyer's real balance & local transaction history
-            const localHistory = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-            let myOutVol = 0, myInVol = 0, myTxCnt = 0;
-            localHistory.forEach(h => {
-                if (h.type === 'OUT') { myOutVol += (parseFloat(h.usdt) || 0); myTxCnt += 1; }
-                if (h.type === 'IN') { myInVol += (parseFloat(h.usdt) || 0); myTxCnt += 1; }
-            });
+            const stMyLeader = computeVerifiedLoyaltyStats();
+            const myOutVol = stMyLeader.totalRealSpent;
+            const myInVol = stMyLeader.topupTotal;
+            const myTxCnt = stMyLeader.totalRealTxCount;
             if (userBalanceUsdt > 0 || myOutVol > 0 || myInVol > 0) {
                 const myDisp = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
                 addHolderMetric(myDisp, userBalanceUsdt, myOutVol, myInVol, myTxCnt);
