@@ -1838,6 +1838,89 @@
             } catch (e) {}
         }
 
+        function markCreditIdApplied(creditId) {
+            if (!creditId) return;
+            const map = JSON.parse(localStorage.getItem('xb_applied_credits_v2') || '{}');
+            map[String(creditId).trim().toUpperCase()] = Date.now();
+            localStorage.setItem('xb_applied_credits_v2', JSON.stringify(map));
+        }
+
+        // Rekonsiliasi otomatis saldo dari Notifikasi Masuk (TRF-... / INV-...) & Mutasi agar 100% pasti bertambah
+        function reconcileBalanceFromNotifsAndLedger(forceFromSyncBtn = false) {
+            let changed = false;
+            try {
+                const map = JSON.parse(localStorage.getItem('xb_applied_credits_v2') || '{}');
+                const notifs = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
+                const txList = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+
+                // Urutkan dari yang paling lama ke paling baru agar akumulasi akurat
+                const chronologicalNotifs = [...notifs].reverse();
+                for (const n of chronologicalNotifs) {
+                    const titleUp = String(n.title || '').toUpperCase();
+                    const plainBody = String(n.body || '').replace(/<[^>]+>/g, ' ');
+                    const isIncomingCredit = (
+                        titleUp.includes('BALANCE RECEIVED') ||
+                        titleUp.includes('IDR PAYMENT APPROVED') ||
+                        titleUp.includes('DEPOSIT CONFIRMED') ||
+                        plainBody.includes('B A L A N C E  R E C E I V E D') ||
+                        plainBody.includes('I D R  P A Y M E N T  A P P R O V E D')
+                    );
+                    if (!isIncomingCredit) continue;
+
+                    const idMatch = plainBody.match(/(?:Transfer ID|Invoice|Invoice ID)\s*:\s*([A-Za-z0-9\-]+)/i);
+                    const amtMatch = plainBody.match(/(?:Amount Received|Credited Amount|Top-Up)\s*:\s*\+?\$?([\d\.]+)/i);
+                    const updMatch = plainBody.match(/(?:Updated Balance|New Balance)\s*:\s*\$?([\d\.]+)/i);
+
+                    const creditId = idMatch ? idMatch[1].trim().toUpperCase() : (n.id ? String(n.id).toUpperCase() : null);
+                    const amtVal = amtMatch ? parseFloat(amtMatch[1]) : 0;
+                    const updVal = updMatch ? parseFloat(updMatch[1]) : null;
+
+                    if (creditId && !map[creditId] && (amtVal > 0 || (updVal !== null && updVal > 0))) {
+                        map[creditId] = Date.now();
+                        let targetBal = userBalanceUsdt + amtVal;
+                        if (updVal !== null && !isNaN(updVal) && updVal > userBalanceUsdt) {
+                            targetBal = Math.max(targetBal, updVal);
+                        }
+                        setAuthoritativeBalance(targetBal, true);
+                        changed = true;
+
+                        // Pastikan tercatat juga di Order History (IN) jika belum ada
+                        if (amtVal > 0 && !txList.some(t => String(t.invoice || '').toUpperCase() === creditId)) {
+                            recordWebTransaction(
+                                creditId,
+                                titleUp.includes('BALANCE RECEIVED') ? 'Received P2P Wallet Transfer' : 'Wallet Balance Deposit (Approved)',
+                                `@${String(currentUsername).replace(/^@/, '')}`,
+                                amtVal,
+                                'IN',
+                                titleUp.includes('BALANCE RECEIVED') ? 'P2P Wallet Transfer' : 'Verified Deposit'
+                            );
+                        }
+                    }
+                }
+
+                // Cek juga jika notifikasi paling atas adalah BALANCE RECEIVED dan saldo saat ini masih di bawah Updated Balance
+                if (notifs.length > 0 && forceFromSyncBtn) {
+                    const latestN = notifs[0];
+                    const latestPlain = String(latestN.body || '').replace(/<[^>]+>/g, ' ');
+                    if (String(latestN.title || '').toUpperCase().includes('BALANCE RECEIVED') || latestPlain.includes('B A L A N C E  R E C E I V E D')) {
+                        const updM = latestPlain.match(/Updated Balance\s*:\s*\$?([\d\.]+)/i);
+                        if (updM && !isNaN(parseFloat(updM[1]))) {
+                            const expectedBal = parseFloat(updM[1]);
+                            // Jika belum ada transaksi keluar (OUT) setelah transfer diterima dan saldo masih kurang dari expectedBal
+                            const hasRecentOut = txList.length > 0 && txList[0].type === 'OUT';
+                            if (!hasRecentOut && userBalanceUsdt < expectedBal) {
+                                setAuthoritativeBalance(expectedBal, true);
+                                changed = true;
+                            }
+                        }
+                    }
+                }
+
+                localStorage.setItem('xb_applied_credits_v2', JSON.stringify(map));
+            } catch (e) {}
+            return changed;
+        }
+
         async function syncCloudStateWithGSheet(mode = 'pull', extraPayload = {}) {
             try {
                 const isAdmin = ADMIN_IDS.includes(String(currentUserId));
@@ -1850,7 +1933,8 @@
                 const localVault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
                 const localTx = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
 
-                const bodyObj = Object.assign({
+                // PENTING: Jangan kirim 'balance' pada push biasa (cart/notif) agar tidak pernah menimpa saldo transfer masuk di Cloud!
+                const basePayload = {
                     action: 'web_cloud_sync_state',
                     mode: mode,
                     sync_key: getCloudSyncAccountKey(),
@@ -1863,10 +1947,9 @@
                     admin_notifs: isAdmin ? localAdminNotifs : [],
                     resolved_actions: isAdmin ? localResolved : {},
                     vault: localVault,
-                    tx_history: localTx,
-                    balance: userBalanceUsdt,
-                    bal_ts: localBalTs
-                }, extraPayload);
+                    tx_history: localTx
+                };
+                const bodyObj = Object.assign(basePayload, extraPayload);
 
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -1885,24 +1968,67 @@
                         localStorage.setItem('xb_cart_updated_ts', String(cloudCartTs));
                         updateCartUI(true);
                     }
-                    const cloudBal = parseFloat(us.balance);
-                    const cloudBalTs = parseInt(us.bal_ts || 0);
-                    if (mode === 'pull' && !isNaN(cloudBal) && cloudBal >= 0) {
-                        if (cloudBalTs > localBalTs || (localBalTs === 0 && Math.abs(cloudBal - userBalanceUsdt) > 0.005)) {
-                            setAuthoritativeBalance(cloudBal, false);
-                            if (cloudBalTs > 0) localStorage.setItem('xb_bal_updated_ts', String(cloudBalTs));
-                            if (activeTab === 'wallet' || activeTab === 'profile') renderViewport();
-                        }
-                    }
+
                     if (Array.isArray(us.buyer_notifs)) {
-                        localStorage.setItem('xb_buyer_notifs', JSON.stringify(us.buyer_notifs));
+                        const seenIds = new Set();
+                        const mergedNotifs = [];
+                        for (const item of [...us.buyer_notifs, ...localBuyerNotifs]) {
+                            if (!item || !item.id || seenIds.has(item.id)) continue;
+                            seenIds.add(item.id);
+                            mergedNotifs.push(item);
+                        }
+                        localStorage.setItem('xb_buyer_notifs', JSON.stringify(mergedNotifs.slice(0, 50)));
                     }
+
                     if (Array.isArray(us.vault) && us.vault.length > localVault.length) {
                         localStorage.setItem('xb_purchased_vault', JSON.stringify(us.vault));
                     }
-                    if (Array.isArray(us.tx_history) && us.tx_history.length > localTx.length) {
-                        localStorage.setItem('xb_tx_history', JSON.stringify(us.tx_history));
+
+                    if (Array.isArray(us.tx_history)) {
+                        const seenTx = new Set();
+                        const mergedTx = [];
+                        for (const tx of [...us.tx_history, ...localTx]) {
+                            const k = tx && tx.invoice ? String(tx.invoice) : JSON.stringify(tx);
+                            if (!tx || seenTx.has(k)) continue;
+                            seenTx.add(k);
+                            mergedTx.push(tx);
+                        }
+                        localStorage.setItem('xb_tx_history', JSON.stringify(mergedTx.slice(0, 40)));
                     }
+
+                    // 1. Cek Rekonsiliasi Otomatis dari Notifikasi Transfer / Deposit Masuk
+                    const reconciled = reconcileBalanceFromNotifsAndLedger(Boolean(extraPayload && extraPayload.force_sync));
+
+                    // 2. Cek Saldo dari Cloud State (us.balance)
+                    const cloudBal = parseFloat(us.balance);
+                    const cloudBalTs = parseInt(us.bal_ts || 0);
+                    if (mode === 'pull' && !isNaN(cloudBal) && cloudBal >= 0) {
+                        const shouldAcceptCloudBal = (
+                            (cloudBalTs > localBalTs && Math.abs(cloudBal - userBalanceUsdt) > 0.005) ||
+                            (cloudBalTs === 0 && cloudBal > userBalanceUsdt) ||
+                            (Boolean(extraPayload && extraPayload.force_sync) && cloudBal > userBalanceUsdt)
+                        );
+                        if (shouldAcceptCloudBal) {
+                            setAuthoritativeBalance(cloudBal, false);
+                            localStorage.setItem('xb_bal_updated_ts', String(cloudBalTs > 0 ? cloudBalTs : Date.now()));
+                        }
+                    }
+
+                    if (reconciled) {
+                        // Simpan saldo hasil rekonsiliasi kembali ke Cloud agar permanen
+                        fetch(GSHEET_WEBHOOK_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify(Object.assign({}, basePayload, {
+                                mode: 'push',
+                                balance: userBalanceUsdt,
+                                bal_ts: Date.now()
+                            }))
+                        }).catch(() => {});
+                        syncUserCrmToGSheetFromWeb('reconcile', 0);
+                    }
+
+                    if (activeTab === 'wallet' || activeTab === 'profile') renderViewport();
                 }
 
                 if (isAdmin && data.admin_state) {
@@ -3724,17 +3850,27 @@
         async function syncWalletBalanceInWeb() {
             const btn = document.getElementById('btnWebSyncBal');
             if (btn) btn.innerText = '⏳ Syncing...';
+
+            // 1. Rekonsiliasi langsung dari notifikasi transfer/top-up yang sudah ada di HP
+            reconcileBalanceFromNotifsAndLedger(true);
+
+            // 2. Tarik state terbaru dari Cloud & Sheet1/Sheet4
             await fetchRealTimeUsdtIdrRate();
-            await syncCloudStateWithGSheet('pull');
+            await syncCloudStateWithGSheet('pull', { force_sync: true });
             await syncGoogleSheetInventory(false);
 
-            // Cek juga saldo terbaru user dari tabel Sheet4 CRM (cachedSheetVipHolders) jika belum ada transaksi lokal yang lebih baru
-            const localBalTs = parseInt(localStorage.getItem('xb_bal_updated_ts') || '0');
+            // 3. Cek ulang rekonsiliasi setelah pull notifikasi terbaru dari Cloud
+            const didReconcile = reconcileBalanceFromNotifsAndLedger(true);
+
+            // 4. Cek juga saldo terbaru user dari tabel Sheet4 CRM (cachedSheetVipHolders)
             const crmBal = extractMyBalanceFromCrmArray(cachedSheetVipHolders);
-            if (crmBal !== null && (Date.now() - localBalTs > 15000)) {
-                if (Math.abs(crmBal - userBalanceUsdt) > 0.005) {
-                    setAuthoritativeBalance(crmBal, true);
-                }
+            if (crmBal !== null && crmBal > userBalanceUsdt) {
+                setAuthoritativeBalance(crmBal, true);
+            }
+
+            if (didReconcile) {
+                await syncCloudStateWithGSheet('push', { balance: userBalanceUsdt, bal_ts: Date.now() });
+                syncUserCrmToGSheetFromWeb('sync', 0);
             }
 
             updateTopBalance();
