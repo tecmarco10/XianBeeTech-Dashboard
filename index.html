@@ -1782,14 +1782,26 @@
             return null;
         }
 
+        function getNotifTimestampMs(nItem) {
+            if (!nItem) return 0;
+            if (nItem.ts && !isNaN(Number(nItem.ts))) return Number(nItem.ts);
+            const m = String(nItem.id || '').match(/(\d{12,14})/);
+            return m ? Number(m[1]) : 0;
+        }
+
         async function pushDirectCloudStateToTargetUser(targetUid, targetUname, newBalUsdt, newNotifObj = null, newTxObj = null) {
             const cleanTargetUname = String(targetUname || '').trim().replace(/^@/, '').toLowerCase();
+            const cleanTargetUid = String(targetUid || '').trim();
             const keysToPush = [];
             if (cleanTargetUname) keysToPush.push('user_' + cleanTargetUname);
-            if (targetUid && String(targetUid).trim() !== '') keysToPush.push('uid_' + String(targetUid).trim().toLowerCase());
-            if (ADMIN_IDS.includes(String(targetUid))) keysToPush.push('executive_admin_shared');
+            if (cleanTargetUid) keysToPush.push('uid_' + cleanTargetUid.toLowerCase());
+            if (ADMIN_IDS.includes(cleanTargetUid) || cleanTargetUname === 'abieharyatmo' || cleanTargetUname === 'xianbeetechstore') {
+                keysToPush.push('executive_admin_shared');
+            }
 
             const nowTs = Date.now();
+            if (newNotifObj && !newNotifObj.ts) newNotifObj.ts = nowTs;
+
             for (const sKey of keysToPush) {
                 try {
                     const pullRes = await fetch(GSHEET_WEBHOOK_URL, {
@@ -1799,7 +1811,7 @@
                             action: 'web_cloud_sync_state',
                             mode: 'pull',
                             sync_key: sKey,
-                            user_id: String(targetUid || ''),
+                            user_id: cleanTargetUid,
                             username: cleanTargetUname
                         })
                     });
@@ -1808,8 +1820,8 @@
                     const bNotifs = Array.isArray(existingState.buyer_notifs) ? existingState.buyer_notifs : [];
                     const txList = Array.isArray(existingState.tx_history) ? existingState.tx_history : [];
 
-                    if (newNotifObj) bNotifs.unshift(newNotifObj);
-                    if (newTxObj) txList.unshift(newTxObj);
+                    if (newNotifObj && !bNotifs.some(x => x && x.id === newNotifObj.id)) bNotifs.unshift(newNotifObj);
+                    if (newTxObj && !txList.some(x => x && x.invoice === newTxObj.invoice)) txList.unshift(newTxObj);
 
                     await fetch(GSHEET_WEBHOOK_URL, {
                         method: 'POST',
@@ -1818,7 +1830,7 @@
                             action: 'web_cloud_sync_state',
                             mode: 'push',
                             sync_key: sKey,
-                            user_id: String(targetUid || ''),
+                            user_id: cleanTargetUid,
                             username: cleanTargetUname,
                             cart: Array.isArray(existingState.cart) ? existingState.cart : [],
                             cart_ts: parseInt(existingState.cart_ts || 0),
@@ -1831,8 +1843,6 @@
                     });
                 } catch (e) {}
             }
-
-            // Jangan panggil sync_user_crm tanpa data order agar statistik Loyalty penerima di Sheet4 tetap utuh
         }
 
         function markCreditIdApplied(creditId) {
@@ -1842,8 +1852,6 @@
             localStorage.setItem('xb_applied_credits_v2', JSON.stringify(map));
         }
 
-        // NONAKTIFKAN penambahan saldo dari teks notifikasi agar TIDAK PERNAH terjadi double-credit (RECONCILE-NOTIF).
-        // Seluruh perhitungan saldo kini 100% dikendalikan secara atomik oleh Sheet2 (Master Wallet Ledger).
         function reconcileBalanceFromNotifsAndLedger(forceFromSyncBtn = false) {
             return false;
         }
@@ -1859,8 +1867,10 @@
                 const localResolved = JSON.parse(localStorage.getItem('xb_resolved_actions') || '{}');
                 const localVault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
                 const localTx = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+                const deletedNotifMap = JSON.parse(localStorage.getItem('xb_deleted_notif_ids') || '{}');
+                const localBuyerClearTs = parseInt(localStorage.getItem('xb_buyer_cleared_ts') || '0');
+                const localAdminClearTs = parseInt(localStorage.getItem('xb_admin_cleared_ts') || '0');
 
-                // PENTING: Jangan kirim 'balance' pada push biasa (cart/notif) agar tidak pernah menimpa saldo transfer masuk di Cloud!
                 const basePayload = {
                     action: 'web_cloud_sync_state',
                     mode: mode,
@@ -1896,11 +1906,23 @@
                         updateCartUI(true);
                     }
 
+                    // Sinkronisasi Buyer Notifications (hormati tombol Clear & ID yang sudah dihapus)
+                    const cloudBuyerClearTs = parseInt(us.notifs_cleared_ts || 0);
+                    const effectiveBuyerClearTs = Math.max(localBuyerClearTs, cloudBuyerClearTs);
+                    if (effectiveBuyerClearTs > localBuyerClearTs) {
+                        localStorage.setItem('xb_buyer_cleared_ts', String(effectiveBuyerClearTs));
+                    }
+                    if (us.deleted_buyer_ids && typeof us.deleted_buyer_ids === 'object') {
+                        Object.assign(deletedNotifMap, us.deleted_buyer_ids);
+                    }
+
                     if (Array.isArray(us.buyer_notifs)) {
                         const seenIds = new Set();
                         const mergedNotifs = [];
                         for (const item of [...us.buyer_notifs, ...localBuyerNotifs]) {
-                            if (!item || !item.id || seenIds.has(item.id)) continue;
+                            if (!item || !item.id || seenIds.has(item.id) || deletedNotifMap[item.id]) continue;
+                            const itemTs = getNotifTimestampMs(item);
+                            if (effectiveBuyerClearTs > 0 && itemTs > 0 && itemTs <= effectiveBuyerClearTs) continue;
                             seenIds.add(item.id);
                             mergedNotifs.push(item);
                         }
@@ -1923,7 +1945,7 @@
                         localStorage.setItem('xb_tx_history', JSON.stringify(mergedTx.slice(0, 40)));
                     }
 
-                    // 1. Ambil Saldo Resmi dari Sheet2 (Master Wallet Ledger) terlebih dahulu
+                    // Ambil Saldo Resmi dari Sheet2 (Master Wallet Ledger)
                     const cloudBal = parseFloat(us.balance);
                     const cloudBalTs = parseInt(us.bal_ts || 0);
                     const isForceSync = Boolean(extraPayload && extraPayload.force_sync);
@@ -1940,25 +1962,6 @@
                         }
                     }
 
-                    // 2. Jika ada notifikasi transfer lama (sebelum Sheet2 aktif) yang belum masuk ke Sheet2, rekonsiliasi 1x
-                    if (isForceSync) {
-                        const reconciled = reconcileBalanceFromNotifsAndLedger(true);
-                        if (reconciled) {
-                            fetch(GSHEET_WEBHOOK_URL, {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                                body: JSON.stringify(Object.assign({}, basePayload, {
-                                    mode: 'push',
-                                    balance: userBalanceUsdt,
-                                    bal_ts: Date.now(),
-                                    tx_id: 'RECONCILE-NOTIF',
-                                    tx_note: 'Auto-Reconciled Incoming Transfer'
-                                }))
-                            }).catch(() => {});
-                            syncUserCrmToGSheetFromWeb('reconcile', 0);
-                        }
-                    }
-
                     if (activeTab === 'wallet' || activeTab === 'profile') renderViewport();
                 }
 
@@ -1967,11 +1970,33 @@
                     if (as.resolved_actions && typeof as.resolved_actions === 'object') {
                         localStorage.setItem('xb_resolved_actions', JSON.stringify(as.resolved_actions));
                     }
+                    const cloudAdminClearTs = parseInt(as.admin_cleared_ts || 0);
+                    const effectiveAdminClearTs = Math.max(localAdminClearTs, cloudAdminClearTs);
+                    if (effectiveAdminClearTs > localAdminClearTs) {
+                        localStorage.setItem('xb_admin_cleared_ts', String(effectiveAdminClearTs));
+                    }
+                    if (as.deleted_admin_ids && typeof as.deleted_admin_ids === 'object') {
+                        Object.assign(deletedNotifMap, as.deleted_admin_ids);
+                    }
                     if (Array.isArray(as.admin_notifs)) {
-                        localStorage.setItem('xb_admin_notifs', JSON.stringify(as.admin_notifs));
+                        const seenAdmIds = new Set();
+                        const mergedAdmNotifs = [];
+                        for (const item of [...as.admin_notifs, ...localAdminNotifs]) {
+                            if (!item || !item.id || seenAdmIds.has(item.id) || deletedNotifMap[item.id]) continue;
+                            const itemTs = getNotifTimestampMs(item);
+                            if (effectiveAdminClearTs > 0 && itemTs > 0 && itemTs <= effectiveAdminClearTs) continue;
+                            if (item.meta && item.meta.actionKey && as.resolved_actions && as.resolved_actions[item.meta.actionKey]) {
+                                item.title = as.resolved_actions[item.meta.actionKey];
+                                delete item.meta;
+                            }
+                            seenAdmIds.add(item.id);
+                            mergedAdmNotifs.push(item);
+                        }
+                        localStorage.setItem('xb_admin_notifs', JSON.stringify(mergedAdmNotifs.slice(0, 50)));
                     }
                 }
 
+                localStorage.setItem('xb_deleted_notif_ids', JSON.stringify(deletedNotifMap));
                 updateNotifBadgeCount();
                 if (document.getElementById('notificationsModal')?.classList.contains('active')) {
                     renderNotificationsList();
@@ -1982,9 +2007,11 @@
         function pushInWebNotification(role, title, htmlBody, extraMeta = null) {
             const storageKey = role === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
             const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
-            const newId = 'NTF-' + Date.now() + '-' + Math.floor(Math.random()*999);
+            const nowMs = Date.now();
+            const newId = 'NTF-' + nowMs + '-' + Math.floor(Math.random() * 999);
             list.unshift({
                 id: newId,
+                ts: nowMs,
                 time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
                 title: title,
                 body: htmlBody,
@@ -2280,14 +2307,31 @@
             showToast('🔔 Reminder sent to Buyer Web & Telegram!');
         }
 
-        function clearWebNotifications() {
+        async function clearWebNotifications() {
+            clearTimeout(_cloudSyncTimer);
             const isAdmFeed = activeNotifFeed === 'admin';
             const storageKey = isAdmFeed ? 'xb_admin_notifs' : 'xb_buyer_notifs';
+            const currentList = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const deletedMap = JSON.parse(localStorage.getItem('xb_deleted_notif_ids') || '{}');
+            const clearedIds = [];
+            currentList.forEach(item => {
+                if (item && item.id) {
+                    deletedMap[item.id] = true;
+                    clearedIds.push(item.id);
+                }
+            });
+            const nowClearTs = Date.now();
+            localStorage.setItem('xb_deleted_notif_ids', JSON.stringify(deletedMap));
+            localStorage.setItem(isAdmFeed ? 'xb_admin_cleared_ts' : 'xb_buyer_cleared_ts', String(nowClearTs));
             localStorage.setItem(storageKey, '[]');
             updateNotifBadgeCount();
             renderNotificationsList();
-            syncCloudStateWithGSheet('push', isAdmFeed ? { clear_admin_notifs_ts: Date.now() } : { clear_buyer_notifs_ts: Date.now() });
-            showToast('Notifications cleared across all devices!');
+            showToast('🗑️ Notifications permanently cleared!');
+
+            await syncCloudStateWithGSheet('push', isAdmFeed
+                ? { clear_admin_notifs_ts: nowClearTs, cleared_ids: clearedIds, admin_notifs: [] }
+                : { clear_buyer_notifs_ts: nowClearTs, cleared_ids: clearedIds, buyer_notifs: [] }
+            );
         }
 
         // Fire complete Notification Flow for ADD_TO_CART with Double-Line Header & Aligned Colons
@@ -3876,63 +3920,6 @@
             renderViewport();
         }
 
-        function getUserVipRankMeta() {
-            const st = computeVerifiedLoyaltyStats();
-            const totalSpent = st.totalRealSpent;
-            const totalTopup = st.topupTotal;
-            const txCount = st.totalRealTxCount;
-            const totalVol = Math.max(totalTopup, userBalanceUsdt + totalSpent);
-
-            if (ADMIN_IDS.includes(String(currentUserId))) {
-                return {
-                    emblem: '👑',
-                    rank: 'ROYAL FOUNDER VIP',
-                    perk: 'Executive Store Owner • Full Vault & Zero Fee Transfer',
-                    badgeBg: 'linear-gradient(135deg, rgba(250,204,21,0.28) 0%, rgba(234,179,8,0.18) 100%)',
-                    badgeBorder: 'rgba(250,204,21,0.65)',
-                    badgeColor: '#fef08a'
-                };
-            }
-            if (txCount >= 100 || totalVol >= 500) {
-                return {
-                    emblem: '💎',
-                    rank: 'DIAMOND VIP HOLDER',
-                    perk: `10% Loyalty Cashback Unlocked • Vol: $${totalVol.toFixed(2)} USDT (${txCount} TX)`,
-                    badgeBg: 'rgba(56, 189, 248, 0.22)',
-                    badgeBorder: 'rgba(56, 189, 248, 0.6)',
-                    badgeColor: '#e0f2fe'
-                };
-            }
-            if (txCount >= 50 || totalVol >= 200) {
-                return {
-                    emblem: '🥇',
-                    rank: 'GOLD VIP HOLDER',
-                    perk: `Priority Vault & 10% Milestone • Vol: $${totalVol.toFixed(2)} USDT (${txCount} TX)`,
-                    badgeBg: 'rgba(250, 204, 21, 0.22)',
-                    badgeBorder: 'rgba(250, 204, 21, 0.6)',
-                    badgeColor: '#fef9c3'
-                };
-            }
-            if (txCount >= 20 || totalVol >= 50) {
-                return {
-                    emblem: '🥈',
-                    rank: 'SILVER VIP MEMBER',
-                    perk: `Verified VIP Tier • Vol: $${totalVol.toFixed(2)} USDT (${txCount} TX)`,
-                    badgeBg: 'rgba(226, 232, 240, 0.2)',
-                    badgeBorder: 'rgba(226, 232, 240, 0.5)',
-                    badgeColor: '#f8fafc'
-                };
-            }
-            return {
-                emblem: '🥉',
-                rank: 'BRONZE VIP MEMBER',
-                perk: `Active Tier • Vol: $${totalVol.toFixed(2)} USDT ($${Math.max(0, 50 - totalVol).toFixed(0)} to Silver VIP)`,
-                badgeBg: 'rgba(15, 23, 42, 0.38)',
-                badgeBorder: 'rgba(255, 255, 255, 0.28)',
-                badgeColor: '#f1f5f9'
-            };
-        }
-
         function openWalletReceiveModal() {
             const vip = getUserVipRankMeta();
             const cleanU = currentUsername.replace(/^@/, '');
@@ -4013,8 +4000,8 @@
             const pin = (document.getElementById('sendSecurityPin')?.value || '').trim();
 
             if (!rawTarget || rawTarget.length < 2) return showToast('Please enter a valid recipient @username!');
-            if (rawTarget.toLowerCase() === currentUsername.replace(/^@/, '').toLowerCase()) {
-                return showToast('You cannot transfer balance to your own username!');
+            if (rawTarget.toLowerCase() === currentUsername.replace(/^@/, '').toLowerCase() || rawTarget === String(currentUserId)) {
+                return showToast('You cannot transfer balance to your own account!');
             }
             if (isNaN(amt) || amt < 1) return showToast('Minimum transfer amount is 1.00 USDT!');
             if (amt > userBalanceUsdt) return showToast('Insufficient USDT balance in your wallet!');
@@ -4034,6 +4021,7 @@
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'web_transfer_balance',
+                        tx_id: trfId,
                         sender_uid: String(currentUserId),
                         sender_uname: currentUsername.replace(/^@/, ''),
                         sender_new_bal: newSenderBal,
@@ -4050,16 +4038,27 @@
                 const cleanRecUname = String(data.receiver_uname || rawTarget).replace(/^@/, '');
                 const confirmedSenderBal = !isNaN(parseFloat(data.sender_new_bal)) ? parseFloat(data.sender_new_bal) : newSenderBal;
                 const recNewBal = !isNaN(parseFloat(data.receiver_new_bal)) ? parseFloat(data.receiver_new_bal) : amt;
+                const finalTrfId = String(data.tx_id || trfId);
 
                 // 1. Kunci saldo baru pengirim sesuai hasil potong resmi dari Sheet2
                 setAuthoritativeBalance(confirmedSenderBal, true);
-                recordWebTransaction(trfId, `Sent Balance to @${cleanRecUname}`, `@${cleanRecUname}`, amt, 'OUT', 'P2P Wallet Transfer');
+
+                // 2. Catat riwayat transaksi lokal & notifikasi in-web pengirim (menggunakan ID yang sama dengan server agar tidak duplikat)
+                if (data.sender_tx) {
+                    const txList = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+                    if (!txList.some(t => t && t.invoice === data.sender_tx.invoice)) {
+                        txList.unshift(data.sender_tx);
+                        localStorage.setItem('xb_tx_history', JSON.stringify(txList.slice(0, 40)));
+                    }
+                } else {
+                    recordWebTransaction(finalTrfId, `Sent Balance to @${cleanRecUname}`, `@${cleanRecUname}`, amt, 'OUT', 'P2P Wallet Transfer');
+                }
 
                 const senderMsg = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   📤 <b>B A L A N C E  T R A N S F E R  S E N T</b>\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `🔸 <b>Transfer ID:</b> <code>${trfId}</code>\n` +
+                    `🔸 <b>Transfer ID:</b> <code>${finalTrfId}</code>\n` +
                     `🔸 <b>Recipient:</b> <b>@${cleanRecUname}</b>\n` +
                     `🔸 <b>Amount Sent:</b> <b>-$${amt.toFixed(2)} USDT</b>\n` +
                     `🔸 <b>Remaining Balance:</b> <b>$${userBalanceUsdt.toFixed(2)} USDT</b>`
@@ -4068,37 +4067,26 @@
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   📥 <b>B A L A N C E  R E C E I V E D</b>\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `🔸 <b>Transfer ID:</b> <code>${trfId}</code>\n` +
+                    `🔸 <b>Transfer ID:</b> <code>${finalTrfId}</code>\n` +
                     `🔸 <b>From Sender:</b> <b>@${currentUsername.replace(/^@/, '')}</b>\n` +
                     `🔸 <b>Amount Received:</b> <b>+$${amt.toFixed(2)} USDT</b>\n` +
                     `🔸 <b>Updated Balance:</b> <b>$${recNewBal.toFixed(2)} USDT</b>`
                 );
 
-                pushInWebNotification('buyer', `📤 TRANSFER SENT (@${cleanRecUname})`, senderMsg);
+                if (data.sender_notif) {
+                    const bNotifs = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
+                    if (!bNotifs.some(n => n && n.id === data.sender_notif.id)) {
+                        bNotifs.unshift(data.sender_notif);
+                        localStorage.setItem('xb_buyer_notifs', JSON.stringify(bNotifs.slice(0, 50)));
+                    }
+                    updateNotifBadgeCount();
+                } else {
+                    pushInWebNotification('buyer', `📤 TRANSFER SENT (@${cleanRecUname})`, senderMsg);
+                }
+
+                // 3. Kirim juga notifikasi ke Telegram DM pengirim & penerima
                 sendTelegramSilentPush(currentUserId, senderMsg, true);
                 if (data.receiver_uid) sendTelegramSilentPush(data.receiver_uid, receiverMsg, true);
-
-                // 2. Simpan riwayat transaksi & notifikasi pengirim ke Cloud TANPA menimpa ulang saldo Sheet2
-                await syncCloudStateWithGSheet('push');
-
-                // 3. Kirim hanya notifikasi & catatan riwayat mutasi ke Cloud penerima (saldo penerima sudah dihitung pas oleh Sheet2)
-                const recNotifObj = {
-                    id: 'NTF-' + trfId,
-                    time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
-                    title: `📥 BALANCE RECEIVED (+$${amt.toFixed(2)} USDT)`,
-                    body: receiverMsg,
-                    meta: null
-                };
-                const recTxObj = {
-                    invoice: trfId,
-                    title: `Received Balance from @${currentUsername.replace(/^@/, '')}`,
-                    target: `@${cleanRecUname}`,
-                    usdt: amt.toFixed(2),
-                    type: 'IN',
-                    method: 'P2P Wallet Transfer',
-                    date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
-                };
-                pushDirectCloudStateToTargetUser(data.receiver_uid || '', cleanRecUname, recNewBal, recNotifObj, recTxObj);
 
                 closeModal('paymentGatewayModal');
                 renderViewport();
@@ -4148,10 +4136,10 @@
         }
 
         function getUserVipRankMeta() {
-            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-            const totalSpent = history.filter(x => x.type === 'OUT').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-            const totalTopup = history.filter(x => x.type === 'IN').reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
-            const txCount = history.length;
+            const st = computeVerifiedLoyaltyStats();
+            const totalSpent = st.totalRealSpent;
+            const totalTopup = st.topupTotal;
+            const txCount = st.totalRealTxCount;
             const totalVol = Math.max(totalTopup, userBalanceUsdt + totalSpent);
 
             // 1. VIP FOUNDER = RED (CRIMSON RUBY METALLIC CARD)
@@ -6644,25 +6632,27 @@
             document.getElementById('cartModal').classList.add('active');
         }
 
-        function applyCartVoucher() {
-            const code = document.getElementById('cartPromoInput').value.trim().toUpperCase();
-            if (code === 'XIANBEE5' || code === 'VIP5') {
-                cartDiscountPct = 5;
-                openCartModal();
-                showToast('5% Discount Voucher Applied!');
-            } else {
-                showToast('Invalid voucher code!');
-            }
-        }
-
         function claimWalletVoucher() {
-            const code = document.getElementById('walletPromoInput').value.trim().toUpperCase();
+            const code = (document.getElementById('walletPromoInput')?.value || '').trim().toUpperCase();
+            if (!code) return showToast('Please enter a promo code!');
             if (code === 'XIANBEE5' || code === 'VIP5') {
                 cartDiscountPct = 5;
-                showToast('5% Discount Voucher Activated for your next checkout!');
-            } else {
-                showToast('Invalid or expired promo code!');
+                return showToast('5% Discount Voucher Activated for your next checkout!');
             }
+            const list = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
+            const found = list.find(x => x.code === code);
+            if (!found) {
+                return showToast('❌ Invalid or expired promo code!');
+            }
+            if (found.type === 'once' && found.used) {
+                return showToast('❌ This once-off promo voucher has already been used!');
+            }
+            cartDiscountPct = found.disc;
+            if (found.type === 'once') {
+                found.used = true;
+                localStorage.setItem('xb_custom_vouchers', JSON.stringify(list));
+            }
+            showToast(`✅ ${found.disc}% Discount Voucher Activated for your next checkout!`);
         }
 
         function sendPayloadToBot(action, extra = {}) {
@@ -8483,20 +8473,25 @@
                 const finalUid = (data && data.user && data.user.user_id) ? String(data.user.user_id) : generatedUid;
                 const finalBal = (data && data.user && !isNaN(parseFloat(data.user.balance))) ? parseFloat(data.user.balance) : 0.00;
 
+                // Bersihkan cache sesi akun sebelumnya sebelum mengaktifkan akun baru
+                localStorage.removeItem('xb_buyer_notifs');
+                localStorage.removeItem('xb_tx_history');
+                localStorage.removeItem('xb_purchased_vault');
+                localStorage.removeItem('xb_saved_cart');
+                localStorage.removeItem('xb_deleted_notif_ids');
+
                 currentUserId = finalUid;
                 currentUsername = rawUname;
                 currentFullName = rawUname;
-                userBalanceUsdt = finalBal;
                 isWebCloudAuthenticated = true;
+                setAuthoritativeBalance(finalBal, true);
 
                 localStorage.setItem('xb_web_logged_in', 'true');
                 localStorage.setItem('xb_uid', currentUserId);
                 localStorage.setItem('xb_uname', currentUsername);
-                localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
                 localStorage.setItem('xb_bot_pin_hash', pinHash);
                 localStorage.setItem('xb_user_pin', rawPin);
 
-                // Notify Admin Telegram Bot of New Web Registration
                 const regAlertHtml = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                     `   🌐 <b>N E W  W E B  U S E R  R E G I S T E R E D</b>\n` +
@@ -8504,11 +8499,12 @@
                     `👤 <b>Username:</b> @${rawUname}\n` +
                     `🆔 <b>Web Client ID:</b> <code>${currentUserId}</code>\n` +
                     `📩 <b>Contact:</b> <code>${contact}</code>\n` +
-                    `☁️ <b>Database:</b> Synced to Google Sheet4 CRM`
+                    `☁️ <b>Database:</b> Synced to Sheet2 & Sheet4 CRM`
                 );
                 ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, regAlertHtml, true));
                 pushInWebNotification('buyer', '🎉 WELCOME TO XIANBEE-TECH', `Your cloud account <b>@${rawUname}</b> (ID: <code>${currentUserId}</code>) is now active and synced with Google Cloud Vault.`);
 
+                await syncCloudStateWithGSheet('pull', { force_sync: true });
                 updateTopBalance();
                 checkAdminVisibility();
                 checkInitialAuthGate();
@@ -8550,16 +8546,22 @@
                 }
 
                 const usr = data.user;
+                // Bersihkan cache lokal dari akun sebelumnya agar notifikasi & histori tidak pernah tercampur
+                localStorage.removeItem('xb_buyer_notifs');
+                localStorage.removeItem('xb_tx_history');
+                localStorage.removeItem('xb_purchased_vault');
+                localStorage.removeItem('xb_saved_cart');
+                localStorage.removeItem('xb_deleted_notif_ids');
+
                 currentUserId = String(usr.user_id || 'Client-Web');
                 currentUsername = String(usr.username || rawUname).replace(/^@/, '');
                 currentFullName = currentUsername;
-                userBalanceUsdt = parseFloat(usr.balance || 0);
                 isWebCloudAuthenticated = true;
+                setAuthoritativeBalance(parseFloat(usr.balance || 0), true);
 
                 localStorage.setItem('xb_web_logged_in', 'true');
                 localStorage.setItem('xb_uid', currentUserId);
                 localStorage.setItem('xb_uname', currentUsername);
-                localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
                 if (usr.pin_hash) localStorage.setItem('xb_bot_pin_hash', usr.pin_hash);
                 if (Array.isArray(usr.vault) && usr.vault.length > 0) {
                     localStorage.setItem('xb_purchased_vault', JSON.stringify(usr.vault));
@@ -8568,6 +8570,7 @@
                     localStorage.setItem('xb_tx_history', JSON.stringify(usr.tx_history));
                 }
 
+                await syncCloudStateWithGSheet('pull', { force_sync: true });
                 updateTopBalance();
                 checkAdminVisibility();
                 checkInitialAuthGate();
