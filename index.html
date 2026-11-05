@@ -1842,80 +1842,10 @@
             localStorage.setItem('xb_applied_credits_v2', JSON.stringify(map));
         }
 
-        // Rekonsiliasi otomatis saldo dari Notifikasi Masuk (TRF-... / INV-...) & Mutasi agar 100% pasti bertambah
+        // NONAKTIFKAN penambahan saldo dari teks notifikasi agar TIDAK PERNAH terjadi double-credit (RECONCILE-NOTIF).
+        // Seluruh perhitungan saldo kini 100% dikendalikan secara atomik oleh Sheet2 (Master Wallet Ledger).
         function reconcileBalanceFromNotifsAndLedger(forceFromSyncBtn = false) {
-            let changed = false;
-            try {
-                const map = JSON.parse(localStorage.getItem('xb_applied_credits_v2') || '{}');
-                const notifs = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
-                const txList = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-
-                // Urutkan dari yang paling lama ke paling baru agar akumulasi akurat
-                const chronologicalNotifs = [...notifs].reverse();
-                for (const n of chronologicalNotifs) {
-                    const titleUp = String(n.title || '').toUpperCase();
-                    const plainBody = String(n.body || '').replace(/<[^>]+>/g, ' ');
-                    const isIncomingCredit = (
-                        titleUp.includes('BALANCE RECEIVED') ||
-                        titleUp.includes('IDR PAYMENT APPROVED') ||
-                        titleUp.includes('DEPOSIT CONFIRMED') ||
-                        plainBody.includes('B A L A N C E  R E C E I V E D') ||
-                        plainBody.includes('I D R  P A Y M E N T  A P P R O V E D')
-                    );
-                    if (!isIncomingCredit) continue;
-
-                    const idMatch = plainBody.match(/(?:Transfer ID|Invoice|Invoice ID)\s*:\s*([A-Za-z0-9\-]+)/i);
-                    const amtMatch = plainBody.match(/(?:Amount Received|Credited Amount|Top-Up)\s*:\s*\+?\$?([\d\.]+)/i);
-                    const updMatch = plainBody.match(/(?:Updated Balance|New Balance)\s*:\s*\$?([\d\.]+)/i);
-
-                    const creditId = idMatch ? idMatch[1].trim().toUpperCase() : (n.id ? String(n.id).toUpperCase() : null);
-                    const amtVal = amtMatch ? parseFloat(amtMatch[1]) : 0;
-                    const updVal = updMatch ? parseFloat(updMatch[1]) : null;
-
-                    if (creditId && !map[creditId] && (amtVal > 0 || (updVal !== null && updVal > 0))) {
-                        map[creditId] = Date.now();
-                        let targetBal = userBalanceUsdt + amtVal;
-                        if (updVal !== null && !isNaN(updVal) && updVal > userBalanceUsdt) {
-                            targetBal = Math.max(targetBal, updVal);
-                        }
-                        setAuthoritativeBalance(targetBal, true);
-                        changed = true;
-
-                        // Pastikan tercatat juga di Order History (IN) jika belum ada
-                        if (amtVal > 0 && !txList.some(t => String(t.invoice || '').toUpperCase() === creditId)) {
-                            recordWebTransaction(
-                                creditId,
-                                titleUp.includes('BALANCE RECEIVED') ? 'Received P2P Wallet Transfer' : 'Wallet Balance Deposit (Approved)',
-                                `@${String(currentUsername).replace(/^@/, '')}`,
-                                amtVal,
-                                'IN',
-                                titleUp.includes('BALANCE RECEIVED') ? 'P2P Wallet Transfer' : 'Verified Deposit'
-                            );
-                        }
-                    }
-                }
-
-                // Cek juga jika notifikasi paling atas adalah BALANCE RECEIVED dan saldo saat ini masih di bawah Updated Balance
-                if (notifs.length > 0 && forceFromSyncBtn) {
-                    const latestN = notifs[0];
-                    const latestPlain = String(latestN.body || '').replace(/<[^>]+>/g, ' ');
-                    if (String(latestN.title || '').toUpperCase().includes('BALANCE RECEIVED') || latestPlain.includes('B A L A N C E  R E C E I V E D')) {
-                        const updM = latestPlain.match(/Updated Balance\s*:\s*\$?([\d\.]+)/i);
-                        if (updM && !isNaN(parseFloat(updM[1]))) {
-                            const expectedBal = parseFloat(updM[1]);
-                            // Jika belum ada transaksi keluar (OUT) setelah transfer diterima dan saldo masih kurang dari expectedBal
-                            const hasRecentOut = txList.length > 0 && txList[0].type === 'OUT';
-                            if (!hasRecentOut && userBalanceUsdt < expectedBal) {
-                                setAuthoritativeBalance(expectedBal, true);
-                                changed = true;
-                            }
-                        }
-                    }
-                }
-
-                localStorage.setItem('xb_applied_credits_v2', JSON.stringify(map));
-            } catch (e) {}
-            return changed;
+            return false;
         }
 
         async function syncCloudStateWithGSheet(mode = 'pull', extraPayload = {}) {
@@ -4148,13 +4078,12 @@
                 sendTelegramSilentPush(currentUserId, senderMsg, true);
                 if (data.receiver_uid) sendTelegramSilentPush(data.receiver_uid, receiverMsg, true);
 
-                // 2. Sinkronkan saldo baru pengirim ke Sheet4 CRM & Cloud State
-                syncUserCrmToGSheetFromWeb('transfer_out', amt);
-                await syncCloudStateWithGSheet('push', { balance: userBalanceUsdt, bal_ts: Date.now() });
+                // 2. Simpan riwayat transaksi & notifikasi pengirim ke Cloud TANPA menimpa ulang saldo Sheet2
+                await syncCloudStateWithGSheet('push');
 
-                // 3. Dorong langsung saldo baru + riwayat transaksi + notifikasi ke Cloud milik Penerima agar saat Penerima klik Sync langsung bertambah!
+                // 3. Kirim hanya notifikasi & catatan riwayat mutasi ke Cloud penerima (saldo penerima sudah dihitung pas oleh Sheet2)
                 const recNotifObj = {
-                    id: 'NTF-' + Date.now(),
+                    id: 'NTF-' + trfId,
                     time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
                     title: `📥 BALANCE RECEIVED (+$${amt.toFixed(2)} USDT)`,
                     body: receiverMsg,
