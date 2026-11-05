@@ -1606,18 +1606,27 @@
         let currentUserId = urlParams.get('uid') || (tgUser ? String(tgUser.id) : (localStorage.getItem('xb_uid') || 'Client-Web'));
         let currentUsername = urlParams.get('uname') || (tgUser ? (tgUser.username || tgUser.first_name) : (localStorage.getItem('xb_uname') || 'XianBeeClient'));
         let currentFullName = (tgUser ? `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() : currentUsername) || 'Client';
+        const _prevStoredUid = localStorage.getItem('xb_uid') || '';
+        const _prevStoredUname = (localStorage.getItem('xb_uname') || '').toLowerCase();
+        // Jika berganti akun di browser/HP yang sama, bersihkan cache lokal akun sebelumnya agar tidak pernah bocor/bentrok!
+        if ((_prevStoredUid && _prevStoredUid !== String(currentUserId)) || (_prevStoredUname && _prevStoredUname !== String(currentUsername).toLowerCase())) {
+            localStorage.removeItem('xb_bal_updated_ts');
+            localStorage.removeItem('xb_buyer_notifs');
+            localStorage.removeItem('xb_tx_history');
+            localStorage.removeItem('xb_purchased_vault');
+            localStorage.removeItem('xb_saved_cart');
+        }
+
         const _urlBalRaw = urlParams.get('bal');
-        const _lastUrlBalLoaded = sessionStorage.getItem('xb_loaded_url_bal');
         const _localBalTs = parseInt(localStorage.getItem('xb_bal_updated_ts') || '0');
         const _savedLocalBal = parseFloat(localStorage.getItem('xb_bal_usdt') || '0.00');
 
         let userBalanceUsdt = _savedLocalBal;
         if (_urlBalRaw !== null && !isNaN(parseFloat(_urlBalRaw))) {
             const parsedUrlBal = parseFloat(_urlBalRaw);
-            // Hanya gunakan ?bal= dari URL jika sesi baru dan belum ada transaksi lokal yang lebih baru
-            if (_localBalTs === 0 || _lastUrlBalLoaded !== _urlBalRaw) {
+            // HANYA gunakan ?bal= dari URL saat pertama kali buka (_localBalTs === 0) sebelum Sheet2 selesai ditarik
+            if (_localBalTs === 0) {
                 userBalanceUsdt = parsedUrlBal;
-                sessionStorage.setItem('xb_loaded_url_bal', _urlBalRaw);
             }
         }
 
@@ -1996,17 +2005,16 @@
                         localStorage.setItem('xb_tx_history', JSON.stringify(mergedTx.slice(0, 40)));
                     }
 
-                    // 1. Cek Rekonsiliasi Otomatis dari Notifikasi Transfer / Deposit Masuk
-                    const reconciled = reconcileBalanceFromNotifsAndLedger(Boolean(extraPayload && extraPayload.force_sync));
-
-                    // 2. Cek Saldo dari Cloud State (us.balance)
+                    // 1. Ambil Saldo Resmi dari Sheet2 (Master Wallet Ledger) terlebih dahulu
                     const cloudBal = parseFloat(us.balance);
                     const cloudBalTs = parseInt(us.bal_ts || 0);
+                    const isForceSync = Boolean(extraPayload && extraPayload.force_sync);
+
                     if (mode === 'pull' && !isNaN(cloudBal) && cloudBal >= 0) {
                         const shouldAcceptCloudBal = (
-                            (cloudBalTs > localBalTs && Math.abs(cloudBal - userBalanceUsdt) > 0.005) ||
-                            (cloudBalTs === 0 && cloudBal > userBalanceUsdt) ||
-                            (Boolean(extraPayload && extraPayload.force_sync) && cloudBal > userBalanceUsdt)
+                            isForceSync ||
+                            cloudBalTs >= localBalTs ||
+                            localBalTs === 0
                         );
                         if (shouldAcceptCloudBal) {
                             setAuthoritativeBalance(cloudBal, false);
@@ -2014,18 +2022,23 @@
                         }
                     }
 
-                    if (reconciled) {
-                        // Simpan saldo hasil rekonsiliasi kembali ke Cloud agar permanen
-                        fetch(GSHEET_WEBHOOK_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                            body: JSON.stringify(Object.assign({}, basePayload, {
-                                mode: 'push',
-                                balance: userBalanceUsdt,
-                                bal_ts: Date.now()
-                            }))
-                        }).catch(() => {});
-                        syncUserCrmToGSheetFromWeb('reconcile', 0);
+                    // 2. Jika ada notifikasi transfer lama (sebelum Sheet2 aktif) yang belum masuk ke Sheet2, rekonsiliasi 1x
+                    if (isForceSync) {
+                        const reconciled = reconcileBalanceFromNotifsAndLedger(true);
+                        if (reconciled) {
+                            fetch(GSHEET_WEBHOOK_URL, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                body: JSON.stringify(Object.assign({}, basePayload, {
+                                    mode: 'push',
+                                    balance: userBalanceUsdt,
+                                    bal_ts: Date.now(),
+                                    tx_id: 'RECONCILE-NOTIF',
+                                    tx_note: 'Auto-Reconciled Incoming Transfer'
+                                }))
+                            }).catch(() => {});
+                            syncUserCrmToGSheetFromWeb('reconcile', 0);
+                        }
                     }
 
                     if (activeTab === 'wallet' || activeTab === 'profile') renderViewport();
@@ -3851,31 +3864,14 @@
             const btn = document.getElementById('btnWebSyncBal');
             if (btn) btn.innerText = '⏳ Syncing...';
 
-            // 1. Rekonsiliasi langsung dari notifikasi transfer/top-up yang sudah ada di HP
-            reconcileBalanceFromNotifsAndLedger(true);
-
-            // 2. Tarik state terbaru dari Cloud & Sheet1/Sheet4
             await fetchRealTimeUsdtIdrRate();
+            // Tarik langsung saldo resmi dari Sheet2 (Master Wallet Ledger)
             await syncCloudStateWithGSheet('pull', { force_sync: true });
             await syncGoogleSheetInventory(false);
 
-            // 3. Cek ulang rekonsiliasi setelah pull notifikasi terbaru dari Cloud
-            const didReconcile = reconcileBalanceFromNotifsAndLedger(true);
-
-            // 4. Cek juga saldo terbaru user dari tabel Sheet4 CRM (cachedSheetVipHolders)
-            const crmBal = extractMyBalanceFromCrmArray(cachedSheetVipHolders);
-            if (crmBal !== null && crmBal > userBalanceUsdt) {
-                setAuthoritativeBalance(crmBal, true);
-            }
-
-            if (didReconcile) {
-                await syncCloudStateWithGSheet('push', { balance: userBalanceUsdt, bal_ts: Date.now() });
-                syncUserCrmToGSheetFromWeb('sync', 0);
-            }
-
             updateTopBalance();
             if (activeTab === 'wallet' || activeTab === 'profile') renderViewport();
-            showToast(`✅ Cloud Wallet Synced! Balance: ${fmtPrice(userBalanceUsdt)}`);
+            showToast(`✅ Master Wallet (Sheet2) Synced! Balance: ${fmtPrice(userBalanceUsdt)}`);
         }
 
         let selectedWalletDepMode = 'USDT';
@@ -4057,10 +4053,11 @@
                 }
 
                 const cleanRecUname = String(data.receiver_uname || rawTarget).replace(/^@/, '');
+                const confirmedSenderBal = !isNaN(parseFloat(data.sender_new_bal)) ? parseFloat(data.sender_new_bal) : newSenderBal;
                 const recNewBal = !isNaN(parseFloat(data.receiver_new_bal)) ? parseFloat(data.receiver_new_bal) : amt;
 
-                // 1. Kunci saldo baru pengirim + timestamp agar tidak pernah tertimpa balik oleh URL/pull lama
-                setAuthoritativeBalance(newSenderBal, true);
+                // 1. Kunci saldo baru pengirim sesuai hasil potong resmi dari Sheet2
+                setAuthoritativeBalance(confirmedSenderBal, true);
                 recordWebTransaction(trfId, `Sent Balance to @${cleanRecUname}`, `@${cleanRecUname}`, amt, 'OUT', 'P2P Wallet Transfer');
 
                 const senderMsg = (
