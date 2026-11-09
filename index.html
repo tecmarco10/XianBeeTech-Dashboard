@@ -1596,8 +1596,8 @@
             "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
             "🛡️ <b>Engineered by Abie Haryatmo</b>\n" +
             "🤝 <b>Powered by XianBee-Tech</b>\n" +
-            "🌐 <b>Ordered via: Web App Store (Order by Web)</b>\n" +
-            "🤖 <b> Official Bot: @XianBeeTechStore_Bot</b>\n" +
+            "🌐 <b>Ordered via: Web App Store</b>\n" +
+            "🤖 <b>Official Bot: @XianBeeTechStore_Bot</b>\n" +
             "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         );
 
@@ -5495,20 +5495,25 @@
                 const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
                 if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
 
-                // Dorong saldo baru yang sudah dipotong langsung ke Sheet4 CRM & Cloud State
-                await syncUserCrmToGSheetFromWeb('acc', cleanTotal);
-                await syncCloudStateWithGSheet('push', { balance: newBalAfterPay, bal_ts: Date.now() });
-
+                // Tampilkan resi & kredensial SECARA INSTAN tanpa menunggu jeda Google Sheet, lalu sinkronkan di background!
                 triggerOrderCompletedNotifications(invId, itemsList, cleanTotal, 'Balance', unlockedAccounts);
                 renderViewport();
                 showInstantReceiptModal(invId, summaryTitle, targetStr, cleanTotal, 'Wallet Balance (PIN Verified)', unlockedAccounts);
+
+                await Promise.allSettled([
+                    syncUserCrmToGSheetFromWeb('acc', cleanTotal),
+                    syncCloudStateWithGSheet('push', { balance: newBalAfterPay, bal_ts: Date.now() })
+                ]);
             } finally {
                 _isProcessingBalanceCheckout = false;
             }
         }
 
         function verifyCheckoutPinNow() {
-            if (_isProcessingBalanceCheckout) return;
+            if (_isProcessingBalanceCheckout || !_pendingBalanceCheckout) return;
+            const btnPay = document.getElementById('btnConfirmPinPay');
+            if (btnPay && btnPay.disabled) return;
+
             const inputPin = (document.getElementById('checkoutPinInput')?.value || '').trim();
             if (!/^\d{6}$/.test(inputPin)) {
                 return showToast('Please enter your 6-digit Security PIN!');
@@ -5516,6 +5521,23 @@
             if (!isPinValidWithBot(inputPin)) {
                 return showToast('❌ Wrong 6-Digit PIN! Must match your Security PIN.');
             }
+
+            // Kunci permanen tombol & input begitu diklik sekali agar mustahil ter-klik berulang!
+            if (btnPay) {
+                btnPay.disabled = true;
+                btnPay.style.pointerEvents = 'none';
+                btnPay.style.opacity = '0.55';
+                btnPay.innerText = '⏳ Processing...';
+            }
+            const btnChg = document.getElementById('btnChangePinModal');
+            if (btnChg) {
+                btnChg.disabled = true;
+                btnChg.style.pointerEvents = 'none';
+                btnChg.style.opacity = '0.5';
+            }
+            const pinEl = document.getElementById('checkoutPinInput');
+            if (pinEl) pinEl.readOnly = true;
+
             finalizeBalanceCheckoutAfterPin();
         }
 
@@ -5581,8 +5603,8 @@
                             <input type="password" class="form-input" id="checkoutPinInput" maxlength="6" inputmode="numeric" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.35rem;letter-spacing:8px;" placeholder="••••••">
                         </div>
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                            <button class="btn-ui secondary" style="padding:11px 8px;font-size:0.72rem;" onclick="openSecurityPinModal()">🔐 Change PIN</button>
-                            <button class="btn-ui buy-now" style="padding:11px 8px;font-size:0.72rem;" onclick="verifyCheckoutPinNow()">✅ Confirm & Pay</button>
+                            <button class="btn-ui secondary" id="btnChangePinModal" style="padding:11px 8px;font-size:0.72rem;" onclick="openSecurityPinModal()">🔐 Change PIN</button>
+                            <button class="btn-ui buy-now" id="btnConfirmPinPay" style="padding:11px 8px;font-size:0.72rem;" onclick="verifyCheckoutPinNow()">✅ Confirm & Pay</button>
                         </div>
                     `}
                 `;
