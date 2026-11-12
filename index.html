@@ -920,39 +920,108 @@
             100% { transform: translate(18px, -18px) scale(1.15); }
         }
 
-        /* 1-LINE COMPACT TELEMETRY TOPBAR */
+        /* SPACIOUS 3D DEVOPS TELEMETRY TOPBAR */
         .auth-ticker-bar {
             position: relative;
             z-index: 2;
             width: 100%;
-            height: 40px;
+            min-height: 52px;
             flex-shrink: 0;
             background: var(--bg-elevated);
-            backdrop-filter: blur(16px);
-            border-bottom: 1px solid var(--border-focus);
-            padding: 0 12px;
+            backdrop-filter: blur(18px);
+            border-bottom: 2px solid rgba(56, 189, 248, 0.5);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
+            padding: 8px 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            font-size: 0.68rem;
+            gap: 10px;
+            font-size: 0.72rem;
             font-weight: 800;
+        }
+
+        .auth-brand-pill {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            flex-shrink: 0;
+            background: var(--bg-input);
+            border: 1px solid rgba(56, 189, 248, 0.45);
+            border-left: 3px solid #38bdf8;
+            padding: 5px 10px;
+            border-radius: 10px;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+        }
+
+        .auth-brand-gradient {
+            font-size: 0.84rem;
+            font-weight: 800;
+            letter-spacing: -0.2px;
+            background: linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
 
         .auth-marquee-wrap {
             flex: 1;
             overflow: hidden;
             white-space: nowrap;
-            mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-            -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+            background: rgba(7, 8, 13, 0.45);
+            border: 1px solid var(--border-subtle);
+            border-radius: 9px;
+            padding: 6px 0;
+            mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
         }
 
         .auth-ticker-items {
             display: inline-flex;
             align-items: center;
-            gap: 20px;
+            gap: 24px;
             font-family: 'JetBrains Mono', monospace;
-            animation: authTickerSlide 20s linear infinite;
+            font-size: 0.68rem;
+            animation: authTickerSlide 22s linear infinite;
+        }
+
+        /* SPACIOUS DEVELOPER CONSOLE FOOTER */
+        .auth-dev-footer {
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            flex-shrink: 0;
+            background: var(--bg-elevated);
+            backdrop-filter: blur(18px);
+            border-top: 2px solid rgba(168, 85, 247, 0.5);
+            box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.45);
+            padding: 9px 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .auth-dev-badges {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .auth-dev-chip {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-radius: 7px;
+            padding: 3px 9px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.64rem;
         }
 
         @keyframes authTickerSlide {
@@ -1467,21 +1536,22 @@
             <div class="auth-orb-float" style="width:260px;height:260px;background:#06b6d4;bottom:10%;right:6%;animation-delay:-4s;"></div>
         </div>
 
-        <!-- 1-LINE LIVE TELEMETRY & MARKET MARQUEE BAR (ZERO INTERNAL SECRETS) -->
+        <!-- SPACIOUS 3D DEVOPS TELEMETRY TOPBAR -->
         <div class="auth-ticker-bar">
-            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-                <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);"></span>
-                <span style="font-weight:800;letter-spacing:0.4px;color:var(--text-primary);">XIANBEE CORE</span>
+            <div class="auth-brand-pill">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 10px var(--success);"></span>
+                <span class="auth-brand-gradient">XianBee-Tech</span>
             </div>
             <div class="auth-marquee-wrap">
                 <div class="auth-ticker-items">
-                    <span style="color:var(--success);">💱 1 USDT = <b id="authLiveIdrTicker">Rp 16.250</b></span>
-                    <span style="color:var(--accent-cyan);">📦 Live Inventory: <b id="authLiveStockTicker">Verified Ready</b></span>
-                    <span style="color:var(--warning);">🔒 256-Bit Quantum SSL Encryption</span>
-                    <span style="color:#c084fc;">⚡ Instant Automated Dispatch 24/7</span>
+                    <span style="color:#38bdf8;">⚡ <b>SYS_NODE:</b> 99.98% ONLINE</span>
+                    <span style="color:var(--success);">💱 <b>ORACLE_RATE:</b> 1 USDT = <b id="authLiveIdrTicker">Rp 16.250</b></span>
+                    <span style="color:#c084fc;">🐙 <b>GITHUB_ASSETS:</b> <b id="authLiveStockTicker">VERIFIED READY</b></span>
+                    <span style="color:var(--warning);">🔐 <b>CIPHER:</b> AES-256-GCM &amp; TOTP_2FA</span>
+                    <span style="color:#38bdf8;">🚀 <b>AUTO_DISPATCH:</b> &lt; 0.4s EXECUTION</span>
                 </div>
             </div>
-            <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:4px 9px;font-size:0.68rem;flex-shrink:0;">☀️/🌌</button>
+            <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:6px 10px;font-size:0.74rem;border-color:rgba(56,189,248,0.45);flex-shrink:0;">☀️/🌌</button>
         </div>
 
         <!-- MAIN WORKSPACE -->
@@ -1706,9 +1776,22 @@
             </div>
         </div>
 
-        <!-- COMPACT BOTTOM FOOTER -->
-        <div style="position:relative;z-index:2;text-align:center;padding:6px 10px;font-size:0.64rem;color:var(--text-muted);border-top:1px solid var(--border-subtle);background:var(--bg-elevated);flex-shrink:0;">
-            🛡️ Engineered by <b>Abie Haryatmo</b> &nbsp;•&nbsp; 🤝 Powered by <b>XianBee-Tech Enterprise</b>
+        <!-- SPACIOUS 3D DEVOPS TELEMETRY TOPBAR -->
+        <div class="auth-ticker-bar">
+            <div class="auth-brand-pill">
+                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 10px var(--success);"></span>
+                <span class="auth-brand-gradient">XianBee-Tech</span>
+            </div>
+            <div class="auth-marquee-wrap">
+                <div class="auth-ticker-items">
+                    <span style="color:#38bdf8;">⚡ <b>SYS_NODE:</b> 99.98% ONLINE</span>
+                    <span style="color:var(--success);">💱 <b>ORACLE_RATE:</b> 1 USDT = <b id="authLiveIdrTicker">Rp 16.250</b></span>
+                    <span style="color:#c084fc;">🐙 <b>GITHUB_ASSETS:</b> <b id="authLiveStockTicker">VERIFIED READY</b></span>
+                    <span style="color:var(--warning);">🔐 <b>CIPHER:</b> AES-256-GCM &amp; TOTP_2FA</span>
+                    <span style="color:#38bdf8;">🚀 <b>AUTO_DISPATCH:</b> &lt; 0.4s EXECUTION</span>
+                </div>
+            </div>
+            <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:6px 10px;font-size:0.74rem;border-color:rgba(56,189,248,0.45);flex-shrink:0;">☀️/🌌</button>
         </div>
 
         <script>
