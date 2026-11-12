@@ -860,7 +860,7 @@
             .grid-cards { grid-template-columns: repeat(3, 1fr); }
         }
 
-        /* 🚪 ENTERPRISE AUTH PORTAL & ZERO-SCROLL 100DVH MOBILE COCKPIT */
+        /* 🚪 ENTERPRISE AUTH PORTAL & PROPORTIONAL ZERO-SCROLL 100DVH COCKPIT */
         .auth-gate-overlay {
             position: fixed;
             inset: 0;
@@ -925,17 +925,17 @@
             position: relative;
             z-index: 2;
             width: 100%;
-            height: 36px;
+            height: 40px;
             flex-shrink: 0;
             background: var(--bg-elevated);
             backdrop-filter: blur(16px);
             border-bottom: 1px solid var(--border-focus);
-            padding: 0 10px;
+            padding: 0 12px;
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 8px;
-            font-size: 0.65rem;
+            font-size: 0.68rem;
             font-weight: 800;
         }
 
@@ -950,7 +950,7 @@
         .auth-ticker-items {
             display: inline-flex;
             align-items: center;
-            gap: 18px;
+            gap: 20px;
             font-family: 'JetBrains Mono', monospace;
             animation: authTickerSlide 20s linear infinite;
         }
@@ -960,7 +960,7 @@
             100% { transform: translateX(-50%); }
         }
 
-        /* MAIN WORKSPACE (ZERO-SCROLL FLEX ON MOBILE, 2-COL ON PC) */
+        /* MAIN WORKSPACE (PROPORTIONAL FULL-SCREEN FILL) */
         .auth-main-grid {
             position: relative;
             z-index: 2;
@@ -969,43 +969,44 @@
             flex: 1;
             min-height: 0;
             margin: 0 auto;
-            padding: 6px 10px;
+            padding: 12px 14px;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            gap: 6px;
         }
 
         .auth-showcase-panel {
             display: none;
             flex-direction: column;
-            gap: 16px;
+            gap: 18px;
         }
 
         .auth-right-column {
             width: 100%;
-            max-width: 450px;
+            max-width: 460px;
+            height: 100%;
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            justify-content: space-evenly;
+            gap: 12px;
             min-height: 0;
-            justify-content: center;
         }
 
         @media (min-width: 960px) {
             .auth-main-grid {
                 display: grid;
                 grid-template-columns: 1.12fr 0.88fr;
-                padding: 20px 24px;
-                gap: 28px;
+                padding: 24px 28px;
+                gap: 32px;
             }
             .auth-showcase-panel {
                 display: flex;
             }
             .auth-right-column {
-                max-width: 460px;
-                gap: 10px;
+                height: auto;
+                justify-content: center;
+                gap: 14px;
             }
         }
 
@@ -1049,17 +1050,17 @@
             transition: 0.2s;
         }
 
-        /* 3D COCKPIT AUTH BOX */
+        /* 3D COCKPIT AUTH BOX (SPACIOUS & PROPORTIONAL) */
         .auth-container {
             width: 100%;
             background: var(--bg-surface);
-            border-top: 2px solid #38bdf8;
-            border-bottom: 3.5px solid #a855f7;
-            border-left: 4px solid #38bdf8;
-            border-right: 4px solid #ec4899;
-            border-radius: 18px;
-            padding: 10px 12px;
-            box-shadow: 0 14px 36px rgba(0, 0, 0, 0.6), var(--shadow-glow);
+            border-top: 2.5px solid #38bdf8;
+            border-bottom: 4px solid #a855f7;
+            border-left: 4.5px solid #38bdf8;
+            border-right: 4.5px solid #ec4899;
+            border-radius: 22px;
+            padding: 18px 16px;
+            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.65), var(--shadow-glow);
             position: relative;
             overflow: hidden;
             transform-style: preserve-3d;
@@ -1072,20 +1073,20 @@
             grid-template-columns: 1fr 1fr;
             background: var(--bg-input);
             border: 1px solid var(--border-subtle);
-            padding: 3px;
-            border-radius: 10px;
-            margin-bottom: 8px;
+            padding: 4px;
+            border-radius: 12px;
+            margin-bottom: 14px;
             overflow: hidden;
         }
 
         .auth-tab-glider {
             position: absolute;
-            top: 3px;
-            bottom: 3px;
-            left: 3px;
-            width: calc(50% - 3px);
+            top: 4px;
+            bottom: 4px;
+            left: 4px;
+            width: calc(50% - 4px);
             background: var(--grad-primary);
-            border-radius: 8px;
+            border-radius: 9px;
             box-shadow: var(--shadow-glow);
             transition: transform 0.34s cubic-bezier(0.22, 1, 0.36, 1);
             z-index: 0;
@@ -1101,10 +1102,10 @@
             background: transparent;
             border: none;
             color: var(--text-secondary);
-            padding: 6px 8px;
-            border-radius: 8px;
+            padding: 9px 10px;
+            border-radius: 9px;
             font-family: inherit;
-            font-size: 0.72rem;
+            font-size: 0.78rem;
             font-weight: 800;
             cursor: pointer;
             transition: color 0.2s ease;
@@ -1116,7 +1117,7 @@
 
         /* 3D FLIP & BLUR-SLIDE FORM PANEL ANIMATION */
         .auth-form-panel {
-            animation: authPanel3DIn 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            animation: authPanel3DIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
             transform-origin: center top;
         }
 
@@ -1137,29 +1138,30 @@
             }
         }
 
-        /* COMPACT FORM INPUTS FOR ZERO-SCROLL */
+        /* SPACIOUS FORM INPUTS */
         .auth-container .form-group {
-            margin-bottom: 6px;
+            margin-bottom: 11px;
         }
 
         .auth-container .form-group label {
-            font-size: 0.6rem;
-            margin-bottom: 3px;
-            letter-spacing: 0.4px;
+            font-size: 0.66rem;
+            margin-bottom: 5px;
+            letter-spacing: 0.5px;
+            color: var(--text-secondary);
         }
 
         .auth-container .form-input {
-            padding: 7px 10px;
-            font-size: 0.76rem;
-            border-radius: 8px;
-            border-left: 3px solid var(--accent-cyan);
+            padding: 11px 13px;
+            font-size: 0.84rem;
+            border-radius: 10px;
+            border-left: 3.5px solid var(--accent-cyan);
             transition: all 0.2s ease;
         }
 
         .auth-container .form-input:focus {
             border-color: var(--accent-primary);
             border-left-color: #fde047;
-            box-shadow: 0 0 12px rgba(99, 102, 241, 0.25);
+            box-shadow: 0 0 14px rgba(99, 102, 241, 0.28);
         }
 
         /* LASER SHIMMER CTA BUTTON */
@@ -1189,31 +1191,31 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 4px;
-            margin-top: 6px;
-            padding-top: 6px;
+            gap: 6px;
+            margin-top: 12px;
+            padding-top: 10px;
             border-top: 1px solid var(--border-subtle);
-            font-size: 0.58rem;
+            font-size: 0.63rem;
             color: var(--text-muted);
             font-weight: 800;
             white-space: nowrap;
         }
 
         /* =========================================================
-           🎯 OUR CORE SPECIALTIES — 3-BUTTON INTERACTIVE DECK
+           🎯 3 CORE SPECIALTIES LAUNCHER DOCK & FULL-SCREEN PAGE
            ========================================================= */
         .core-spec-dock {
             width: 100%;
             background: var(--bg-surface);
             border: 1.5px solid var(--border-focus);
             border-top: 2px solid var(--accent-cyan);
-            border-bottom: 3px solid #a855f7;
-            border-radius: 16px;
-            padding: 8px 10px;
+            border-bottom: 3.5px solid #a855f7;
+            border-radius: 18px;
+            padding: 12px 14px;
             box-shadow: var(--shadow-card);
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 10px;
             position: relative;
             overflow: hidden;
         }
@@ -1223,141 +1225,164 @@
             align-items: center;
             justify-content: space-between;
             border-bottom: 1px solid var(--border-subtle);
-            padding-bottom: 4px;
+            padding-bottom: 7px;
         }
 
         .core-spec-tabs {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 5px;
+            gap: 8px;
         }
 
         .core-spec-btn {
             background: var(--bg-input);
             border: 1px solid var(--border-subtle);
-            border-bottom: 2.5px solid rgba(0, 0, 0, 0.5);
-            color: var(--text-secondary);
-            padding: 6px 4px;
-            border-radius: 9px;
+            border-top: 2px solid rgba(56, 189, 248, 0.45);
+            border-bottom: 3px solid rgba(0, 0, 0, 0.6);
+            color: var(--text-primary);
+            padding: 10px 6px;
+            border-radius: 12px;
             font-family: inherit;
-            font-size: 0.63rem;
+            font-size: 0.68rem;
             font-weight: 800;
             cursor: pointer;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 4px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            gap: 5px;
+            text-align: center;
             transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: var(--shadow-card);
         }
 
-        .core-spec-btn.active-0 {
-            background: linear-gradient(135deg, rgba(6, 182, 212, 0.24) 0%, rgba(59, 130, 246, 0.22) 100%);
-            border-color: #38bdf8;
-            border-left: 3px solid #38bdf8;
-            color: var(--text-primary);
-            box-shadow: 0 0 14px rgba(56, 189, 248, 0.32);
-            transform: translateY(-1px);
+        .core-spec-btn:hover, .core-spec-btn:active {
+            border-color: var(--accent-cyan);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-glow);
         }
 
-        .core-spec-btn.active-1 {
-            background: linear-gradient(135deg, rgba(16, 185, 129, 0.24) 0%, rgba(245, 158, 11, 0.20) 100%);
-            border-color: #10b981;
-            border-left: 3px solid #fde047;
-            color: var(--text-primary);
-            box-shadow: 0 0 14px rgba(16, 185, 129, 0.32);
-            transform: translateY(-1px);
+        /* FULL-SCREEN SPECIALTY SLIDE PAGE VIEW */
+        .auth-specialty-fullpage {
+            display: none;
+            width: 100%;
+            max-width: 500px;
+            height: 100%;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+            z-index: 10;
         }
 
-        .core-spec-btn.active-2 {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.25) 0%, rgba(236, 72, 153, 0.22) 100%);
-            border-color: #c084fc;
-            border-left: 3px solid #f472b6;
-            color: var(--text-primary);
-            box-shadow: 0 0 14px rgba(192, 132, 252, 0.34);
-            transform: translateY(-1px);
+        .auth-specialty-fullpage.active {
+            display: flex;
         }
 
-        .core-spec-stage {
-            position: relative;
-            background: var(--bg-input);
-            border: 1px solid var(--border-subtle);
-            border-radius: 11px;
-            padding: 8px 10px;
-            min-height: 74px;
+        .spec-full-card {
+            flex: 1;
+            min-height: 0;
+            background: var(--bg-surface);
+            border-top: 2.5px solid #38bdf8;
+            border-bottom: 4px solid #a855f7;
+            border-left: 4.5px solid #38bdf8;
+            border-right: 4.5px solid #ec4899;
+            border-radius: 22px;
+            padding: 16px 15px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.72), var(--shadow-glow);
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            justify-content: space-between;
+            position: relative;
             overflow: hidden;
-            perspective: 900px;
+            perspective: 1000px;
         }
 
-        /* 3 DISTINCT COOL ANIMATIONS FOR THE 3 CORE SPECIALTY SLIDES */
-        /* Slide 1: 3D Cyber-Matrix X-Flip + Cyan Laser Scanline */
+        .spec-pillar-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin: 6px 0;
+        }
+
+        .spec-pillar-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            border-left: 3px solid var(--accent-cyan);
+            border-radius: 11px;
+            padding: 9px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        /* 3 DISTINCT FULL-PAGE 3D ANIMATIONS */
+        /* 1. Cyber-Matrix X-Flip + Cyan Laser Scanline */
         .spec-anim-cyber {
-            border-left: 3.5px solid #38bdf8 !important;
-            animation: specCyberFlip 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            border-top-color: #38bdf8 !important;
+            border-left-color: #38bdf8 !important;
+            animation: specCyberFlip 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
         .spec-anim-cyber::after {
             content: '';
             position: absolute;
             left: 0;
             right: 0;
-            height: 2px;
+            height: 3px;
             background: linear-gradient(90deg, transparent, #38bdf8, #ffffff, #38bdf8, transparent);
-            box-shadow: 0 0 12px #38bdf8;
-            animation: cyberScanline 0.65s ease-out forwards;
+            box-shadow: 0 0 18px #38bdf8;
+            animation: cyberScanline 0.85s ease-out forwards;
+            pointer-events: none;
         }
         @keyframes specCyberFlip {
-            0% { opacity: 0; transform: perspective(700px) rotateX(65deg) translateY(-10px) scale(0.94); }
-            100% { opacity: 1; transform: perspective(700px) rotateX(0deg) translateY(0) scale(1); }
+            0% { opacity: 0; transform: perspective(900px) rotateX(55deg) translateY(-16px) scale(0.93); }
+            100% { opacity: 1; transform: perspective(900px) rotateX(0deg) translateY(0) scale(1); }
         }
         @keyframes cyberScanline {
             0% { top: 0%; opacity: 1; }
             100% { top: 100%; opacity: 0; }
         }
 
-        /* Slide 2: 3D Quantum Gyro Y-Spin + Emerald-Gold Wave */
+        /* 2. Quantum Gyro Y-Spin + Emerald-Gold Wave */
         .spec-anim-vortex {
-            border-left: 3.5px solid #10b981 !important;
-            animation: specQuantumGyro 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            border-top-color: #10b981 !important;
+            border-left-color: #fde047 !important;
+            animation: specQuantumGyro 0.56s cubic-bezier(0.22, 1, 0.36, 1) forwards;
         }
         .spec-anim-vortex::before {
             content: '';
             position: absolute;
             inset: 0;
-            background: linear-gradient(120deg, transparent 20%, rgba(16, 185, 129, 0.18) 50%, rgba(250, 204, 21, 0.15) 60%, transparent 80%);
-            animation: vortexWave 0.7s ease-out forwards;
+            background: linear-gradient(120deg, transparent 15%, rgba(16, 185, 129, 0.20) 50%, rgba(250, 204, 21, 0.16) 62%, transparent 85%);
+            animation: vortexWave 0.8s ease-out forwards;
             pointer-events: none;
         }
         @keyframes specQuantumGyro {
-            0% { opacity: 0; transform: perspective(700px) rotateY(-45deg) scale(0.88); filter: brightness(1.5); }
-            65% { transform: perspective(700px) rotateY(6deg) scale(1.01); }
-            100% { opacity: 1; transform: perspective(700px) rotateY(0deg) scale(1); filter: brightness(1); }
+            0% { opacity: 0; transform: perspective(900px) rotateY(-50deg) scale(0.88); filter: brightness(1.4); }
+            65% { transform: perspective(900px) rotateY(5deg) scale(1.01); }
+            100% { opacity: 1; transform: perspective(900px) rotateY(0deg) scale(1); filter: brightness(1); }
         }
         @keyframes vortexWave {
             0% { transform: translateX(-100%); }
             100% { transform: translateX(100%); }
         }
 
-        /* Slide 3: 3D Holographic Prism Unfold + Nebula Elastic Pop */
+        /* 3. Holographic Prism Unfold + Nebula Elastic Pop */
         .spec-anim-prism {
-            border-left: 3.5px solid #c084fc !important;
-            animation: specPrismPop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            border-top-color: #c084fc !important;
+            border-left-color: #f472b6 !important;
+            animation: specPrismPop 0.54s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
         }
         .spec-anim-prism::after {
             content: '';
             position: absolute;
             inset: 0;
-            border-radius: 11px;
-            box-shadow: inset 0 0 18px rgba(236, 72, 153, 0.28);
-            animation: prismGlowFade 0.7s ease-out forwards;
+            border-radius: 22px;
+            box-shadow: inset 0 0 28px rgba(236, 72, 153, 0.32);
+            animation: prismGlowFade 0.8s ease-out forwards;
             pointer-events: none;
         }
         @keyframes specPrismPop {
-            0% { opacity: 0; transform: scale(0.82) rotateZ(-2deg); filter: hue-rotate(45deg) blur(3px); }
+            0% { opacity: 0; transform: scale(0.82) rotateZ(-3deg); filter: hue-rotate(45deg) blur(4px); }
             100% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: hue-rotate(0deg) blur(0); }
         }
         @keyframes prismGlowFade {
@@ -1433,30 +1458,30 @@
     <div class="toast-msg" id="toastBanner">✅ Action completed</div>
 
     <!-- =========================================================
-         🚪 ENTERPRISE AUTH PORTAL & ZERO-SCROLL 100DVH MOBILE COCKPIT
+         🚪 ENTERPRISE AUTH PORTAL & FULL-SCREEN SPECIALTY SLIDES
          ========================================================= -->
     <div class="auth-gate-overlay" id="enterpriseAuthGate">
         <!-- ANIMATED 3D CYBER GRID & FLOATING NEON ORBS -->
         <div class="auth-cyber-bg">
-            <div class="auth-orb-float" style="width:220px;height:220px;background:#6366f1;top:8%;left:6%;"></div>
-            <div class="auth-orb-float" style="width:240px;height:240px;background:#06b6d4;bottom:10%;right:6%;animation-delay:-4s;"></div>
+            <div class="auth-orb-float" style="width:240px;height:240px;background:#6366f1;top:8%;left:6%;"></div>
+            <div class="auth-orb-float" style="width:260px;height:260px;background:#06b6d4;bottom:10%;right:6%;animation-delay:-4s;"></div>
         </div>
 
-        <!-- 1-LINE LIVE TELEMETRY & MARKET MARQUEE BAR -->
+        <!-- 1-LINE LIVE TELEMETRY & MARKET MARQUEE BAR (ZERO INTERNAL SECRETS) -->
         <div class="auth-ticker-bar">
             <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
                 <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);"></span>
-                <span style="font-weight:800;letter-spacing:0.4px;color:var(--text-primary);">VAULT v4.8</span>
+                <span style="font-weight:800;letter-spacing:0.4px;color:var(--text-primary);">XIANBEE CORE</span>
             </div>
             <div class="auth-marquee-wrap">
                 <div class="auth-ticker-items">
                     <span style="color:var(--success);">💱 1 USDT = <b id="authLiveIdrTicker">Rp 16.250</b></span>
-                    <span style="color:var(--accent-cyan);">📦 Live Stock: <b id="authLiveStockTicker">Syncing...</b></span>
-                    <span style="color:var(--warning);">🔒 256-Bit Cloud DB Sync</span>
-                    <span style="color:#c084fc;">⚡ Instant Auto-Dispatch 24/7</span>
+                    <span style="color:var(--accent-cyan);">📦 Live Inventory: <b id="authLiveStockTicker">Verified Ready</b></span>
+                    <span style="color:var(--warning);">🔒 256-Bit Quantum SSL Encryption</span>
+                    <span style="color:#c084fc;">⚡ Instant Automated Dispatch 24/7</span>
                 </div>
             </div>
-            <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:3px 8px;font-size:0.65rem;flex-shrink:0;">☀️/🌌</button>
+            <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:4px 9px;font-size:0.68rem;flex-shrink:0;">☀️/🌌</button>
         </div>
 
         <!-- MAIN WORKSPACE -->
@@ -1465,61 +1490,61 @@
             <div class="auth-showcase-panel">
                 <div class="auth-hero-badge">
                     <span>🐝</span>
-                    <span>ENTERPRISE DIGITAL ASSET &amp; GITHUB INFRASTRUCTURE HUB</span>
+                    <span>ENTERPRISE DIGITAL ASSET &amp; WEB3 INFRASTRUCTURE HUB</span>
                 </div>
 
                 <h1 class="auth-showcase-title">
-                    Instant Access to Verified <span style="background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Aged GitHub Vaults</span> &amp; Web3 Infrastructure.
+                    Instant Access to Verified <span style="background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Aged GitHub Profiles</span> &amp; Web3 Infrastructure.
                 </h1>
 
-                <p style="margin:0;font-size:0.86rem;color:var(--text-secondary);line-height:1.55;max-width:600px;">
-                    Engineered for developers, Web3 teams, and digital agencies. Sign in to your cloud-synced account to inspect live <b>2011–2026 GitHub profiles</b>, generate real-time <b>2FA OTP codes</b>, deploy repository metrics, and manage your encrypted credential vault across any device.
+                <p style="margin:0;font-size:0.88rem;color:var(--text-secondary);line-height:1.6;max-width:600px;">
+                    Engineered for developers, Web3 teams, and digital agencies. Sign in to your encrypted account to inspect live <b>2011–2026 GitHub profiles</b>, generate real-time <b>2FA OTP codes</b>, deploy repository metrics, and manage your digital assets across any device.
                 </p>
 
                 <div class="auth-feature-grid">
                     <div class="auth-feature-card">
                         <div style="font-size:1.15rem;margin-bottom:4px;">🐙</div>
-                        <div style="font-size:0.82rem;font-weight:800;margin-bottom:3px;">Aged GitHub Vault (2011–2026)</div>
-                        <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.4;">Inspect exact <code>@usernames</code>, Arctic Code Vault badges &amp; full 2FA secret keys before checkout.</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Aged GitHub Assets (2011–2026)</div>
+                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Inspect exact <code>@usernames</code>, Arctic Code badges &amp; full 2FA secret keys before checkout.</div>
                     </div>
                     <div class="auth-feature-card">
-                        <div style="font-size:1.15rem;margin-bottom:4px;">☁️</div>
-                        <div style="font-size:0.82rem;font-weight:800;margin-bottom:3px;">Google Cloud DB Sync</div>
-                        <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.4;">Your USDT balance, 6-digit security PIN &amp; purchased account vault stay synced across Phone &amp; PC.</div>
+                        <div style="font-size:1.15rem;margin-bottom:4px;">🛡️</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Proprietary Cross-Device Sync</div>
+                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Your USDT wallet balance, 6-digit security PIN &amp; purchased credentials stay synced across Phone &amp; PC.</div>
                     </div>
                     <div class="auth-feature-card">
                         <div style="font-size:1.15rem;margin-bottom:4px;">🚀</div>
-                        <div style="font-size:0.82rem;font-weight:800;margin-bottom:3px;">Automated Repo &amp; Dev Boost</div>
-                        <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.4;">High-trust GitHub Followers, Stars, Forks &amp; Watchers with real-time telemetry tracking.</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Automated Repo &amp; Dev Boost</div>
+                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">High-trust GitHub Followers, Stars, Forks &amp; Watchers with real-time telemetry tracking.</div>
                     </div>
                     <div class="auth-feature-card">
                         <div style="font-size:1.15rem;margin-bottom:4px;">⚡</div>
-                        <div style="font-size:0.82rem;font-weight:800;margin-bottom:3px;">Multi-Currency Settlement</div>
-                        <div style="font-size:0.72rem;color:var(--text-secondary);line-height:1.4;">Instant checkout via Wallet Balance, OxaPay Crypto (USDT), QRIS, SeaBank, or DANA.</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Multi-Currency Settlement</div>
+                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Instant checkout via Wallet Balance, OxaPay Crypto (USDT), QRIS, SeaBank, or DANA.</div>
                     </div>
                 </div>
             </div>
 
-            <!-- RIGHT COLUMN: ZERO-SCROLL AUTH COCKPIT + 3-BUTTON CORE SPECIALTIES DECK -->
-            <div class="auth-right-column">
+            <!-- VIEW 1: SPACIOUS LOGIN / CREATE ACCOUNT COCKPIT + 3 SPECIALTY BUTTONS -->
+            <div class="auth-right-column" id="authMainPortalView">
                 <!-- 1. INTERACTIVE SIGN IN / SIGN UP COCKPIT BOX -->
                 <div class="auth-container">
                     <!-- COCKPIT HEADER -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:7px;">
-                        <div style="display:flex;align-items:center;gap:9px;min-width:0;">
-                            <div class="brand-orb" style="width:36px;height:36px;background:#07080d;border:1.5px solid rgba(56,189,248,0.75);box-shadow:0 0 12px rgba(56,189,248,0.35);padding:3px;border-radius:50%;overflow:hidden;flex-shrink:0;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
+                        <div style="display:flex;align-items:center;gap:11px;min-width:0;">
+                            <div class="brand-orb" style="width:44px;height:44px;background:#07080d;border:1.5px solid rgba(56,189,248,0.75);box-shadow:0 0 14px rgba(56,189,248,0.35);padding:4px;border-radius:50%;overflow:hidden;flex-shrink:0;">
                                 <img src="logo.png" alt="XianBee-Tech" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
                             </div>
                             <div style="min-width:0;">
-                                <h2 style="margin:0;font-size:0.94rem;font-weight:800;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.15;">XianBee-Tech Portal</h2>
-                                <span style="font-size:0.58rem;color:var(--accent-cyan);font-weight:800;letter-spacing:0.7px;display:block;">CLOUD VAULT AUTHENTICATION</span>
+                                <h2 style="margin:0;font-size:1.06rem;font-weight:800;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;">XianBee-Tech Portal</h2>
+                                <span style="font-size:0.62rem;color:var(--accent-cyan);font-weight:800;letter-spacing:0.8px;display:block;">ENTERPRISE CLIENT ACCESS</span>
                             </div>
                         </div>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;padding:3px 7px;border-radius:6px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.4);color:var(--success);white-space:nowrap;">🛡️ 2FA READY</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;padding:4px 8px;border-radius:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.4);color:var(--success);white-space:nowrap;">🛡️ 2FA READY</span>
                     </div>
 
                     <!-- GLOWING LASER DIVIDER -->
-                    <div style="width:100%;height:1.5px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);margin-bottom:8px;opacity:0.85;"></div>
+                    <div style="width:100%;height:2px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);margin-bottom:14px;opacity:0.9;"></div>
 
                     <!-- DUAL-TAB SWITCHER WITH SLIDING NEON GLIDER -->
                     <div class="auth-tab-switcher" id="authTabSwitcherBox" data-active="signin">
@@ -1528,173 +1553,270 @@
                         <button class="auth-tab-btn" type="button" id="authTabSignUpBtn" onclick="switchAuthPortalTab('signup'); document.getElementById('authTabSwitcherBox').setAttribute('data-active','signup');">✨ Create Account</button>
                     </div>
 
-                    <!-- PANEL 1: SIGN IN FORM -->
+                    <!-- PANEL 1: SIGN IN FORM (SPACIOUS VERTICAL LAYOUT) -->
                     <div class="auth-form-panel" id="authPanelSignIn">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                            <div class="form-group">
-                                <label>👤 Username:</label>
-                                <input type="text" class="form-input" id="loginUsernameInput" placeholder="e.g. abieharyatmo" autocomplete="username" oninput="updateAuthSecurityMeter('signin')">
-                            </div>
-                            <div class="form-group">
-                                <label>🔑 Password:</label>
-                                <div style="position:relative;">
-                                    <input type="password" class="form-input" id="loginPasswordInput" placeholder="••••••" style="padding-right:30px;" autocomplete="current-password" oninput="updateAuthSecurityMeter('signin')">
-                                    <button type="button" onclick="toggleAuthPwdVisibility('loginPasswordInput')" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:0.78rem;padding:2px;">👁️</button>
-                                </div>
+                        <div class="form-group">
+                            <label>👤 CLIENT USERNAME (WITHOUT @):</label>
+                            <input type="text" class="form-input" id="loginUsernameInput" placeholder="Enter your username (e.g. abieharyatmo)" autocomplete="username" oninput="updateAuthSecurityMeter('signin')">
+                        </div>
+                        <div class="form-group">
+                            <label>🔑 ACCOUNT PASSWORD:</label>
+                            <div style="position:relative;">
+                                <input type="password" class="form-input" id="loginPasswordInput" placeholder="Enter your security password..." style="padding-right:38px;" autocomplete="current-password" oninput="updateAuthSecurityMeter('signin')">
+                                <button type="button" onclick="toggleAuthPwdVisibility('loginPasswordInput')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:0.9rem;padding:2px;">👁️</button>
                             </div>
                         </div>
 
-                        <button class="btn-ui primary btn-laser-shimmer" type="button" id="btnExecSignIn" style="width:100%;padding:9px;font-size:0.78rem;margin-top:2px;border-radius:9px;" onclick="executeWebCloudSignIn()">
-                            🚀 Sign In &amp; Sync Cloud Vault
+                        <button class="btn-ui primary btn-laser-shimmer" type="button" id="btnExecSignIn" style="width:100%;padding:12px;font-size:0.84rem;margin-top:4px;border-radius:11px;" onclick="executeWebCloudSignIn()">
+                            🚀 Sign In to XianBee-Tech Portal
                         </button>
                     </div>
 
-                    <!-- PANEL 2: SIGN UP (REGISTER) FORM — 2x2 SYMMETRICAL BENTO GRID -->
+                    <!-- PANEL 2: SIGN UP (REGISTER) FORM — SPACIOUS 2x2 BENTO GRID -->
                     <div class="auth-form-panel hidden" id="authPanelSignUp">
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                             <div class="form-group">
-                                <label>👤 Username:</label>
-                                <input type="text" class="form-input" id="regUsernameInput" placeholder="xianbee_user" autocomplete="username" oninput="updateAuthSecurityMeter('signup')">
+                                <label>👤 USERNAME:</label>
+                                <input type="text" class="form-input" id="regUsernameInput" placeholder="e.g. xianbee_vip" autocomplete="username" oninput="updateAuthSecurityMeter('signup')">
                             </div>
                             <div class="form-group">
-                                <label>📱 Email / Telegram:</label>
-                                <input type="text" class="form-input" id="regContactInput" placeholder="@username / email" oninput="updateAuthSecurityMeter('signup')">
+                                <label>📱 EMAIL / TELEGRAM:</label>
+                                <input type="text" class="form-input" id="regContactInput" placeholder="@telegram or email" oninput="updateAuthSecurityMeter('signup')">
                             </div>
                             <div class="form-group">
-                                <label>🔑 Password (6+):</label>
-                                <input type="password" class="form-input" id="regPasswordInput" placeholder="••••••" autocomplete="new-password" oninput="updateAuthSecurityMeter('signup')">
+                                <label>🔑 PASSWORD (6+):</label>
+                                <input type="password" class="form-input" id="regPasswordInput" placeholder="••••••••" autocomplete="new-password" oninput="updateAuthSecurityMeter('signup')">
                             </div>
                             <div class="form-group">
-                                <label>🛡️ 6-Digit PIN:</label>
-                                <input type="password" class="form-input" id="regPinInput" maxlength="6" inputmode="numeric" style="font-family:'JetBrains Mono',monospace;letter-spacing:2px;" placeholder="123456" oninput="updateAuthSecurityMeter('signup')">
+                                <label>🛡️ 6-DIGIT PIN:</label>
+                                <input type="password" class="form-input" id="regPinInput" maxlength="6" inputmode="numeric" style="font-family:'JetBrains Mono',monospace;letter-spacing:3px;" placeholder="123456" oninput="updateAuthSecurityMeter('signup')">
                             </div>
                         </div>
 
-                        <button class="btn-ui buy-now btn-laser-shimmer" type="button" id="btnExecSignUp" style="width:100%;padding:9px;font-size:0.78rem;margin-top:2px;border-radius:9px;" onclick="executeWebCloudSignUp()">
-                            ✨ Create Cloud Account &amp; Enter Store
+                        <button class="btn-ui buy-now btn-laser-shimmer" type="button" id="btnExecSignUp" style="width:100%;padding:12px;font-size:0.84rem;margin-top:4px;border-radius:11px;" onclick="executeWebCloudSignUp()">
+                            ✨ Create Official Account &amp; Enter Store
                         </button>
                     </div>
 
                     <!-- REAL-TIME SECURITY READINESS BAR -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:6px;background:var(--bg-input);padding:4px 8px;border-radius:7px;border:1px solid var(--border-subtle);">
-                        <span id="authSecStatusText" style="font-family:'JetBrains Mono',monospace;font-size:0.57rem;font-weight:700;color:var(--accent-cyan);">🔒 256-Bit Vault Tunnel Ready</span>
-                        <div style="width:72px;height:4px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:11px;background:var(--bg-input);padding:7px 11px;border-radius:9px;border:1px solid var(--border-subtle);">
+                        <span id="authSecStatusText" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:700;color:var(--accent-cyan);">🔒 256-Bit Encrypted Session Ready</span>
+                        <div style="width:84px;height:5px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;">
                             <div id="authSecMeterFill" style="width:35%;height:100%;background:var(--grad-primary);transition:width 0.25s ease;"></div>
                         </div>
                     </div>
 
                     <!-- QUICK ALTERNATIVE ACCESS (1-ROW DOCK) -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:7px;">
-                        <button class="btn-ui secondary" type="button" style="padding:7px 6px;font-size:0.68rem;border-radius:8px;min-width:0;" onclick="enterGuestPreviewMode()">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+                        <button class="btn-ui secondary" type="button" style="padding:10px 8px;font-size:0.74rem;border-radius:10px;min-width:0;" onclick="enterGuestPreviewMode()">
                             👁️ Guest Catalog
                         </button>
-                        <a href="https://t.me/XianBeeTechStore_Bot" target="_blank" class="btn-ui secondary" style="padding:7px 6px;font-size:0.68rem;border-radius:8px;min-width:0;border-color:var(--accent-cyan);color:var(--accent-cyan);">
+                        <a href="https://t.me/XianBeeTechStore_Bot" target="_blank" class="btn-ui secondary" style="padding:10px 8px;font-size:0.74rem;border-radius:10px;min-width:0;border-color:var(--accent-cyan);color:var(--accent-cyan);">
                             ✈️ Telegram Bot
                         </a>
                     </div>
 
                     <div class="auth-security-strip">
-                        <span>🛡️ SSL 256-Bit</span>
-                        <span>☁️ GSheet CRM Sync</span>
-                        <span>⚡ 99.9% Uptime</span>
+                        <span>🛡️ 256-Bit SSL</span>
+                        <span>⚡ Neural Real-Time Sync</span>
+                        <span>💎 99.9% Uptime</span>
                     </div>
                 </div>
 
-                <!-- 2. 🎯 OUR CORE SPECIALTIES — 3-BUTTON INTERACTIVE SLIDER DECK -->
+                <!-- 2. 🎯 3 CORE SPECIALTIES — CLICK TO OPEN FULL-SCREEN SLIDE PAGE -->
                 <div class="core-spec-dock">
                     <div class="core-spec-header">
-                        <div style="display:flex;align-items:center;gap:5px;">
-                            <span style="font-size:0.74rem;">🎯</span>
-                            <span style="font-size:0.63rem;font-weight:800;letter-spacing:0.7px;color:var(--text-primary);text-transform:uppercase;">OUR CORE SPECIALTIES</span>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span style="font-size:0.84rem;">🎯</span>
+                            <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.8px;color:var(--text-primary);text-transform:uppercase;">OUR CORE SPECIALTIES</span>
                         </div>
-                        <span id="coreSpecCounter" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--accent-cyan);background:rgba(6,182,212,0.12);padding:1px 6px;border-radius:5px;border:1px solid rgba(6,182,212,0.3);">SLIDE 01 / 03</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">TAP TO OPEN FULL PAGE ➔</span>
                     </div>
 
-                    <!-- 3 INTERACTIVE SPECIALTY BUTTONS -->
+                    <!-- 3 INTERACTIVE SPECIALTY LAUNCHER BUTTONS -->
                     <div class="core-spec-tabs">
-                        <button type="button" class="core-spec-btn active-0" id="coreSpecBtn0" onclick="switchCoreSpecialtySlide(0)">
-                            <span>🐙</span>
-                            <span>GitHub Enterprise</span>
+                        <button type="button" class="core-spec-btn" onclick="openFullSpecialtyPage(0)">
+                            <span style="font-size:1.25rem;">🐙</span>
+                            <span style="color:#38bdf8;">GitHub Enterprise</span>
+                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">View Full Specs ➔</span>
                         </button>
-                        <button type="button" class="core-spec-btn" id="coreSpecBtn1" onclick="switchCoreSpecialtySlide(1)">
-                            <span>🌐</span>
-                            <span>Crypto Exchange</span>
+                        <button type="button" class="core-spec-btn" onclick="openFullSpecialtyPage(1)">
+                            <span style="font-size:1.25rem;">🌐</span>
+                            <span style="color:#10b981;">Crypto Exchange</span>
+                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">View Full Specs ➔</span>
                         </button>
-                        <button type="button" class="core-spec-btn" id="coreSpecBtn2" onclick="switchCoreSpecialtySlide(2)">
-                            <span>🌟</span>
-                            <span>One-Stop Shop</span>
+                        <button type="button" class="core-spec-btn" onclick="openFullSpecialtyPage(2)">
+                            <span style="font-size:1.25rem;">🌟</span>
+                            <span style="color:#c084fc;">One-Stop Shop</span>
+                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">View Full Specs ➔</span>
                         </button>
                     </div>
+                </div>
+            </div>
 
-                    <!-- ANIMATED SLIDE CONTENT STAGE -->
-                    <div class="core-spec-stage spec-anim-cyber" id="coreSpecStage">
-                        <div id="coreSpecTitle" style="font-size:0.71rem;font-weight:800;color:#38bdf8;margin-bottom:2px;display:flex;align-items:center;gap:5px;">
-                            <span>🐙 GitHub Enterprise Solutions:</span>
+            <!-- VIEW 2: FULL-SCREEN CORE SPECIALTY SLIDE PAGE (WITH BACK BUTTON & RICH COPYWRITING) -->
+            <div class="auth-specialty-fullpage" id="authSpecialtyFullPage">
+                <!-- TOP NAVIGATION BAR FOR FULL-SCREEN SLIDE -->
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg-surface);border:1.5px solid var(--border-focus);border-radius:14px;padding:8px 12px;box-shadow:var(--shadow-card);">
+                    <button type="button" class="top-pill" style="background:var(--grad-primary);color:#fff;border:none;padding:7px 13px;font-size:0.74rem;box-shadow:var(--shadow-glow);" onclick="closeFullSpecialtyPage()">
+                        ⬅️ Back to Login Portal
+                    </button>
+                    <span id="fullSpecBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;color:var(--accent-cyan);background:rgba(6,182,212,0.12);padding:4px 9px;border-radius:8px;border:1px solid rgba(6,182,212,0.35);">
+                        SPECIALTY 01 / 03
+                    </span>
+                </div>
+
+                <!-- MAIN ANIMATED FULL-SCREEN SPECIALTY CARD -->
+                <div class="spec-full-card spec-anim-cyber" id="fullSpecStageCard">
+                    <div>
+                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                            <div id="fullSpecIconOrb" style="width:46px;height:46px;border-radius:13px;background:rgba(56,189,248,0.14);border:1.5px solid #38bdf8;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">
+                                🐙
+                            </div>
+                            <div>
+                                <span id="fullSpecSubtitle" style="font-size:0.6rem;font-weight:800;letter-spacing:0.9px;color:#38bdf8;text-transform:uppercase;display:block;">ENTERPRISE DEVELOPER INFRASTRUCTURE</span>
+                                <h2 id="fullSpecTitle" style="margin:0;font-size:1.08rem;font-weight:800;color:var(--text-primary);line-height:1.2;">GitHub Enterprise Solutions</h2>
+                            </div>
                         </div>
-                        <div id="coreSpecDesc" style="font-size:0.62rem;color:var(--text-secondary);line-height:1.38;font-weight:600;">
+
+                        <div style="width:100%;height:1.5px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);margin-bottom:10px;opacity:0.85;"></div>
+
+                        <p id="fullSpecLeadDesc" style="margin:0 0 10px 0;font-size:0.75rem;color:var(--text-secondary);line-height:1.55;font-weight:600;">
                             Providing top-tier Aged, Premium, Fresh, and High Followers GitHub Accounts, alongside advanced automation and comprehensive repository metric optimization (Stars, Forks, Followers).
-                        </div>
+                        </p>
+                    </div>
+
+                    <!-- 4 EXECUTIVE PILLARS BENTO GRID -->
+                    <div class="spec-pillar-grid" id="fullSpecPillarsGrid"></div>
+
+                    <!-- BOTTOM HIGHLIGHT BANNER INSIDE CARD -->
+                    <div id="fullSpecFooterNote" style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:11px;padding:9px 11px;font-size:0.68rem;color:var(--text-primary);font-weight:700;line-height:1.4;text-align:center;">
+                        ⚡ Instant Automated Credential Delivery • Built-In 2FA Code Generator
+                    </div>
+                </div>
+
+                <!-- BOTTOM SLIDE SWITCHER & RETURN CTA -->
+                <div style="background:var(--bg-surface);border:1.5px solid var(--border-subtle);border-radius:15px;padding:8px 10px;display:flex;flex-direction:column;gap:7px;">
+                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
+                        <button type="button" class="subtab-pill" id="fullNavBtn0" style="padding:8px 4px;font-size:0.66rem;" onclick="openFullSpecialtyPage(0)">🐙 GitHub</button>
+                        <button type="button" class="subtab-pill" id="fullNavBtn1" style="padding:8px 4px;font-size:0.66rem;" onclick="openFullSpecialtyPage(1)">🌐 Crypto</button>
+                        <button type="button" class="subtab-pill" id="fullNavBtn2" style="padding:8px 4px;font-size:0.66rem;" onclick="openFullSpecialtyPage(2)">🌟 Ecosystem</button>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- COMPACT BOTTOM FOOTER -->
-        <div style="position:relative;z-index:2;text-align:center;padding:5px 10px;font-size:0.62rem;color:var(--text-muted);border-top:1px solid var(--border-subtle);background:var(--bg-elevated);flex-shrink:0;">
+        <div style="position:relative;z-index:2;text-align:center;padding:6px 10px;font-size:0.64rem;color:var(--text-muted);border-top:1px solid var(--border-subtle);background:var(--bg-elevated);flex-shrink:0;">
             🛡️ Engineered by <b>Abie Haryatmo</b> &nbsp;•&nbsp; 🤝 Powered by <b>XianBee-Tech Enterprise</b>
         </div>
 
         <script>
-            // DATA & DISTINCT ANIMATIONS FOR THE 3 CORE SPECIALTIES SLIDES
-            const CORE_SPECIALTIES_DATA = [
+            // DETAILED EXECUTIVE DATA & 3 DISTINCT ANIMATIONS FOR FULL-SCREEN CORE SPECIALTY PAGES
+            const FULL_SPECIALTIES_PAGES = [
                 {
-                    badge: 'SLIDE 01 / 03 • CYBER MATRIX',
+                    badge: 'SPECIALTY 01 / 03 • CYBER MATRIX',
+                    icon: '🐙',
                     color: '#38bdf8',
                     animClass: 'spec-anim-cyber',
-                    title: '🐙 GitHub Enterprise Solutions:',
-                    desc: 'Providing top-tier Aged, Premium, Fresh, and High Followers GitHub Accounts, alongside advanced automation and comprehensive repository metric optimization (Stars, Forks, Followers).'
+                    subtitle: 'ENTERPRISE DEVELOPER INFRASTRUCTURE',
+                    title: 'GitHub Enterprise Solutions',
+                    lead: 'Providing top-tier Aged, Premium, Fresh, and High Followers GitHub Accounts (2011–2026), alongside advanced automation and comprehensive repository metric optimization (Stars, Forks, Watchers, and Followers) engineered for Web3 teams, open-source maintainers, and software agencies.',
+                    pillars: [
+                        { title: '📅 Aged Profiles (2011–2026)', desc: 'Hand-vetted historic accounts with clean commit graphs, high trust scores, and anti-flagged protection.' },
+                        { title: '🏅 Rare Developer Badges', desc: 'Authentic 2020 Arctic Code Vault, 6 Premium Badges (Pull Shark, Galaxy Brain, YOLO) & Student Dev Packs.' },
+                        { title: '🚀 Repo Metric Optimization', desc: 'High-retention GitHub Followers, Repository Stars, Forks & Watchers with real-time progress telemetry.' },
+                        { title: '🔐 Full 2FA & Instant Access', desc: 'Complete Username, Password, Recovery Email & 2FA Secret Key with built-in live 6-digit OTP generator.' }
+                    ],
+                    footer: '⚡ Inspect Exact @Usernames Live Before Checkout • 100% Instant Automated Delivery'
                 },
                 {
-                    badge: 'SLIDE 02 / 03 • QUANTUM EXCHANGE',
+                    badge: 'SPECIALTY 02 / 03 • QUANTUM EXCHANGE',
+                    icon: '🌐',
                     color: '#10b981',
                     animClass: 'spec-anim-vortex',
-                    title: '🌐 XianBee Crypto Exchange:',
-                    desc: 'A secure, fully integrated instant crypto asset platform featuring lightning-fast purchases (Buy Crypto), cross-chain network exchanges (Swap), and seamless crypto-to-IDR cashouts (Convert P2P).'
+                    subtitle: 'INSTANT DIGITAL ASSET & LIQUIDITY BRIDGE',
+                    title: 'XianBee Crypto Exchange',
+                    lead: 'A secure, fully integrated instant crypto asset platform featuring lightning-fast retail purchases (Buy Crypto & L2 Gas), cross-chain network exchanges (Swap), verified exchange accounts, and seamless crypto-to-IDR settlements (Convert P2P) with zero hidden delays.',
+                    pillars: [
+                        { title: '⛽ Instant Retail Gas & Crypto', desc: 'Direct retail delivery of ETH, BNB, SOL, TON, SUI & Layer-2 gas straight to your personal Web3 wallet.' },
+                        { title: '🔄 Cross-Chain Network Swap', desc: 'Automated multi-network routing supporting TRC-20, BEP-20, Arbitrum, Base, Optimism, Polygon & TON.' },
+                        { title: '🔶 Verified Exchange Accounts', desc: 'Aged & verified accounts for global tier-1 exchanges (Binance, OKX, Bybit, Bitget, Gate.io & MEXC).' },
+                        { title: '🇮🇩 Seamless Crypto-to-IDR', desc: 'Instant multi-currency settlement bridging USDT with QRIS, SeaBank, and DANA at live market rates.' }
+                    ],
+                    footer: '💎 Automated Blockchain Confirmation • Multi-Network Settlement 24/7'
                 },
                 {
-                    badge: 'SLIDE 03 / 03 • HOLOGRAPHIC HUB',
+                    badge: 'SPECIALTY 03 / 03 • HOLOGRAPHIC HUB',
+                    icon: '🌟',
                     color: '#c084fc',
                     animClass: 'spec-anim-prism',
-                    title: '🌟 The Ultimate One-Stop Shop Ecosystem:',
-                    desc: 'We supply everything your digital business and operations need under one roof—ranging from <i>Aged Social Media Accounts, Pro Subscription Apps, SMM Traffic Boosts, to Digital Bills &amp; PPOB Top-Ups</i> connected in Real-Time.'
+                    subtitle: 'ALL-IN-ONE DIGITAL OPERATIONS ARCHITECTURE',
+                    title: 'The Ultimate One-Stop Shop Ecosystem',
+                    lead: 'We supply everything your digital business, agency, and daily operations need under one unified roof—ranging from Aged Social Media Accounts, Pro AI & Creative Subscriptions, High-Velocity SMM Traffic Boosts, to Digital Bills & PPOB Top-Ups connected in Real-Time.',
+                    pillars: [
+                        { title: '📱 Aged Social & Email Assets', desc: 'High-trust aged X (Twitter), Instagram, TikTok, Discord, Telegram, Reddit & verified email accounts.' },
+                        { title: '👑 Pro AI & Creative Apps', desc: 'Official subscriptions for ChatGPT Plus, Gemini Advanced, Canva Pro, CapCut Pro & 4K VIP Streaming.' },
+                        { title: '📈 SMM & Web3 Traffic Boost', desc: 'Cross-platform followers, views, community members, and CoinMarketCap watchlist optimization.' },
+                        { title: '🎮 Real-Time PPOB & Games', desc: 'Instant top-ups for Mobile Legends, Valorant, Genshin, Steam, E-Wallets (DANA/OVO/GoPay) & PLN Tokens.' }
+                    ],
+                    footer: '🌟 One Unified Wallet Balance for All Digital Assets, Subscriptions & Services'
                 }
             ];
 
-            function switchCoreSpecialtySlide(idx) {
-                const item = CORE_SPECIALTIES_DATA[idx] || CORE_SPECIALTIES_DATA[0];
-                const stage = document.getElementById('coreSpecStage');
-                const titleEl = document.getElementById('coreSpecTitle');
-                const descEl = document.getElementById('coreSpecDesc');
-                const counterEl = document.getElementById('coreSpecCounter');
+            function openFullSpecialtyPage(idx) {
+                const item = FULL_SPECIALTIES_PAGES[idx] || FULL_SPECIALTIES_PAGES[0];
+                const mainView = document.getElementById('authMainPortalView');
+                const fullView = document.getElementById('authSpecialtyFullPage');
+                const stageCard = document.getElementById('fullSpecStageCard');
+
+                if (mainView) mainView.style.display = 'none';
+                if (fullView) fullView.classList.add('active');
+
+                if (stageCard) {
+                    stageCard.classList.remove('spec-anim-cyber', 'spec-anim-vortex', 'spec-anim-prism');
+                    void stageCard.offsetWidth; // Replay unique 3D animation
+                    stageCard.classList.add(item.animClass);
+                }
+
+                document.getElementById('fullSpecBadge').innerText = item.badge;
+                document.getElementById('fullSpecBadge').style.color = item.color;
+                document.getElementById('fullSpecBadge').style.borderColor = item.color;
+
+                const orb = document.getElementById('fullSpecIconOrb');
+                orb.innerText = item.icon;
+                orb.style.borderColor = item.color;
+
+                const sub = document.getElementById('fullSpecSubtitle');
+                sub.innerText = item.subtitle;
+                sub.style.color = item.color;
+
+                document.getElementById('fullSpecTitle').innerText = item.title;
+                document.getElementById('fullSpecLeadDesc').innerText = item.lead;
+                document.getElementById('fullSpecFooterNote').innerText = item.footer;
+                document.getElementById('fullSpecFooterNote').style.borderColor = item.color;
+
+                const grid = document.getElementById('fullSpecPillarsGrid');
+                grid.innerHTML = item.pillars.map(p => `
+                    <div class="spec-pillar-box" style="border-left-color:${item.color};">
+                        <div style="font-size:0.7rem;font-weight:800;color:var(--text-primary);">${p.title}</div>
+                        <div style="font-size:0.62rem;color:var(--text-secondary);line-height:1.38;">${p.desc}</div>
+                    </div>
+                `).join('');
 
                 [0, 1, 2].forEach(i => {
-                    const btn = document.getElementById('coreSpecBtn' + i);
-                    if (btn) {
-                        btn.className = 'core-spec-btn' + (i === idx ? ' active-' + i : '');
-                    }
+                    const btn = document.getElementById('fullNavBtn' + i);
+                    if (btn) btn.classList.toggle('active', i === idx);
                 });
+            }
 
-                if (stage && titleEl && descEl) {
-                    stage.classList.remove('spec-anim-cyber', 'spec-anim-vortex', 'spec-anim-prism');
-                    void stage.offsetWidth; // Force reflow so each click replays its unique 3D animation
-                    stage.classList.add(item.animClass);
-                    titleEl.style.color = item.color;
-                    titleEl.innerHTML = `<span>${item.title}</span>`;
-                    descEl.innerHTML = item.desc;
-                }
-                if (counterEl) {
-                    counterEl.style.color = item.color;
-                    counterEl.innerText = item.badge;
+            function closeFullSpecialtyPage() {
+                const mainView = document.getElementById('authMainPortalView');
+                const fullView = document.getElementById('authSpecialtyFullPage');
+                if (fullView) fullView.classList.remove('active');
+                if (mainView) {
+                    mainView.style.display = 'flex';
+                    mainView.style.animation = 'authPanel3DIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards';
                 }
             }
 
@@ -1708,7 +1830,7 @@
                     const p = (document.getElementById('loginPasswordInput')?.value || '').trim();
                     const score = (u.length >= 2 ? 50 : 15) + (p.length >= 4 ? 50 : 10);
                     fillEl.style.width = score + '%';
-                    statusEl.innerText = score >= 100 ? '🟢 Credentials Ready for Cloud Sync' : '🔐 Enter Username & Password...';
+                    statusEl.innerText = score >= 100 ? '🟢 Credentials Ready — Encrypted Session' : '🔐 Enter Username & Password...';
                 } else {
                     const u = (document.getElementById('regUsernameInput')?.value || '').trim();
                     const c = (document.getElementById('regContactInput')?.value || '').trim();
@@ -1720,7 +1842,7 @@
                     if (p.length >= 6) score += 25;
                     if (/^\d{6}$/.test(pin)) score += 25;
                     fillEl.style.width = score + '%';
-                    statusEl.innerText = score >= 100 ? '🛡️ 6-Digit PIN & Vault Ready!' : `⚡ Setup Progress: ${score}%`;
+                    statusEl.innerText = score >= 100 ? '🛡️ 6-Digit PIN & Security Ready!' : `⚡ Registration Progress: ${score}%`;
                 }
             }
         </script>
