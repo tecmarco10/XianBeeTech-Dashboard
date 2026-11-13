@@ -2916,6 +2916,59 @@
                             <button class="btn-ui buy-now" style="width:100%;padding:9px;font-size:0.72rem;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt}, ${!!m.isCartOffer})">💳 Accept & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
                         </div>
                     `;
+                } else if (n.meta && n.meta.type === 'stock_alert' && Array.isArray(n.meta.accounts)) {
+                    const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
+                    const totalInit = n.meta.initialCount || n.meta.accounts.length;
+                    let availNowCount = 0;
+
+                    const accRowsHtml = n.meta.accounts.map(item => {
+                        const uLow = String(item.username || '').toLowerCase();
+                        const isStillAvail = liveSet.has(uLow);
+                        if (isStillAvail) {
+                            availNowCount++;
+                            const liveAccObj = allLiveAccountsFlat.find(a => String(a.username || '').toLowerCase() === uLow) || item.accountData || item;
+                            ACCOUNT_CACHE_MAP[item.accId] = { acc: liveAccObj, yrKey: item.yearKey };
+                        }
+                        return `
+                            <div style="background:var(--bg-surface);border:1px solid ${isStillAvail ? 'var(--border-focus)' : 'rgba(239,68,68,0.4)'};border-left:3.5px solid ${isStillAvail ? 'var(--success)' : 'var(--danger)'};border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:${isStillAvail ? 'var(--text-primary)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                        ${isStillAvail ? '🟢' : '🔴'} @${item.username} <span style="font-size:0.62rem;color:var(--accent-cyan);">(${item.yearKey})</span>
+                                    </div>
+                                    <span class="price-chip" style="padding:2px 7px;font-size:0.65rem;">${fmtPrice(item.usdt)}</span>
+                                </div>
+                                <div style="font-size:0.63rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
+                                    👥 ${item.followers || 0} Flw • 📁 ${item.repos || 0} Repos
+                                </div>
+                                ${isStillAvail ? `
+                                    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
+                                        <a href="${item.url}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;">🌐 Profile</a>
+                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;border-color:var(--warning);color:var(--warning);" onclick="closeModal('notificationsModal'); openNegoModalById('${item.accId}')">🤝 Offer</button>
+                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="addSpecificAccountById('${item.accId}')">🛒 +Cart</button>
+                                        <button type="button" class="btn-ui buy-now" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="closeModal('notificationsModal'); buySpecificAccountById('${item.accId}')">⚡ Buy</button>
+                                    </div>
+                                ` : `
+                                    <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:var(--danger);border-radius:7px;padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;">
+                                        🔴 SOLD OUT — Purchased by another client
+                                    </div>
+                                `}
+                            </div>
+                        `;
+                    }).join('');
+
+                    actionBtnsHtml = `
+                        <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:7px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-surface);border:1px solid var(--border-subtle);padding:6px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;">
+                                <span style="color:var(--text-secondary);">LIVE STOCK STATUS:</span>
+                                <span style="color:${availNowCount > 0 ? 'var(--success)' : 'var(--danger)'};">
+                                    ${availNowCount > 0 ? `🟢 ${availNowCount} / ${totalInit} Available` : `🔴 0 / ${totalInit} (ALL SOLD OUT)`}
+                                </span>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;">
+                                ${accRowsHtml}
+                            </div>
+                        </div>
+                    `;
                 }
                 return `
                     <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid var(--accent-cyan);">
@@ -3514,15 +3567,27 @@
                     const prevKnownRaw = localStorage.getItem('xb_known_stock_unames');
                     const prevKnownSet = prevKnownRaw ? new Set(JSON.parse(prevKnownRaw)) : null;
                     const newAddedPerCat = {};
+                    const newAddedAccountsList = [];
                     const currentUnames = [];
 
                     json.data.forEach(acc => {
                         const cat = String(acc.category || acc.year || '2026');
                         const uLow = String(acc.username || '').toLowerCase().trim();
+                        const prc = computeAccountPrice(acc, cat);
                         if (uLow) {
                             currentUnames.push(uLow);
                             if (prevKnownSet && !prevKnownSet.has(uLow)) {
                                 newAddedPerCat[cat] = (newAddedPerCat[cat] || 0) + 1;
+                                newAddedAccountsList.push({
+                                    accId: `${cat}-${acc.username}`,
+                                    yearKey: cat,
+                                    username: acc.username,
+                                    followers: parseInt(acc.followers || 0) || 0,
+                                    repos: parseInt(acc.repos || 0) || 0,
+                                    usdt: prc,
+                                    url: acc.url || `https://github.com/${acc.username}`,
+                                    accountData: acc
+                                });
                             }
                         }
                     });
@@ -3533,18 +3598,23 @@
                     }
 
                     const addedCats = Object.keys(newAddedPerCat);
-                    if (addedCats.length > 0) {
-                        const totalAdded = addedCats.reduce((s, k) => s + newAddedPerCat[k], 0);
+                    if (addedCats.length > 0 && newAddedAccountsList.length > 0) {
+                        const totalAdded = newAddedAccountsList.length;
                         const summaryStr = addedCats.map(k => `<b>GitHub ${k}</b> (+${newAddedPerCat[k]})`).join(', ');
-                        const stockAlertHtml = (
-                            `🔥 <b>[ NEW STOCK ARRIVED! ]</b> 🔥\n` +
-                            `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                            `📦 <b>Restocked Catalogs:</b> ${summaryStr}\n` +
-                            `✨ <b>Total New Assets:</b> <b>+${totalAdded} Verified Accounts</b>\n` +
-                            `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                            `🛍️ <i>Open the GitHub Catalog now — first come, first served!</i>`
-                        );
-                        pushInWebNotification('buyer', '🔥 NEW STOCK ALERT!', stockAlertHtml);
+                        const stockAlertHtml = [
+                            `════════════════════`,
+                            `🔥 <b>NEW STOCK ARRIVED</b>`,
+                            `════════════════════`,
+                            fmtAlignedNotifRow('Catalogs', summaryStr),
+                            fmtAlignedNotifRow('Added', `<b>+${totalAdded} Verified Accounts</b>`),
+                            `════════════════════`,
+                            `⚡ <i>Instant Checkout, Make an Offer, or Add to Cart directly below:</i>`
+                        ].join('\n');
+                        pushInWebNotification('buyer', `🔥 NEW STOCK ALERT (+${totalAdded} ACCOUNTS)`, stockAlertHtml, {
+                            type: 'stock_alert',
+                            initialCount: totalAdded,
+                            accounts: newAddedAccountsList
+                        });
                         showToast(`🔥 +${totalAdded} New GitHub Account(s) Restocked!`);
                     }
 
