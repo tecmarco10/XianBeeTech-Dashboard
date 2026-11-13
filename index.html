@@ -2371,9 +2371,45 @@
             }
             _recentTgPushCache[cleanSig] = nowMs;
 
-            const finalHtml = (withFooter && !htmlText.includes("Engineered by Abie Haryatmo"))
+            const charPx = (c) => {
+                if ("Iltij!|':;.,".includes(c)) return 3.8;
+                if ("rfJ()[]/\\".includes(c)) return 5.2;
+                if (" -_".includes(c)) return 5.8;
+                if ("acegknopsuvxzy?".includes(c)) return 8.3;
+                if ("bdhqFPLTZ0123456789".includes(c)) return 9.0;
+                if ("ABCDEFGHKMNORUVWXY".includes(c)) return 10.2;
+                if ("mwMW@#%&".includes(c)) return 12.0;
+                return 8.5;
+            };
+            const wordPx = (w) => Array.from(String(w || '')).reduce((s, c) => s + charPx(c), 0);
+            const rawJoined = (withFooter && !htmlText.includes("Engineered by Abie Haryatmo"))
                 ? (htmlText + FOOTER_BRANDING)
                 : htmlText;
+            const kvRegex = /^(<blockquote>)?(\s*(?:[^\w\s<]+))\s*(?:<code>([^:<]{1,20}?)\s*:\s*<\/code>|<b>([^:<]{1,20}?)\s*:\s*<\/b>)\s*(.*)$/;
+            const rawLines = String(rawJoined)
+                .replace(/╭━{19,}╮/g, '╭━━━━━━━━━━━━━━━━━━╮')
+                .replace(/╰━{19,}╯/g, '╰━━━━━━━━━━━━━━━━━━╯')
+                .replace(/━{20,}/g, '━━━━━━━━━━━━━━━━━━━━')
+                .split('\n');
+            const kvRows = [];
+            rawLines.forEach((ln, idx) => {
+                const m = ln.match(kvRegex);
+                if (m) {
+                    const bq = m[1] || '';
+                    const emo = (m[2] || '').trim();
+                    const key = (m[3] !== undefined ? m[3] : m[4]).replace(/\u00A0/g, ' ').trim();
+                    const val = m[5] || '';
+                    if (val.trim() !== '') kvRows.push({ idx, bq, emo, key, px: wordPx(key), val });
+                }
+            });
+            if (kvRows.length >= 2) {
+                const targetPx = Math.max(68.0, Math.min(92.0, Math.max(...kvRows.map(x => x.px))));
+                kvRows.forEach(item => {
+                    const spaces = Math.max(1, Math.round(Math.max(0, targetPx - item.px) / 5.75) + 1);
+                    rawLines[item.idx] = `${item.bq}${item.emo}\u00A0<code>${item.key}${'\u00A0'.repeat(spaces)}:</code> ${item.val}`;
+                });
+            }
+            const finalHtml = rawLines.join('\n');
             const payload = {
                 chat_id: String(chatId),
                 text: finalHtml,
@@ -3106,7 +3142,7 @@
             if (y === '6Badge') return 'GitHub Account (6 Premium Badges)';
             if (y === 'Followers') return 'GitHub Account (With Followers)';
             if (y === 'StudentPack') return 'GitHub Student Developer Pack';
-            if (y === 'Contrib') return 'GitHub Account (High Contributions)';
+            if (y === 'Contrib') return 'GitHub Account (High Contributions • 200K+ Commits)';
             if (y === 'OldRepo') return 'GitHub Account (Old Repository)';
             return String(fallbackTitle).split('—')[0].split('(@')[0].trim() || 'GitHub Account';
         }
@@ -3463,7 +3499,7 @@
             { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges', line1: '✨ 6 Official Badges Unlocked', line2: '🛡️ Pull Shark, YOLO, Starstruck & Galaxy Brain', desc: 'Unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usdt: 10.00 },
             { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Vault', line1: '✨ Aged Profile + 50+ Followers', line2: '🛡️ Instant Developer Authority • Full Access & 2FA', desc: 'Aged GitHub profiles pre-warmed with 50+ organic followers', usdt: 10.00 },
             { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Dev Pack', line1: '✨ Verified Dev Pack Benefits', line2: '🛡️ Cloud Credits, Pro Tools & Full Account Access', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
-            { yr: 'Contrib', icon: '📈', tag: 'GREEN GRAPH', title: 'GitHub Green Contributions', line1: '✨ Active Green Matrix Graph', line2: '🛡️ Pre-Populated Repositories & Clean History', desc: 'Active green contribution matrix & populated repositories', usdt: 10.00 }
+            { yr: 'Contrib', icon: '📈', tag: '200K+ COMMITS', title: 'GitHub High Contributions (200K+)', line1: '🔥 200,000+ Green Matrix Commits', line2: '🛡️ High Authority Graph • Full Access & 2FA', desc: '200K+ green contribution commits & populated repositories', usdt: 10.00 }
         ];
 
         const CATALOG_ITEMS = [
@@ -4245,7 +4281,7 @@
                                 ID : ${uname}
                             </div>
                             <div style="font-size:0.6rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                Year : ${dispYear}
+                                ${yrKey === 'Contrib' ? 'Spec : 🔥 200K+ Commits' : (yrKey === '6Badge' ? 'Spec : 🏅 6 Premium Badges' : (yrKey === 'Arctic' ? 'Spec : ❄️ Arctic Vault 2020' : (yrKey === 'StudentPack' ? 'Spec : 🎒 Student Dev Pack' : `Year : ${dispYear}`)))}
                             </div>
                         </div>
                         <div class="price-chip" style="padding:5px 9px;font-size:0.72rem;flex-shrink:0;">${fmtPrice(prc)}</div>
@@ -4254,7 +4290,7 @@
                     <!-- KOTAK 3D DETAIL AKUN -->
                     <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:10px;padding:8px 10px;min-width:0;width:100%;">
                         <h4 class="item-title" style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;margin:0 0 3px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${uname}</h4>
-                        <div style="font-size:0.65rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👥 Followers: <b>${acc.followers || 0}</b> • 📁 Public Repos: <b>${acc.repos || 0}</b></div>
+                        <div style="font-size:0.65rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">👥 Followers: <b>${acc.followers || 0}</b> • 📁 Repos: <b>${acc.repos || 0}</b>${yrKey === 'Contrib' ? ' • 🔥 <b>200K+ Commits</b>' : ''}</div>
                         <div style="font-size:0.62rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:2px;">🔐 Full Username, Password &amp; 2FA Secret Key Included</div>
                     </div>
                 </div>
