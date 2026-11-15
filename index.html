@@ -2218,15 +2218,25 @@
          🪟 MODAL 3: LIVE NOTIFICATION CENTER (TELEGRAM-STYLE ALERTS IN WEB)
          ========================================================= -->
     <div class="modal-overlay" id="notificationsModal">
-        <div class="modal-box">
-            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                <div>
-                    <span class="item-tag" style="margin:0;">REAL-TIME TELEMETRY & ALERTS</span>
-                    <h3 style="margin:2px 0 0 0;font-size:1.15rem;">🔔 Live Notification Center</h3>
+        <div class="modal-box" style="padding:16px;">
+            <!-- 1 KOTAK 3D MENYATU: BARIS 1 REAL-TIME (TENGAH), BARIS 2 LIVE NOTIFICATION CENTER (TENGAH), BARIS 3 TOMBOL CEKLIS & CLEAR -->
+            <div style="background:var(--bg-input);border:1.5px solid var(--border-focus);border-left:4px solid var(--accent-cyan);border-radius:14px;padding:11px 12px;margin-bottom:12px;text-align:center;box-shadow:var(--shadow-card);">
+                <div style="display:flex;justify-content:center;align-items:center;">
+                    <span class="item-tag" style="margin:0;font-size:0.6rem;letter-spacing:0.8px;padding:3px 10px;">REAL-TIME TELEMETRY &amp; ALERTS</span>
                 </div>
-                <div style="display:flex;gap:6px;">
-                    <button class="top-pill" style="color:var(--danger);" onclick="clearWebNotifications()">🗑️ Clear</button>
-                    <button class="top-pill" onclick="closeModal('notificationsModal')">✕</button>
+                <h3 style="margin:6px 0 10px 0;font-size:1.02rem;font-weight:800;color:var(--text-primary);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                    🔔 Live Notification Center
+                </h3>
+                <div style="display:grid;grid-template-columns:1fr 1.25fr auto;gap:6px;padding-top:9px;border-top:1px solid var(--border-subtle);align-items:center;">
+                    <button type="button" class="top-pill" id="btnSelectAllNotifs" style="justify-content:center;padding:7px 8px;font-size:0.68rem;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="toggleSelectAllWebNotifications()">
+                        ☑️ Select All
+                    </button>
+                    <button type="button" class="top-pill" id="btnClearOrDeleteNotifs" style="justify-content:center;padding:7px 8px;font-size:0.68rem;color:var(--danger);border-color:rgba(239,68,68,0.45);background:rgba(239,68,68,0.08);" onclick="deleteSelectedOrClearWebNotifications()">
+                        🗑️ Clear All
+                    </button>
+                    <button type="button" class="top-pill" style="justify-content:center;padding:7px 11px;font-size:0.72rem;" onclick="closeModal('notificationsModal')">
+                        ✕
+                    </button>
                 </div>
             </div>
 
@@ -2235,7 +2245,7 @@
                 <button class="subtab-pill" id="tabNotifAdmin" onclick="switchNotifFeed('admin')">🕵️ Admin Logs</button>
             </div>
 
-            <div id="notificationsListContainer" style="max-height:62vh;overflow-y:auto;"></div>
+            <div id="notificationsListContainer" style="max-height:60vh;overflow-y:auto;"></div>
         </div>
     </div>
 
@@ -3206,7 +3216,7 @@
                     `;
                 }
 
-                // Hapus teks judul duplikat di atas garis ganda (cukup tampilkan badge PINNED di kiri jika di-pin & jam di kanan)
+                const isChecked = _selectedNotifIds.has(String(n.id));
                 const topBarHtml = isPinned ? `
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;">
                         <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:${isFlashAlert ? 'var(--warning)' : 'var(--success)'};background:${isFlashAlert ? 'rgba(245,158,11,0.14)' : 'rgba(16,185,129,0.14)'};border:1px solid ${isFlashAlert ? 'rgba(245,158,11,0.45)' : 'rgba(16,185,129,0.45)'};padding:2px 8px;border-radius:6px;">
@@ -3215,13 +3225,20 @@
                         <span style="font-size:0.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;">🕒 ${n.time}</span>
                     </div>
                 ` : `
-                    <div style="display:flex;justify-content:flex-end;align-items:center;margin-bottom:4px;">
-                        <span style="font-size:0.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;">🕒 ${n.time}</span>
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;">
+                        <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;color:${isChecked ? 'var(--accent-cyan)' : 'var(--text-secondary)'};background:var(--bg-surface);border:1px solid ${isChecked ? 'var(--accent-cyan)' : 'var(--border-subtle)'};padding:3px 8px;border-radius:7px;" onclick="event.stopPropagation();">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSingleNotifSelection('${n.id}', this.checked)" style="width:14px;height:14px;accent-color:var(--accent-cyan);cursor:pointer;margin:0;">
+                            <span>${isChecked ? 'Selected' : 'Select'}</span>
+                        </label>
+                        <div style="display:flex;align-items:center;gap:6px;">
+                            <span style="font-size:0.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;">🕒 ${n.time}</span>
+                            <button type="button" class="top-pill" title="Delete this notification" style="padding:2px 6px;font-size:0.62rem;color:var(--danger);border-color:rgba(239,68,68,0.35);" onclick="deleteSingleWebNotification('${n.id}')">🗑️</button>
+                        </div>
                     </div>
                 `;
 
                 return `
-                    <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid ${isFlashAlert ? 'var(--warning)' : (isPinned ? 'var(--success)' : 'var(--accent-cyan)')};">
+                    <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid ${isFlashAlert ? 'var(--warning)' : (isPinned ? 'var(--success)' : (isChecked ? 'var(--danger)' : 'var(--accent-cyan)'))};${isChecked ? 'border-color:rgba(239,68,68,0.55);background:rgba(239,68,68,0.05);' : ''}">
                         ${topBarHtml}
                         ${formatWebNotifBodyToCleanCard(n.body, n.title)}
                         ${imgPreviewHtml}
@@ -3229,6 +3246,108 @@
                     </div>
                 `;
             }).join('');
+
+            updateNotifHeaderSelectionButtons();
+        }
+
+        let _selectedNotifIds = new Set();
+
+        function getDeletableCurrentFeedNotifs() {
+            const list = activeNotifFeed === 'admin'
+                ? JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]')
+                : JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
+            return list.filter(x => x && x.id && !isPinnedNotifItem(x));
+        }
+
+        function updateNotifHeaderSelectionButtons() {
+            const deletable = getDeletableCurrentFeedNotifs();
+            const validIds = new Set(deletable.map(x => String(x.id)));
+            for (const id of Array.from(_selectedNotifIds)) {
+                if (!validIds.has(id)) _selectedNotifIds.delete(id);
+            }
+
+            const selCount = _selectedNotifIds.size;
+            const btnSelAll = document.getElementById('btnSelectAllNotifs');
+            const btnDel = document.getElementById('btnClearOrDeleteNotifs');
+
+            if (btnSelAll) {
+                const allSelected = deletable.length > 0 && selCount === deletable.length;
+                btnSelAll.innerHTML = allSelected ? '❎ Unselect All' : `☑️ Select All (${deletable.length})`;
+            }
+            if (btnDel) {
+                if (selCount > 0) {
+                    btnDel.innerHTML = `🗑️ Delete Selected (${selCount})`;
+                    btnDel.style.background = 'rgba(239,68,68,0.2)';
+                    btnDel.style.borderColor = 'var(--danger)';
+                } else {
+                    btnDel.innerHTML = '🗑️ Clear All';
+                    btnDel.style.background = 'rgba(239,68,68,0.08)';
+                    btnDel.style.borderColor = 'rgba(239,68,68,0.45)';
+                }
+            }
+        }
+
+        function toggleSingleNotifSelection(notifId, isChecked) {
+            const idStr = String(notifId);
+            if (isChecked) _selectedNotifIds.add(idStr);
+            else _selectedNotifIds.delete(idStr);
+            renderNotificationsList();
+        }
+
+        function toggleSelectAllWebNotifications() {
+            const deletable = getDeletableCurrentFeedNotifs();
+            if (deletable.length === 0) {
+                return showToast('No regular notifications to select!');
+            }
+            if (_selectedNotifIds.size === deletable.length) {
+                _selectedNotifIds.clear();
+            } else {
+                deletable.forEach(x => _selectedNotifIds.add(String(x.id)));
+            }
+            renderNotificationsList();
+        }
+
+        async function deleteSingleWebNotification(notifId) {
+            _selectedNotifIds.clear();
+            _selectedNotifIds.add(String(notifId));
+            await deleteSelectedWebNotifications();
+        }
+
+        async function deleteSelectedWebNotifications() {
+            clearTimeout(_cloudSyncTimer);
+            const isAdmFeed = activeNotifFeed === 'admin';
+            const storageKey = isAdmFeed ? 'xb_admin_notifs' : 'xb_buyer_notifs';
+            const currentList = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const deletedMap = JSON.parse(localStorage.getItem('xb_deleted_notif_ids') || '{}');
+            const idsToRemove = Array.from(_selectedNotifIds);
+
+            if (idsToRemove.length === 0) return;
+
+            idsToRemove.forEach(id => {
+                deletedMap[id] = true;
+            });
+
+            const remainingList = currentList.filter(item => !item || isPinnedNotifItem(item) || !_selectedNotifIds.has(String(item.id)));
+            _selectedNotifIds.clear();
+
+            localStorage.setItem('xb_deleted_notif_ids', JSON.stringify(deletedMap));
+            localStorage.setItem(storageKey, JSON.stringify(remainingList));
+            updateNotifBadgeCount();
+            renderNotificationsList();
+            showToast(`🗑️ Deleted ${idsToRemove.length} selected notification(s)!`);
+
+            await syncCloudStateWithGSheet('push', isAdmFeed
+                ? { cleared_ids: idsToRemove, admin_notifs: remainingList }
+                : { cleared_ids: idsToRemove, buyer_notifs: remainingList }
+            );
+        }
+
+        async function deleteSelectedOrClearWebNotifications() {
+            if (_selectedNotifIds.size > 0) {
+                await deleteSelectedWebNotifications();
+            } else {
+                await clearWebNotifications();
+            }
         }
 
         async function adminSendBuyerReminder(notifIdx) {
@@ -3288,6 +3407,7 @@
                     clearedIds.push(item.id);
                 }
             });
+            _selectedNotifIds.clear();
             const nowClearTs = Date.now();
             localStorage.setItem('xb_deleted_notif_ids', JSON.stringify(deletedMap));
             localStorage.setItem(isAdmFeed ? 'xb_admin_cleared_ts' : 'xb_buyer_cleared_ts', String(nowClearTs));
@@ -3295,7 +3415,7 @@
             localStorage.setItem(storageKey, JSON.stringify(keptPinned));
             updateNotifBadgeCount();
             renderNotificationsList();
-            showToast('🗑️ Regular notifications cleared! (Pinned alerts kept at top)');
+            showToast('🗑️ All regular notifications cleared! (Pinned alerts kept at top)');
 
             await syncCloudStateWithGSheet('push', isAdmFeed
                 ? { clear_admin_notifs_ts: nowClearTs, cleared_ids: clearedIds, admin_notifs: [] }
