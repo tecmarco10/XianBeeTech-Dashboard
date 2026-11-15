@@ -2708,20 +2708,121 @@
             } catch (e) {}
         }
 
+        function isPinnedNotifItem(n) {
+            if (!n) return false;
+            if (n.pinned === true) return true;
+            if (n.meta && (n.meta.type === 'stock_alert' || n.meta.type === 'flash_sale')) return true;
+            return false;
+        }
+
+        function buildPinnedFlashSaleNotif() {
+            cleanupExpiredOrSoldFlashAccounts();
+            const flashCfg = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true}');
+            const flashAccs = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]');
+            if (!flashCfg.active || !Array.isArray(flashAccs) || flashAccs.length === 0) return null;
+
+            const flashBodyHtml = [
+                `════════════════════`,
+                `⚡ <b>LIMITED TIME FLASH SALE (${flashAccs.length} DEALS)</b>`,
+                `════════════════════`,
+                fmtAlignedNotifRow('Deals', `<b>${flashAccs.length} Discounted GitHub Accounts</b>`),
+                fmtAlignedNotifRow('Delivery', `<b>Instant Auto-Dispatch + 2FA</b>`),
+                `════════════════════`,
+                `🔥 <i>Claim special discounted accounts below before the timer expires or sold out:</i>`
+            ].join('\n');
+
+            return {
+                id: 'PINNED-FLASH-SALE',
+                pinned: true,
+                pinOrder: 1,
+                ts: Date.now(),
+                time: 'LIVE DEAL',
+                title: `⚡ FLASH SALE ALERT (${flashAccs.length} DEALS)`,
+                body: flashBodyHtml,
+                meta: {
+                    type: 'flash_sale',
+                    initialCount: flashAccs.length,
+                    accounts: flashAccs
+                }
+            };
+        }
+
+        function getMergedBuyerNotifsWithPinned() {
+            const rawList = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
+            let pinnedStock = null;
+            try {
+                const savedPinStock = localStorage.getItem('xb_pinned_stock_alert');
+                if (savedPinStock) pinnedStock = JSON.parse(savedPinStock);
+            } catch (e) {}
+
+            const regularItems = [];
+            for (const item of rawList) {
+                if (!item) continue;
+                if (item.meta && item.meta.type === 'stock_alert') {
+                    if (!pinnedStock || (item.ts || 0) >= (pinnedStock.ts || 0)) {
+                        pinnedStock = Object.assign({}, item, { id: 'PINNED-STOCK-ALERT', pinned: true, pinOrder: 2 });
+                    }
+                    continue;
+                }
+                if (item.meta && item.meta.type === 'flash_sale') continue;
+                regularItems.push(item);
+            }
+
+            if (pinnedStock) {
+                pinnedStock.pinned = true;
+                pinnedStock.pinOrder = 2;
+                localStorage.setItem('xb_pinned_stock_alert', JSON.stringify(pinnedStock));
+            }
+
+            const pinnedFlash = buildPinnedFlashSaleNotif();
+            const finalTopPinned = [];
+            if (pinnedFlash) finalTopPinned.push(pinnedFlash);
+            if (pinnedStock) finalTopPinned.push(pinnedStock);
+
+            return [...finalTopPinned, ...regularItems];
+        }
+
         function pushInWebNotification(role, title, htmlBody, extraMeta = null) {
             const storageKey = role === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
-            const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            let list = JSON.parse(localStorage.getItem(storageKey) || '[]');
             const nowMs = Date.now();
-            const newId = 'NTF-' + nowMs + '-' + Math.floor(Math.random() * 999);
-            list.unshift({
+            const isStockPin = Boolean(extraMeta && extraMeta.type === 'stock_alert');
+            const isFlashPin = Boolean(extraMeta && extraMeta.type === 'flash_sale');
+            const newId = isStockPin ? 'PINNED-STOCK-ALERT' : (isFlashPin ? 'PINNED-FLASH-SALE' : ('NTF-' + nowMs + '-' + Math.floor(Math.random() * 999)));
+
+            const newObj = {
                 id: newId,
+                pinned: isStockPin || isFlashPin,
+                pinOrder: isFlashPin ? 1 : (isStockPin ? 2 : 99),
                 ts: nowMs,
                 time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
                 title: title,
                 body: htmlBody,
                 meta: extraMeta
-            });
-            localStorage.setItem(storageKey, JSON.stringify(list.slice(0, 50)));
+            };
+
+            if (role !== 'admin' && isStockPin) {
+                localStorage.setItem('xb_pinned_stock_alert', JSON.stringify(newObj));
+                list = list.filter(x => !(x && x.meta && x.meta.type === 'stock_alert') && x.id !== 'PINNED-STOCK-ALERT');
+                list.unshift(newObj);
+                localStorage.setItem(storageKey, JSON.stringify(list.slice(0, 50)));
+                updateNotifBadgeCount();
+                scheduleCloudStatePush({ global_pinned_stock_alert: newObj });
+                return newId;
+            }
+
+            if (role !== 'admin') {
+                // Pastikan notifikasi biasa selalu masuk di bawah item PINNED agar tidak pernah menimpa Stock Alert / Flash Sale
+                const pinnedItems = list.filter(x => isPinnedNotifItem(x));
+                const normalItems = list.filter(x => !isPinnedNotifItem(x));
+                normalItems.unshift(newObj);
+                list = [...pinnedItems, ...normalItems].slice(0, 50);
+            } else {
+                list.unshift(newObj);
+                list = list.slice(0, 50);
+            }
+
+            localStorage.setItem(storageKey, JSON.stringify(list));
             updateNotifBadgeCount();
             scheduleCloudStatePush();
             return newId;
@@ -2738,7 +2839,7 @@
         }
 
         function updateNotifBadgeCount() {
-            const buyerList = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
+            const buyerList = getMergedBuyerNotifsWithPinned();
             const adminList = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
             const isAdmin = ADMIN_IDS.includes(String(currentUserId));
             const total = isAdmin ? (buyerList.length + adminList.length) : buyerList.length;
@@ -2810,7 +2911,15 @@
                 // Abaikan garis dekorasi ASCII panjang yang bikin berantakan di HP
                 if (/^[╭╰┏┗━─═\-\s]+$/.test(plain)) continue;
 
-                // Deteksi baris judul di dalam pesan (misal O F F E R  S U B M I T T E D atau [ REAL-TIME CART ALERT ])
+// Abaikan baris duplikat "NEW STOCK ARRIVED" agar tidak muncul dua kali di bawah tabel
+                if (plain.toUpperCase().includes('NEW STOCK ARRIVED')) {
+                    if (!bannerHeading && fallbackTitle) {
+                        bannerHeading = String(fallbackTitle).replace(/\s*\(WEB\)/i, '').trim();
+                    }
+                    continue;
+                }
+
+                // Deteksi baris judul di dalam pesan
                 if (!bannerHeading && !plain.includes(':') && (
                     plain.includes('O F F E R') ||
                     plain.includes('A L E R T') ||
@@ -2824,7 +2933,9 @@
                     plain.includes('T R A N S F E R') ||
                     plain.includes('R E C E I V E D') ||
                     plain.includes('C O N F I R M E D') ||
-                    plain.startsWith('🛒') || plain.startsWith('🤝') || plain.startsWith('🧾') || plain.startsWith('🪙') || plain.startsWith('🇮🇩') || plain.startsWith('📸') || plain.startsWith('🎉') || plain.startsWith('⚡') || plain.startsWith('❌')
+                    plain.includes('FLASH SALE') ||
+                    plain.includes('NEW STOCK') ||
+                    plain.startsWith('🔥') || plain.startsWith('🛒') || plain.startsWith('🤝') || plain.startsWith('🧾') || plain.startsWith('🪙') || plain.startsWith('🇮🇩') || plain.startsWith('📸') || plain.startsWith('🎉') || plain.startsWith('⚡') || plain.startsWith('❌')
                 )) {
                     bannerHeading = plain
                         .replace(/\[\s*|\s*\]/g, '')
@@ -2853,14 +2964,12 @@
                     let rawKey = plain.slice(0, colonIdx)
                         .replace(/^[🔸🔹👤🆔📦💰🌐🧾🎯💳🔥📝⏳📡🔐⚠️✅]+/u, '')
                         .trim();
-                    // Ambil bagian value dalam bentuk HTML agar warna/bold tetap terjaga
                     const htmlColonIdx = line.indexOf(':');
                     let valHtml = htmlColonIdx !== -1 ? line.slice(htmlColonIdx + 1).replace(/^<\/b>|^<\/code>/i, '').trim() : plain.slice(colonIdx + 1).trim();
 
                     if (rawKey.toLowerCase() === 'status' || rawKey.toLowerCase().includes('select an executive')) {
                         noteLines.push(line);
                     } else if (rawKey) {
-                        // Singkatkan nama label yang terlalu panjang agar titik dua sejajar presisi
                         if (rawKey.toLowerCase() === 'normal price') rawKey = 'Normal';
                         if (rawKey.toLowerCase() === 'your offer' || rawKey.toLowerCase() === 'buyer offer') rawKey = 'Offer';
                         if (rawKey.toLowerCase() === 'target item' || rawKey.toLowerCase() === 'item added' || rawKey.toLowerCase() === 'order / type') rawKey = 'Item';
@@ -2875,12 +2984,12 @@
                 }
             }
 
-            if (!bannerHeading) {
+            if (!bannerHeading || bannerHeading.toUpperCase().includes('NEW STOCK ARRIVED')) {
                 bannerHeading = String(fallbackTitle || 'NOTIFICATION ALERT').replace(/\s*\(WEB\)/i, '').trim();
             }
 
             const headerBoxHtml = `
-                <div style="border-top:3px double var(--accent-cyan);border-bottom:3px double var(--accent-cyan);background:rgba(6,182,212,0.08);padding:5px 8px;margin-bottom:8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.6px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                <div style="border-top:3px double var(--accent-cyan);border-bottom:3px double var(--accent-cyan);background:rgba(6,182,212,0.08);padding:6px 8px;margin-bottom:8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.69rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                     ${bannerHeading}
                 </div>
             `;
@@ -2907,8 +3016,9 @@
         }
 
         function renderNotificationsList() {
-            const storageKey = activeNotifFeed === 'admin' ? 'xb_admin_notifs' : 'xb_buyer_notifs';
-            const list = JSON.parse(localStorage.getItem(storageKey) || '[]');
+            const list = activeNotifFeed === 'admin'
+                ? JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]')
+                : getMergedBuyerNotifsWithPinned();
             const container = document.getElementById('notificationsListContainer');
             if (list.length === 0) {
                 container.innerHTML = `<div style="padding:26px;text-align:center;color:var(--text-muted);font-weight:700;">No notifications in this feed yet.</div>`;
@@ -2918,6 +3028,9 @@
             container.innerHTML = list.map((n, idx) => {
                 let actionBtnsHtml = '';
                 let imgPreviewHtml = '';
+                const isPinned = isPinnedNotifItem(n);
+                const isFlashAlert = Boolean(n.meta && n.meta.type === 'flash_sale');
+
                 if (n.meta && n.meta.proofDataUrl) {
                     imgPreviewHtml = `<div style="margin-top:8px;"><img src="${n.meta.proofDataUrl}" style="max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border-focus);"></div>`;
                 }
@@ -2952,6 +3065,72 @@
                             <button class="btn-ui buy-now" style="width:100%;padding:9px;font-size:0.72rem;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt}, ${!!m.isCartOffer})">💳 Accept & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
                         </div>
                     `;
+                } else if (n.meta && n.meta.type === 'flash_sale' && Array.isArray(n.meta.accounts)) {
+                    const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
+                    let availFlashCount = 0;
+
+                    const flashRowsHtml = n.meta.accounts.map(fItem => {
+                        const uLow = String(fItem.username || '').toLowerCase();
+                        const remMs = Math.max(0, (fItem.expiresAt || (Date.now() + 3600000)) - Date.now());
+                        const isNotExpired = remMs > 0;
+                        const isStillAvail = isNotExpired && (liveSet.size === 0 || liveSet.has(uLow));
+                        const remHrs = Math.floor(remMs / 3600000);
+                        const remMins = Math.floor((remMs % 3600000) / 60000);
+                        const accId = `${fItem.yearKey || '2026'}-${fItem.username}`;
+
+                        if (isStillAvail) {
+                            availFlashCount++;
+                            const baseAcc = allLiveAccountsFlat.find(a => String(a.username || '').toLowerCase() === uLow) || fItem.accountData || fItem;
+                            ACCOUNT_CACHE_MAP[accId] = {
+                                acc: Object.assign({}, baseAcc, { _computed_usdt: parseFloat(fItem.flashUsdt), price_usd: parseFloat(fItem.flashUsdt) }),
+                                yrKey: fItem.yearKey || '2026'
+                            };
+                        }
+
+                        return `
+                            <div style="background:var(--bg-surface);border:1px solid ${isStillAvail ? 'var(--warning)' : 'rgba(239,68,68,0.4)'};border-left:3.5px solid ${isStillAvail ? 'var(--warning)' : 'var(--danger)'};border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:${isStillAvail ? 'var(--text-primary)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                        ${isStillAvail ? '🔥' : '🔴'} @${fItem.username} <span style="font-size:0.62rem;color:var(--warning);">(${fItem.yearKey || 'GitHub'})</span>
+                                    </div>
+                                    <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                                        <s style="font-size:0.6rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">${fmtPrice(fItem.origUsdt)}</s>
+                                        <span class="price-chip" style="padding:2px 7px;font-size:0.65rem;border-color:var(--warning);color:var(--warning);">${fmtPrice(fItem.flashUsdt)}</span>
+                                    </div>
+                                </div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.62rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
+                                    <span>👥 ${fItem.followers || 0} Flw • 📁 ${fItem.repos || 0} Repos</span>
+                                    <span style="color:var(--warning);font-weight:800;">⏳ ${remHrs}h ${remMins}m Left</span>
+                                </div>
+                                ${isStillAvail ? `
+                                    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
+                                        <a href="https://github.com/${fItem.username}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;">🌐 Profile</a>
+                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;border-color:var(--warning);color:var(--warning);" onclick="closeModal('notificationsModal'); openNegoModalById('${accId}')">🤝 Offer</button>
+                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
+                                        <button type="button" class="btn-ui buy-now" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="closeModal('notificationsModal'); buySpecificAccountById('${accId}')">⚡ Claim</button>
+                                    </div>
+                                ` : `
+                                    <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:var(--danger);border-radius:7px;padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;">
+                                        🔴 SOLD OUT / EXPIRED
+                                    </div>
+                                `}
+                            </div>
+                        `;
+                    }).join('');
+
+                    actionBtnsHtml = `
+                        <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:7px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-surface);border:1px solid rgba(245,158,11,0.45);padding:6px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;">
+                                <span style="color:var(--warning);">FLASH SALE STATUS:</span>
+                                <span style="color:${availFlashCount > 0 ? 'var(--success)' : 'var(--danger)'};">
+                                    ${availFlashCount > 0 ? `🟢 ${availFlashCount} Active Deal(s)` : `🔴 All Deals Sold Out`}
+                                </span>
+                            </div>
+                            <div style="display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;">
+                                ${flashRowsHtml}
+                            </div>
+                        </div>
+                    `;
                 } else if (n.meta && n.meta.type === 'stock_alert' && Array.isArray(n.meta.accounts)) {
                     const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
                     const totalInit = n.meta.initialCount || n.meta.accounts.length;
@@ -2959,7 +3138,7 @@
 
                     const accRowsHtml = n.meta.accounts.map(item => {
                         const uLow = String(item.username || '').toLowerCase();
-                        const isStillAvail = liveSet.has(uLow);
+                        const isStillAvail = liveSet.size === 0 || liveSet.has(uLow);
                         if (isStillAvail) {
                             availNowCount++;
                             const liveAccObj = allLiveAccountsFlat.find(a => String(a.username || '').toLowerCase() === uLow) || item.accountData || item;
@@ -2974,7 +3153,7 @@
                                     <span class="price-chip" style="padding:2px 7px;font-size:0.65rem;">${fmtPrice(item.usdt)}</span>
                                 </div>
                                 <div style="font-size:0.63rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
-                                    👥 ${item.followers || 0} Flw • 📁 ${item.repos || 0} Repos
+                                    👥 ${item.followers || 0} Flw • 📁 ${item.repos || 0} Repos${item.yearKey === 'Contrib' ? ' • 🔥 200K+ Commits' : ''}
                                 </div>
                                 ${isStillAvail ? `
                                     <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
@@ -3006,12 +3185,24 @@
                         </div>
                     `;
                 }
+
+                // Hapus teks judul duplikat di atas garis ganda (cukup tampilkan badge PINNED di kiri jika di-pin & jam di kanan)
+                const topBarHtml = isPinned ? `
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:${isFlashAlert ? 'var(--warning)' : 'var(--success)'};background:${isFlashAlert ? 'rgba(245,158,11,0.14)' : 'rgba(16,185,129,0.14)'};border:1px solid ${isFlashAlert ? 'rgba(245,158,11,0.45)' : 'rgba(16,185,129,0.45)'};padding:2px 8px;border-radius:6px;">
+                            📌 PINNED ${isFlashAlert ? 'FLASH DEAL' : 'LIVE STOCK'}
+                        </span>
+                        <span style="font-size:0.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;">🕒 ${n.time}</span>
+                    </div>
+                ` : `
+                    <div style="display:flex;justify-content:flex-end;align-items:center;margin-bottom:4px;">
+                        <span style="font-size:0.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;">🕒 ${n.time}</span>
+                    </div>
+                `;
+
                 return `
-                    <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid var(--accent-cyan);">
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;">
-                            <span class="item-tag" style="margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${n.title}</span>
-                            <span style="font-size:0.64rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;flex-shrink:0;">🕒 ${n.time}</span>
-                        </div>
+                    <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid ${isFlashAlert ? 'var(--warning)' : (isPinned ? 'var(--success)' : 'var(--accent-cyan)')};">
+                        ${topBarHtml}
                         ${formatWebNotifBodyToCleanCard(n.body, n.title)}
                         ${imgPreviewHtml}
                         ${actionBtnsHtml}
@@ -3072,7 +3263,7 @@
             const deletedMap = JSON.parse(localStorage.getItem('xb_deleted_notif_ids') || '{}');
             const clearedIds = [];
             currentList.forEach(item => {
-                if (item && item.id) {
+                if (item && item.id && !isPinnedNotifItem(item)) {
                     deletedMap[item.id] = true;
                     clearedIds.push(item.id);
                 }
@@ -3080,14 +3271,15 @@
             const nowClearTs = Date.now();
             localStorage.setItem('xb_deleted_notif_ids', JSON.stringify(deletedMap));
             localStorage.setItem(isAdmFeed ? 'xb_admin_cleared_ts' : 'xb_buyer_cleared_ts', String(nowClearTs));
-            localStorage.setItem(storageKey, '[]');
+            const keptPinned = isAdmFeed ? [] : currentList.filter(x => isPinnedNotifItem(x));
+            localStorage.setItem(storageKey, JSON.stringify(keptPinned));
             updateNotifBadgeCount();
             renderNotificationsList();
-            showToast('🗑️ Notifications permanently cleared!');
+            showToast('🗑️ Regular notifications cleared! (Pinned alerts kept at top)');
 
             await syncCloudStateWithGSheet('push', isAdmFeed
                 ? { clear_admin_notifs_ts: nowClearTs, cleared_ids: clearedIds, admin_notifs: [] }
-                : { clear_buyer_notifs_ts: nowClearTs, cleared_ids: clearedIds, buyer_notifs: [] }
+                : { clear_buyer_notifs_ts: nowClearTs, cleared_ids: clearedIds, buyer_notifs: keptPinned }
             );
         }
 
@@ -3633,13 +3825,30 @@
                         localStorage.setItem('xb_cached_live_stock_arr', JSON.stringify(json.data));
                     }
 
+                    if (json.global_flash_sale && typeof json.global_flash_sale === 'object') {
+                        if (Array.isArray(json.global_flash_sale.accounts)) {
+                            localStorage.setItem('xb_admin_flash_accs', JSON.stringify(json.global_flash_sale.accounts));
+                        }
+                        if (json.global_flash_sale.active !== undefined) {
+                            localStorage.setItem('xb_admin_flash_cfg', JSON.stringify({ active: Boolean(json.global_flash_sale.active) }));
+                        }
+                    }
+
+                    if (json.global_pinned_stock_alert && json.global_pinned_stock_alert.meta) {
+                        const curPinRaw = localStorage.getItem('xb_pinned_stock_alert');
+                        const curPin = curPinRaw ? JSON.parse(curPinRaw) : null;
+                        if (!curPin || (json.global_pinned_stock_alert.ts || 0) > (curPin.ts || 0)) {
+                            localStorage.setItem('xb_pinned_stock_alert', JSON.stringify(json.global_pinned_stock_alert));
+                        }
+                    }
+
                     const addedCats = Object.keys(newAddedPerCat);
                     if (addedCats.length > 0 && newAddedAccountsList.length > 0) {
                         const totalAdded = newAddedAccountsList.length;
                         const summaryStr = addedCats.map(k => `<b>GitHub ${k}</b> (+${newAddedPerCat[k]})`).join(', ');
                         const stockAlertHtml = [
                             `════════════════════`,
-                            `🔥 <b>NEW STOCK ARRIVED</b>`,
+                            `🔥 <b>NEW STOCK ALERT (+${totalAdded} ACCOUNTS)</b>`,
                             `════════════════════`,
                             fmtAlignedNotifRow('Catalogs', summaryStr),
                             fmtAlignedNotifRow('Added', `<b>+${totalAdded} Verified Accounts</b>`),
@@ -3651,8 +3860,9 @@
                             initialCount: totalAdded,
                             accounts: newAddedAccountsList
                         });
-                        showToast(`🔥 +${totalAdded} New GitHub Account(s) Restocked!`);
+                        showToast(`🔥 +${totalAdded} New GitHub Account(s) Restocked & Pinned!`);
                     }
+                    updateNotifBadgeCount();
 
                     if (json.telemetry && typeof json.telemetry === 'object') {
                         localStorage.setItem('xb_gsheet_telemetry', JSON.stringify(json.telemetry));
@@ -5816,14 +6026,14 @@
                 accountData: acc
             });
             localStorage.setItem('xb_admin_flash_accs', JSON.stringify(list));
-
-            // Make sure Flash Sale visibility is turned ON
             localStorage.setItem('xb_admin_flash_cfg', JSON.stringify({ active: true }));
+            updateNotifBadgeCount();
+            scheduleCloudStatePush({ global_flash_sale: { active: true, accounts: list, ts: Date.now() } });
 
             renderAdminActiveFlashList();
             renderAdminFlashStockCandidates();
             if (activeTab === 'home' || activeTab === 'admin') renderViewport();
-            showToast(`🔥 @${acc.username} added to Flash Sale at $${flashUsdt.toFixed(2)} USDT for ${hours}h!`);
+            showToast(`🔥 @${acc.username} added to Flash Sale & Pinned in Web Notifications!`);
         }
 
         // =========================================================
@@ -6125,20 +6335,26 @@
         }
 
         function isPinValidWithBot(enteredPin) {
-            if (!/^\d{6}$/.test(enteredPin)) return false;
-            const enteredHash = md5Hash(enteredPin);
-            const botHash = localStorage.getItem('xb_bot_pin_hash');
-            const localPlainPin = localStorage.getItem('xb_user_pin');
-            if (botHash && botHash.length === 32) {
-                return enteredHash === botHash;
+            const cleanPin = String(enteredPin || '').trim();
+            if (!/^\d{6}$/.test(cleanPin)) return false;
+            const enteredHash = md5Hash(cleanPin);
+            const botHash = (localStorage.getItem('xb_bot_pin_hash') || '').trim().toLowerCase();
+            const localPlainPin = (localStorage.getItem('xb_user_pin') || '').trim();
+
+            if (localPlainPin && /^\d{6}$/.test(localPlainPin) && cleanPin === localPlainPin) {
+                localStorage.setItem('xb_bot_pin_hash', enteredHash);
+                return true;
             }
-            if (localPlainPin && /^\d{6}$/.test(localPlainPin)) {
-                return enteredPin === localPlainPin;
+            if (botHash && botHash.length === 32 && enteredHash === botHash) {
+                localStorage.setItem('xb_user_pin', cleanPin);
+                return true;
             }
-            // First time fallback if URL didn't carry hash yet: lock it to match user's Telegram PIN
-            localStorage.setItem('xb_bot_pin_hash', enteredHash);
-            localStorage.setItem('xb_user_pin', enteredPin);
-            return true;
+            if ((!botHash || botHash.length !== 32) && (!localPlainPin || !/^\d{6}$/.test(localPlainPin))) {
+                localStorage.setItem('xb_bot_pin_hash', enteredHash);
+                localStorage.setItem('xb_user_pin', cleanPin);
+                return true;
+            }
+            return false;
         }
 
         function openSecurityPinModal() {
@@ -6177,7 +6393,7 @@
                     <input type="password" class="form-input" id="confirmNewPinInput" maxlength="6" inputmode="numeric" style="letter-spacing:6px;font-family:'JetBrains Mono',monospace;text-align:center;" placeholder="••••••">
                 </div>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                    <button class="btn-ui secondary" onclick="closeModal('paymentGatewayModal')">Cancel</button>
+                    <button class="btn-ui secondary" onclick="if(_pendingBalanceCheckout){ renderBalancePinModalView(); } else { closeModal('paymentGatewayModal'); }">Cancel</button>
                     <button class="btn-ui buy-now" onclick="saveChangedPinOnly()">${hasExistingPin ? '🔐 Update PIN' : '✅ Create PIN'}</button>
                 </div>
             `;
@@ -6221,24 +6437,39 @@
             pushInWebNotification('buyer', hasExistingPin ? '🔐 PIN UPDATED' : '🔐 PIN CREATED', `Your 6-digit Security PIN has been ${hasExistingPin ? 'updated' : 'created'} successfully.`);
             sendTelegramSilentPush(currentUserId, pinChangeMsg, true);
 
+            showToast(`✅ 6-Digit Security PIN ${hasExistingPin ? 'updated' : 'created'} successfully!`);
+            if (_pendingBalanceCheckout) {
+                renderBalancePinModalView();
+                return;
+            }
             closeModal('paymentGatewayModal');
             renderViewport();
-            showToast(`✅ 6-Digit Security PIN ${hasExistingPin ? 'updated' : 'created'} successfully!`);
         }
 
         let _pendingBalanceCheckout = null;
         let _isProcessingBalanceCheckout = false;
 
+        function setPinModalFeedback(msg, isError = true) {
+            const box = document.getElementById('pinModalStatusBox');
+            if (!box) return;
+            box.style.display = 'block';
+            box.style.background = isError ? 'rgba(239,68,68,0.14)' : 'rgba(16,185,129,0.14)';
+            box.style.borderColor = isError ? 'var(--danger)' : 'var(--success)';
+            box.style.color = isError ? 'var(--danger)' : 'var(--success)';
+            box.innerHTML = msg;
+        }
+
         async function finalizeBalanceCheckoutAfterPin() {
             if (!_pendingBalanceCheckout || _isProcessingBalanceCheckout) return;
             _isProcessingBalanceCheckout = true;
+            const checkoutSnapshot = _pendingBalanceCheckout;
 
             try {
-                const { invId, summaryTitle, targetStr, totalUsdt, itemsList, isFromCart } = _pendingBalanceCheckout;
-                _pendingBalanceCheckout = null;
-
+                const { invId, summaryTitle, targetStr, totalUsdt, itemsList, isFromCart } = checkoutSnapshot;
                 const cleanTotal = parseFloat(totalUsdt);
+
                 if (isNaN(cleanTotal) || cleanTotal <= 0) {
+                    setPinModalFeedback('❌ Invalid order total!', true);
                     showToast('❌ Invalid order total!');
                     return;
                 }
@@ -6249,12 +6480,34 @@
                     return;
                 }
 
-                // Pastikan semua akun GitHub yang dibeli masih tersedia di stok live sebelum potong saldo
-                const accountItems = itemsList.filter(x => x.isAccount && x.accountData);
+                // Lengkapi accountData secara otomatis jika item berasal dari Cloud Cart / Offer
+                itemsList.forEach(item => {
+                    if ((item.isAccount || String(item.title || '').toLowerCase().includes('github')) && !item.accountData) {
+                        const rawId = String(item.id || '').replace(/-\d{10,}$/, '');
+                        const cached = ACCOUNT_CACHE_MAP[rawId];
+                        if (cached && cached.acc) {
+                            item.isAccount = true;
+                            item.accountData = cached.acc;
+                            item.yearKey = cached.yrKey || item.yearKey || '2026';
+                        } else {
+                            const unameMatch = String(item.target || item.title || rawId).match(/@([a-zA-Z0-9\-_]+)/);
+                            const unameTarget = unameMatch ? unameMatch[1].toLowerCase() : rawId.split('-').slice(1).join('-').toLowerCase();
+                            const foundLive = allLiveAccountsFlat.find(a => a && String(a.username || '').toLowerCase() === unameTarget);
+                            if (foundLive) {
+                                item.isAccount = true;
+                                item.accountData = foundLive;
+                                item.yearKey = foundLive._cat_key || foundLive.year || item.yearKey || '2026';
+                            }
+                        }
+                    }
+                });
+
+                const accountItems = itemsList.filter(x => x.isAccount && x.accountData && x.accountData.username);
                 if (accountItems.length > 0 && allLiveAccountsFlat.length > 0) {
-                    const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
+                    const liveSet = new Set(allLiveAccountsFlat.map(a => String((a && a.username) || '').toLowerCase()));
                     const unavailableAccs = accountItems.filter(x => !liveSet.has(String(x.accountData.username || '').toLowerCase()));
                     if (unavailableAccs.length > 0) {
+                        _pendingBalanceCheckout = null;
                         closeModal('paymentGatewayModal');
                         showToast(`⚠️ Account @${unavailableAccs[0].accountData.username} was just sold! Refreshing stock...`);
                         await syncGoogleSheetInventory(false);
@@ -6262,6 +6515,7 @@
                     }
                 }
 
+                _pendingBalanceCheckout = null;
                 const newBalAfterPay = Math.max(0, parseFloat((userBalanceUsdt - cleanTotal).toFixed(2)));
                 setAuthoritativeBalance(newBalAfterPay, true);
                 recordWebTransaction(invId, summaryTitle, targetStr, cleanTotal, 'OUT', 'Wallet Balance (PIN Verified)');
@@ -6269,34 +6523,67 @@
                 const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
                 if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
 
-                // Tampilkan resi & kredensial SECARA INSTAN tanpa menunggu jeda Google Sheet, lalu sinkronkan di background!
-                triggerOrderCompletedNotifications(invId, itemsList, cleanTotal, 'Balance', unlockedAccounts);
+                try {
+                    triggerOrderCompletedNotifications(invId, itemsList, cleanTotal, 'Balance', unlockedAccounts);
+                } catch (eNotif) {
+                    console.log('Order notification error:', eNotif);
+                }
                 renderViewport();
                 showInstantReceiptModal(invId, summaryTitle, targetStr, cleanTotal, 'Wallet Balance (PIN Verified)', unlockedAccounts);
 
-                await Promise.allSettled([
+                Promise.allSettled([
                     syncUserCrmToGSheetFromWeb('acc', cleanTotal),
                     syncCloudStateWithGSheet('push', { balance: newBalAfterPay, bal_ts: Date.now() })
                 ]);
+            } catch (errCheckout) {
+                console.error('Checkout execution error:', errCheckout);
+                _pendingBalanceCheckout = checkoutSnapshot;
+                const btnPay = document.getElementById('btnConfirmPinPay');
+                if (btnPay) {
+                    btnPay.disabled = false;
+                    btnPay.style.pointerEvents = 'auto';
+                    btnPay.style.opacity = '1';
+                    btnPay.innerText = '✅ Confirm & Pay';
+                }
+                const pinEl = document.getElementById('checkoutPinInput');
+                if (pinEl) pinEl.readOnly = false;
+                setPinModalFeedback('⚠️ Checkout error: ' + String(errCheckout.message || errCheckout), true);
             } finally {
                 _isProcessingBalanceCheckout = false;
             }
         }
 
         function verifyCheckoutPinNow() {
-            if (_isProcessingBalanceCheckout || !_pendingBalanceCheckout) return;
+            if (_isProcessingBalanceCheckout) return;
+            if (!_pendingBalanceCheckout) {
+                showToast('⚠️ Checkout session expired. Please click Buy Now again.');
+                closeModal('paymentGatewayModal');
+                return;
+            }
             const btnPay = document.getElementById('btnConfirmPinPay');
             if (btnPay && btnPay.disabled) return;
 
-            const inputPin = (document.getElementById('checkoutPinInput')?.value || '').trim();
-            if (!/^\d{6}$/.test(inputPin)) {
-                return showToast('Please enter your 6-digit Security PIN!');
+            const pinEl = document.getElementById('checkoutPinInput');
+            const inputPin = (pinEl ? pinEl.value : '').replace(/\D/g, '').trim();
+
+            if (inputPin.length !== 6) {
+                setPinModalFeedback('⚠️ Please enter a complete 6-digit numeric Security PIN!', true);
+                showToast('Please enter your 6-digit Security PIN!');
+                if (pinEl) pinEl.focus();
+                return;
             }
             if (!isPinValidWithBot(inputPin)) {
-                return showToast('❌ Wrong 6-Digit PIN! Must match your Security PIN.');
+                setPinModalFeedback('❌ Incorrect 6-Digit PIN! Click "🔐 Change / Reset PIN" below if you forgot it.', true);
+                showToast('❌ Wrong 6-Digit PIN! Must match your Security PIN.');
+                if (pinEl) {
+                    pinEl.value = '';
+                    pinEl.focus();
+                }
+                return;
             }
 
-            // Kunci permanen tombol & input begitu diklik sekali agar mustahil ter-klik berulang!
+            setPinModalFeedback('🟢 PIN Verified! Unlocking credentials & processing order...', false);
+
             if (btnPay) {
                 btnPay.disabled = true;
                 btnPay.style.pointerEvents = 'none';
@@ -6309,10 +6596,72 @@
                 btnChg.style.pointerEvents = 'none';
                 btnChg.style.opacity = '0.5';
             }
-            const pinEl = document.getElementById('checkoutPinInput');
             if (pinEl) pinEl.readOnly = true;
 
             finalizeBalanceCheckoutAfterPin();
+        }
+
+        function renderBalancePinModalView() {
+            if (!_pendingBalanceCheckout) return;
+            const { totalUsdt, itemsList } = _pendingBalanceCheckout;
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            const hasExistingPin = Boolean(
+                (localStorage.getItem('xb_bot_pin_hash') && localStorage.getItem('xb_bot_pin_hash').length === 32) ||
+                (localStorage.getItem('xb_user_pin') && /^\d{6}$/.test(localStorage.getItem('xb_user_pin')))
+            );
+
+            const itemsListHtml = itemsList.map(item => `
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:0.75rem;padding:3px 0;border-bottom:1px dashed var(--border-subtle);">
+                    <span style="font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">• ${item.title}</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--success);flex-shrink:0;">${fmtPrice(item.usdt)}</span>
+                </div>
+            `).join('');
+
+            body.innerHTML = `
+                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
+                    <div></div>
+                    <h3 style="margin:0;font-size:0.9rem;font-weight:800;color:var(--text-primary);">🔐 Security PIN Verification</h3>
+                    <button type="button" class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+
+                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:11px;padding:11px 13px;margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
+                        <span style="font-size:0.75rem;font-weight:800;color:var(--text-secondary);">Total Payment:</span>
+                        <span class="price-chip" style="padding:4px 8px;font-size:0.76rem;">${fmtPrice(totalUsdt)}</span>
+                    </div>
+                    <div style="font-size:0.68rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;margin-bottom:4px;letter-spacing:0.6px;">
+                        Purchased Assets (${itemsList.length} Items):
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:3px;max-height:120px;overflow-y:auto;">
+                        ${itemsListHtml}
+                    </div>
+                </div>
+
+                <div id="pinModalStatusBox" style="display:none;padding:9px 11px;border-radius:10px;border:1px solid var(--danger);font-size:0.74rem;font-weight:800;text-align:center;margin-bottom:12px;"></div>
+
+                ${!hasExistingPin ? `
+                    <div style="background:rgba(245,158,11,0.12);border:1px solid var(--warning);border-radius:11px;padding:12px;text-align:center;margin-bottom:12px;">
+                        <div style="font-size:0.82rem;font-weight:800;color:var(--warning);margin-bottom:4px;">⚠️ Security PIN Not Created Yet</div>
+                        <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:10px;">Create your 6-digit Security PIN directly right now to complete checkout:</div>
+                        <button type="button" class="btn-ui buy-now" style="width:100%;padding:10px;font-size:0.76rem;" onclick="openSecurityPinModal()">
+                            🔐 Create 6-Digit PIN Now
+                        </button>
+                    </div>
+                ` : `
+                    <div class="form-group" style="margin-bottom:14px;">
+                        <label style="text-align:center;font-size:0.68rem;color:var(--accent-cyan);">ENTER YOUR 6-DIGIT SECURITY PIN:</label>
+                        <input type="password" class="form-input" id="checkoutPinInput" maxlength="6" inputmode="numeric" pattern="[0-9]*" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.35rem;letter-spacing:8px;" placeholder="••••••" onkeydown="if(event.key==='Enter'){event.preventDefault();verifyCheckoutPinNow();}">
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                        <button type="button" class="btn-ui secondary" id="btnChangePinModal" style="padding:11px 8px;font-size:0.72rem;" onclick="openSecurityPinModal()">🔐 Change PIN</button>
+                        <button type="button" class="btn-ui buy-now" id="btnConfirmPinPay" style="padding:11px 8px;font-size:0.72rem;" onclick="verifyCheckoutPinNow()">✅ Confirm & Pay</button>
+                    </div>
+                `}
+            `;
+            setTimeout(() => { const el = document.getElementById('checkoutPinInput'); if (el) el.focus(); }, 120);
         }
 
         async function processPaymentFlow(itemsList, totalUsdt, method, isFromCart = false) {
@@ -6320,69 +6669,16 @@
             const summaryTitle = itemsList.map(x => x.title).join(' + ');
             const targetStr = itemsList.map(x => x.target).join(', ');
 
-            // A. PAY WITH BALANCE (STRICTLY VERIFIES 6-DIGIT TELEGRAM BOT PIN)
+            // A. PAY WITH BALANCE (STRICTLY VERIFIES 6-DIGIT SECURITY PIN)
             if (method === 'balance') {
                 if (userBalanceUsdt < totalUsdt) {
                     showToast(`Insufficient Balance! Need ${fmtPrice(totalUsdt)}. Redirecting to Deposit...`);
                     switchTab('wallet');
                     return;
                 }
-
+                _isProcessingBalanceCheckout = false;
                 _pendingBalanceCheckout = { invId, summaryTitle, targetStr, totalUsdt, itemsList, isFromCart };
-                const modal = document.getElementById('paymentGatewayModal');
-                const body = document.getElementById('paymentGatewayBody');
-                modal.classList.add('active');
-
-                const hasExistingPin = Boolean(localStorage.getItem('xb_bot_pin_hash') || localStorage.getItem('xb_user_pin'));
-
-                const itemsListHtml = itemsList.map(item => `
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:0.75rem;padding:3px 0;border-bottom:1px dashed var(--border-subtle);">
-                        <span style="font-weight:700;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">• ${item.title}</span>
-                        <span style="font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--success);flex-shrink:0;">${fmtPrice(item.usdt)}</span>
-                    </div>
-                `).join('');
-
-                body.innerHTML = `
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-                        <div></div>
-                        <h3 style="margin:0;font-size:0.9rem;font-weight:800;color:var(--text-primary);">🔐 Security PIN Verification</h3>
-                        <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
-                    </div>
-
-                    <!-- KOTAK 3D RAPI BERISI JUMLAH HARGA & LIST AKUN -->
-                    <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:11px;padding:11px 13px;margin-bottom:14px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
-                            <span style="font-size:0.75rem;font-weight:800;color:var(--text-secondary);">Total Payment:</span>
-                            <span class="price-chip" style="padding:4px 8px;font-size:0.76rem;">${fmtPrice(totalUsdt)}</span>
-                        </div>
-                        <div style="font-size:0.68rem;font-weight:800;color:var(--accent-cyan);text-transform:uppercase;margin-bottom:4px;letter-spacing:0.6px;">
-                            Purchased Assets (${itemsList.length} Items):
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:3px;max-height:120px;overflow-y:auto;">
-                            ${itemsListHtml}
-                        </div>
-                    </div>
-
-                    ${!hasExistingPin ? `
-                        <div style="background:rgba(239,68,68,0.12);border:1px solid var(--danger);border-radius:11px;padding:12px;text-align:center;margin-bottom:14px;">
-                            <div style="font-size:0.82rem;font-weight:800;color:var(--danger);margin-bottom:4px;">⚠️ PIN Not Set Yet!</div>
-                            <div style="font-size:0.72rem;color:var(--text-secondary);margin-bottom:10px;">You haven't set your 6-digit security PIN in the Telegram Bot. Please create your PIN first.</div>
-                            <a href="https://t.me/XianBeeTechStore_Bot?start=setpin" target="_blank" class="btn-ui buy-now" style="width:100%;padding:10px;font-size:0.76rem;">
-                                🔐 Set PIN via Telegram Bot Now
-                            </a>
-                        </div>
-                    ` : `
-                        <div class="form-group" style="margin-bottom:14px;">
-                            <label style="text-align:center;font-size:0.68rem;color:var(--accent-cyan);">ENTER 6-DIGIT TELEGRAM BOT PIN:</label>
-                            <input type="password" class="form-input" id="checkoutPinInput" maxlength="6" inputmode="numeric" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:1.35rem;letter-spacing:8px;" placeholder="••••••">
-                        </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                            <button class="btn-ui secondary" id="btnChangePinModal" style="padding:11px 8px;font-size:0.72rem;" onclick="openSecurityPinModal()">🔐 Change PIN</button>
-                            <button class="btn-ui buy-now" id="btnConfirmPinPay" style="padding:11px 8px;font-size:0.72rem;" onclick="verifyCheckoutPinNow()">✅ Confirm & Pay</button>
-                        </div>
-                    `}
-                `;
-                setTimeout(() => { const el = document.getElementById('checkoutPinInput'); if (el) el.focus(); }, 150);
+                renderBalancePinModalView();
                 return;
             }
 
