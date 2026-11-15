@@ -1487,32 +1487,180 @@
     <div class="toast-msg" id="toastBanner">✅ Action completed</div>
 
     <!-- =========================================================
-         🚪 ENTERPRISE AUTH PORTAL & FULL-SCREEN SPECIALTY SLIDES
+         🚪 EXECUTIVE LUXURY LOGIN & SPECIALTY SHOWCASE
          ========================================================= -->
     <div class="auth-gate-overlay" id="enterpriseAuthGate">
-        <!-- ANIMATED 3D CYBER GRID & FLOATING NEON ORBS -->
-        <div class="auth-cyber-bg">
-            <div class="auth-orb-float" style="width:240px;height:240px;background:#6366f1;top:8%;left:6%;"></div>
-            <div class="auth-orb-float" style="width:260px;height:260px;background:#06b6d4;bottom:10%;right:6%;animation-delay:-4s;"></div>
-        </div>
+        <style>
+            /* LUXURY EXECUTIVE LOGIN OVERRIDES (ADAPTIVE DARK & LIGHT MODE) */
+            #enterpriseAuthGate {
+                background:
+                    radial-gradient(circle at 15% 15%, rgba(79, 70, 229, 0.14) 0%, transparent 48%),
+                    radial-gradient(circle at 85% 85%, rgba(6, 182, 212, 0.12) 0%, transparent 48%),
+                    var(--bg-base) !important;
+            }
+            .exec-auth-header {
+                position: relative;
+                z-index: 5;
+                width: 100%;
+                flex-shrink: 0;
+                background: var(--bg-surface);
+                border-bottom: 1px solid var(--border-subtle);
+                box-shadow: var(--shadow-card);
+                padding: 8px 14px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .exec-header-top {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                max-width: 1180px;
+                width: 100%;
+                margin: 0 auto;
+            }
+            .exec-header-marquee {
+                width: 100%;
+                max-width: 1180px;
+                margin: 0 auto;
+                overflow: hidden;
+                white-space: nowrap;
+                background: var(--bg-input);
+                border: 1px solid var(--border-subtle);
+                border-radius: 8px;
+                padding: 5px 10px;
+            }
+            .exec-marquee-track {
+                display: inline-flex;
+                align-items: center;
+                gap: 28px;
+                font-size: 0.68rem;
+                font-weight: 700;
+                color: var(--text-secondary);
+                animation: authTickerSlide 26s linear infinite;
+            }
+            .exec-marquee-track b {
+                color: var(--text-primary);
+                font-weight: 800;
+            }
+            .exec-luxury-card {
+                width: 100%;
+                background: var(--bg-surface);
+                border: 1.5px solid var(--border-focus);
+                border-radius: 20px;
+                padding: 18px 16px;
+                box-shadow: var(--shadow-card), 0 16px 38px rgba(15, 23, 42, 0.18);
+                position: relative;
+                overflow: hidden;
+            }
+            .exec-luxury-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3.5px;
+                background: var(--grad-primary);
+            }
+            .exec-spec-dock {
+                width: 100%;
+                background: var(--bg-surface);
+                border: 1.5px solid var(--border-subtle);
+                border-radius: 18px;
+                padding: 12px 14px;
+                box-shadow: var(--shadow-card);
+                display: flex;
+                flex-direction: column;
+                gap: 9px;
+            }
+            .exec-spec-btn {
+                background: var(--bg-input);
+                border: 1px solid var(--border-subtle);
+                color: var(--text-primary);
+                padding: 10px 6px;
+                border-radius: 12px;
+                font-family: inherit;
+                font-size: 0.68rem;
+                font-weight: 800;
+                cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                text-align: center;
+                transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+            }
+            .exec-spec-btn:hover, .exec-spec-btn:active {
+                border-color: var(--accent-primary);
+                transform: translateY(-2px);
+                box-shadow: var(--shadow-glow);
+            }
+            .exec-single-footer {
+                position: relative;
+                z-index: 5;
+                width: 100%;
+                flex-shrink: 0;
+                background: var(--bg-surface);
+                border-top: 1px solid var(--border-subtle);
+                padding: 10px 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                white-space: nowrap;
+                overflow: hidden;
+                box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+            }
+            .exec-footer-line {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                font-size: 0.78rem;
+                font-weight: 800;
+                color: var(--text-primary);
+                letter-spacing: -0.1px;
+                white-space: nowrap;
+            }
+            @media (max-width: 390px) {
+                .exec-footer-line {
+                    font-size: 0.72rem;
+                    gap: 6px;
+                }
+            }
+        </style>
 
-        <!-- SPACIOUS 3D DEVOPS TELEMETRY TOPBAR -->
-        <div class="auth-ticker-bar">
-            <div class="auth-brand-pill">
-                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 10px var(--success);"></span>
-                <span class="auth-brand-gradient">XianBee-Tech</span>
-            </div>
-            <div class="auth-marquee-wrap">
-                <div class="auth-ticker-items">
-                    <span style="color:#38bdf8;">⚡ <b>SYS_NODE:</b> 99.98% ONLINE</span>
-                    <span style="color:var(--success);">💱 <b>ORACLE_RATE:</b> 1 USDT = <b id="authLiveIdrTicker">Rp 16.250</b></span>
-                    <span style="color:#c084fc;">🐙 <b>GITHUB_ASSETS:</b> <b id="authLiveStockTicker">VERIFIED READY</b></span>
-                    <span style="color:var(--warning);">🔐 <b>CIPHER:</b> AES-256-GCM &amp; TOTP_2FA</span>
-                    <span style="color:#38bdf8;">🚀 <b>AUTO_DISPATCH:</b> &lt; 0.4s EXECUTION</span>
+        <!-- FORMAL EXECUTIVE HEADER BAR -->
+        <header class="exec-auth-header">
+            <div class="exec-header-top">
+                <div style="display:flex;align-items:center;gap:9px;min-width:0;">
+                    <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 8px var(--success);flex-shrink:0;"></span>
+                    <span style="font-size:0.9rem;font-weight:800;letter-spacing:-0.2px;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;">XianBee-Tech</span>
+                    <span style="font-size:0.64rem;font-weight:700;color:var(--text-muted);border-left:1px solid var(--border-subtle);padding-left:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Official Digital Store</span>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                    <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);padding:4px 9px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;color:var(--success);white-space:nowrap;">
+                        1 USDT = <span id="authLiveIdrTicker">Rp 16.250</span>
+                    </div>
+                    <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:5px 9px;font-size:0.72rem;">☀️/🌌</button>
                 </div>
             </div>
-            <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:6px 10px;font-size:0.74rem;border-color:rgba(56,189,248,0.45);flex-shrink:0;">☀️/🌌</button>
-        </div>
+
+            <!-- FORMAL HIGH-CONTRAST STORE ANNOUNCEMENT BAR -->
+            <div class="exec-header-marquee">
+                <div class="exec-marquee-track">
+                    <span>🐙 <b>Aged GitHub Accounts (2011–2026):</b> <b id="authLiveStockTicker" style="color:var(--accent-cyan);">Verified &amp; Ready</b></span>
+                    <span>•</span>
+                    <span>🌐 <b>Instant Crypto &amp; IDR Exchange:</b> Automated Settlement</span>
+                    <span>•</span>
+                    <span>👑 <b>Pro Subscriptions &amp; SMM Boost:</b> Real-Time Delivery</span>
+                    <span>•</span>
+                    <span>🔐 <b>Built-In 2FA Authenticator:</b> Instant Account Credentials</span>
+                </div>
+            </div>
+        </header>
 
         <!-- MAIN WORKSPACE -->
         <div class="auth-main-grid">
@@ -1520,79 +1668,79 @@
             <div class="auth-showcase-panel">
                 <div class="auth-hero-badge">
                     <span>🐝</span>
-                    <span>ENTERPRISE DIGITAL ASSET &amp; WEB3 INFRASTRUCTURE HUB</span>
+                    <span>OFFICIAL DIGITAL ASSET &amp; WEB3 INFRASTRUCTURE MARKETPLACE</span>
                 </div>
 
                 <h1 class="auth-showcase-title">
-                    Instant Access to Verified <span style="background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Aged GitHub Profiles</span> &amp; Web3 Infrastructure.
+                    Instant Access to Verified <span style="background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Aged GitHub Profiles</span> &amp; Digital Assets.
                 </h1>
 
                 <p style="margin:0;font-size:0.88rem;color:var(--text-secondary);line-height:1.6;max-width:600px;">
-                    Engineered for developers, Web3 teams, and digital agencies. Sign in to your encrypted account to inspect live <b>2011–2026 GitHub profiles</b>, generate real-time <b>2FA OTP codes</b>, deploy repository metrics, and manage your digital assets across any device.
+                    Built for developers, Web3 teams, and digital businesses. Sign in to inspect live <b>2011–2026 GitHub accounts</b>, generate real-time <b>2FA OTP codes</b>, boost repository metrics, and manage your purchased credentials across any device.
                 </p>
 
                 <div class="auth-feature-grid">
                     <div class="auth-feature-card">
                         <div style="font-size:1.15rem;margin-bottom:4px;">🐙</div>
-                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Aged GitHub Assets (2011–2026)</div>
-                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Inspect exact <code>@usernames</code>, Arctic Code badges &amp; full 2FA secret keys before checkout.</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Aged GitHub Accounts (2011–2026)</div>
+                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Inspect exact <code>@usernames</code>, rare badges &amp; full 2FA secret keys before purchase.</div>
                     </div>
                     <div class="auth-feature-card">
                         <div style="font-size:1.15rem;margin-bottom:4px;">🛡️</div>
-                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Proprietary Cross-Device Sync</div>
-                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Your USDT wallet balance, 6-digit security PIN &amp; purchased credentials stay synced across Phone &amp; PC.</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Real-Time Cross-Device Sync</div>
+                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Your USDT wallet balance, 6-digit security PIN &amp; purchased vault stay synced on Phone &amp; PC.</div>
                     </div>
                     <div class="auth-feature-card">
                         <div style="font-size:1.15rem;margin-bottom:4px;">🚀</div>
-                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Automated Repo &amp; Dev Boost</div>
-                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">High-trust GitHub Followers, Stars, Forks &amp; Watchers with real-time telemetry tracking.</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Automated Repository Boost</div>
+                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">High-retention GitHub Followers, Stars, Forks &amp; Watchers with live progress tracking.</div>
                     </div>
                     <div class="auth-feature-card">
                         <div style="font-size:1.15rem;margin-bottom:4px;">⚡</div>
-                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Multi-Currency Settlement</div>
-                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Instant checkout via Wallet Balance, OxaPay Crypto (USDT), QRIS, SeaBank, or DANA.</div>
+                        <div style="font-size:0.84rem;font-weight:800;margin-bottom:3px;">Instant Multi-Currency Checkout</div>
+                        <div style="font-size:0.73rem;color:var(--text-secondary);line-height:1.45;">Seamless payment via Wallet Balance, USDT Crypto, QRIS, SeaBank, or DANA.</div>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW 1: SPACIOUS LOGIN / CREATE ACCOUNT COCKPIT + 3 SPECIALTY BUTTONS -->
+            <!-- VIEW 1: LUXURY SIGN IN / CREATE ACCOUNT CARD + 3 CORE SPECIALTIES -->
             <div class="auth-right-column" id="authMainPortalView">
-                <!-- 1. INTERACTIVE SIGN IN / SIGN UP COCKPIT BOX -->
-                <div class="auth-container">
-                    <!-- COCKPIT HEADER (TANPA KATA PORTAL) -->
+                <!-- 1. LUXURY LOGIN / REGISTER CARD -->
+                <div class="exec-luxury-card auth-container" style="border:1.5px solid var(--border-focus);box-shadow:var(--shadow-card);">
+                    <!-- CARD HEADER -->
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
                         <div style="display:flex;align-items:center;gap:11px;min-width:0;">
-                            <div class="brand-orb" style="width:44px;height:44px;background:#07080d;border:1.5px solid rgba(56,189,248,0.75);box-shadow:0 0 14px rgba(56,189,248,0.35);padding:4px;border-radius:50%;overflow:hidden;flex-shrink:0;">
-                                <img src="logo.png" alt="XianBee-Tech" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
+                            <div class="brand-orb" style="width:44px;height:44px;background:#07080d;border:1.5px solid var(--border-focus);box-shadow:var(--shadow-glow);padding:3px;border-radius:12px;overflow:hidden;flex-shrink:0;">
+                                <img src="logo.jpg" alt="XianBee-Tech" style="width:100%;height:100%;object-fit:contain;border-radius:9px;" onerror="this.onerror=null;this.src='logo.png';">
                             </div>
                             <div style="min-width:0;">
-                                <h2 style="margin:0;font-size:1.08rem;font-weight:800;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;">XianBee-Tech</h2>
-                                <span style="font-size:0.62rem;color:var(--accent-cyan);font-weight:800;letter-spacing:0.8px;display:block;">ENTERPRISE CLIENT ACCESS</span>
+                                <h2 style="margin:0;font-size:1.1rem;font-weight:800;color:var(--text-primary);letter-spacing:-0.3px;line-height:1.2;">XianBee-Tech</h2>
+                                <span style="font-size:0.62rem;color:var(--accent-cyan);font-weight:800;letter-spacing:0.6px;display:block;">OFFICIAL DIGITAL MARKETPLACE</span>
                             </div>
                         </div>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;padding:4px 8px;border-radius:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.4);color:var(--success);white-space:nowrap;">🛡️ 2FA READY</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;padding:4px 8px;border-radius:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);color:var(--success);white-space:nowrap;">🛡️ 2FA READY</span>
                     </div>
 
-                    <!-- GLOWING DIVIDER -->
-                    <div style="width:100%;height:2px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);margin-bottom:14px;opacity:0.9;"></div>
+                    <!-- SUBTLE DIVIDER -->
+                    <div style="width:100%;height:1px;background:var(--border-subtle);margin-bottom:13px;"></div>
 
-                    <!-- DUAL-TAB SWITCHER WITH SLIDING GLIDER -->
+                    <!-- DUAL-TAB SWITCHER -->
                     <div class="auth-tab-switcher" id="authTabSwitcherBox" data-active="signin">
                         <div class="auth-tab-glider"></div>
                         <button class="auth-tab-btn active" type="button" id="authTabSignInBtn" onclick="switchAuthPortalTab('signin'); document.getElementById('authTabSwitcherBox').setAttribute('data-active','signin');">🔐 Sign In</button>
                         <button class="auth-tab-btn" type="button" id="authTabSignUpBtn" onclick="switchAuthPortalTab('signup'); document.getElementById('authTabSwitcherBox').setAttribute('data-active','signup');">✨ Create Account</button>
                     </div>
 
-                    <!-- PANEL 1: SIGN IN FORM -->
+                    <!-- PANEL 1: SIGN IN FORM (CLEAN LABELS WITHOUT "CLIENT") -->
                     <div class="auth-form-panel" id="authPanelSignIn">
                         <div class="form-group">
-                            <label>👤 CLIENT USERNAME (WITHOUT @):</label>
-                            <input type="text" class="form-input" id="loginUsernameInput" placeholder="Enter your username (e.g. abieharyatmo)" autocomplete="username" oninput="updateAuthSecurityMeter('signin')">
+                            <label>👤 USERNAME:</label>
+                            <input type="text" class="form-input" id="loginUsernameInput" placeholder="Enter your username" autocomplete="username" oninput="updateAuthSecurityMeter('signin')">
                         </div>
                         <div class="form-group">
-                            <label>🔑 ACCOUNT PASSWORD:</label>
+                            <label>🔑 PASSWORD:</label>
                             <div style="position:relative;">
-                                <input type="password" class="form-input" id="loginPasswordInput" placeholder="Enter your security password..." style="padding-right:38px;" autocomplete="current-password" oninput="updateAuthSecurityMeter('signin')">
+                                <input type="password" class="form-input" id="loginPasswordInput" placeholder="Enter your password" style="padding-right:38px;" autocomplete="current-password" oninput="updateAuthSecurityMeter('signin')">
                                 <button type="button" onclick="toggleAuthPwdVisibility('loginPasswordInput')" style="position:absolute;right:10px;top:50%;transform:translateY(-50%);background:transparent;border:none;color:var(--text-muted);cursor:pointer;font-size:0.9rem;padding:2px;">👁️</button>
                             </div>
                         </div>
@@ -1602,7 +1750,7 @@
                         </button>
                     </div>
 
-                    <!-- PANEL 2: SIGN UP (REGISTER) FORM -->
+                    <!-- PANEL 2: CREATE ACCOUNT FORM -->
                     <div class="auth-form-panel hidden" id="authPanelSignUp">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                             <div class="form-group">
@@ -1610,12 +1758,12 @@
                                 <input type="text" class="form-input" id="regUsernameInput" placeholder="e.g. xianbee_vip" autocomplete="username" oninput="updateAuthSecurityMeter('signup')">
                             </div>
                             <div class="form-group">
-                                <label>📱 EMAIL / TELEGRAM:</label>
-                                <input type="text" class="form-input" id="regContactInput" placeholder="@telegram or email" oninput="updateAuthSecurityMeter('signup')">
+                                <label>📱 TELEGRAM / EMAIL:</label>
+                                <input type="text" class="form-input" id="regContactInput" placeholder="@username or email" oninput="updateAuthSecurityMeter('signup')">
                             </div>
                             <div class="form-group">
-                                <label>🔑 PASSWORD (6+):</label>
-                                <input type="password" class="form-input" id="regPasswordInput" placeholder="••••••••" autocomplete="new-password" oninput="updateAuthSecurityMeter('signup')">
+                                <label>🔑 PASSWORD:</label>
+                                <input type="password" class="form-input" id="regPasswordInput" placeholder="Min. 6 characters" autocomplete="new-password" oninput="updateAuthSecurityMeter('signup')">
                             </div>
                             <div class="form-group">
                                 <label>🛡️ 6-DIGIT PIN:</label>
@@ -1624,69 +1772,54 @@
                         </div>
 
                         <button class="btn-ui buy-now btn-laser-shimmer" type="button" id="btnExecSignUp" style="width:100%;padding:12px;font-size:0.84rem;margin-top:4px;border-radius:11px;" onclick="executeWebCloudSignUp()">
-                            ✨ Create Official Account &amp; Enter Store
+                            ✨ Create Account &amp; Enter Store
                         </button>
                     </div>
 
-                    <!-- REAL-TIME SECURITY READINESS BAR -->
-                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:11px;background:var(--bg-input);padding:7px 11px;border-radius:9px;border:1px solid var(--border-subtle);">
-                        <span id="authSecStatusText" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:700;color:var(--accent-cyan);">🔒 256-Bit Encrypted Session Ready</span>
-                        <div style="width:84px;height:5px;background:rgba(255,255,255,0.08);border-radius:99px;overflow:hidden;">
-                            <div id="authSecMeterFill" style="width:35%;height:100%;background:var(--grad-primary);transition:width 0.25s ease;"></div>
-                        </div>
-                    </div>
-
-                    <!-- QUICK ALTERNATIVE ACCESS (1-ROW DOCK) -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px;">
+                    <!-- QUICK ACCESS BUTTONS -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:11px;padding-top:11px;border-top:1px solid var(--border-subtle);">
                         <button class="btn-ui secondary" type="button" style="padding:10px 8px;font-size:0.74rem;border-radius:10px;min-width:0;" onclick="enterGuestPreviewMode()">
-                            👁️ Guest Catalog
+                            👁️ Browse Store
                         </button>
                         <a href="https://t.me/XianBeeTechStore_Bot" target="_blank" class="btn-ui secondary" style="padding:10px 8px;font-size:0.74rem;border-radius:10px;min-width:0;border-color:var(--accent-cyan);color:var(--accent-cyan);">
                             ✈️ Telegram Bot
                         </a>
                     </div>
-
-                    <div class="auth-security-strip">
-                        <span>🛡️ 256-Bit SSL</span>
-                        <span>⚡ Real-Time Cloud Sync</span>
-                        <span>💎 99.9% Uptime</span>
-                    </div>
                 </div>
 
-                <!-- 2. 🎯 3 CORE SPECIALTIES — CLICK TO OPEN FULL-SCREEN SLIDE PAGE -->
-                <div class="core-spec-dock">
-                    <div class="core-spec-header">
+                <!-- 2. 🎯 OUR CORE SPECIALTIES DOCK -->
+                <div class="exec-spec-dock">
+                    <div class="core-spec-header" style="padding-bottom:6px;">
                         <div style="display:flex;align-items:center;gap:6px;">
-                            <span style="font-size:0.84rem;">🎯</span>
-                            <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.8px;color:var(--text-primary);text-transform:uppercase;">OUR CORE SPECIALTIES</span>
+                            <span style="font-size:0.82rem;">🎯</span>
+                            <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.6px;color:var(--text-primary);text-transform:uppercase;">OUR CORE SPECIALTIES</span>
                         </div>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">TAP TO EXPLORE ➔</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--accent-cyan);">TAP TO VIEW DETAILS ➔</span>
                     </div>
 
-                    <!-- 3 INTERACTIVE SPECIALTY LAUNCHER BUTTONS -->
                     <div class="core-spec-tabs">
-                        <button type="button" class="core-spec-btn" onclick="openFullSpecialtyPage(0)">
-                            <span style="font-size:1.25rem;">🐙</span>
-                            <span style="color:#38bdf8;">GitHub Enterprise</span>
-                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">View Full Specs ➔</span>
+                        <button type="button" class="exec-spec-btn" onclick="openFullSpecialtyPage(0)">
+                            <span style="font-size:1.2rem;">🐙</span>
+                            <span style="color:var(--accent-cyan);">GitHub Enterprise</span>
+                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">Explore ➔</span>
                         </button>
-                        <button type="button" class="core-spec-btn" onclick="openFullSpecialtyPage(1)">
-                            <span style="font-size:1.25rem;">🌐</span>
-                            <span style="color:#10b981;">Crypto Exchange</span>
-                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">View Full Specs ➔</span>
+                        <button type="button" class="exec-spec-btn" onclick="openFullSpecialtyPage(1)">
+                            <span style="font-size:1.2rem;">🌐</span>
+                            <span style="color:var(--success);">Crypto Exchange</span>
+                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">Explore ➔</span>
                         </button>
-                        <button type="button" class="core-spec-btn" onclick="openFullSpecialtyPage(2)">
-                            <span style="font-size:1.25rem;">🌟</span>
-                            <span style="color:#c084fc;">One-Stop Shop</span>
-                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">View Full Specs ➔</span>
+                        <button type="button" class="exec-spec-btn" onclick="openFullSpecialtyPage(2)">
+                            <span style="font-size:1.2rem;">🌟</span>
+                            <span style="color:var(--accent-secondary);">One-Stop Shop</span>
+                            <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">Explore ➔</span>
                         </button>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW 2: FULL-SCREEN CORE SPECIALTY SLIDE PAGE (WITH SYMMETRICAL 50/50 TOP BAR) -->
+            <!-- VIEW 2: FULL-SCREEN CORE SPECIALTY SLIDE PAGE -->
             <div class="auth-specialty-fullpage" id="authSpecialtyFullPage">
-                <!-- TOP NAVIGATION BAR: SAMA RATA 1FR 1FR, TINGGI SAMA (36PX), DAN HURUF SEJAJAR PRESISI -->
+                <!-- SYMMETRICAL 50/50 TOP BAR: BACK TO LOGIN & SPECIALTY 01 / 03 -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;background:var(--bg-surface);border:1.5px solid var(--border-focus);border-radius:14px;padding:7px 10px;box-shadow:var(--shadow-card);">
                     <button type="button" onclick="closeFullSpecialtyPage()" style="height:36px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--grad-primary);color:#ffffff;border:none;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;letter-spacing:0.4px;line-height:1;cursor:pointer;box-shadow:var(--shadow-glow);white-space:nowrap;padding:0 8px;">
                         <span>⬅️</span>
@@ -1697,8 +1830,8 @@
                     </span>
                 </div>
 
-                <!-- MAIN ANIMATED FULL-SCREEN SPECIALTY CARD -->
-                <div class="spec-full-card spec-anim-cyber" id="fullSpecStageCard">
+                <!-- MAIN SPECIALTY DETAIL CARD -->
+                <div class="spec-full-card spec-anim-cyber" id="fullSpecStageCard" style="border:1.5px solid var(--border-focus);box-shadow:var(--shadow-card);">
                     <div>
                         <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
                             <div id="fullSpecIconOrb" style="width:46px;height:46px;border-radius:13px;background:rgba(56,189,248,0.14);border:1.5px solid #38bdf8;display:flex;align-items:center;justify-content:center;font-size:1.5rem;flex-shrink:0;">
@@ -1710,24 +1843,22 @@
                             </div>
                         </div>
 
-                        <div style="width:100%;height:1.5px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);margin-bottom:10px;opacity:0.85;"></div>
+                        <div style="width:100%;height:1px;background:var(--border-subtle);margin-bottom:10px;"></div>
 
                         <p id="fullSpecLeadDesc" style="margin:0 0 10px 0;font-size:0.75rem;color:var(--text-secondary);line-height:1.55;font-weight:600;">
                             Providing top-tier Aged, Premium, Fresh, and High Followers GitHub Accounts, alongside advanced automation and comprehensive repository metric optimization (Stars, Forks, Followers).
                         </p>
                     </div>
 
-                    <!-- 4 EXECUTIVE PILLARS BENTO GRID -->
                     <div class="spec-pillar-grid" id="fullSpecPillarsGrid"></div>
 
-                    <!-- BOTTOM HIGHLIGHT BANNER INSIDE CARD -->
                     <div id="fullSpecFooterNote" style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:11px;padding:9px 11px;font-size:0.68rem;color:var(--text-primary);font-weight:700;line-height:1.4;text-align:center;">
                         ⚡ Instant Automated Credential Delivery • Built-In 2FA Code Generator
                     </div>
                 </div>
 
                 <!-- BOTTOM SLIDE SWITCHER -->
-                <div style="background:var(--bg-surface);border:1.5px solid var(--border-subtle);border-radius:15px;padding:8px 10px;display:flex;flex-direction:column;gap:7px;">
+                <div style="background:var(--bg-surface);border:1.5px solid var(--border-subtle);border-radius:15px;padding:8px 10px;">
                     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
                         <button type="button" class="subtab-pill" id="fullNavBtn0" style="padding:8px 4px;font-size:0.66rem;" onclick="openFullSpecialtyPage(0)">🐙 GitHub</button>
                         <button type="button" class="subtab-pill" id="fullNavBtn1" style="padding:8px 4px;font-size:0.66rem;" onclick="openFullSpecialtyPage(1)">🌐 Crypto</button>
@@ -1737,25 +1868,21 @@
             </div>
         </div>
 
-        <!-- DEVELOPER CONSOLE FOOTER (BERBEDA DARI HEADER ATAS: ENGINEERED BY ABIE HARYATMO & POWERED BY XIANBEE-TECH) -->
-        <footer class="auth-dev-footer">
-            <div class="auth-dev-badges">
-                <span class="auth-dev-chip" style="border-color:rgba(56,189,248,0.45);color:var(--text-primary);">
-                    🛡️ Engineered by <b style="color:#38bdf8;">Abie Haryatmo</b>
-                </span>
-                <span class="auth-dev-chip" style="border-color:rgba(168,85,247,0.45);color:var(--text-primary);">
-                    🤝 Powered by <b style="background:linear-gradient(90deg, #38bdf8 0%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">XianBee-Tech</b>
-                </span>
+        <!-- SINGLE-LINE LARGER EXECUTIVE FOOTER (100% 1 LINE ON ALL SCREENS) -->
+        <footer class="exec-single-footer">
+            <div class="exec-footer-line">
+                <span>🛡️ Engineered by <b style="color:var(--accent-cyan);">Abie Haryatmo</b></span>
+                <span style="color:var(--text-muted);">•</span>
+                <span>🤝 Powered by <b style="background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">XianBee-Tech</b></span>
             </div>
         </footer>
 
         <script>
-            // DETAILED EXECUTIVE DATA FOR FULL-SCREEN CORE SPECIALTY PAGES
             const FULL_SPECIALTIES_PAGES = [
                 {
                     badge: 'SPECIALTY 01 / 03',
                     icon: '🐙',
-                    color: '#38bdf8',
+                    color: '#0284c7',
                     animClass: 'spec-anim-cyber',
                     subtitle: 'ENTERPRISE DEVELOPER INFRASTRUCTURE',
                     title: 'GitHub Enterprise Solutions',
@@ -1771,7 +1898,7 @@
                 {
                     badge: 'SPECIALTY 02 / 03',
                     icon: '🌐',
-                    color: '#10b981',
+                    color: '#059669',
                     animClass: 'spec-anim-vortex',
                     subtitle: 'INSTANT DIGITAL ASSET & LIQUIDITY BRIDGE',
                     title: 'XianBee Crypto Exchange',
@@ -1787,7 +1914,7 @@
                 {
                     badge: 'SPECIALTY 03 / 03',
                     icon: '🌟',
-                    color: '#c084fc',
+                    color: '#7c3aed',
                     animClass: 'spec-anim-prism',
                     subtitle: 'ALL-IN-ONE DIGITAL OPERATIONS ARCHITECTURE',
                     title: 'The Ultimate One-Stop Shop Ecosystem',
@@ -1861,31 +1988,7 @@
                 }
             }
 
-            function updateAuthSecurityMeter(mode) {
-                const statusEl = document.getElementById('authSecStatusText');
-                const fillEl = document.getElementById('authSecMeterFill');
-                if (!statusEl || !fillEl) return;
-
-                if (mode === 'signin') {
-                    const u = (document.getElementById('loginUsernameInput')?.value || '').trim();
-                    const p = (document.getElementById('loginPasswordInput')?.value || '').trim();
-                    const score = (u.length >= 2 ? 50 : 15) + (p.length >= 4 ? 50 : 10);
-                    fillEl.style.width = score + '%';
-                    statusEl.innerText = score >= 100 ? '🟢 Credentials Ready — Encrypted Session' : '🔐 Enter Username & Password...';
-                } else {
-                    const u = (document.getElementById('regUsernameInput')?.value || '').trim();
-                    const c = (document.getElementById('regContactInput')?.value || '').trim();
-                    const p = (document.getElementById('regPasswordInput')?.value || '').trim();
-                    const pin = (document.getElementById('regPinInput')?.value || '').trim();
-                    let score = 10;
-                    if (u.length >= 2) score += 20;
-                    if (c.length >= 3) score += 20;
-                    if (p.length >= 6) score += 25;
-                    if (/^\d{6}$/.test(pin)) score += 25;
-                    fillEl.style.width = score + '%';
-                    statusEl.innerText = score >= 100 ? '🛡️ 6-Digit PIN & Security Ready!' : `⚡ Registration Progress: ${score}%`;
-                }
-            }
+            function updateAuthSecurityMeter(mode) {}
         </script>
     </div>
 
