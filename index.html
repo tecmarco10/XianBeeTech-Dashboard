@@ -3069,7 +3069,17 @@
                     const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
                     let availFlashCount = 0;
 
-                    const flashRowsHtml = n.meta.accounts.map(fItem => {
+                    // Urutkan otomatis: Akun Flash Sale yang masih Available di atas, yang SOLD OUT / EXPIRED pindah ke bawah
+                    const sortedFlashAccounts = [...n.meta.accounts].sort((a, b) => {
+                        const uA = String(a.username || '').toLowerCase();
+                        const uB = String(b.username || '').toLowerCase();
+                        const availA = ((a.expiresAt || (Date.now() + 3600000)) > Date.now()) && (liveSet.size === 0 || liveSet.has(uA));
+                        const availB = ((b.expiresAt || (Date.now() + 3600000)) > Date.now()) && (liveSet.size === 0 || liveSet.has(uB));
+                        if (availA === availB) return 0;
+                        return availA ? -1 : 1;
+                    });
+
+                    const flashRowsHtml = sortedFlashAccounts.map(fItem => {
                         const uLow = String(fItem.username || '').toLowerCase();
                         const remMs = Math.max(0, (fItem.expiresAt || (Date.now() + 3600000)) - Date.now());
                         const isNotExpired = remMs > 0;
@@ -3099,7 +3109,7 @@
                                     </div>
                                 </div>
                                 <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.62rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
-                                    <span>👥 ${fItem.followers || 0} Flw • 📁 ${fItem.repos || 0} Repos</span>
+                                    <span>👥 ${fItem.followers || 0} Followers • 📁 ${fItem.repos || 0} Repository</span>
                                     <span style="color:var(--warning);font-weight:800;">⏳ ${remHrs}h ${remMins}m Left</span>
                                 </div>
                                 ${isStillAvail ? `
@@ -3136,7 +3146,17 @@
                     const totalInit = n.meta.initialCount || n.meta.accounts.length;
                     let availNowCount = 0;
 
-                    const accRowsHtml = n.meta.accounts.map(item => {
+                    // Urutkan otomatis: Akun yang masih Available (🟢) di atas, yang SOLD OUT (🔴) otomatis pindah ke paling bawah!
+                    const sortedStockAccounts = [...n.meta.accounts].sort((a, b) => {
+                        const uA = String(a.username || '').toLowerCase();
+                        const uB = String(b.username || '').toLowerCase();
+                        const availA = liveSet.size === 0 || liveSet.has(uA);
+                        const availB = liveSet.size === 0 || liveSet.has(uB);
+                        if (availA === availB) return 0;
+                        return availA ? -1 : 1;
+                    });
+
+                    const accRowsHtml = sortedStockAccounts.map(item => {
                         const uLow = String(item.username || '').toLowerCase();
                         const isStillAvail = liveSet.size === 0 || liveSet.has(uLow);
                         if (isStillAvail) {
@@ -3153,7 +3173,7 @@
                                     <span class="price-chip" style="padding:2px 7px;font-size:0.65rem;">${fmtPrice(item.usdt)}</span>
                                 </div>
                                 <div style="font-size:0.63rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
-                                    👥 ${item.followers || 0} Flw • 📁 ${item.repos || 0} Repos${item.yearKey === 'Contrib' ? ' • 🔥 200K+ Commits' : ''}
+                                    👥 ${item.followers || 0} Followers • 📁 ${item.repos || 0} Repository${item.yearKey === 'Contrib' ? ' • 🔥 200K+ Commits' : ''}
                                 </div>
                                 ${isStillAvail ? `
                                     <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
