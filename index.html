@@ -2271,12 +2271,12 @@
         const OXAPAY_MERCHANT_KEY = "Y91KE8-V6HAJV-464FIB-Y4PQTL";
 
         const FOOTER_BRANDING = (
-            "\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
+            "\n━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
             "🛡️ <b>Engineered by Abie Haryatmo</b>\n" +
             "🤝 <b>Powered by XianBee-Tech</b>\n" +
-            "🌐 <b>Ordered via: Web App Store</b>\n" +
-            "🤖 <b>Official Bot: @XianBeeTechStore_Bot</b>\n" +
-            "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+            "🌐 <b>Via: Web App Store</b>\n" +
+            "🤖 <b>Bot: @XianBeeTechStore_Bot</b>\n" +
+            "━━━━━━━━━━━━━━━━━━━━━━━━━"
         );
 
         const urlParams = new URLSearchParams(window.location.search);
@@ -2396,29 +2396,40 @@
                 ? (htmlText + FOOTER_BRANDING)
                 : htmlText;
             const kvRegex = /^(<blockquote>)?(\s*(?:[^\w\s<]+))\s*(?:<code>([^:<]{1,20}?)\s*:\s*<\/code>|<b>([^:<]{1,20}?)\s*:\s*<\/b>)\s*(.*)$/;
+            const exactPadMap = {
+                "Invoice": "\u00A0\u00A0\u00A0\u00A0",
+                "Client": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0",
+                "User ID": "\u00A0\u00A0\u00A0\u00A0",
+                "Service": "\u00A0\u00A0\u00A0\u2009",
+                "Items": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0",
+                "Price": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0",
+                "Acc ID": "\u00A0\u00A0\u00A0\u00A0\u00A0",
+                "Source": "\u00A0\u00A0\u00A0\u2009",
+                "Target": "\u00A0\u00A0\u00A0\u00A0\u00A0",
+                "Quantity": "\u00A0\u2009",
+                "Payment": "\u00A0\u2009",
+                "Via": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"
+            };
             const rawLines = String(rawJoined)
-                .replace(/╭━{19,}╮/g, '╭━━━━━━━━━━━━━━━━━━╮')
-                .replace(/╰━{19,}╯/g, '╰━━━━━━━━━━━━━━━━━━╯')
-                .replace(/━{20,}/g, '━━━━━━━━━━━━━━━━━━━━')
+                .replace(/╭━{18,}╮/g, '╭━━━━━━━━━━━━━━━━━━━━━━━━━╮')
+                .replace(/╰━{18,}╯/g, '╰━━━━━━━━━━━━━━━━━━━━━━━━━╯')
+                .replace(/━{20,}/g, '━━━━━━━━━━━━━━━━━━━━━━━━━')
                 .split('\n');
-            const kvRows = [];
             rawLines.forEach((ln, idx) => {
                 const m = ln.match(kvRegex);
                 if (m) {
                     const bq = m[1] || '';
                     const emo = (m[2] || '').trim();
-                    const key = (m[3] !== undefined ? m[3] : m[4]).replace(/\u00A0/g, ' ').trim();
+                    let key = (m[3] !== undefined ? m[3] : m[4]).replace(/[\u00A0\u2009]/g, ' ').trim();
+                    if (key === 'Total Items') key = 'Items';
+                    if (key === 'Total Price') key = 'Price';
                     const val = m[5] || '';
-                    if (val.trim() !== '') kvRows.push({ idx, bq, emo, key, px: wordPx(key), val });
+                    if (val.trim() !== '') {
+                        const padStr = exactPadMap[key] || '\u00A0\u00A0';
+                        rawLines[idx] = `${bq}${emo}\u00A0<code>${key}${padStr}:</code> ${val}`;
+                    }
                 }
             });
-            if (kvRows.length >= 2) {
-                const targetPx = Math.max(68.0, Math.min(92.0, Math.max(...kvRows.map(x => x.px))));
-                kvRows.forEach(item => {
-                    const spaces = Math.max(1, Math.round(Math.max(0, targetPx - item.px) / 5.75) + 1);
-                    rawLines[item.idx] = `${item.bq}${item.emo}\u00A0<code>${item.key}${'\u00A0'.repeat(spaces)}:</code> ${item.val}`;
-                });
-            }
             const finalHtml = rawLines.join('\n');
             const payload = {
                 chat_id: String(chatId),
@@ -3469,14 +3480,14 @@
 
         function formatStandardServiceName(yrKey, fallbackTitle = 'Digital Asset') {
             const y = String(yrKey || '').trim();
-            if (/^\d{4}$/.test(y)) return `GitHub Account (Year ${y})`;
-            if (y === 'Arctic') return 'GitHub Account (Arctic Vault)';
-            if (y === '6Badge') return 'GitHub Account (6 Premium Badges)';
-            if (y === 'Followers') return 'GitHub Account (With Followers)';
-            if (y === 'StudentPack') return 'GitHub Student Developer Pack';
-            if (y === 'Contrib') return 'GitHub Account (High Contributions • 200K+ Commits)';
-            if (y === 'OldRepo') return 'GitHub Account (Old Repository)';
-            return String(fallbackTitle).split('—')[0].split('(@')[0].trim() || 'GitHub Account';
+            if (/^\d{4}$/.test(y)) return `GitHub Year ${y}`;
+            if (y === 'Arctic') return 'GitHub Arctic 2020';
+            if (y === '6Badge') return 'GitHub 6 Badges';
+            if (y === 'Followers') return 'GitHub Followers';
+            if (y === 'StudentPack') return 'Student Dev Pack';
+            if (y === 'Contrib') return 'High Contrib 200K+';
+            if (y === 'OldRepo') return 'GitHub Old Repo';
+            return String(fallbackTitle).split('—')[0].split('(@')[0].trim().slice(0, 18) || 'GitHub Account';
         }
 
         // Fire complete Notification Flow for ORDER / CHECKOUT (Clean & Elegant Telegram Format + Order by Web)
@@ -3625,17 +3636,17 @@
 
                 const publicSingleLog = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   🟢 <b>A S S E T  I N S T A N T L Y  S O L D</b> 🟢\n` +
+                    `   🟢 <b>ASSET INSTANTLY SOLD</b> 🟢\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `🔸 <b>Invoice:</b> ${invId}\n` +
+                    `<blockquote>🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
                     `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
-                    `🔸 <b>User ID:</b> ${mId}\n` +
-                    `🔸 <b>Service:</b> ${cleanServiceName}\n` +
-                    `🔸 <b>Price:</b> $${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})\n` +
-                    `🔸 <b>Acc ID:</b> ${maskedAccId}\n` +
-                    `🔸 <b>Source:</b> 🌐 Order by Web\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `✅ <i>Status: Balance deducted & Credentials auto-delivered.</i>`
+                    `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${cleanServiceName}</b>\n` +
+                    `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT</b>\n` +
+                    `🔸 <b>Acc ID:</b> <code>${maskedAccId}</code>\n` +
+                    `🔸 <b>Source:</b> <b>🌐 Order by Web</b></blockquote>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `✅ <i>Balance deducted &amp; Auto-dispatched.</i>`
                 );
                 sendTelegramSilentPush(CHANNEL_ID, publicSingleLog, true);
                 sendTelegramSilentPush(GROUP_ID, publicSingleLog, true);
@@ -3687,20 +3698,27 @@
                 pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (CART WEB)', secretCartLog);
                 ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretCartLog, true));
 
+                const firstMaskedId = unlockedAccounts.length > 0
+                    ? maskData(`${unlockedAccounts[0].category}-${unlockedAccounts[0].username}`, 'target')
+                    : maskData(String(itemsList[0].id).replace(/-\d{10,}$/, ''), 'target');
+                const compactAccIds = itemsList.length > 1
+                    ? `${firstMaskedId} (+${itemsList.length - 1} more)`
+                    : firstMaskedId;
+
                 const publicCartLog = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   🛒 <b>M A S S I V E  A S S E T S  S O L D  O U T</b> 🛒\n` +
+                    `   🛒 <b>MASSIVE ASSETS SOLD</b> 🛒\n` +
                     `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `🔸 <b>Invoice:</b> ${invId}\n` +
+                    `<blockquote>🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
                     `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
-                    `🔸 <b>User ID:</b> ${mId}\n` +
-                    `🔸 <b>Service:</b> Executive Cart Checkout\n` +
-                    `🔸 <b>Total Items:</b> <b>${itemsList.length} Digital Assets</b>\n` +
-                    `🔸 <b>Acc ID:</b> ${maskedIdsList}\n` +
-                    `🔸 <b>Total Price:</b> $${totalUsdt.toFixed(2)} USDT (${paymentMethodLabel})\n` +
-                    `🔸 <b>Source:</b> 🌐 Order by Web\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `✅ <i>Status: Massive assets sold out & Credentials dispatched.</i>`
+                    `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
+                    `🔸 <b>Service:</b> <b>Cart Checkout</b>\n` +
+                    `🔸 <b>Items:</b> <b>${itemsList.length} Digital Assets</b>\n` +
+                    `🔸 <b>Acc ID:</b> <code>${compactAccIds}</code>\n` +
+                    `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT</b>\n` +
+                    `🔸 <b>Source:</b> <b>🌐 Order by Web</b></blockquote>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `✅ <i>Massive assets sold &amp; Auto-dispatched.</i>`
                 );
                 sendTelegramSilentPush(CHANNEL_ID, publicCartLog, true);
                 sendTelegramSilentPush(GROUP_ID, publicCartLog, true);
