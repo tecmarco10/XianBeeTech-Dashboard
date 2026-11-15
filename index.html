@@ -1184,26 +1184,23 @@
             color: #ffffff;
         }
 
-        /* 3D FLIP & BLUR-SLIDE FORM PANEL ANIMATION */
+        /* EXECUTIVE SMOOTH ELEVATION FORM TRANSITION (ZERO TILT / ZERO BLUR) */
         .auth-form-panel {
-            animation: authPanel3DIn 0.38s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-            transform-origin: center top;
+            animation: authPanelSmoothIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .auth-form-panel.hidden {
             display: none !important;
         }
 
-        @keyframes authPanel3DIn {
+        @keyframes authPanelSmoothIn {
             0% {
                 opacity: 0;
-                transform: perspective(800px) rotateX(-12deg) translateY(8px) scale(0.97);
-                filter: blur(4px);
+                transform: translateY(6px);
             }
             100% {
                 opacity: 1;
-                transform: perspective(800px) rotateX(0deg) translateY(0) scale(1);
-                filter: blur(0);
+                transform: translateY(0);
             }
         }
 
@@ -1224,36 +1221,25 @@
             font-size: 0.84rem;
             border-radius: 10px;
             border-left: 3.5px solid var(--accent-cyan);
-            transition: all 0.2s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         .auth-container .form-input:focus {
             border-color: var(--accent-primary);
-            border-left-color: #fde047;
-            box-shadow: 0 0 14px rgba(99, 102, 241, 0.28);
+            border-left-color: #38bdf8;
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.14);
         }
 
-        /* LASER SHIMMER CTA BUTTON */
+        /* CLEAN EXECUTIVE CTA BUTTON (SUBTLE HOVER ELEVATION, NO DISTRACTING LASER BEAM) */
         .btn-laser-shimmer {
             position: relative;
             overflow: hidden;
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
         }
 
-        .btn-laser-shimmer::after {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 40%;
-            height: 200%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent);
-            transform: rotate(25deg);
-            animation: laserSweep 3.2s infinite;
-        }
-
-        @keyframes laserSweep {
-            0% { left: -60%; }
-            35%, 100% { left: 130%; }
+        .btn-laser-shimmer:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 24px rgba(99, 102, 241, 0.35);
         }
 
         .auth-security-strip {
@@ -1321,7 +1307,7 @@
             justify-content: center;
             gap: 5px;
             text-align: center;
-            transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+            transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease, box-shadow 0.2s ease;
             box-shadow: var(--shadow-card);
         }
 
@@ -1345,6 +1331,7 @@
 
         .auth-specialty-fullpage.active {
             display: flex;
+            animation: authPanelSmoothIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
         .spec-full-card {
@@ -1363,7 +1350,7 @@
             justify-content: space-between;
             position: relative;
             overflow: hidden;
-            perspective: 1000px;
+            transition: border-color 0.25s ease;
         }
 
         .spec-pillar-grid {
@@ -1382,81 +1369,54 @@
             display: flex;
             flex-direction: column;
             gap: 3px;
+            opacity: 0;
+            animation: specPillarStaggerIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* 3 DISTINCT FULL-PAGE 3D ANIMATIONS */
-        /* 1. Cyber-Matrix X-Flip + Cyan Laser Scanline */
+        .spec-pillar-box:nth-child(1) { animation-delay: 0.03s; }
+        .spec-pillar-box:nth-child(2) { animation-delay: 0.07s; }
+        .spec-pillar-box:nth-child(3) { animation-delay: 0.11s; }
+        .spec-pillar-box:nth-child(4) { animation-delay: 0.15s; }
+
+        @keyframes specPillarStaggerIn {
+            0% {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* PROFESSIONAL EXECUTIVE SPECIALTY CARD TRANSITIONS (CLEAN THEME ACCENTS) */
         .spec-anim-cyber {
             border-top-color: #38bdf8 !important;
             border-left-color: #38bdf8 !important;
-            animation: specCyberFlip 0.52s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-        .spec-anim-cyber::after {
-            content: '';
-            position: absolute;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, transparent, #38bdf8, #ffffff, #38bdf8, transparent);
-            box-shadow: 0 0 18px #38bdf8;
-            animation: cyberScanline 0.85s ease-out forwards;
-            pointer-events: none;
-        }
-        @keyframes specCyberFlip {
-            0% { opacity: 0; transform: perspective(900px) rotateX(55deg) translateY(-16px) scale(0.93); }
-            100% { opacity: 1; transform: perspective(900px) rotateX(0deg) translateY(0) scale(1); }
-        }
-        @keyframes cyberScanline {
-            0% { top: 0%; opacity: 1; }
-            100% { top: 100%; opacity: 0; }
+            animation: specCardCleanSlide 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* 2. Quantum Gyro Y-Spin + Emerald-Gold Wave */
         .spec-anim-vortex {
             border-top-color: #10b981 !important;
-            border-left-color: #fde047 !important;
-            animation: specQuantumGyro 0.56s cubic-bezier(0.22, 1, 0.36, 1) forwards;
-        }
-        .spec-anim-vortex::before {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(120deg, transparent 15%, rgba(16, 185, 129, 0.20) 50%, rgba(250, 204, 21, 0.16) 62%, transparent 85%);
-            animation: vortexWave 0.8s ease-out forwards;
-            pointer-events: none;
-        }
-        @keyframes specQuantumGyro {
-            0% { opacity: 0; transform: perspective(900px) rotateY(-50deg) scale(0.88); filter: brightness(1.4); }
-            65% { transform: perspective(900px) rotateY(5deg) scale(1.01); }
-            100% { opacity: 1; transform: perspective(900px) rotateY(0deg) scale(1); filter: brightness(1); }
-        }
-        @keyframes vortexWave {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
+            border-left-color: #10b981 !important;
+            animation: specCardCleanSlide 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
 
-        /* 3. Holographic Prism Unfold + Nebula Elastic Pop */
         .spec-anim-prism {
             border-top-color: #c084fc !important;
-            border-left-color: #f472b6 !important;
-            animation: specPrismPop 0.54s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            border-left-color: #c084fc !important;
+            animation: specCardCleanSlide 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
-        .spec-anim-prism::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            border-radius: 22px;
-            box-shadow: inset 0 0 28px rgba(236, 72, 153, 0.32);
-            animation: prismGlowFade 0.8s ease-out forwards;
-            pointer-events: none;
-        }
-        @keyframes specPrismPop {
-            0% { opacity: 0; transform: scale(0.82) rotateZ(-3deg); filter: hue-rotate(45deg) blur(4px); }
-            100% { opacity: 1; transform: scale(1) rotateZ(0deg); filter: hue-rotate(0deg) blur(0); }
-        }
-        @keyframes prismGlowFade {
-            0% { opacity: 1; }
-            100% { opacity: 0.25; }
+
+        @keyframes specCardCleanSlide {
+            0% {
+                opacity: 0;
+                transform: translateY(8px) scale(0.99);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         /* =========================================================
@@ -1599,31 +1559,31 @@
             <div class="auth-right-column" id="authMainPortalView">
                 <!-- 1. INTERACTIVE SIGN IN / SIGN UP COCKPIT BOX -->
                 <div class="auth-container">
-                    <!-- COCKPIT HEADER -->
+                    <!-- COCKPIT HEADER (TANPA KATA PORTAL) -->
                     <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;">
                         <div style="display:flex;align-items:center;gap:11px;min-width:0;">
                             <div class="brand-orb" style="width:44px;height:44px;background:#07080d;border:1.5px solid rgba(56,189,248,0.75);box-shadow:0 0 14px rgba(56,189,248,0.35);padding:4px;border-radius:50%;overflow:hidden;flex-shrink:0;">
                                 <img src="logo.png" alt="XianBee-Tech" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
                             </div>
                             <div style="min-width:0;">
-                                <h2 style="margin:0;font-size:1.06rem;font-weight:800;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;">XianBee-Tech Portal</h2>
+                                <h2 style="margin:0;font-size:1.08rem;font-weight:800;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1.2;">XianBee-Tech</h2>
                                 <span style="font-size:0.62rem;color:var(--accent-cyan);font-weight:800;letter-spacing:0.8px;display:block;">ENTERPRISE CLIENT ACCESS</span>
                             </div>
                         </div>
                         <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;padding:4px 8px;border-radius:7px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.4);color:var(--success);white-space:nowrap;">🛡️ 2FA READY</span>
                     </div>
 
-                    <!-- GLOWING LASER DIVIDER -->
+                    <!-- GLOWING DIVIDER -->
                     <div style="width:100%;height:2px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);margin-bottom:14px;opacity:0.9;"></div>
 
-                    <!-- DUAL-TAB SWITCHER WITH SLIDING NEON GLIDER -->
+                    <!-- DUAL-TAB SWITCHER WITH SLIDING GLIDER -->
                     <div class="auth-tab-switcher" id="authTabSwitcherBox" data-active="signin">
                         <div class="auth-tab-glider"></div>
                         <button class="auth-tab-btn active" type="button" id="authTabSignInBtn" onclick="switchAuthPortalTab('signin'); document.getElementById('authTabSwitcherBox').setAttribute('data-active','signin');">🔐 Sign In</button>
                         <button class="auth-tab-btn" type="button" id="authTabSignUpBtn" onclick="switchAuthPortalTab('signup'); document.getElementById('authTabSwitcherBox').setAttribute('data-active','signup');">✨ Create Account</button>
                     </div>
 
-                    <!-- PANEL 1: SIGN IN FORM (SPACIOUS VERTICAL LAYOUT) -->
+                    <!-- PANEL 1: SIGN IN FORM -->
                     <div class="auth-form-panel" id="authPanelSignIn">
                         <div class="form-group">
                             <label>👤 CLIENT USERNAME (WITHOUT @):</label>
@@ -1638,11 +1598,11 @@
                         </div>
 
                         <button class="btn-ui primary btn-laser-shimmer" type="button" id="btnExecSignIn" style="width:100%;padding:12px;font-size:0.84rem;margin-top:4px;border-radius:11px;" onclick="executeWebCloudSignIn()">
-                            🚀 Sign In to XianBee-Tech Portal
+                            🚀 Sign In to XianBee-Tech
                         </button>
                     </div>
 
-                    <!-- PANEL 2: SIGN UP (REGISTER) FORM — SPACIOUS 2x2 BENTO GRID -->
+                    <!-- PANEL 2: SIGN UP (REGISTER) FORM -->
                     <div class="auth-form-panel hidden" id="authPanelSignUp">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
                             <div class="form-group">
@@ -1688,7 +1648,7 @@
 
                     <div class="auth-security-strip">
                         <span>🛡️ 256-Bit SSL</span>
-                        <span>⚡ Neural Real-Time Sync</span>
+                        <span>⚡ Real-Time Cloud Sync</span>
                         <span>💎 99.9% Uptime</span>
                     </div>
                 </div>
@@ -1700,7 +1660,7 @@
                             <span style="font-size:0.84rem;">🎯</span>
                             <span style="font-size:0.68rem;font-weight:800;letter-spacing:0.8px;color:var(--text-primary);text-transform:uppercase;">OUR CORE SPECIALTIES</span>
                         </div>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">TAP TO OPEN FULL PAGE ➔</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">TAP TO EXPLORE ➔</span>
                     </div>
 
                     <!-- 3 INTERACTIVE SPECIALTY LAUNCHER BUTTONS -->
@@ -1724,14 +1684,15 @@
                 </div>
             </div>
 
-            <!-- VIEW 2: FULL-SCREEN CORE SPECIALTY SLIDE PAGE (WITH BACK BUTTON & RICH COPYWRITING) -->
+            <!-- VIEW 2: FULL-SCREEN CORE SPECIALTY SLIDE PAGE (WITH SYMMETRICAL 50/50 TOP BAR) -->
             <div class="auth-specialty-fullpage" id="authSpecialtyFullPage">
-                <!-- TOP NAVIGATION BAR FOR FULL-SCREEN SLIDE -->
-                <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--bg-surface);border:1.5px solid var(--border-focus);border-radius:14px;padding:8px 12px;box-shadow:var(--shadow-card);">
-                    <button type="button" class="top-pill" style="background:var(--grad-primary);color:#fff;border:none;padding:7px 13px;font-size:0.74rem;box-shadow:var(--shadow-glow);" onclick="closeFullSpecialtyPage()">
-                        ⬅️ Back to Login Portal
+                <!-- TOP NAVIGATION BAR: SAMA RATA 1FR 1FR, TINGGI SAMA (36PX), DAN HURUF SEJAJAR PRESISI -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;background:var(--bg-surface);border:1.5px solid var(--border-focus);border-radius:14px;padding:7px 10px;box-shadow:var(--shadow-card);">
+                    <button type="button" onclick="closeFullSpecialtyPage()" style="height:36px;width:100%;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:var(--grad-primary);color:#ffffff;border:none;border-radius:10px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;letter-spacing:0.4px;line-height:1;cursor:pointer;box-shadow:var(--shadow-glow);white-space:nowrap;padding:0 8px;">
+                        <span>⬅️</span>
+                        <span>BACK TO LOGIN</span>
                     </button>
-                    <span id="fullSpecBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;color:var(--accent-cyan);background:rgba(6,182,212,0.12);padding:4px 9px;border-radius:8px;border:1px solid rgba(6,182,212,0.35);">
+                    <span id="fullSpecBadge" style="height:36px;width:100%;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;letter-spacing:0.4px;line-height:1;color:var(--accent-cyan);background:rgba(6,182,212,0.12);border-radius:10px;border:1px solid rgba(6,182,212,0.4);white-space:nowrap;padding:0 8px;">
                         SPECIALTY 01 / 03
                     </span>
                 </div>
@@ -1765,7 +1726,7 @@
                     </div>
                 </div>
 
-                <!-- BOTTOM SLIDE SWITCHER & RETURN CTA -->
+                <!-- BOTTOM SLIDE SWITCHER -->
                 <div style="background:var(--bg-surface);border:1.5px solid var(--border-subtle);border-radius:15px;padding:8px 10px;display:flex;flex-direction:column;gap:7px;">
                     <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
                         <button type="button" class="subtab-pill" id="fullNavBtn0" style="padding:8px 4px;font-size:0.66rem;" onclick="openFullSpecialtyPage(0)">🐙 GitHub</button>
@@ -1776,29 +1737,23 @@
             </div>
         </div>
 
-        <!-- SPACIOUS 3D DEVOPS TELEMETRY TOPBAR -->
-        <div class="auth-ticker-bar">
-            <div class="auth-brand-pill">
-                <span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--success);box-shadow:0 0 10px var(--success);"></span>
-                <span class="auth-brand-gradient">XianBee-Tech</span>
+        <!-- DEVELOPER CONSOLE FOOTER (BERBEDA DARI HEADER ATAS: ENGINEERED BY ABIE HARYATMO & POWERED BY XIANBEE-TECH) -->
+        <footer class="auth-dev-footer">
+            <div class="auth-dev-badges">
+                <span class="auth-dev-chip" style="border-color:rgba(56,189,248,0.45);color:var(--text-primary);">
+                    🛡️ Engineered by <b style="color:#38bdf8;">Abie Haryatmo</b>
+                </span>
+                <span class="auth-dev-chip" style="border-color:rgba(168,85,247,0.45);color:var(--text-primary);">
+                    🤝 Powered by <b style="background:linear-gradient(90deg, #38bdf8 0%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">XianBee-Tech</b>
+                </span>
             </div>
-            <div class="auth-marquee-wrap">
-                <div class="auth-ticker-items">
-                    <span style="color:#38bdf8;">⚡ <b>SYS_NODE:</b> 99.98% ONLINE</span>
-                    <span style="color:var(--success);">💱 <b>ORACLE_RATE:</b> 1 USDT = <b id="authLiveIdrTicker">Rp 16.250</b></span>
-                    <span style="color:#c084fc;">🐙 <b>GITHUB_ASSETS:</b> <b id="authLiveStockTicker">VERIFIED READY</b></span>
-                    <span style="color:var(--warning);">🔐 <b>CIPHER:</b> AES-256-GCM &amp; TOTP_2FA</span>
-                    <span style="color:#38bdf8;">🚀 <b>AUTO_DISPATCH:</b> &lt; 0.4s EXECUTION</span>
-                </div>
-            </div>
-            <button class="top-pill" type="button" onclick="toggleTheme()" style="padding:6px 10px;font-size:0.74rem;border-color:rgba(56,189,248,0.45);flex-shrink:0;">☀️/🌌</button>
-        </div>
+        </footer>
 
         <script>
-            // DETAILED EXECUTIVE DATA & 3 DISTINCT ANIMATIONS FOR FULL-SCREEN CORE SPECIALTY PAGES
+            // DETAILED EXECUTIVE DATA FOR FULL-SCREEN CORE SPECIALTY PAGES
             const FULL_SPECIALTIES_PAGES = [
                 {
-                    badge: 'SPECIALTY 01 / 03 • CYBER MATRIX',
+                    badge: 'SPECIALTY 01 / 03',
                     icon: '🐙',
                     color: '#38bdf8',
                     animClass: 'spec-anim-cyber',
@@ -1814,7 +1769,7 @@
                     footer: '⚡ Inspect Exact @Usernames Live Before Checkout • 100% Instant Automated Delivery'
                 },
                 {
-                    badge: 'SPECIALTY 02 / 03 • QUANTUM EXCHANGE',
+                    badge: 'SPECIALTY 02 / 03',
                     icon: '🌐',
                     color: '#10b981',
                     animClass: 'spec-anim-vortex',
@@ -1830,7 +1785,7 @@
                     footer: '💎 Automated Blockchain Confirmation • Multi-Network Settlement 24/7'
                 },
                 {
-                    badge: 'SPECIALTY 03 / 03 • HOLOGRAPHIC HUB',
+                    badge: 'SPECIALTY 03 / 03',
                     icon: '🌟',
                     color: '#c084fc',
                     animClass: 'spec-anim-prism',
@@ -1858,13 +1813,16 @@
 
                 if (stageCard) {
                     stageCard.classList.remove('spec-anim-cyber', 'spec-anim-vortex', 'spec-anim-prism');
-                    void stageCard.offsetWidth; // Replay unique 3D animation
+                    void stageCard.offsetWidth;
                     stageCard.classList.add(item.animClass);
                 }
 
-                document.getElementById('fullSpecBadge').innerText = item.badge;
-                document.getElementById('fullSpecBadge').style.color = item.color;
-                document.getElementById('fullSpecBadge').style.borderColor = item.color;
+                const badgeEl = document.getElementById('fullSpecBadge');
+                if (badgeEl) {
+                    badgeEl.innerText = item.badge;
+                    badgeEl.style.color = item.color;
+                    badgeEl.style.borderColor = item.color;
+                }
 
                 const orb = document.getElementById('fullSpecIconOrb');
                 orb.innerText = item.icon;
@@ -1899,7 +1857,7 @@
                 if (fullView) fullView.classList.remove('active');
                 if (mainView) {
                     mainView.style.display = 'flex';
-                    mainView.style.animation = 'authPanel3DIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+                    mainView.style.animation = 'authPanelSmoothIn 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards';
                 }
             }
 
@@ -2411,9 +2369,9 @@
                 "Via": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"
             };
             const rawLines = String(rawJoined)
-                .replace(/╭━{18,}╮/g, '╭━━━━━━━━━━━━━━━━━━━━━━━━━╮')
-                .replace(/╰━{18,}╯/g, '╰━━━━━━━━━━━━━━━━━━━━━━━━━╯')
+                .replace(/[╭╰┏┗]━{15,}[╮╯┓┛]/g, '━━━━━━━━━━━━━━━━━━━━━━━━━')
                 .replace(/━{20,}/g, '━━━━━━━━━━━━━━━━━━━━━━━━━')
+                .replace(/(━━━━━━━━━━━━━━━━━━━━━━━━━\n)\s{2,}/g, '$1')
                 .split('\n');
             rawLines.forEach((ln, idx) => {
                 const m = ln.match(kvRegex);
@@ -2425,8 +2383,7 @@
                     if (key === 'Total Price') key = 'Price';
                     const val = m[5] || '';
                     if (val.trim() !== '') {
-                        const padStr = exactPadMap[key] || '\u00A0\u00A0';
-                        rawLines[idx] = `${bq}${emo}\u00A0<code>${key}${padStr}:</code> ${val}`;
+                        rawLines[idx] = `${bq}${emo} <code>${key}</code> ▸ ${val}`;
                     }
                 }
             });
@@ -3016,11 +2973,11 @@
             `;
 
             const kvBoxHtml = kvRows.length > 0 ? `
-                <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;font-family:'JetBrains Mono',monospace;font-size:0.69rem;line-height:1.45;">
+                <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.69rem;line-height:1.45;">
                     ${kvRows.map(r => `
-                        <div style="display:flex;align-items:flex-start;min-width:0;width:100%;">
-                            <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:78px;flex-shrink:0;">${r.key}</span>
-                            <span style="color:var(--text-muted);font-weight:700;margin-right:6px;flex-shrink:0;">:</span>
+                        <div style="display:flex;align-items:center;gap:6px;min-width:0;width:100%;">
+                            <span style="color:var(--text-muted);font-weight:700;flex-shrink:0;">🔹 ${r.key}</span>
+                            <span style="color:var(--accent-cyan);font-weight:800;flex-shrink:0;">▸</span>
                             <span style="color:var(--text-primary);font-weight:700;min-width:0;flex:1;word-break:break-word;">${r.val}</span>
                         </div>
                     `).join('')}
@@ -3733,6 +3690,21 @@
         let currentTheme = localStorage.getItem('xb_theme_mode') || 'obsidian';
 
         async function fetchRealTimeUsdtIdrRate() {
+            // 1. Prioritas 1: Real-Time Market USDT/IDR Indonesia (Indodax Public Ticker)
+            try {
+                const rIdx = await fetch('https://indodax.com/api/ticker/usdtidr');
+                if (rIdx.ok) {
+                    const dIdx = await rIdx.json();
+                    if (dIdx && dIdx.ticker && dIdx.ticker.last && parseFloat(dIdx.ticker.last) > 10000) {
+                        liveUsdtIdrRate = parseFloat(dIdx.ticker.last);
+                        localStorage.setItem('xb_live_idr_rate', liveUsdtIdrRate);
+                        updateRateDisplays();
+                        return;
+                    }
+                }
+            } catch (e) {}
+
+            // 2. Prioritas 2: CoinGecko Live Tether (USDT) to IDR
             try {
                 const r1 = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=idr');
                 if (r1.ok) {
@@ -3746,6 +3718,7 @@
                 }
             } catch (e) {}
 
+            // 3. Prioritas 3: Open ExchangeRate Live USD/IDR
             try {
                 const r2 = await fetch('https://open.er-api.com/v6/latest/USD');
                 if (r2.ok) {
@@ -3760,10 +3733,14 @@
         }
 
         function updateRateDisplays() {
+            const formattedIdr = 'Rp ' + Math.round(liveUsdtIdrRate).toLocaleString('id-ID');
             const sideEl = document.getElementById('liveRateSidebar');
-            if (sideEl) sideEl.innerText = 'Rp ' + Math.round(liveUsdtIdrRate).toLocaleString('id-ID');
+            if (sideEl) sideEl.innerText = formattedIdr;
+            const authTickerEl = document.getElementById('authLiveIdrTicker');
+            if (authTickerEl) authTickerEl.innerText = formattedIdr;
             updateTopBalance();
         }
+        setInterval(fetchRealTimeUsdtIdrRate, 30000);
 
         function fmtPrice(usdtVal) {
             const val = parseFloat(usdtVal) || 0;
