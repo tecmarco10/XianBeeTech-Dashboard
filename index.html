@@ -6718,6 +6718,7 @@
 
                 if (_patPollTimer) clearInterval(_patPollTimer);
                 let pollTick = 0;
+                let lastLogIdx = 0;
 
                 _patPollTimer = setInterval(async () => {
                     pollTick++;
@@ -6734,8 +6735,10 @@
                         });
                         const pData = await pollRes.json();
 
-                        if (pData && Array.isArray(pData.logs)) {
-                            pData.logs.forEach(lg => appendPatTelemetryLog(lg.tag || '[WORKER]', lg.msg, lg.color || '#38bdf8'));
+                        if (pData && Array.isArray(pData.logs) && pData.logs.length > lastLogIdx) {
+                            const newLogs = pData.logs.slice(lastLogIdx);
+                            newLogs.forEach(lg => appendPatTelemetryLog(lg.tag || '[WORKER]', lg.msg, lg.color || '#38bdf8'));
+                            lastLogIdx = pData.logs.length;
                         }
 
                         if (pData && Array.isArray(pData.items)) {
