@@ -6215,27 +6215,106 @@
                 box.value = existing.join('\n');
             }
             updatePatTargetCounter();
-        }
-
-        function autoFillMissingPatAccounts(limit = 5) {
-            const box = document.getElementById('patTargetUsername');
-            if (!box) return;
-            const missing = allLiveAccountsFlat
-                .filter(a => !a.pat || String(a.pat).trim() === '')
-                .slice(0, limit)
-                .map(a => a.username);
-            if (missing.length === 0) {
-                return showToast('✅ Semua akun aktif di Sheet1 sudah memiliki PAT Token!');
-            }
-            box.value = missing.join('\n');
-            updatePatTargetCounter();
-            showToast(`⚡ ${missing.length} akun tanpa PAT dimasukkan ke antrean!`);
+            refreshPatStudioStockDropdown(false);
         }
 
         function clearPatTargetBox() {
             const box = document.getElementById('patTargetUsername');
             if (box) box.value = '';
             updatePatTargetCounter();
+            refreshPatStudioStockDropdown(false);
+        }
+
+        function isPatEligibleCategory(acc) {
+            const cat = String(acc?.category || acc?._cat_key || '').trim();
+            return cat.toLowerCase() === 'arctic' || /^20\d{2}$/.test(cat);
+        }
+
+        function isAccountMissingPat(acc) {
+            const p = String(acc?.pat || '').trim();
+            return !p || p === '-' || p.toLowerCase() === 'none' || p.toLowerCase() === 'null';
+        }
+
+        function getOrderedMissingPatGroups() {
+            const eligible = allLiveAccountsFlat.filter(isPatEligibleCategory);
+            const missingOnly = eligible.filter(isAccountMissingPat);
+
+            const groupMap = new Map();
+            missingOnly.forEach(acc => {
+                const rawCat = String(acc.category || acc._cat_key || acc.year || '2026').trim();
+                const normKey = rawCat.toLowerCase() === 'arctic' ? 'Arctic' : rawCat;
+                if (!groupMap.has(normKey)) groupMap.set(normKey, []);
+                groupMap.get(normKey).push(acc);
+            });
+
+            const sortedKeys = Array.from(groupMap.keys()).sort((a, b) => {
+                if (a === 'Arctic') return -1;
+                if (b === 'Arctic') return 1;
+                return parseInt(a, 10) - parseInt(b, 10);
+            });
+
+            return {
+                totalEligible: eligible.length,
+                missingCount: missingOnly.length,
+                readyCount: Math.max(0, eligible.length - missingOnly.length),
+                groups: sortedKeys.map(k => ({
+                    key: k,
+                    label: k === 'Arctic' ? '❄️ Arctic Code Vault' : `📅 GitHub Year ${k}`,
+                    items: groupMap.get(k)
+                }))
+            };
+        }
+
+        function buildPatManualSelectOptionsHtml(groups) {
+            const box = document.getElementById('patTargetUsername');
+            const selectedSet = new Set(
+                (box ? box.value : '')
+                    .split(/[\s,;]+/)
+                    .map(s => s.replace(/^@/, '').trim().toLowerCase())
+                    .filter(Boolean)
+            );
+
+            if (!groups || groups.length === 0) {
+                return `<option value="" disabled>✅ Semua akun Arctic & Tahun sudah memiliki PAT Token!</option>`;
+            }
+
+            const totalAvail = groups.reduce((s, g) => s + g.items.length, 0);
+            let html = `<option value="">-- Pilih akun tanpa PAT (${totalAvail} tersedia) --</option>`;
+            groups.forEach(grp => {
+                html += `<optgroup label="${grp.label} (${grp.items.length} Missing PAT)">`;
+                grp.items.forEach((acc, idx) => {
+                    const numStr = String(idx + 1).padStart(2, '0');
+                    const isPicked = selectedSet.has(String(acc.username || '').toLowerCase());
+                    const flw = Number(acc.followers || 0);
+                    const rep = Number(acc.repos || 0);
+                    const yrInfo = grp.key === 'Arctic' && acc.year ? ` [${acc.year}]` : '';
+                    html += `<option value="${acc.username}">${isPicked ? '✓' : `#${numStr}`} • @${acc.username}${yrInfo} — ${flw} Flw • ${rep} Repo${isPicked ? ' [Dipilih]' : ''}</option>`;
+                });
+                html += `</optgroup>`;
+            });
+            return html;
+        }
+
+        function refreshPatStudioStockDropdown(showNotif = false) {
+            const stats = getOrderedMissingPatGroups();
+            const elTot = document.getElementById('patStatTotal');
+            const elMis = document.getElementById('patStatMissing');
+            const elRdy = document.getElementById('patStatReady');
+            const selEl = document.getElementById('patManualSelect');
+
+            if (elTot) elTot.innerText = stats.totalEligible;
+            if (elMis) elMis.innerText = stats.missingCount;
+            if (elRdy) elRdy.innerText = stats.readyCount;
+            if (selEl) selEl.innerHTML = buildPatManualSelectOptionsHtml(stats.groups);
+            if (showNotif) showToast(`🔄 Sinkron Sheet1: ${stats.missingCount} akun Arctic/Tahun belum punya PAT.`);
+        }
+
+        async function syncPatModalSheetNow() {
+            const btn = document.getElementById('btnSyncPatSheet');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Syncing...'; }
+            await syncGoogleSheetInventory(false);
+            refreshPatStudioStockDropdown(true);
+            if (btn) { btn.disabled = false; btn.innerText = '↻ Sync Sheet1'; }
         }
 
         function toggleRevealPatToken(idx) {
@@ -6439,7 +6518,7 @@
                     if (json.batch.status !== 'RUNNING' && _patPollTimer) {
                         clearInterval(_patPollTimer);
                         _patPollTimer = null;
-                        syncGoogleSheetInventory(false);
+                        syncGoogleSheetInventory(false).then(() => refreshPatStudioStockDropdown(false));
                     }
                 }
             } catch (e) {}
@@ -6528,19 +6607,8 @@
             const body = document.getElementById('paymentGatewayBody');
             if (!modal || !body) return;
 
-            const totalSheet = allLiveAccountsFlat.length;
-            const missingPatCnt = allLiveAccountsFlat.filter(a => !a.pat || String(a.pat).trim() === '').length;
-            const readyPatCnt = Math.max(0, totalSheet - missingPatCnt);
-
-            const sortedOptions = [...allLiveAccountsFlat].sort((a, b) => {
-                const aHas = a.pat && String(a.pat).trim() !== '' ? 1 : 0;
-                const bHas = b.pat && String(b.pat).trim() !== '' ? 1 : 0;
-                return aHas - bHas;
-            });
-            const selectOptsHtml = sortedOptions.map(a => {
-                const hasP = a.pat && String(a.pat).trim() !== '';
-                return `<option value="${a.username}">${hasP ? '✅' : '⚠️'} @${a.username} (${a.category || a.year || '2026'}) ${hasP ? '[PAT Ready]' : '[Missing PAT]'}</option>`;
-            }).join('');
+            const stats = getOrderedMissingPatGroups();
+            const selectOptsHtml = buildPatManualSelectOptionsHtml(stats.groups);
 
             modal.classList.add('active');
             body.innerHTML = `
@@ -6553,37 +6621,38 @@
                     <button type="button" class="top-pill" style="padding:6px 10px;border-radius:9px;" onclick="closeAdminPatStudioV2()">✕</button>
                 </div>
 
-                <!-- 3-CARD TELEMETRY SUMMARY -->
+                <!-- 3-CARD TELEMETRY SUMMARY (KHUSUS ARCTIC & TAHUN 2011-2026) -->
                 <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:13px;">
                     <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:2px solid var(--accent-cyan);border-radius:11px;padding:8px 6px;text-align:center;">
-                        <div style="font-size:0.56rem;font-weight:800;color:var(--text-muted);letter-spacing:0.5px;">SHEET1 STOCK</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:1.02rem;font-weight:800;color:var(--text-primary);margin-top:2px;">${totalSheet}</div>
+                        <div style="font-size:0.55rem;font-weight:800;color:var(--text-muted);letter-spacing:0.4px;">ARCTIC &amp; YEAR</div>
+                        <div id="patStatTotal" style="font-family:'JetBrains Mono',monospace;font-size:1.02rem;font-weight:800;color:var(--text-primary);margin-top:2px;">${stats.totalEligible}</div>
                     </div>
                     <div style="background:var(--bg-input);border:1px solid rgba(245,158,11,0.4);border-top:2px solid var(--warning);border-radius:11px;padding:8px 6px;text-align:center;">
-                        <div style="font-size:0.56rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;">MISSING PAT</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:1.02rem;font-weight:800;color:var(--warning);margin-top:2px;">${missingPatCnt}</div>
+                        <div style="font-size:0.55rem;font-weight:800;color:var(--warning);letter-spacing:0.4px;">MISSING PAT</div>
+                        <div id="patStatMissing" style="font-family:'JetBrains Mono',monospace;font-size:1.02rem;font-weight:800;color:var(--warning);margin-top:2px;">${stats.missingCount}</div>
                     </div>
                     <div style="background:var(--bg-input);border:1px solid rgba(16,185,129,0.4);border-top:2px solid var(--success);border-radius:11px;padding:8px 6px;text-align:center;">
-                        <div style="font-size:0.56rem;font-weight:800;color:var(--success);letter-spacing:0.5px;">PAT READY</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:1.02rem;font-weight:800;color:var(--success);margin-top:2px;">${readyPatCnt}</div>
+                        <div style="font-size:0.55rem;font-weight:800;color:var(--success);letter-spacing:0.4px;">PAT READY</div>
+                        <div id="patStatReady" style="font-family:'JetBrains Mono',monospace;font-size:1.02rem;font-weight:800;color:var(--success);margin-top:2px;">${stats.readyCount}</div>
                     </div>
                 </div>
 
                 <!-- TARGET USERNAMES CARD -->
                 <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-radius:14px;padding:12px;margin-bottom:12px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;">
                         <span style="font-size:0.65rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.6px;">TARGET GITHUB USERNAMES:</span>
-                        <span id="patTargetCountBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:var(--text-muted);background:var(--bg-input);border:1px solid var(--border-subtle);padding:2px 8px;border-radius:7px;">0 Selected</span>
+                        <div style="display:flex;align-items:center;gap:5px;">
+                            <span id="patTargetCountBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:var(--text-muted);background:var(--bg-input);border:1px solid var(--border-subtle);padding:2px 8px;border-radius:7px;">0 Selected</span>
+                            <button type="button" class="top-pill" style="padding:2px 8px;font-size:0.62rem;color:var(--danger);border-color:rgba(239,68,68,0.35);" onclick="clearPatTargetBox()">🧹 Clear</button>
+                        </div>
                     </div>
-                    <textarea id="patTargetUsername" rows="3" class="form-input" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;resize:vertical;margin-bottom:8px;" placeholder="Masukkan 1 atau beberapa username (pisahkan Enter / Spasi / Koma)..." oninput="updatePatTargetCounter()"></textarea>
-                    <div style="display:grid;grid-template-columns:1fr auto;gap:7px;margin-bottom:10px;">
-                        <button type="button" class="btn-ui secondary" style="padding:8px 10px;font-size:0.71rem;border-color:rgba(245,158,11,0.45);color:var(--warning);" onclick="autoFillMissingPatAccounts(5)">⚡ Auto-Fill 5 Missing PAT</button>
-                        <button type="button" class="btn-ui secondary" style="padding:8px 12px;font-size:0.71rem;color:var(--danger);border-color:rgba(239,68,68,0.35);" onclick="clearPatTargetBox()">🧹 Clear</button>
-                    </div>
+                    <textarea id="patTargetUsername" rows="3" class="form-input" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;resize:vertical;margin-bottom:10px;" placeholder="Masukkan 1 atau beberapa username (pisahkan Enter / Spasi / Koma)..." oninput="updatePatTargetCounter(); refreshPatStudioStockDropdown(false);"></textarea>
 
-                    <label style="display:block;font-size:0.62rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.6px;margin-bottom:5px;">PILIH MANUAL DARI STOK SHEET1:</label>
-                    <select class="form-input" style="font-size:0.76rem;padding:9px 11px;" onchange="appendPatQuickUsername(this.value); this.value='';">
-                        <option value="">-- Klik untuk tambahkan akun ke antrean --</option>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                        <label style="font-size:0.61rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.5px;">PILIH MANUAL (MISSING PAT • ARCTIC &amp; YEAR):</label>
+                        <button type="button" id="btnSyncPatSheet" class="top-pill" style="padding:2px 8px;font-size:0.6rem;border-color:rgba(56,189,248,0.45);color:var(--accent-cyan);" onclick="syncPatModalSheetNow()">↻ Sync Sheet1</button>
+                    </div>
+                    <select id="patManualSelect" class="form-input" style="font-size:0.75rem;padding:9px 11px;" onchange="appendPatQuickUsername(this.value); this.value='';">
                         ${selectOptsHtml}
                     </select>
                 </div>
@@ -6635,6 +6704,9 @@
                 <!-- LIVE TELEMETRY & 0% - 100% PROGRESS BAR CONTAINER -->
                 <div id="patGeneratorStatusBox" style="display:none;"></div>
             `;
+
+            // Otomatis tarik data terbaru dari Sheet1 saat modal dibuka agar daftar dropdown 100% sinkron
+            syncGoogleSheetInventory(false).then(() => refreshPatStudioStockDropdown(false));
 
             // Cek status batch terakhir di server saat modal dibuka
             pollPatBatchStatusV2();
