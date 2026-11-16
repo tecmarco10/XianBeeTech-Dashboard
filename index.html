@@ -6180,90 +6180,325 @@
             }
         }
 
-        // --- 🔑 ADMIN BATCH & SINGLE STEALTH GITHUB PAT TOKEN GENERATOR MODAL ---
+// --- 🔑 ADMIN EXECUTIVE GITHUB PAT STUDIO (MASKED VAULT + ANTI-SUSPEND CONTROLS) ---
+        const XB_PAT_SECRET = "XB-PAT-GUARD-2026";
         let _patPollTimer = null;
+        let _patLatestBatchItems = [];
+        let _patRevealedSet = new Set();
+
+        function updatePatTargetCounter() {
+            const box = document.getElementById('patTargetUsername');
+            const badge = document.getElementById('patTargetCountBadge');
+            if (!box || !badge) return;
+            const list = Array.from(new Set(box.value.split(/[\s,;]+/).map(s => s.replace(/^@/, '').trim()).filter(Boolean)));
+            badge.innerText = `${list.length} Selected`;
+            badge.style.color = list.length > 0 ? 'var(--success)' : 'var(--text-muted)';
+            badge.style.borderColor = list.length > 0 ? 'rgba(16,185,129,0.45)' : 'var(--border-subtle)';
+        }
 
         function appendPatQuickUsername(val) {
             if (!val) return;
             const box = document.getElementById('patTargetUsername');
             if (!box) return;
-            const existing = box.value.split(/[\s,;]+/).map(s => s.trim()).filter(Boolean);
+            const existing = box.value.split(/[\s,;]+/).map(s => s.replace(/^@/, '').trim()).filter(Boolean);
             if (!existing.includes(val)) {
                 existing.push(val);
                 box.value = existing.join('\n');
             }
+            updatePatTargetCounter();
+        }
+
+        function autoFillMissingPatAccounts(limit = 5) {
+            const box = document.getElementById('patTargetUsername');
+            if (!box) return;
+            const missing = allLiveAccountsFlat
+                .filter(a => !a.pat || String(a.pat).trim() === '')
+                .slice(0, limit)
+                .map(a => a.username);
+            if (missing.length === 0) {
+                return showToast('✅ Semua akun aktif di Sheet1 sudah memiliki PAT Token!');
+            }
+            box.value = missing.join('\n');
+            updatePatTargetCounter();
+            showToast(`⚡ ${missing.length} akun tanpa PAT dimasukkan ke antrean!`);
+        }
+
+        function clearPatTargetBox() {
+            const box = document.getElementById('patTargetUsername');
+            if (box) box.value = '';
+            updatePatTargetCounter();
+        }
+
+        function toggleRevealPatToken(idx) {
+            if (_patRevealedSet.has(idx)) _patRevealedSet.delete(idx);
+            else _patRevealedSet.add(idx);
+            const tokEl = document.getElementById(`pat_tok_disp_${idx}`);
+            const btnEl = document.getElementById(`pat_tok_eye_${idx}`);
+            const item = _patLatestBatchItems[idx];
+            if (!tokEl || !item || !item.pat_token) return;
+            const fullTok = item.pat_token;
+            const masked = `${fullTok.slice(0, 8)}••••••••••••${fullTok.slice(-4)}`;
+            const isShown = _patRevealedSet.has(idx);
+            tokEl.innerText = isShown ? fullTok : masked;
+            if (btnEl) btnEl.innerText = isShown ? '🙈' : '👁️';
+        }
+
+        function copyAllCompletedPats() {
+            const done = _patLatestBatchItems.filter(it => it.status === 'COMPLETED' && it.pat_token);
+            if (done.length === 0) return showToast('Belum ada PAT Token yang selesai!');
+            const txt = done.map(it => `${it.username} | ${it.pat_token}`).join('\n');
+            navigator.clipboard.writeText(txt);
+            showToast(`📋 ${done.length} PAT Token berhasil disalin!`);
+        }
+
+        function renderPatBatchTelemetry(batch) {
+            const statusBox = document.getElementById('patGeneratorStatusBox');
+            const btnStart = document.getElementById('btnStartPatGen');
+            if (!statusBox || !batch) return;
+
+            _patLatestBatchItems = Array.isArray(batch.items) ? batch.items : [];
+            const total = Math.max(1, Number(batch.total || _patLatestBatchItems.length || 1));
+            const doneCnt = _patLatestBatchItems.filter(i => i.status === 'COMPLETED').length;
+            const failCnt = _patLatestBatchItems.filter(i => i.status === 'FAILED' || i.status === 'CANCELLED').length;
+            const finishedCnt = doneCnt + failCnt;
+            const pct = Math.min(100, Math.round((finishedCnt / total) * 100));
+            const isRunning = batch.status === 'RUNNING';
+
+            statusBox.style.display = 'block';
+            statusBox.style.borderLeftColor = isRunning ? 'var(--accent-cyan)' : (doneCnt > 0 ? 'var(--success)' : 'var(--danger)');
+
+            const warnHtml = (Array.isArray(batch.skipped_warnings) && batch.skipped_warnings.length > 0)
+                ? `<div style="font-size:0.63rem;color:var(--warning);background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.35);border-radius:8px;padding:6px 8px;margin-bottom:8px;">⚠️ Dilewati: ${batch.skipped_warnings.join(', ')}</div>`
+                : '';
+
+            const rowsHtml = _patLatestBatchItems.map((it, idx) => {
+                let badge = `<span style="color:var(--text-muted);">⏳ QUEUED</span>`;
+                let borderCol = 'var(--border-subtle)';
+                if (it.status === 'RUNNING') {
+                    badge = `<span style="color:var(--accent-cyan);">⚡ RUNNING</span>`;
+                    borderCol = 'var(--accent-cyan)';
+                } else if (it.status === 'COMPLETED') {
+                    badge = `<span style="color:var(--success);">✅ SAVED + 📸 ALBUM</span>`;
+                    borderCol = 'var(--success)';
+                } else if (it.status === 'FAILED' || it.status === 'CANCELLED') {
+                    badge = `<span style="color:var(--danger);">❌ ${it.status}</span>`;
+                    borderCol = 'var(--danger)';
+                }
+
+                let tokenBox = '';
+                if (it.pat_token) {
+                    const masked = `${it.pat_token.slice(0, 8)}••••••••••••${it.pat_token.slice(-4)}`;
+                    const isShown = _patRevealedSet.has(idx);
+                    tokenBox = `
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px;background:var(--bg-surface);border:1px solid rgba(16,185,129,0.4);border-radius:8px;padding:5px 8px;">
+                            <code id="pat_tok_disp_${idx}" style="font-size:0.68rem;color:var(--success);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${isShown ? it.pat_token : masked}</code>
+                            <div style="display:flex;gap:4px;flex-shrink:0;">
+                                <button type="button" id="pat_tok_eye_${idx}" class="top-pill" style="padding:3px 7px;font-size:0.65rem;" onclick="toggleRevealPatToken(${idx})">${isShown ? '🙈' : '👁️'}</button>
+                                <button type="button" class="top-pill" style="padding:3px 8px;font-size:0.65rem;color:var(--success);border-color:rgba(16,185,129,0.45);" onclick="navigator.clipboard.writeText('${it.pat_token}'); showToast('PAT @${it.username} disalin!');">📋 Copy</button>
+                            </div>
+                        </div>
+                    `;
+                } else if (it.error) {
+                    tokenBox = `<div style="margin-top:4px;font-size:0.63rem;color:var(--danger);">└ ${it.error}</div>`;
+                }
+
+                return `
+                    <div style="background:var(--bg-input);border:1px solid ${borderCol};border-left:3.5px solid ${borderCol};border-radius:10px;padding:8px 10px;font-family:'JetBrains Mono',monospace;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.71rem;font-weight:800;">
+                            <span>#${idx + 1} • @${it.username}</span>
+                            ${badge}
+                        </div>
+                        ${tokenBox}
+                    </div>
+                `;
+            }).join('');
+
+            statusBox.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--accent-cyan);">
+                        📡 LIVE WORKER TELEMETRY (${finishedCnt}/${total} • ${pct}%)
+                    </span>
+                    ${isRunning ? `<button type="button" class="top-pill" style="padding:3px 9px;font-size:0.63rem;color:var(--danger);border-color:rgba(239,68,68,0.45);" onclick="cancelAdminPatBatch()">🛑 Stop Batch</button>` : ''}
+                </div>
+                <div class="progress-track" style="height:7px;margin-bottom:8px;">
+                    <div class="progress-fill" style="width:${pct}%;"></div>
+                </div>
+                <div style="font-size:0.7rem;font-weight:700;color:var(--text-primary);margin-bottom:8px;line-height:1.4;">
+                    ${batch.step || 'Memproses antrean...'}
+                </div>
+                ${warnHtml}
+                <div style="display:flex;flex-direction:column;gap:6px;max-height:210px;overflow-y:auto;">
+                    ${rowsHtml}
+                </div>
+                ${doneCnt > 0 ? `
+                    <button type="button" class="btn-ui secondary" style="width:100%;margin-top:8px;padding:8px;font-size:0.7rem;border-color:var(--success);color:var(--success);" onclick="copyAllCompletedPats()">
+                        📋 Copy All ${doneCnt} Completed PAT Tokens
+                    </button>
+                ` : ''}
+            `;
+
+            if (btnStart) {
+                btnStart.disabled = isRunning;
+                btnStart.innerText = isRunning
+                    ? `⏳ Worker Sedang Berjalan (${finishedCnt}/${total})...`
+                    : '⚡ Start Batch Generate & Save to Sheet1';
+            }
+        }
+
+        async function pollAdminPatBatchStatus() {
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'status', secret: XB_PAT_SECRET })
+                });
+                const data = await res.json();
+                if (data && data.result && data.batch) {
+                    renderPatBatchTelemetry(data.batch);
+                    if (data.batch.status !== 'RUNNING') {
+                        clearInterval(_patPollTimer);
+                        _patPollTimer = null;
+                        syncGoogleSheetInventory(false);
+                    }
+                }
+            } catch (e) {}
+        }
+
+        async function cancelAdminPatBatch() {
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'cancel', secret: XB_PAT_SECRET })
+                });
+                const data = await res.json();
+                if (data && data.batch) renderPatBatchTelemetry(data.batch);
+                clearInterval(_patPollTimer);
+                _patPollTimer = null;
+                showToast('🛑 Antrean PAT Batch dihentikan.');
+            } catch (e) {}
         }
 
         function openAdminPatGeneratorModal() {
             clearInterval(_patPollTimer);
+            _patRevealedSet.clear();
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
-            const quickOptions = allLiveAccountsFlat.slice(0, 100).map(a =>
-                `<option value="${a.username}">+ @${a.username} (${a.category || a.year || 'GitHub'}${a.pat ? ' • Has PAT' : ''})</option>`
+            const totalActive = allLiveAccountsFlat.length;
+            const missingCount = allLiveAccountsFlat.filter(a => !a.pat || String(a.pat).trim() === '').length;
+            const readyCount = Math.max(0, totalActive - missingCount);
+
+            const quickOptions = allLiveAccountsFlat.slice(0, 120).map(a =>
+                `<option value="${a.username}">+ @${a.username} (${a.category || a.year || 'GitHub'} • ${a.pat ? '✅ Has PAT' : '⚠️ Empty PAT'})</option>`
             ).join('');
 
             body.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                    <span class="item-tag" style="margin:0;color:var(--accent-cyan);border-color:var(--accent-cyan);">🔑 BATCH STEALTH PAT + ALBUM PROOF</span>
-                    <button class="top-pill" onclick="clearInterval(_patPollTimer); closeModal('paymentGatewayModal')">✕</button>
-                </div>
-                <h3 style="margin:0 0 4px 0;font-size:1.05rem;">🐙 Multi-Account GitHub PAT Generator</h3>
-                <p style="font-size:0.73rem;color:var(--text-secondary);margin:0 0 11px 0;line-height:1.45;">
-                    Masukkan 1 atau beberapa username (pisahkan dengan <b>Enter / Spasi / Koma</b>). Sistem otomatis memproses berurutan dengan <b>Jeda Acak 2–5 Menit</b>, menyimpan token ke <b>Sheet1 (Kolom H)</b>, dan mengirim <b>1 Album 4 Screenshot</b> (Login ➔ Home ➔ Scopes ➔ PAT) ke Telegram Admin.
-                </p>
-
-                <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-left:4px solid var(--success);border-radius:11px;padding:8px 11px;margin-bottom:11px;font-family:'JetBrains Mono',monospace;font-size:0.64rem;display:flex;flex-direction:column;gap:3px;">
-                    <div>✅ <b>Config     :</b> <span style="color:var(--success);">No Expiration + All Scopes Checked</span></div>
-                    <div>📸 <b>Evidence   :</b> <span style="color:var(--accent-cyan);">1 Album (4 Screenshots/Akun) -> Telegram Admin</span></div>
-                    <div>🛡️ <b>Anti-Flag  :</b> <span style="color:var(--warning);">Isolated Session + Random Delay Antar-Akun</span></div>
+                <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-left:4px solid var(--accent-cyan);border-radius:13px;padding:10px 12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                    <div style="min-width:0;">
+                        <span style="font-size:0.56rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.9px;text-transform:uppercase;display:block;">STEALTH AUTOMATION &amp; 4-SHOT ALBUM PROOF</span>
+                        <h3 style="margin:2px 0 0 0;font-size:0.98rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">🔑 GitHub PAT Token Studio</h3>
+                    </div>
+                    <button class="top-pill" style="padding:5px 10px;font-size:0.72rem;" onclick="clearInterval(_patPollTimer); closeModal('paymentGatewayModal')">✕</button>
                 </div>
 
+                <!-- 3-COLUMN SHEET1 PAT TELEMETRY -->
+                <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-bottom:11px;font-family:'JetBrains Mono',monospace;">
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:7px 8px;text-align:center;">
+                        <div style="font-size:0.54rem;color:var(--text-muted);font-weight:800;">SHEET1 STOCK</div>
+                        <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);margin-top:2px;">${totalActive}</div>
+                    </div>
+                    <div style="background:var(--bg-input);border:1px solid rgba(245,158,11,0.4);border-radius:10px;padding:7px 8px;text-align:center;">
+                        <div style="font-size:0.54rem;color:var(--warning);font-weight:800;">MISSING PAT</div>
+                        <div style="font-size:0.84rem;font-weight:800;color:var(--warning);margin-top:2px;">${missingCount}</div>
+                    </div>
+                    <div style="background:var(--bg-input);border:1px solid rgba(16,185,129,0.4);border-radius:10px;padding:7px 8px;text-align:center;">
+                        <div style="font-size:0.54rem;color:var(--success);font-weight:800;">PAT READY</div>
+                        <div style="font-size:0.84rem;font-weight:800;color:var(--success);margin-top:2px;">${readyCount}</div>
+                    </div>
+                </div>
+
+                <!-- TARGET USERNAMES BOX -->
                 <div class="form-group" style="margin-bottom:9px;">
-                    <label>Target GitHub Usernames (Bisa 1 atau 5+ Sekaligus):</label>
-                    <textarea class="form-input" id="patTargetUsername" rows="3" placeholder="user1&#10;user2&#10;user3" style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem;resize:vertical;"></textarea>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:6px;">
+                        <label style="margin:0;">Target GitHub Usernames:</label>
+                        <span id="patTargetCountBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--text-muted);background:var(--bg-input);border:1px solid var(--border-subtle);padding:2px 7px;border-radius:6px;">0 Selected</span>
+                    </div>
+                    <textarea class="form-input" id="patTargetUsername" rows="3" placeholder="Masukkan 1 atau beberapa username (pisahkan Enter / Spasi / Koma)..." style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.78rem;resize:vertical;" oninput="updatePatTargetCounter()"></textarea>
+                    <div style="display:grid;grid-template-columns:1fr auto;gap:6px;margin-top:6px;">
+                        <button type="button" class="top-pill" style="justify-content:center;padding:6px 8px;font-size:0.67rem;border-color:var(--warning);color:var(--warning);" onclick="autoFillMissingPatAccounts(5)">
+                            ⚡ Auto-Fill 5 Missing PAT
+                        </button>
+                        <button type="button" class="top-pill" style="padding:6px 10px;font-size:0.67rem;color:var(--danger);" onclick="clearPatTargetBox()">
+                            🧹 Clear
+                        </button>
+                    </div>
                 </div>
 
                 ${quickOptions ? `
                 <div class="form-group" style="margin-bottom:9px;">
-                    <label>Tambah Cepat dari Stok Sheet1:</label>
-                    <select class="form-input" style="font-size:0.76rem;padding:8px 10px;" onchange="appendPatQuickUsername(this.value); this.value='';">
-                        <option value="">-- Klik untuk tambahkan akun ke daftar --</option>
+                    <label>Pilih Manual dari Stok Sheet1:</label>
+                    <select class="form-input" style="font-size:0.74rem;padding:8px 10px;" onchange="appendPatQuickUsername(this.value); this.value='';">
+                        <option value="">-- Klik untuk tambahkan akun ke antrean --</option>
                         ${quickOptions}
                     </select>
                 </div>
                 ` : ''}
 
-                <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:8px;margin-bottom:11px;">
+                <!-- SECURITY & ANTI-SUSPEND CONFIGURATION GRID (2x2) -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;">
                     <div class="form-group" style="margin-bottom:0;">
-                        <label>Token Prefix Note:</label>
-                        <input type="text" class="form-input" id="patTokenNote" value="XianBee-Core" style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;padding:8px 10px;">
+                        <label>🛡️ Scope Preset:</label>
+                        <select class="form-input" id="patScopePreset" style="font-size:0.72rem;padding:8px 8px;">
+                            <option value="safe" selected>🛡️ Safe (repo, workflow, user)</option>
+                            <option value="all">⚠️ All Scopes (Full Classic)</option>
+                        </select>
                     </div>
                     <div class="form-group" style="margin-bottom:0;">
-                        <label>Jeda Antar-Akun:</label>
-                        <select class="form-input" id="patBatchDelayMode" style="font-size:0.75rem;padding:8px 8px;">
-                            <option value="120,300" selected>🛡️ 2–5 Menit Acak (Paling Aman)</option>
-                            <option value="60,120">⚡ 1–2 Menit Acak (Sedang)</option>
-                            <option value="15,30">🚀 15–30 Detik (Cepat)</option>
+                        <label>⏳ Token Expiration:</label>
+                        <select class="form-input" id="patExpiryDays" style="font-size:0.72rem;padding:8px 8px;">
+                            <option value="90" selected>⏳ 90 Days (Anti-Flag)</option>
+                            <option value="30">🔒 30 Days (Ultra Safe)</option>
+                            <option value="none">♾️ No Expiration</option>
                         </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>⏱️ Jeda Antar-Akun:</label>
+                        <select class="form-input" id="patBatchDelayMode" style="font-size:0.72rem;padding:8px 8px;">
+                            <option value="180,360" selected>🛡️ 3–6 Menit (Ultra Safe)</option>
+                            <option value="120,300">⚖️ 2–5 Menit (Standard)</option>
+                            <option value="45,90">⚡ 45–90 Detik (Fast)</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>🏷️ Token Note Prefix:</label>
+                        <input type="text" class="form-input" id="patTokenNote" value="XianBee-Core" style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;padding:8px 10px;">
                     </div>
                 </div>
 
-                <div id="patGeneratorStatusBox" style="display:none;background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:11px;margin-bottom:11px;"></div>
+                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:9px;padding:7px 10px;margin-bottom:10px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:var(--text-secondary);line-height:1.45;">
+                    📸 <b>Telegram Album Proof:</b> Setiap akun otomatis mengirim 1 Album berisi 4 foto (Login ➔ Home ➔ Scopes ➔ Token Jadi) ke Telegram Admin.
+                </div>
 
-                <button class="btn-ui buy-now" id="btnStartPatGen" style="width:100%;padding:11px;font-size:0.8rem;" onclick="startAdminPatGeneration()">
+                <div id="patGeneratorStatusBox" style="display:none;background:var(--bg-surface);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:11px;margin-bottom:11px;"></div>
+
+                <button class="btn-ui buy-now" id="btnStartPatGen" style="width:100%;padding:11px;font-size:0.78rem;" onclick="startAdminPatGeneration()">
                     ⚡ Start Batch Generate &amp; Save to Sheet1
                 </button>
             `;
+
+            pollAdminPatBatchStatus();
         }
 
         async function startAdminPatGeneration() {
             const rawUnames = (document.getElementById('patTargetUsername')?.value || '').trim();
             const note = (document.getElementById('patTokenNote')?.value || 'XianBee-Core').trim();
-            const delayParts = (document.getElementById('patBatchDelayMode')?.value || '120,300').split(',');
-            const delayMin = parseInt(delayParts[0]) || 120;
-            const delayMax = parseInt(delayParts[1]) || 300;
+            const scopePreset = document.getElementById('patScopePreset')?.value || 'safe';
+            const expiryDays = document.getElementById('patExpiryDays')?.value || '90';
+            const delayParts = (document.getElementById('patBatchDelayMode')?.value || '180,360').split(',');
+            const delayMin = parseInt(delayParts[0]) || 180;
+            const delayMax = parseInt(delayParts[1]) || 360;
 
             if (!rawUnames) return showToast('Masukkan minimal 1 username GitHub!');
 
@@ -6276,7 +6511,7 @@
             if (statusBox) {
                 statusBox.style.display = 'block';
                 statusBox.style.borderLeftColor = 'var(--accent-cyan)';
-                statusBox.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:800;color:var(--accent-cyan);">🔍 Memvalidasi kredensial di Sheet1...</div>`;
+                statusBox.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:var(--accent-cyan);">🔍 Memvalidasi kredensial & menyusun antrean aman...</div>`;
             }
 
             try {
@@ -6286,8 +6521,11 @@
                     body: JSON.stringify({
                         action: 'admin_pat_job',
                         sub_action: 'enqueue',
+                        secret: XB_PAT_SECRET,
                         usernames: rawUnames,
                         note: note,
+                        scope_preset: scopePreset,
+                        expiry_days: expiryDays,
                         delay_min: delayMin,
                         delay_max: delayMax
                     })
@@ -6300,87 +6538,20 @@
                     }
                     if (statusBox) {
                         statusBox.style.borderLeftColor = 'var(--danger)';
-                        statusBox.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:var(--danger);">❌ ${data?.error || 'Gagal membaca Sheet1'}</div>`;
+                        statusBox.innerHTML = `<div style="font-size:0.72rem;font-weight:800;color:var(--danger);">❌ ${(data && data.error) ? data.error : 'Gagal membuat antrean PAT.'}</div>`;
                     }
-                    return showToast('❌ ' + (data?.error || 'Username tidak ditemukan di Sheet1!'));
+                    return;
                 }
 
-                const renderBatchProgress = (b) => {
-                    if (!statusBox || !b) return;
-                    const doneTokens = (b.items || []).filter(x => x.status === 'COMPLETED' && x.pat_token);
-                    const allTokensText = doneTokens.map(x => `${x.username} | ${x.pat_token}`).join('\n');
-
-                    const rowsHtml = (b.items || []).map((it, idx) => {
-                        const icon = it.status === 'COMPLETED' ? '✅' : (it.status === 'FAILED' ? '❌' : (it.status === 'RUNNING' ? '⚙️' : '⏳'));
-                        const col = it.status === 'COMPLETED' ? 'var(--success)' : (it.status === 'FAILED' ? 'var(--danger)' : (it.status === 'RUNNING' ? 'var(--warning)' : 'var(--text-muted)'));
-                        return `
-                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;padding:5px 7px;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;">
-                                <span style="font-weight:800;color:${col};">${icon} ${idx + 1}. @${it.username}</span>
-                                <span style="color:${col};font-weight:700;max-width:56%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
-                                    ${it.pat_token ? it.pat_token : (it.error || it.status)}
-                                </span>
-                            </div>
-                        `;
-                    }).join('');
-
-                    statusBox.style.borderLeftColor = b.status === 'COMPLETED' ? 'var(--success)' : 'var(--warning)';
-                    statusBox.innerHTML = `
-                        <div style="font-size:0.72rem;font-weight:800;color:var(--text-primary);margin-bottom:6px;line-height:1.4;">
-                            ${b.step}
-                        </div>
-                        <div style="display:flex;flex-direction:column;gap:4px;max-height:175px;overflow-y:auto;margin-bottom:8px;">
-                            ${rowsHtml}
-                        </div>
-                        ${doneTokens.length > 0 ? `
-                            <button type="button" class="btn-ui primary" style="width:100%;padding:8px;font-size:0.72rem;" onclick="navigator.clipboard.writeText(\`${allTokensText.replace(/`/g, '')}\`); showToast('✅ ${doneTokens.length} PAT Token copied!');">
-                                📋 Copy Semua PAT Token (${doneTokens.length} Selesai)
-                            </button>
-                        ` : ''}
-                    `;
-                };
-
-                renderBatchProgress(data.batch);
-                const batchId = data.batch.batch_id;
-
+                renderPatBatchTelemetry(data.batch);
                 clearInterval(_patPollTimer);
-                _patPollTimer = setInterval(async () => {
-                    try {
-                        const pollRes = await fetch(GSHEET_WEBHOOK_URL, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                            body: JSON.stringify({
-                                action: 'admin_pat_job',
-                                sub_action: 'status',
-                                batch_id: batchId
-                            })
-                        });
-                        const pollData = await pollRes.json();
-                        if (!pollData || !pollData.result || !pollData.batch) return;
-                        const b = pollData.batch;
-                        renderBatchProgress(b);
-
-                        if (b.status === 'COMPLETED') {
-                            clearInterval(_patPollTimer);
-                            if (btn) {
-                                btn.disabled = false;
-                                btn.innerText = '🔄 Jalankan Batch Baru';
-                            }
-                            const okItems = (b.items || []).filter(x => x.status === 'COMPLETED' && x.pat_token);
-                            if (okItems.length > 0) {
-                                const copyStr = okItems.length === 1 ? okItems[0].pat_token : okItems.map(x => `${x.username} | ${x.pat_token}`).join('\n');
-                                try { await navigator.clipboard.writeText(copyStr); } catch (eC) {}
-                                showToast(`✅ Selesai! ${okItems.length}/${b.total} PAT Token tersimpan di Sheet1 & ter-copy!`);
-                            }
-                            syncGoogleSheetInventory(false);
-                        }
-                    } catch (ePoll) {}
-                }, 3000);
-            } catch (e) {
+                _patPollTimer = setInterval(pollAdminPatBatchStatus, 4000);
+            } catch (err) {
                 if (btn) {
                     btn.disabled = false;
                     btn.innerText = '⚡ Start Batch Generate & Save to Sheet1';
                 }
-                showToast('⚠️ Gagal menghubungi Google Sheet Webhook.');
+                showToast('⚠️ Gagal terhubung ke Google Apps Script!');
             }
         }
 
