@@ -6180,12 +6180,15 @@
             }
         }
 
-// --- 🔑 ADMIN EXECUTIVE GITHUB PAT STUDIO V2 (ELEGANT + 0-100% LIVE PROGRESS + SAFE SCOPES) ---
+// --- 🔑 ADMIN EXECUTIVE GITHUB PAT STUDIO V3 (ZERO-SCROLL COCKPIT) ---
         const XB_PAT_SECRET = "XB-PAT-GUARD-2026";
         let _patPollTimer = null;
         let _patLatestBatchItems = [];
         let _patRevealedSet = new Set();
         let _patAutoCopiedDone = new Set();
+        let _patActiveViewTab = 'config'; // 'config' | 'telemetry'
+        let _patSelectedManualSet = new Set();
+        let _patLogLines = [];
 
         function closeAdminPatStudioV2() {
             if (_patPollTimer) {
@@ -6195,34 +6198,38 @@
             closeModal('paymentGatewayModal');
         }
 
-        function updatePatTargetCounter() {
-            const box = document.getElementById('patTargetUsername');
-            const badge = document.getElementById('patTargetCountBadge');
-            if (!box || !badge) return;
-            const list = Array.from(new Set(box.value.split(/[\s,;]+/).map(s => s.replace(/^@/, '').trim()).filter(Boolean)));
-            badge.innerText = `${list.length} Selected`;
-            badge.style.color = list.length > 0 ? 'var(--success)' : 'var(--text-muted)';
-            badge.style.borderColor = list.length > 0 ? 'rgba(16,185,129,0.45)' : 'var(--border-subtle)';
-        }
+        function switchPatStudioTab(tabName) {
+            _patActiveViewTab = tabName;
+            const viewCfg = document.getElementById('patViewConfigPanel');
+            const viewTel = document.getElementById('patViewTelemetryPanel');
+            const btnCfg = document.getElementById('patTabBtnConfig');
+            const btnTel = document.getElementById('patTabBtnTelemetry');
 
-        function appendPatQuickUsername(val) {
-            if (!val) return;
-            const box = document.getElementById('patTargetUsername');
-            if (!box) return;
-            const existing = box.value.split(/[\s,;]+/).map(s => s.replace(/^@/, '').trim()).filter(Boolean);
-            if (!existing.includes(val)) {
-                existing.push(val);
-                box.value = existing.join('\n');
+            if (viewCfg && viewTel) {
+                viewCfg.style.display = tabName === 'config' ? 'flex' : 'none';
+                viewTel.style.display = tabName === 'telemetry' ? 'flex' : 'none';
             }
-            updatePatTargetCounter();
-            refreshPatStudioStockDropdown(false);
+            if (btnCfg && btnTel) {
+                btnCfg.classList.toggle('active', tabName === 'config');
+                btnTel.classList.toggle('active', tabName === 'telemetry');
+            }
         }
 
-        function clearPatTargetBox() {
-            const box = document.getElementById('patTargetUsername');
-            if (box) box.value = '';
-            updatePatTargetCounter();
-            refreshPatStudioStockDropdown(false);
+        function appendPatTelemetryLog(stepTag, message, color = '#94a3b8') {
+            const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            _patLogLines.push({ time: now, tag: stepTag, msg: message, color: color });
+            if (_patLogLines.length > 60) _patLogLines.shift();
+
+            const logBox = document.getElementById('patRealtimeLogConsole');
+            if (!logBox) return;
+            logBox.innerHTML = _patLogLines.map(l => `
+                <div style="display:flex;align-items:flex-start;gap:6px;line-height:1.35;border-bottom:1px dashed rgba(255,255,255,0.05);padding-bottom:3px;">
+                    <span style="color:#64748b;flex-shrink:0;">[${l.time}]</span>
+                    <span style="color:${l.color};font-weight:800;flex-shrink:0;">${l.tag}</span>
+                    <span style="color:#e2e8f0;word-break:break-word;">${l.msg}</span>
+                </div>
+            `).join('');
+            logBox.scrollTop = logBox.scrollHeight;
         }
 
         function isPatEligibleCategory(acc) {
@@ -6259,70 +6266,562 @@
                 readyCount: Math.max(0, eligible.length - missingOnly.length),
                 groups: sortedKeys.map(k => ({
                     key: k,
-                    label: k === 'Arctic' ? '❄️ Arctic Code Vault' : `📅 GitHub Year ${k}`,
+                    label: k === 'Arctic' ? 'ARCTIC CODE VAULT' : `GITHUB YEAR ${k}`,
                     items: groupMap.get(k)
                 }))
             };
         }
 
-        function buildPatManualSelectOptionsHtml(groups) {
+        function getCombinedSelectedPatUsernames() {
             const box = document.getElementById('patTargetUsername');
-            const selectedSet = new Set(
-                (box ? box.value : '')
-                    .split(/[\s,;]+/)
-                    .map(s => s.replace(/^@/, '').trim().toLowerCase())
-                    .filter(Boolean)
-            );
-
-            if (!groups || groups.length === 0) {
-                return `<option value="" disabled>✅ Semua akun Arctic & Tahun sudah memiliki PAT Token!</option>`;
-            }
-
-            const totalAvail = groups.reduce((s, g) => s + g.items.length, 0);
-            let html = `<option value="">-- Pilih akun tanpa PAT (${totalAvail} tersedia) --</option>`;
-            groups.forEach(grp => {
-                html += `<optgroup label="${grp.label} (${grp.items.length} Missing PAT)">`;
-                grp.items.forEach((acc, idx) => {
-                    const numStr = String(idx + 1).padStart(2, '0');
-                    const isPicked = selectedSet.has(String(acc.username || '').toLowerCase());
-                    const flw = Number(acc.followers || 0);
-                    const rep = Number(acc.repos || 0);
-                    const yrInfo = grp.key === 'Arctic' && acc.year ? ` [${acc.year}]` : '';
-                    html += `<option value="${acc.username}">${isPicked ? '✓' : `#${numStr}`} • @${acc.username}${yrInfo} — ${flw} Flw • ${rep} Repo${isPicked ? ' [Dipilih]' : ''}</option>`;
-                });
-                html += `</optgroup>`;
-            });
-            return html;
+            const typedList = (box ? box.value : '')
+                .split(/[\s,;]+/)
+                .map(s => s.replace(/^@/, '').trim())
+                .filter(Boolean);
+            const combined = new Set([...typedList, ...Array.from(_patSelectedManualSet)]);
+            return Array.from(combined);
         }
 
-        function refreshPatStudioStockDropdown(showNotif = false) {
+        function updatePatTargetCounter() {
+            const list = getCombinedSelectedPatUsernames();
+            const badge = document.getElementById('patTargetCountBadge');
+            if (badge) {
+                badge.innerText = `${list.length} Selected`;
+                badge.style.color = list.length > 0 ? 'var(--success)' : 'var(--text-secondary)';
+                badge.style.borderColor = list.length > 0 ? 'rgba(16,185,129,0.55)' : 'var(--border-subtle)';
+            }
+        }
+
+        function toggleManualPatAccountPick(username) {
+            if (!username) return;
+            if (_patSelectedManualSet.has(username)) {
+                _patSelectedManualSet.delete(username);
+            } else {
+                _patSelectedManualSet.add(username);
+            }
+            const box = document.getElementById('patTargetUsername');
+            if (box) {
+                box.value = getCombinedSelectedPatUsernames().join(', ');
+            }
+            updatePatTargetCounter();
+            renderPatManualAccountCards();
+        }
+
+        function clearPatTargetBox() {
+            _patSelectedManualSet.clear();
+            const box = document.getElementById('patTargetUsername');
+            if (box) box.value = '';
+            updatePatTargetCounter();
+            renderPatManualAccountCards();
+        }
+
+        function renderPatManualAccountCards() {
+            const listContainer = document.getElementById('patManualCardsList');
+            const countLabel = document.getElementById('patManualAvailBadge');
+            if (!listContainer) return;
+
             const stats = getOrderedMissingPatGroups();
             const elTot = document.getElementById('patStatTotal');
             const elMis = document.getElementById('patStatMissing');
             const elRdy = document.getElementById('patStatReady');
-            const selEl = document.getElementById('patManualSelect');
-
             if (elTot) elTot.innerText = stats.totalEligible;
             if (elMis) elMis.innerText = stats.missingCount;
             if (elRdy) elRdy.innerText = stats.readyCount;
-            if (selEl) selEl.innerHTML = buildPatManualSelectOptionsHtml(stats.groups);
-            if (showNotif) showToast(`🔄 Sinkron Sheet1: ${stats.missingCount} akun Arctic/Tahun belum punya PAT.`);
+            if (countLabel) countLabel.innerText = `${stats.missingCount} Available`;
+
+            const activeSet = new Set(getCombinedSelectedPatUsernames().map(u => u.toLowerCase()));
+
+            if (stats.groups.length === 0) {
+                listContainer.innerHTML = `
+                    <div style="padding:14px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--success);font-weight:800;">
+                        ✅ All Arctic & Aged Year Accounts Already Have PAT Tokens!
+                    </div>
+                `;
+                return;
+            }
+
+            listContainer.innerHTML = stats.groups.map(grp => {
+                const cardsHtml = grp.items.map(acc => {
+                    const u = String(acc.username || '');
+                    const isPicked = activeSet.has(u.toLowerCase());
+                    const flw = Number(acc.followers || 0);
+                    const rep = Number(acc.repos || 0);
+                    const yrDisp = grp.key === 'Arctic' ? (acc.year || 'Arctic') : grp.key;
+
+                    return `
+                        <div onclick="toggleManualPatAccountPick('${u}')" style="background:${isPicked ? 'rgba(16,185,129,0.14)' : 'var(--bg-surface)'};border:1px solid ${isPicked ? 'var(--success)' : 'var(--border-subtle)'};border-left:3.5px solid ${isPicked ? 'var(--success)' : 'var(--accent-cyan)'};border-radius:8px;padding:6px 9px;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;transition:0.15s;">
+                            <div style="min-width:0;flex:1;display:flex;flex-direction:column;gap:2px;">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:${isPicked ? 'var(--success)' : 'var(--text-primary)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ${isPicked ? '☑️' : '🟢'} @${u} <span style="font-size:0.6rem;color:var(--accent-cyan);">(${yrDisp})</span>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.59rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    👥 ${flw} Followers • 📁 ${rep} Repositories • ⚠️ Missing PAT
+                                </div>
+                            </div>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;padding:3px 7px;border-radius:6px;flex-shrink:0;background:${isPicked ? 'var(--success)' : 'var(--bg-input)'};color:${isPicked ? '#ffffff' : 'var(--accent-cyan)'};border:1px solid ${isPicked ? 'var(--success)' : 'var(--border-focus)'};">
+                                ${isPicked ? 'SELECTED' : '+ PICK'}
+                            </span>
+                        </div>
+                    `;
+                }).join('');
+
+                return `
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        <div style="border-top:1.5px solid #38bdf8;border-bottom:1.5px solid #a855f7;background:rgba(56,189,248,0.08);padding:3px 8px;border-radius:6px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">
+                            <span>📂 ${grp.label}</span>
+                            <span>${grp.items.length} Missing</span>
+                        </div>
+                        ${cardsHtml}
+                    </div>
+                `;
+            }).join('');
         }
 
         async function syncPatModalSheetNow() {
             const btn = document.getElementById('btnSyncPatSheet');
             if (btn) { btn.disabled = true; btn.innerText = '⏳ Syncing...'; }
             await syncGoogleSheetInventory(false);
-            refreshPatStudioStockDropdown(true);
+            renderPatManualAccountCards();
             if (btn) { btn.disabled = false; btn.innerText = '↻ Sync Sheet1'; }
+            showToast('✅ Synced missing PAT accounts from Sheet1!');
+        }
+
+        function openAdminPatStudioV2() {
+            _patSelectedManualSet.clear();
+            _patRevealedSet.clear();
+            _patAutoCopiedDone.clear();
+            _patLatestBatchItems = [];
+            _patLogLines = [];
+
+            const stats = getOrderedMissingPatGroups();
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+
+            // Make modal fit cleanly on 1 viewport screen without vertical scroll
+            body.style.maxWidth = '540px';
+            body.style.padding = '12px';
+            body.style.maxHeight = '94dvh';
+            body.style.overflow = 'hidden';
+            body.style.display = 'flex';
+            body.style.flexDirection = 'column';
+            body.style.gap = '8px';
+
+            body.innerHTML = `
+                <!-- 1. EXECUTIVE DOUBLE-BORDER HEADER (TOP & BOTTOM ACCENT LINES) -->
+                <div style="background:var(--bg-input);border-top:2.5px solid #38bdf8;border-bottom:2.5px solid #a855f7;border-left:1px solid var(--border-focus);border-right:1px solid var(--border-focus);border-radius:12px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;">
+                    <div style="min-width:0;flex:1;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.7px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            STEALTH AUTOMATION • 4-SHOT TELEGRAM PROOF
+                        </div>
+                        <h3 style="margin:1px 0 0 0;font-size:0.9rem;font-weight:800;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            🔑 GitHub PAT Token Studio
+                        </h3>
+                    </div>
+                    <button type="button" class="top-pill" style="padding:5px 10px;font-size:0.72rem;flex-shrink:0;" onclick="closeAdminPatStudioV2()">✕</button>
+                </div>
+
+                <!-- 2. 1-PAGE VIEW SWITCHER TABS (NO SCROLL NEEDED) -->
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--bg-input);padding:4px;border-radius:10px;border:1px solid var(--border-subtle);flex-shrink:0;">
+                    <button type="button" id="patTabBtnConfig" class="subtab-pill active" style="padding:7px 6px;font-size:0.68rem;border-radius:8px;white-space:nowrap;" onclick="switchPatStudioTab('config')">
+                        ⚙️ Token Configurator
+                    </button>
+                    <button type="button" id="patTabBtnTelemetry" class="subtab-pill" style="padding:7px 6px;font-size:0.68rem;border-radius:8px;white-space:nowrap;" onclick="switchPatStudioTab('telemetry')">
+                        📡 Live Worker Telemetry
+                    </button>
+                </div>
+
+                <!-- =======================================================
+                     PAGE 1: TOKEN CONFIGURATOR (ZERO SCROLL, SYMMETRICAL)
+                     ======================================================= -->
+                <div id="patViewConfigPanel" style="display:flex;flex-direction:column;gap:8px;flex:1;min-height:0;">
+                    <!-- 3-COLUMN INVENTORY METRIC CARDS -->
+                    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex-shrink:0;">
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:2px solid #38bdf8;border-radius:9px;padding:5px 4px;text-align:center;">
+                            <div style="font-size:0.53rem;font-weight:800;color:var(--text-muted);letter-spacing:0.4px;white-space:nowrap;">ARCTIC &amp; YEAR</div>
+                            <div id="patStatTotal" style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--text-primary);">${stats.totalEligible}</div>
+                        </div>
+                        <div style="background:var(--bg-input);border:1px solid rgba(245,158,11,0.45);border-top:2px solid var(--warning);border-radius:9px;padding:5px 4px;text-align:center;">
+                            <div style="font-size:0.53rem;font-weight:800;color:var(--warning);letter-spacing:0.4px;white-space:nowrap;">MISSING PAT</div>
+                            <div id="patStatMissing" style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--warning);">${stats.missingCount}</div>
+                        </div>
+                        <div style="background:var(--bg-input);border:1px solid rgba(16,185,129,0.45);border-top:2px solid var(--success);border-radius:9px;padding:5px 4px;text-align:center;">
+                            <div style="font-size:0.53rem;font-weight:800;color:var(--success);letter-spacing:0.4px;white-space:nowrap;">PAT READY</div>
+                            <div id="patStatReady" style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--success);">${stats.readyCount}</div>
+                        </div>
+                    </div>
+
+                    <!-- TARGET GITHUB USERNAMES (STRICTLY 1-LINE ALIGNED HEADER) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:10px;padding:7px 9px;display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;">
+                            <span style="font-size:0.62rem;font-weight:800;color:var(--text-primary);letter-spacing:0.4px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                TARGET GITHUB USERNAMES
+                            </span>
+                            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                                <span id="patTargetCountBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.61rem;font-weight:800;color:var(--text-secondary);background:var(--bg-surface);border:1px solid var(--border-subtle);padding:2px 7px;border-radius:6px;white-space:nowrap;">
+                                    0 Selected
+                                </span>
+                                <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.61rem;color:var(--danger);border-color:rgba(239,68,68,0.4);white-space:nowrap;" onclick="clearPatTargetBox()">
+                                    ✕ Clear
+                                </button>
+                            </div>
+                        </div>
+                        <input type="text" class="form-input" id="patTargetUsername" style="padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:0.74rem;background:var(--bg-surface);" placeholder="Type usernames (comma/space separated) or pick below..." oninput="updatePatTargetCounter(); renderPatManualAccountCards();">
+                    </div>
+
+                    <!-- MANUAL ACCOUNT PICKER (STOCK ALERT CARD STYLE + 1-LINE HEADER) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:10px;padding:7px 9px;display:flex;flex-direction:column;gap:5px;flex:1;min-height:110px;overflow:hidden;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;width:100%;flex-shrink:0;">
+                            <div style="display:flex;align-items:center;gap:5px;min-width:0;flex:1;">
+                                <span style="font-size:0.62rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.3px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    SELECT MISSING PAT ACCOUNTS
+                                </span>
+                                <span id="patManualAvailBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--warning);background:rgba(245,158,11,0.12);border:1px solid rgba(245,158,11,0.35);padding:1px 6px;border-radius:5px;white-space:nowrap;flex-shrink:0;">
+                                    ${stats.missingCount} Available
+                                </span>
+                            </div>
+                            <button type="button" id="btnSyncPatSheet" class="top-pill" style="padding:2px 8px;font-size:0.61rem;border-color:var(--accent-cyan);color:var(--accent-cyan);white-space:nowrap;flex-shrink:0;" onclick="syncPatModalSheetNow()">
+                                ↻ Sync Sheet1
+                            </button>
+                        </div>
+                        <div id="patManualCardsList" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding-right:2px;"></div>
+                    </div>
+
+                    <!-- SCOPE PRESET & TOKEN EXPIRATION (INSIDE CLEAN 3D BOXES) -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;flex-shrink:0;">
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--success);border-radius:9px;padding:6px 8px;display:flex;flex-direction:column;gap:4px;">
+                            <span style="font-size:0.57rem;font-weight:800;color:var(--success);letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;">
+                                🛡️ SCOPE PRESET
+                            </span>
+                            <select class="form-input" id="patScopePreset" style="padding:6px 8px;font-size:0.68rem;font-weight:700;background:var(--bg-surface);border-radius:7px;">
+                                <option value="safe_all" selected>Safe Full (repo, workflow, admin)</option>
+                                <option value="full_classic">Classic Full (All Scopes)</option>
+                                <option value="repo_only">Repo &amp; Workflow Only</option>
+                            </select>
+                        </div>
+
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--warning);border-radius:9px;padding:6px 8px;display:flex;flex-direction:column;gap:4px;">
+                            <span style="font-size:0.57rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;">
+                                ⏳ TOKEN EXPIRATION
+                            </span>
+                            <select class="form-input" id="patExpirationPreset" style="padding:6px 8px;font-size:0.68rem;font-weight:700;background:var(--bg-surface);border-radius:7px;">
+                                <option value="none" selected>No Expiration (Permanent)</option>
+                                <option value="90">90 Days (Anti-Flagged)</option>
+                                <option value="30">30 Days</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- PRIMARY ACTION BUTTON (AUTO-SWITCHES TO TELEMETRY TAB ON CLICK) -->
+                    <button type="button" id="btnStartPatWorker" class="btn-ui primary" style="width:100%;padding:10px 12px;font-size:0.78rem;border-radius:10px;flex-shrink:0;white-space:nowrap;" onclick="startGithubPatWorkerFromWeb()">
+                        🚀 Generate PAT Token Now
+                    </button>
+                </div>
+
+                <!-- =======================================================
+                     PAGE 2: LIVE WORKER TELEMETRY (REAL-TIME LOGS & RESULTS)
+                     ======================================================= -->
+                <div id="patViewTelemetryPanel" style="display:none;flex-direction:column;gap:8px;flex:1;min-height:0;">
+                    <!-- STATUS & 4-STAGE STEPPER -->
+                    <div style="background:var(--bg-input);border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;border-left:1px solid var(--border-focus);border-right:1px solid var(--border-focus);border-radius:11px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                            <span id="patTelStatusBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;color:var(--accent-cyan);white-space:nowrap;">
+                                📡 WORKER STANDBY
+                            </span>
+                            <span id="patTelProgressCounter" style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.4);padding:2px 8px;border-radius:6px;white-space:nowrap;">
+                                0 / 0 Done (0%)
+                            </span>
+                        </div>
+
+                        <!-- PROGRESS BAR -->
+                        <div class="progress-track" style="margin-top:0;height:7px;">
+                            <div id="patTelProgressBar" class="progress-fill" style="width:0%;transition:width 0.3s ease;"></div>
+                        </div>
+
+                        <!-- 4 STEP PILLS -->
+                        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;text-align:center;">
+                            <div id="patStepPill1" style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:6px;padding:4px 2px;color:var(--text-muted);white-space:nowrap;">1. Login</div>
+                            <div id="patStepPill2" style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:6px;padding:4px 2px;color:var(--text-muted);white-space:nowrap;">2. 2FA OTP</div>
+                            <div id="patStepPill3" style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:6px;padding:4px 2px;color:var(--text-muted);white-space:nowrap;">3. Scopes</div>
+                            <div id="patStepPill4" style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:6px;padding:4px 2px;color:var(--text-muted);white-space:nowrap;">4. Sheet1</div>
+                        </div>
+                    </div>
+
+                    <!-- LIVE TERMINAL LOG STREAM -->
+                    <div style="background:#06080f;border:1px solid rgba(56,189,248,0.4);border-left:3.5px solid #38bdf8;border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:4px;height:135px;flex-shrink:0;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid rgba(255,255,255,0.08);padding-bottom:4px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;">
+                            <span>🖥️ REAL-TIME AUTOMATION STREAM</span>
+                            <span id="patTelLiveClock" style="color:#10b981;">● LIVE</span>
+                        </div>
+                        <div id="patRealtimeLogConsole" style="flex:1;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:0.62rem;display:flex;flex-direction:column;gap:4px;padding-right:2px;">
+                            <div style="color:#64748b;">Waiting for worker execution... Select accounts in Configurator and click Generate PAT Token Now.</div>
+                        </div>
+                    </div>
+
+                    <!-- GENERATED TOKENS VAULT OUTPUT -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:7px 9px;display:flex;flex-direction:column;gap:5px;flex:1;min-height:95px;overflow:hidden;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;flex-shrink:0;">
+                            <span style="font-size:0.6rem;font-weight:800;color:var(--success);letter-spacing:0.4px;text-transform:uppercase;white-space:nowrap;">
+                                🔐 GENERATED PAT TOKENS
+                            </span>
+                            <button type="button" class="top-pill" style="padding:2px 8px;font-size:0.6rem;border-color:var(--success);color:var(--success);white-space:nowrap;" onclick="copyAllReadyPatTokens()">
+                                📋 Copy All Ready
+                            </button>
+                        </div>
+                        <div id="patGeneratedResultsList" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:6px;">
+                            <div style="text-align:center;padding:12px;font-size:0.68rem;color:var(--text-muted);font-weight:700;">
+                                Generated tokens will appear here automatically upon completion.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            renderPatManualAccountCards();
+        }
+
+        function setPatStepperStage(activeStage) {
+            for (let i = 1; i <= 4; i++) {
+                const el = document.getElementById(`patStepPill${i}`);
+                if (!el) continue;
+                if (i < activeStage) {
+                    el.style.background = 'rgba(16,185,129,0.16)';
+                    el.style.borderColor = 'var(--success)';
+                    el.style.color = 'var(--success)';
+                } else if (i === activeStage) {
+                    el.style.background = 'rgba(56,189,248,0.18)';
+                    el.style.borderColor = '#38bdf8';
+                    el.style.color = '#38bdf8';
+                } else {
+                    el.style.background = 'var(--bg-surface)';
+                    el.style.borderColor = 'var(--border-subtle)';
+                    el.style.color = 'var(--text-muted)';
+                }
+            }
         }
 
         function toggleRevealPatToken(idx) {
             if (_patRevealedSet.has(idx)) _patRevealedSet.delete(idx);
             else _patRevealedSet.add(idx);
-            const tokEl = document.getElementById(`pat_tok_disp_${idx}`);
-            const btnEl = document.getElementById(`pat_tok_eye_${idx}`);
+            renderPatTelemetryResults();
+        }
+
+        function copySinglePatToken(idx) {
             const item = _patLatestBatchItems[idx];
+            if (!item || !item.pat) return;
+            navigator.clipboard.writeText(item.pat);
+            showToast(`📋 Copied PAT token for @${item.username}!`);
+        }
+
+        function copyAllReadyPatTokens() {
+            const ready = _patLatestBatchItems.filter(x => x && x.pat && x.pat.startsWith('ghp_'));
+            if (ready.length === 0) return showToast('No generated PAT tokens ready to copy yet!');
+            const text = ready.map(x => `${x.username}: ${x.pat}`).join('\n');
+            navigator.clipboard.writeText(text);
+            showToast(`📋 Copied ${ready.length} PAT token(s) to clipboard!`);
+        }
+
+        function renderPatTelemetryResults() {
+            const container = document.getElementById('patGeneratedResultsList');
+            if (!container) return;
+            if (!_patLatestBatchItems.length) return;
+
+            container.innerHTML = _patLatestBatchItems.map((item, idx) => {
+                const isDone = item.status === 'done' || (item.pat && item.pat.startsWith('ghp_'));
+                const isErr = item.status === 'error';
+                const isRevealed = _patRevealedSet.has(idx);
+                const tokStr = item.pat || '';
+                const maskedTok = tokStr.length > 12 ? `${tokStr.slice(0, 8)}••••••••••••••••${tokStr.slice(-4)}` : tokStr;
+
+                return `
+                    <div style="background:var(--bg-surface);border:1px solid ${isDone ? 'var(--success)' : (isErr ? 'var(--danger)' : 'var(--border-focus)')};border-left:3.5px solid ${isDone ? 'var(--success)' : (isErr ? 'var(--danger)' : '#38bdf8')};border-radius:8px;padding:7px 9px;display:flex;flex-direction:column;gap:4px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                #${idx + 1} • @${item.username}
+                            </span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.57rem;font-weight:800;padding:2px 6px;border-radius:5px;white-space:nowrap;background:${isDone ? 'rgba(16,185,129,0.14)' : (isErr ? 'rgba(239,68,68,0.14)' : 'rgba(56,189,248,0.14)')};color:${isDone ? 'var(--success)' : (isErr ? 'var(--danger)' : '#38bdf8')};">
+                                ${isDone ? '✅ SAVED TO SHEET1' : (isErr ? '❌ FAILED' : '⏳ PROCESSING')}
+                            </span>
+                        </div>
+                        ${isDone ? `
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:5px;background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:6px;padding:4px 7px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;">
+                                <span style="color:var(--success);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">
+                                    ${isRevealed ? tokStr : maskedTok}
+                                </span>
+                                <button type="button" class="top-pill" style="padding:2px 6px;font-size:0.58rem;" onclick="toggleRevealPatToken(${idx})">${isRevealed ? '🙈' : '👁️'}</button>
+                                <button type="button" class="top-pill" style="padding:2px 6px;font-size:0.58rem;border-color:var(--success);color:var(--success);" onclick="copySinglePatToken(${idx})">📋 Copy</button>
+                            </div>
+                        ` : (isErr ? `<div style="font-size:0.62rem;color:var(--danger);font-family:'JetBrains Mono',monospace;">${item.error || 'Authentication or 2FA check failed'}</div>` : '')}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchPatStudioTab(tabName) {
+            _patActiveViewTab = tabName;
+            const viewCfg = document.getElementById('patViewConfigPanel');
+            const viewTel = document.getElementById('patViewTelemetryPanel');
+            const btnCfg = document.getElementById('patTabBtnConfig');
+            const btnTel = document.getElementById('patTabBtnTelemetry');
+
+            if (viewCfg && viewTel) {
+                viewCfg.style.display = tabName === 'config' ? 'flex' : 'none';
+                viewTel.style.display = tabName === 'telemetry' ? 'flex' : 'none';
+            }
+            if (btnCfg && btnTel) {
+                btnCfg.classList.toggle('active', tabName === 'config');
+                btnTel.classList.toggle('active', tabName === 'telemetry');
+            }
+        }
+
+        function appendPatTelemetryLog(stepTag, message, color = '#94a3b8') {
+            const now = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            _patLogLines.push({ time: now, tag: stepTag, msg: message, color: color });
+            if (_patLogLines.length > 60) _patLogLines.shift();
+
+            const logBox = document.getElementById('patRealtimeLogConsole');
+            if (!logBox) return;
+            logBox.innerHTML = _patLogLines.map(l => `
+                <div style="display:flex;align-items:flex-start;gap:6px;line-height:1.35;border-bottom:1px dashed rgba(255,255,255,0.05);padding-bottom:3px;">
+                    <span style="color:#64748b;flex-shrink:0;">[${l.time}]</span>
+                    <span style="color:${l.color};font-weight:800;flex-shrink:0;">${l.tag}</span>
+                    <span style="color:#e2e8f0;word-break:break-word;">${l.msg}</span>
+                </div>
+            `).join('');
+            logBox.scrollTop = logBox.scrollHeight;
+        }
+
+        async function startGithubPatWorkerFromWeb() {
+            const usernames = getCombinedSelectedPatUsernames();
+            if (usernames.length === 0) {
+                return showToast('⚠️ Please select or enter at least 1 GitHub username first!');
+            }
+
+            const scopePreset = document.getElementById('patScopePreset')?.value || 'safe_all';
+            const expPreset = document.getElementById('patExpirationPreset')?.value || 'none';
+            const jobId = 'PAT-' + Date.now();
+
+            // Automatically switch to Live Worker Telemetry tab!
+            switchPatStudioTab('telemetry');
+
+            _patLogLines = [];
+            _patLatestBatchItems = usernames.map(u => ({ username: u, status: 'queued', pat: '' }));
+            renderPatTelemetryResults();
+
+            const statusBadge = document.getElementById('patTelStatusBadge');
+            const progCounter = document.getElementById('patTelProgressCounter');
+            const progBar = document.getElementById('patTelProgressBar');
+
+            if (statusBadge) statusBadge.innerText = '⚡ INITIALIZING STEALTH WORKER...';
+            if (progCounter) progCounter.innerText = `0 / ${usernames.length} Done (5%)`;
+            if (progBar) progBar.style.width = '5%';
+            setPatStepperStage(1);
+
+            appendPatTelemetryLog('[INIT]', `Queued ${usernames.length} account(s): ${usernames.map(u => '@' + u).join(', ')}`, '#38bdf8');
+            appendPatTelemetryLog('[CONFIG]', `Scope: ${scopePreset.toUpperCase()} | Expiration: ${expPreset === 'none' ? 'No Expiration' : expPreset + ' Days'}`, '#a855f7');
+            appendPatTelemetryLog('[SHEET1]', `Fetching credentials & 2FA secret keys from Master Sheet1...`, '#f59e0b');
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'enqueue_pat_worker',
+                        secret: XB_PAT_SECRET,
+                        job_id: jobId,
+                        usernames: usernames,
+                        scope_preset: scopePreset,
+                        expiration: expPreset,
+                        requested_by: String(currentUserId)
+                    })
+                });
+                const data = await res.json();
+
+                if (!data || !data.result) {
+                    appendPatTelemetryLog('[ERROR]', (data && data.error) ? data.error : 'Worker endpoint rejected job payload.', '#ef4444');
+                    if (statusBadge) statusBadge.innerText = '❌ WORKER ERROR';
+                    return;
+                }
+
+                appendPatTelemetryLog('[DISPATCH]', `Job ${jobId} dispatched to Python Playwright Stealth Worker!`, '#10b981');
+                setPatStepperStage(2);
+                if (progBar) progBar.style.width = '20%';
+                if (progCounter) progCounter.innerText = `0 / ${usernames.length} Done (20%)`;
+
+                if (_patPollTimer) clearInterval(_patPollTimer);
+                let pollTick = 0;
+
+                _patPollTimer = setInterval(async () => {
+                    pollTick++;
+                    try {
+                        const pollRes = await fetch(GSHEET_WEBHOOK_URL, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({
+                                action: 'poll_pat_worker',
+                                secret: XB_PAT_SECRET,
+                                job_id: jobId,
+                                usernames: usernames
+                            })
+                        });
+                        const pData = await pollRes.json();
+
+                        if (pData && Array.isArray(pData.logs)) {
+                            pData.logs.forEach(lg => appendPatTelemetryLog(lg.tag || '[WORKER]', lg.msg, lg.color || '#38bdf8'));
+                        }
+
+                        if (pData && Array.isArray(pData.items)) {
+                            _patLatestBatchItems = pData.items;
+                            renderPatTelemetryResults();
+
+                            const doneCount = pData.items.filter(x => x.status === 'done' || (x.pat && x.pat.startsWith('ghp_'))).length;
+                            const failCount = pData.items.filter(x => x.status === 'error').length;
+                            const finishedTotal = doneCount + failCount;
+                            const pct = Math.min(100, Math.max(20, Math.round((finishedTotal / usernames.length) * 100)));
+
+                            if (progBar) progBar.style.width = `${pct}%`;
+                            if (progCounter) progCounter.innerText = `${finishedTotal} / ${usernames.length} Done (${pct}%)`;
+
+                            if (pct >= 40 && pct < 75) setPatStepperStage(3);
+                            if (pct >= 75) setPatStepperStage(4);
+
+                            pData.items.forEach((itm, idx) => {
+                                if (itm.pat && itm.pat.startsWith('ghp_') && !_patAutoCopiedDone.has(itm.username)) {
+                                    _patAutoCopiedDone.add(itm.username);
+                                    appendPatTelemetryLog('[SUCCESS]', `@${itm.username} -> Token ${itm.pat.slice(0, 10)}... saved to Sheet1 (Col H)!`, '#10b981');
+                                    if (usernames.length === 1) {
+                                        navigator.clipboard.writeText(itm.pat);
+                                    }
+                                }
+                            });
+
+                            if (finishedTotal >= usernames.length || pData.completed === true) {
+                                clearInterval(_patPollTimer);
+                                _patPollTimer = null;
+                                setPatStepperStage(5);
+                                if (statusBadge) statusBadge.innerText = '✅ ALL BATCH JOBS COMPLETED';
+                                appendPatTelemetryLog('[COMPLETE]', `All ${usernames.length} account(s) processed & synced to Sheet1!`, '#10b981');
+                                await syncGoogleSheetInventory(false);
+                                showToast(`✅ PAT Generation Completed (${doneCount}/${usernames.length} Ready)!`);
+                            }
+                        } else if (pollTick % 2 === 0) {
+                            const stages = [
+                                { st: 2, msg: 'Verifying GitHub session & injecting 6-digit 2FA TOTP...' },
+                                { st: 3, msg: 'Selecting Classic PAT scopes & setting expiration policy...' },
+                                { st: 4, msg: 'Capturing ghp_ token & writing to Sheet1 Column H...' }
+                            ];
+                            const cur = stages[Math.min(stages.length - 1, Math.floor(pollTick / 3))];
+                            setPatStepperStage(cur.st);
+                            appendPatTelemetryLog('[LIVE]', cur.msg, '#38bdf8');
+                        }
+                    } catch (err) {}
+                }, 2500);
+
+            } catch (e) {
+                appendPatTelemetryLog('[ERROR]', 'Network error connecting to PAT Worker Webhook.', '#ef4444');
+                if (statusBadge) statusBadge.innerText = '❌ CONNECTION FAILED';
+            }
+        }
             if (!tokEl || !item || !item.pat_token) return;
             const fullTok = item.pat_token;
             const masked = `${fullTok.slice(0, 8)}••••••••••••${fullTok.slice(-4)}`;
