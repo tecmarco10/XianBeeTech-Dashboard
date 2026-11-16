@@ -6180,8 +6180,19 @@
             }
         }
 
-        // --- 🔑 ADMIN STEALTH GITHUB PAT TOKEN GENERATOR MODAL ---
+        // --- 🔑 ADMIN BATCH & SINGLE STEALTH GITHUB PAT TOKEN GENERATOR MODAL ---
         let _patPollTimer = null;
+
+        function appendPatQuickUsername(val) {
+            if (!val) return;
+            const box = document.getElementById('patTargetUsername');
+            if (!box) return;
+            const existing = box.value.split(/[\s,;]+/).map(s => s.trim()).filter(Boolean);
+            if (!existing.includes(val)) {
+                existing.push(val);
+                box.value = existing.join('\n');
+            }
+        }
 
         function openAdminPatGeneratorModal() {
             clearInterval(_patPollTimer);
@@ -6189,73 +6200,83 @@
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
-            const quickOptions = allLiveAccountsFlat.slice(0, 80).map(a =>
-                `<option value="${a.username}">@${a.username} (${a.category || a.year || 'GitHub'}${a.pat ? ' • Has PAT' : ''})</option>`
+            const quickOptions = allLiveAccountsFlat.slice(0, 100).map(a =>
+                `<option value="${a.username}">+ @${a.username} (${a.category || a.year || 'GitHub'}${a.pat ? ' • Has PAT' : ''})</option>`
             ).join('');
 
             body.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                    <span class="item-tag" style="margin:0;color:var(--accent-cyan);border-color:var(--accent-cyan);">🔑 STEALTH PAT GENERATOR (ANTI-FLAG)</span>
+                    <span class="item-tag" style="margin:0;color:var(--accent-cyan);border-color:var(--accent-cyan);">🔑 BATCH STEALTH PAT + ALBUM PROOF</span>
                     <button class="top-pill" onclick="clearInterval(_patPollTimer); closeModal('paymentGatewayModal')">✕</button>
                 </div>
-                <h3 style="margin:0 0 4px 0;font-size:1.05rem;">🐙 Auto-Generate GitHub PAT Token (Classic)</h3>
-                <p style="font-size:0.74rem;color:var(--text-secondary);margin:0 0 12px 0;line-height:1.45;">
-                    Input username akun yang ada di <b>Sheet1</b>. Sistem otomatis menarik <b>Username, Password &amp; 2FA</b> dari Google Sheet, login via Stealth Browser di VPS, memilih <b>No Expiration</b> + <b>Check All Scopes</b>, lalu menyimpan token ke <b>Kolom H (PAT TOKEN)</b>.
+                <h3 style="margin:0 0 4px 0;font-size:1.05rem;">🐙 Multi-Account GitHub PAT Generator</h3>
+                <p style="font-size:0.73rem;color:var(--text-secondary);margin:0 0 11px 0;line-height:1.45;">
+                    Masukkan 1 atau beberapa username (pisahkan dengan <b>Enter / Spasi / Koma</b>). Sistem otomatis memproses berurutan dengan <b>Jeda Acak 2–5 Menit</b>, menyimpan token ke <b>Sheet1 (Kolom H)</b>, dan mengirim <b>1 Album 4 Screenshot</b> (Login ➔ Home ➔ Scopes ➔ PAT) ke Telegram Admin.
                 </p>
 
-                <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-left:4px solid var(--success);border-radius:11px;padding:9px 11px;margin-bottom:12px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;display:flex;flex-direction:column;gap:4px;">
-                    <div>✅ <b>Expiration :</b> <span style="color:var(--success);">No expiration (Permanent)</span></div>
-                    <div>✅ <b>Scopes     :</b> <span style="color:var(--accent-cyan);">All Scopes Checked (repo, workflow, admin:org, delete_repo, etc.)</span></div>
-                    <div>🛡️ <b>Protection :</b> <span style="color:var(--warning);">Xvfb Virtual Display + Human Typing Jitter + Anti-Flag Delay</span></div>
+                <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-left:4px solid var(--success);border-radius:11px;padding:8px 11px;margin-bottom:11px;font-family:'JetBrains Mono',monospace;font-size:0.64rem;display:flex;flex-direction:column;gap:3px;">
+                    <div>✅ <b>Config     :</b> <span style="color:var(--success);">No Expiration + All Scopes Checked</span></div>
+                    <div>📸 <b>Evidence   :</b> <span style="color:var(--accent-cyan);">1 Album (4 Screenshots/Akun) -> Telegram Admin</span></div>
+                    <div>🛡️ <b>Anti-Flag  :</b> <span style="color:var(--warning);">Isolated Session + Random Delay Antar-Akun</span></div>
                 </div>
 
-                <div class="form-group" style="margin-bottom:10px;">
-                    <label>Target GitHub Username (dari Sheet1):</label>
-                    <input type="text" class="form-input" id="patTargetUsername" placeholder="Ketik username (contoh: octocat)..." style="font-family:'JetBrains Mono',monospace;font-weight:800;">
+                <div class="form-group" style="margin-bottom:9px;">
+                    <label>Target GitHub Usernames (Bisa 1 atau 5+ Sekaligus):</label>
+                    <textarea class="form-input" id="patTargetUsername" rows="3" placeholder="user1&#10;user2&#10;user3" style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.8rem;resize:vertical;"></textarea>
                 </div>
 
                 ${quickOptions ? `
-                <div class="form-group" style="margin-bottom:10px;">
-                    <label>Atau Pilih Cepat dari Daftar Stok Sheet1:</label>
-                    <select class="form-input" style="font-size:0.78rem;" onchange="if(this.value) document.getElementById('patTargetUsername').value = this.value;">
-                        <option value="">-- Pilih Akun dari Sheet1 --</option>
+                <div class="form-group" style="margin-bottom:9px;">
+                    <label>Tambah Cepat dari Stok Sheet1:</label>
+                    <select class="form-input" style="font-size:0.76rem;padding:8px 10px;" onchange="appendPatQuickUsername(this.value); this.value='';">
+                        <option value="">-- Klik untuk tambahkan akun ke daftar --</option>
                         ${quickOptions}
                     </select>
                 </div>
                 ` : ''}
 
-                <div class="form-group" style="margin-bottom:12px;">
-                    <label>Token Note / Label di GitHub:</label>
-                    <input type="text" class="form-input" id="patTokenNote" value="XianBee-Enterprise-Core" style="font-family:'JetBrains Mono',monospace;font-size:0.8rem;">
+                <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:8px;margin-bottom:11px;">
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Token Prefix Note:</label>
+                        <input type="text" class="form-input" id="patTokenNote" value="XianBee-Core" style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;padding:8px 10px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom:0;">
+                        <label>Jeda Antar-Akun:</label>
+                        <select class="form-input" id="patBatchDelayMode" style="font-size:0.75rem;padding:8px 8px;">
+                            <option value="120,300" selected>🛡️ 2–5 Menit Acak (Paling Aman)</option>
+                            <option value="60,120">⚡ 1–2 Menit Acak (Sedang)</option>
+                            <option value="15,30">🚀 15–30 Detik (Cepat)</option>
+                        </select>
+                    </div>
                 </div>
 
-                <div id="patGeneratorStatusBox" style="display:none;background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:12px;margin-bottom:12px;"></div>
+                <div id="patGeneratorStatusBox" style="display:none;background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:11px;margin-bottom:11px;"></div>
 
-                <button class="btn-ui buy-now" id="btnStartPatGen" style="width:100%;padding:12px;font-size:0.82rem;" onclick="startAdminPatGeneration()">
-                    ⚡ Generate PAT Token &amp; Save to Sheet1
+                <button class="btn-ui buy-now" id="btnStartPatGen" style="width:100%;padding:11px;font-size:0.8rem;" onclick="startAdminPatGeneration()">
+                    ⚡ Start Batch Generate &amp; Save to Sheet1
                 </button>
             `;
         }
 
         async function startAdminPatGeneration() {
-            const uname = (document.getElementById('patTargetUsername')?.value || '').trim().replace(/^@/, '');
-            const note = (document.getElementById('patTokenNote')?.value || 'XianBee-Enterprise-Core').trim();
-            if (!uname) return showToast('Masukkan username GitHub terlebih dahulu!');
+            const rawUnames = (document.getElementById('patTargetUsername')?.value || '').trim();
+            const note = (document.getElementById('patTokenNote')?.value || 'XianBee-Core').trim();
+            const delayParts = (document.getElementById('patBatchDelayMode')?.value || '120,300').split(',');
+            const delayMin = parseInt(delayParts[0]) || 120;
+            const delayMax = parseInt(delayParts[1]) || 300;
+
+            if (!rawUnames) return showToast('Masukkan minimal 1 username GitHub!');
 
             const btn = document.getElementById('btnStartPatGen');
             const statusBox = document.getElementById('patGeneratorStatusBox');
             if (btn) {
                 btn.disabled = true;
-                btn.innerText = '⏳ Memproses Otomatisasi Login & PAT...';
+                btn.innerText = '⏳ Menyiapkan Antrean Batch...';
             }
             if (statusBox) {
                 statusBox.style.display = 'block';
                 statusBox.style.borderLeftColor = 'var(--accent-cyan)';
-                statusBox.innerHTML = `
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:var(--accent-cyan);">
-                        🔍 Mencari kredensial @${uname} di Google Sheet (Sheet1)...
-                    </div>
-                `;
+                statusBox.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:800;color:var(--accent-cyan);">🔍 Memvalidasi kredensial di Sheet1...</div>`;
             }
 
             try {
@@ -6265,34 +6286,61 @@
                     body: JSON.stringify({
                         action: 'admin_pat_job',
                         sub_action: 'enqueue',
-                        username: uname,
-                        note: note
+                        usernames: rawUnames,
+                        note: note,
+                        delay_min: delayMin,
+                        delay_max: delayMax
                     })
                 });
                 const data = await res.json();
                 if (!data || !data.result) {
                     if (btn) {
                         btn.disabled = false;
-                        btn.innerText = '⚡ Generate PAT Token & Save to Sheet1';
+                        btn.innerText = '⚡ Start Batch Generate & Save to Sheet1';
                     }
                     if (statusBox) {
                         statusBox.style.borderLeftColor = 'var(--danger)';
-                        statusBox.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:800;color:var(--danger);">❌ ${data?.error || 'Gagal membaca Sheet1'}</div>`;
+                        statusBox.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:var(--danger);">❌ ${data?.error || 'Gagal membaca Sheet1'}</div>`;
                     }
                     return showToast('❌ ' + (data?.error || 'Username tidak ditemukan di Sheet1!'));
                 }
 
-                const jobId = data.job.job_id;
-                if (statusBox) {
+                const renderBatchProgress = (b) => {
+                    if (!statusBox || !b) return;
+                    const doneTokens = (b.items || []).filter(x => x.status === 'COMPLETED' && x.pat_token);
+                    const allTokensText = doneTokens.map(x => `${x.username} | ${x.pat_token}`).join('\n');
+
+                    const rowsHtml = (b.items || []).map((it, idx) => {
+                        const icon = it.status === 'COMPLETED' ? '✅' : (it.status === 'FAILED' ? '❌' : (it.status === 'RUNNING' ? '⚙️' : '⏳'));
+                        const col = it.status === 'COMPLETED' ? 'var(--success)' : (it.status === 'FAILED' ? 'var(--danger)' : (it.status === 'RUNNING' ? 'var(--warning)' : 'var(--text-muted)'));
+                        return `
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;padding:5px 7px;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:7px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;">
+                                <span style="font-weight:800;color:${col};">${icon} ${idx + 1}. @${it.username}</span>
+                                <span style="color:${col};font-weight:700;max-width:56%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+                                    ${it.pat_token ? it.pat_token : (it.error || it.status)}
+                                </span>
+                            </div>
+                        `;
+                    }).join('');
+
+                    statusBox.style.borderLeftColor = b.status === 'COMPLETED' ? 'var(--success)' : 'var(--warning)';
                     statusBox.innerHTML = `
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:var(--warning);margin-bottom:4px;">
-                            ⚙️ JOB ID: ${jobId} (@${data.job.username})
+                        <div style="font-size:0.72rem;font-weight:800;color:var(--text-primary);margin-bottom:6px;line-height:1.4;">
+                            ${b.step}
                         </div>
-                        <div style="font-size:0.74rem;color:var(--text-primary);font-weight:700;" id="patLiveStepText">
-                            ${data.job.step}
+                        <div style="display:flex;flex-direction:column;gap:4px;max-height:175px;overflow-y:auto;margin-bottom:8px;">
+                            ${rowsHtml}
                         </div>
+                        ${doneTokens.length > 0 ? `
+                            <button type="button" class="btn-ui primary" style="width:100%;padding:8px;font-size:0.72rem;" onclick="navigator.clipboard.writeText(\`${allTokensText.replace(/`/g, '')}\`); showToast('✅ ${doneTokens.length} PAT Token copied!');">
+                                📋 Copy Semua PAT Token (${doneTokens.length} Selesai)
+                            </button>
+                        ` : ''}
                     `;
-                }
+                };
+
+                renderBatchProgress(data.batch);
+                const batchId = data.batch.batch_id;
 
                 clearInterval(_patPollTimer);
                 _patPollTimer = setInterval(async () => {
@@ -6303,67 +6351,34 @@
                             body: JSON.stringify({
                                 action: 'admin_pat_job',
                                 sub_action: 'status',
-                                job_id: jobId
+                                batch_id: batchId
                             })
                         });
                         const pollData = await pollRes.json();
-                        if (!pollData || !pollData.result || !pollData.job) return;
-                        const j = pollData.job;
+                        if (!pollData || !pollData.result || !pollData.batch) return;
+                        const b = pollData.batch;
+                        renderBatchProgress(b);
 
-                        const stepEl = document.getElementById('patLiveStepText');
-                        if (stepEl && j.step) stepEl.innerText = j.step;
-
-                        if (j.status === 'COMPLETED' && j.pat_token) {
+                        if (b.status === 'COMPLETED') {
                             clearInterval(_patPollTimer);
                             if (btn) {
                                 btn.disabled = false;
-                                btn.innerText = '🔄 Generate Ulang / Akun Lain';
+                                btn.innerText = '🔄 Jalankan Batch Baru';
                             }
-                            try {
-                                await navigator.clipboard.writeText(j.pat_token);
-                                showToast(`✅ PAT Token @${j.username} otomatis ter-copy & tersimpan di Sheet1!`);
-                            } catch (eClip) {
-                                showToast(`✅ PAT Token @${j.username} berhasil disimpan ke Sheet1!`);
-                            }
-
-                            if (statusBox) {
-                                statusBox.style.borderLeftColor = 'var(--success)';
-                                statusBox.innerHTML = `
-                                    <div style="font-size:0.72rem;font-weight:800;color:var(--success);margin-bottom:6px;">
-                                        ✅ BERHASIL DISIMPAN KE SHEET1 (KOLOM H) &amp; AUTO-COPIED!
-                                    </div>
-                                    <div class="cred-field-row" style="margin-bottom:8px;border-color:var(--success);background:rgba(16,185,129,0.08);">
-                                        <span class="lbl">PAT TOKEN</span>
-                                        <span class="val" style="color:var(--success);font-size:0.78rem;">${j.pat_token}</span>
-                                    </div>
-                                    <button type="button" class="btn-ui primary" style="width:100%;padding:9px;font-size:0.74rem;" onclick="navigator.clipboard.writeText('${j.pat_token}'); showToast('✅ PAT Token copied to clipboard!');">
-                                        📋 Copy PAT Token (${j.pat_token.slice(0, 10)}...)
-                                    </button>
-                                `;
+                            const okItems = (b.items || []).filter(x => x.status === 'COMPLETED' && x.pat_token);
+                            if (okItems.length > 0) {
+                                const copyStr = okItems.length === 1 ? okItems[0].pat_token : okItems.map(x => `${x.username} | ${x.pat_token}`).join('\n');
+                                try { await navigator.clipboard.writeText(copyStr); } catch (eC) {}
+                                showToast(`✅ Selesai! ${okItems.length}/${b.total} PAT Token tersimpan di Sheet1 & ter-copy!`);
                             }
                             syncGoogleSheetInventory(false);
-                        } else if (j.status === 'FAILED') {
-                            clearInterval(_patPollTimer);
-                            if (btn) {
-                                btn.disabled = false;
-                                btn.innerText = '⚡ Coba Generate Lagi';
-                            }
-                            if (statusBox) {
-                                statusBox.style.borderLeftColor = 'var(--danger)';
-                                statusBox.innerHTML = `
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:var(--danger);">
-                                        ❌ ${j.error || j.step || 'Gagal membuat PAT Token.'}
-                                    </div>
-                                `;
-                            }
-                            showToast('❌ ' + (j.error || 'Gagal membuat PAT Token'));
                         }
                     } catch (ePoll) {}
-                }, 2500);
+                }, 3000);
             } catch (e) {
                 if (btn) {
                     btn.disabled = false;
-                    btn.innerText = '⚡ Generate PAT Token & Save to Sheet1';
+                    btn.innerText = '⚡ Start Batch Generate & Save to Sheet1';
                 }
                 showToast('⚠️ Gagal menghubungi Google Sheet Webhook.');
             }
