@@ -2277,15 +2277,15 @@
          ========================================================= -->
     <div class="modal-overlay" id="notificationsModal">
         <div class="modal-box" style="padding:16px;">
-            <!-- 1 KOTAK 3D MENYATU: BARIS 1 REAL-TIME (TENGAH), BARIS 2 LIVE NOTIFICATION CENTER (TENGAH), BARIS 3 TOMBOL CEKLIS & CLEAR -->
-            <div style="background:var(--bg-input);border:1.5px solid var(--border-focus);border-left:4px solid var(--accent-cyan);border-radius:14px;padding:11px 12px;margin-bottom:12px;text-align:center;box-shadow:var(--shadow-card);">
-                <div style="display:flex;justify-content:center;align-items:center;">
-                    <span class="item-tag" style="margin:0;font-size:0.6rem;letter-spacing:0.8px;padding:3px 10px;">REAL-TIME TELEMETRY &amp; ALERTS</span>
+            <!-- KOTAK LUAR DENGAN GARIS ATAS-BAWAH + KOTAK DALAM UNTUK LIVE NOTIFICATION CENTER -->
+            <div style="background:var(--bg-input);border-top:2.5px solid #38bdf8;border-bottom:2.5px solid #a855f7;border-left:1.5px solid var(--border-focus);border-right:1.5px solid var(--border-focus);border-radius:15px;padding:10px 11px;margin-bottom:12px;text-align:center;box-shadow:var(--shadow-card);">
+                <!-- KOTAK DALAM: LIVE NOTIFICATION CENTER DENGAN GARIS ATAS-BAWAH -->
+                <div style="background:var(--bg-surface);border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);border-radius:10px;padding:8px 12px;margin-bottom:9px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);">
+                    <h3 style="margin:0;font-size:0.98rem;font-weight:800;color:var(--text-primary);text-align:center;letter-spacing:0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                        🔔 Live Notification Center
+                    </h3>
                 </div>
-                <h3 style="margin:6px 0 10px 0;font-size:1.02rem;font-weight:800;color:var(--text-primary);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                    🔔 Live Notification Center
-                </h3>
-                <div style="display:grid;grid-template-columns:1fr 1.25fr auto;gap:6px;padding-top:9px;border-top:1px solid var(--border-subtle);align-items:center;">
+                <div style="display:grid;grid-template-columns:1fr 1.25fr auto;gap:6px;align-items:center;">
                     <button type="button" class="top-pill" id="btnSelectAllNotifs" style="justify-content:center;padding:7px 8px;font-size:0.68rem;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="toggleSelectAllWebNotifications()">
                         ☑️ Select All
                     </button>
@@ -2825,6 +2825,60 @@
             };
         }
 
+        function compareStockCatalogOrder(catA, catB) {
+            const a = String(catA || '').trim();
+            const b = String(catB || '').trim();
+            const isYrA = /^\d{4}$/.test(a);
+            const isYrB = /^\d{4}$/.test(b);
+            if (isYrA && isYrB) return parseInt(a, 10) - parseInt(b, 10);
+            if (isYrA && !isYrB) return -1;
+            if (!isYrA && isYrB) return 1;
+            return a.localeCompare(b);
+        }
+
+        function mergeStockAlertAccountsList(existingList = [], newList = []) {
+            const mapByUname = new Map();
+            const addAcc = (item) => {
+                if (!item || !item.username) return;
+                const uLow = String(item.username).toLowerCase().trim();
+                if (!uLow) return;
+                const yrKey = String(item.yearKey || item.category || item.year || '2026').trim();
+                const prc = parseFloat(item.usdt || item.priceUsdt || item.price_usd || computeAccountPrice(item, yrKey)) || 8.5;
+                const prev = mapByUname.get(uLow) || {};
+                mapByUname.set(uLow, {
+                    accId: item.accId || prev.accId || `${yrKey}-${item.username}`,
+                    yearKey: yrKey,
+                    username: item.username,
+                    followers: parseInt(item.followers !== undefined ? item.followers : (prev.followers || 0)) || 0,
+                    repos: parseInt(item.repos !== undefined ? item.repos : (prev.repos || 0)) || 0,
+                    usdt: prc,
+                    url: item.url || prev.url || `https://github.com/${item.username}`,
+                    accountData: item.accountData || prev.accountData || item
+                });
+            };
+            if (Array.isArray(existingList)) existingList.forEach(addAcc);
+            if (Array.isArray(newList)) newList.forEach(addAcc);
+
+            // Sertakan juga akun SOLD OUT dari Sheet1 & Purchased Vault yang berada pada kategori/tahun yang sama agar akun SOLD tidak pernah hilang
+            const activeCats = new Set(Array.from(mapByUname.values()).map(x => String(x.yearKey)));
+            try {
+                const soldSheetArr = JSON.parse(localStorage.getItem('xb_cached_sold_stock_arr') || '[]');
+                soldSheetArr.forEach(sAcc => {
+                    const sCat = String(sAcc.category || sAcc.year || '');
+                    if (activeCats.size === 0 || activeCats.has(sCat)) addAcc(sAcc);
+                });
+            } catch (e) {}
+            try {
+                const myVault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+                myVault.forEach(vAcc => {
+                    const vCat = String(vAcc.category || '');
+                    if (activeCats.size === 0 || activeCats.has(vCat)) addAcc(vAcc);
+                });
+            } catch (e) {}
+
+            return Array.from(mapByUname.values());
+        }
+
         function getMergedBuyerNotifsWithPinned() {
             const rawList = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
             let pinnedStock = null;
@@ -2837,8 +2891,15 @@
             for (const item of rawList) {
                 if (!item) continue;
                 if (item.meta && item.meta.type === 'stock_alert') {
-                    if (!pinnedStock || (item.ts || 0) >= (pinnedStock.ts || 0)) {
+                    if (!pinnedStock) {
                         pinnedStock = Object.assign({}, item, { id: 'PINNED-STOCK-ALERT', pinned: true, pinOrder: 2 });
+                    } else {
+                        const mergedAccs = mergeStockAlertAccountsList(
+                            pinnedStock.meta ? pinnedStock.meta.accounts : [],
+                            item.meta ? item.meta.accounts : []
+                        );
+                        pinnedStock.meta.accounts = mergedAccs;
+                        pinnedStock.meta.initialCount = mergedAccs.length;
                     }
                     continue;
                 }
@@ -2846,9 +2907,11 @@
                 regularItems.push(item);
             }
 
-            if (pinnedStock) {
+            if (pinnedStock && pinnedStock.meta) {
                 pinnedStock.pinned = true;
                 pinnedStock.pinOrder = 2;
+                pinnedStock.meta.accounts = mergeStockAlertAccountsList(pinnedStock.meta.accounts || [], []);
+                pinnedStock.meta.initialCount = pinnedStock.meta.accounts.length;
                 localStorage.setItem('xb_pinned_stock_alert', JSON.stringify(pinnedStock));
             }
 
@@ -2867,6 +2930,19 @@
             const isStockPin = Boolean(extraMeta && extraMeta.type === 'stock_alert');
             const isFlashPin = Boolean(extraMeta && extraMeta.type === 'flash_sale');
             const newId = isStockPin ? 'PINNED-STOCK-ALERT' : (isFlashPin ? 'PINNED-FLASH-SALE' : ('NTF-' + nowMs + '-' + Math.floor(Math.random() * 999)));
+
+            if (role !== 'admin' && isStockPin) {
+                let prevAccs = [];
+                try {
+                    const prevPin = JSON.parse(localStorage.getItem('xb_pinned_stock_alert') || 'null');
+                    if (prevPin && prevPin.meta && Array.isArray(prevPin.meta.accounts)) {
+                        prevAccs = prevPin.meta.accounts;
+                    }
+                } catch (e) {}
+                const mergedAccs = mergeStockAlertAccountsList(prevAccs, extraMeta.accounts || []);
+                extraMeta.accounts = mergedAccs;
+                extraMeta.initialCount = mergedAccs.length;
+            }
 
             const newObj = {
                 id: newId,
@@ -3221,64 +3297,132 @@
                     `;
                 } else if (n.meta && n.meta.type === 'stock_alert' && Array.isArray(n.meta.accounts)) {
                     const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
-                    const totalInit = n.meta.initialCount || n.meta.accounts.length;
+                    const mergedAccounts = mergeStockAlertAccountsList(n.meta.accounts, []);
+                    const totalInit = mergedAccounts.length;
                     let availNowCount = 0;
+                    let soldNowCount = 0;
 
-                    // Urutkan otomatis: Akun yang masih Available (🟢) di atas, yang SOLD OUT (🔴) otomatis pindah ke paling bawah!
-                    const sortedStockAccounts = [...n.meta.accounts].sort((a, b) => {
-                        const uA = String(a.username || '').toLowerCase();
-                        const uB = String(b.username || '').toLowerCase();
-                        const availA = liveSet.size === 0 || liveSet.has(uA);
-                        const availB = liveSet.size === 0 || liveSet.has(uB);
-                        if (availA === availB) return 0;
-                        return availA ? -1 : 1;
+                    // Kelompokkan berdasarkan Tahun / Kategori, lalu urutkan dari Tahun Terlama ke Terbaru (misal 2022 di atas, 2024 di bawah, dst.)
+                    const groupedByCat = {};
+                    mergedAccounts.forEach(item => {
+                        const cKey = String(item.yearKey || item.category || '2026').trim();
+                        if (!groupedByCat[cKey]) groupedByCat[cKey] = [];
+                        groupedByCat[cKey].push(item);
+                    });
+                    const sortedCatKeys = Object.keys(groupedByCat).sort(compareStockCatalogOrder);
+
+                    const catalogSummaryRowsHtml = [];
+                    const groupedSectionsHtml = [];
+
+                    sortedCatKeys.forEach(catKey => {
+                        const catItems = groupedByCat[catKey];
+                        let catAvail = 0;
+                        let catSold = 0;
+
+                        // Di dalam setiap Tahun: Akun Available (🟢) di atas, Akun SOLD OUT (🔴) tetap tampil di bawahnya
+                        const sortedCatItems = [...catItems].sort((a, b) => {
+                            const uA = String(a.username || '').toLowerCase();
+                            const uB = String(b.username || '').toLowerCase();
+                            const isAvA = liveSet.size === 0 ? (a.status !== 'SOLD OUT') : liveSet.has(uA);
+                            const isAvB = liveSet.size === 0 ? (b.status !== 'SOLD OUT') : liveSet.has(uB);
+                            if (isAvA === isAvB) return 0;
+                            return isAvA ? -1 : 1;
+                        });
+
+                        const cardsInCatHtml = sortedCatItems.map(item => {
+                            const uLow = String(item.username || '').toLowerCase();
+                            const isStillAvail = liveSet.size === 0 ? (item.status !== 'SOLD OUT') : liveSet.has(uLow);
+                            if (isStillAvail) {
+                                availNowCount++;
+                                catAvail++;
+                                const liveAccObj = allLiveAccountsFlat.find(a => String(a.username || '').toLowerCase() === uLow) || item.accountData || item;
+                                ACCOUNT_CACHE_MAP[item.accId] = { acc: liveAccObj, yrKey: catKey };
+                            } else {
+                                soldNowCount++;
+                                catSold++;
+                            }
+                            return `
+                                <div style="background:var(--bg-surface);border:1px solid ${isStillAvail ? 'var(--border-focus)' : 'rgba(239,68,68,0.4)'};border-left:3.5px solid ${isStillAvail ? 'var(--success)' : 'var(--danger)'};border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:${isStillAvail ? 'var(--text-primary)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                            ${isStillAvail ? '🟢' : '🔴'} @${item.username} <span style="font-size:0.62rem;color:var(--accent-cyan);">(${catKey})</span>
+                                        </div>
+                                        <span class="price-chip" style="padding:2px 7px;font-size:0.65rem;">${fmtPrice(item.usdt)}</span>
+                                    </div>
+                                    <div style="font-size:0.63rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
+                                        👥 ${item.followers || 0} Followers • 📁 ${item.repos || 0} Repository${catKey === 'Contrib' ? ' • 🔥 200K+ Commits' : ''}
+                                    </div>
+                                    ${isStillAvail ? `
+                                        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
+                                            <a href="${item.url}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;">🌐 Profile</a>
+                                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;border-color:var(--warning);color:var(--warning);" onclick="closeModal('notificationsModal'); openNegoModalById('${item.accId}')">🤝 Offer</button>
+                                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="addSpecificAccountById('${item.accId}')">🛒 +Cart</button>
+                                            <button type="button" class="btn-ui buy-now" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="closeModal('notificationsModal'); buySpecificAccountById('${item.accId}')">⚡ Buy</button>
+                                        </div>
+                                    ` : `
+                                        <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:var(--danger);border-radius:7px;padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;">
+                                            🔴 SOLD OUT — Purchased by another client
+                                        </div>
+                                    `}
+                                </div>
+                            `;
+                        }).join('');
+
+                        const catLabel = /^\d{4}$/.test(catKey) ? `GitHub ${catKey}` : `GitHub ${catKey}`;
+                        catalogSummaryRowsHtml.push(`
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:4px 0;border-bottom:1px dashed rgba(255,255,255,0.07);">
+                                <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                                    <span style="color:var(--accent-cyan);font-weight:800;">📂 ${catLabel}</span>
+                                    <span style="color:var(--accent-cyan);font-weight:800;">▸</span>
+                                    <span style="color:var(--text-primary);font-weight:800;">+${catItems.length} Accs</span>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:6px;font-size:0.62rem;font-weight:800;flex-shrink:0;">
+                                    <span style="color:var(--success);">🟢 ${catAvail} Ready</span>
+                                    <span style="color:var(--text-muted);">•</span>
+                                    <span style="color:${catSold > 0 ? 'var(--danger)' : 'var(--text-muted)'};">🔴 ${catSold} Sold</span>
+                                </div>
+                            </div>
+                        `);
+
+                        groupedSectionsHtml.push(`
+                            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:6px;">
+                                <div style="border-top:1.5px solid var(--border-focus);border-bottom:1.5px solid var(--border-focus);background:rgba(6,182,212,0.08);padding:5px 9px;border-radius:7px;display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.64rem;font-weight:800;">
+                                    <span style="color:var(--accent-cyan);">📂 ${catLabel.toUpperCase()} VAULT</span>
+                                    <span><b style="color:var(--success);">🟢 ${catAvail} Ready</b> • <b style="color:${catSold > 0 ? 'var(--danger)' : 'var(--text-muted)'};">🔴 ${catSold} Sold</b></span>
+                                </div>
+                                ${cardsInCatHtml}
+                            </div>
+                        `);
                     });
 
-                    const accRowsHtml = sortedStockAccounts.map(item => {
-                        const uLow = String(item.username || '').toLowerCase();
-                        const isStillAvail = liveSet.size === 0 || liveSet.has(uLow);
-                        if (isStillAvail) {
-                            availNowCount++;
-                            const liveAccObj = allLiveAccountsFlat.find(a => String(a.username || '').toLowerCase() === uLow) || item.accountData || item;
-                            ACCOUNT_CACHE_MAP[item.accId] = { acc: liveAccObj, yrKey: item.yearKey };
-                        }
-                        return `
-                            <div style="background:var(--bg-surface);border:1px solid ${isStillAvail ? 'var(--border-focus)' : 'rgba(239,68,68,0.4)'};border-left:3.5px solid ${isStillAvail ? 'var(--success)' : 'var(--danger)'};border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;">
-                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:${isStillAvail ? 'var(--text-primary)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        ${isStillAvail ? '🟢' : '🔴'} @${item.username} <span style="font-size:0.62rem;color:var(--accent-cyan);">(${item.yearKey})</span>
-                                    </div>
-                                    <span class="price-chip" style="padding:2px 7px;font-size:0.65rem;">${fmtPrice(item.usdt)}</span>
-                                </div>
-                                <div style="font-size:0.63rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
-                                    👥 ${item.followers || 0} Followers • 📁 ${item.repos || 0} Repository${item.yearKey === 'Contrib' ? ' • 🔥 200K+ Commits' : ''}
-                                </div>
-                                ${isStillAvail ? `
-                                    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
-                                        <a href="${item.url}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;">🌐 Profile</a>
-                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;border-color:var(--warning);color:var(--warning);" onclick="closeModal('notificationsModal'); openNegoModalById('${item.accId}')">🤝 Offer</button>
-                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="addSpecificAccountById('${item.accId}')">🛒 +Cart</button>
-                                        <button type="button" class="btn-ui buy-now" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="closeModal('notificationsModal'); buySpecificAccountById('${item.accId}')">⚡ Buy</button>
-                                    </div>
-                                ` : `
-                                    <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:var(--danger);border-radius:7px;padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;">
-                                        🔴 SOLD OUT — Purchased by another client
-                                    </div>
-                                `}
+                    // Buat tampilan Header & Tabel Catalogs tersusun ke bawah per tahun
+                    const customStockHeaderHtml = `
+                        <div style="border-top:3px double var(--accent-cyan);border-bottom:3px double var(--accent-cyan);background:rgba(6,182,212,0.08);padding:6px 8px;margin-bottom:8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.69rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.5px;text-transform:uppercase;">
+                            🔥 NEW STOCK ALERT (+${totalInit} ACCOUNTS)
+                        </div>
+                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:9px;padding:7px 10px;display:flex;flex-direction:column;gap:2px;font-family:'JetBrains Mono',monospace;font-size:0.67rem;">
+                            <div style="font-size:0.59rem;font-weight:800;color:var(--text-muted);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:2px;">
+                                📋 RESTOCKED CATALOGS BY YEAR:
                             </div>
-                        `;
-                    }).join('');
+                            ${catalogSummaryRowsHtml.join('')}
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding-top:5px;margin-top:2px;">
+                                <span style="color:var(--text-secondary);font-weight:800;">📦 Total Restocked</span>
+                                <span style="color:var(--text-primary);font-weight:800;">+${totalInit} Verified Accounts</span>
+                            </div>
+                        </div>
+                    `;
 
                     actionBtnsHtml = `
-                        <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:7px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-surface);border:1px solid var(--border-subtle);padding:6px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;">
+                        ${customStockHeaderHtml}
+                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:7px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-surface);border:1px solid var(--border-subtle);padding:6px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;">
                                 <span style="color:var(--text-secondary);">LIVE STOCK STATUS:</span>
-                                <span style="color:${availNowCount > 0 ? 'var(--success)' : 'var(--danger)'};">
-                                    ${availNowCount > 0 ? `🟢 ${availNowCount} / ${totalInit} Available` : `🔴 0 / ${totalInit} (ALL SOLD OUT)`}
+                                <span>
+                                    <b style="color:var(--success);">🟢 ${availNowCount} Ready</b> • <b style="color:${soldNowCount > 0 ? 'var(--danger)' : 'var(--text-muted)'};">🔴 ${soldNowCount} Sold</b> <span style="color:var(--text-muted);">(${totalInit} Total)</span>
                                 </span>
                             </div>
-                            <div style="display:flex;flex-direction:column;gap:6px;max-height:260px;overflow-y:auto;">
-                                ${accRowsHtml}
+                            <div style="display:flex;flex-direction:column;gap:8px;max-height:290px;overflow-y:auto;padding-right:2px;">
+                                ${groupedSectionsHtml.join('')}
                             </div>
                         </div>
                     `;
@@ -3308,7 +3452,7 @@
                 return `
                     <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid ${isFlashAlert ? 'var(--warning)' : (isPinned ? 'var(--success)' : (isChecked ? 'var(--danger)' : 'var(--accent-cyan)'))};${isChecked ? 'border-color:rgba(239,68,68,0.55);background:rgba(239,68,68,0.05);' : ''}">
                         ${topBarHtml}
-                        ${formatWebNotifBodyToCleanCard(n.body, n.title)}
+                        ${(n.meta && n.meta.type === 'stock_alert') ? '' : formatWebNotifBodyToCleanCard(n.body, n.title)}
                         ${imgPreviewHtml}
                         ${actionBtnsHtml}
                     </div>
@@ -4069,6 +4213,9 @@
                         }
                     }
 
+                    if (Array.isArray(json.sold_data) && json.sold_data.length > 0) {
+                        localStorage.setItem('xb_cached_sold_stock_arr', JSON.stringify(json.sold_data));
+                    }
                     if (json.global_pinned_stock_alert && json.global_pinned_stock_alert.meta) {
                         const curPinRaw = localStorage.getItem('xb_pinned_stock_alert');
                         const curPin = curPinRaw ? JSON.parse(curPinRaw) : null;
