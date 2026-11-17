@@ -6188,11 +6188,158 @@
         let _patRevealedSet = new Set();
         let _patAutoCopiedDone = new Set();
         let _patActiveViewTab = 'config'; // 'config' | 'telemetry'
+        let _patPickerSourceTab = 'sheet'; // 'sheet' | 'custom'
         let _patSelectedManualSet = new Set();
+        let _patCustomAccountsMap = new Map(); // username.toLowerCase() -> { username, password, twofa }
         let _patLogLines = [];
         let _patSelectedScope = 'safe_5';
         let _patSelectedExpiry = '90';
         let _patSelectedDelay = '180,360';
+
+        function switchPatPickerSource(mode) {
+            _patPickerSourceTab = mode;
+            const sheetBox = document.getElementById('patManualCardsList');
+            const customBox = document.getElementById('patCustomCredsPanel');
+            const btnSheet = document.getElementById('patSrcTabSheet');
+            const btnCustom = document.getElementById('patSrcTabCustom');
+
+            if (sheetBox) sheetBox.style.display = mode === 'sheet' ? 'flex' : 'none';
+            if (customBox) customBox.style.display = mode === 'custom' ? 'flex' : 'none';
+
+            if (btnSheet) {
+                btnSheet.style.background = mode === 'sheet' ? 'var(--grad-primary)' : 'var(--bg-surface)';
+                btnSheet.style.borderColor = mode === 'sheet' ? '#38bdf8' : 'rgba(148,163,184,0.35)';
+                btnSheet.style.color = mode === 'sheet' ? '#ffffff' : 'var(--text-secondary)';
+            }
+            if (btnCustom) {
+                btnCustom.style.background = mode === 'custom' ? 'var(--grad-primary)' : 'var(--bg-surface)';
+                btnCustom.style.borderColor = mode === 'custom' ? '#38bdf8' : 'rgba(148,163,184,0.35)';
+                btnCustom.style.color = mode === 'custom' ? '#ffffff' : 'var(--text-secondary)';
+            }
+        }
+
+        function handleCustomPatPasteSplit(rawVal) {
+            if (!rawVal) return;
+            const uInp = document.getElementById('patCustomUserInput');
+            const pInp = document.getElementById('patCustomPassInput');
+            const tInp = document.getElementById('patCustomTwofaInput');
+
+            const lines = rawVal.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+
+            // Case A: Bulk multi-line paste (banyak akun sekaligus dengan | atau ,)
+            if (lines.length >= 2 && lines.every(ln => ln.includes('|') || (ln.split(',').length >= 2))) {
+                let addedBulk = 0;
+                lines.forEach(ln => {
+                    const sep = ln.includes('|') ? '|' : ',';
+                    const pts = ln.split(sep).map(x => x.trim());
+                    const u = (pts[0] || '').replace(/^@/, '');
+                    const p = pts[1] || '';
+                    const t = pts[2] || '-';
+                    if (u && p) {
+                        _patCustomAccountsMap.set(u.toLowerCase(), { username: u, password: p, twofa: t });
+                        addedBulk++;
+                    }
+                });
+                if (addedBulk > 0) {
+                    if (uInp) uInp.value = '';
+                    if (pInp) pInp.value = '';
+                    if (tInp) tInp.value = '';
+                    const box = document.getElementById('patTargetUsername');
+                    if (box) box.value = getCombinedSelectedPatUsernames().join(', ');
+                    updatePatTargetCounter();
+                    renderCustomPatQueuedList();
+                    showToast(`✅ Auto-queued ${addedBulk} custom account(s)!`);
+                }
+                return;
+            }
+
+            // Case B: Format susun ke bawah (Baris 1: username, Baris 2: password, Baris 3: 2fa)
+            if (lines.length >= 2 && !lines[0].includes('|') && !lines[0].includes(',')) {
+                if (uInp) uInp.value = lines[0].replace(/^@/, '');
+                if (pInp && lines[1]) pInp.value = lines[1];
+                if (tInp && lines[2]) tInp.value = lines[2];
+                return;
+            }
+
+            // Case C: Satu baris dengan pemisah "|" atau "," (user|pass|2fa atau user,pass,2fa)
+            const singleLine = lines[0] || rawVal;
+            if (singleLine.includes('|') || singleLine.includes(',')) {
+                const sep = singleLine.includes('|') ? '|' : ',';
+                const parts = singleLine.split(sep).map(s => s.trim());
+                if (uInp && parts[0]) uInp.value = parts[0].replace(/^@/, '');
+                if (pInp && parts[1] !== undefined) pInp.value = parts[1];
+                if (tInp && parts[2] !== undefined) tInp.value = parts[2];
+            }
+        }
+
+        function addCustomPatAccountToQueue(silentIfEmpty = false) {
+            const uInp = document.getElementById('patCustomUserInput');
+            const pInp = document.getElementById('patCustomPassInput');
+            const tInp = document.getElementById('patCustomTwofaInput');
+            if (!uInp || !pInp) return false;
+
+            const rawU = uInp.value.replace(/^@/, '').trim();
+            const rawP = pInp.value.trim();
+            const rawT = (tInp ? tInp.value.trim() : '') || '-';
+
+            if (!rawU && !rawP) return false;
+            if (!rawU || !rawP) {
+                if (!silentIfEmpty) showToast('⚠️ Enter both GitHub Username and Password!');
+                return false;
+            }
+
+            _patCustomAccountsMap.set(rawU.toLowerCase(), {
+                username: rawU,
+                password: rawP,
+                twofa: rawT
+            });
+
+            uInp.value = '';
+            pInp.value = '';
+            if (tInp) tInp.value = '';
+
+            const box = document.getElementById('patTargetUsername');
+            if (box) {
+                box.value = getCombinedSelectedPatUsernames().join(', ');
+            }
+            updatePatTargetCounter();
+            renderCustomPatQueuedList();
+            if (!silentIfEmpty) showToast(`✅ Added custom account @${rawU} to queue!`);
+            return true;
+        }
+
+        function removeCustomPatAccount(lowKey) {
+            _patCustomAccountsMap.delete(lowKey);
+            const box = document.getElementById('patTargetUsername');
+            if (box) {
+                box.value = getCombinedSelectedPatUsernames().join(', ');
+            }
+            updatePatTargetCounter();
+            renderCustomPatQueuedList();
+        }
+
+        function renderCustomPatQueuedList() {
+            const listEl = document.getElementById('patCustomQueuedList');
+            if (!listEl) return;
+            const entries = Array.from(_patCustomAccountsMap.values());
+            if (entries.length === 0) {
+                listEl.innerHTML = `<div style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-muted);padding:6px;">No custom accounts queued yet. Fill above or click Generate directly.</div>`;
+                return;
+            }
+            listEl.innerHTML = entries.map(acc => `
+                <div style="background:var(--bg-surface);border:1px solid rgba(56,189,248,0.45);border-left:3.5px solid #38bdf8;border-radius:8px;padding:5px 8px;display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;">
+                    <div style="min-width:0;flex:1;">
+                        <div style="font-size:0.7rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            ✍️ @${acc.username} <span style="color:#38bdf8;font-size:0.58rem;">(CUSTOM)</span>
+                        </div>
+                        <div style="font-size:0.57rem;color:var(--text-secondary);">
+                            🔑 Pass: •••••• • 🔐 2FA: ${acc.twofa && acc.twofa !== '-' ? '✅ Set' : '➖ None'}
+                        </div>
+                    </div>
+                    <button type="button" class="top-pill" style="padding:3px 7px;font-size:0.6rem;color:var(--danger);border-color:rgba(239,68,68,0.4);" onclick="removeCustomPatAccount('${acc.username.toLowerCase()}')">✕</button>
+                </div>
+            `).join('');
+        }
 
         function selectPatScopePreset(val) {
             _patSelectedScope = val;
@@ -6333,7 +6480,8 @@
                 .split(/[\s,;]+/)
                 .map(s => s.replace(/^@/, '').trim())
                 .filter(Boolean);
-            const combined = new Set([...typedList, ...Array.from(_patSelectedManualSet)]);
+            const customUsers = Array.from(_patCustomAccountsMap.values()).map(c => c.username);
+            const combined = new Set([...typedList, ...Array.from(_patSelectedManualSet), ...customUsers]);
             return Array.from(combined);
         }
 
@@ -6364,10 +6512,18 @@
 
         function clearPatTargetBox() {
             _patSelectedManualSet.clear();
+            _patCustomAccountsMap.clear();
             const box = document.getElementById('patTargetUsername');
             if (box) box.value = '';
+            const uInp = document.getElementById('patCustomUserInput');
+            const pInp = document.getElementById('patCustomPassInput');
+            const tInp = document.getElementById('patCustomTwofaInput');
+            if (uInp) uInp.value = '';
+            if (pInp) pInp.value = '';
+            if (tInp) tInp.value = '';
             updatePatTargetCounter();
             renderPatManualAccountCards();
+            renderCustomPatQueuedList();
         }
 
         function renderPatManualAccountCards() {
@@ -6769,9 +6925,66 @@
 
             body.innerHTML = `
                 <style>
-                    @keyframes patCyberBarStripes {
-                        0% { background-position: 0 0; }
-                        100% { background-position: 28px 0; }
+                    @keyframes patAuroraFlow {
+                        0% { background-position: 0% 50%; }
+                        50% { background-position: 100% 50%; }
+                        100% { background-position: 0% 50%; }
+                    }
+                    @keyframes patSheenSweep {
+                        0% { transform: translateX(-120%); }
+                        100% { transform: translateX(220%); }
+                    }
+                    .pat-double-line-hdr {
+                        border-top: 3px double #38bdf8;
+                        border-bottom: 3px double #a855f7;
+                        background: linear-gradient(90deg, rgba(56,189,248,0.08) 0%, rgba(168,85,247,0.12) 50%, rgba(56,189,248,0.08) 100%);
+                        padding: 5px 10px;
+                        border-radius: 9px;
+                        text-align: center;
+                        font-family: 'JetBrains Mono', monospace;
+                    }
+                    .pat-label-double-line {
+                        display: block;
+                        width: 100%;
+                        text-align: center;
+                        font-family: 'JetBrains Mono', monospace;
+                        font-size: 0.56rem;
+                        font-weight: 800;
+                        letter-spacing: 0.5px;
+                        border-top: 2px solid rgba(56, 189, 248, 0.55);
+                        border-bottom: 2px solid rgba(168, 85, 247, 0.55);
+                        padding: 3px 4px;
+                        margin-bottom: 5px;
+                    }
+                    .pat-realistic-bar-track {
+                        width: 100%;
+                        height: 18px;
+                        background: #070912;
+                        border: 1.5px solid rgba(129, 140, 248, 0.55);
+                        border-radius: 10px;
+                        overflow: hidden;
+                        position: relative;
+                        box-shadow: inset 0 2px 7px rgba(0, 0, 0, 0.85), 0 0 14px rgba(99, 102, 241, 0.22);
+                    }
+                    .pat-realistic-bar-fill {
+                        height: 100%;
+                        background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 25%, #8b5cf6 50%, #ec4899 75%, #10b981 100%);
+                        background-size: 240% 100%;
+                        animation: patAuroraFlow 3.2s ease infinite;
+                        border-radius: 8px;
+                        position: relative;
+                        overflow: hidden;
+                        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+                        box-shadow: 0 0 16px rgba(139, 92, 246, 0.65);
+                    }
+                    .pat-realistic-bar-fill::after {
+                        content: '';
+                        position: absolute;
+                        top: 0;
+                        bottom: 0;
+                        width: 45%;
+                        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
+                        animation: patSheenSweep 1.8s ease-in-out infinite;
                     }
                     .pat-double-line-hdr {
                         border-top: 3px double #38bdf8;
@@ -6877,14 +7090,41 @@
                         <input type="text" class="form-input" id="patTargetUsername" placeholder="Type usernames (comma/space separated) or pick below..." style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;" oninput="updatePatTargetCounter(); renderPatManualAccountCards();">
                     </div>
 
-                    <!-- MANUAL ACCOUNT PICKER (DIPERBESAR MENGISI LAYAR) -->
-                    <div style="background:var(--bg-input);border:1.5px solid rgba(245,158,11,0.5);border-radius:11px;padding:7px 8px;flex:1;min-height:165px;display:flex;flex-direction:column;">
-                        <div class="pat-double-line-hdr" style="padding:3px 6px;margin-bottom:6px;flex-shrink:0;border-top-color:var(--warning);border-bottom-color:var(--warning);">
-                            <span style="font-size:0.58rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;">
-                                ⚡ MANUAL ACCOUNT PICKER (<span id="patManualAvailBadge">${stats.missingCount} AVAILABLE</span>)
+                    <!-- MANUAL ACCOUNT PICKER & CUSTOM CREDENTIALS PANEL -->
+                    <div style="background:var(--bg-input);border:1.5px solid rgba(245,158,11,0.5);border-radius:11px;padding:7px 8px;flex:1;min-height:175px;display:flex;flex-direction:column;">
+                        <div class="pat-double-line-hdr" style="padding:3px 6px;margin-bottom:5px;flex-shrink:0;border-top-color:var(--warning);border-bottom-color:var(--warning);">
+                            <span style="font-size:0.57rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;">
+                                ⚡ ACCOUNT SOURCE (<span id="patManualAvailBadge">${stats.missingCount} AVAILABLE</span>)
                             </span>
                         </div>
+
+                        <!-- 2 SOURCE TABS: SHEET1 STOCK VS MANUAL CUSTOM ACCOUNT -->
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:6px;flex-shrink:0;">
+                            <button type="button" id="patSrcTabSheet" onclick="switchPatPickerSource('sheet')" style="padding:5px 4px;border-radius:7px;border:1px solid #38bdf8;background:var(--grad-primary);color:#ffffff;font-family:'JetBrains Mono',monospace;font-size:0.59rem;font-weight:800;cursor:pointer;text-align:center;">
+                                📋 Sheet1 Stock
+                            </button>
+                            <button type="button" id="patSrcTabCustom" onclick="switchPatPickerSource('custom')" style="padding:5px 4px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);background:var(--bg-surface);color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:0.59rem;font-weight:800;cursor:pointer;text-align:center;">
+                                ✍️ Custom Account
+                            </button>
+                        </div>
+
+                        <!-- LIST 1: SHEET1 MISSING PAT CARDS -->
                         <div id="patManualCardsList" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:2px;"></div>
+
+                        <!-- LIST 2: CUSTOM MANUAL CREDENTIALS (USERNAME + PASSWORD + 2FA) -->
+                        <div id="patCustomCredsPanel" style="flex:1;min-height:0;display:none;flex-direction:column;justify-content:space-between;gap:5px;">
+                            <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
+                                <textarea rows="2" class="form-input" id="patCustomUserInput" placeholder="👤 Username (paste user|pass|2fa, user,pass,2fa, or 3 lines down)" style="padding:5px 9px;font-family:'JetBrains Mono',monospace;font-size:0.69rem;font-weight:700;resize:none;line-height:1.35;" oninput="handleCustomPatPasteSplit(this.value)"></textarea>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+                                    <input type="text" class="form-input" id="patCustomPassInput" placeholder="🔑 Password" style="padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;">
+                                    <input type="text" class="form-input" id="patCustomTwofaInput" placeholder="🔐 2FA Secret (Opt)" style="padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;">
+                                </div>
+                                <button type="button" class="top-pill" style="width:100%;justify-content:center;padding:6px 8px;font-size:0.64rem;font-family:'JetBrains Mono',monospace;color:#38bdf8;border-color:rgba(56,189,248,0.55);background:rgba(56,189,248,0.12);" onclick="addCustomPatAccountToQueue(false)">
+                                    ➕ Add Custom Account to Queue
+                                </button>
+                            </div>
+                            <div id="patCustomQueuedList" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:4px;border-top:1px dashed rgba(148,163,184,0.28);padding-top:4px;"></div>
+                        </div>
                     </div>
 
                     <!-- 3 PILIHAN TOMBOL LANGSUNG RATA TENGAH (MASING-MASING 3 OPSI) -->
@@ -6967,11 +7207,18 @@
                         </div>
                     </div>
 
-                    <!-- REALISTIC LOADING BAR + CENTERED 4-STAGE PILLS -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:11px;padding:7px 9px;flex-shrink:0;">
+                    <!-- MULTI-COLOR AURORA SPECTRUM GAUGE + 4-STAGE PIPELINE -->
+                    <div style="background:linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(11,13,20,0.98) 100%);border:1.5px solid rgba(129,140,248,0.5);border-radius:12px;padding:8px 9px;flex-shrink:0;box-shadow:0 6px 20px rgba(0,0,0,0.45);">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-family:'JetBrains Mono',monospace;">
+                            <span style="font-size:0.56rem;font-weight:800;color:#94a3b8;letter-spacing:0.6px;">⚡ EXECUTION PROGRESS</span>
+                            <span id="patTelProgressPctText" style="font-size:0.64rem;font-weight:800;background:linear-gradient(90deg,#38bdf8,#a855f7,#ec4899,#10b981);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">0%</span>
+                        </div>
                         <div class="pat-realistic-bar-track" style="margin-bottom:7px;">
                             <div class="pat-realistic-bar-fill" id="patTelProgressBar" style="width:0%;"></div>
-                            <span id="patTelProgressPctText" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#ffffff;text-shadow:0 1px 3px rgba(0,0,0,0.95);">0%</span>
+                            <!-- Precision Segment Ticks -->
+                            <div style="position:absolute;left:25%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.16);pointer-events:none;"></div>
+                            <div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.16);pointer-events:none;"></div>
+                            <div style="position:absolute;left:75%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.16);pointer-events:none;"></div>
                         </div>
                         <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;text-align:center;">
                             <div id="patStagePill1" style="padding:4px 3px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);text-align:center;">1. Login<div style="font-size:0.5rem;opacity:0.8;">25%</div></div>
@@ -7006,7 +7253,9 @@
                 </div>
             `;
 
+            _patCustomAccountsMap.clear();
             renderPatManualAccountCards();
+            renderCustomPatQueuedList();
             selectPatScopePreset(_patSelectedScope);
             selectPatExpiryDays(_patSelectedExpiry);
             selectPatCooldownMode(_patSelectedDelay);
@@ -7027,9 +7276,16 @@
         const openAdminPatGeneratorModal = openAdminPatStudioV2;
 
         async function startAdminPatGeneration() {
-            const selectedList = getCombinedSelectedPatUsernames();
-            if (selectedList.length === 0) {
-                return showToast('⚠️ Select or type at least 1 GitHub username first!');
+            // Jika user mengisi form Custom Account lalu langsung klik Generate tanpa klik "+ Add", otomatis masukkan!
+            addCustomPatAccountToQueue(true);
+
+            const customAccountsArr = Array.from(_patCustomAccountsMap.values());
+            const customLowerSet = new Set(customAccountsArr.map(c => c.username.toLowerCase()));
+            const sheetOnlyUsernames = getCombinedSelectedPatUsernames().filter(u => !customLowerSet.has(u.toLowerCase()));
+            const totalTargetCount = customAccountsArr.length + sheetOnlyUsernames.length;
+
+            if (totalTargetCount === 0) {
+                return showToast('⚠️ Select from Sheet1 or enter a Custom Account first!');
             }
 
             const scopePreset = _patSelectedScope || 'safe_5';
@@ -7047,7 +7303,7 @@
             _patLogLines = [{
                 time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
                 tag: '[QUEUE]',
-                msg: `[0/4] Enqueued ${selectedList.length} account(s) • Preset: [${scopePreset}] • Cooldown: ${Math.round(delayMin/60)}-${Math.round(delayMax/60)}m`,
+                msg: `[0/4] Enqueued ${totalTargetCount} account(s) (${customAccountsArr.length} Custom, ${sheetOnlyUsernames.length} Sheet1) • Preset: [${scopePreset}]`,
                 isDone: false,
                 isErr: false
             }];
@@ -7061,7 +7317,8 @@
                         action: 'admin_pat_job',
                         sub_action: 'enqueue',
                         secret: XB_PAT_SECRET,
-                        usernames: selectedList.join('\n'),
+                        usernames: sheetOnlyUsernames.join('\n'),
+                        custom_accounts: customAccountsArr,
                         note: 'XianBee-Core',
                         scope_preset: scopePreset,
                         expiry_days: expiryDays,
