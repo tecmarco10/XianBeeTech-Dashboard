@@ -6143,6 +6143,7 @@
             const activeFlashCount = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]').length;
             const customVouchers = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
             const admActions = [
+                { icon: '🌱', title: 'GitHub Account Creator & Profile Studio', desc: 'Create fresh GitHub accounts with manual Web OTP, auto-enable 2FA in Creator_Vault, customize Bio/Avatar/Repo & move to Sheet1', cmd: 'open_creator_studio' },
                 { icon: '🔑', title: 'Auto-Generate GitHub PAT Token (Stealth)', desc: 'Input username -> Pulls Password & 2FA from Sheet1 -> Checks all scopes & No Expiration -> Auto-Copy & Save to Sheet1', cmd: 'generate_github_pat' },
                 { icon: '🎟️', title: `Manage & Create Promo Vouchers (${customVouchers.length} Active)`, desc: 'Create custom discount codes, set percentage/fixed cut, & once-off vs reusable rules', cmd: 'manage_vouchers' },
                 { icon: '⚡', title: `Manage Flash Sale Accounts (${activeFlashCount} Active)`, desc: 'Search stock by @username or year, set Flash Price & Duration hours', cmd: 'manage_flash_stock' },
@@ -6192,7 +6193,9 @@
         }
 
         function execAdminCmd(cmd) {
-            if (cmd === 'generate_github_pat') {
+            if (cmd === 'open_creator_studio') {
+                openAdminAccountCreatorStudio();
+            } else if (cmd === 'generate_github_pat') {
                 openAdminPatStudioV2();
             } else if (cmd === 'sync_gsheet') {
                 syncGoogleSheetInventory(true);
@@ -6223,6 +6226,626 @@
                     showToast(`Wallet balance set to ${userBalanceUsdt.toFixed(2)} USDT!`);
                 }
             }
+        }
+
+// =========================================================================
+        // 🌱 ADMIN EXECUTIVE GITHUB ACCOUNT CREATOR & PROFILE STUDIO (100% ENGLISH)
+        // =========================================================================
+        let _crtPollTimer = null;
+        let _crtActiveTab = 'create'; // 'create' | 'customize' | 'telemetry'
+        let _crtCredMode = 'auto';    // 'auto' | 'custom'
+        let _crtCustMode = 'single';  // 'single' | 'batch'
+        let _crtDelayPreset = '60,180';
+        let _crtJobsList = [];
+        let _crtLogsList = [];
+        let _crtSelectedJobIds = new Set();
+        let _crtAvatarB64 = '';
+
+        function generateRealisticDevIdentity(emailStr, idxOffset = 0) {
+            const firstNames = ['alex', 'ryan', 'liam', 'noah', 'ethan', 'lucas', 'mason', 'logan', 'owen', 'caleb', 'nathan', 'evan', 'dylan', 'leo', 'cole', 'nolan'];
+            const suffixes = ['dev', 'code', 'labs', 'stack', 'tech', 'hub', 'io', 'sys', 'cloud', 'build', 'ops', 'net'];
+            const localPart = String(emailStr || '').split('@')[0].replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+            const fName = firstNames[(Math.floor(Math.random() * firstNames.length) + idxOffset) % firstNames.length];
+            const sName = suffixes[(Math.floor(Math.random() * suffixes.length) + idxOffset) % suffixes.length];
+            const numTag = Math.floor(10 + Math.random() * 89);
+            const baseSeed = localPart.length >= 4 ? localPart.slice(0, 7) : fName;
+            const username = `${baseSeed}-${sName}${numTag}`;
+
+            const charsUpper = 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+            const charsLower = 'abcdefghijkmnopqrstuvwxyz';
+            const charsNum = '23456789';
+            const charsSym = '!@#$%';
+            let pwd = 'Xb' +
+                charsUpper[Math.floor(Math.random() * charsUpper.length)] +
+                charsLower[Math.floor(Math.random() * charsLower.length)] +
+                charsNum[Math.floor(Math.random() * charsNum.length)] +
+                charsSym[Math.floor(Math.random() * charsSym.length)];
+            for (let i = 0; i < 6; i++) {
+                const pool = charsUpper + charsLower + charsNum;
+                pwd += pool[Math.floor(Math.random() * pool.length)];
+            }
+            return { username, password: pwd };
+        }
+
+        function openAdminAccountCreatorStudio() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            if (!modal || !body) return;
+            modal.classList.add('active');
+
+            body.innerHTML = `
+                <div style="display:flex;flex-direction:column;gap:10px;max-height:84vh;overflow:hidden;">
+                    <!-- TOP DOUBLE-LINE CENTERED HEADER (MATCHING PAT STUDIO) -->
+                    <div style="background:#0f1629;border-top:2.5px solid #38bdf8;border-bottom:2.5px solid #a855f7;border-left:1px solid rgba(56,189,248,0.4);border-right:1px solid rgba(168,85,247,0.4);border-radius:14px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;">
+                        <div style="width:28px;"></div>
+                        <div style="text-align:center;min-width:0;flex:1;">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#38bdf8;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                STEALTH AUTOMATION • 3-SHOT TELEGRAM PROOF
+                            </div>
+                            <h3 style="margin:2px 0 0 0;font-size:0.94rem;font-weight:800;background:linear-gradient(90deg,#38bdf8 0%,#818cf8 50%,#c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                🌱 GitHub Account Creator Studio
+                            </h3>
+                        </div>
+                        <button type="button" class="top-pill" style="padding:5px 9px;font-size:0.74rem;flex-shrink:0;" onclick="closeAdminAccountCreatorStudio()">✕</button>
+                    </div>
+
+                    <!-- 3-TAB SYMMETRICAL NAVIGATION BAR -->
+                    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex-shrink:0;">
+                        <button type="button" id="crtTabBtnCreate" class="subtab-pill active" style="padding:8px 4px;font-size:0.68rem;" onclick="switchCreatorStudioTab('create')">✨ 1. Create</button>
+                        <button type="button" id="crtTabBtnCustomize" class="subtab-pill" style="padding:8px 4px;font-size:0.68rem;" onclick="switchCreatorStudioTab('customize')">🎨 2. Bio &amp; Repo</button>
+                        <button type="button" id="crtTabBtnTelemetry" class="subtab-pill" style="padding:8px 4px;font-size:0.68rem;" onclick="switchCreatorStudioTab('telemetry')">📡 3. Telemetry</button>
+                    </div>
+
+                    <!-- 3-COLUMN LIVE STAT STRIP -->
+                    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;flex-shrink:0;font-family:'JetBrains Mono',monospace;text-align:center;">
+                        <div style="background:#0b0e19;border:1px solid rgba(56,189,248,0.35);border-radius:10px;padding:6px 4px;">
+                            <div style="font-size:0.52rem;font-weight:800;color:#94a3b8;letter-spacing:0.5px;">CREATOR_VAULT</div>
+                            <div id="crtStatTotal" style="font-size:0.86rem;font-weight:800;color:#f8fafc;margin-top:1px;">0</div>
+                        </div>
+                        <div style="background:#0b0e19;border:1px solid rgba(251,191,36,0.45);border-radius:10px;padding:6px 4px;">
+                            <div style="font-size:0.52rem;font-weight:800;color:#94a3b8;letter-spacing:0.5px;">WAITING OTP</div>
+                            <div id="crtStatOtp" style="font-size:0.86rem;font-weight:800;color:#fbbf24;margin-top:1px;">0</div>
+                        </div>
+                        <div style="background:#0b0e19;border:1px solid rgba(16,185,129,0.45);border-radius:10px;padding:6px 4px;">
+                            <div style="font-size:0.52rem;font-weight:800;color:#94a3b8;letter-spacing:0.5px;">2FA READY</div>
+                            <div id="crtStatReady" style="font-size:0.86rem;font-weight:800;color:#10b981;margin-top:1px;">0</div>
+                        </div>
+                    </div>
+
+                    <!-- SCROLLABLE INNER WORKSPACE -->
+                    <div style="flex:1;min-height:0;overflow-y:auto;padding-right:2px;display:flex;flex-direction:column;gap:10px;">
+                        <!-- TAB 1: ACCOUNT CREATOR CONFIGURATOR -->
+                        <div id="crtPanelCreate" style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="background:#0f1629;border:1px solid rgba(56,189,248,0.35);border-radius:13px;padding:10px 11px;display:flex;flex-direction:column;gap:8px;">
+                                <!-- CENTERED TOP-BOTTOM BORDERED TITLE -->
+                                <div style="border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;background:rgba(56,189,248,0.08);padding:5px 8px;border-radius:7px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;color:#38bdf8;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    📧 CLEAN EMAIL &amp; CREDENTIALS INPUT
+                                </div>
+
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                                    <button type="button" id="crtCredAutoBtn" class="subtab-pill active" style="padding:7px 4px;font-size:0.66rem;" onclick="switchCreatorCredMode('auto')">⚡ Auto User &amp; Pass</button>
+                                    <button type="button" id="crtCredCustomBtn" class="subtab-pill" style="padding:7px 4px;font-size:0.66rem;" onclick="switchCreatorCredMode('custom')">✍️ Custom Format</button>
+                                </div>
+
+                                <div id="crtCredHint" style="font-size:0.62rem;color:#94a3b8;font-family:'JetBrains Mono',monospace;line-height:1.35;">
+                                    Paste 1 clean Gmail/Outlook per line. Username &amp; strong password auto-generate.
+                                </div>
+
+                                <textarea id="crtEmailsTextarea" class="form-input" rows="4" style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;padding:9px 10px;resize:vertical;" placeholder="clean.dev01@gmail.com&#10;clean.dev02@gmail.com"></textarea>
+                            </div>
+
+                            <div style="background:#0f1629;border:1px solid rgba(56,189,248,0.35);border-radius:13px;padding:10px 11px;display:flex;flex-direction:column;gap:7px;">
+                                <div style="border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;background:rgba(56,189,248,0.08);padding:5px 8px;border-radius:7px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;color:#38bdf8;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ⏱️ INTER-ACCOUNT PACING &amp; 2FA SETUP
+                                </div>
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                                    <button type="button" id="crtDelayFastBtn" class="subtab-pill active" style="padding:7px 4px;font-size:0.65rem;" onclick="selectCreatorDelay('60,180')">⚡ Standard (1–3 Min)</button>
+                                    <button type="button" id="crtDelayDripBtn" class="subtab-pill" style="padding:7px 4px;font-size:0.65rem;" onclick="selectCreatorDelay('2700,5400')">🛡️ Safe Drip (45–90 Min)</button>
+                                </div>
+                                <div style="font-size:0.61rem;color:#10b981;font-family:'JetBrains Mono',monospace;text-align:center;">
+                                    ✅ Auto-Enables 2FA Authenticator &amp; Saves to Creator_Vault
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn-ui primary" id="btnStartAccountCreator" style="width:100%;padding:12px;font-size:0.8rem;border-radius:12px;" onclick="submitAccountCreatorQueue()">
+                                🌱 Start Account Creation Queue
+                            </button>
+                        </div>
+
+                        <!-- TAB 2: PROFILE BIO, AVATAR & REPOSITORY CUSTOMIZER -->
+                        <div id="crtPanelCustomize" style="display:none;flex-direction:column;gap:9px;">
+                            <div style="background:#0f1629;border:1px solid rgba(56,189,248,0.35);border-radius:13px;padding:10px 11px;display:flex;flex-direction:column;gap:7px;">
+                                <div style="border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;background:rgba(56,189,248,0.08);padding:5px 8px;border-radius:7px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;color:#38bdf8;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    📂 SELECT ACCOUNTS FROM CREATOR_VAULT
+                                </div>
+                                <div id="crtVaultPickerList" style="display:flex;flex-direction:column;gap:6px;max-height:155px;overflow-y:auto;"></div>
+                            </div>
+
+                            <div style="background:#0f1629;border:1px solid rgba(56,189,248,0.35);border-radius:13px;padding:10px 11px;display:flex;flex-direction:column;gap:8px;">
+                                <div style="border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;background:rgba(56,189,248,0.08);padding:5px 8px;border-radius:7px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;color:#38bdf8;letter-spacing:0.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ✍️ MANUAL NAME, BIO, AVATAR &amp; REPO
+                                </div>
+
+                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                                    <button type="button" id="crtCustSingleBtn" class="subtab-pill active" style="padding:7px 4px;font-size:0.65rem;" onclick="switchCreatorCustMode('single')">📝 Single Form</button>
+                                    <button type="button" id="crtCustBatchBtn" class="subtab-pill" style="padding:7px 4px;font-size:0.65rem;" onclick="switchCreatorCustMode('batch')">📋 AI Quick Paste</button>
+                                </div>
+
+                                <div id="crtCustSingleForm" style="display:flex;flex-direction:column;gap:7px;">
+                                    <input type="text" id="crtFullNameInp" class="form-input" style="padding:8px 10px;font-size:0.75rem;" placeholder="Display Name (e.g. Alex Mercer)">
+                                    <textarea id="crtBioInp" class="form-input" rows="2" style="padding:8px 10px;font-size:0.75rem;" placeholder="Paste Developer Bio from AI..."></textarea>
+                                    <input type="text" id="crtRepoNameInp" class="form-input" style="padding:8px 10px;font-size:0.75rem;" placeholder="First Repo Name + README (e.g. cloud-cli-kit)">
+                                    <div style="display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;">
+                                        <input type="text" id="crtAvatarUrlInp" class="form-input" style="padding:8px 10px;font-size:0.72rem;" placeholder="Avatar Image URL or pick file ➔">
+                                        <label class="top-pill" style="padding:8px 10px;font-size:0.68rem;cursor:pointer;border-color:#38bdf8;color:#38bdf8;margin:0;">
+                                            📷 File
+                                            <input type="file" accept="image/*" style="display:none;" onchange="handleCreatorAvatarFileSelect(this)">
+                                        </label>
+                                    </div>
+                                    <div id="crtAvatarFileStatus" style="font-size:0.6rem;color:#10b981;font-family:'JetBrains Mono',monospace;display:none;"></div>
+                                </div>
+
+                                <div id="crtCustBatchForm" style="display:none;flex-direction:column;gap:6px;">
+                                    <div style="font-size:0.61rem;color:#94a3b8;font-family:'JetBrains Mono',monospace;">
+                                        Format (1 line per picked account): <b>Name | Bio | RepoName</b>
+                                    </div>
+                                    <textarea id="crtBatchPasteTextarea" class="form-input" rows="4" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;padding:8px 10px;" placeholder="Alex Mercer | Full-stack Rust &amp; Web3 builder | rust-rpc-node&#10;Ryan Cole | Cloud automation &amp; Python dev | py-docker-sync"></textarea>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn-ui primary" id="btnStartCustomizeQueue" style="width:100%;padding:12px;font-size:0.8rem;border-radius:12px;" onclick="submitAccountCustomizeQueue()">
+                                🎨 Apply Bio, Avatar &amp; Repo
+                            </button>
+                        </div>
+
+                        <!-- TAB 3: LIVE TELEMETRY & MANUAL OTP INPUT -->
+                        <div id="crtPanelTelemetry" style="display:none;flex-direction:column;gap:9px;">
+                            <!-- NEON PROGRESS BAR -->
+                            <div style="background:#0f1629;border:1px solid rgba(56,189,248,0.45);border-radius:12px;padding:9px 11px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.64rem;font-weight:800;margin-bottom:5px;">
+                                    <span id="crtProgStepLabel" style="color:#38bdf8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%;">🟢 Standing by for jobs...</span>
+                                    <span id="crtProgPctLabel" style="color:#10b981;">0%</span>
+                                </div>
+                                <div class="xb-neon-track">
+                                    <div class="xb-neon-fill" id="crtProgBarFill" style="width:6%;"></div>
+                                </div>
+                            </div>
+
+                            <!-- DYNAMIC MANUAL OTP INPUT BOX (POPS UP WHEN STATUS === WAITING_OTP) -->
+                            <div id="crtOtpActionBox" style="display:none;background:linear-gradient(135deg,rgba(245,158,11,0.16) 0%,rgba(15,22,41,0.98) 100%);border:1.5px solid #fbbf24;border-radius:13px;padding:10px 11px;flex-direction:column;gap:7px;">
+                                <div style="border-top:2px solid #fbbf24;border-bottom:2px solid #fbbf24;padding:4px 6px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;color:#fbbf24;">
+                                    📩 EMAIL VERIFICATION OTP REQUIRED
+                                </div>
+                                <div id="crtOtpTargetInfo" style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;color:#f8fafc;text-align:center;"></div>
+                                <div style="display:grid;grid-template-columns:1fr auto;gap:6px;">
+                                    <input type="text" id="crtManualOtpInput" class="form-input" maxlength="10" inputmode="numeric" style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:800;letter-spacing:3px;text-align:center;padding:8px;" placeholder="Enter 8-Digit OTP">
+                                    <button type="button" class="btn-ui buy-now" style="padding:8px 14px;font-size:0.74rem;white-space:nowrap;" onclick="submitManualCreatorOtp()">✅ Submit OTP</button>
+                                </div>
+                            </div>
+
+                            <!-- CREATOR_VAULT ACCOUNTS & LIVE STATUS -->
+                            <div style="background:#0f1629;border:1px solid rgba(56,189,248,0.35);border-radius:12px;padding:9px 10px;display:flex;flex-direction:column;gap:6px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:#38bdf8;">📋 CREATOR_VAULT ACCOUNTS</span>
+                                    <button type="button" class="top-pill" style="padding:3px 8px;font-size:0.6rem;color:#f87171;border-color:rgba(239,68,68,0.45);" onclick="stopAccountCreatorQueue()">🛑 Stop Queue</button>
+                                </div>
+                                <div id="crtJobsCardsList" style="display:flex;flex-direction:column;gap:6px;max-height:200px;overflow-y:auto;"></div>
+                            </div>
+
+                            <!-- LIVE WORKER LOG CONSOLE -->
+                            <div id="crtTerminalConsole" style="background:#070a14;border:1px solid rgba(56,189,248,0.3);border-radius:10px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#cbd5e1;max-height:110px;overflow-y:auto;line-height:1.45;">
+                                &gt;_ Ready. Syncing Creator_Vault status...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            switchCreatorStudioTab(_crtActiveTab);
+            pollCreatorStudioStatus();
+            if (_crtPollTimer) clearInterval(_crtPollTimer);
+            _crtPollTimer = setInterval(pollCreatorStudioStatus, 3500);
+        }
+
+        function closeAdminAccountCreatorStudio() {
+            if (_crtPollTimer) {
+                clearInterval(_crtPollTimer);
+                _crtPollTimer = null;
+            }
+            closeModal('paymentGatewayModal');
+        }
+
+        function switchCreatorStudioTab(tab) {
+            _crtActiveTab = tab;
+            const pCreate = document.getElementById('crtPanelCreate');
+            const pCust = document.getElementById('crtPanelCustomize');
+            const pTel = document.getElementById('crtPanelTelemetry');
+            if (pCreate) pCreate.style.display = tab === 'create' ? 'flex' : 'none';
+            if (pCust) pCust.style.display = tab === 'customize' ? 'flex' : 'none';
+            if (pTel) pTel.style.display = tab === 'telemetry' ? 'flex' : 'none';
+
+            document.getElementById('crtTabBtnCreate')?.classList.toggle('active', tab === 'create');
+            document.getElementById('crtTabBtnCustomize')?.classList.toggle('active', tab === 'customize');
+            document.getElementById('crtTabBtnTelemetry')?.classList.toggle('active', tab === 'telemetry');
+            if (tab === 'customize') renderCreatorVaultPicker();
+        }
+
+        function switchCreatorCredMode(mode) {
+            _crtCredMode = mode;
+            document.getElementById('crtCredAutoBtn')?.classList.toggle('active', mode === 'auto');
+            document.getElementById('crtCredCustomBtn')?.classList.toggle('active', mode === 'custom');
+            const hint = document.getElementById('crtCredHint');
+            const ta = document.getElementById('crtEmailsTextarea');
+            if (mode === 'auto') {
+                if (hint) hint.innerText = 'Paste 1 clean Gmail/Outlook per line. Username & strong password auto-generate.';
+                if (ta) ta.placeholder = 'clean.dev01@gmail.com\nclean.dev02@gmail.com';
+            } else {
+                if (hint) hint.innerText = 'Paste 1 account per line using format: email|username|password';
+                if (ta) ta.placeholder = 'clean.dev01@gmail.com|alex-stack24|StrongPass#2026';
+            }
+        }
+
+        function selectCreatorDelay(val) {
+            _crtDelayPreset = val;
+            document.getElementById('crtDelayFastBtn')?.classList.toggle('active', val === '60,180');
+            document.getElementById('crtDelayDripBtn')?.classList.toggle('active', val === '2700,5400');
+        }
+
+        function switchCreatorCustMode(mode) {
+            _crtCustMode = mode;
+            document.getElementById('crtCustSingleBtn')?.classList.toggle('active', mode === 'single');
+            document.getElementById('crtCustBatchBtn')?.classList.toggle('active', mode === 'batch');
+            const sForm = document.getElementById('crtCustSingleForm');
+            const bForm = document.getElementById('crtCustBatchForm');
+            if (sForm) sForm.style.display = mode === 'single' ? 'flex' : 'none';
+            if (bForm) bForm.style.display = mode === 'batch' ? 'flex' : 'none';
+        }
+
+        function handleCreatorAvatarFileSelect(inputEl) {
+            const file = inputEl && inputEl.files ? inputEl.files[0] : null;
+            const stEl = document.getElementById('crtAvatarFileStatus');
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                _crtAvatarB64 = String(ev.target.result || '');
+                if (stEl) {
+                    stEl.style.display = 'block';
+                    stEl.innerText = `✅ Image loaded: ${file.name} (${Math.round(file.size / 1024)} KB)`;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function submitAccountCreatorQueue() {
+            const raw = (document.getElementById('crtEmailsTextarea')?.value || '').trim();
+            if (!raw) return showToast('⚠️ Enter at least 1 clean email address first!');
+            const lines = raw.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+            const accounts = [];
+
+            lines.forEach((ln, idx) => {
+                if (_crtCredMode === 'custom' && ln.includes('|')) {
+                    const pts = ln.split('|').map(s => s.trim());
+                    if (pts[0] && pts[1] && pts[2]) {
+                        accounts.push({ email: pts[0], username: pts[1].replace(/^@/, ''), password: pts[2] });
+                    }
+                } else {
+                    const em = ln.split('|')[0].trim();
+                    if (em.includes('@')) {
+                        const gen = generateRealisticDevIdentity(em, idx);
+                        accounts.push({ email: em, username: gen.username, password: gen.password });
+                    }
+                }
+            });
+
+            if (accounts.length === 0) {
+                return showToast('⚠️ Invalid email format! Check your input lines.');
+            }
+
+            const [dMin, dMax] = _crtDelayPreset.split(',').map(n => parseInt(n, 10) || 60);
+            const btn = document.getElementById('btnStartAccountCreator');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Enqueuing Jobs...'; }
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'admin_creator_job',
+                        sub_action: 'enqueue_create',
+                        secret: XB_PAT_SECRET,
+                        accounts: accounts,
+                        delay_min: dMin,
+                        delay_max: dMax
+                    })
+                });
+                const data = await res.json();
+                if (data && data.result) {
+                    document.getElementById('crtEmailsTextarea').value = '';
+                    showToast(`🌱 Queued ${data.added} account(s) into Creator_Vault!`);
+                    switchCreatorStudioTab('telemetry');
+                    pollCreatorStudioStatus();
+                } else {
+                    showToast('❌ ' + (data.error || 'Failed to enqueue creation job.'));
+                }
+            } catch (e) {
+                showToast('⚠️ Network error connecting to GSheet.');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = '🌱 Start Account Creation Queue'; }
+            }
+        }
+
+        function togglePickCreatorVaultAccount(jobId) {
+            if (_crtSelectedJobIds.has(jobId)) _crtSelectedJobIds.delete(jobId);
+            else _crtSelectedJobIds.add(jobId);
+            renderCreatorVaultPicker();
+        }
+
+        function renderCreatorVaultPicker() {
+            const box = document.getElementById('crtVaultPickerList');
+            if (!box) return;
+            const eligible = _crtJobsList.filter(j => ['2FA_ACTIVE', 'CUSTOMIZED'].includes(String(j.status || '').toUpperCase()));
+            if (eligible.length === 0) {
+                box.innerHTML = `<div style="text-align:center;font-size:0.65rem;color:#94a3b8;padding:10px;">No 2FA_ACTIVE accounts in Creator_Vault yet. Create an account in Tab 1 first.</div>`;
+                return;
+            }
+            box.innerHTML = eligible.map(j => {
+                const picked = _crtSelectedJobIds.has(j.job_id);
+                return `
+                    <div style="background:#0b0e19;border:1px solid ${picked ? '#38bdf8' : 'rgba(148,163,184,0.25)'};border-radius:9px;padding:7px 9px;display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                        <div style="min-width:0;flex:1;font-family:'JetBrains Mono',monospace;">
+                            <div style="font-size:0.72rem;font-weight:800;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${j.username}</div>
+                            <div style="font-size:0.58rem;color:#38bdf8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${j.status} • ${j.created_wib || ''}</div>
+                        </div>
+                        <button type="button" class="top-pill" style="padding:4px 9px;font-size:0.62rem;background:${picked ? 'linear-gradient(135deg,#4f46e5,#06b6d4)' : '#13182b'};color:#fff;border-color:#38bdf8;" onclick="togglePickCreatorVaultAccount('${j.job_id}')">
+                            ${picked ? '✅ PICKED' : '+ PICK'}
+                        </button>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function submitAccountCustomizeQueue() {
+            const selectedJobs = _crtJobsList.filter(j => _crtSelectedJobIds.has(j.job_id));
+            if (selectedJobs.length === 0) {
+                return showToast('⚠️ Pick at least 1 account from Creator_Vault above!');
+            }
+
+            const itemsPayload = [];
+            if (_crtCustMode === 'batch') {
+                const rawLines = (document.getElementById('crtBatchPasteTextarea')?.value || '').trim().split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+                selectedJobs.forEach((jb, idx) => {
+                    const line = rawLines[idx] || rawLines[0] || '';
+                    const pts = line.split('|').map(s => s.trim());
+                    itemsPayload.push({
+                        job_id: jb.job_id,
+                        username: jb.username,
+                        password: jb.password,
+                        twofa: jb.twofa,
+                        full_name: pts[0] || '',
+                        bio: pts[1] || '',
+                        repo_name: pts[2] || '',
+                        avatar_url: (document.getElementById('crtAvatarUrlInp')?.value || '').trim(),
+                        avatar_b64: _crtAvatarB64
+                    });
+                });
+            } else {
+                const fName = (document.getElementById('crtFullNameInp')?.value || '').trim();
+                const bioTxt = (document.getElementById('crtBioInp')?.value || '').trim();
+                const rName = (document.getElementById('crtRepoNameInp')?.value || '').trim();
+                const aUrl = (document.getElementById('crtAvatarUrlInp')?.value || '').trim();
+                selectedJobs.forEach(jb => {
+                    itemsPayload.push({
+                        job_id: jb.job_id,
+                        username: jb.username,
+                        password: jb.password,
+                        twofa: jb.twofa,
+                        full_name: fName,
+                        bio: bioTxt,
+                        repo_name: rName,
+                        avatar_url: aUrl,
+                        avatar_b64: _crtAvatarB64
+                    });
+                });
+            }
+
+            const btn = document.getElementById('btnStartCustomizeQueue');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Sending to VPS...'; }
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'admin_creator_job',
+                        sub_action: 'enqueue_customize',
+                        secret: XB_PAT_SECRET,
+                        items: itemsPayload
+                    })
+                });
+                const data = await res.json();
+                if (data && data.result) {
+                    _crtSelectedJobIds.clear();
+                    _crtAvatarB64 = '';
+                    showToast(`🎨 Queued ${data.queued} profile customization job(s)!`);
+                    switchCreatorStudioTab('telemetry');
+                    pollCreatorStudioStatus();
+                } else {
+                    showToast('❌ ' + (data.error || 'Failed to queue customization.'));
+                }
+            } catch (e) {
+                showToast('⚠️ Network error.');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = '🎨 Apply Bio, Avatar & Repo'; }
+            }
+        }
+
+        async function submitManualCreatorOtp() {
+            const waitingJob = _crtJobsList.find(j => String(j.status || '').toUpperCase() === 'WAITING_OTP');
+            if (!waitingJob) return showToast('No active job waiting for OTP.');
+            const otpVal = (document.getElementById('crtManualOtpInput')?.value || '').replace(/\s+/g, '').trim();
+            if (otpVal.length < 4) return showToast('⚠️ Enter the verification OTP code from your email!');
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'admin_creator_job',
+                        sub_action: 'submit_otp',
+                        secret: XB_PAT_SECRET,
+                        job_id: waitingJob.job_id,
+                        otp_code: otpVal
+                    })
+                });
+                const data = await res.json();
+                if (data && data.result) {
+                    document.getElementById('crtManualOtpInput').value = '';
+                    showToast(`🔢 OTP (${otpVal}) dispatched to VPS worker!`);
+                    pollCreatorStudioStatus();
+                }
+            } catch (e) {
+                showToast('⚠️ Failed to submit OTP.');
+            }
+        }
+
+        async function promoteCreatorAccountToSheet1(jobId) {
+            try {
+                showToast('🚀 Moving account to Sheet1 Store...');
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'admin_creator_job',
+                        sub_action: 'promote_to_store',
+                        secret: XB_PAT_SECRET,
+                        job_id: jobId
+                    })
+                });
+                const data = await res.json();
+                if (data && data.result) {
+                    showToast(`✅ @${data.username} is now LIVE in Sheet1 Store!`);
+                    pollCreatorStudioStatus();
+                    syncGoogleSheetInventory(false);
+                } else {
+                    showToast('❌ ' + (data.error || 'Failed to move to Sheet1.'));
+                }
+            } catch (e) {
+                showToast('⚠️ Network error.');
+            }
+        }
+
+        async function stopAccountCreatorQueue() {
+            try {
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'admin_creator_job',
+                        sub_action: 'cancel_all',
+                        secret: XB_PAT_SECRET
+                    })
+                });
+                showToast('🛑 Active queue stopped.');
+                pollCreatorStudioStatus();
+            } catch (e) {}
+        }
+
+        async function pollCreatorStudioStatus() {
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'admin_creator_job',
+                        sub_action: 'status',
+                        secret: XB_PAT_SECRET
+                    })
+                });
+                const data = await res.json();
+                if (!data || !data.result) return;
+
+                _crtJobsList = Array.isArray(data.jobs) ? data.jobs : [];
+                _crtLogsList = Array.isArray(data.logs) ? data.logs : [];
+
+                const waitingJobs = _crtJobsList.filter(j => String(j.status || '').toUpperCase() === 'WAITING_OTP');
+                const readyJobs = _crtJobsList.filter(j => ['2FA_ACTIVE', 'CUSTOMIZED'].includes(String(j.status || '').toUpperCase()));
+
+                const elTot = document.getElementById('crtStatTotal');
+                const elOtp = document.getElementById('crtStatOtp');
+                const elRdy = document.getElementById('crtStatReady');
+                if (elTot) elTot.innerText = _crtJobsList.length;
+                if (elOtp) elOtp.innerText = waitingJobs.length;
+                if (elRdy) elRdy.innerText = readyJobs.length;
+
+                // Show/hide manual OTP input card automatically
+                const otpBox = document.getElementById('crtOtpActionBox');
+                const otpInfo = document.getElementById('crtOtpTargetInfo');
+                if (otpBox) {
+                    if (waitingJobs.length > 0) {
+                        otpBox.style.display = 'flex';
+                        if (otpInfo) otpInfo.innerHTML = `Target: <b>@${waitingJobs[0].username}</b> (${waitingJobs[0].email})`;
+                        if (_crtActiveTab !== 'telemetry') switchCreatorStudioTab('telemetry');
+                    } else {
+                        otpBox.style.display = 'none';
+                    }
+                }
+
+                // Update neon progress bar
+                const activeJob = _crtJobsList.find(j => ['QUEUED', 'RUNNING', 'WAITING_OTP', 'OTP_SUBMITTED'].includes(String(j.status || '').toUpperCase()));
+                const stepLbl = document.getElementById('crtProgStepLabel');
+                const pctLbl = document.getElementById('crtProgPctLabel');
+                const barFill = document.getElementById('crtProgBarFill');
+                if (activeJob && stepLbl && pctLbl && barFill) {
+                    const stUp = String(activeJob.status || '').toUpperCase();
+                    const pct = stUp === 'QUEUED' ? 15 : (stUp === 'RUNNING' ? 38 : (stUp === 'WAITING_OTP' ? 58 : 82));
+                    stepLbl.innerText = activeJob.step || `${stUp} • @${activeJob.username}`;
+                    pctLbl.innerText = `${pct}%`;
+                    barFill.style.width = `${pct}%`;
+                } else if (stepLbl && pctLbl && barFill) {
+                    stepLbl.innerText = readyJobs.length > 0 ? `✅ ${readyJobs.length} account(s) ready in Creator_Vault` : '🟢 Standing by for jobs...';
+                    pctLbl.innerText = readyJobs.length > 0 ? '100%' : '0%';
+                    barFill.style.width = readyJobs.length > 0 ? '100%' : '8%';
+                }
+
+                // Render Creator_Vault cards
+                const cardsBox = document.getElementById('crtJobsCardsList');
+                if (cardsBox) {
+                    if (_crtJobsList.length === 0) {
+                        cardsBox.innerHTML = `<div style="text-align:center;font-size:0.65rem;color:#94a3b8;padding:12px;">No accounts in Creator_Vault yet.</div>`;
+                    } else {
+                        cardsBox.innerHTML = _crtJobsList.map(j => {
+                            const st = String(j.status || '').toUpperCase();
+                            const badgeColor = (st === 'CUSTOMIZED' || st === 'MOVED_TO_STORE' || st === '2FA_ACTIVE') ? '#10b981' : (st === 'FAILED' ? '#f87171' : '#fbbf24');
+                            const canMove = (st === '2FA_ACTIVE' || st === 'CUSTOMIZED');
+                            return `
+                                <div style="background:#0b0e19;border:1px solid rgba(56,189,248,0.3);border-left:3.5px solid ${badgeColor};border-radius:9px;padding:7px 9px;font-family:'JetBrains Mono',monospace;display:flex;flex-direction:column;gap:5px;">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                        <span style="font-size:0.72rem;font-weight:800;color:#f8fafc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${j.username}</span>
+                                        <span style="font-size:0.56rem;font-weight:800;color:${badgeColor};background:rgba(255,255,255,0.06);padding:2px 6px;border-radius:5px;white-space:nowrap;">${st}</span>
+                                    </div>
+                                    <div style="font-size:0.6rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                        📧 ${j.email} • 🔑 2FA: <b style="color:#38bdf8;">${j.twofa || '-'}</b>
+                                    </div>
+                                    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;">
+                                        <button type="button" class="top-pill" style="justify-content:center;padding:4px 3px;font-size:0.58rem;" onclick="navigator.clipboard.writeText('${j.username}|${j.password}|${j.twofa}'); showToast('Credentials copied!');">📋 Copy</button>
+                                        ${canMove ? `<button type="button" class="top-pill" style="justify-content:center;padding:4px 3px;font-size:0.58rem;border-color:#10b981;color:#10b981;" onclick="promoteCreatorAccountToSheet1('${j.job_id}')">🚀 To Sheet1</button>` : `<span style="font-size:0.56rem;color:#64748b;text-align:center;align-self:center;">${j.profile_note || ''}</span>`}
+                                        <a href="https://github.com/${j.username}" target="_blank" class="top-pill" style="justify-content:center;padding:4px 3px;font-size:0.58rem;">🌐 Profile</a>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
+                    }
+                }
+
+                // Render terminal console logs
+                const termEl = document.getElementById('crtTerminalConsole');
+                if (termEl && _crtLogsList.length > 0) {
+                    termEl.innerHTML = _crtLogsList.slice(-15).map(lg =>
+                        `<div><span style="color:${lg.color || '#38bdf8'};font-weight:800;">${lg.tag || '[LOG]'}</span> ${lg.msg}</div>`
+                    ).join('');
+                    termEl.scrollTop = termEl.scrollHeight;
+                }
+            } catch (e) {}
         }
 
 // --- 🔑 ADMIN EXECUTIVE GITHUB PAT STUDIO V3 (ZERO-SCROLL COCKPIT) ---
