@@ -6300,7 +6300,7 @@
             if (badge) {
                 badge.innerText = `${list.length} Selected`;
                 badge.style.color = list.length > 0 ? 'var(--success)' : 'var(--text-secondary)';
-                badge.style.borderColor = list.length > 0 ? 'rgba(16,185,129,0.55)' : 'var(--border-subtle)';
+                badge.style.borderColor = list.length > 0 ? 'rgba(16,185,129,0.6)' : 'rgba(148,163,184,0.35)';
             }
         }
 
@@ -6339,14 +6339,14 @@
             if (elTot) elTot.innerText = stats.totalEligible;
             if (elMis) elMis.innerText = stats.missingCount;
             if (elRdy) elRdy.innerText = stats.readyCount;
-            if (countLabel) countLabel.innerText = `${stats.missingCount} Available`;
+            if (countLabel) countLabel.innerText = `${stats.missingCount} AVAILABLE`;
 
             const activeSet = new Set(getCombinedSelectedPatUsernames().map(u => u.toLowerCase()));
 
             if (stats.groups.length === 0) {
                 listContainer.innerHTML = `
-                    <div style="padding:18px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--success);font-weight:800;">
-                        ✅ All Arctic & Aged Year Accounts Already Have PAT Tokens!
+                    <div style="padding:22px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--success);font-weight:800;">
+                        ✅ All Arctic &amp; Aged Year Accounts Already Have PAT Tokens!
                     </div>
                 `;
                 return;
@@ -6361,16 +6361,16 @@
                     const yrDisp = grp.key === 'Arctic' ? (acc.year || 'Arctic') : grp.key;
 
                     return `
-                        <div onclick="toggleManualPatAccountPick('${u}')" style="background:var(--bg-surface);border:1px solid ${isPicked ? 'var(--success)' : 'var(--border-subtle)'};border-left:3.5px solid ${isPicked ? 'var(--success)' : 'var(--warning)'};border-radius:10px;padding:7px 9px;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;transition:0.15s;">
+                        <div onclick="toggleManualPatAccountPick('${u}')" style="background:var(--bg-surface);border:1.5px solid ${isPicked ? 'var(--success)' : 'rgba(148,163,184,0.28)'};border-left:4px solid ${isPicked ? 'var(--success)' : 'var(--warning)'};border-radius:10px;padding:8px 10px;display:flex;justify-content:space-between;align-items:center;gap:8px;cursor:pointer;transition:0.15s;">
                             <div style="min-width:0;flex:1;">
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                    ${isPicked ? '✅' : '🟢'} @${u} <span style="color:var(--accent-cyan);font-size:0.64rem;">(${yrDisp})</span>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ${isPicked ? '✅' : '🟢'} @${u} <span style="color:var(--accent-cyan);font-size:0.65rem;">(${yrDisp})</span>
                                 </div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.61rem;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
                                     👥 ${flw} Followers • 📁 ${rep} Repositories • <span style="color:var(--warning);">⚠️ Missing PAT</span>
                                 </div>
                             </div>
-                            <button type="button" class="top-pill" style="padding:4px 8px;font-size:0.62rem;font-family:'JetBrains Mono',monospace;border-color:${isPicked ? 'var(--success)' : 'var(--accent-cyan)'};color:${isPicked ? 'var(--success)' : 'var(--accent-cyan)'};background:${isPicked ? 'rgba(16,185,129,0.14)' : 'rgba(6,182,212,0.1)'};flex-shrink:0;">
+                            <button type="button" class="top-pill" style="padding:4px 9px;font-size:0.62rem;font-family:'JetBrains Mono',monospace;border-color:${isPicked ? 'var(--success)' : 'var(--accent-cyan)'};color:${isPicked ? 'var(--success)' : 'var(--accent-cyan)'};background:${isPicked ? 'rgba(16,185,129,0.14)' : 'rgba(6,182,212,0.1)'};flex-shrink:0;">
                                 ${isPicked ? '✓ PICKED' : '+ PICK'}
                             </button>
                         </div>
@@ -6378,8 +6378,8 @@
                 }).join('');
 
                 return `
-                    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:7px;">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.28);border-radius:7px;padding:4px 8px;display:flex;justify-content:space-between;align-items:center;">
+                    <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:8px;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:#38bdf8;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.55);border-radius:7px;padding:4px 9px;display:flex;justify-content:space-between;align-items:center;">
                             <span>📂 ${grp.label}</span>
                             <span>${grp.items.length} Missing</span>
                         </div>
@@ -6443,6 +6443,37 @@
             return s;
         }
 
+        function formatStreamLogCardHtml(l) {
+            let cleanMsg = String(l.msg || '').trim();
+            let rightStageBadge = '';
+
+            // Ekstrak teks [1/4], [2/4], [3/4], [4/4] untuk diletakkan rata kanan dengan rapi
+            const stageMatch = cleanMsg.match(/\[([1-4]\/4)\]/);
+            if (stageMatch) {
+                rightStageBadge = `[${stageMatch[1]}]`;
+                cleanMsg = cleanMsg.replace(stageMatch[0], '').replace(/\s{2,}/g, ' ').trim();
+            } else if (l.isDone) {
+                rightStageBadge = '[4/4]';
+            } else if (/\[QUEUE\]/i.test(l.tag)) {
+                rightStageBadge = '[0/4]';
+            }
+
+            const hdrColor = l.isErr ? 'var(--danger)' : (l.isDone ? 'var(--success)' : '#38bdf8');
+            const borderLineCol = l.isErr ? 'rgba(239,68,68,0.45)' : (l.isDone ? 'rgba(16,185,129,0.45)' : 'rgba(56,189,248,0.38)');
+
+            return `
+                <div style="background:var(--bg-input);border:1px solid ${borderLineCol};border-radius:9px;padding:6px 8px;margin-bottom:6px;">
+                    <div style="border-top:1px solid ${borderLineCol};border-bottom:1px solid ${borderLineCol};padding:2px 4px;margin-bottom:5px;text-align:center;font-size:0.58rem;font-weight:800;color:${hdrColor};letter-spacing:0.4px;">
+                        🕒 ${l.time} • ${l.tag}
+                    </div>
+                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;line-height:1.38;">
+                        <span style="color:var(--text-primary);flex:1;min-width:0;word-break:break-word;">${cleanMsg}</span>
+                        ${rightStageBadge ? `<span style="color:${hdrColor};font-weight:800;font-size:0.62rem;background:var(--bg-surface);border:1px solid ${borderLineCol};padding:1px 6px;border-radius:5px;flex-shrink:0;text-align:right;">${rightStageBadge}</span>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
         function renderPatBatchTelemetry(batch) {
             if (!batch) return;
             const rawItems = Array.isArray(batch.items) ? batch.items : [];
@@ -6457,7 +6488,8 @@
                     username: it.username,
                     status: normStatus,
                     pat_token: tok,
-                    error: translateWorkerLogToEnglish(it.error || '')
+                    // Hanya simpan error jika benar-benar FAILED dan tidak ada token
+                    error: (normStatus === 'FAILED' && !tok) ? translateWorkerLogToEnglish(it.error || '') : ''
                 };
             });
 
@@ -6519,7 +6551,7 @@
                 hdrTitle.innerHTML = isCompleted
                     ? (batch.status === 'CANCELLED' ? `🛑 BATCH STOPPED BY ADMIN` : `✅ ALL BATCH JOBS COMPLETED`)
                     : `⚡ ${stageTitleCenter}`;
-                hdrTitle.style.color = isCompleted ? 'var(--success)' : 'var(--accent-cyan)';
+                hdrTitle.style.color = isCompleted ? 'var(--success)' : '#38bdf8';
             }
             if (hdrBadge) {
                 hdrBadge.innerText = `Batch ${finishedCnt}/${total} • ${pct}%`;
@@ -6538,13 +6570,13 @@
                 if (!pill) return;
                 const isPassed = isCompleted || stNum < activeStage;
                 const isCurrent = !isCompleted && stNum === activeStage;
-                pill.style.borderColor = isCurrent ? '#fde047' : (isPassed ? 'var(--success)' : 'var(--border-subtle)');
+                pill.style.borderColor = isCurrent ? '#fde047' : (isPassed ? 'var(--success)' : 'rgba(148,163,184,0.35)');
                 pill.style.color = isCurrent ? '#fde047' : (isPassed ? 'var(--success)' : 'var(--text-muted)');
                 pill.style.background = isCurrent ? 'rgba(250,204,21,0.14)' : (isPassed ? 'rgba(16,185,129,0.12)' : 'var(--bg-input)');
                 pill.innerHTML = `${isPassed ? '✓ ' : (isCurrent ? '⚡ ' : '')}${stageNames[stNum - 1]}<div style="font-size:0.5rem;opacity:0.85;margin-top:1px;">${isPassed ? '100%' : (isCurrent ? pct + '%' : stagePcts[stNum - 1] + '%')}</div>`;
             });
 
-            // Sync all server logs into _patLogLines
+            // Sync server logs cleanly (hindari menandai log sukses sebagai error)
             const nowTimeStr = new Date().toLocaleTimeString('en-GB', { hour12: false });
             if (Array.isArray(batch.logs) && batch.logs.length > 0) {
                 const mergedLogs = [];
@@ -6553,12 +6585,14 @@
                     const cleanM = translateWorkerLogToEnglish(lg.msg || '');
                     if (!cleanM || seenMsg.has(cleanM)) return;
                     seenMsg.add(cleanM);
+                    const isDoneMsg = /completed|saved/i.test(cleanM);
+                    const isErrMsg = !isDoneMsg && (failCnt > 0 && /failed|stopped|cancelled|unauthorized/i.test(cleanM));
                     mergedLogs.push({
                         time: lg.time || nowTimeStr,
                         tag: lg.tag || '[WORKER]',
                         msg: cleanM,
-                        isDone: /completed|saved/i.test(cleanM),
-                        isErr: /fail|error|stop|cancel/i.test(cleanM)
+                        isDone: isDoneMsg,
+                        isErr: isErrMsg
                     });
                 });
                 if (mergedLogs.length > 0) _patLogLines = mergedLogs.slice(-40);
@@ -6568,19 +6602,13 @@
                     tag: isCompleted ? '[COMPLETE]' : '[WORKER]',
                     msg: stepText,
                     isDone: isCompleted,
-                    isErr: /fail|error/i.test(stepText)
+                    isErr: !isCompleted && failCnt > 0 && /failed|error/i.test(stepText)
                 });
             }
 
             const streamBox = document.getElementById('patTelStreamBox');
             if (streamBox) {
-                streamBox.innerHTML = _patLogLines.map(l => `
-                    <div style="margin-bottom:5px;line-height:1.42;padding-bottom:3px;border-bottom:1px dashed rgba(255,255,255,0.05);">
-                        <span style="color:var(--text-muted);">[${l.time}]</span>
-                        <b style="color:${l.isErr ? 'var(--danger)' : (l.isDone ? 'var(--success)' : 'var(--accent-cyan)')};">${l.tag}</b>
-                        <span style="color:var(--text-primary);">${l.msg}</span>
-                    </div>
-                `).join('');
+                streamBox.innerHTML = _patLogLines.map(formatStreamLogCardHtml).join('');
                 streamBox.scrollTop = streamBox.scrollHeight;
             }
 
@@ -6588,15 +6616,15 @@
             if (tokListEl) {
                 tokListEl.innerHTML = _patLatestBatchItems.map((it, idx) => {
                     let badge = `<span style="color:var(--text-muted);background:var(--bg-soft);padding:2px 7px;border-radius:5px;font-size:0.6rem;">⏳ QUEUED</span>`;
-                    let borderCol = 'var(--border-subtle)';
+                    let borderCol = 'rgba(148,163,184,0.35)';
                     if (it.status === 'RUNNING') {
-                        badge = `<span style="color:var(--accent-cyan);background:rgba(6,182,212,0.14);border:1px solid rgba(6,182,212,0.4);padding:2px 7px;border-radius:5px;font-size:0.6rem;">⚡ RUNNING (${pct}%)</span>`;
-                        borderCol = 'var(--accent-cyan)';
+                        badge = `<span style="color:#38bdf8;background:rgba(56,189,248,0.14);border:1px solid rgba(56,189,248,0.5);padding:2px 7px;border-radius:5px;font-size:0.6rem;">⚡ RUNNING (${pct}%)</span>`;
+                        borderCol = '#38bdf8';
                     } else if (it.status === 'COMPLETED') {
-                        badge = `<span style="color:var(--success);background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);padding:2px 7px;border-radius:5px;font-size:0.6rem;">✅ READY &amp; SAVED</span>`;
+                        badge = `<span style="color:var(--success);background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.5);padding:2px 7px;border-radius:5px;font-size:0.6rem;">✅ READY &amp; SAVED</span>`;
                         borderCol = 'var(--success)';
                     } else if (it.status === 'FAILED') {
-                        badge = `<span style="color:var(--danger);background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.4);padding:2px 7px;border-radius:5px;font-size:0.6rem;">✕ FAILED</span>`;
+                        badge = `<span style="color:var(--danger);background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.5);padding:2px 7px;border-radius:5px;font-size:0.6rem;">✕ FAILED</span>`;
                         borderCol = 'var(--danger)';
                     }
 
@@ -6605,7 +6633,7 @@
                         const masked = `${it.pat_token.slice(0, 7)}••••••••••••••••${it.pat_token.slice(-4)}`;
                         const isShown = _patRevealedSet.has(idx);
                         bodyRow = `
-                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px;background:var(--bg-input);border:1px solid rgba(16,185,129,0.4);border-radius:8px;padding:5px 8px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:6px;background:var(--bg-input);border:1px solid rgba(16,185,129,0.45);border-radius:8px;padding:5px 8px;">
                                 <code id="pat_tok_disp_${idx}" style="font-size:0.68rem;color:var(--success);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;">${isShown ? it.pat_token : masked}</code>
                                 <div style="display:flex;gap:4px;flex-shrink:0;">
                                     <button type="button" id="pat_tok_eye_${idx}" class="top-pill" style="padding:3px 7px;font-size:0.64rem;" onclick="toggleRevealPatToken(${idx})">${isShown ? '🙈' : '👁️'}</button>
@@ -6613,13 +6641,13 @@
                                 </div>
                             </div>
                         `;
-                    } else if (it.error) {
-                        bodyRow = `<div style="margin-top:5px;font-size:0.64rem;color:var(--danger);line-height:1.35;">⚠️ Stuck/Error Reason: ${it.error}</div>`;
+                    } else if (it.status === 'FAILED' && it.error) {
+                        bodyRow = `<div style="margin-top:5px;font-size:0.64rem;color:var(--danger);line-height:1.35;">⚠️ ${it.error}</div>`;
                     }
 
                     return `
-                        <div style="background:var(--bg-surface);border:1px solid ${borderCol};border-left:3.5px solid ${borderCol};border-radius:10px;padding:8px 10px;font-family:'JetBrains Mono',monospace;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;font-weight:800;">
+                        <div style="background:var(--bg-surface);border:1px solid ${borderCol};border-left:3.5px solid ${borderCol};border-radius:10px;padding:7px 9px;font-family:'JetBrains Mono',monospace;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.71rem;font-weight:800;">
                                 <span>#${idx + 1} • @${it.username}</span>
                                 ${badge}
                             </div>
@@ -6683,12 +6711,12 @@
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
-            // Buat 100% Full 1 Layar HP tanpa ruang kosong
-            modal.style.padding = '6px';
+            // Full-Screen 1 Layar HP tanpa ruang kosong
+            modal.style.padding = '5px';
             body.style.maxWidth = '540px';
-            body.style.height = 'calc(100dvh - 12px)';
-            body.style.maxHeight = 'calc(100dvh - 12px)';
-            body.style.padding = '11px 12px';
+            body.style.height = 'calc(100dvh - 10px)';
+            body.style.maxHeight = 'calc(100dvh - 10px)';
+            body.style.padding = '10px 11px';
             body.style.display = 'flex';
             body.style.flexDirection = 'column';
             body.style.justifyContent = 'space-between';
@@ -6706,16 +6734,29 @@
                         border-top: 3px double #38bdf8;
                         border-bottom: 3px double #a855f7;
                         background: linear-gradient(90deg, rgba(56,189,248,0.08) 0%, rgba(168,85,247,0.12) 50%, rgba(56,189,248,0.08) 100%);
-                        padding: 6px 10px;
+                        padding: 5px 10px;
                         border-radius: 9px;
                         text-align: center;
                         font-family: 'JetBrains Mono', monospace;
                     }
+                    .pat-label-double-line {
+                        display: block;
+                        width: 100%;
+                        text-align: center;
+                        font-family: 'JetBrains Mono', monospace;
+                        font-size: 0.56rem;
+                        font-weight: 800;
+                        letter-spacing: 0.5px;
+                        border-top: 2px solid rgba(56, 189, 248, 0.55);
+                        border-bottom: 2px solid rgba(168, 85, 247, 0.55);
+                        padding: 3px 4px;
+                        margin-bottom: 5px;
+                    }
                     .pat-realistic-bar-track {
                         width: 100%;
-                        height: 14px;
+                        height: 15px;
                         background: var(--bg-surface);
-                        border: 1px solid rgba(56,189,248,0.45);
+                        border: 1.5px solid rgba(56,189,248,0.55);
                         border-radius: 99px;
                         overflow: hidden;
                         position: relative;
@@ -6727,11 +6768,11 @@
                         background-size: 28px 28px;
                         background-image: linear-gradient(
                             45deg,
-                            rgba(255,255,255,0.22) 25%,
+                            rgba(255,255,255,0.24) 25%,
                             transparent 25%,
                             transparent 50%,
-                            rgba(255,255,255,0.22) 50%,
-                            rgba(255,255,255,0.22) 75%,
+                            rgba(255,255,255,0.24) 50%,
+                            rgba(255,255,255,0.24) 75%,
                             transparent 75%,
                             transparent
                         );
@@ -6742,85 +6783,81 @@
                     }
                 </style>
 
-                <!-- TOP STUDIO HEADER: CENTERED WITH DOUBLE LINES TOP & BOTTOM -->
-                <div class="pat-double-line-hdr" style="position:relative;margin-bottom:8px;flex-shrink:0;">
-                    <div style="font-size:0.53rem;font-weight:800;color:var(--accent-cyan);letter-spacing:1px;text-transform:uppercase;">
-                        ══ STEALTH AUTOMATION • 4-SHOT TELEGRAM PROOF ══
+                <!-- TOP STUDIO HEADER: RATA TENGAH GARIS DUA ATAS-BAWAH -->
+                <div class="pat-double-line-hdr" style="position:relative;margin-bottom:7px;flex-shrink:0;">
+                    <div style="font-size:0.52rem;font-weight:800;color:#38bdf8;letter-spacing:0.9px;text-transform:uppercase;">
+                        STEALTH AUTOMATION • 4-SHOT TELEGRAM PROOF
                     </div>
-                    <h3 style="margin:2px 0 0 0;font-size:0.94rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;">
+                    <h3 style="margin:2px 0 0 0;font-size:0.92rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;">
                         🔑 GitHub PAT Token Studio
                     </h3>
-                    <button type="button" class="top-pill" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:4px 9px;font-size:0.7rem;" onclick="closeAdminPatStudioV2()">✕</button>
+                    <button type="button" class="top-pill" style="position:absolute;right:7px;top:50%;transform:translateY(-50%);padding:4px 8px;font-size:0.68rem;" onclick="closeAdminPatStudioV2()">✕</button>
                 </div>
 
                 <!-- 2 VIEW TABS -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;flex-shrink:0;">
-                    <button type="button" class="subtab-pill active" id="patTabBtnConfig" style="padding:8px 6px;font-size:0.69rem;" onclick="switchPatStudioTab('config')">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px;flex-shrink:0;">
+                    <button type="button" class="subtab-pill active" id="patTabBtnConfig" style="padding:7px 6px;font-size:0.68rem;" onclick="switchPatStudioTab('config')">
                         ⚙️ Token Configurator
                     </button>
-                    <button type="button" class="subtab-pill" id="patTabBtnTelemetry" style="padding:8px 6px;font-size:0.69rem;" onclick="switchPatStudioTab('telemetry')">
+                    <button type="button" class="subtab-pill" id="patTabBtnTelemetry" style="padding:7px 6px;font-size:0.68rem;" onclick="switchPatStudioTab('telemetry')">
                         📡 Live Worker Telemetry
                     </button>
                 </div>
 
-                <!-- PANEL 1: TOKEN CONFIGURATOR (FULL PAGE FLEX) -->
-                <div id="patViewConfigPanel" style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-between;gap:7px;">
-                    <!-- DOUBLE-LINE SECTION HEADER -->
-                    <div class="pat-double-line-hdr" style="padding:4px 8px;flex-shrink:0;">
-                        <span style="font-size:0.6rem;font-weight:800;color:var(--text-primary);letter-spacing:0.7px;">⚙️ STEALTH TOKEN CONFIGURATOR &amp; VAULT PICKER</span>
-                    </div>
-
-                    <!-- 3 STATS COUNTERS -->
+                <!-- PANEL 1: TOKEN CONFIGURATOR (MANUAL PICKER DIPERBESAR + TOMBOL GENERATE RINGKAS) -->
+                <div id="patViewConfigPanel" style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-between;gap:6px;">
+                    <!-- 3 STATS COUNTERS DENGAN GARIS TERANG DI MODE MALAM -->
                     <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;font-family:'JetBrains Mono',monospace;flex-shrink:0;">
-                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:6px;text-align:center;">
-                            <div style="font-size:0.52rem;color:var(--text-muted);font-weight:800;">ARCTIC &amp; YEAR</div>
+                        <div style="background:var(--bg-input);border:1.5px solid rgba(56,189,248,0.68);box-shadow:inset 0 1px 0 rgba(56,189,248,0.22);border-radius:10px;padding:5px;text-align:center;">
+                            <div style="font-size:0.52rem;color:#38bdf8;font-weight:800;">ARCTIC &amp; YEAR</div>
                             <div id="patStatTotal" style="font-size:0.84rem;font-weight:800;color:var(--text-primary);margin-top:1px;">${stats.totalEligible}</div>
                         </div>
-                        <div style="background:var(--bg-input);border:1px solid rgba(245,158,11,0.4);border-radius:10px;padding:6px;text-align:center;">
+                        <div style="background:var(--bg-input);border:1.5px solid rgba(245,158,11,0.68);box-shadow:inset 0 1px 0 rgba(245,158,11,0.22);border-radius:10px;padding:5px;text-align:center;">
                             <div style="font-size:0.52rem;color:var(--warning);font-weight:800;">MISSING PAT</div>
                             <div id="patStatMissing" style="font-size:0.84rem;font-weight:800;color:var(--warning);margin-top:1px;">${stats.missingCount}</div>
                         </div>
-                        <div style="background:var(--bg-input);border:1px solid rgba(16,185,129,0.4);border-radius:10px;padding:6px;text-align:center;">
+                        <div style="background:var(--bg-input);border:1.5px solid rgba(16,185,129,0.68);box-shadow:inset 0 1px 0 rgba(16,185,129,0.22);border-radius:10px;padding:5px;text-align:center;">
                             <div style="font-size:0.52rem;color:var(--success);font-weight:800;">PAT READY</div>
                             <div id="patStatReady" style="font-size:0.84rem;font-weight:800;color:var(--success);margin-top:1px;">${stats.readyCount}</div>
                         </div>
                     </div>
 
                     <!-- TARGET GITHUB USERNAMES INPUT -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:11px;padding:7px 9px;flex-shrink:0;">
+                    <div style="background:var(--bg-input);border:1px solid rgba(99,102,241,0.45);border-left:3.5px solid var(--accent-primary);border-radius:10px;padding:6px 8px;flex-shrink:0;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:6px;">
-                            <span style="font-size:0.58rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.5px;">TARGET GITHUB USERNAMES</span>
+                            <span style="font-size:0.56rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.5px;">TARGET GITHUB USERNAMES</span>
                             <div style="display:flex;align-items:center;gap:5px;">
-                                <span id="patTargetCountBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--text-secondary);background:var(--bg-surface);border:1px solid var(--border-subtle);padding:2px 7px;border-radius:6px;">0 Selected</span>
-                                <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.58rem;color:var(--danger);border-color:rgba(239,68,68,0.35);" onclick="clearPatTargetBox()">✕ Clear</button>
+                                <span id="patTargetCountBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:var(--text-secondary);background:var(--bg-surface);border:1px solid rgba(148,163,184,0.35);padding:2px 6px;border-radius:6px;">0 Selected</span>
+                                <button type="button" class="top-pill" style="padding:2px 6px;font-size:0.56rem;color:var(--danger);border-color:rgba(239,68,68,0.4);" onclick="clearPatTargetBox()">✕ Clear</button>
                             </div>
                         </div>
-                        <input type="text" class="form-input" id="patTargetUsername" placeholder="Type usernames (comma/space separated) or pick below..." style="padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;" oninput="updatePatTargetCounter(); renderPatManualAccountCards();">
+                        <input type="text" class="form-input" id="patTargetUsername" placeholder="Type usernames (comma/space separated) or pick below..." style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:700;" oninput="updatePatTargetCounter(); renderPatManualAccountCards();">
                     </div>
 
-                    <!-- MANUAL ACCOUNT PICKER (FLEXIBLE FULL HEIGHT) -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--warning);border-radius:11px;padding:7px 9px;flex:1;min-height:0;display:flex;flex-direction:column;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-shrink:0;">
-                            <span style="font-size:0.58rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;">⚡ MANUAL ACCOUNT PICKER (MISSING PAT ONLY)</span>
-                            <span id="patManualAvailBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--accent-cyan);">${stats.missingCount} Available</span>
+                    <!-- MANUAL ACCOUNT PICKER (DIPERBESAR MENGISI LAYAR) -->
+                    <div style="background:var(--bg-input);border:1.5px solid rgba(245,158,11,0.5);border-radius:11px;padding:7px 8px;flex:3.2;min-height:190px;display:flex;flex-direction:column;">
+                        <div class="pat-double-line-hdr" style="padding:3px 6px;margin-bottom:6px;flex-shrink:0;border-top-color:var(--warning);border-bottom-color:var(--warning);">
+                            <span style="font-size:0.58rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;">
+                                ⚡ MANUAL ACCOUNT PICKER (<span id="patManualAvailBadge">${stats.missingCount} AVAILABLE</span>)
+                            </span>
                         </div>
                         <div id="patManualCardsList" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:2px;"></div>
                     </div>
 
-                    <!-- 3 SCOPE OPTIONS, EXPIRATION & 5 INTER-ACCOUNT DELAY OPTIONS -->
-                    <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+                    <!-- SCOPE PRESET, TOKEN EXPIRATION & INTER-ACCOUNT COOLDOWN (LABEL RATA TENGAH GARIS ATAS-BAWAH) -->
+                    <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-cyan);border-radius:10px;padding:6px 8px;">
-                                <label style="display:block;font-size:0.54rem;font-weight:800;color:var(--accent-cyan);margin-bottom:3px;">🛡️ SCOPE PRESET</label>
-                                <select class="form-input" id="patScopePreset" style="padding:6px 7px;font-size:0.68rem;font-weight:700;">
+                            <div style="background:var(--bg-input);border:1px solid rgba(56,189,248,0.4);border-radius:10px;padding:5px 7px;">
+                                <label class="pat-label-double-line" style="color:#38bdf8;">🛡️ SCOPE PRESET</label>
+                                <select class="form-input" id="patScopePreset" style="padding:5px 6px;font-size:0.67rem;font-weight:700;">
                                     <option value="repo_workflow">1. Ultra Safe (repo &amp; workflow)</option>
                                     <option value="safe_5" selected>2. Safe 5-Scopes (repo, workflow, admin:org, user, delete_repo)</option>
                                     <option value="all">3. Full Checklist (All Scopes)</option>
                                 </select>
                             </div>
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--warning);border-radius:10px;padding:6px 8px;">
-                                <label style="display:block;font-size:0.54rem;font-weight:800;color:var(--warning);margin-bottom:3px;">⏳ TOKEN EXPIRATION</label>
-                                <select class="form-input" id="patExpiryDays" style="padding:6px 7px;font-size:0.68rem;font-weight:700;">
+                            <div style="background:var(--bg-input);border:1px solid rgba(245,158,11,0.4);border-radius:10px;padding:5px 7px;">
+                                <label class="pat-label-double-line" style="color:var(--warning);">⏳ TOKEN EXPIRATION</label>
+                                <select class="form-input" id="patExpiryDays" style="padding:5px 6px;font-size:0.67rem;font-weight:700;">
                                     <option value="90" selected>90 Days (Recommended)</option>
                                     <option value="30">30 Days (Ultra Safe)</option>
                                     <option value="none">No Expiration (Permanent)</option>
@@ -6828,10 +6865,9 @@
                             </div>
                         </div>
 
-                        <!-- 5 RANDOM INTER-ACCOUNT COOLDOWN OPTIONS -->
-                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--success);border-radius:10px;padding:6px 8px;">
-                            <label style="display:block;font-size:0.54rem;font-weight:800;color:var(--success);margin-bottom:3px;">⏱️ INTER-ACCOUNT COOLDOWN (ANTI-FLAG RANDOM DELAY)</label>
-                            <select class="form-input" id="patBatchDelayMode" style="padding:6px 7px;font-size:0.68rem;font-weight:700;">
+                        <div style="background:var(--bg-input);border:1px solid rgba(16,185,129,0.4);border-radius:10px;padding:5px 7px;">
+                            <label class="pat-label-double-line" style="color:var(--success);">⏱️ INTER-ACCOUNT COOLDOWN</label>
+                            <select class="form-input" id="patBatchDelayMode" style="padding:5px 6px;font-size:0.67rem;font-weight:700;">
                                 <option value="60,180">1. 1 – 3 Minutes Random (Fast Batch)</option>
                                 <option value="180,360" selected>2. 3 – 6 Minutes Random (Recommended Safe)</option>
                                 <option value="300,600">3. 5 – 10 Minutes Random (Medium Stealth)</option>
@@ -6841,67 +6877,68 @@
                         </div>
                     </div>
 
-                    <button type="button" class="btn-ui primary" id="btnStartPatGen" style="width:100%;padding:11px;font-size:0.78rem;border-radius:11px;flex-shrink:0;" onclick="startAdminPatGeneration()">
+                    <!-- TOMBOL GENERATE RINGKAS (TIDAK KEBESARAN) -->
+                    <button type="button" class="btn-ui primary" id="btnStartPatGen" style="width:100%;padding:8px 10px;font-size:0.73rem;border-radius:9px;flex-shrink:0;" onclick="startAdminPatGeneration()">
                         🚀 Generate PAT Token Now
                     </button>
                 </div>
 
-                <!-- PANEL 2: LIVE WORKER TELEMETRY (FULL PAGE FLEX) -->
-                <div id="patViewTelemetryPanel" style="flex:1;min-height:0;display:none;flex-direction:column;justify-content:space-between;gap:7px;">
+                <!-- PANEL 2: LIVE WORKER TELEMETRY (REAL-TIME STREAM DIPERBESAR FULL PAGE) -->
+                <div id="patViewTelemetryPanel" style="flex:1;min-height:0;display:none;flex-direction:column;justify-content:space-between;gap:6px;">
                     <!-- DOUBLE-LINE CENTERED TELEMETRY HEADER -->
-                    <div class="pat-double-line-hdr" style="padding:6px 9px;flex-shrink:0;">
-                        <div id="patTelHeaderTitle" style="font-size:0.69rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.5px;text-align:center;">
+                    <div class="pat-double-line-hdr" style="padding:5px 8px;flex-shrink:0;">
+                        <div id="patTelHeaderTitle" style="font-size:0.68rem;font-weight:800;color:#38bdf8;letter-spacing:0.5px;text-align:center;">
                             ⏳ WAITING FOR STEALTH BATCH QUEUE...
                         </div>
                         <div style="margin-top:3px;display:flex;justify-content:center;align-items:center;gap:8px;">
-                            <span id="patTelHeaderBadge" style="font-size:0.6rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);padding:2px 9px;border-radius:99px;">
+                            <span id="patTelHeaderBadge" style="font-size:0.58rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.45);padding:1px 9px;border-radius:99px;">
                                 Batch 0/0 • 0%
                             </span>
                         </div>
                     </div>
 
                     <!-- REALISTIC LOADING BAR + CENTERED 4-STAGE PILLS -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:12px;padding:8px 10px;flex-shrink:0;">
-                        <div class="pat-realistic-bar-track" style="margin-bottom:8px;">
+                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:11px;padding:7px 9px;flex-shrink:0;">
+                        <div class="pat-realistic-bar-track" style="margin-bottom:7px;">
                             <div class="pat-realistic-bar-fill" id="patTelProgressBar" style="width:0%;"></div>
-                            <span id="patTelProgressPctText" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#ffffff;text-shadow:0 1px 3px rgba(0,0,0,0.9);">0%</span>
+                            <span id="patTelProgressPctText" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#ffffff;text-shadow:0 1px 3px rgba(0,0,0,0.95);">0%</span>
                         </div>
-                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.57rem;font-weight:800;text-align:center;">
-                            <div id="patStagePill1" style="padding:5px 3px;border-radius:7px;border:1px solid var(--border-subtle);color:var(--text-muted);text-align:center;">1. Login<div style="font-size:0.5rem;opacity:0.8;">25%</div></div>
-                            <div id="patStagePill2" style="padding:5px 3px;border-radius:7px;border:1px solid var(--border-subtle);color:var(--text-muted);text-align:center;">2. 2FA OTP<div style="font-size:0.5rem;opacity:0.8;">55%</div></div>
-                            <div id="patStagePill3" style="padding:5px 3px;border-radius:7px;border:1px solid var(--border-subtle);color:var(--text-muted);text-align:center;">3. Scopes<div style="font-size:0.5rem;opacity:0.8;">85%</div></div>
-                            <div id="patStagePill4" style="padding:5px 3px;border-radius:7px;border:1px solid var(--border-subtle);color:var(--text-muted);text-align:center;">4. Sheet1<div style="font-size:0.5rem;opacity:0.8;">100%</div></div>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;text-align:center;">
+                            <div id="patStagePill1" style="padding:4px 3px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);text-align:center;">1. Login<div style="font-size:0.5rem;opacity:0.8;">25%</div></div>
+                            <div id="patStagePill2" style="padding:4px 3px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);text-align:center;">2. 2FA OTP<div style="font-size:0.5rem;opacity:0.8;">55%</div></div>
+                            <div id="patStagePill3" style="padding:4px 3px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);text-align:center;">3. Scopes<div style="font-size:0.5rem;opacity:0.8;">85%</div></div>
+                            <div id="patStagePill4" style="padding:4px 3px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);text-align:center;">4. Sheet1<div style="font-size:0.5rem;opacity:0.8;">100%</div></div>
                         </div>
                     </div>
 
-                    <!-- REAL-TIME AUTOMATION STREAM (EXPANDS TO FILL SCREEN) -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:12px;padding:8px 10px;flex:1.15;min-height:0;display:flex;flex-direction:column;">
+                    <!-- REAL-TIME AUTOMATION STREAM (DIPERBESAR MENGISI LAYAR) -->
+                    <div style="background:var(--bg-input);border:1.5px solid rgba(56,189,248,0.55);border-radius:11px;padding:7px 9px;flex:2.8;min-height:190px;display:flex;flex-direction:column;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-shrink:0;">
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">🖥️ REAL-TIME AUTOMATION STREAM</span>
-                            <div style="display:flex;align-items:center;gap:6px;">
-                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--success);">● LIVE</span>
-                                <button type="button" class="top-pill" style="padding:2px 8px;font-size:0.58rem;color:var(--danger);border-color:rgba(239,68,68,0.4);" onclick="cancelAdminPatBatch()">🛑 Stop</button>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;">🖥️ REAL-TIME AUTOMATION STREAM</span>
+                            <div style="display:flex;align-items:center;gap:5px;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:var(--success);">● LIVE</span>
+                                <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.56rem;color:var(--danger);border-color:rgba(239,68,68,0.45);" onclick="cancelAdminPatBatch()">🛑 Stop</button>
                             </div>
                         </div>
-                        <div id="patTelStreamBox" style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;flex:1;min-height:0;overflow-y:auto;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:8px;padding:7px 8px;">
-                            <div style="color:var(--text-muted);">Ready to dispatch stealth worker jobs...</div>
+                        <div id="patTelStreamBox" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;flex:1;min-height:0;overflow-y:auto;background:var(--bg-surface);border:1px solid rgba(148,163,184,0.28);border-radius:8px;padding:6px 7px;">
+                            <div style="color:var(--text-muted);text-align:center;padding:12px;">Ready to dispatch stealth worker jobs...</div>
                         </div>
                     </div>
 
-                    <!-- GENERATED PAT TOKENS VAULT (EXPANDS TO FILL SCREEN) -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:12px;padding:8px 10px;flex:1;min-height:0;display:flex;flex-direction:column;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-shrink:0;">
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--success);">🔐 GENERATED PAT TOKENS</span>
-                            <button type="button" class="top-pill" style="padding:3px 8px;font-size:0.6rem;color:var(--success);border-color:rgba(16,185,129,0.45);" onclick="copyAllCompletedPats()">📋 Copy All Ready</button>
+                    <!-- GENERATED PAT TOKENS VAULT (RINGKAS DI BAWAH) -->
+                    <div style="background:var(--bg-input);border:1px solid rgba(16,185,129,0.5);border-radius:11px;padding:7px 9px;flex:0.85;min-height:95px;max-height:135px;display:flex;flex-direction:column;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-shrink:0;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--success);">🔐 GENERATED PAT TOKENS</span>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.56rem;color:var(--success);border-color:rgba(16,185,129,0.45);" onclick="copyAllCompletedPats()">📋 Copy All Ready</button>
                         </div>
-                        <div id="patTelTokensList" style="display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;overflow-y:auto;"></div>
+                        <div id="patTelTokensList" style="display:flex;flex-direction:column;gap:5px;flex:1;min-height:0;overflow-y:auto;"></div>
                     </div>
                 </div>
             `;
 
             renderPatManualAccountCards();
 
-            // Pulihkan state lokal terakhir secara instan sebelum menarik status terbaru dari Cloud
+            // Pulihkan state lokal terakhir secara instan saat reload / reopen
             const cached = loadPatStudioLocalCache();
             if (cached && cached.batch) {
                 if (Array.isArray(cached.logs) && cached.logs.length > 0) _patLogLines = cached.logs;
@@ -6937,7 +6974,7 @@
             _patLogLines = [{
                 time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
                 tag: '[QUEUE]',
-                msg: `Enqueued ${selectedList.length} account(s) • Preset: [${scopePreset}] • Delay: ${Math.round(delayMin/60)}-${Math.round(delayMax/60)}m...`,
+                msg: `[0/4] Enqueued ${selectedList.length} account(s) • Preset: [${scopePreset}] • Cooldown: ${Math.round(delayMin/60)}-${Math.round(delayMax/60)}m`,
                 isDone: false,
                 isErr: false
             }];
