@@ -6218,93 +6218,90 @@
             }
         }
 
-        function handleCustomPatPasteSplit(rawVal) {
-            if (!rawVal) return;
-            const uInp = document.getElementById('patCustomUserInput');
-            const pInp = document.getElementById('patCustomPassInput');
-            const tInp = document.getElementById('patCustomTwofaInput');
+        function parseCustomSingleBoxAccounts(rawVal) {
+            const text = String(rawVal || '').trim();
+            if (!text) return [];
 
-            const lines = rawVal.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+            const parsed = [];
+            const pushAcc = (u, p, t) => {
+                const cleanU = String(u || '').replace(/^@/, '').trim();
+                const cleanP = String(p || '').trim();
+                const cleanT = String(t || '-').trim() || '-';
+                if (cleanU && cleanP) {
+                    parsed.push({ username: cleanU, password: cleanP, twofa: cleanT });
+                }
+            };
 
-            // Case A: Bulk multi-line paste (banyak akun sekaligus dengan | atau ,)
-            if (lines.length >= 2 && lines.every(ln => ln.includes('|') || (ln.split(',').length >= 2))) {
-                let addedBulk = 0;
-                lines.forEach(ln => {
-                    const sep = ln.includes('|') ? '|' : ',';
-                    const pts = ln.split(sep).map(x => x.trim());
-                    const u = (pts[0] || '').replace(/^@/, '');
-                    const p = pts[1] || '';
-                    const t = pts[2] || '-';
-                    if (u && p) {
-                        _patCustomAccountsMap.set(u.toLowerCase(), { username: u, password: p, twofa: t });
-                        addedBulk++;
+            // Jika dipisah baris kosong (banyak blok susun ke bawah)
+            if (/\r?\n\s*\r?\n/.test(text)) {
+                const blocks = text.split(/\r?\n\s*\r?\n/);
+                blocks.forEach(blk => {
+                    const bLines = blk.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+                    if (bLines.length === 1 && (bLines[0].includes('|') || bLines[0].includes(','))) {
+                        const sep = bLines[0].includes('|') ? '|' : ',';
+                        const pts = bLines[0].split(sep);
+                        pushAcc(pts[0], pts[1], pts[2]);
+                    } else if (bLines.length >= 2) {
+                        pushAcc(bLines[0], bLines[1], bLines[2]);
                     }
                 });
-                if (addedBulk > 0) {
-                    if (uInp) uInp.value = '';
-                    if (pInp) pInp.value = '';
-                    if (tInp) tInp.value = '';
-                    const box = document.getElementById('patTargetUsername');
-                    if (box) box.value = getCombinedSelectedPatUsernames().join(', ');
-                    updatePatTargetCounter();
-                    renderCustomPatQueuedList();
-                    showToast(`✅ Auto-queued ${addedBulk} custom account(s)!`);
+                return parsed;
+            }
+
+            const lines = text.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+            const hasDelimiter = lines.some(ln => ln.includes('|') || ln.includes(','));
+
+            if (hasDelimiter) {
+                lines.forEach(ln => {
+                    if (ln.includes('|') || ln.includes(',')) {
+                        const sep = ln.includes('|') ? '|' : ',';
+                        const pts = ln.split(sep);
+                        pushAcc(pts[0], pts[1], pts[2]);
+                    }
+                });
+                return parsed;
+            }
+
+            // Format susun ke bawah: Baris 1 = Username, Baris 2 = Password, Baris 3 = 2FA
+            if (lines.length === 2) {
+                pushAcc(lines[0], lines[1], '-');
+            } else if (lines.length >= 3) {
+                for (let i = 0; i + 1 < lines.length; i += 3) {
+                    pushAcc(lines[i], lines[i + 1], lines[i + 2]);
                 }
-                return;
             }
-
-            // Case B: Format susun ke bawah (Baris 1: username, Baris 2: password, Baris 3: 2fa)
-            if (lines.length >= 2 && !lines[0].includes('|') && !lines[0].includes(',')) {
-                if (uInp) uInp.value = lines[0].replace(/^@/, '');
-                if (pInp && lines[1]) pInp.value = lines[1];
-                if (tInp && lines[2]) tInp.value = lines[2];
-                return;
-            }
-
-            // Case C: Satu baris dengan pemisah "|" atau "," (user|pass|2fa atau user,pass,2fa)
-            const singleLine = lines[0] || rawVal;
-            if (singleLine.includes('|') || singleLine.includes(',')) {
-                const sep = singleLine.includes('|') ? '|' : ',';
-                const parts = singleLine.split(sep).map(s => s.trim());
-                if (uInp && parts[0]) uInp.value = parts[0].replace(/^@/, '');
-                if (pInp && parts[1] !== undefined) pInp.value = parts[1];
-                if (tInp && parts[2] !== undefined) tInp.value = parts[2];
-            }
+            return parsed;
         }
 
         function addCustomPatAccountToQueue(silentIfEmpty = false) {
             const uInp = document.getElementById('patCustomUserInput');
-            const pInp = document.getElementById('patCustomPassInput');
-            const tInp = document.getElementById('patCustomTwofaInput');
-            if (!uInp || !pInp) return false;
+            if (!uInp) return false;
 
-            const rawU = uInp.value.replace(/^@/, '').trim();
-            const rawP = pInp.value.trim();
-            const rawT = (tInp ? tInp.value.trim() : '') || '-';
+            const rawText = uInp.value.trim();
+            if (!rawText) return false;
 
-            if (!rawU && !rawP) return false;
-            if (!rawU || !rawP) {
-                if (!silentIfEmpty) showToast('⚠️ Enter both GitHub Username and Password!');
+            const accounts = parseCustomSingleBoxAccounts(rawText);
+            if (accounts.length === 0) {
+                if (!silentIfEmpty) {
+                    showToast('⚠️ Format invalid! Use user|pass|2fa, user,pass,2fa, or 3 lines down.');
+                }
                 return false;
             }
 
-            _patCustomAccountsMap.set(rawU.toLowerCase(), {
-                username: rawU,
-                password: rawP,
-                twofa: rawT
+            accounts.forEach(acc => {
+                _patCustomAccountsMap.set(acc.username.toLowerCase(), acc);
             });
 
             uInp.value = '';
-            pInp.value = '';
-            if (tInp) tInp.value = '';
-
             const box = document.getElementById('patTargetUsername');
             if (box) {
                 box.value = getCombinedSelectedPatUsernames().join(', ');
             }
             updatePatTargetCounter();
             renderCustomPatQueuedList();
-            if (!silentIfEmpty) showToast(`✅ Added custom account @${rawU} to queue!`);
+            if (!silentIfEmpty) {
+                showToast(`✅ Added ${accounts.length} custom account(s) to queue!`);
+            }
             return true;
         }
 
@@ -6516,11 +6513,7 @@
             const box = document.getElementById('patTargetUsername');
             if (box) box.value = '';
             const uInp = document.getElementById('patCustomUserInput');
-            const pInp = document.getElementById('patCustomPassInput');
-            const tInp = document.getElementById('patCustomTwofaInput');
             if (uInp) uInp.value = '';
-            if (pInp) pInp.value = '';
-            if (tInp) tInp.value = '';
             updatePatTargetCounter();
             renderPatManualAccountCards();
             renderCustomPatQueuedList();
@@ -7111,14 +7104,10 @@
                         <!-- LIST 1: SHEET1 MISSING PAT CARDS -->
                         <div id="patManualCardsList" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:2px;"></div>
 
-                        <!-- LIST 2: CUSTOM MANUAL CREDENTIALS (USERNAME + PASSWORD + 2FA) -->
+                        <!-- LIST 2: SINGLE-BOX CUSTOM CREDENTIALS (| , OR 3 LINES VERTICAL) -->
                         <div id="patCustomCredsPanel" style="flex:1;min-height:0;display:none;flex-direction:column;justify-content:space-between;gap:5px;">
                             <div style="display:flex;flex-direction:column;gap:5px;flex-shrink:0;">
-                                <textarea rows="2" class="form-input" id="patCustomUserInput" placeholder="👤 Username (paste user|pass|2fa, user,pass,2fa, or 3 lines down)" style="padding:5px 9px;font-family:'JetBrains Mono',monospace;font-size:0.69rem;font-weight:700;resize:none;line-height:1.35;" oninput="handleCustomPatPasteSplit(this.value)"></textarea>
-                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
-                                    <input type="text" class="form-input" id="patCustomPassInput" placeholder="🔑 Password" style="padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;">
-                                    <input type="text" class="form-input" id="patCustomTwofaInput" placeholder="🔐 2FA Secret (Opt)" style="padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:700;">
-                                </div>
+                                <textarea rows="3" class="form-input" id="patCustomUserInput" placeholder="✍️ Paste 1 or many accounts:&#10;• user|pass|2fa  or  user,pass,2fa&#10;• Or 3 lines down (user ↵ pass ↵ 2fa)" style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:0.69rem;font-weight:700;resize:none;line-height:1.35;"></textarea>
                                 <button type="button" class="top-pill" style="width:100%;justify-content:center;padding:6px 8px;font-size:0.64rem;font-family:'JetBrains Mono',monospace;color:#38bdf8;border-color:rgba(56,189,248,0.55);background:rgba(56,189,248,0.12);" onclick="addCustomPatAccountToQueue(false)">
                                     ➕ Add Custom Account to Queue
                                 </button>
