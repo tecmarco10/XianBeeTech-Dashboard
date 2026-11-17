@@ -10,37 +10,37 @@
 
         /* =========================================================
            🎨 DUAL THEME ENGINE (OBSIDIAN DARK & PLATINUM LIGHT)
-           ========================================================= *////////
+           ========================================================= */
         :root,
         [data-theme="obsidian"] {
-            --bg-base: #07080d;
-            --bg-surface: #0f111a;
-            --bg-elevated: rgba(17, 20, 31, 0.94);
-            --bg-card: rgba(22, 26, 40, 0.82);
-            --bg-card-hover: rgba(31, 36, 56, 0.98);
-            --bg-subtab: rgba(13, 15, 24, 0.94);
-            --bg-input: #0b0d14;
-            --bg-soft: rgba(255, 255, 255, 0.045);
+            --bg-base: #060913;
+            --bg-surface: #0f1629;
+            --bg-elevated: rgba(15, 22, 41, 0.96);
+            --bg-card: #141d35;
+            --bg-card-hover: #1b2747;
+            --bg-subtab: #11192e;
+            --bg-input: #0b1120;
+            --bg-soft: rgba(56, 189, 248, 0.08);
 
             --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --text-muted: #64748b;
+            --text-secondary: #cbd5e1;
+            --text-muted: #94a3b8;
 
             --accent-primary: #6366f1;
-            --accent-secondary: #8b5cf6;
-            --accent-cyan: #06b6d4;
-            --grad-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 52%, #06b6d4 100%);
+            --accent-secondary: #a855f7;
+            --accent-cyan: #38bdf8;
+            --grad-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 52%, #0284c7 100%);
             --grad-danger: linear-gradient(135deg, #dc2626 0%, #f43f5e 100%);
-            --grad-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(6, 182, 212, 0.10) 100%);
+            --grad-subtle: linear-gradient(135deg, rgba(99, 102, 241, 0.22) 0%, rgba(56, 189, 248, 0.16) 100%);
 
-            --border-subtle: rgba(255, 255, 255, 0.085);
-            --border-focus: rgba(99, 102, 241, 0.58);
-            --shadow-card: 0 8px 28px rgba(0, 0, 0, 0.38);
-            --shadow-glow: 0 8px 24px rgba(99, 102, 241, 0.28);
+            --border-subtle: rgba(148, 163, 184, 0.22);
+            --border-focus: rgba(56, 189, 248, 0.65);
+            --shadow-card: 0 10px 28px rgba(0, 0, 0, 0.52);
+            --shadow-glow: 0 8px 24px rgba(79, 70, 229, 0.38);
 
             --success: #10b981;
-            --warning: #f59e0b;
-            --danger: #ef4444;
+            --warning: #fbbf24;
+            --danger: #f87171;
         }
 
         [data-theme="platinum"] {
@@ -368,11 +368,12 @@
         }
 
         .subtab-pill.active {
-            background: var(--grad-primary);
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.28);
+            background-color: #4f46e5 !important;
+            background-image: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #0284c7 100%) !important;
+            color: #ffffff !important;
+            border-color: rgba(56, 189, 248, 0.65);
             border-left: 4px solid #fde047;
-            border-bottom: 3px solid rgba(15, 23, 42, 0.8);
+            border-bottom: 3px solid rgba(15, 23, 42, 0.85);
             box-shadow: var(--shadow-glow);
         }
 
@@ -619,8 +620,9 @@
         }
 
         .btn-ui.primary {
-            background: var(--grad-primary);
-            color: #ffffff;
+            background-color: #4f46e5 !important;
+            background-image: linear-gradient(135deg, #4f46e5 0%, #7c3aed 55%, #0284c7 100%) !important;
+            color: #ffffff !important;
             box-shadow: var(--shadow-glow);
         }
 
@@ -719,18 +721,30 @@
 
         .progress-track {
             width: 100%;
-            height: 9px;
-            background: var(--bg-input);
+            height: 12px;
+            background: linear-gradient(90deg, rgba(56, 189, 248, 0.16) 0%, rgba(124, 58, 237, 0.18) 100%);
             border-radius: 99px;
             overflow: hidden;
-            border: 1px solid var(--border-subtle);
+            border: 1.5px solid rgba(56, 189, 248, 0.55);
+            box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.45), 0 0 12px rgba(56, 189, 248, 0.2);
             margin-top: 6px;
+            position: relative;
         }
 
         .progress-fill {
             height: 100%;
-            background: var(--grad-primary);
+            min-width: 14px;
+            background: linear-gradient(90deg, #06b6d4 0%, #6366f1 50%, #10b981 100%);
+            background-size: 200% 100%;
+            animation: xbNeonBarFlow 2.4s linear infinite;
             border-radius: 99px;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.75);
+            transition: width 0.35s ease;
+        }
+
+        @keyframes xbNeonBarFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
         }
 
         /* =========================================================
@@ -816,7 +830,7 @@
             flex: 1;
             background: transparent;
             border: none;
-            color: var(--text-muted);
+            color: #cbd5e1;
             font-family: inherit;
             font-size: 0.67rem;
             font-weight: 800;
@@ -828,7 +842,10 @@
             padding: 6px 2px;
         }
 
-        .bnav-btn.active { color: var(--accent-cyan); }
+        .bnav-btn.active {
+            color: #38bdf8;
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.65);
+        }
 
         .toast-msg {
             position: fixed;
@@ -1477,6 +1494,34 @@
             padding: 10px 12px;
             text-align: center;
             font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* HIGH-CONTRAST PAT STUDIO OVERRIDES */
+        #paymentGatewayModal button {
+            color: #f8fafc;
+        }
+        [data-theme="platinum"] #paymentGatewayModal button {
+            color: #0f172a;
+        }
+        #paymentGatewayModal [id*="ProgressTrack"],
+        #paymentGatewayModal [id*="progressTrack"],
+        #paymentGatewayModal [id*="patBarTrack"],
+        #paymentGatewayModal .pat-progress-track {
+            background: linear-gradient(90deg, rgba(6, 182, 212, 0.22) 0%, rgba(99, 102, 241, 0.24) 50%, rgba(16, 185, 129, 0.22) 100%) !important;
+            border: 1.5px solid #38bdf8 !important;
+            box-shadow: 0 0 14px rgba(56, 189, 248, 0.3) !important;
+            height: 16px !important;
+            border-radius: 999px !important;
+        }
+        #paymentGatewayModal [id*="ProgressFill"],
+        #paymentGatewayModal [id*="progressFill"],
+        #paymentGatewayModal [id*="patBarFill"],
+        #paymentGatewayModal .pat-progress-fill {
+            min-width: 18px !important;
+            background: linear-gradient(90deg, #06b6d4 0%, #6366f1 45%, #a855f7 75%, #10b981 100%) !important;
+            background-size: 200% 100% !important;
+            animation: xbNeonBarFlow 2s linear infinite !important;
+            box-shadow: 0 0 16px rgba(56, 189, 248, 0.85) !important;
         }
     </style>
     <!-- Chart.js for Slick 3D/Gradient Interactive Graphs -->
@@ -6750,6 +6795,27 @@
             }
             if (progFill) {
                 progFill.style.width = `${pct}%`;
+                if (pct <= 30) {
+                    // Tahap awal: spektrum warna gelap (deep dark neon)
+                    progFill.style.backgroundImage = 'linear-gradient(90deg, #1e1b4b 0%, #311042 35%, #1e3a8a 70%, #115e59 100%)';
+                    progFill.style.filter = 'brightness(0.85) saturate(1.15)';
+                    progFill.style.boxShadow = '0 0 10px rgba(79, 70, 229, 0.45)';
+                } else if (pct <= 65) {
+                    // Tahap tengah: spektrum warna mulai menyala
+                    progFill.style.backgroundImage = 'linear-gradient(90deg, #2563eb 0%, #0891b2 30%, #7c3aed 65%, #db2777 100%)';
+                    progFill.style.filter = 'brightness(1.05) saturate(1.25)';
+                    progFill.style.boxShadow = '0 0 15px rgba(139, 92, 246, 0.65)';
+                } else if (pct < 100) {
+                    // Tahap akhir: spektrum warna cerah
+                    progFill.style.backgroundImage = 'linear-gradient(90deg, #06b6d4 0%, #6366f1 28%, #c084fc 56%, #f43f5e 80%, #10b981 100%)';
+                    progFill.style.filter = 'brightness(1.2) saturate(1.35)';
+                    progFill.style.boxShadow = '0 0 20px rgba(56, 189, 248, 0.78)';
+                } else {
+                    // 100% Selesai: spektrum warna paling terang & bersinar maksimal
+                    progFill.style.backgroundImage = 'linear-gradient(90deg, #38bdf8 0%, #818cf8 22%, #e879f9 45%, #fde047 72%, #34d399 100%)';
+                    progFill.style.filter = 'brightness(1.38) saturate(1.45)';
+                    progFill.style.boxShadow = '0 0 24px rgba(56, 189, 248, 0.9), 0 0 36px rgba(16, 185, 129, 0.65)';
+                }
             }
             if (progPctTxt) {
                 progPctTxt.innerText = `${pct}%`;
@@ -6952,23 +7018,36 @@
                     .pat-realistic-bar-track {
                         width: 100%;
                         height: 18px;
-                        background: #070912;
-                        border: 1.5px solid rgba(129, 140, 248, 0.55);
+                        background: linear-gradient(90deg, rgba(30, 27, 75, 0.85) 0%, rgba(59, 7, 100, 0.78) 50%, rgba(12, 74, 110, 0.85) 100%);
+                        border: 1.5px solid rgba(56, 189, 248, 0.65);
                         border-radius: 10px;
                         overflow: hidden;
                         position: relative;
-                        box-shadow: inset 0 2px 7px rgba(0, 0, 0, 0.85), 0 0 14px rgba(99, 102, 241, 0.22);
+                        box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.65), 0 0 14px rgba(99, 102, 241, 0.28);
                     }
                     .pat-realistic-bar-fill {
+                        display: block;
                         height: 100%;
-                        background: linear-gradient(90deg, #06b6d4 0%, #3b82f6 25%, #8b5cf6 50%, #ec4899 75%, #10b981 100%);
-                        background-size: 240% 100%;
-                        animation: patAuroraFlow 3.2s ease infinite;
+                        background-image: linear-gradient(90deg, #1e1b4b 0%, #2563eb 20%, #06b6d4 40%, #8b5cf6 60%, #ec4899 80%, #10b981 100%);
+                        background-size: 220% 100%;
+                        animation: patAuroraFlow 2.8s ease infinite;
                         border-radius: 8px;
                         position: relative;
                         overflow: hidden;
-                        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-                        box-shadow: 0 0 16px rgba(139, 92, 246, 0.65);
+                        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1), filter 0.45s ease, box-shadow 0.45s ease;
+                    }
+                    .pat-realistic-bar-fill::before {
+                        content: '';
+                        position: absolute;
+                        inset: 0;
+                        background-image: repeating-linear-gradient(
+                            -45deg,
+                            rgba(255, 255, 255, 0.14) 0px,
+                            rgba(255, 255, 255, 0.14) 6px,
+                            transparent 6px,
+                            transparent 12px
+                        );
+                        pointer-events: none;
                     }
                     .pat-realistic-bar-fill::after {
                         content: '';
@@ -6976,8 +7055,9 @@
                         top: 0;
                         bottom: 0;
                         width: 45%;
-                        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.45), transparent);
-                        animation: patSheenSweep 1.8s ease-in-out infinite;
+                        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+                        animation: patSheenSweep 1.6s ease-in-out infinite;
+                        pointer-events: none;
                     }
                     .pat-double-line-hdr {
                         border-top: 3px double #38bdf8;
