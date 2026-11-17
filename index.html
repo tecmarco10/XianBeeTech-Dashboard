@@ -6182,6 +6182,7 @@
 
 // --- 🔑 ADMIN EXECUTIVE GITHUB PAT STUDIO V3 (ZERO-SCROLL COCKPIT) ---
         const XB_PAT_SECRET = "XB-PAT-GUARD-2026";
+        const XB_PAT_LOCAL_STORAGE_KEY = "xb_pat_studio_state_v4";
         let _patPollTimer = null;
         let _patLatestBatchItems = [];
         let _patRevealedSet = new Set();
@@ -6190,10 +6191,38 @@
         let _patSelectedManualSet = new Set();
         let _patLogLines = [];
 
+        function savePatStudioLocalCache(batchObj) {
+            try {
+                const payload = {
+                    saved_ts: Date.now(),
+                    active_tab: _patActiveViewTab,
+                    logs: _patLogLines.slice(-40),
+                    batch: batchObj || null
+                };
+                localStorage.setItem(XB_PAT_LOCAL_STORAGE_KEY, JSON.stringify(payload));
+            } catch (e) {}
+        }
+
+        function loadPatStudioLocalCache() {
+            try {
+                const raw = localStorage.getItem(XB_PAT_LOCAL_STORAGE_KEY);
+                return raw ? JSON.parse(raw) : null;
+            } catch (e) {
+                return null;
+            }
+        }
+
         function closeAdminPatStudioV2() {
-            if (_patPollTimer) {
-                clearInterval(_patPollTimer);
-                _patPollTimer = null;
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            if (modal) modal.style.padding = '';
+            if (body) {
+                body.style.maxWidth = '';
+                body.style.height = '';
+                body.style.maxHeight = '';
+                body.style.padding = '';
+                body.style.display = '';
+                body.style.flexDirection = '';
             }
             closeModal('paymentGatewayModal');
         }
@@ -6316,7 +6345,7 @@
 
             if (stats.groups.length === 0) {
                 listContainer.innerHTML = `
-                    <div style="padding:14px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.7rem;color:var(--success);font-weight:800;">
+                    <div style="padding:18px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:var(--success);font-weight:800;">
                         ✅ All Arctic & Aged Year Accounts Already Have PAT Tokens!
                     </div>
                 `;
@@ -6390,14 +6419,14 @@
                 [/Memulai browser siluman untuk/gi, 'Launching stealth browser for'],
                 [/Membuka halaman login GitHub untuk/gi, 'Opening GitHub login page for'],
                 [/Input kredensial/gi, 'Entering credentials for'],
-                [/Verifikasi 6-digit 2FA OTP untuk/gi, 'Verifying 6-digit 2FA TOTP for'],
+                [/Verifikasi 6-digit 2FA OTP untuk/gi, 'Entering 6-digit 2FA OTP for'],
                 [/Menunggu/gi, 'Waiting'],
                 [/untuk kode 2FA OTP baru/gi, 'for fresh 2FA TOTP cycle'],
                 [/agar kode Sudo OTP tidak bentrok dengan Login OTP/gi, 'for next Sudo 2FA TOTP cycle'],
                 [/Warm-Up Dashboard GitHub/gi, 'Running dashboard warm-up for'],
                 [/Membuka pengaturan PAT Token/gi, 'Opening developer PAT settings for'],
-                [/Verifikasi Sudo 2FA untuk/gi, 'Verifying Sudo 2FA TOTP for'],
-                [/Konfirmasi Sudo Password untuk/gi, 'Confirming Sudo password for'],
+                [/Verifikasi Sudo 2FA untuk/gi, 'Entering Sudo 2FA TOTP for'],
+                [/Konfirmasi Sudo Password untuk/gi, 'Entering Sudo password for'],
                 [/Mengatur masa aktif PAT/gi, 'Setting token expiration'],
                 [/Mencentang/gi, 'Selecting'],
                 [/Mengklik Generate Token/gi, 'Clicking Generate Token for'],
@@ -6439,17 +6468,38 @@
             const isCompleted = batch.status === 'COMPLETED' || batch.status === 'CANCELLED' || batch.completed === true || (finishedCnt >= total && _patLatestBatchItems.length > 0);
 
             const stepText = translateWorkerLogToEnglish(batch.step || '');
-            let stepSubPct = 0.15;
+            let stepSubPct = 0.12;
             let activeStage = 1;
-            if (/\[2\/4\]|2FA|TOTP|Warm-Up|dashboard/i.test(stepText)) { stepSubPct = 0.45; activeStage = 2; }
-            else if (/\[3\/4\]|Scope|expiration|settings/i.test(stepText)) { stepSubPct = 0.75; activeStage = 3; }
-            else if (/\[4\/4\]|Generating|Clicking Generate|Sheet1/i.test(stepText)) { stepSubPct = 0.92; activeStage = 4; }
+            let stageTitleCenter = '1. LOGIN AUTHENTICATION';
+
+            const pctMatch = stepText.match(/\((\d{1,3})%\)/);
+            if (pctMatch) {
+                stepSubPct = Math.min(0.96, Math.max(0.08, parseInt(pctMatch[1], 10) / 100));
+            }
+
+            if (/\[2\/4\]|2FA|TOTP|Warm-Up|dashboard/i.test(stepText)) {
+                if (!pctMatch) stepSubPct = 0.48;
+                activeStage = 2;
+                stageTitleCenter = '2. 2FA OTP & WARM-UP';
+            } else if (/\[3\/4\]|Scope|expiration|settings|note/i.test(stepText)) {
+                if (!pctMatch) stepSubPct = 0.78;
+                activeStage = 3;
+                stageTitleCenter = '3. SCOPES & EXPIRATION';
+            } else if (/\[4\/4\]|Generating|Clicking Generate|Sheet1/i.test(stepText)) {
+                if (!pctMatch) stepSubPct = 0.94;
+                activeStage = 4;
+                stageTitleCenter = '4. TOKEN DISPATCH & SHEET1';
+            }
 
             const pct = isCompleted
                 ? 100
-                : Math.min(99, Math.max(5, Math.round(((finishedCnt + stepSubPct) / total) * 100)));
+                : Math.min(99, Math.max(6, Math.round(((finishedCnt + stepSubPct) / total) * 100)));
 
-            // Auto-copy newly generated token once
+            if (isCompleted) {
+                activeStage = 4;
+                stageTitleCenter = batch.status === 'CANCELLED' ? '🛑 BATCH CANCELLED' : '✅ 4. SAVED TO SHEET1 (100%)';
+            }
+
             _patLatestBatchItems.forEach(it => {
                 if (it.status === 'COMPLETED' && it.pat_token && !_patAutoCopiedDone.has(it.username)) {
                     _patAutoCopiedDone.add(it.username);
@@ -6463,41 +6513,71 @@
             const hdrTitle = document.getElementById('patTelHeaderTitle');
             const hdrBadge = document.getElementById('patTelHeaderBadge');
             const progFill = document.getElementById('patTelProgressBar');
+            const progPctTxt = document.getElementById('patTelProgressPctText');
+
             if (hdrTitle) {
                 hdrTitle.innerHTML = isCompleted
-                    ? `✅ ALL BATCH JOBS COMPLETED`
-                    : `⏳ RUNNING STEALTH AUTOMATION...`;
+                    ? (batch.status === 'CANCELLED' ? `🛑 BATCH STOPPED BY ADMIN` : `✅ ALL BATCH JOBS COMPLETED`)
+                    : `⚡ ${stageTitleCenter}`;
                 hdrTitle.style.color = isCompleted ? 'var(--success)' : 'var(--accent-cyan)';
             }
             if (hdrBadge) {
-                hdrBadge.innerText = `${finishedCnt} / ${total} Done (${pct}%)`;
+                hdrBadge.innerText = `Batch ${finishedCnt}/${total} • ${pct}%`;
             }
             if (progFill) {
                 progFill.style.width = `${pct}%`;
             }
+            if (progPctTxt) {
+                progPctTxt.innerText = `${pct}%`;
+            }
 
+            const stageNames = ['1. Login', '2. 2FA OTP', '3. Scopes', '4. Sheet1'];
+            const stagePcts = [25, 55, 85, 100];
             [1, 2, 3, 4].forEach(stNum => {
                 const pill = document.getElementById(`patStagePill${stNum}`);
                 if (!pill) return;
-                const isPassed = isCompleted || stNum <= activeStage;
-                pill.style.borderColor = isPassed ? 'var(--success)' : 'var(--border-subtle)';
-                pill.style.color = isPassed ? 'var(--success)' : 'var(--text-muted)';
-                pill.style.background = isPassed ? 'rgba(16,185,129,0.12)' : 'var(--bg-input)';
+                const isPassed = isCompleted || stNum < activeStage;
+                const isCurrent = !isCompleted && stNum === activeStage;
+                pill.style.borderColor = isCurrent ? '#fde047' : (isPassed ? 'var(--success)' : 'var(--border-subtle)');
+                pill.style.color = isCurrent ? '#fde047' : (isPassed ? 'var(--success)' : 'var(--text-muted)');
+                pill.style.background = isCurrent ? 'rgba(250,204,21,0.14)' : (isPassed ? 'rgba(16,185,129,0.12)' : 'var(--bg-input)');
+                pill.innerHTML = `${isPassed ? '✓ ' : (isCurrent ? '⚡ ' : '')}${stageNames[stNum - 1]}<div style="font-size:0.5rem;opacity:0.85;margin-top:1px;">${isPassed ? '100%' : (isCurrent ? pct + '%' : stagePcts[stNum - 1] + '%')}</div>`;
             });
 
-            // Stream Logs (100% English)
+            // Sync all server logs into _patLogLines
             const nowTimeStr = new Date().toLocaleTimeString('en-GB', { hour12: false });
-            if (stepText && (_patLogLines.length === 0 || _patLogLines[_patLogLines.length - 1].msg !== stepText)) {
-                _patLogLines.push({ time: nowTimeStr, tag: isCompleted ? '[COMPLETE]' : '[WORKER]', msg: stepText, isDone: isCompleted });
-                if (_patLogLines.length > 30) _patLogLines = _patLogLines.slice(-30);
+            if (Array.isArray(batch.logs) && batch.logs.length > 0) {
+                const mergedLogs = [];
+                const seenMsg = new Set();
+                batch.logs.forEach(lg => {
+                    const cleanM = translateWorkerLogToEnglish(lg.msg || '');
+                    if (!cleanM || seenMsg.has(cleanM)) return;
+                    seenMsg.add(cleanM);
+                    mergedLogs.push({
+                        time: lg.time || nowTimeStr,
+                        tag: lg.tag || '[WORKER]',
+                        msg: cleanM,
+                        isDone: /completed|saved/i.test(cleanM),
+                        isErr: /fail|error|stop|cancel/i.test(cleanM)
+                    });
+                });
+                if (mergedLogs.length > 0) _patLogLines = mergedLogs.slice(-40);
+            } else if (stepText && (_patLogLines.length === 0 || _patLogLines[_patLogLines.length - 1].msg !== stepText)) {
+                _patLogLines.push({
+                    time: nowTimeStr,
+                    tag: isCompleted ? '[COMPLETE]' : '[WORKER]',
+                    msg: stepText,
+                    isDone: isCompleted,
+                    isErr: /fail|error/i.test(stepText)
+                });
             }
 
             const streamBox = document.getElementById('patTelStreamBox');
             if (streamBox) {
                 streamBox.innerHTML = _patLogLines.map(l => `
-                    <div style="margin-bottom:4px;line-height:1.4;">
+                    <div style="margin-bottom:5px;line-height:1.42;padding-bottom:3px;border-bottom:1px dashed rgba(255,255,255,0.05);">
                         <span style="color:var(--text-muted);">[${l.time}]</span>
-                        <b style="color:${l.isDone ? 'var(--success)' : 'var(--accent-cyan)'};">${l.tag}</b>
+                        <b style="color:${l.isErr ? 'var(--danger)' : (l.isDone ? 'var(--success)' : 'var(--accent-cyan)')};">${l.tag}</b>
                         <span style="color:var(--text-primary);">${l.msg}</span>
                     </div>
                 `).join('');
@@ -6510,10 +6590,10 @@
                     let badge = `<span style="color:var(--text-muted);background:var(--bg-soft);padding:2px 7px;border-radius:5px;font-size:0.6rem;">⏳ QUEUED</span>`;
                     let borderCol = 'var(--border-subtle)';
                     if (it.status === 'RUNNING') {
-                        badge = `<span style="color:var(--accent-cyan);background:rgba(6,182,212,0.14);border:1px solid rgba(6,182,212,0.4);padding:2px 7px;border-radius:5px;font-size:0.6rem;">⚡ RUNNING</span>`;
+                        badge = `<span style="color:var(--accent-cyan);background:rgba(6,182,212,0.14);border:1px solid rgba(6,182,212,0.4);padding:2px 7px;border-radius:5px;font-size:0.6rem;">⚡ RUNNING (${pct}%)</span>`;
                         borderCol = 'var(--accent-cyan)';
                     } else if (it.status === 'COMPLETED') {
-                        badge = `<span style="color:var(--success);background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);padding:2px 7px;border-radius:5px;font-size:0.6rem;">✅ READY & SAVED</span>`;
+                        badge = `<span style="color:var(--success);background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);padding:2px 7px;border-radius:5px;font-size:0.6rem;">✅ READY &amp; SAVED</span>`;
                         borderCol = 'var(--success)';
                     } else if (it.status === 'FAILED') {
                         badge = `<span style="color:var(--danger);background:rgba(239,68,68,0.14);border:1px solid rgba(239,68,68,0.4);padding:2px 7px;border-radius:5px;font-size:0.6rem;">✕ FAILED</span>`;
@@ -6534,7 +6614,7 @@
                             </div>
                         `;
                     } else if (it.error) {
-                        bodyRow = `<div style="margin-top:5px;font-size:0.64rem;color:var(--danger);line-height:1.35;">${it.error}</div>`;
+                        bodyRow = `<div style="margin-top:5px;font-size:0.64rem;color:var(--danger);line-height:1.35;">⚠️ Stuck/Error Reason: ${it.error}</div>`;
                     }
 
                     return `
@@ -6548,9 +6628,11 @@
                     `;
                 }).join('');
             }
+
+            savePatStudioLocalCache(batch);
         }
 
-        async function pollAdminPatBatchStatus() {
+        async function pollAdminPatBatchStatus(autoSwitchIfRunning = false) {
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -6559,8 +6641,15 @@
                 });
                 const data = await res.json();
                 if (data && data.result && data.batch) {
+                    if (autoSwitchIfRunning && data.batch.status === 'RUNNING') {
+                        switchPatStudioTab('telemetry');
+                    }
                     renderPatBatchTelemetry(data.batch);
-                    if (data.batch.status !== 'RUNNING') {
+                    if (data.batch.status === 'RUNNING') {
+                        if (!_patPollTimer) {
+                            _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 3000);
+                        }
+                    } else {
                         clearInterval(_patPollTimer);
                         _patPollTimer = null;
                         syncGoogleSheetInventory(false);
@@ -6586,6 +6675,7 @@
 
         function openAdminPatStudioV2() {
             clearInterval(_patPollTimer);
+            _patPollTimer = null;
             _patRevealedSet.clear();
             _patSelectedManualSet.clear();
 
@@ -6593,20 +6683,78 @@
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
+            // Buat 100% Full 1 Layar HP tanpa ruang kosong
+            modal.style.padding = '6px';
+            body.style.maxWidth = '540px';
+            body.style.height = 'calc(100dvh - 12px)';
+            body.style.maxHeight = 'calc(100dvh - 12px)';
+            body.style.padding = '11px 12px';
+            body.style.display = 'flex';
+            body.style.flexDirection = 'column';
+            body.style.justifyContent = 'space-between';
+            body.style.overflow = 'hidden';
+
             const stats = getOrderedMissingPatGroups();
 
             body.innerHTML = `
-                <!-- HEADER BOX -->
-                <div style="background:var(--bg-input);border:1.5px solid var(--border-focus);border-radius:14px;padding:9px 12px;margin-bottom:9px;display:flex;justify-content:space-between;align-items:center;gap:8px;">
-                    <div style="min-width:0;">
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.9px;text-transform:uppercase;display:block;">STEALTH AUTOMATION • 4-SHOT TELEGRAM PROOF</span>
-                        <h3 style="margin:2px 0 0 0;font-size:0.95rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">🔑 GitHub PAT Token Studio</h3>
+                <style>
+                    @keyframes patCyberBarStripes {
+                        0% { background-position: 0 0; }
+                        100% { background-position: 28px 0; }
+                    }
+                    .pat-double-line-hdr {
+                        border-top: 3px double #38bdf8;
+                        border-bottom: 3px double #a855f7;
+                        background: linear-gradient(90deg, rgba(56,189,248,0.08) 0%, rgba(168,85,247,0.12) 50%, rgba(56,189,248,0.08) 100%);
+                        padding: 6px 10px;
+                        border-radius: 9px;
+                        text-align: center;
+                        font-family: 'JetBrains Mono', monospace;
+                    }
+                    .pat-realistic-bar-track {
+                        width: 100%;
+                        height: 14px;
+                        background: var(--bg-surface);
+                        border: 1px solid rgba(56,189,248,0.45);
+                        border-radius: 99px;
+                        overflow: hidden;
+                        position: relative;
+                        box-shadow: inset 0 2px 6px rgba(0,0,0,0.65);
+                    }
+                    .pat-realistic-bar-fill {
+                        height: 100%;
+                        background: linear-gradient(90deg, #06b6d4 0%, #6366f1 50%, #10b981 100%);
+                        background-size: 28px 28px;
+                        background-image: linear-gradient(
+                            45deg,
+                            rgba(255,255,255,0.22) 25%,
+                            transparent 25%,
+                            transparent 50%,
+                            rgba(255,255,255,0.22) 50%,
+                            rgba(255,255,255,0.22) 75%,
+                            transparent 75%,
+                            transparent
+                        );
+                        animation: patCyberBarStripes 0.8s linear infinite;
+                        border-radius: 99px;
+                        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+                        box-shadow: 0 0 12px rgba(6,182,212,0.65);
+                    }
+                </style>
+
+                <!-- TOP STUDIO HEADER: CENTERED WITH DOUBLE LINES TOP & BOTTOM -->
+                <div class="pat-double-line-hdr" style="position:relative;margin-bottom:8px;flex-shrink:0;">
+                    <div style="font-size:0.53rem;font-weight:800;color:var(--accent-cyan);letter-spacing:1px;text-transform:uppercase;">
+                        ══ STEALTH AUTOMATION • 4-SHOT TELEGRAM PROOF ══
                     </div>
-                    <button type="button" class="top-pill" style="padding:5px 10px;font-size:0.74rem;" onclick="closeAdminPatStudioV2()">✕</button>
+                    <h3 style="margin:2px 0 0 0;font-size:0.94rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;">
+                        🔑 GitHub PAT Token Studio
+                    </h3>
+                    <button type="button" class="top-pill" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);padding:4px 9px;font-size:0.7rem;" onclick="closeAdminPatStudioV2()">✕</button>
                 </div>
 
                 <!-- 2 VIEW TABS -->
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:9px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:8px;flex-shrink:0;">
                     <button type="button" class="subtab-pill active" id="patTabBtnConfig" style="padding:8px 6px;font-size:0.69rem;" onclick="switchPatStudioTab('config')">
                         ⚙️ Token Configurator
                     </button>
@@ -6615,10 +6763,15 @@
                     </button>
                 </div>
 
-                <!-- PANEL 1: TOKEN CONFIGURATOR -->
-                <div id="patViewConfigPanel" style="display:flex;flex-direction:column;gap:8px;">
+                <!-- PANEL 1: TOKEN CONFIGURATOR (FULL PAGE FLEX) -->
+                <div id="patViewConfigPanel" style="flex:1;min-height:0;display:flex;flex-direction:column;justify-content:space-between;gap:7px;">
+                    <!-- DOUBLE-LINE SECTION HEADER -->
+                    <div class="pat-double-line-hdr" style="padding:4px 8px;flex-shrink:0;">
+                        <span style="font-size:0.6rem;font-weight:800;color:var(--text-primary);letter-spacing:0.7px;">⚙️ STEALTH TOKEN CONFIGURATOR &amp; VAULT PICKER</span>
+                    </div>
+
                     <!-- 3 STATS COUNTERS -->
-                    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;font-family:'JetBrains Mono',monospace;">
+                    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;font-family:'JetBrains Mono',monospace;flex-shrink:0;">
                         <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:10px;padding:6px;text-align:center;">
                             <div style="font-size:0.52rem;color:var(--text-muted);font-weight:800;">ARCTIC &amp; YEAR</div>
                             <div id="patStatTotal" style="font-size:0.84rem;font-weight:800;color:var(--text-primary);margin-top:1px;">${stats.totalEligible}</div>
@@ -6634,94 +6787,131 @@
                     </div>
 
                     <!-- TARGET GITHUB USERNAMES INPUT -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:11px;padding:8px 10px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:6px;">
-                            <span style="font-size:0.6rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.5px;">TARGET GITHUB USERNAMES</span>
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:11px;padding:7px 9px;flex-shrink:0;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:6px;">
+                            <span style="font-size:0.58rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.5px;">TARGET GITHUB USERNAMES</span>
                             <div style="display:flex;align-items:center;gap:5px;">
                                 <span id="patTargetCountBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--text-secondary);background:var(--bg-surface);border:1px solid var(--border-subtle);padding:2px 7px;border-radius:6px;">0 Selected</span>
                                 <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.58rem;color:var(--danger);border-color:rgba(239,68,68,0.35);" onclick="clearPatTargetBox()">✕ Clear</button>
                             </div>
                         </div>
-                        <input type="text" class="form-input" id="patTargetUsername" placeholder="Type usernames (comma/space separated) or pick below..." style="padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:700;" oninput="updatePatTargetCounter(); renderPatManualAccountCards();">
+                        <input type="text" class="form-input" id="patTargetUsername" placeholder="Type usernames (comma/space separated) or pick below..." style="padding:7px 10px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;" oninput="updatePatTargetCounter(); renderPatManualAccountCards();">
                     </div>
 
-                    <!-- MANUAL ACCOUNT PICKER (MISSING PAT ONLY) -->
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--warning);border-radius:11px;padding:8px 10px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                            <span style="font-size:0.6rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;">⚡ MANUAL ACCOUNT PICKER (MISSING PAT ONLY)</span>
+                    <!-- MANUAL ACCOUNT PICKER (FLEXIBLE FULL HEIGHT) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--warning);border-radius:11px;padding:7px 9px;flex:1;min-height:0;display:flex;flex-direction:column;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-shrink:0;">
+                            <span style="font-size:0.58rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;">⚡ MANUAL ACCOUNT PICKER (MISSING PAT ONLY)</span>
                             <span id="patManualAvailBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--accent-cyan);">${stats.missingCount} Available</span>
                         </div>
-                        <div id="patManualCardsList" style="max-height:175px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:2px;"></div>
+                        <div id="patManualCardsList" style="flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:2px;"></div>
                     </div>
 
-                    <!-- 3 SCOPE OPTIONS & EXPIRATION GRID -->
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-cyan);border-radius:10px;padding:7px 8px;">
-                            <label style="display:block;font-size:0.56rem;font-weight:800;color:var(--accent-cyan);margin-bottom:4px;">🛡️ SCOPE PRESET</label>
-                            <select class="form-input" id="patScopePreset" style="padding:6px 7px;font-size:0.69rem;font-weight:700;">
-                                <option value="repo_workflow">1. Ultra Safe (repo &amp; workflow)</option>
-                                <option value="safe_5" selected>2. Safe 5-Scopes (repo, workflow, admin:org, user, delete_repo)</option>
-                                <option value="all">3. Full Checklist (All Scopes)</option>
-                            </select>
+                    <!-- 3 SCOPE OPTIONS, EXPIRATION & 5 INTER-ACCOUNT DELAY OPTIONS -->
+                    <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-cyan);border-radius:10px;padding:6px 8px;">
+                                <label style="display:block;font-size:0.54rem;font-weight:800;color:var(--accent-cyan);margin-bottom:3px;">🛡️ SCOPE PRESET</label>
+                                <select class="form-input" id="patScopePreset" style="padding:6px 7px;font-size:0.68rem;font-weight:700;">
+                                    <option value="repo_workflow">1. Ultra Safe (repo &amp; workflow)</option>
+                                    <option value="safe_5" selected>2. Safe 5-Scopes (repo, workflow, admin:org, user, delete_repo)</option>
+                                    <option value="all">3. Full Checklist (All Scopes)</option>
+                                </select>
+                            </div>
+                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--warning);border-radius:10px;padding:6px 8px;">
+                                <label style="display:block;font-size:0.54rem;font-weight:800;color:var(--warning);margin-bottom:3px;">⏳ TOKEN EXPIRATION</label>
+                                <select class="form-input" id="patExpiryDays" style="padding:6px 7px;font-size:0.68rem;font-weight:700;">
+                                    <option value="90" selected>90 Days (Recommended)</option>
+                                    <option value="30">30 Days (Ultra Safe)</option>
+                                    <option value="none">No Expiration (Permanent)</option>
+                                </select>
+                            </div>
                         </div>
-                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--warning);border-radius:10px;padding:7px 8px;">
-                            <label style="display:block;font-size:0.56rem;font-weight:800;color:var(--warning);margin-bottom:4px;">⏳ TOKEN EXPIRATION</label>
-                            <select class="form-input" id="patExpiryDays" style="padding:6px 7px;font-size:0.69rem;font-weight:700;">
-                                <option value="90" selected>90 Days (Recommended)</option>
-                                <option value="30">30 Days (Ultra Safe)</option>
-                                <option value="none">No Expiration (Permanent)</option>
+
+                        <!-- 5 RANDOM INTER-ACCOUNT COOLDOWN OPTIONS -->
+                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--success);border-radius:10px;padding:6px 8px;">
+                            <label style="display:block;font-size:0.54rem;font-weight:800;color:var(--success);margin-bottom:3px;">⏱️ INTER-ACCOUNT COOLDOWN (ANTI-FLAG RANDOM DELAY)</label>
+                            <select class="form-input" id="patBatchDelayMode" style="padding:6px 7px;font-size:0.68rem;font-weight:700;">
+                                <option value="60,180">1. 1 – 3 Minutes Random (Fast Batch)</option>
+                                <option value="180,360" selected>2. 3 – 6 Minutes Random (Recommended Safe)</option>
+                                <option value="300,600">3. 5 – 10 Minutes Random (Medium Stealth)</option>
+                                <option value="600,1200">4. 10 – 20 Minutes Random (High Stealth)</option>
+                                <option value="1800,3600">5. 30 – 60 Minutes (1 Hour) Random (Ultra Anti-Flag)</option>
                             </select>
                         </div>
                     </div>
 
-                    <button type="button" class="btn-ui primary" id="btnStartPatGen" style="width:100%;padding:11px;font-size:0.78rem;border-radius:11px;" onclick="startAdminPatGeneration()">
+                    <button type="button" class="btn-ui primary" id="btnStartPatGen" style="width:100%;padding:11px;font-size:0.78rem;border-radius:11px;flex-shrink:0;" onclick="startAdminPatGeneration()">
                         🚀 Generate PAT Token Now
                     </button>
                 </div>
 
-                <!-- PANEL 2: LIVE WORKER TELEMETRY -->
-                <div id="patViewTelemetryPanel" style="display:none;flex-direction:column;gap:8px;">
-                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:12px;padding:9px 10px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;">
-                            <span id="patTelHeaderTitle" style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--accent-cyan);">⏳ WAITING FOR BATCH QUEUE...</span>
-                            <span id="patTelHeaderBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.4);padding:2px 7px;border-radius:6px;">0 / 0 Done (0%)</span>
+                <!-- PANEL 2: LIVE WORKER TELEMETRY (FULL PAGE FLEX) -->
+                <div id="patViewTelemetryPanel" style="flex:1;min-height:0;display:none;flex-direction:column;justify-content:space-between;gap:7px;">
+                    <!-- DOUBLE-LINE CENTERED TELEMETRY HEADER -->
+                    <div class="pat-double-line-hdr" style="padding:6px 9px;flex-shrink:0;">
+                        <div id="patTelHeaderTitle" style="font-size:0.69rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.5px;text-align:center;">
+                            ⏳ WAITING FOR STEALTH BATCH QUEUE...
                         </div>
-                        <div class="progress-track" style="height:7px;margin-bottom:8px;">
-                            <div class="progress-fill" id="patTelProgressBar" style="width:0%;transition:width 0.35s ease;"></div>
-                        </div>
-                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;text-align:center;">
-                            <div id="patStagePill1" style="padding:4px;border-radius:6px;border:1px solid var(--border-subtle);color:var(--text-muted);">1. Login</div>
-                            <div id="patStagePill2" style="padding:4px;border-radius:6px;border:1px solid var(--border-subtle);color:var(--text-muted);">2. 2FA OTP</div>
-                            <div id="patStagePill3" style="padding:4px;border-radius:6px;border:1px solid var(--border-subtle);color:var(--text-muted);">3. Scopes</div>
-                            <div id="patStagePill4" style="padding:4px;border-radius:6px;border:1px solid var(--border-subtle);color:var(--text-muted);">4. Sheet1</div>
+                        <div style="margin-top:3px;display:flex;justify-content:center;align-items:center;gap:8px;">
+                            <span id="patTelHeaderBadge" style="font-size:0.6rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.4);padding:2px 9px;border-radius:99px;">
+                                Batch 0/0 • 0%
+                            </span>
                         </div>
                     </div>
 
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:12px;padding:9px 10px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <!-- REALISTIC LOADING BAR + CENTERED 4-STAGE PILLS -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-radius:12px;padding:8px 10px;flex-shrink:0;">
+                        <div class="pat-realistic-bar-track" style="margin-bottom:8px;">
+                            <div class="pat-realistic-bar-fill" id="patTelProgressBar" style="width:0%;"></div>
+                            <span id="patTelProgressPctText" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#ffffff;text-shadow:0 1px 3px rgba(0,0,0,0.9);">0%</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.57rem;font-weight:800;text-align:center;">
+                            <div id="patStagePill1" style="padding:5px 3px;border-radius:7px;border:1px solid var(--border-subtle);color:var(--text-muted);text-align:center;">1. Login<div style="font-size:0.5rem;opacity:0.8;">25%</div></div>
+                            <div id="patStagePill2" style="padding:5px 3px;border-radius:7px;border:1px solid var(--border-subtle);color:var(--text-muted);text-align:center;">2. 2FA OTP<div style="font-size:0.5rem;opacity:0.8;">55%</div></div>
+                            <div id="patStagePill3" style="padding:5px 3px;border-radius:7px;border:1px solid var(--border-subtle);color:var(--text-muted);text-align:center;">3. Scopes<div style="font-size:0.5rem;opacity:0.8;">85%</div></div>
+                            <div id="patStagePill4" style="padding:5px 3px;border-radius:7px;border:1px solid var(--border-subtle);color:var(--text-muted);text-align:center;">4. Sheet1<div style="font-size:0.5rem;opacity:0.8;">100%</div></div>
+                        </div>
+                    </div>
+
+                    <!-- REAL-TIME AUTOMATION STREAM (EXPANDS TO FILL SCREEN) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:12px;padding:8px 10px;flex:1.15;min-height:0;display:flex;flex-direction:column;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-shrink:0;">
                             <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">🖥️ REAL-TIME AUTOMATION STREAM</span>
                             <div style="display:flex;align-items:center;gap:6px;">
                                 <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--success);">● LIVE</span>
-                                <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.58rem;color:var(--danger);border-color:rgba(239,68,68,0.4);" onclick="cancelAdminPatBatch()">🛑 Stop</button>
+                                <button type="button" class="top-pill" style="padding:2px 8px;font-size:0.58rem;color:var(--danger);border-color:rgba(239,68,68,0.4);" onclick="cancelAdminPatBatch()">🛑 Stop</button>
                             </div>
                         </div>
-                        <div id="patTelStreamBox" style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;max-height:110px;overflow-y:auto;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:8px;padding:7px 8px;">
+                        <div id="patTelStreamBox" style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;flex:1;min-height:0;overflow-y:auto;background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:8px;padding:7px 8px;">
                             <div style="color:var(--text-muted);">Ready to dispatch stealth worker jobs...</div>
                         </div>
                     </div>
 
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:12px;padding:9px 10px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                    <!-- GENERATED PAT TOKENS VAULT (EXPANDS TO FILL SCREEN) -->
+                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);border-radius:12px;padding:8px 10px;flex:1;min-height:0;display:flex;flex-direction:column;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-shrink:0;">
                             <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--success);">🔐 GENERATED PAT TOKENS</span>
                             <button type="button" class="top-pill" style="padding:3px 8px;font-size:0.6rem;color:var(--success);border-color:rgba(16,185,129,0.45);" onclick="copyAllCompletedPats()">📋 Copy All Ready</button>
                         </div>
-                        <div id="patTelTokensList" style="display:flex;flex-direction:column;gap:6px;max-height:145px;overflow-y:auto;"></div>
+                        <div id="patTelTokensList" style="display:flex;flex-direction:column;gap:6px;flex:1;min-height:0;overflow-y:auto;"></div>
                     </div>
                 </div>
             `;
 
             renderPatManualAccountCards();
-            pollAdminPatBatchStatus();
+
+            // Pulihkan state lokal terakhir secara instan sebelum menarik status terbaru dari Cloud
+            const cached = loadPatStudioLocalCache();
+            if (cached && cached.batch) {
+                if (Array.isArray(cached.logs) && cached.logs.length > 0) _patLogLines = cached.logs;
+                renderPatBatchTelemetry(cached.batch);
+                if (cached.batch.status === 'RUNNING') {
+                    switchPatStudioTab('telemetry');
+                }
+            }
+
+            pollAdminPatBatchStatus(true);
         }
 
         const openAdminPatGeneratorModal = openAdminPatStudioV2;
@@ -6734,6 +6924,10 @@
 
             const scopePreset = document.getElementById('patScopePreset')?.value || 'safe_5';
             const expiryDays = document.getElementById('patExpiryDays')?.value || '90';
+            const delayRaw = (document.getElementById('patBatchDelayMode')?.value || '180,360').split(',');
+            const delayMin = Math.max(0, parseInt(delayRaw[0], 10) || 180);
+            const delayMax = Math.max(delayMin, parseInt(delayRaw[1], 10) || 360);
+
             const btn = document.getElementById('btnStartPatGen');
             if (btn) {
                 btn.disabled = true;
@@ -6743,8 +6937,9 @@
             _patLogLines = [{
                 time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
                 tag: '[QUEUE]',
-                msg: `Enqueued ${selectedList.length} account(s) with preset [${scopePreset}]...`,
-                isDone: false
+                msg: `Enqueued ${selectedList.length} account(s) • Preset: [${scopePreset}] • Delay: ${Math.round(delayMin/60)}-${Math.round(delayMax/60)}m...`,
+                isDone: false,
+                isErr: false
             }];
             switchPatStudioTab('telemetry');
 
@@ -6760,8 +6955,8 @@
                         note: 'XianBee-Core',
                         scope_preset: scopePreset,
                         expiry_days: expiryDays,
-                        delay_min: 180,
-                        delay_max: 360
+                        delay_min: delayMin,
+                        delay_max: delayMax
                     })
                 });
                 const data = await res.json();
@@ -6777,7 +6972,7 @@
 
                 renderPatBatchTelemetry(data.batch);
                 clearInterval(_patPollTimer);
-                _patPollTimer = setInterval(pollAdminPatBatchStatus, 3500);
+                _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 3000);
             } catch (err) {
                 if (btn) {
                     btn.disabled = false;
