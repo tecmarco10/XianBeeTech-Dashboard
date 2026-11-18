@@ -6379,16 +6379,19 @@ let _ghAgeCheckerResults = [];
                             </div>
                         </div>
 
-                        <!-- QUICK BULK COPY ACTIONS -->
-                        <div id="ghAgeBulkActions" style="display:none;flex-shrink:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
-                            <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.61rem;min-width:0;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="copyAgeCheckerColumn('links')">
-                                📋 Copy Links
+                        <!-- QUICK BULK COPY & GSHEET SYNC ACTIONS -->
+                        <div id="ghAgeBulkActions" style="display:none;flex-shrink:0;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
+                            <button type="button" class="btn-ui secondary" style="padding:6px 3px;font-size:0.58rem;min-width:0;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="copyAgeCheckerColumn('links')">
+                                📋 Links
                             </button>
-                            <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.61rem;min-width:0;border-color:var(--success);color:var(--success);" onclick="copyAgeCheckerColumn('dates')">
-                                📋 Copy Dates
+                            <button type="button" class="btn-ui secondary" style="padding:6px 3px;font-size:0.58rem;min-width:0;border-color:var(--success);color:var(--success);" onclick="copyAgeCheckerColumn('dates')">
+                                📋 Dates
                             </button>
-                            <button type="button" class="btn-ui buy-now" style="padding:6px 4px;font-size:0.61rem;min-width:0;" onclick="copyAgeCheckerColumn('both')">
-                                📊 Copy 2 Cols
+                            <button type="button" class="btn-ui secondary" style="padding:6px 3px;font-size:0.58rem;min-width:0;" onclick="copyAgeCheckerColumn('both')">
+                                📊 2 Cols
+                            </button>
+                            <button type="button" id="btnPushAgeGSheet" class="btn-ui buy-now" style="padding:6px 3px;font-size:0.58rem;min-width:0;" onclick="pushSortedAgeResultsToGSheet(true)">
+                                📤 GSheet
                             </button>
                         </div>
 
@@ -6730,6 +6733,8 @@ let _ghAgeCheckerResults = [];
                 progFill.style.width = `${pct}%`;
 
                 let createdFormatted = '⏳ Loading...';
+                let createdIso = '9999-12-31T23:59:59Z';
+                let createdMs = Number.MAX_SAFE_INTEGER;
                 let statusColor = 'var(--text-primary)';
 
                 try {
@@ -6763,6 +6768,9 @@ let _ghAgeCheckerResults = [];
 
                     if (res.status === 200) {
                         const data = await res.json();
+                        createdIso = data.created_at || '9999-12-31T23:59:59Z';
+                        const parsedTs = data.created_at ? new Date(data.created_at).getTime() : NaN;
+                        createdMs = !isNaN(parsedTs) ? parsedTs : Number.MAX_SAFE_INTEGER;
                         createdFormatted = formatGithubCreatedWib(data.created_at);
                         statusColor = 'var(--success)';
                     } else if (res.status === 404) {
@@ -6780,21 +6788,61 @@ let _ghAgeCheckerResults = [];
                     statusColor = 'var(--danger)';
                 }
 
+                // Ambil PAT token aktif dari Tab 1 jika username cocok
+                const matchedPatObj = _ghPatCheckerResults.find(
+                    p => p.active && p.username && p.username.toLowerCase() === uname.toLowerCase()
+                );
+
                 _ghAgeCheckerResults.push({
                     index: i + 1,
                     username: uname,
                     url: profileUrl,
-                    createdText: createdFormatted
+                    createdIso: createdIso,
+                    createdMs: createdMs,
+                    createdText: createdFormatted,
+                    statusColor: statusColor,
+                    patToken: matchedPatObj ? matchedPatObj.token : ''
                 });
 
-                const rowBg = i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.025)';
+                renderSortedAgeTables();
+
+                if (i < lines.length - 1 && !_ghAgeAbortFlag) {
+                    await new Promise(r => setTimeout(r, 260));
+                }
+            }
+
+            btn.disabled = false;
+            btn.innerText = '⚡ Check Now';
+            if (stopBtn) stopBtn.style.display = 'none';
+
+            if (_ghAgeCheckerResults.length > 0) {
+                progLbl.innerText = `📤 Sorting Oldest ➔ Newest & Syncing ${_ghAgeCheckerResults.length} rows to GSheet...`;
+                await pushSortedAgeResultsToGSheet(false);
+                progLbl.innerText = `✅ Sorted (Oldest ➔ Newest) & Saved to GSheet 'PAT_Age_Audit'!`;
+            }
+        }
+
+        function renderSortedAgeTables() {
+            const linksBody = document.getElementById('ghAgeLinksTableBody');
+            const datesBody = document.getElementById('ghAgeDatesTableBody');
+            if (!linksBody || !datesBody) return;
+
+            // Urutkan ascending: Tanggal pembuatan TERTUA di paling atas, TERMUDA di paling bawah
+            _ghAgeCheckerResults.sort((a, b) => a.createdMs - b.createdMs);
+            _ghAgeCheckerResults.forEach((item, idx) => { item.index = idx + 1; });
+
+            linksBody.innerHTML = '';
+            datesBody.innerHTML = '';
+
+            _ghAgeCheckerResults.forEach((item, idx) => {
+                const rowBg = idx % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.025)';
 
                 const linkRow = document.createElement('div');
                 linkRow.style.cssText = `padding:7px 8px;border-bottom:1px solid var(--border-subtle);background:${rowBg};display:flex;align-items:center;gap:5px;min-height:36px;`;
                 linkRow.innerHTML = `
-                    <span style="color:var(--text-muted);font-weight:800;flex-shrink:0;">${i + 1}.</span>
-                    <a href="${profileUrl}" target="_blank" style="color:#38bdf8;text-decoration:none;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;flex:1;" title="${profileUrl}">
-                        ${profileUrl}
+                    <span style="color:var(--text-muted);font-weight:800;flex-shrink:0;">${idx + 1}.</span>
+                    <a href="${item.url}" target="_blank" style="color:#38bdf8;text-decoration:none;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;flex:1;" title="${item.url}">
+                        ${item.url}
                     </a>
                 `;
                 linksBody.appendChild(linkRow);
@@ -6802,25 +6850,48 @@ let _ghAgeCheckerResults = [];
                 const dateRow = document.createElement('div');
                 dateRow.style.cssText = `padding:7px 8px;border-bottom:1px solid var(--border-subtle);background:${rowBg};display:flex;align-items:center;gap:5px;min-height:36px;`;
                 dateRow.innerHTML = `
-                    <span style="color:var(--text-muted);font-weight:800;flex-shrink:0;">${i + 1}.</span>
-                    <span style="color:${statusColor};font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;flex:1;" title="${createdFormatted}">
-                        ${createdFormatted}
+                    <span style="color:var(--text-muted);font-weight:800;flex-shrink:0;">${idx + 1}.</span>
+                    <span style="color:${item.statusColor};font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;flex:1;" title="${item.createdText}">
+                        ${item.createdText}
                     </span>
                 `;
                 datesBody.appendChild(dateRow);
+            });
+        }
 
-                if (i < lines.length - 1 && !_ghAgeAbortFlag) {
-                    await new Promise(r => setTimeout(r, 260));
+        async function pushSortedAgeResultsToGSheet(manualClick = false) {
+            if (!_ghAgeCheckerResults || _ghAgeCheckerResults.length === 0) {
+                if (manualClick) showToast('⚠️ Belum ada data akun untuk dikirim ke GSheet!');
+                return;
+            }
+            const btn = document.getElementById('btnPushAgeGSheet');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = '⏳ Syncing...';
+            }
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'sync_pat_age_audit',
+                        items: _ghAgeCheckerResults
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    showToast(`✅ ${json.total_rows} akun tersusun Tertua ➔ Termuda di tab '${json.sheet}'!`);
+                } else {
+                    showToast('⚠️ Gagal sync ke GSheet: ' + ((json && json.error) || 'Cek deploy Apps Script'));
+                }
+            } catch (err) {
+                showToast('⚠️ Error koneksi saat mengirim ke Google Sheet.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = '📤 GSheet';
                 }
             }
-
-            if (!_ghAgeAbortFlag) {
-                progLbl.innerText = `✅ Completed checking ${lines.length} account(s) across ${activeTokens.length} PATs!`;
-            }
-            btn.disabled = false;
-            btn.innerText = '⚡ Check Now';
-            if (stopBtn) stopBtn.style.display = 'none';
-            showToast(`✅ Checked ${_ghAgeCheckerResults.length} GitHub creation dates!`);
         }
 
         function copyAgeCheckerColumn(mode) {
