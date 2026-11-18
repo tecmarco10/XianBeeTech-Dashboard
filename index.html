@@ -6277,14 +6277,14 @@ let _ghAgeCheckerResults = [];
                                     🔑 PASTE PAT TOKENS (UP TO 250+):
                                 </label>
                                 <span id="ghPatSummaryBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);padding:1px 6px;border-radius:5px;">
-                                    🛡️ Safe 50/Batch
+                                    🛡️ Ultra-Safe 40/Batch
                                 </span>
                             </div>
                             <textarea class="form-input" id="ghPatTokensInput" rows="2" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;line-height:1.35;height:48px;min-height:48px;max-height:54px;padding:6px 9px;resize:none;" placeholder="Paste daftar PAT token ke bawah (ghp_xxxx...)"></textarea>
 
                             <div style="display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;">
                                 <button type="button" class="btn-ui primary" id="btnRunGhPatCheck" style="padding:7px 10px;font-size:0.7rem;" onclick="runBulkGithubPatCheck()">
-                                    🛡️ Cek Aman (Auto-Batch 50)
+                                    🛡️ Cek Ultra-Safe (40/Batch • 3.5s)
                                 </button>
                                 <button type="button" class="btn-ui secondary" id="btnStopGhPatCheck" style="display:none;padding:7px 10px;font-size:0.7rem;border-color:var(--danger);color:var(--danger);" onclick="_ghPatAbortFlag=true;">
                                     🛑 Stop
@@ -6474,7 +6474,7 @@ let _ghAgeCheckerResults = [];
 
             let activeCnt = 0;
             let invalidCnt = 0;
-            const batchSize = 50;
+            const batchSize = 40;
             const totalBatches = Math.ceil(tokens.length / batchSize);
             const _esc = (s) => String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
@@ -6484,12 +6484,12 @@ let _ghAgeCheckerResults = [];
                     break;
                 }
 
-                // Cooldown 15 detik setiap selesai 1 batch (50 token) agar 100% aman dari secondary rate limit IP
+                // Cooldown 20 detik setiap selesai 1 batch (40 token) — waktu ideal jika ingin toggle Airplane Mode IP
                 if (i > 0 && i % batchSize === 0) {
                     const nextBatchNum = Math.floor(i / batchSize) + 1;
-                    for (let cd = 15; cd >= 1; cd--) {
+                    for (let cd = 20; cd >= 1; cd--) {
                         if (_ghPatAbortFlag) break;
-                        progLbl.innerText = `⏳ Cooldown IP ${cd}s sebelum Batch ${nextBatchNum}/${totalBatches}...`;
+                        progLbl.innerText = `⏳ Cooldown IP ${cd}s (Batch ${nextBatchNum}/${totalBatches})...`;
                         await new Promise(r => setTimeout(r, 1000));
                     }
                     if (_ghPatAbortFlag) break;
@@ -6558,8 +6558,8 @@ let _ghAgeCheckerResults = [];
                 transferBtn.innerText = `🚀 Lanjut Cek Umur & Link (${activeCnt} Akun Aktif) ➔`;
 
                 if (i < tokens.length - 1 && !_ghPatAbortFlag) {
-                    // Jeda natural 650-950ms antar request agar terlihat seperti pengecekan manusiawi
-                    const jitterMs = 650 + Math.floor(Math.random() * 300);
+                    // Jeda ultra-safe acak 2.5 - 4.5 detik antar token untuk menghindari secondary rate limit
+                    const jitterMs = 2500 + Math.floor(Math.random() * 2000);
                     await new Promise(r => setTimeout(r, jitterMs));
                 }
             }
@@ -6568,7 +6568,7 @@ let _ghAgeCheckerResults = [];
                 progLbl.innerText = `✅ Selesai! ${activeCnt} Aktif • ${invalidCnt} Invalid (${totalBatches} Batch Aman)`;
             }
             btn.disabled = false;
-            btn.innerText = '🛡️ Cek Aman (Auto-Batch 50)';
+            btn.innerText = '🛡️ Cek Ultra-Safe (40/Batch • 3.5s)';
             if (stopBtn) stopBtn.style.display = 'none';
             showToast(`✅ Selesai! ${activeCnt} Token Aktif, ${invalidCnt} Invalid.`);
         }
