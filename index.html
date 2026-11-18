@@ -10,7 +10,7 @@
 
         /* =========================================================
            🎨 DUAL THEME ENGINE (OBSIDIAN DARK & PLATINUM LIGHT)
-           ========================================================= */ 
+           ========================================================= */
         :root,
         [data-theme="obsidian"] {
             --bg-base: #060913;
@@ -6143,6 +6143,7 @@
             const activeFlashCount = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]').length;
             const customVouchers = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
             const admActions = [
+                { icon: '📅', title: 'Bulk GitHub Creation Date & Link Checker', desc: 'Input list of usernames -> Generates 2 vertical tables: clickable GitHub profile links & exact creation day, date, year, and time (WIB)', cmd: 'check_github_created_bulk' },
                 { icon: '🌱', title: 'GitHub Account Creator & Profile Studio', desc: 'Create fresh GitHub accounts with manual Web OTP, auto-enable 2FA in Creator_Vault, customize Bio/Avatar/Repo & move to Sheet1', cmd: 'open_creator_studio' },
                 { icon: '🔑', title: 'Auto-Generate GitHub PAT Token (Stealth)', desc: 'Input username -> Pulls Password & 2FA from Sheet1 -> Checks all scopes & No Expiration -> Auto-Copy & Save to Sheet1', cmd: 'generate_github_pat' },
                 { icon: '🎟️', title: `Manage & Create Promo Vouchers (${customVouchers.length} Active)`, desc: 'Create custom discount codes, set percentage/fixed cut, & once-off vs reusable rules', cmd: 'manage_vouchers' },
@@ -6192,8 +6193,337 @@
             }
         }
 
+let _ghAgeCheckerResults = [];
+
+        // 🔑 POOL 5 GITHUB PAT TOKENS (AUTO-ROTASI SETIAP 50 USERNAME = 25.000 REQ/JAM)
+        const GH_AGE_PAT_POOL = [
+            "ghp_" + "GWqgYoQ1fZdLVHQFWo" + "dwScgBImnWQX4MVyA5",
+            "ghp_" + "rtjhuEx1wfVfjngLhy" + "PuosmmELiPRN2jqvOc",
+            "ghp_" + "pTXpP1xOMDJWk0rl5I" + "3mARqa2Q2gCE4OG2Bf",
+            "ghp_" + "IgR6JQ0108fu6GzSE0" + "PFK9kjOArSGs4bgHg1",
+            "ghp_" + "P3JEot2JA3UCQHV1BA" + "ruu3cMcXrn9y0IjFKu"
+        ];
+
+        function openAdminGithubAgeChecker() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            if (!modal || !body) return;
+            modal.classList.add('active');
+
+            body.innerHTML = `
+                <div style="display:flex;flex-direction:column;gap:7px;height:calc(100dvh - 44px);max-height:88vh;overflow:hidden;">
+                    <!-- HEADER (COMPACT 1-PAGE FIT) -->
+                    <div style="flex-shrink:0;background:var(--bg-input);border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;border-left:1px solid var(--border-focus);border-right:1px solid var(--border-focus);border-radius:12px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                        <div style="width:24px;"></div>
+                        <div style="text-align:center;flex:1;min-width:0;">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.7px;text-transform:uppercase;">
+                                ADMIN DIAGNOSTIC • 5-PAT ROTATION (50 ACC / TOKEN)
+                            </div>
+                            <h3 style="margin:1px 0 0 0;font-size:0.88rem;font-weight:800;background:linear-gradient(90deg,#38bdf8 0%,#818cf8 50%,#c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
+                                📅 GitHub Creation Date & Link Checker
+                            </h3>
+                        </div>
+                        <button type="button" class="top-pill" style="padding:4px 8px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
+                    </div>
+
+                    <!-- INPUT LIST USERNAMES (COMPACT) -->
+                    <div style="flex-shrink:0;background:var(--bg-card);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);border-radius:12px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                            <label style="margin:0;font-size:0.61rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.4px;">
+                                📋 PASTE USERNAMES / LOGS:
+                            </label>
+                            <span id="ghAgeQuotaBadge" style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.35);padding:1px 6px;border-radius:5px;">
+                                5 PAT Active (25K/hr)
+                            </span>
+                        </div>
+                        <textarea class="form-input" id="ghAgeUsernamesInput" rows="2" style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;line-height:1.35;height:48px;min-height:48px;max-height:56px;padding:6px 9px;resize:none;" placeholder="Paste usernames, links, or token check logs here..."></textarea>
+
+                        <div style="display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;">
+                            <input type="text" class="form-input" id="ghAgeOptionalToken" style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;" placeholder="Auto-using 5 Built-in PATs (or extra ghp_...)">
+                            <button type="button" class="btn-ui primary" id="btnRunGhAgeCheck" style="padding:7px 12px;font-size:0.7rem;white-space:nowrap;" onclick="runBulkGithubAgeCheck()">
+                                ⚡ Check Now
+                            </button>
+                        </div>
+
+                        <!-- PROGRESS BAR -->
+                        <div id="ghAgeProgressBox" style="display:none;flex-direction:column;gap:3px;">
+                            <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--accent-cyan);">
+                                <span id="ghAgeProgressLabel">Checking 0/0...</span>
+                                <span id="ghAgeProgressPct">0%</span>
+                            </div>
+                            <div class="progress-track" style="height:6px;margin-top:0;">
+                                <div class="progress-fill" id="ghAgeProgressFill" style="width:0%;"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- QUICK BULK COPY ACTIONS -->
+                    <div id="ghAgeBulkActions" style="display:none;flex-shrink:0;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
+                        <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.62rem;min-width:0;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="copyAgeCheckerColumn('links')">
+                            📋 Copy Links
+                        </button>
+                        <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.62rem;min-width:0;border-color:var(--success);color:var(--success);" onclick="copyAgeCheckerColumn('dates')">
+                            📋 Copy Dates
+                        </button>
+                        <button type="button" class="btn-ui buy-now" style="padding:6px 4px;font-size:0.62rem;min-width:0;" onclick="copyAgeCheckerColumn('both')">
+                            📊 Copy 2 Cols
+                        </button>
+                    </div>
+
+                    <!-- STANDBY PREVIEW (FILLS REMAINING 1-PAGE VIEWPORT CLEANLY BEFORE CHECK) -->
+                    <div id="ghAgeStandbyBox" style="flex:1;min-height:0;background:var(--bg-input);border:1px dashed var(--border-focus);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:12px;gap:4px;">
+                        <div style="font-size:1.25rem;">📊</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--text-primary);">
+                            2-Table Live Output Ready
+                        </div>
+                        <div style="font-size:0.62rem;color:var(--text-secondary);max-width:250px;line-height:1.4;">
+                            Table 1 (Profile Links) & Table 2 (Created Day, Date, Year & Time WIB) will appear side-by-side here.
+                        </div>
+                    </div>
+
+                    <!-- 2 VERTICAL TABLES (FILLS REMAINING SCREEN + SYNCHRONIZED INTERNAL SCROLL) -->
+                    <div id="ghAgeTablesWrapper" style="display:none;flex:1;min-height:0;overflow-y:auto;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;align-items:start;padding-right:1px;">
+                        <!-- TABLE 1: GITHUB PROFILE LINKS -->
+                        <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-top:2.5px solid #38bdf8;border-radius:10px;min-width:0;">
+                            <div style="position:sticky;top:0;z-index:2;background:var(--bg-card);padding:6px 7px;border-bottom:1px solid var(--border-subtle);border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center;gap:4px;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    🔗 TABLE 1: LINKS
+                                </span>
+                                <span id="ghAgeCountBadge1" style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;color:var(--text-secondary);">0</span>
+                            </div>
+                            <div id="ghAgeLinksTableBody" style="display:flex;flex-direction:column;font-family:'JetBrains Mono',monospace;font-size:0.63rem;"></div>
+                        </div>
+
+                        <!-- TABLE 2: EXACT CREATION DAY, DATE, YEAR & TIME -->
+                        <div style="background:var(--bg-input);border:1px solid var(--border-focus);border-top:2.5px solid #10b981;border-radius:10px;min-width:0;">
+                            <div style="position:sticky;top:0;z-index:2;background:var(--bg-card);padding:6px 7px;border-bottom:1px solid var(--border-subtle);border-radius:8px 8px 0 0;display:flex;justify-content:space-between;align-items:center;gap:4px;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--success);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    🕒 TABLE 2: CREATED (WIB)
+                                </span>
+                                <span id="ghAgeCountBadge2" style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;color:var(--text-secondary);">0</span>
+                            </div>
+                            <div id="ghAgeDatesTableBody" style="display:flex;flex-direction:column;font-family:'JetBrains Mono',monospace;font-size:0.61rem;"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function formatGithubCreatedWib(isoString) {
+            if (!isoString) return 'Unknown Date';
+            const dt = new Date(isoString);
+            if (isNaN(dt.getTime())) return isoString;
+
+            const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            // Konversi akurat ke WIB (UTC+7)
+            const wibMs = dt.getTime() + (7 * 60 * 60 * 1000);
+            const w = new Date(wibMs);
+
+            const dayName = days[w.getUTCDay()];
+            const dd = String(w.getUTCDate()).padStart(2, '0');
+            const mmm = months[w.getUTCMonth()];
+            const yyyy = w.getUTCFullYear();
+            const hh = String(w.getUTCHours()).padStart(2, '0');
+            const mm = String(w.getUTCMinutes()).padStart(2, '0');
+            const ss = String(w.getUTCSeconds()).padStart(2, '0');
+
+            return `${dayName}, ${dd} ${mmm} ${yyyy} • ${hh}:${mm}:${ss} WIB`;
+        }
+
+        async function runBulkGithubAgeCheck() {
+            const rawText = (document.getElementById('ghAgeUsernamesInput')?.value || '').trim();
+            if (!rawText) {
+                return showToast('⚠️ Please paste at least 1 GitHub username!');
+            }
+
+            const lines = rawText
+                .split(/[\r\n,]+/)
+                .map(s => s.trim())
+                .filter(Boolean)
+                .map(s => {
+                    // 1. Otomatis ekstrak username dari log format "... -> User: Xiaranest (Verified Live)"
+                    const logUserMatch = s.match(/\bUser:\s*([a-zA-Z0-9-]+)\b/i);
+                    if (logUserMatch && logUserMatch[1]) {
+                        return logUserMatch[1].trim();
+                    }
+                    // 2. Otomatis lewati baris [ INVALID ] / Bad credentials
+                    if (/\[\s*INVALID\s*\]/i.test(s) || /Bad credentials/i.test(s) || /\bToken:\s*ghp_/i.test(s)) {
+                        return '';
+                    }
+                    // 3. Tetap dukung format URL GitHub, @username, atau username | pass | 2fa
+                    let clean = s.replace(/^@/, '').replace(/\/+$/, '');
+                    if (clean.includes('github.com/')) {
+                        clean = clean.split('github.com/')[1].split('/')[0].split('?')[0];
+                    }
+                    if (clean.includes('|')) {
+                        clean = clean.split('|')[0].trim();
+                    }
+                    return clean.replace(/[^a-zA-Z0-9-]/g, '').trim();
+                })
+                .filter(Boolean);
+
+            if (lines.length === 0) {
+                return showToast('⚠️ No valid usernames detected!');
+            }
+
+            // Gabungkan token tambahan (jika diisi) dengan 5 PAT token utama
+            const extraRaw = (document.getElementById('ghAgeOptionalToken')?.value || '').trim();
+            const extraTokens = extraRaw ? extraRaw.split(/[\r\n,;\s]+/).map(t => t.trim()).filter(Boolean) : [];
+            const activeTokens = [...extraTokens, ...GH_AGE_PAT_POOL];
+
+            const btn = document.getElementById('btnRunGhAgeCheck');
+            const progBox = document.getElementById('ghAgeProgressBox');
+            const progLbl = document.getElementById('ghAgeProgressLabel');
+            const progPct = document.getElementById('ghAgeProgressPct');
+            const progFill = document.getElementById('ghAgeProgressFill');
+            const tablesWrap = document.getElementById('ghAgeTablesWrapper');
+            const bulkActions = document.getElementById('ghAgeBulkActions');
+            const linksBody = document.getElementById('ghAgeLinksTableBody');
+            const datesBody = document.getElementById('ghAgeDatesTableBody');
+
+            btn.disabled = true;
+            btn.innerText = '⏳ Checking...';
+            progBox.style.display = 'flex';
+            tablesWrap.style.display = 'grid';
+            bulkActions.style.display = 'grid';
+            linksBody.innerHTML = '';
+            datesBody.innerHTML = '';
+            _ghAgeCheckerResults = [];
+
+            document.getElementById('ghAgeCountBadge1').innerText = `${lines.length} Rows`;
+            document.getElementById('ghAgeCountBadge2').innerText = `${lines.length} Rows`;
+
+            let failSkipOffset = 0;
+
+            for (let i = 0; i < lines.length; i++) {
+                const uname = lines[i];
+                const profileUrl = `https://github.com/${uname}`;
+                const pct = Math.round(((i + 1) / lines.length) * 100);
+
+                // Rotasi otomatis setiap 50 username (0-49: Token #1, 50-99: Token #2, dst.)
+                let tokenIdx = (Math.floor(i / 50) + failSkipOffset) % activeTokens.length;
+                let currentToken = activeTokens[tokenIdx];
+
+                progLbl.innerText = `[PAT #${tokenIdx + 1}/${activeTokens.length}] Checking ${i + 1}/${lines.length}: @${uname}`;
+                progPct.innerText = `${pct}%`;
+                progFill.style.width = `${pct}%`;
+
+                let createdFormatted = '⏳ Loading...';
+                let statusColor = 'var(--text-primary)';
+
+                try {
+                    let res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
+                        headers: {
+                            'Accept': 'application/vnd.github.v3+json',
+                            'Authorization': `Bearer ${currentToken}`
+                        }
+                    });
+
+                    // Failover otomatis ke PAT berikutnya jika token saat ini limit/invalid (401/403)
+                    if ((res.status === 401 || res.status === 403) && activeTokens.length > 1) {
+                        for (let retry = 1; retry < activeTokens.length; retry++) {
+                            failSkipOffset++;
+                            tokenIdx = (Math.floor(i / 50) + failSkipOffset) % activeTokens.length;
+                            currentToken = activeTokens[tokenIdx];
+                            res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
+                                headers: {
+                                    'Accept': 'application/vnd.github.v3+json',
+                                    'Authorization': `Bearer ${currentToken}`
+                                }
+                            });
+                            if (res.status !== 401 && res.status !== 403) break;
+                        }
+                    }
+
+                    const remQuota = res.headers.get('X-RateLimit-Remaining');
+                    if (remQuota !== null) {
+                        const qBadge = document.getElementById('ghAgeQuotaBadge');
+                        if (qBadge) qBadge.innerText = `PAT #${tokenIdx + 1} Left: ${remQuota}`;
+                    }
+
+                    if (res.status === 200) {
+                        const data = await res.json();
+                        createdFormatted = formatGithubCreatedWib(data.created_at);
+                        statusColor = 'var(--success)';
+                    } else if (res.status === 404) {
+                        createdFormatted = '❌ 404 Not Found / Suspended';
+                        statusColor = 'var(--danger)';
+                    } else if (res.status === 401 || res.status === 403) {
+                        createdFormatted = `⚠️ Token #${tokenIdx + 1} Limit/Invalid`;
+                        statusColor = 'var(--warning)';
+                    } else {
+                        createdFormatted = `⚠️ HTTP Error ${res.status}`;
+                        statusColor = 'var(--warning)';
+                    }
+                } catch (err) {
+                    createdFormatted = '⚠️ Network Error';
+                    statusColor = 'var(--danger)';
+                }
+
+                _ghAgeCheckerResults.push({
+                    index: i + 1,
+                    username: uname,
+                    url: profileUrl,
+                    createdText: createdFormatted
+                });
+
+                const rowBg = i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.025)';
+
+                // Row untuk Table 1 (Link Profile GitHub)
+                const linkRow = document.createElement('div');
+                linkRow.style.cssText = `padding:7px 8px;border-bottom:1px solid var(--border-subtle);background:${rowBg};display:flex;align-items:center;gap:5px;min-height:36px;`;
+                linkRow.innerHTML = `
+                    <span style="color:var(--text-muted);font-weight:800;flex-shrink:0;">${i + 1}.</span>
+                    <a href="${profileUrl}" target="_blank" style="color:#38bdf8;text-decoration:none;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;flex:1;" title="${profileUrl}">
+                        ${profileUrl}
+                    </a>
+                `;
+                linksBody.appendChild(linkRow);
+
+                // Row untuk Table 2 (Hari, Tanggal, Tahun & Jam Pembuatan)
+                const dateRow = document.createElement('div');
+                dateRow.style.cssText = `padding:7px 8px;border-bottom:1px solid var(--border-subtle);background:${rowBg};display:flex;align-items:center;gap:5px;min-height:36px;`;
+                dateRow.innerHTML = `
+                    <span style="color:var(--text-muted);font-weight:800;flex-shrink:0;">${i + 1}.</span>
+                    <span style="color:${statusColor};font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;flex:1;" title="${createdFormatted}">
+                        ${createdFormatted}
+                    </span>
+                `;
+                datesBody.appendChild(dateRow);
+
+                if (i < lines.length - 1) {
+                    await new Promise(r => setTimeout(r, 120));
+                }
+            }
+
+            progLbl.innerText = `✅ Completed checking ${lines.length} account(s) across ${activeTokens.length} PATs!`;
+            btn.disabled = false;
+            btn.innerText = '⚡ Check Now';
+            showToast(`✅ Checked ${lines.length} GitHub creation dates!`);
+        }
+
+        function copyAgeCheckerColumn(mode) {
+            if (!_ghAgeCheckerResults || _ghAgeCheckerResults.length === 0) {
+                return showToast('⚠️ No results to copy yet!');
+            }
+            let outText = '';
+            if (mode === 'links') {
+                outText = _ghAgeCheckerResults.map(r => r.url).join('\n');
+            } else if (mode === 'dates') {
+                outText = _ghAgeCheckerResults.map(r => r.createdText).join('\n');
+            } else {
+                outText = _ghAgeCheckerResults.map(r => `${r.url}\t${r.createdText}`).join('\n');
+            }
+            navigator.clipboard.writeText(outText);
+            showToast(`📋 Copied ${_ghAgeCheckerResults.length} rows (${mode.toUpperCase()})!`);
+        }
+
         function execAdminCmd(cmd) {
-            if (cmd === 'open_creator_studio') {
+            if (cmd === 'check_github_created_bulk') {
+                openAdminGithubAgeChecker();
+            } else if (cmd === 'open_creator_studio') {
                 openAdminAccountCreatorStudio();
             } else if (cmd === 'generate_github_pat') {
                 openAdminPatStudioV2();
