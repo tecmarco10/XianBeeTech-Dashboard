@@ -6307,17 +6307,41 @@ let _ghAgeCheckerResults = [];
                             <button type="button" id="btnTransferPatToAge" class="btn-ui buy-now" style="padding:8px 10px;font-size:0.7rem;width:100%;" onclick="transferActivePatsToAgeTab()">
                                 🚀 Lanjut Cek Umur & Link (0 Akun Aktif) ➔
                             </button>
-                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
-                                <button type="button" class="btn-ui secondary" style="padding:5px 4px;font-size:0.6rem;min-width:0;border-color:var(--success);color:var(--success);" onclick="copyPatCheckerOutput('tokens')">
-                                    🔑 Copy Token
+                            <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;">
+                                <button type="button" class="btn-ui secondary" style="padding:5px 2px;font-size:0.55rem;min-width:0;border-color:var(--success);color:var(--success);" onclick="copyPatCheckerOutput('tokens')">
+                                    🔑 Token
                                 </button>
-                                <button type="button" class="btn-ui secondary" style="padding:5px 4px;font-size:0.6rem;min-width:0;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="copyPatCheckerOutput('users')">
-                                    👤 Copy User
+                                <button type="button" class="btn-ui secondary" style="padding:5px 2px;font-size:0.55rem;min-width:0;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="copyPatCheckerOutput('users')">
+                                    👤 User
                                 </button>
-                                <button type="button" class="btn-ui secondary" style="padding:5px 4px;font-size:0.6rem;min-width:0;" onclick="copyPatCheckerOutput('log')">
-                                    📄 Copy Log
+                                <button type="button" class="btn-ui secondary" style="padding:5px 2px;font-size:0.55rem;min-width:0;" onclick="copyPatCheckerOutput('log')">
+                                    📄 Log
+                                </button>
+                                <button type="button" id="btnScanDeadSheets" class="btn-ui secondary" style="padding:5px 2px;font-size:0.55rem;min-width:0;border-color:var(--warning);color:var(--warning);" onclick="scanDeadPatsAcrossAllSheets(true)">
+                                    🔍 Scan
+                                </button>
+                                <button type="button" class="btn-ui secondary" style="padding:5px 2px;font-size:0.55rem;min-width:0;border-color:var(--danger);color:var(--danger);" onclick="pushSortedAgeResultsToGSheet(true)">
+                                    📤 GSheet
                                 </button>
                             </div>
+                        </div>
+
+                        <!-- ALERT BOX: AKUN MATI DITEMUKAN & DI-BLOCK MERAH DI GOOGLE SHEET -->
+                        <div id="ghDeadSheetAlertBox" style="display:none;flex-shrink:0;background:rgba(239,68,68,0.12);border:1.5px solid var(--danger);border-left:4px solid var(--danger);border-radius:11px;padding:8px 9px;flex-direction:column;gap:5px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                <span id="ghDeadSheetAlertTitle" style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--danger);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    🚨 0 AKUN MATI DITEMUKAN DI SHEET
+                                </span>
+                                <div style="display:flex;gap:4px;flex-shrink:0;">
+                                    <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.56rem;border-color:var(--danger);color:var(--danger);" onclick="copyMatchedDeadSheetAccounts('simple')">
+                                        📋 Copy User & Link
+                                    </button>
+                                    <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.56rem;" onclick="copyMatchedDeadSheetAccounts('full')">
+                                        📋 Full
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="ghDeadSheetAlertList" style="max-height:68px;overflow-y:auto;display:flex;flex-direction:column;gap:3px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;"></div>
                         </div>
 
                         <!-- STANDBY TAB 1 -->
@@ -6571,6 +6595,11 @@ let _ghAgeCheckerResults = [];
             btn.innerText = '🛡️ Cek Ultra-Safe (40/Batch • 3.5s)';
             if (stopBtn) stopBtn.style.display = 'none';
             showToast(`✅ Selesai! ${activeCnt} Token Aktif, ${invalidCnt} Invalid.`);
+
+            // Otomatis scan semua sheet jika ditemukan PAT token yang mati!
+            if (invalidCnt > 0) {
+                await scanDeadPatsAcrossAllSheets(false);
+            }
         }
 
         function transferActivePatsToAgeTab() {
@@ -6860,47 +6889,216 @@ let _ghAgeCheckerResults = [];
         }
 
         async function pushSortedAgeResultsToGSheet(manualClick = false) {
-            if (!_ghAgeCheckerResults || _ghAgeCheckerResults.length === 0) {
-                if (manualClick) showToast('⚠️ Belum ada data akun untuk dikirim ke GSheet!');
+            const ageItems = (_ghAgeCheckerResults || []).map(r => {
+                const is404 = String(r.createdText || '').includes('404');
+                return {
+                    username: r.username,
+                    url: r.url,
+                    createdText: r.createdText,
+                    createdIso: is404 ? '9999-12-31T23:59:59Z' : r.createdIso,
+                    patToken: r.patToken || '',
+                    isFlagged404: is404,
+                    isInvalidPat: false
+                };
+            });
+
+            // Ambil juga seluruh PAT token yang INVALID / EXPIRED / FLAGGED dari Tab 1 agar tersimpan di paling bawah GSheet
+            const invalidPatItems = (_ghPatCheckerResults || [])
+                .filter(p => !p.active && p.token)
+                .map(p => ({
+                    username: '(Invalid PAT)',
+                    url: '-',
+                    createdText: `❌ ${p.message || 'Bad credentials/Expired'}`,
+                    createdIso: '9999-99-99T99:99:99Z',
+                    patToken: p.token,
+                    isFlagged404: false,
+                    isInvalidPat: true,
+                    customStatus: `INVALID PAT (${p.message || 'Expired'})`
+                }));
+
+            let combinedPayloadItems = [...ageItems, ...invalidPatItems];
+
+            // Simpan backup otomatis di browser; jika memori kosong, pulihkan dari backup terakhir
+            if (combinedPayloadItems.length > 0) {
+                try {
+                    localStorage.setItem('xb_last_pat_audit_backup', JSON.stringify(combinedPayloadItems));
+                } catch (e) {}
+            } else {
+                try {
+                    const savedBackup = JSON.parse(localStorage.getItem('xb_last_pat_audit_backup') || '[]');
+                    if (Array.isArray(savedBackup) && savedBackup.length > 0) {
+                        combinedPayloadItems = savedBackup;
+                    }
+                } catch (e) {}
+            }
+
+            if (combinedPayloadItems.length === 0) {
+                if (manualClick) showToast('⚠️ Belum ada data token atau akun untuk dikirim ke GSheet!');
                 return;
             }
+
             const btn = document.getElementById('btnPushAgeGSheet');
             if (btn) {
                 btn.disabled = true;
                 btn.innerText = '⏳ Syncing...';
             }
-            try {
-                const cleanItems = _ghAgeCheckerResults.map(r => ({
-                    username: r.username,
-                    url: r.url,
-                    createdText: r.createdText,
-                    createdIso: r.createdIso,
-                    patToken: r.patToken || ''
-                }));
 
-                const res = await fetch(GSHEET_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({
-                        action: 'sync_pat_age_audit',
-                        items: cleanItems,
-                        items_json: JSON.stringify(cleanItems)
-                    })
-                });
-                const json = await res.json();
-                if (json && json.result) {
-                    showToast(`✅ ${json.total_rows} akun tersusun Tertua ➔ Termuda di tab '${json.sheet}'!`);
-                } else {
-                    showToast('⚠️ Gagal sync ke GSheet: ' + ((json && json.error) || 'Cek deploy Apps Script'));
+            const chunkSize = 20;
+            const totalChunks = Math.ceil(combinedPayloadItems.length / chunkSize);
+            let lastTotalRows = 0;
+
+            try {
+                for (let c = 0; c < totalChunks; c++) {
+                    const chunkSlice = combinedPayloadItems.slice(c * chunkSize, (c + 1) * chunkSize);
+                    if (btn) btn.innerText = `⏳ ${c + 1}/${totalChunks}...`;
+
+                    let chunkSuccess = false;
+                    let lastErrMsg = '';
+
+                    for (let attempt = 1; attempt <= 3; attempt++) {
+                        try {
+                            const res = await fetch(GSHEET_WEBHOOK_URL, {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                body: JSON.stringify({
+                                    action: 'sync_pat_age_audit',
+                                    items: chunkSlice
+                                })
+                            });
+                            const json = await res.json();
+                            if (json && json.result) {
+                                lastTotalRows = json.total_rows || lastTotalRows;
+                                chunkSuccess = true;
+                                break;
+                            } else {
+                                lastErrMsg = (json && json.error) || 'Cek deploy Apps Script';
+                            }
+                        } catch (netErr) {
+                            lastErrMsg = 'Koneksi terputus sesaat';
+                            if (btn && attempt < 3) btn.innerText = `⏳ Retry ${attempt}/3`;
+                            await new Promise(r => setTimeout(r, 1500 * attempt));
+                        }
+                    }
+
+                    if (!chunkSuccess) {
+                        throw new Error(lastErrMsg || 'Gagal mengirim batch ke Google Sheet');
+                    }
                 }
+
+                showToast(`✅ ${lastTotalRows} baris tersusun (Tertua ➔ Termuda, Invalid/404 di bawah)!`);
+                await scanDeadPatsAcrossAllSheets(false);
             } catch (err) {
-                showToast('⚠️ Error koneksi saat mengirim ke Google Sheet.');
+                showToast(`⚠️ ${err.message || 'Error koneksi'} — Data aman ter-backup, klik 📤 GSheet untuk coba lagi.`);
             } finally {
                 if (btn) {
                     btn.disabled = false;
                     btn.innerText = '📤 GSheet';
                 }
             }
+        }
+
+        let _matchedDeadSheetRows = [];
+
+        async function scanDeadPatsAcrossAllSheets(manualClick = false) {
+            const deadToks = [];
+            const reasonMap = {};
+            (_ghPatCheckerResults || []).forEach(p => {
+                if (!p.active && p.token) {
+                    deadToks.push(p.token);
+                    reasonMap[p.token] = p.message || 'Bad credentials/Expired';
+                }
+            });
+
+            const deadUsernames = [];
+            (_ghAgeCheckerResults || []).forEach(r => {
+                if (String(r.createdText || '').includes('404') && r.username) {
+                    deadUsernames.push(r.username);
+                }
+            });
+
+            if (deadToks.length === 0 && deadUsernames.length === 0) {
+                if (manualClick) showToast('✅ Tidak ada PAT token mati atau akun 404 yang perlu di-scan!');
+                return;
+            }
+
+            const scanBtn = document.getElementById('btnScanDeadSheets');
+            if (scanBtn) {
+                scanBtn.disabled = true;
+                scanBtn.innerText = '⏳...';
+            }
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'scan_dead_pats_all_sheets',
+                        dead_tokens: deadToks,
+                        dead_usernames: deadUsernames,
+                        token_reasons: reasonMap
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    _matchedDeadSheetRows = Array.isArray(json.matches) ? json.matches : [];
+                    const alertBox = document.getElementById('ghDeadSheetAlertBox');
+                    const alertTitle = document.getElementById('ghDeadSheetAlertTitle');
+                    const alertList = document.getElementById('ghDeadSheetAlertList');
+
+                    if (_matchedDeadSheetRows.length > 0 && alertBox && alertTitle && alertList) {
+                        alertBox.style.display = 'flex';
+                        alertTitle.innerText = `🚨 ${_matchedDeadSheetRows.length} AKUN MATI DI-BLOCK MERAH DI SHEET`;
+                        alertList.innerHTML = _matchedDeadSheetRows.map((m, idx) => `
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;background:var(--bg-input);padding:4px 7px;border-radius:6px;border:1px solid rgba(239,68,68,0.35);">
+                                <span style="color:var(--text-primary);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ${idx + 1}. @${m.username} ➔ <a href="${m.url}" target="_blank" style="color:#38bdf8;text-decoration:none;">${m.url}</a>
+                                </span>
+                                <span style="color:var(--warning);font-size:0.55rem;flex-shrink:0;">
+                                    [${m.sheetName} #${m.rowNumber}]
+                                </span>
+                            </div>
+                        `).join('');
+
+                        // Kirim juga ke Lonceng Notifikasi Admin di Web App agar tersimpan permanen
+                        const notifLines = _matchedDeadSheetRows.map((m, i) =>
+                            `${i + 1}. <b>@${m.username}</b> | ${m.url} (<code>${m.sheetName} Row ${m.rowNumber}</code>)`
+                        ).join('\n');
+                        pushInWebNotification(
+                            'admin',
+                            `🚨 ${_matchedDeadSheetRows.length} DEAD PAT FOUND & MARKED RED`,
+                            `Ditemukan <b>${_matchedDeadSheetRows.length} akun mati</b> di Google Sheet (otomatis di-block warna merah):\n\n${notifLines}`
+                        );
+                        showToast(`🚨 ${_matchedDeadSheetRows.length} akun mati ditemukan & di-block merah di GSheet!`);
+                    } else if (manualClick) {
+                        showToast('✅ Scan selesai: tidak ada kecocokan PAT mati di sheet mana pun.');
+                    }
+                }
+            } catch (e) {
+                if (manualClick) showToast('⚠️ Gagal memindai Google Sheet.');
+            } finally {
+                if (scanBtn) {
+                    scanBtn.disabled = false;
+                    scanBtn.innerText = '🔍 Scan';
+                }
+            }
+        }
+
+        function copyMatchedDeadSheetAccounts(mode = 'simple') {
+            if (!_matchedDeadSheetRows || _matchedDeadSheetRows.length === 0) {
+                return showToast('⚠️ Belum ada daftar akun mati yang ditemukan di sheet!');
+            }
+            let out = '';
+            if (mode === 'simple') {
+                out = _matchedDeadSheetRows
+                    .map(m => `@${m.username} | ${m.url}`)
+                    .join('\n');
+            } else {
+                out = _matchedDeadSheetRows
+                    .map((m, i) => `${i + 1}. @${m.username} | ${m.url} | Sheet: ${m.sheetName} (Baris ${m.rowNumber}) | Token: ${m.patToken}`)
+                    .join('\n');
+            }
+            navigator.clipboard.writeText(out);
+            showToast(`📋 Berhasil copy ${_matchedDeadSheetRows.length} akun mati (${mode.toUpperCase()})!`);
         }
 
         function copyAgeCheckerColumn(mode) {
