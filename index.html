@@ -6870,12 +6870,21 @@ let _ghAgeCheckerResults = [];
                 btn.innerText = '⏳ Syncing...';
             }
             try {
+                const cleanItems = _ghAgeCheckerResults.map(r => ({
+                    username: r.username,
+                    url: r.url,
+                    createdText: r.createdText,
+                    createdIso: r.createdIso,
+                    patToken: r.patToken || ''
+                }));
+
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'sync_pat_age_audit',
-                        items: _ghAgeCheckerResults
+                        items: cleanItems,
+                        items_json: JSON.stringify(cleanItems)
                     })
                 });
                 const json = await res.json();
