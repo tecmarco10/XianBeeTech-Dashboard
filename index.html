@@ -6920,6 +6920,42 @@ let _ghAgeCheckerResults = [];
             `;
         }
 
+        async function verifyGithubUsernamePublicStatus(username) {
+            if (!username) return { status: 'unknown' };
+
+            // 1. Cek langsung halaman publik https://github.com/{username} via Apps Script (100% sama dengan script terminal & bebas CORS)
+            try {
+                const rGas = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'check_github_web_404',
+                        username: username
+                    })
+                });
+                const dGas = await rGas.json();
+                if (dGas && dGas.result) {
+                    if (dGas.http_code === 404 || dGas.is_404 === true) {
+                        return { status: 'flagged_404' };
+                    }
+                    if (dGas.http_code === 200) {
+                        return { status: 'public' };
+                    }
+                }
+            } catch (e) {}
+
+            // 2. Fallback: Cek endpoint publik GitHub API /users/{username}
+            try {
+                const rApi = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, {
+                    headers: { 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (rApi.status === 404) return { status: 'flagged_404' };
+                if (rApi.status === 200) return { status: 'public' };
+            } catch (e) {}
+
+            return { status: 'unknown' };
+        }
+
         async function runBulkGithubPatCheck() {
             const rawText = (document.getElementById('ghPatTokensInput')?.value || '').trim();
             if (!rawText) {
@@ -6958,6 +6994,7 @@ let _ghAgeCheckerResults = [];
             _ghPatCheckerResults = [];
 
             let activeCnt = 0;
+            let flaggedCnt = 0;
             let invalidCnt = 0;
             const batchSize = 40;
             const totalBatches = Math.ceil(tokens.length / batchSize);
@@ -6988,7 +7025,7 @@ let _ghAgeCheckerResults = [];
                 progPct.innerText = `${pct}%`;
                 progFill.style.width = `${pct}%`;
 
-                let item = { index: i + 1, token: tok, masked, active: false, username: '', message: '' };
+                let item = { index: i + 1, token: tok, masked, active: false, flagged: false, isError403: false, username: '', createdAt: '', message: '' };
                 try {
                     const res = await fetch('https://api.github.com/user', {
                         headers: {
@@ -6998,12 +7035,26 @@ let _ghAgeCheckerResults = [];
                     });
                     if (res.status === 200) {
                         const data = await res.json();
-                        item.active = true;
+                        const rateLimitMax = parseInt(res.headers.get('X-RateLimit-Limit') || '5000', 10);
                         item.username = data.login || 'unknown';
+                        item.createdAt = data.created_at || '';
+
+                        // Verifikasi profil publik https://github.com/{username}: jika 404 atau limit dicekik <= 60 -> FLAGGED (bukan ACTIVE)
+                        const pubCheck = await verifyGithubUsernamePublicStatus(item.username);
+                        if (pubCheck.status === 'flagged_404' || (!isNaN(rateLimitMax) && rateLimitMax <= 60)) {
+                            item.active = false;
+                            item.flagged = true;
+                            item.message = 'Shadowbanned/404';
+                        } else {
+                            item.active = true;
+                        }
+                    } else if (res.status === 403) {
+                        item.isError403 = true;
+                        item.message = 'Status: 403 (Suspended/Forbidden)';
                     } else if (res.status === 429) {
                         item.message = 'Rate Limited (Tunggu 1m)';
                     } else {
-                        item.message = res.status === 401 ? 'Bad credentials/Expired' : `HTTP ${res.status}`;
+                        item.message = res.status === 401 ? 'Bad credentials/Expired' : `Status: ${res.status}`;
                     }
                 } catch (e) {
                     item.message = 'Network Error';
@@ -7011,6 +7062,7 @@ let _ghAgeCheckerResults = [];
 
                 _ghPatCheckerResults.push(item);
                 if (item.active) activeCnt++;
+                else if (item.flagged) flaggedCnt++;
                 else invalidCnt++;
 
                 const rowBg = i % 2 === 0 ? 'transparent' : 'rgba(255,255,255,0.025)';
@@ -7026,11 +7078,22 @@ let _ghAgeCheckerResults = [];
                         </div>
                         <span style="color:var(--text-secondary);font-size:0.57rem;flex-shrink:0;">${_esc(item.masked)}</span>
                     `;
-                } else {
+                } else if (item.flagged) {
                     rowEl.innerHTML = `
                         <div style="display:flex;align-items:center;gap:5px;min-width:0;flex:1;">
                             <span style="color:var(--text-muted);font-weight:800;">${item.index}.</span>
-                            <span style="color:var(--danger);font-weight:800;flex-shrink:0;">[INVALID]</span>
+                            <span style="color:#c084fc;font-weight:800;flex-shrink:0;">[FLAGGED]</span>
+                            <span style="color:var(--danger);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${_esc(item.username)} (Shadowbanned/404)</span>
+                        </div>
+                        <span style="color:var(--text-muted);font-size:0.57rem;flex-shrink:0;">${_esc(item.masked)}</span>
+                    `;
+                } else {
+                    const tagErr = item.isError403 ? '[ERROR]' : '[INVALID]';
+                    const colErr = item.isError403 ? 'var(--warning)' : 'var(--danger)';
+                    rowEl.innerHTML = `
+                        <div style="display:flex;align-items:center;gap:5px;min-width:0;flex:1;">
+                            <span style="color:var(--text-muted);font-weight:800;">${item.index}.</span>
+                            <span style="color:${colErr};font-weight:800;flex-shrink:0;">${tagErr}</span>
                             <span style="color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${_esc(item.message)}</span>
                         </div>
                         <span style="color:var(--text-muted);font-size:0.57rem;flex-shrink:0;">${_esc(item.masked)}</span>
@@ -7038,7 +7101,7 @@ let _ghAgeCheckerResults = [];
                 }
                 resBody.appendChild(rowEl);
 
-                sumBadge.innerText = `✅ ${activeCnt} | ❌ ${invalidCnt} | ☁️ Sync`;
+                sumBadge.innerText = `✅ ${activeCnt} | 🟣 ${flaggedCnt} | ❌ ${invalidCnt}`;
                 listCnt.innerText = `${i + 1}/${tokens.length}`;
                 transferBtn.innerText = `🚀 Lanjut Cek Umur & Link (${activeCnt} Akun Aktif) ➔`;
 
@@ -7055,12 +7118,12 @@ let _ghAgeCheckerResults = [];
             }
 
             if (!_ghPatAbortFlag) {
-                progLbl.innerText = `✅ Selesai! ${activeCnt} Aktif • ${invalidCnt} Invalid • ☁️ Synced ke 'PAT_Audit_Report'`;
+                progLbl.innerText = `✅ Selesai! ${activeCnt} Aktif • ${flaggedCnt} Flagged • ${invalidCnt} Invalid/403 • ☁️ Synced`;
             }
             btn.disabled = false;
             btn.innerText = '🛡️ Cek Ultra-Safe (40/Batch • 3.5s)';
             if (stopBtn) stopBtn.style.display = 'none';
-            showToast(`✅ Selesai! ${activeCnt} Token Aktif, ${invalidCnt} Invalid & Auto-Synced!`);
+            showToast(`✅ Selesai! ${activeCnt} Aktif, ${flaggedCnt} Flagged/404, ${invalidCnt} Invalid/403!`);
 
             await queueRealtimePatAutoSync(true);
         }
@@ -7098,7 +7161,13 @@ let _ghAgeCheckerResults = [];
                 textOut = _ghPatCheckerResults.map(r => {
                     const idxPad = String(r.index).padEnd(3, ' ');
                     if (r.active) {
-                        return `${idxPad}. [  ACTIVE  ] Token: ${r.masked} -> User: ${r.username.padEnd(18, ' ')} (Verified Live)`;
+                        return `${idxPad}. [  ACTIVE  ] Token: ${r.masked} -> User: ${r.username.padEnd(18, ' ')} (Verified Public)`;
+                    }
+                    if (r.flagged) {
+                        return `${idxPad}. [ FLAGGED  ] Token: ${r.masked} -> User: ${(r.username || '-').padEnd(18, ' ')} (Shadowbanned/404)`;
+                    }
+                    if (r.isError403) {
+                        return `${idxPad}. [  ERROR   ] Token: ${r.masked} -> ${r.message}`;
                     }
                     return `${idxPad}. [ INVALID  ] Token: ${r.masked} -> Message: ${r.message}`;
                 }).join('\n');
@@ -7164,8 +7233,7 @@ let _ghAgeCheckerResults = [];
 
             const extraRaw = (document.getElementById('ghAgeOptionalToken')?.value || '').trim();
             const extraTokens = extraRaw ? extraRaw.split(/[\r\n,;\s]+/).map(t => t.trim()).filter(Boolean) : [];
-            const activeTab1Tokens = _ghPatCheckerResults.filter(r => r.active && r.token).map(r => r.token);
-            const activeTokens = [...new Set([...extraTokens, ...activeTab1Tokens, ...GH_AGE_PAT_POOL])];
+            const activeTokens = [...new Set([...extraTokens, ...GH_AGE_PAT_POOL])];
 
             const btn = document.getElementById('btnRunGhAgeCheck');
             const stopBtn = document.getElementById('btnStopGhAgeCheck');
@@ -7285,6 +7353,14 @@ let _ghAgeCheckerResults = [];
                     p => p.active && p.username && p.username.toLowerCase() === uname.toLowerCase()
                 );
 
+                if (createdFormatted.includes('404') && matchedPatObj) {
+                    const origDate = matchedPatObj.createdAt ? formatGithubCreatedWib(matchedPatObj.createdAt) : '';
+                    createdFormatted = origDate
+                        ? `🟣 FLAGGED / 404 (${origDate})`
+                        : '🟣 FLAGGED / 404 (PAT Active, Shadowban)';
+                    statusColor = '#c084fc';
+                }
+
                 _ghAgeCheckerResults.push({
                     index: i + 1,
                     username: uname,
@@ -7365,19 +7441,30 @@ let _ghAgeCheckerResults = [];
                 };
             });
 
-            // Ambil juga seluruh PAT token yang INVALID / EXPIRED / FLAGGED dari Tab 1 agar tersimpan di paling bawah GSheet
-            const invalidPatItems = (_ghPatCheckerResults || [])
-                .filter(p => !p.active && p.token)
-                .map(p => ({
-                    username: '(Invalid PAT)',
-                    url: '-',
-                    createdText: `❌ ${p.message || 'Bad credentials/Expired'}`,
-                    createdIso: '9999-99-99T99:99:99Z',
-                    patToken: p.token,
-                    isFlagged404: false,
-                    isInvalidPat: true,
-                    customStatus: `INVALID PAT (${p.message || 'Expired'})`
-                }));
+            const deadToks = [];
+            const reasonMap = {};
+            const activeTokUsers = {};
+            const deadUsernames = [];
+
+            (_ghPatCheckerResults || []).forEach(p => {
+                if (p.token) {
+                    if (p.active && p.username) {
+                        activeTokUsers[p.token] = p.username;
+                    } else if (!p.active) {
+                        deadToks.push(p.token);
+                        reasonMap[p.token] = p.flagged ? 'FLAGGED / SHADOWBANNED (404)' : (p.message || 'Bad credentials/Expired');
+                        if (p.flagged && p.username && !deadUsernames.includes(p.username)) {
+                            deadUsernames.push(p.username);
+                        }
+                    }
+                }
+            });
+
+            (_ghAgeCheckerResults || []).forEach(r => {
+                if (String(r.createdText || '').includes('404') && r.username && !deadUsernames.includes(r.username)) {
+                    deadUsernames.push(r.username);
+                }
+            });
 
             let combinedPayloadItems = [...ageItems, ...invalidPatItems];
 
