@@ -6282,6 +6282,15 @@ let _ghAgeCheckerResults = [];
                             </div>
                             <textarea class="form-input" id="ghPatTokensInput" rows="2" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;line-height:1.35;height:48px;min-height:48px;max-height:54px;padding:6px 9px;resize:none;" placeholder="Paste daftar PAT token ke bawah (ghp_xxxx...)"></textarea>
 
+                            <input type="text" class="form-input" id="ghExternalSheetUrlInput" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;height:27px;min-height:27px;padding:3px 8px;" placeholder="🔗 Link GSheet Lain (Opsional, pisahkan koma jika >1)" oninput="localStorage.setItem('xb_external_gsheet_url', this.value)">
+
+                            <div style="display:grid;grid-template-columns:1fr auto;gap:5px;align-items:center;">
+                                <input type="text" class="form-input" id="ghTargetSheetsInput" value="Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;height:27px;min-height:27px;padding:3px 8px;border-color:rgba(56,189,248,0.45);" placeholder="📋 Pilih Sheet (cth: Sheet10, Sheet11, Sheet12...)" oninput="localStorage.setItem('xb_target_match_sheets', this.value)">
+                                <button type="button" id="btnRunMasterMatch" class="btn-ui secondary" style="height:27px;padding:0 9px;font-size:0.6rem;border-color:var(--accent-cyan);color:var(--accent-cyan);white-space:nowrap;" onclick="runMasterSheetMatchFromWeb()">
+                                    🔄 Match
+                                </button>
+                            </div>
+
                             <div style="display:grid;grid-template-columns:1fr auto;gap:6px;align-items:center;">
                                 <button type="button" class="btn-ui primary" id="btnRunGhPatCheck" style="padding:7px 10px;font-size:0.7rem;" onclick="runBulkGithubPatCheck()">
                                     🛡️ Cek Ultra-Safe (40/Batch • 3.5s)
@@ -6320,7 +6329,7 @@ let _ghAgeCheckerResults = [];
                                 <button type="button" id="btnScanDeadSheets" class="btn-ui secondary" style="padding:5px 2px;font-size:0.55rem;min-width:0;border-color:var(--warning);color:var(--warning);" onclick="scanDeadPatsAcrossAllSheets(true)">
                                     🔍 Scan
                                 </button>
-                                <button type="button" class="btn-ui secondary" style="padding:5px 2px;font-size:0.55rem;min-width:0;border-color:var(--danger);color:var(--danger);" onclick="pushSortedAgeResultsToGSheet(true)">
+                                <button type="button" id="btnSyncTab1GSheet" class="btn-ui secondary" style="padding:5px 2px;font-size:0.55rem;min-width:0;border-color:var(--danger);color:var(--danger);" onclick="syncTab1PatsAndReportToGSheet(true)">
                                     📤 GSheet
                                 </button>
                             </div>
@@ -6959,12 +6968,16 @@ let _ghAgeCheckerResults = [];
 
                     for (let attempt = 1; attempt <= 3; attempt++) {
                         try {
+                            const extSheetUrlAge = (document.getElementById('ghExternalSheetUrlInput')?.value || localStorage.getItem('xb_external_gsheet_url') || '').trim();
+                            const targetSheetsAge = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').trim();
                             const res = await fetch(GSHEET_WEBHOOK_URL, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                                 body: JSON.stringify({
                                     action: 'sync_pat_age_audit',
-                                    items: chunkSlice
+                                    items: chunkSlice,
+                                    external_sheet_url: extSheetUrlAge,
+                                    target_sheets: targetSheetsAge
                                 })
                             });
                             const json = await res.json();
@@ -7004,6 +7017,106 @@ let _ghAgeCheckerResults = [];
         let _isPatAutoSyncing = false;
         let _pendingPatAutoSync = false;
 
+        async function runMasterSheetMatchFromWeb() {
+            const btn = document.getElementById('btnRunMasterMatch');
+            const extSheetUrl = (document.getElementById('ghExternalSheetUrlInput')?.value || localStorage.getItem('xb_external_gsheet_url') || '').trim();
+            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').trim();
+
+            if (!targetSheetsStr) {
+                return showToast('⚠️ Isi nama sheet yang mau dicocokkan (misal: Sheet10, Sheet11, Sheet12)');
+            }
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = '⏳...';
+            }
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'run_master_match',
+                        external_sheet_url: extSheetUrl,
+                        target_sheets: targetSheetsStr
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    showToast(`✅ ${json.total_accounts} akun dari [${(json.used_sheets || []).join(', ')}] tersusun di Master_Matched_Accounts!`);
+                } else {
+                    showToast('⚠️ Gagal mencocokkan sheet: ' + ((json && json.error) || 'Cek deploy Apps Script'));
+                }
+            } catch (e) {
+                showToast('⚠️ Error koneksi saat mencocokkan sheet.');
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = '🔄 Match';
+                }
+            }
+        }
+
+        async function pairActivePatsToExistingSheets(manualClick = false) {
+            const activePairs = (_ghPatCheckerResults || [])
+                .filter(p => p.active && p.username && p.token)
+                .map(p => ({
+                    username: p.username,
+                    url: `https://github.com/${p.username}`,
+                    patToken: p.token
+                }));
+
+            if (activePairs.length === 0) {
+                if (manualClick) showToast('⚠️ Belum ada PAT token ACTIVE untuk dipasangkan!');
+                return 0;
+            }
+
+            const extSheetUrl = (document.getElementById('ghExternalSheetUrlInput')?.value || localStorage.getItem('xb_external_gsheet_url') || '').trim();
+            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').trim();
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'pair_active_pats_to_sheets',
+                        pairs: activePairs,
+                        external_sheet_url: extSheetUrl,
+                        target_sheets: targetSheetsStr
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    const totalPaired = json.total_paired || 0;
+                    if (manualClick && totalPaired > 0) {
+                        showToast(`🔗 ${totalPaired} PAT Token berhasil dijodohkan ke baris Username & Link di GSheet!`);
+                    }
+                    return totalPaired;
+                }
+            } catch (e) {
+                if (manualClick) showToast('⚠️ Gagal memasangkan PAT Token ke Google Sheet.');
+            }
+            return 0;
+        }
+
+        async function syncTab1PatsAndReportToGSheet(manualClick = false) {
+            const btn = document.getElementById('btnSyncTab1GSheet');
+            if (btn) {
+                btn.disabled = true;
+                btn.innerText = '⏳...';
+            }
+            try {
+                const pairedCnt = await pairActivePatsToExistingSheets(false);
+                await scanDeadPatsAcrossAllSheets(false);
+                if (manualClick) {
+                    showToast(`✅ Sync Selesai! ${pairedCnt} PAT dijodohkan ke Username/Link & Audit Report diperbarui.`);
+                }
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerText = '📤 GSheet';
+                }
+            }
+        }
+
         async function queueRealtimePatAutoSync(waitUntilDone = false) {
             if (_isPatAutoSyncing) {
                 _pendingPatAutoSync = true;
@@ -7018,6 +7131,7 @@ let _ghAgeCheckerResults = [];
             try {
                 do {
                     _pendingPatAutoSync = false;
+                    await pairActivePatsToExistingSheets(false);
                     await scanDeadPatsAcrossAllSheets(false);
                 } while (_pendingPatAutoSync);
             } finally {
@@ -7059,6 +7173,9 @@ let _ghAgeCheckerResults = [];
                 scanBtn.innerText = '⏳...';
             }
 
+            const extSheetUrl = (document.getElementById('ghExternalSheetUrlInput')?.value || localStorage.getItem('xb_external_gsheet_url') || '').trim();
+            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').trim();
+
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -7069,7 +7186,9 @@ let _ghAgeCheckerResults = [];
                         dead_usernames: deadUsernames,
                         token_reasons: reasonMap,
                         active_token_users: activeTokUsers,
-                        auto_update_rename: true
+                        auto_update_rename: true,
+                        external_sheet_url: extSheetUrl,
+                        target_sheets: targetSheetsStr
                     })
                 });
                 const json = await res.json();
