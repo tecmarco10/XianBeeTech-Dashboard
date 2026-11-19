@@ -5229,6 +5229,14 @@
             showToast(`Downloaded ${entries.length} account credentials (.TXT)!`);
         }
 
+        function copyVaultFieldByIdx(idx, fieldKey, labelName) {
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            const e = vault[idx];
+            if (!e || !e[fieldKey]) return;
+            navigator.clipboard.writeText(String(e[fieldKey]));
+            showToast(`${labelName} copied!`);
+        }
+
         function copyFullCredentialBlock(idx) {
             const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
             const e = vault[idx];
@@ -5284,7 +5292,7 @@
                                 <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
                                 <span style="color:var(--text-primary);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.username}</span>
                             </div>
-                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.username}'); showToast('Username copied!');">📋</button>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="copyVaultFieldByIdx(${idx}, 'username', 'Username')">📋</button>
                         </div>
 
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
@@ -5293,7 +5301,7 @@
                                 <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
                                 <span style="color:var(--text-primary);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.password}</span>
                             </div>
-                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.password}'); showToast('Password copied!');">📋</button>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="copyVaultFieldByIdx(${idx}, 'password', 'Password')">📋</button>
                         </div>
 
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
@@ -5302,7 +5310,7 @@
                                 <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
                                 <span style="color:var(--accent-cyan);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.twofa}</span>
                             </div>
-                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="navigator.clipboard.writeText('${entry.twofa}'); showToast('2FA Key copied!');">📋</button>
+                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="copyVaultFieldByIdx(${idx}, 'twofa', '2FA Key')">📋</button>
                         </div>
 
                         <!-- TOMBOL OTP, COPY ALL, SAVE .TXT & GITHUB MASUK DI DALAM KOTAK 3D -->
@@ -8206,6 +8214,10 @@ let _ghAgeCheckerResults = [];
         }
 
         function closeAdminPatStudioV2() {
+            if (_patPollTimer) {
+                clearInterval(_patPollTimer);
+                _patPollTimer = null;
+            }
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             if (modal) modal.style.padding = '';
@@ -8389,45 +8401,72 @@ let _ghAgeCheckerResults = [];
 
         let _patSoundEnabled = localStorage.getItem('xb_pat_sound_on') !== 'false';
         let _patAudioCtx = null;
+        let _patMasterGain = null;
         let _lastSpokenStageKey = '';
+
+        function ensurePatAudioEngine() {
+            const AudioCtx = window.AudioContext || window.webkitAudioContext;
+            if (!AudioCtx) return null;
+            if (!_patAudioCtx) {
+                _patAudioCtx = new AudioCtx();
+                const comp = _patAudioCtx.createDynamicsCompressor();
+                comp.threshold.value = -10;
+                comp.knee.value = 14;
+                comp.ratio.value = 10;
+                comp.attack.value = 0.002;
+                comp.release.value = 0.12;
+
+                _patMasterGain = _patAudioCtx.createGain();
+                _patMasterGain.gain.value = 0.98;
+
+                comp.connect(_patMasterGain);
+                _patMasterGain.connect(_patAudioCtx.destination);
+            }
+            if (_patAudioCtx.state === 'suspended') {
+                _patAudioCtx.resume().catch(() => {});
+            }
+            return _patAudioCtx;
+        }
+
+        function triggerPatSynthNote(freq, dur, wave = 'triangle', delay = 0, peak = 0.72, slideTo = null) {
+            const ctx = ensurePatAudioEngine();
+            if (!ctx || !_patMasterGain) return;
+            const t = ctx.currentTime + delay;
+            const osc = ctx.createOscillator();
+            const g = ctx.createGain();
+
+            osc.type = wave;
+            osc.frequency.setValueAtTime(freq, t);
+            if (slideTo) {
+                osc.frequency.exponentialRampToValueAtTime(slideTo, t + dur);
+            }
+
+            g.gain.setValueAtTime(0.0001, t);
+            g.gain.linearRampToValueAtTime(peak, t + 0.009);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+
+            osc.connect(g);
+            g.connect(_patMasterGain);
+            osc.start(t);
+            osc.stop(t + dur + 0.02);
+        }
 
         function playPatStudioTone(kind = 'step') {
             if (!_patSoundEnabled) return;
             try {
-                const AudioCtx = window.AudioContext || window.webkitAudioContext;
-                if (!AudioCtx) return;
-                if (!_patAudioCtx) _patAudioCtx = new AudioCtx();
-                if (_patAudioCtx.state === 'suspended') _patAudioCtx.resume();
-
-                const now = _patAudioCtx.currentTime;
-                const osc = _patAudioCtx.createOscillator();
-                const gain = _patAudioCtx.createGain();
-                osc.connect(gain);
-                gain.connect(_patAudioCtx.destination);
-
-                if (kind === 'done') {
-                    osc.type = 'triangle';
-                    osc.frequency.setValueAtTime(660, now);
-                    osc.frequency.setValueAtTime(880, now + 0.09);
-                    gain.gain.setValueAtTime(0.08, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
-                    osc.start(now);
-                    osc.stop(now + 0.28);
+                if (kind === 'start') {
+                    triggerPatSynthNote(360, 0.12, 'sawtooth', 0, 0.65, 620);
+                    triggerPatSynthNote(620, 0.18, 'triangle', 0.09, 0.85, 940);
+                } else if (kind === 'done') {
+                    triggerPatSynthNote(523.25, 0.12, 'triangle', 0, 0.78);     // C5
+                    triggerPatSynthNote(659.25, 0.12, 'triangle', 0.08, 0.82);  // E5
+                    triggerPatSynthNote(783.99, 0.26, 'triangle', 0.16, 0.92);  // G5
                 } else if (kind === 'error') {
-                    osc.type = 'sawtooth';
-                    osc.frequency.setValueAtTime(240, now);
-                    osc.frequency.linearRampToValueAtTime(170, now + 0.2);
-                    gain.gain.setValueAtTime(0.06, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-                    osc.start(now);
-                    osc.stop(now + 0.22);
+                    triggerPatSynthNote(240, 0.17, 'sawtooth', 0, 0.78, 155);
+                    triggerPatSynthNote(185, 0.24, 'sawtooth', 0.18, 0.78, 115);
                 } else {
-                    osc.type = 'sine';
-                    osc.frequency.setValueAtTime(520, now);
-                    gain.gain.setValueAtTime(0.05, now);
-                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
-                    osc.start(now);
-                    osc.stop(now + 0.12);
+                    triggerPatSynthNote(720, 0.09, 'triangle', 0, 0.72);
+                    triggerPatSynthNote(1080, 0.12, 'sine', 0.05, 0.65);
                 }
             } catch (e) {}
         }
@@ -8437,8 +8476,8 @@ let _ghAgeCheckerResults = [];
             localStorage.setItem('xb_pat_sound_on', String(_patSoundEnabled));
             const btn = document.getElementById('btnTogglePatSound');
             if (btn) btn.innerText = _patSoundEnabled ? '🔊 SFX ON' : '🔇 SFX OFF';
-            if (_patSoundEnabled) playPatStudioTone('step');
-            showToast(_patSoundEnabled ? '🔊 PAT Studio sound effect ON' : '🔇 PAT Studio sound effect OFF');
+            if (_patSoundEnabled) playPatStudioTone('done');
+            showToast(_patSoundEnabled ? '🔊 PAT Studio sound effect ON (Boosted)' : '🔇 PAT Studio sound effect OFF');
         }
 
         function toggleRevealPatToken(idx) {
@@ -8545,11 +8584,13 @@ let _ghAgeCheckerResults = [];
                 };
             });
 
+            const batchStatusUp = String(batch.status || '').toUpperCase();
+            const isStoppedByAdmin = (batchStatusUp === 'CANCELLED' || batchStatusUp === 'STOPPED');
             const total = Math.max(1, Number(batch.total || _patLatestBatchItems.length || 1));
             const doneCnt = _patLatestBatchItems.filter(i => i.status === 'COMPLETED').length;
             const failCnt = _patLatestBatchItems.filter(i => i.status === 'FAILED').length;
             const finishedCnt = doneCnt + failCnt;
-            const isCompleted = batch.status === 'COMPLETED' || batch.status === 'CANCELLED' || batch.completed === true || (finishedCnt >= total && _patLatestBatchItems.length > 0);
+            const isCompleted = batchStatusUp === 'COMPLETED' || isStoppedByAdmin || batch.completed === true || (finishedCnt >= total && _patLatestBatchItems.length > 0);
 
             const stepText = translateWorkerLogToEnglish(batch.step || '');
             let stepSubPct = 0.12;
@@ -8575,13 +8616,15 @@ let _ghAgeCheckerResults = [];
                 stageTitleCenter = '4. TOKEN DISPATCH & SHEET1';
             }
 
-            const pct = isCompleted
-                ? 100
-                : Math.min(99, Math.max(6, Math.round(((finishedCnt + stepSubPct) / total) * 100)));
+            const pct = isStoppedByAdmin
+                ? Math.round((finishedCnt / total) * 100)
+                : (isCompleted
+                    ? 100
+                    : Math.min(99, Math.max(6, Math.round(((finishedCnt + stepSubPct) / total) * 100))));
 
             if (isCompleted) {
-                activeStage = 4;
-                stageTitleCenter = batch.status === 'CANCELLED' ? '🛑 BATCH CANCELLED' : '✅ 4. SAVED TO SHEET1 (100%)';
+                activeStage = isStoppedByAdmin ? activeStage : 4;
+                stageTitleCenter = isStoppedByAdmin ? '🛑 BATCH STOPPED BY ADMIN' : '✅ 4. SAVED TO SHEET1 (100%)';
             }
 
             const stageSig = `${finishedCnt}-${activeStage}-${stepText}-${isCompleted}-${failCnt}`;
@@ -8613,9 +8656,13 @@ let _ghAgeCheckerResults = [];
 
             if (hdrTitle) {
                 hdrTitle.innerHTML = isCompleted
-                    ? (batch.status === 'CANCELLED' ? `🛑 BATCH STOPPED BY ADMIN` : `✅ ALL BATCH JOBS COMPLETED`)
+                    ? (isStoppedByAdmin ? `🛑 BATCH STOPPED BY ADMIN` : `✅ ALL BATCH JOBS COMPLETED`)
                     : `⚡ ${stageTitleCenter}`;
-                hdrTitle.style.color = isCompleted ? 'var(--success)' : '#38bdf8';
+                hdrTitle.style.color = isStoppedByAdmin ? 'var(--danger)' : (isCompleted ? 'var(--success)' : '#38bdf8');
+            }
+            const btnResetTel = document.getElementById('btnResetPatStudioTel');
+            if (btnResetTel) {
+                btnResetTel.style.display = isCompleted ? 'inline-flex' : 'none';
             }
             if (hdrBadge) {
                 hdrBadge.innerText = `Batch ${finishedCnt}/${total} • ${pct}%`;
@@ -8745,7 +8792,60 @@ let _ghAgeCheckerResults = [];
             savePatStudioLocalCache(batch);
         }
 
+        let _patBatchGenerationEpoch = 0;
+
+        function resetAdminPatStudioState(switchToConfig = true) {
+            _patBatchGenerationEpoch++;
+            if (_patPollTimer) {
+                clearInterval(_patPollTimer);
+                _patPollTimer = null;
+            }
+            _patLatestBatchItems = [];
+            _patAutoCopiedDone.clear();
+            _patRevealedSet.clear();
+            _lastSpokenStageKey = '';
+            _patLogLines = [];
+            try { localStorage.removeItem(XB_PAT_LOCAL_STORAGE_KEY); } catch (e) {}
+
+            const hdrTitle = document.getElementById('patTelHeaderTitle');
+            const hdrBadge = document.getElementById('patTelHeaderBadge');
+            const progFill = document.getElementById('patTelProgressBar');
+            const progPctTxt = document.getElementById('patTelProgressPctText');
+            const streamBox = document.getElementById('patTelStreamBox');
+            const tokListEl = document.getElementById('patTelTokensList');
+            const btnResetTel = document.getElementById('btnResetPatStudioTel');
+
+            if (hdrTitle) {
+                hdrTitle.innerHTML = '⏳ WAITING FOR STEALTH BATCH QUEUE...';
+                hdrTitle.style.color = '#38bdf8';
+            }
+            if (hdrBadge) hdrBadge.innerText = 'Batch 0/0 • 0%';
+            if (progFill) progFill.style.width = '0%';
+            if (progPctTxt) progPctTxt.innerText = '0%';
+            if (streamBox) streamBox.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:12px;">Ready to dispatch stealth worker jobs...</div>';
+            if (tokListEl) tokListEl.innerHTML = '';
+            if (btnResetTel) btnResetTel.style.display = 'none';
+
+            [1, 2, 3, 4].forEach(stNum => {
+                const pill = document.getElementById(`patStagePill${stNum}`);
+                const stageNames = ['1. Login', '2. 2FA OTP', '3. Scopes', '4. Sheet1'];
+                const stagePcts = [25, 55, 85, 100];
+                if (pill) {
+                    pill.style.borderColor = 'rgba(148,163,184,0.35)';
+                    pill.style.color = 'var(--text-muted)';
+                    pill.style.background = 'var(--bg-input)';
+                    pill.innerHTML = `${stageNames[stNum - 1]}<div style="font-size:0.5rem;opacity:0.8;">${stagePcts[stNum - 1]}%</div>`;
+                }
+            });
+
+            if (switchToConfig) {
+                switchPatStudioTab('config');
+                renderPatManualAccountCards();
+            }
+        }
+
         async function pollAdminPatBatchStatus(autoSwitchIfRunning = false) {
+            const reqEpoch = _patBatchGenerationEpoch;
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -8753,25 +8853,37 @@ let _ghAgeCheckerResults = [];
                     body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'status', secret: XB_PAT_SECRET })
                 });
                 const data = await res.json();
+                if (reqEpoch !== _patBatchGenerationEpoch) return;
                 if (data && data.result && data.batch) {
-                    if (autoSwitchIfRunning && data.batch.status === 'RUNNING') {
+                    const stUp = String(data.batch.status || '').toUpperCase();
+                    if (autoSwitchIfRunning && stUp === 'RUNNING') {
                         switchPatStudioTab('telemetry');
                     }
-                    renderPatBatchTelemetry(data.batch);
-                    if (data.batch.status === 'RUNNING') {
+                    if (!autoSwitchIfRunning || stUp === 'RUNNING' || stUp === 'COMPLETED') {
+                        renderPatBatchTelemetry(data.batch);
+                    }
+                    if (stUp === 'RUNNING') {
                         if (!_patPollTimer) {
                             _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 3000);
                         }
                     } else {
                         clearInterval(_patPollTimer);
                         _patPollTimer = null;
-                        syncGoogleSheetInventory(false);
+                        if (stUp === 'COMPLETED') {
+                            syncGoogleSheetInventory(false);
+                        }
                     }
                 }
             } catch (e) {}
         }
 
         async function cancelAdminPatBatch() {
+            _patBatchGenerationEpoch++;
+            if (_patPollTimer) {
+                clearInterval(_patPollTimer);
+                _patPollTimer = null;
+            }
+            playPatStudioTone('error');
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -8779,10 +8891,12 @@ let _ghAgeCheckerResults = [];
                     body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'cancel', secret: XB_PAT_SECRET })
                 });
                 const data = await res.json();
-                if (data && data.batch) renderPatBatchTelemetry(data.batch);
-                clearInterval(_patPollTimer);
-                _patPollTimer = null;
-                showToast('🛑 PAT Batch queue stopped.');
+                if (data && data.batch) {
+                    data.batch.status = 'CANCELLED';
+                    renderPatBatchTelemetry(data.batch);
+                }
+                try { localStorage.removeItem(XB_PAT_LOCAL_STORAGE_KEY); } catch (e) {}
+                showToast('🛑 PAT Batch stopped & cleared! Pick new accounts anytime.');
             } catch (e) {}
         }
 
@@ -8885,57 +8999,6 @@ let _ghAgeCheckerResults = [];
                         background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
                         animation: patSheenSweep 1.6s ease-in-out infinite;
                         pointer-events: none;
-                    }
-                    .pat-double-line-hdr {
-                        border-top: 3px double #38bdf8;
-                        border-bottom: 3px double #a855f7;
-                        background: linear-gradient(90deg, rgba(56,189,248,0.08) 0%, rgba(168,85,247,0.12) 50%, rgba(56,189,248,0.08) 100%);
-                        padding: 5px 10px;
-                        border-radius: 9px;
-                        text-align: center;
-                        font-family: 'JetBrains Mono', monospace;
-                    }
-                    .pat-label-double-line {
-                        display: block;
-                        width: 100%;
-                        text-align: center;
-                        font-family: 'JetBrains Mono', monospace;
-                        font-size: 0.56rem;
-                        font-weight: 800;
-                        letter-spacing: 0.5px;
-                        border-top: 2px solid rgba(56, 189, 248, 0.55);
-                        border-bottom: 2px solid rgba(168, 85, 247, 0.55);
-                        padding: 3px 4px;
-                        margin-bottom: 5px;
-                    }
-                    .pat-realistic-bar-track {
-                        width: 100%;
-                        height: 15px;
-                        background: var(--bg-surface);
-                        border: 1.5px solid rgba(56,189,248,0.55);
-                        border-radius: 99px;
-                        overflow: hidden;
-                        position: relative;
-                        box-shadow: inset 0 2px 6px rgba(0,0,0,0.65);
-                    }
-                    .pat-realistic-bar-fill {
-                        height: 100%;
-                        background: linear-gradient(90deg, #06b6d4 0%, #6366f1 50%, #10b981 100%);
-                        background-size: 28px 28px;
-                        background-image: linear-gradient(
-                            45deg,
-                            rgba(255,255,255,0.24) 25%,
-                            transparent 25%,
-                            transparent 50%,
-                            rgba(255,255,255,0.24) 50%,
-                            rgba(255,255,255,0.24) 75%,
-                            transparent 75%,
-                            transparent
-                        );
-                        animation: patCyberBarStripes 0.8s linear infinite;
-                        border-radius: 99px;
-                        transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-                        box-shadow: 0 0 12px rgba(6,182,212,0.65);
                     }
                 </style>
 
@@ -9128,10 +9191,11 @@ let _ghAgeCheckerResults = [];
                     <div style="background:var(--bg-input);border:1.5px solid rgba(56,189,248,0.55);border-radius:11px;padding:7px 9px;flex:2.8;min-height:190px;display:flex;flex-direction:column;">
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-shrink:0;">
                             <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;">🖥️ REAL-TIME AUTOMATION STREAM</span>
-                            <div style="display:flex;align-items:center;gap:5px;">
-                                <button type="button" id="btnTogglePatSound" class="top-pill" style="padding:2px 7px;font-size:0.56rem;color:#38bdf8;border-color:rgba(56,189,248,0.45);" onclick="togglePatSoundEffect()">🔊 SFX ON</button>
-                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:var(--success);">● LIVE</span>
-                                <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.56rem;color:var(--danger);border-color:rgba(239,68,68,0.45);" onclick="cancelAdminPatBatch()">🛑 Stop</button>
+                            <div style="display:flex;align-items:center;gap:4px;">
+                                <button type="button" id="btnTogglePatSound" class="top-pill" style="padding:2px 6px;font-size:0.55rem;color:#38bdf8;border-color:rgba(56,189,248,0.45);" onclick="togglePatSoundEffect()">${_patSoundEnabled ? '🔊 SFX' : '🔇 SFX'}</button>
+                                <button type="button" id="btnResetPatStudioTel" class="top-pill" style="display:none;padding:2px 6px;font-size:0.55rem;color:var(--warning);border-color:rgba(245,158,11,0.45);" onclick="resetAdminPatStudioState(true)">🔄 Reset</button>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;color:var(--success);">● LIVE</span>
+                                <button type="button" class="top-pill" style="padding:2px 6px;font-size:0.55rem;color:var(--danger);border-color:rgba(239,68,68,0.45);" onclick="cancelAdminPatBatch()">🛑 Stop</button>
                             </div>
                         </div>
                         <div id="patTelStreamBox" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;flex:1;min-height:0;overflow-y:auto;background:var(--bg-surface);border:1px solid rgba(148,163,184,0.28);border-radius:8px;padding:6px 7px;">
@@ -9157,14 +9221,14 @@ let _ghAgeCheckerResults = [];
             selectPatExpiryDays(_patSelectedExpiry);
             selectPatCooldownMode(_patSelectedDelay);
 
-            // Pulihkan state lokal terakhir secara instan saat reload / reopen
+            // Hanya pulihkan state lokal jika batch benar-benar masih RUNNING; jika sudah STOPPED/COMPLETED, mulai bersih!
             const cached = loadPatStudioLocalCache();
-            if (cached && cached.batch) {
+            if (cached && cached.batch && String(cached.batch.status || '').toUpperCase() === 'RUNNING') {
                 if (Array.isArray(cached.logs) && cached.logs.length > 0) _patLogLines = cached.logs;
                 renderPatBatchTelemetry(cached.batch);
-                if (cached.batch.status === 'RUNNING') {
-                    switchPatStudioTab('telemetry');
-                }
+                switchPatStudioTab('telemetry');
+            } else {
+                resetAdminPatStudioState(true);
             }
 
             pollAdminPatBatchStatus(true);
@@ -9184,6 +9248,11 @@ let _ghAgeCheckerResults = [];
             if (totalTargetCount === 0) {
                 return showToast('⚠️ Select from Sheet1 or enter a Custom Account first!');
             }
+
+            // Bersihkan 100% sisa batch / status STOPPED lama sebelum memulai batch baru
+            resetAdminPatStudioState(false);
+            const currentEpoch = _patBatchGenerationEpoch;
+            playPatStudioTone('start');
 
             const scopePreset = _patSelectedScope || 'safe_5';
             const expiryDays = _patSelectedExpiry || '90';
@@ -9205,6 +9274,10 @@ let _ghAgeCheckerResults = [];
                 isErr: false
             }];
             switchPatStudioTab('telemetry');
+            const streamBoxInit = document.getElementById('patTelStreamBox');
+            if (streamBoxInit) {
+                streamBoxInit.innerHTML = _patLogLines.map(formatStreamLogCardHtml).join('');
+            }
 
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
