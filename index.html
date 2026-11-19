@@ -7441,30 +7441,33 @@ let _ghAgeCheckerResults = [];
                 };
             });
 
-            const deadToks = [];
-            const reasonMap = {};
-            const activeTokUsers = {};
-            const deadUsernames = [];
-
-            (_ghPatCheckerResults || []).forEach(p => {
-                if (p.token) {
-                    if (p.active && p.username) {
-                        activeTokUsers[p.token] = p.username;
-                    } else if (!p.active) {
-                        deadToks.push(p.token);
-                        reasonMap[p.token] = p.flagged ? 'FLAGGED / SHADOWBANNED (404)' : (p.message || 'Bad credentials/Expired');
-                        if (p.flagged && p.username && !deadUsernames.includes(p.username)) {
-                            deadUsernames.push(p.username);
-                        }
+            const invalidPatItems = (_ghPatCheckerResults || [])
+                .filter(p => !p.active && p.token)
+                .map(p => {
+                    if (p.flagged) {
+                        const origDate = p.createdAt ? formatGithubCreatedWib(p.createdAt) : '';
+                        return {
+                            username: p.username || '(Flagged PAT)',
+                            url: p.username ? `https://github.com/${p.username}` : '-',
+                            createdText: origDate ? `🟣 FLAGGED / 404 (${origDate})` : '🟣 FLAGGED / 404 (Shadowbanned)',
+                            createdIso: '9999-12-31T23:59:59Z',
+                            patToken: p.token,
+                            isFlagged404: true,
+                            isInvalidPat: false,
+                            customStatus: 'FLAGGED / 404 (SUSPENDED)'
+                        };
                     }
-                }
-            });
-
-            (_ghAgeCheckerResults || []).forEach(r => {
-                if (String(r.createdText || '').includes('404') && r.username && !deadUsernames.includes(r.username)) {
-                    deadUsernames.push(r.username);
-                }
-            });
+                    return {
+                        username: '(Invalid PAT)',
+                        url: '-',
+                        createdText: `❌ ${p.message || 'Bad credentials/Expired'}`,
+                        createdIso: '9999-99-99T99:99:99Z',
+                        patToken: p.token,
+                        isFlagged404: false,
+                        isInvalidPat: true,
+                        customStatus: `INVALID PAT (${p.message || 'Expired'})`
+                    };
+                });
 
             let combinedPayloadItems = [...ageItems, ...invalidPatItems];
 
@@ -7682,6 +7685,7 @@ let _ghAgeCheckerResults = [];
             const deadToks = [];
             const reasonMap = {};
             const activeTokUsers = {};
+            const deadUsernames = [];
 
             (_ghPatCheckerResults || []).forEach(p => {
                 if (p.token) {
@@ -7689,14 +7693,16 @@ let _ghAgeCheckerResults = [];
                         activeTokUsers[p.token] = p.username;
                     } else if (!p.active) {
                         deadToks.push(p.token);
-                        reasonMap[p.token] = p.message || 'Bad credentials/Expired';
+                        reasonMap[p.token] = p.flagged ? 'FLAGGED / SHADOWBANNED (404)' : (p.message || 'Bad credentials/Expired');
+                        if (p.flagged && p.username && !deadUsernames.includes(p.username)) {
+                            deadUsernames.push(p.username);
+                        }
                     }
                 }
             });
 
-            const deadUsernames = [];
             (_ghAgeCheckerResults || []).forEach(r => {
-                if (String(r.createdText || '').includes('404') && r.username) {
+                if (String(r.createdText || '').includes('404') && r.username && !deadUsernames.includes(r.username)) {
                     deadUsernames.push(r.username);
                 }
             });
