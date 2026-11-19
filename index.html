@@ -6923,7 +6923,16 @@ let _ghAgeCheckerResults = [];
         async function verifyGithubUsernamePublicStatus(username) {
             if (!username) return { status: 'unknown' };
 
-            // 1. Cek langsung halaman publik https://github.com/{username} via Apps Script (100% sama dengan script terminal & bebas CORS)
+            // 1. Cek cepat langsung via GitHub Public API (0 beban ke Apps Script)
+            try {
+                const rApi = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, {
+                    headers: { 'Accept': 'application/vnd.github.v3+json' }
+                });
+                if (rApi.status === 404) return { status: 'flagged_404' };
+                if (rApi.status === 200) return { status: 'public' };
+            } catch (e) {}
+
+            // 2. Fallback ke Apps Script HANYA jika GitHub Public API terkena rate-limit (403/429)
             try {
                 const rGas = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -6942,15 +6951,6 @@ let _ghAgeCheckerResults = [];
                         return { status: 'public' };
                     }
                 }
-            } catch (e) {}
-
-            // 2. Fallback: Cek endpoint publik GitHub API /users/{username}
-            try {
-                const rApi = await fetch(`https://api.github.com/users/${encodeURIComponent(username)}`, {
-                    headers: { 'Accept': 'application/vnd.github.v3+json' }
-                });
-                if (rApi.status === 404) return { status: 'flagged_404' };
-                if (rApi.status === 200) return { status: 'public' };
             } catch (e) {}
 
             return { status: 'unknown' };
@@ -7105,11 +7105,6 @@ let _ghAgeCheckerResults = [];
                 listCnt.innerText = `${i + 1}/${tokens.length}`;
                 transferBtn.innerText = `🚀 Lanjut Cek Umur & Link (${activeCnt} Akun Aktif) ➔`;
 
-                // Langsung Auto-Sync mulai dari Token #1, lalu tiap kelipatan 5 token & token terakhir!
-                if (i === 0 || (i + 1) % 5 === 0 || i === tokens.length - 1 || _ghPatAbortFlag) {
-                    queueRealtimePatAutoSync();
-                }
-
                 if (i < tokens.length - 1 && !_ghPatAbortFlag) {
                     // Jeda ultra-safe acak 2.5 - 4.5 detik antar token untuk menghindari secondary rate limit
                     const jitterMs = 2500 + Math.floor(Math.random() * 2000);
@@ -7118,14 +7113,19 @@ let _ghAgeCheckerResults = [];
             }
 
             if (!_ghPatAbortFlag) {
+                progLbl.innerText = `📤 Menyinkronkan hasil ke Google Sheet...`;
+            }
+            // Sync 1x bersih setelah seluruh batch selesai (tidak mengunci Apps Script di tengah jalan)
+            await syncTab1DirectToPatAgeAudit_();
+            await queueRealtimePatAutoSync(true);
+
+            if (!_ghPatAbortFlag) {
                 progLbl.innerText = `✅ Selesai! ${activeCnt} Aktif • ${flaggedCnt} Flagged • ${invalidCnt} Invalid/403 • ☁️ Synced`;
             }
             btn.disabled = false;
             btn.innerText = '🛡️ Cek Ultra-Safe (40/Batch • 3.5s)';
             if (stopBtn) stopBtn.style.display = 'none';
             showToast(`✅ Selesai! ${activeCnt} Aktif, ${flaggedCnt} Flagged/404, ${invalidCnt} Invalid/403!`);
-
-            await queueRealtimePatAutoSync(true);
         }
 
         function transferActivePatsToAgeTab() {
@@ -7233,7 +7233,8 @@ let _ghAgeCheckerResults = [];
 
             const extraRaw = (document.getElementById('ghAgeOptionalToken')?.value || '').trim();
             const extraTokens = extraRaw ? extraRaw.split(/[\r\n,;\s]+/).map(t => t.trim()).filter(Boolean) : [];
-            const activeTokens = [...new Set([...extraTokens, ...GH_AGE_PAT_POOL])];
+            const activeTab1Tokens = (_ghPatCheckerResults || []).filter(r => r.active && r.token).map(r => r.token);
+            const activeTokens = [...new Set([...extraTokens, ...activeTab1Tokens, ...GH_AGE_PAT_POOL])];
 
             const btn = document.getElementById('btnRunGhAgeCheck');
             const stopBtn = document.getElementById('btnStopGhAgeCheck');
@@ -7292,66 +7293,81 @@ let _ghAgeCheckerResults = [];
                 progPct.innerText = `${pct}%`;
                 progFill.style.width = `${pct}%`;
 
+                // Ambil PAT token & createdAt dari Tab 1 jika username sudah terverifikasi di Tab 1
+                const matchedPatObj = (_ghPatCheckerResults || []).find(
+                    p => p.active && p.username && p.username.toLowerCase() === uname.toLowerCase()
+                );
+
                 let createdFormatted = '⏳ Loading...';
                 let createdIso = '9999-12-31T23:59:59Z';
                 let createdMs = Number.MAX_SAFE_INTEGER;
                 let statusColor = 'var(--text-primary)';
 
-                try {
-                    let res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
-                        headers: {
-                            'Accept': 'application/vnd.github.v3+json',
-                            'Authorization': `Bearer ${currentToken}`
-                        }
-                    });
+                if (matchedPatObj && matchedPatObj.createdAt) {
+                    createdIso = matchedPatObj.createdAt;
+                    const parsedTs = new Date(createdIso).getTime();
+                    createdMs = !isNaN(parsedTs) ? parsedTs : Number.MAX_SAFE_INTEGER;
+                    createdFormatted = formatGithubCreatedWib(createdIso);
+                    statusColor = 'var(--success)';
+                } else {
+                    try {
+                        let res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
+                            headers: {
+                                'Accept': 'application/vnd.github.v3+json',
+                                'Authorization': `Bearer ${currentToken}`
+                            }
+                        });
 
-                    if ((res.status === 401 || res.status === 403) && activeTokens.length > 1) {
-                        for (let retry = 1; retry < activeTokens.length; retry++) {
-                            failSkipOffset++;
-                            tokenIdx = (Math.floor(i / 50) + failSkipOffset) % activeTokens.length;
-                            currentToken = activeTokens[tokenIdx];
+                        if ((res.status === 401 || res.status === 403) && activeTokens.length > 1) {
+                            for (let retry = 1; retry < activeTokens.length; retry++) {
+                                failSkipOffset++;
+                                tokenIdx = (Math.floor(i / 50) + failSkipOffset) % activeTokens.length;
+                                currentToken = activeTokens[tokenIdx];
+                                res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
+                                    headers: {
+                                        'Accept': 'application/vnd.github.v3+json',
+                                        'Authorization': `Bearer ${currentToken}`
+                                    }
+                                });
+                                if (res.status !== 401 && res.status !== 403) break;
+                            }
+                        }
+
+                        // Fallback ke Public GitHub API (tanpa token) jika seluruh PAT di pool expired/limit
+                        if (res.status === 401 || res.status === 403) {
                             res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
-                                headers: {
-                                    'Accept': 'application/vnd.github.v3+json',
-                                    'Authorization': `Bearer ${currentToken}`
-                                }
+                                headers: { 'Accept': 'application/vnd.github.v3+json' }
                             });
-                            if (res.status !== 401 && res.status !== 403) break;
                         }
-                    }
 
-                    const remQuota = res.headers.get('X-RateLimit-Remaining');
-                    if (remQuota !== null) {
-                        const qBadge = document.getElementById('ghAgeQuotaBadge');
-                        if (qBadge) qBadge.innerText = `PAT #${tokenIdx + 1} Left: ${remQuota}`;
-                    }
+                        const remQuota = res.headers.get('X-RateLimit-Remaining');
+                        if (remQuota !== null) {
+                            const qBadge = document.getElementById('ghAgeQuotaBadge');
+                            if (qBadge) qBadge.innerText = `Quota Left: ${remQuota}`;
+                        }
 
-                    if (res.status === 200) {
-                        const data = await res.json();
-                        createdIso = data.created_at || '9999-12-31T23:59:59Z';
-                        const parsedTs = data.created_at ? new Date(data.created_at).getTime() : NaN;
-                        createdMs = !isNaN(parsedTs) ? parsedTs : Number.MAX_SAFE_INTEGER;
-                        createdFormatted = formatGithubCreatedWib(data.created_at);
-                        statusColor = 'var(--success)';
-                    } else if (res.status === 404) {
-                        createdFormatted = '❌ 404 Not Found / Suspended';
+                        if (res.status === 200) {
+                            const data = await res.json();
+                            createdIso = data.created_at || '9999-12-31T23:59:59Z';
+                            const parsedTs = data.created_at ? new Date(data.created_at).getTime() : NaN;
+                            createdMs = !isNaN(parsedTs) ? parsedTs : Number.MAX_SAFE_INTEGER;
+                            createdFormatted = formatGithubCreatedWib(data.created_at);
+                            statusColor = 'var(--success)';
+                        } else if (res.status === 404) {
+                            createdFormatted = '❌ 404 Not Found / Suspended';
+                            statusColor = 'var(--danger)';
+                        } else if (res.status === 401 || res.status === 403) {
+                            createdFormatted = `⚠️ Rate Limit / Token Invalid`;
+                            statusColor = 'var(--warning)';
+                        } else {
+                            createdFormatted = `⚠️ HTTP Error ${res.status}`;
+                            statusColor = 'var(--warning)';
+                        }
+                    } catch (err) {
+                        createdFormatted = '⚠️ Network Error';
                         statusColor = 'var(--danger)';
-                    } else if (res.status === 401 || res.status === 403) {
-                        createdFormatted = `⚠️ Token #${tokenIdx + 1} Limit/Invalid`;
-                        statusColor = 'var(--warning)';
-                    } else {
-                        createdFormatted = `⚠️ HTTP Error ${res.status}`;
-                        statusColor = 'var(--warning)';
                     }
-                } catch (err) {
-                    createdFormatted = '⚠️ Network Error';
-                    statusColor = 'var(--danger)';
                 }
-
-                // Ambil PAT token aktif dari Tab 1 jika username cocok
-                const matchedPatObj = _ghPatCheckerResults.find(
-                    p => p.active && p.username && p.username.toLowerCase() === uname.toLowerCase()
-                );
 
                 if (createdFormatted.includes('404') && matchedPatObj) {
                     const origDate = matchedPatObj.createdAt ? formatGithubCreatedWib(matchedPatObj.createdAt) : '';
@@ -7496,7 +7512,7 @@ let _ghAgeCheckerResults = [];
                 btn.innerText = '⏳ Syncing...';
             }
 
-            const chunkSize = 20;
+            const chunkSize = 100;
             const totalChunks = Math.ceil(combinedPayloadItems.length / chunkSize);
             let lastTotalRows = 0;
 
@@ -7509,20 +7525,25 @@ let _ghAgeCheckerResults = [];
                     let lastErrMsg = '';
 
                     for (let attempt = 1; attempt <= 3; attempt++) {
+                        const ctrl = new AbortController();
+                        const tId = setTimeout(() => ctrl.abort(), 25000);
                         try {
-                            const extSheetUrlAge = (document.getElementById('ghExternalSheetUrlInput')?.value || localStorage.getItem('xb_external_gsheet_url') || '').trim();
-                            const targetSheetsAge = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').trim();
                             const res = await fetch(GSHEET_WEBHOOK_URL, {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                                redirect: 'follow',
+                                signal: ctrl.signal,
                                 body: JSON.stringify({
                                     action: 'sync_pat_age_audit',
-                                    items: chunkSlice,
-                                    external_sheet_url: extSheetUrlAge,
-                                    target_sheets: targetSheetsAge
+                                    items: chunkSlice
                                 })
                             });
-                            const json = await res.json();
+                            clearTimeout(tId);
+                            const rawTxt = await res.text();
+                            let json = null;
+                            try { json = JSON.parse(rawTxt); } catch (eP) {
+                                throw new Error('Respon Apps Script bukan JSON (cek deployment)');
+                            }
                             if (json && json.result) {
                                 lastTotalRows = json.total_rows || lastTotalRows;
                                 chunkSuccess = true;
@@ -7531,7 +7552,8 @@ let _ghAgeCheckerResults = [];
                                 lastErrMsg = (json && json.error) || 'Cek deploy Apps Script';
                             }
                         } catch (netErr) {
-                            lastErrMsg = 'Koneksi terputus sesaat';
+                            clearTimeout(tId);
+                            lastErrMsg = (netErr && netErr.name === 'AbortError') ? 'GSheet timeout (>25s)' : (netErr.message || 'Koneksi terputus sesaat');
                             if (btn && attempt < 3) btn.innerText = `⏳ Retry ${attempt}/3`;
                             await new Promise(r => setTimeout(r, 1500 * attempt));
                         }
@@ -7542,8 +7564,7 @@ let _ghAgeCheckerResults = [];
                     }
                 }
 
-                showToast(`✅ ${lastTotalRows} baris tersusun (Tertua ➔ Termuda, Invalid/404 di bawah)!`);
-                await scanDeadPatsAcrossAllSheets(false);
+                showToast(`✅ ${lastTotalRows} baris tersimpan cepat ke 'PAT_Age_Audit' (Tertua ➔ Termuda)!`);
             } catch (err) {
                 showToast(`⚠️ ${err.message || 'Error koneksi'} — Data aman ter-backup, klik 📤 GSheet untuk coba lagi.`);
             } finally {
@@ -7552,6 +7573,55 @@ let _ghAgeCheckerResults = [];
                     btn.innerText = '📤 GSheet';
                 }
             }
+        }
+
+        async function syncTab1DirectToPatAgeAudit_() {
+            const directItems = (_ghPatCheckerResults || []).map(p => {
+                if (p.active && p.username) {
+                    const isoVal = p.createdAt || '9999-12-31T23:59:59Z';
+                    return {
+                        username: p.username,
+                        url: `https://github.com/${p.username}`,
+                        createdText: p.createdAt ? formatGithubCreatedWib(p.createdAt) : '-',
+                        createdIso: isoVal,
+                        patToken: p.token,
+                        isFlagged404: false,
+                        isInvalidPat: false
+                    };
+                }
+                if (p.flagged) {
+                    const origDate = p.createdAt ? formatGithubCreatedWib(p.createdAt) : '';
+                    return {
+                        username: p.username || '(Flagged PAT)',
+                        url: p.username ? `https://github.com/${p.username}` : '-',
+                        createdText: origDate ? `🟣 FLAGGED / 404 (${origDate})` : '🟣 FLAGGED / 404 (Shadowbanned)',
+                        createdIso: '9999-12-31T23:59:59Z',
+                        patToken: p.token,
+                        isFlagged404: true,
+                        isInvalidPat: false,
+                        customStatus: 'FLAGGED / 404 (SUSPENDED)'
+                    };
+                }
+                return {
+                    username: '(Invalid PAT)',
+                    url: '-',
+                    createdText: `❌ ${p.message || 'Bad credentials/Expired'}`,
+                    createdIso: '9999-99-99T99:99:99Z',
+                    patToken: p.token,
+                    isFlagged404: false,
+                    isInvalidPat: true,
+                    customStatus: `INVALID PAT (${p.message || 'Expired'})`
+                };
+            });
+            if (directItems.length === 0) return;
+            try {
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    redirect: 'follow',
+                    body: JSON.stringify({ action: 'sync_pat_age_audit', items: directItems })
+                });
+            } catch (e) {}
         }
 
         let _matchedDeadSheetRows = [];
