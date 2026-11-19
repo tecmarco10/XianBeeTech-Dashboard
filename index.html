@@ -8387,6 +8387,60 @@ let _ghAgeCheckerResults = [];
             }).join('');
         }
 
+        let _patSoundEnabled = localStorage.getItem('xb_pat_sound_on') !== 'false';
+        let _patAudioCtx = null;
+        let _lastSpokenStageKey = '';
+
+        function playPatStudioTone(kind = 'step') {
+            if (!_patSoundEnabled) return;
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                if (!AudioCtx) return;
+                if (!_patAudioCtx) _patAudioCtx = new AudioCtx();
+                if (_patAudioCtx.state === 'suspended') _patAudioCtx.resume();
+
+                const now = _patAudioCtx.currentTime;
+                const osc = _patAudioCtx.createOscillator();
+                const gain = _patAudioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(_patAudioCtx.destination);
+
+                if (kind === 'done') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(660, now);
+                    osc.frequency.setValueAtTime(880, now + 0.09);
+                    gain.gain.setValueAtTime(0.08, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+                    osc.start(now);
+                    osc.stop(now + 0.28);
+                } else if (kind === 'error') {
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(240, now);
+                    osc.frequency.linearRampToValueAtTime(170, now + 0.2);
+                    gain.gain.setValueAtTime(0.06, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+                    osc.start(now);
+                    osc.stop(now + 0.22);
+                } else {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(520, now);
+                    gain.gain.setValueAtTime(0.05, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.11);
+                    osc.start(now);
+                    osc.stop(now + 0.12);
+                }
+            } catch (e) {}
+        }
+
+        function togglePatSoundEffect() {
+            _patSoundEnabled = !_patSoundEnabled;
+            localStorage.setItem('xb_pat_sound_on', String(_patSoundEnabled));
+            const btn = document.getElementById('btnTogglePatSound');
+            if (btn) btn.innerText = _patSoundEnabled ? '🔊 SFX ON' : '🔇 SFX OFF';
+            if (_patSoundEnabled) playPatStudioTone('step');
+            showToast(_patSoundEnabled ? '🔊 PAT Studio sound effect ON' : '🔇 PAT Studio sound effect OFF');
+        }
+
         function toggleRevealPatToken(idx) {
             if (_patRevealedSet.has(idx)) _patRevealedSet.delete(idx);
             else _patRevealedSet.add(idx);
@@ -8528,6 +8582,18 @@ let _ghAgeCheckerResults = [];
             if (isCompleted) {
                 activeStage = 4;
                 stageTitleCenter = batch.status === 'CANCELLED' ? '🛑 BATCH CANCELLED' : '✅ 4. SAVED TO SHEET1 (100%)';
+            }
+
+            const stageSig = `${finishedCnt}-${activeStage}-${stepText}-${isCompleted}-${failCnt}`;
+            if (stageSig !== _lastSpokenStageKey) {
+                _lastSpokenStageKey = stageSig;
+                if (isCompleted && batch.status !== 'CANCELLED') {
+                    playPatStudioTone('done');
+                } else if (failCnt > 0 || batch.status === 'CANCELLED') {
+                    playPatStudioTone('error');
+                } else if (/username|login|credentials|2fa|scope|token/i.test(stepText) || activeStage >= 1) {
+                    playPatStudioTone('step');
+                }
             }
 
             _patLatestBatchItems.forEach(it => {
@@ -9063,6 +9129,7 @@ let _ghAgeCheckerResults = [];
                         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;flex-shrink:0;">
                             <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;">🖥️ REAL-TIME AUTOMATION STREAM</span>
                             <div style="display:flex;align-items:center;gap:5px;">
+                                <button type="button" id="btnTogglePatSound" class="top-pill" style="padding:2px 7px;font-size:0.56rem;color:#38bdf8;border-color:rgba(56,189,248,0.45);" onclick="togglePatSoundEffect()">🔊 SFX ON</button>
                                 <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:var(--success);">● LIVE</span>
                                 <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.56rem;color:var(--danger);border-color:rgba(239,68,68,0.45);" onclick="cancelAdminPatBatch()">🛑 Stop</button>
                             </div>
