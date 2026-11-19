@@ -8446,7 +8446,68 @@ let _ghAgeCheckerResults = [];
         const XB_PAT_SECRET = "XB-PAT-GUARD-2026";
         const XB_PAT_LOCAL_STORAGE_KEY = "xb_pat_studio_state_v4";
         let _patPollTimer = null;
+        let _patCooldownTickTimer = null;
+        let _patCooldownUntilMs = 0;
+        let _patCooldownTotalSec = 0;
         let _patLatestBatchItems = [];
+
+        function stopPatCooldownTicker(hideBanner = true) {
+            if (_patCooldownTickTimer) {
+                clearInterval(_patCooldownTickTimer);
+                _patCooldownTickTimer = null;
+            }
+            _patCooldownUntilMs = 0;
+            _patCooldownTotalSec = 0;
+            if (hideBanner) {
+                const box = document.getElementById('patCooldownBanner');
+                if (box) box.style.display = 'none';
+            }
+        }
+
+        function updatePatCooldownBannerUI() {
+            const box = document.getElementById('patCooldownBanner');
+            const timeEl = document.getElementById('patCooldownTimeLeft');
+            const pctEl = document.getElementById('patCooldownPctText');
+            const barEl = document.getElementById('patCooldownBarFill');
+            const hdrTitle = document.getElementById('patTelHeaderTitle');
+            if (!box || !timeEl || !pctEl || !barEl) return;
+
+            const remMs = _patCooldownUntilMs - Date.now();
+            if (remMs <= 0 || _patCooldownTotalSec <= 0) {
+                stopPatCooldownTicker(true);
+                return;
+            }
+
+            const remSec = Math.ceil(remMs / 1000);
+            const mins = String(Math.floor(remSec / 60)).padStart(2, '0');
+            const secs = String(remSec % 60).padStart(2, '0');
+            const elapsedSec = Math.max(0, _patCooldownTotalSec - remSec);
+            const cdPct = Math.min(99, Math.max(2, Math.round((elapsedSec / _patCooldownTotalSec) * 100)));
+
+            box.style.display = 'flex';
+            timeEl.innerText = `${mins}:${secs} left`;
+            pctEl.innerText = `${cdPct}%`;
+            barEl.style.width = `${cdPct}%`;
+            if (hdrTitle) {
+                hdrTitle.innerHTML = `⏳ COOLDOWN • ${mins}:${secs} LEFT`;
+                hdrTitle.style.color = 'var(--warning)';
+            }
+        }
+
+        function syncPatCooldownTicker(untilMs, totalSec) {
+            const uMs = Number(untilMs || 0);
+            const tSec = Number(totalSec || 0);
+            if (uMs > Date.now() && tSec > 0) {
+                _patCooldownUntilMs = uMs;
+                _patCooldownTotalSec = tSec;
+                updatePatCooldownBannerUI();
+                if (!_patCooldownTickTimer) {
+                    _patCooldownTickTimer = setInterval(updatePatCooldownBannerUI, 1000);
+                }
+            } else {
+                stopPatCooldownTicker(true);
+            }
+        }
         let _patRevealedSet = new Set();
         let _patAutoCopiedDone = new Set();
         let _patActiveViewTab = 'config'; // 'config' | 'telemetry'
@@ -8663,6 +8724,7 @@ let _ghAgeCheckerResults = [];
         }
 
         function closeAdminPatStudioV2() {
+            stopPatCooldownTicker(true);
             if (_patPollTimer) {
                 clearInterval(_patPollTimer);
                 _patPollTimer = null;
@@ -9008,7 +9070,7 @@ let _ghAgeCheckerResults = [];
         }
 
         function formatStreamLogCardHtml(l) {
-            let cleanMsg = String(l.msg || '').trim();
+            let cleanMsg = String(l.msg || '').trim().replace(/\.{2,}$/, '').trim();
             let rightStageBadge = '';
 
             // Ekstrak teks [1/4], [2/4], [3/4], [4/4] untuk diletakkan rata kanan dengan rapi
@@ -9181,8 +9243,20 @@ let _ghAgeCheckerResults = [];
                 pill.innerHTML = `${isPassed ? '✓ ' : (isCurrent ? '⚡ ' : '')}${stageNames[stNum - 1]}<div style="font-size:0.5rem;opacity:0.85;margin-top:1px;">${isPassed ? '100%' : (isCurrent ? pct + '%' : stagePcts[stNum - 1] + '%')}</div>`;
             });
 
-            // Sync server logs cleanly (hindari menandai log sukses sebagai error)
+            // Aktifkan Live Cooldown Countdown Bar jika sedang jeda antar akun
+            if (!isCompleted && Number(batch.cooldown_until || 0) > Date.now()) {
+                syncPatCooldownTicker(batch.cooldown_until, batch.cooldown_total);
+            } else {
+                stopPatCooldownTicker(true);
+            }
+
+            // Kunci jam log yang sudah lewat agar TIDAK PERNAH ikut berubah saat polling berikutnya
             const nowTimeStr = new Date().toLocaleTimeString('en-GB', { hour12: false });
+            const prevTimeByMsg = new Map();
+            _patLogLines.forEach(oldL => {
+                if (oldL && oldL.msg && oldL.time) prevTimeByMsg.set(oldL.msg, oldL.time);
+            });
+
             if (Array.isArray(batch.logs) && batch.logs.length > 0) {
                 const mergedLogs = [];
                 const seenMsg = new Set();
@@ -9193,7 +9267,7 @@ let _ghAgeCheckerResults = [];
                     const isDoneMsg = /completed|saved/i.test(cleanM);
                     const isErrMsg = !isDoneMsg && (failCnt > 0 && /failed|stopped|cancelled|unauthorized/i.test(cleanM));
                     mergedLogs.push({
-                        time: lg.time || nowTimeStr,
+                        time: lg.time || prevTimeByMsg.get(cleanM) || nowTimeStr,
                         tag: lg.tag || '[WORKER]',
                         msg: cleanM,
                         isDone: isDoneMsg,
@@ -9203,7 +9277,7 @@ let _ghAgeCheckerResults = [];
                 if (mergedLogs.length > 0) _patLogLines = mergedLogs.slice(-40);
             } else if (stepText && (_patLogLines.length === 0 || _patLogLines[_patLogLines.length - 1].msg !== stepText)) {
                 _patLogLines.push({
-                    time: nowTimeStr,
+                    time: prevTimeByMsg.get(stepText) || nowTimeStr,
                     tag: isCompleted ? '[COMPLETE]' : '[WORKER]',
                     msg: stepText,
                     isDone: isCompleted,
@@ -9269,6 +9343,7 @@ let _ghAgeCheckerResults = [];
 
         function resetAdminPatStudioState(switchToConfig = true) {
             _patBatchGenerationEpoch++;
+            stopPatCooldownTicker(true);
             if (_patPollTimer) {
                 clearInterval(_patPollTimer);
                 _patPollTimer = null;
@@ -9289,13 +9364,13 @@ let _ghAgeCheckerResults = [];
             const btnResetTel = document.getElementById('btnResetPatStudioTel');
 
             if (hdrTitle) {
-                hdrTitle.innerHTML = '⏳ WAITING FOR STEALTH BATCH QUEUE...';
+                hdrTitle.innerHTML = '⏳ WAITING FOR STEALTH BATCH QUEUE';
                 hdrTitle.style.color = '#38bdf8';
             }
             if (hdrBadge) hdrBadge.innerText = 'Batch 0/0 • 0%';
             if (progFill) progFill.style.width = '0%';
             if (progPctTxt) progPctTxt.innerText = '0%';
-            if (streamBox) streamBox.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:12px;">Ready to dispatch stealth worker jobs...</div>';
+            if (streamBox) streamBox.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:12px;">Ready to dispatch stealth worker jobs</div>';
             if (tokListEl) tokListEl.innerHTML = '';
             if (btnResetTel) btnResetTel.style.display = 'none';
 
@@ -9383,6 +9458,7 @@ let _ghAgeCheckerResults = [];
 
         async function cancelAdminPatBatch() {
             _patBatchGenerationEpoch++;
+            stopPatCooldownTicker(true);
             if (_patPollTimer) {
                 clearInterval(_patPollTimer);
                 _patPollTimer = null;
@@ -9688,6 +9764,20 @@ let _ghAgeCheckerResults = [];
                             <div id="patStagePill2" style="padding:4px 3px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);text-align:center;">2. 2FA OTP<div style="font-size:0.5rem;opacity:0.8;">55%</div></div>
                             <div id="patStagePill3" style="padding:4px 3px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);text-align:center;">3. Scopes<div style="font-size:0.5rem;opacity:0.8;">85%</div></div>
                             <div id="patStagePill4" style="padding:4px 3px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);text-align:center;">4. Sheet1<div style="font-size:0.5rem;opacity:0.8;">100%</div></div>
+                        </div>
+                    </div>
+
+                    <!-- LIVE INTER-ACCOUNT COOLDOWN COUNTDOWN BAR -->
+                    <div id="patCooldownBanner" style="display:none;flex-direction:column;gap:4px;background:rgba(245,158,11,0.12);border:1.5px solid rgba(251,191,36,0.65);border-left:4px solid var(--warning);border-radius:10px;padding:6px 9px;flex-shrink:0;font-family:'JetBrains Mono',monospace;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.61rem;font-weight:800;">
+                            <span style="color:var(--warning);">⏳ SAFE COOLDOWN TO NEXT ACCOUNT</span>
+                            <span style="display:flex;align-items:center;gap:6px;">
+                                <span id="patCooldownTimeLeft" style="color:#fde047;">00:00 left</span>
+                                <span id="patCooldownPctText" style="color:#38bdf8;">0%</span>
+                            </span>
+                        </div>
+                        <div style="width:100%;height:7px;background:rgba(15,23,42,0.75);border:1px solid rgba(251,191,36,0.45);border-radius:99px;overflow:hidden;">
+                            <div id="patCooldownBarFill" style="width:0%;height:100%;background:linear-gradient(90deg,#f59e0b 0%,#fde047 55%,#10b981 100%);border-radius:99px;transition:width 0.8s linear;"></div>
                         </div>
                     </div>
 
