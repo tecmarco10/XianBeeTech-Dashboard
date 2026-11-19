@@ -6577,9 +6577,14 @@ let _ghAgeCheckerResults = [];
                 }
                 resBody.appendChild(rowEl);
 
-                sumBadge.innerText = `✅ ${activeCnt} | ❌ ${invalidCnt}`;
+                sumBadge.innerText = `✅ ${activeCnt} | ❌ ${invalidCnt} | ☁️ Sync`;
                 listCnt.innerText = `${i + 1}/${tokens.length}`;
                 transferBtn.innerText = `🚀 Lanjut Cek Umur & Link (${activeCnt} Akun Aktif) ➔`;
+
+                // Langsung Auto-Sync mulai dari Token #1, lalu tiap kelipatan 5 token & token terakhir!
+                if (i === 0 || (i + 1) % 5 === 0 || i === tokens.length - 1 || _ghPatAbortFlag) {
+                    queueRealtimePatAutoSync();
+                }
 
                 if (i < tokens.length - 1 && !_ghPatAbortFlag) {
                     // Jeda ultra-safe acak 2.5 - 4.5 detik antar token untuk menghindari secondary rate limit
@@ -6589,17 +6594,14 @@ let _ghAgeCheckerResults = [];
             }
 
             if (!_ghPatAbortFlag) {
-                progLbl.innerText = `✅ Selesai! ${activeCnt} Aktif • ${invalidCnt} Invalid (${totalBatches} Batch Aman)`;
+                progLbl.innerText = `✅ Selesai! ${activeCnt} Aktif • ${invalidCnt} Invalid • ☁️ Synced ke 'PAT_Audit_Report'`;
             }
             btn.disabled = false;
             btn.innerText = '🛡️ Cek Ultra-Safe (40/Batch • 3.5s)';
             if (stopBtn) stopBtn.style.display = 'none';
-            showToast(`✅ Selesai! ${activeCnt} Token Aktif, ${invalidCnt} Invalid.`);
+            showToast(`✅ Selesai! ${activeCnt} Token Aktif, ${invalidCnt} Invalid & Auto-Synced!`);
 
-            // Otomatis scan semua sheet untuk mendeteksi PAT mati (block merah) & perubahan username (block kuning)
-            if (invalidCnt > 0 || activeCnt > 0) {
-                await scanDeadPatsAcrossAllSheets(false);
-            }
+            await queueRealtimePatAutoSync(true);
         }
 
         function transferActivePatsToAgeTab() {
@@ -6999,6 +7001,29 @@ let _ghAgeCheckerResults = [];
 
         let _matchedDeadSheetRows = [];
         let _matchedRenamedSheetRows = [];
+        let _isPatAutoSyncing = false;
+        let _pendingPatAutoSync = false;
+
+        async function queueRealtimePatAutoSync(waitUntilDone = false) {
+            if (_isPatAutoSyncing) {
+                _pendingPatAutoSync = true;
+                if (waitUntilDone) {
+                    while (_isPatAutoSyncing || _pendingPatAutoSync) {
+                        await new Promise(r => setTimeout(r, 300));
+                    }
+                }
+                return;
+            }
+            _isPatAutoSyncing = true;
+            try {
+                do {
+                    _pendingPatAutoSync = false;
+                    await scanDeadPatsAcrossAllSheets(false);
+                } while (_pendingPatAutoSync);
+            } finally {
+                _isPatAutoSyncing = false;
+            }
+        }
 
         async function scanDeadPatsAcrossAllSheets(manualClick = false) {
             const deadToks = [];
