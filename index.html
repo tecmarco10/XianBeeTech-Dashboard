@@ -8449,6 +8449,7 @@ let _ghAgeCheckerResults = [];
         let _patCooldownTickTimer = null;
         let _patCooldownUntilMs = 0;
         let _patCooldownTotalSec = 0;
+        let _patCooldownLabelText = 'SAFE COOLDOWN';
         let _patLatestBatchItems = [];
 
         function stopPatCooldownTicker(hideBanner = true) {
@@ -8458,6 +8459,7 @@ let _ghAgeCheckerResults = [];
             }
             _patCooldownUntilMs = 0;
             _patCooldownTotalSec = 0;
+            _patCooldownLabelText = 'SAFE COOLDOWN';
             if (hideBanner) {
                 const box = document.getElementById('patCooldownBanner');
                 if (box) box.style.display = 'none';
@@ -8466,6 +8468,7 @@ let _ghAgeCheckerResults = [];
 
         function updatePatCooldownBannerUI() {
             const box = document.getElementById('patCooldownBanner');
+            const lblEl = document.getElementById('patCooldownLabel');
             const timeEl = document.getElementById('patCooldownTimeLeft');
             const pctEl = document.getElementById('patCooldownPctText');
             const barEl = document.getElementById('patCooldownBarFill');
@@ -8473,36 +8476,47 @@ let _ghAgeCheckerResults = [];
             if (!box || !timeEl || !pctEl || !barEl) return;
 
             const remMs = _patCooldownUntilMs - Date.now();
-            if (remMs <= 0 || _patCooldownTotalSec <= 0) {
+            const totalMs = _patCooldownTotalSec * 1000;
+            if (remMs <= 0 || totalMs <= 0) {
                 stopPatCooldownTicker(true);
                 return;
             }
 
-            const remSec = Math.ceil(remMs / 1000);
-            const mins = String(Math.floor(remSec / 60)).padStart(2, '0');
-            const secs = String(remSec % 60).padStart(2, '0');
-            const elapsedSec = Math.max(0, _patCooldownTotalSec - remSec);
-            const cdPct = Math.min(99, Math.max(2, Math.round((elapsedSec / _patCooldownTotalSec) * 100)));
+            const remSecFloat = remMs / 1000;
+            let timeText = '';
+            if (remSecFloat < 10) {
+                timeText = `${remSecFloat.toFixed(1)}s left`;
+            } else {
+                const remSecInt = Math.ceil(remSecFloat);
+                const mins = String(Math.floor(remSecInt / 60)).padStart(2, '0');
+                const secs = String(remSecInt % 60).padStart(2, '0');
+                timeText = `${mins}:${secs} left`;
+            }
+
+            const elapsedMs = Math.max(0, totalMs - remMs);
+            const cdPct = Math.min(99, Math.max(3, Math.round((elapsedMs / totalMs) * 100)));
 
             box.style.display = 'flex';
-            timeEl.innerText = `${mins}:${secs} left`;
+            if (lblEl) lblEl.innerText = `⏳ ${_patCooldownLabelText}`;
+            timeEl.innerText = timeText;
             pctEl.innerText = `${cdPct}%`;
             barEl.style.width = `${cdPct}%`;
             if (hdrTitle) {
-                hdrTitle.innerHTML = `⏳ COOLDOWN • ${mins}:${secs} LEFT`;
+                hdrTitle.innerHTML = `⏳ ${_patCooldownLabelText} • ${timeText.toUpperCase()}`;
                 hdrTitle.style.color = 'var(--warning)';
             }
         }
 
-        function syncPatCooldownTicker(untilMs, totalSec) {
+        function syncPatCooldownTicker(untilMs, totalSec, labelText = '') {
             const uMs = Number(untilMs || 0);
             const tSec = Number(totalSec || 0);
             if (uMs > Date.now() && tSec > 0) {
                 _patCooldownUntilMs = uMs;
                 _patCooldownTotalSec = tSec;
+                _patCooldownLabelText = String(labelText || 'SAFE COOLDOWN').toUpperCase();
                 updatePatCooldownBannerUI();
                 if (!_patCooldownTickTimer) {
-                    _patCooldownTickTimer = setInterval(updatePatCooldownBannerUI, 1000);
+                    _patCooldownTickTimer = setInterval(updatePatCooldownBannerUI, 250);
                 }
             } else {
                 stopPatCooldownTicker(true);
@@ -9243,9 +9257,9 @@ let _ghAgeCheckerResults = [];
                 pill.innerHTML = `${isPassed ? '✓ ' : (isCurrent ? '⚡ ' : '')}${stageNames[stNum - 1]}<div style="font-size:0.5rem;opacity:0.85;margin-top:1px;">${isPassed ? '100%' : (isCurrent ? pct + '%' : stagePcts[stNum - 1] + '%')}</div>`;
             });
 
-            // Aktifkan Live Cooldown Countdown Bar jika sedang jeda antar akun
+            // Aktifkan Live Cooldown Countdown Bar untuk SEMUA jeda (Warm-Up, 2FA Wait, Klik Scope, Cooldown Antar Akun)
             if (!isCompleted && Number(batch.cooldown_until || 0) > Date.now()) {
-                syncPatCooldownTicker(batch.cooldown_until, batch.cooldown_total);
+                syncPatCooldownTicker(batch.cooldown_until, batch.cooldown_total, batch.cooldown_label || 'SAFE COOLDOWN');
             } else {
                 stopPatCooldownTicker(true);
             }
@@ -9431,7 +9445,7 @@ let _ghAgeCheckerResults = [];
                             hdrTitle.style.color = 'var(--warning)';
                         }
                         if (!_patPollTimer) {
-                            _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 4500);
+                            _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 2500);
                         }
                     } else {
                         clearInterval(_patPollTimer);
@@ -9770,14 +9784,14 @@ let _ghAgeCheckerResults = [];
                     <!-- LIVE INTER-ACCOUNT COOLDOWN COUNTDOWN BAR -->
                     <div id="patCooldownBanner" style="display:none;flex-direction:column;gap:4px;background:rgba(245,158,11,0.12);border:1.5px solid rgba(251,191,36,0.65);border-left:4px solid var(--warning);border-radius:10px;padding:6px 9px;flex-shrink:0;font-family:'JetBrains Mono',monospace;">
                         <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.61rem;font-weight:800;">
-                            <span style="color:var(--warning);">⏳ SAFE COOLDOWN TO NEXT ACCOUNT</span>
+                            <span id="patCooldownLabel" style="color:var(--warning);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:65%;">⏳ SAFE COOLDOWN</span>
                             <span style="display:flex;align-items:center;gap:6px;">
                                 <span id="patCooldownTimeLeft" style="color:#fde047;">00:00 left</span>
                                 <span id="patCooldownPctText" style="color:#38bdf8;">0%</span>
                             </span>
                         </div>
                         <div style="width:100%;height:7px;background:rgba(15,23,42,0.75);border:1px solid rgba(251,191,36,0.45);border-radius:99px;overflow:hidden;">
-                            <div id="patCooldownBarFill" style="width:0%;height:100%;background:linear-gradient(90deg,#f59e0b 0%,#fde047 55%,#10b981 100%);border-radius:99px;transition:width 0.8s linear;"></div>
+                            <div id="patCooldownBarFill" style="width:0%;height:100%;background:linear-gradient(90deg,#f59e0b 0%,#fde047 55%,#10b981 100%);border-radius:99px;transition:width 0.25s linear;"></div>
                         </div>
                     </div>
 
@@ -9920,7 +9934,7 @@ let _ghAgeCheckerResults = [];
 
                 renderPatBatchTelemetry(data.batch);
                 clearInterval(_patPollTimer);
-                _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 4500);
+                _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 2500);
             } catch (err) {
                 if (btn) {
                     btn.disabled = false;
