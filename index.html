@@ -6290,10 +6290,10 @@ let _ghAgeCheckerResults = [];
                             </div>
                             <textarea class="form-input" id="ghPatTokensInput" rows="2" style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;line-height:1.35;height:48px;min-height:48px;max-height:54px;padding:6px 9px;resize:none;" placeholder="Paste daftar PAT token ke bawah (ghp_xxxx...)"></textarea>
 
-                            <input type="text" class="form-input" id="ghExternalSheetUrlInput" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;height:27px;min-height:27px;padding:3px 8px;" placeholder="🔗 Link GSheet Lain (Opsional, pisahkan koma jika >1)" oninput="localStorage.setItem('xb_external_gsheet_url', this.value)">
+                            <input type="text" class="form-input" id="ghExternalSheetUrlInput" value="${(localStorage.getItem('xb_external_gsheet_url') || '').replace(/"/g, '&quot;')}" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;height:27px;min-height:27px;padding:3px 8px;" placeholder="🔗 Link GSheet Lain (Opsional, pisahkan koma jika >1)" oninput="localStorage.setItem('xb_external_gsheet_url', this.value)">
 
                             <div style="display:grid;grid-template-columns:1fr auto;gap:5px;align-items:center;">
-                                <input type="text" class="form-input" id="ghTargetSheetsInput" value="Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;height:27px;min-height:27px;padding:3px 8px;border-color:rgba(56,189,248,0.45);" placeholder="📋 Pilih Sheet (cth: Sheet10, Sheet11, Sheet12...)" oninput="localStorage.setItem('xb_target_match_sheets', this.value)">
+                                <input type="text" class="form-input" id="ghTargetSheetsInput" value="${(localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').replace(/"/g, '&quot;')}" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;height:27px;min-height:27px;padding:3px 8px;border-color:rgba(56,189,248,0.45);" placeholder="📋 Pilih Sheet (cth: Sheet10, Sheet11, Sheet12...)" oninput="localStorage.setItem('xb_target_match_sheets', this.value)">
                                 <button type="button" id="btnRunMasterMatch" class="btn-ui secondary" style="height:27px;padding:0 9px;font-size:0.6rem;border-color:var(--accent-cyan);color:var(--accent-cyan);white-space:nowrap;" onclick="runMasterSheetMatchFromWeb()">
                                     🔄 Match
                                 </button>
@@ -7366,9 +7366,7 @@ let _ghAgeCheckerResults = [];
             } else if (cmd === 'set_test_bal') {
                 const amt = prompt('Enter USDT balance for testing:', '250');
                 if (amt !== null && !isNaN(parseFloat(amt))) {
-                    userBalanceUsdt = parseFloat(amt);
-                    localStorage.setItem('xb_bal_usdt', userBalanceUsdt.toFixed(2));
-                    updateTopBalance();
+                    setAuthoritativeBalance(parseFloat(amt), true);
                     showToast(`Wallet balance set to ${userBalanceUsdt.toFixed(2)} USDT!`);
                 }
             }
@@ -7552,8 +7550,8 @@ let _ghAgeCheckerResults = [];
                                     <span id="crtProgStepLabel" style="color:#38bdf8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80%;">🟢 Standing by for jobs...</span>
                                     <span id="crtProgPctLabel" style="color:#10b981;">0%</span>
                                 </div>
-                                <div class="xb-neon-track">
-                                    <div class="xb-neon-fill" id="crtProgBarFill" style="width:6%;"></div>
+                                <div class="progress-track" style="margin-top:0;">
+                                    <div class="progress-fill" id="crtProgBarFill" style="width:6%;"></div>
                                 </div>
                             </div>
 
@@ -7590,7 +7588,7 @@ let _ghAgeCheckerResults = [];
             switchCreatorStudioTab(_crtActiveTab);
             pollCreatorStudioStatus();
             if (_crtPollTimer) clearInterval(_crtPollTimer);
-            _crtPollTimer = setInterval(pollCreatorStudioStatus, 3500);
+            _crtPollTimer = setInterval(pollCreatorStudioStatus, 5000);
         }
 
         function closeAdminAccountCreatorStudio() {
@@ -7896,7 +7894,11 @@ let _ghAgeCheckerResults = [];
             } catch (e) {}
         }
 
+        let _crtPollInFlight = false;
+
         async function pollCreatorStudioStatus() {
+            if (_crtPollInFlight) return;
+            _crtPollInFlight = true;
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
@@ -7991,7 +7993,9 @@ let _ghAgeCheckerResults = [];
                     ).join('');
                     termEl.scrollTop = termEl.scrollHeight;
                 }
-            } catch (e) {}
+            } catch (e) {} finally {
+                _crtPollInFlight = false;
+            }
         }
 
 // --- 🔑 ADMIN EXECUTIVE GITHUB PAT STUDIO V3 (ZERO-SCROLL COCKPIT) ---
@@ -8123,7 +8127,8 @@ let _ghAgeCheckerResults = [];
             _patCustomAccountsMap.delete(lowKey);
             const box = document.getElementById('patTargetUsername');
             if (box) {
-                box.value = getCombinedSelectedPatUsernames().join(', ');
+                const cleaned = getCombinedSelectedPatUsernames().filter(u => String(u).toLowerCase() !== String(lowKey).toLowerCase());
+                box.value = cleaned.join(', ');
             }
             updatePatTargetCounter();
             renderCustomPatQueuedList();
@@ -8291,17 +8296,34 @@ let _ghAgeCheckerResults = [];
 
         function getCombinedSelectedPatUsernames() {
             const box = document.getElementById('patTargetUsername');
-            const typedList = (box ? box.value : '')
-                .split(/[\s,;]+/)
-                .map(s => s.replace(/^@/, '').trim())
-                .filter(Boolean);
+            const rawVal = (box ? box.value : '').trim();
+            const typedList = rawVal
+                ? rawVal.split(/[\r\n;]+/).flatMap(seg => {
+                    const s = seg.trim();
+                    if (!s) return [];
+                    if (s.includes('|')) return [s];
+                    return s.split(/[\s,]+/).map(x => x.replace(/^@/, '').trim()).filter(Boolean);
+                })
+                : [];
             const customUsers = Array.from(_patCustomAccountsMap.values()).map(c => c.username);
-            const combined = new Set([...typedList, ...Array.from(_patSelectedManualSet), ...customUsers]);
-            return Array.from(combined);
+            const seenLow = new Set();
+            const out = [];
+            [...typedList, ...customUsers].forEach(u => {
+                const key = String(u || '').toLowerCase();
+                if (key && !seenLow.has(key)) {
+                    seenLow.add(key);
+                    out.push(u);
+                }
+            });
+            return out;
         }
 
         function updatePatTargetCounter() {
             const list = getCombinedSelectedPatUsernames();
+            const lowSet = new Set(list.map(u => String(u).toLowerCase()));
+            for (const u of Array.from(_patSelectedManualSet)) {
+                if (!lowSet.has(String(u).toLowerCase())) _patSelectedManualSet.delete(u);
+            }
             const badge = document.getElementById('patTargetCountBadge');
             if (badge) {
                 badge.innerText = `${list.length} Selected`;
@@ -8312,14 +8334,21 @@ let _ghAgeCheckerResults = [];
 
         function toggleManualPatAccountPick(username) {
             if (!username) return;
-            if (_patSelectedManualSet.has(username)) {
+            const box = document.getElementById('patTargetUsername');
+            const uLow = String(username).toLowerCase();
+            const curList = getCombinedSelectedPatUsernames();
+            const alreadyIn = curList.some(u => String(u).toLowerCase() === uLow);
+
+            let nextList;
+            if (alreadyIn) {
                 _patSelectedManualSet.delete(username);
+                nextList = curList.filter(u => String(u).toLowerCase() !== uLow);
             } else {
                 _patSelectedManualSet.add(username);
+                nextList = [...curList, username];
             }
-            const box = document.getElementById('patTargetUsername');
             if (box) {
-                box.value = getCombinedSelectedPatUsernames().join(', ');
+                box.value = nextList.join(', ');
             }
             updatePatTargetCounter();
             renderPatManualAccountCards();
@@ -8844,16 +8873,26 @@ let _ghAgeCheckerResults = [];
             }
         }
 
+        let _patPollInFlight = false;
+        let _patPollFailCount = 0;
+
         async function pollAdminPatBatchStatus(autoSwitchIfRunning = false) {
+            if (_patPollInFlight) return;
+            _patPollInFlight = true;
             const reqEpoch = _patBatchGenerationEpoch;
+            const ctrl = new AbortController();
+            const abortId = setTimeout(() => ctrl.abort(), 22000);
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    signal: ctrl.signal,
                     body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'status', secret: XB_PAT_SECRET })
                 });
                 const data = await res.json();
                 if (reqEpoch !== _patBatchGenerationEpoch) return;
+                _patPollFailCount = 0;
+
                 if (data && data.result && data.batch) {
                     const stUp = String(data.batch.status || '').toUpperCase();
                     if (autoSwitchIfRunning && stUp === 'RUNNING') {
@@ -8862,9 +8901,18 @@ let _ghAgeCheckerResults = [];
                     if (!autoSwitchIfRunning || stUp === 'RUNNING' || stUp === 'COMPLETED') {
                         renderPatBatchTelemetry(data.batch);
                     }
+
+                    // Deteksi jika antrean RUNNING > 45 detik tapi belum diambil oleh VPS Worker
                     if (stUp === 'RUNNING') {
+                        const idleMs = Date.now() - Number(data.batch.updated_ts || 0);
+                        const allStillPending = Array.isArray(data.batch.items) && data.batch.items.every(i => String(i.status || '').toUpperCase() === 'PENDING');
+                        const hdrTitle = document.getElementById('patTelHeaderTitle');
+                        if (allStillPending && idleMs > 45000 && hdrTitle) {
+                            hdrTitle.innerHTML = '⚠️ WAITING VPS WORKER (>45s) — CHECK BOT VPS';
+                            hdrTitle.style.color = 'var(--warning)';
+                        }
                         if (!_patPollTimer) {
-                            _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 3000);
+                            _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 4500);
                         }
                     } else {
                         clearInterval(_patPollTimer);
@@ -8874,7 +8922,19 @@ let _ghAgeCheckerResults = [];
                         }
                     }
                 }
-            } catch (e) {}
+            } catch (e) {
+                _patPollFailCount++;
+                if (_patPollFailCount >= 3) {
+                    const hdrTitle = document.getElementById('patTelHeaderTitle');
+                    if (hdrTitle) {
+                        hdrTitle.innerHTML = '⚠️ WEBHOOK SLOW / RECONNECTING...';
+                        hdrTitle.style.color = 'var(--warning)';
+                    }
+                }
+            } finally {
+                clearTimeout(abortId);
+                _patPollInFlight = false;
+            }
         }
 
         async function cancelAdminPatBatch() {
@@ -9279,10 +9339,13 @@ let _ghAgeCheckerResults = [];
                 streamBoxInit.innerHTML = _patLogLines.map(formatStreamLogCardHtml).join('');
             }
 
+            const enqCtrl = new AbortController();
+            const enqAbortId = setTimeout(() => enqCtrl.abort(), 30000);
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    signal: enqCtrl.signal,
                     body: JSON.stringify({
                         action: 'admin_pat_job',
                         sub_action: 'enqueue',
@@ -9297,25 +9360,60 @@ let _ghAgeCheckerResults = [];
                     })
                 });
                 const data = await res.json();
+                if (currentEpoch !== _patBatchGenerationEpoch) return;
                 if (btn) {
                     btn.disabled = false;
                     btn.innerText = '🚀 Generate PAT Token Now';
                 }
                 if (!data || !data.result) {
-                    showToast('❌ ' + ((data && data.error) ? data.error : 'Failed to enqueue batch.'));
+                    const errTxt = (data && data.error) ? data.error : 'Failed to enqueue batch.';
+                    showToast('❌ ' + errTxt);
                     switchPatStudioTab('config');
                     return;
                 }
 
+                if (Array.isArray(data.batch?.skipped_warnings) && data.batch.skipped_warnings.length > 0) {
+                    const warnMsg = 'Skipped: ' + data.batch.skipped_warnings.join(', ');
+                    _patLogLines.push({
+                        time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
+                        tag: '[WARN]',
+                        msg: warnMsg,
+                        isDone: false,
+                        isErr: true
+                    });
+                    showToast('⚠️ ' + warnMsg);
+                }
+
                 renderPatBatchTelemetry(data.batch);
                 clearInterval(_patPollTimer);
-                _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 3000);
+                _patPollTimer = setInterval(() => pollAdminPatBatchStatus(false), 4500);
             } catch (err) {
                 if (btn) {
                     btn.disabled = false;
                     btn.innerText = '🚀 Generate PAT Token Now';
                 }
-                showToast('⚠️ Failed to connect to Google Sheet webhook!');
+                const errReason = err && err.name === 'AbortError'
+                    ? 'Google Apps Script timeout (>30s). Check deployment & retry.'
+                    : 'Failed to connect to Google Sheet webhook!';
+                _patLogLines.push({
+                    time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
+                    tag: '[ERROR]',
+                    msg: errReason,
+                    isDone: false,
+                    isErr: true
+                });
+                const sBox = document.getElementById('patTelStreamBox');
+                if (sBox) sBox.innerHTML = _patLogLines.map(formatStreamLogCardHtml).join('');
+                const hdrTitle = document.getElementById('patTelHeaderTitle');
+                if (hdrTitle) {
+                    hdrTitle.innerHTML = '❌ ENQUEUE FAILED';
+                    hdrTitle.style.color = 'var(--danger)';
+                }
+                const btnResetTel = document.getElementById('btnResetPatStudioTel');
+                if (btnResetTel) btnResetTel.style.display = 'inline-flex';
+                showToast('⚠️ ' + errReason);
+            } finally {
+                clearTimeout(enqAbortId);
             }
         }
 
