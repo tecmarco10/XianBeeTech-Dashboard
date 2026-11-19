@@ -7264,6 +7264,7 @@ let _ghAgeCheckerResults = [];
             document.getElementById('ghAgeCountBadge2').innerText = `${lines.length} Rows`;
 
             let failSkipOffset = 0;
+            const deadTokensSet = new Set();
 
             for (let i = 0; i < lines.length; i++) {
                 if (_ghAgeAbortFlag) {
@@ -7311,30 +7312,30 @@ let _ghAgeCheckerResults = [];
                     statusColor = 'var(--success)';
                 } else {
                     try {
-                        let res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
-                            headers: {
-                                'Accept': 'application/vnd.github.v3+json',
-                                'Authorization': `Bearer ${currentToken}`
-                            }
-                        });
+                        const livePool = activeTokens.filter(t => !deadTokensSet.has(t));
+                        let res = null;
 
-                        if ((res.status === 401 || res.status === 403) && activeTokens.length > 1) {
-                            for (let retry = 1; retry < activeTokens.length; retry++) {
-                                failSkipOffset++;
-                                tokenIdx = (Math.floor(i / 50) + failSkipOffset) % activeTokens.length;
-                                currentToken = activeTokens[tokenIdx];
+                        if (livePool.length > 0) {
+                            let localIdx = (Math.floor(i / 50) + failSkipOffset) % livePool.length;
+                            for (let attempt = 0; attempt < livePool.length; attempt++) {
+                                const tryTok = livePool[(localIdx + attempt) % livePool.length];
                                 res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
                                     headers: {
                                         'Accept': 'application/vnd.github.v3+json',
-                                        'Authorization': `Bearer ${currentToken}`
+                                        'Authorization': `Bearer ${tryTok}`
                                     }
                                 });
-                                if (res.status !== 401 && res.status !== 403) break;
+                                if (res.status === 401 || res.status === 403) {
+                                    deadTokensSet.add(tryTok);
+                                    failSkipOffset++;
+                                } else {
+                                    break;
+                                }
                             }
                         }
 
-                        // Fallback ke Public GitHub API (tanpa token) jika seluruh PAT di pool expired/limit
-                        if (res.status === 401 || res.status === 403) {
+                        // Fallback langsung ke Public GitHub API (tanpa buang waktu retry token mati)
+                        if (!res || res.status === 401 || res.status === 403) {
                             res = await fetch(`https://api.github.com/users/${encodeURIComponent(uname)}`, {
                                 headers: { 'Accept': 'application/vnd.github.v3+json' }
                             });
@@ -10421,7 +10422,10 @@ let _ghAgeCheckerResults = [];
             }
         }
         setTimeout(() => { updateCartUI(true); syncCloudStateWithGSheet('pull'); }, 80);
-        setInterval(() => syncCloudStateWithGSheet('pull'), 10000);
+        setInterval(() => {
+            if (document.getElementById('paymentGatewayModal')?.classList.contains('active')) return;
+            syncCloudStateWithGSheet('pull');
+        }, 15000);
         window.addEventListener('focus', () => syncCloudStateWithGSheet('pull'));
 
         function openDirectOrderModal(item) {
