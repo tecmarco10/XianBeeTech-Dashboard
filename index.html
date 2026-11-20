@@ -6962,7 +6962,7 @@ let _ghAgeCheckerResults = [];
                 return showToast('⚠️ Paste minimal 1 PAT token terlebih dahulu!');
             }
 
-            const matchedTokens = rawText.match(/\b(ghp_[A-Za-z0-9]{20,60}|github_pat_[A-Za-z0-9_]{20,100})\b/g) || [];
+            const matchedTokens = rawText.match(/(ghp_[A-Za-z0-9]{20,60}|github_pat_[A-Za-z0-9_]{20,100})/g) || [];
             const tokens = [...new Set(matchedTokens)];
             if (tokens.length === 0) {
                 return showToast('⚠️ Tidak ditemukan format token yang valid!');
@@ -7204,28 +7204,30 @@ let _ghAgeCheckerResults = [];
                 return showToast('⚠️ Please paste at least 1 GitHub username!');
             }
 
-            const lines = rawText
-                .split(/[\r\n,]+/)
-                .map(s => s.trim())
-                .filter(Boolean)
-                .map(s => {
-                    const logUserMatch = s.match(/\bUser:\s*([a-zA-Z0-9-]+)\b/i);
-                    if (logUserMatch && logUserMatch[1]) {
-                        return logUserMatch[1].trim();
-                    }
-                    if (/\[\s*INVALID\s*\]/i.test(s) || /Bad credentials/i.test(s) || /\bToken:\s*ghp_/i.test(s)) {
-                        return '';
-                    }
-                    let clean = s.replace(/^@/, '').replace(/\/+$/, '');
-                    if (clean.includes('github.com/')) {
-                        clean = clean.split('github.com/')[1].split('/')[0].split('?')[0];
-                    }
-                    if (clean.includes('|')) {
-                        clean = clean.split('|')[0].trim();
-                    }
-                    return clean.replace(/[^a-zA-Z0-9-]/g, '').trim();
-                })
-                .filter(Boolean);
+            const rawLines = rawText.split(/[\r\n,]+/).map(s => s.trim()).filter(Boolean);
+            const parsedUsernames = [];
+            for (const line of rawLines) {
+                const logUserMatch = line.match(/\bUser:\s*([a-zA-Z0-9-]+)\b/i);
+                if (logUserMatch && logUserMatch[1]) {
+                    parsedUsernames.push(logUserMatch[1].trim());
+                    continue;
+                }
+                if (/\[\s*INVALID\s*\]/i.test(line) || /Bad credentials/i.test(line) || /\bToken:\s*ghp_/i.test(line)) {
+                    continue;
+                }
+                if (line.includes('github.com/')) {
+                    const uFromUrl = line.split('github.com/')[1].split(/[\/\?\s\t|]+/)[0].replace(/[^a-zA-Z0-9-]/g, '').trim();
+                    if (uFromUrl) parsedUsernames.push(uFromUrl);
+                    continue;
+                }
+                let cleanedLine = line.replace(/^\d+[\.\)\-:\s]+/, '').trim();
+                if (cleanedLine.includes('|')) cleanedLine = cleanedLine.split('|')[0].trim();
+                for (const tok of cleanedLine.split(/[\s\t]+/)) {
+                    const u = tok.replace(/^@/, '').replace(/[^a-zA-Z0-9-]/g, '').trim();
+                    if (u && !/^\d+$/.test(u)) parsedUsernames.push(u);
+                }
+            }
+            const lines = [...new Set(parsedUsernames)];
 
             if (lines.length === 0) {
                 return showToast('⚠️ No valid usernames detected!');
@@ -7458,52 +7460,8 @@ let _ghAgeCheckerResults = [];
                 };
             });
 
-            const invalidPatItems = (_ghPatCheckerResults || [])
-                .filter(p => !p.active && p.token)
-                .map(p => {
-                    if (p.flagged) {
-                        const origDate = p.createdAt ? formatGithubCreatedWib(p.createdAt) : '';
-                        return {
-                            username: p.username || '(Flagged PAT)',
-                            url: p.username ? `https://github.com/${p.username}` : '-',
-                            createdText: origDate ? `🟣 FLAGGED / 404 (${origDate})` : '🟣 FLAGGED / 404 (Shadowbanned)',
-                            createdIso: '9999-12-31T23:59:59Z',
-                            patToken: p.token,
-                            isFlagged404: true,
-                            isInvalidPat: false,
-                            customStatus: 'FLAGGED / 404 (SUSPENDED)'
-                        };
-                    }
-                    return {
-                        username: '(Invalid PAT)',
-                        url: '-',
-                        createdText: `❌ ${p.message || 'Bad credentials/Expired'}`,
-                        createdIso: '9999-99-99T99:99:99Z',
-                        patToken: p.token,
-                        isFlagged404: false,
-                        isInvalidPat: true,
-                        customStatus: `INVALID PAT (${p.message || 'Expired'})`
-                    };
-                });
-
-            let combinedPayloadItems = [...ageItems, ...invalidPatItems];
-
-            // Simpan backup otomatis di browser; jika memori kosong, pulihkan dari backup terakhir
-            if (combinedPayloadItems.length > 0) {
-                try {
-                    localStorage.setItem('xb_last_pat_audit_backup', JSON.stringify(combinedPayloadItems));
-                } catch (e) {}
-            } else {
-                try {
-                    const savedBackup = JSON.parse(localStorage.getItem('xb_last_pat_audit_backup') || '[]');
-                    if (Array.isArray(savedBackup) && savedBackup.length > 0) {
-                        combinedPayloadItems = savedBackup;
-                    }
-                } catch (e) {}
-            }
-
-            if (combinedPayloadItems.length === 0) {
-                if (manualClick) showToast('⚠️ Belum ada data token atau akun untuk dikirim ke GSheet!');
+            if (ageItems.length === 0) {
+                if (manualClick) showToast('⚠️ Belum ada hasil cek username di Tab 2! Klik ⚡ Check Now dulu.');
                 return;
             }
 
@@ -7514,12 +7472,14 @@ let _ghAgeCheckerResults = [];
             }
 
             const chunkSize = 100;
-            const totalChunks = Math.ceil(combinedPayloadItems.length / chunkSize);
-            let lastTotalRows = 0;
+            const totalChunks = Math.ceil(ageItems.length / chunkSize);
+            let totalAdded = 0;
+            let totalUpdated = 0;
+            let resultTabRows = 0;
 
             try {
                 for (let c = 0; c < totalChunks; c++) {
-                    const chunkSlice = combinedPayloadItems.slice(c * chunkSize, (c + 1) * chunkSize);
+                    const chunkSlice = ageItems.slice(c * chunkSize, (c + 1) * chunkSize);
                     if (btn) btn.innerText = `⏳ ${c + 1}/${totalChunks}...`;
 
                     let chunkSuccess = false;
@@ -7536,6 +7496,8 @@ let _ghAgeCheckerResults = [];
                                 signal: ctrl.signal,
                                 body: JSON.stringify({
                                     action: 'sync_pat_age_audit',
+                                    mode: 'username_only',
+                                    replace_result_tab: (c === 0),
                                     items: chunkSlice
                                 })
                             });
@@ -7543,10 +7505,12 @@ let _ghAgeCheckerResults = [];
                             const rawTxt = await res.text();
                             let json = null;
                             try { json = JSON.parse(rawTxt); } catch (eP) {
-                                throw new Error('Respon Apps Script bukan JSON (cek deployment)');
+                                throw new Error('Respon Apps Script bukan JSON (wajib Deploy -> New version)');
                             }
                             if (json && json.result) {
-                                lastTotalRows = json.total_rows || lastTotalRows;
+                                totalAdded += Number(json.added_count || 0);
+                                totalUpdated += Number(json.updated_count || 0);
+                                resultTabRows = Number(json.result_tab_rows || ageItems.length);
                                 chunkSuccess = true;
                                 break;
                             } else {
@@ -7565,9 +7529,9 @@ let _ghAgeCheckerResults = [];
                     }
                 }
 
-                showToast(`✅ ${lastTotalRows} baris tersimpan cepat ke 'PAT_Age_Audit' (Tertua ➔ Termuda)!`);
+                showToast(`✅ ${resultTabRows} username masuk tab 'Username_Age_Result' (+${totalAdded} baru, ${totalUpdated} update di PAT_Age_Audit)!`);
             } catch (err) {
-                showToast(`⚠️ ${err.message || 'Error koneksi'} — Data aman ter-backup, klik 📤 GSheet untuk coba lagi.`);
+                showToast(`⚠️ ${err.message || 'Error koneksi'} — Klik 📤 GSheet untuk coba lagi.`);
             } finally {
                 if (btn) {
                     btn.disabled = false;
@@ -7615,14 +7579,29 @@ let _ghAgeCheckerResults = [];
                 };
             });
             if (directItems.length === 0) return;
-            try {
-                await fetch(GSHEET_WEBHOOK_URL, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    redirect: 'follow',
-                    body: JSON.stringify({ action: 'sync_pat_age_audit', items: directItems })
-                });
-            } catch (e) {}
+
+            const chunkSize = 100;
+            for (let c = 0; c < directItems.length; c += chunkSize) {
+                const slice = directItems.slice(c, c + chunkSize);
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        redirect: 'follow',
+                        body: JSON.stringify({
+                            action: 'sync_pat_age_audit',
+                            mode: 'pat_check',
+                            items: slice
+                        })
+                    });
+                    const json = await res.json();
+                    if (!json || !json.result) {
+                        showToast('⚠️ Gagal simpan PAT ke PAT_Age_Audit: ' + ((json && json.error) || 'Cek deploy Apps Script'));
+                    }
+                } catch (e) {
+                    showToast('⚠️ Gagal koneksi saat simpan PAT ke PAT_Age_Audit.');
+                }
+            }
         }
 
         let _matchedDeadSheetRows = [];
