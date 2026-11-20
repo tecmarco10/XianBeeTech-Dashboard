@@ -6737,7 +6737,7 @@ let _ghAgeCheckerResults = [];
                             <input type="text" class="form-input" id="ghExternalSheetUrlInput" value="${(localStorage.getItem('xb_external_gsheet_url') || '').replace(/"/g, '&quot;')}" style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;height:27px;min-height:27px;padding:3px 8px;" placeholder="🔗 Link GSheet Lain (Opsional, pisahkan koma jika >1)" oninput="localStorage.setItem('xb_external_gsheet_url', this.value)">
 
                             <div style="display:grid;grid-template-columns:1fr auto;gap:5px;align-items:center;">
-                                <input type="text" class="form-input" id="ghTargetSheetsInput" value="${(localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').replace(/"/g, '&quot;')}" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;height:27px;min-height:27px;padding:3px 8px;border-color:rgba(56,189,248,0.45);" placeholder="📋 Pilih Sheet (cth: Sheet10, Sheet11, Sheet12...)" oninput="localStorage.setItem('xb_target_match_sheets', this.value)">
+                                <input type="text" class="form-input" id="ghTargetSheetsInput" value="${((localStorage.getItem('xb_target_match_sheets') || '').includes('Sheet10') ? 'Github Stock, Master_Matched_Accounts, Creator_Vault' : (localStorage.getItem('xb_target_match_sheets') || 'Github Stock, Master_Matched_Accounts, Creator_Vault')).replace(/"/g, '&quot;')}" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;height:27px;min-height:27px;padding:3px 8px;border-color:rgba(56,189,248,0.45);" placeholder="📋 Tab aktif (cth: Github Stock, Master_Matched_Accounts)" oninput="localStorage.setItem('xb_target_match_sheets', this.value)">
                                 <button type="button" id="btnRunMasterMatch" class="btn-ui secondary" style="height:27px;padding:0 9px;font-size:0.6rem;border-color:var(--accent-cyan);color:var(--accent-cyan);white-space:nowrap;" onclick="runMasterSheetMatchFromWeb()">
                                     🔄 Match
                                 </button>
@@ -7633,7 +7633,7 @@ let _ghAgeCheckerResults = [];
         async function runMasterSheetMatchFromWeb() {
             const btn = document.getElementById('btnRunMasterMatch');
             const extSheetUrl = (document.getElementById('ghExternalSheetUrlInput')?.value || localStorage.getItem('xb_external_gsheet_url') || '').trim();
-            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').trim();
+            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Github Stock, Master_Matched_Accounts, Creator_Vault').trim();
 
             if (!targetSheetsStr) {
                 return showToast('⚠️ Isi nama sheet yang mau dicocokkan (misal: Sheet10, Sheet11, Sheet12)');
@@ -7683,7 +7683,7 @@ let _ghAgeCheckerResults = [];
             }
 
             const extSheetUrl = (document.getElementById('ghExternalSheetUrlInput')?.value || localStorage.getItem('xb_external_gsheet_url') || '').trim();
-            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').trim();
+            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Github Stock, Master_Matched_Accounts, Creator_Vault').trim();
 
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
@@ -7717,10 +7717,11 @@ let _ghAgeCheckerResults = [];
                 btn.innerText = '⏳...';
             }
             try {
+                await syncTab1DirectToPatAgeAudit_();
                 const pairedCnt = await pairActivePatsToExistingSheets(false);
                 await scanDeadPatsAcrossAllSheets(false);
                 if (manualClick) {
-                    showToast(`✅ Sync Selesai! ${pairedCnt} PAT dijodohkan ke Username/Link & Audit Report diperbarui.`);
+                    showToast(`✅ Sync Selesai! PAT_Age_Audit diperbarui, ${pairedCnt} PAT dijodohkan & Audit Report tersimpan.`);
                 }
             } finally {
                 if (btn) {
@@ -7790,7 +7791,7 @@ let _ghAgeCheckerResults = [];
             }
 
             const extSheetUrl = (document.getElementById('ghExternalSheetUrlInput')?.value || localStorage.getItem('xb_external_gsheet_url') || '').trim();
-            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Sheet10, Sheet11, Sheet12, Sheet13, Sheet14, Sheet15, Sheet16').trim();
+            const targetSheetsStr = (document.getElementById('ghTargetSheetsInput')?.value || localStorage.getItem('xb_target_match_sheets') || 'Github Stock, Master_Matched_Accounts, Creator_Vault').trim();
 
             try {
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
