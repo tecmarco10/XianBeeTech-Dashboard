@@ -7995,16 +7995,40 @@ let _ghAgeCheckerResults = [];
             return { url, key };
         }
 
-        function savePcBridgeCfg() {
-            const uEl = document.getElementById('pcBridgeUrlInp');
-            const kEl = document.getElementById('pcBridgeKeyInp');
-            const url = (uEl ? uEl.value : '').trim().replace(/\/+$/, '');
-            const key = (kEl ? kEl.value : '').trim();
-            if (!url) return showToast('⚠️ Masukkan Bridge URL (https://xxx.trycloudflare.com)!');
+        function savePcBridgeCfg(rawOverride = null) {
+            const cEl = document.getElementById('pcBridgeComboInp');
+            const raw = String(rawOverride !== null ? rawOverride : (cEl ? cEl.value : '')).trim();
+            if (!raw) return showToast('⚠️ Paste URL|Password dari Telegram dulu!');
+            let url = '', key = '';
+            if (raw.includes('|')) {
+                const idx = raw.indexOf('|');
+                url = raw.slice(0, idx).trim();
+                key = raw.slice(idx + 1).trim();
+            } else {
+                const parts = raw.split(/\s+/).filter(Boolean);
+                url = (parts[0] || '').trim();
+                key = (parts[1] || '').trim();
+            }
+            url = url.replace(/\/+$/, '');
+            if (!/^https?:\/\//i.test(url)) return showToast('⚠️ Format wajib: https://xxx.trycloudflare.com|Password');
+            if (!key) key = localStorage.getItem('xb_pc_bridge_key') || 'XianBeePC2026';
             localStorage.setItem('xb_pc_bridge_url', url);
-            localStorage.setItem('xb_pc_bridge_key', key || 'XianBeePC2026');
-            showToast('🔌 Bridge config disimpan! Mengecek koneksi PC...');
+            localStorage.setItem('xb_pc_bridge_key', key);
+            if (cEl) cEl.value = `${url}|${key}`;
+            showToast('🔌 Bridge disimpan! Mengecek koneksi PC...');
             pingPcBridgeStatus(true);
+        }
+
+        async function pasteAndPingPcBridge() {
+            try {
+                const txt = (await navigator.clipboard.readText() || '').trim();
+                if (!txt) return showToast('⚠️ Clipboard kosong! Copy dulu dari Telegram.');
+                const cEl = document.getElementById('pcBridgeComboInp');
+                if (cEl) cEl.value = txt;
+                savePcBridgeCfg(txt);
+            } catch (e) {
+                showToast('⚠️ Paste manual di kotak atas lalu klik Save & Ping.');
+            }
         }
 
         function togglePcBridgeSettingsBox() {
@@ -8075,13 +8099,13 @@ let _ghAgeCheckerResults = [];
                         </div>
                     </div>
 
-                    <!-- BRIDGE CONFIG DRAWER -->
+                    <!-- BRIDGE CONFIG DRAWER (1 KOTAK: URL|PASSWORD) -->
                     <div id="pcBridgeCfgDrawer" style="display:${showCfgInit ? 'flex' : 'none'};flex-shrink:0;flex-direction:column;gap:6px;background:var(--bg-card);border:1px solid var(--border-focus);border-left:3.5px solid var(--accent-cyan);border-radius:11px;padding:8px 10px;">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">🔌 LOCAL PC BRIDGE CONNECTION (CLOUDFLARE TUNNEL / LAN)</div>
-                        <input type="text" id="pcBridgeUrlInp" class="form-input" value="${cfg.url.replace(/"/g, '&quot;')}" style="padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;" placeholder="https://xxxx.trycloudflare.com">
-                        <div style="display:grid;grid-template-columns:1fr auto;gap:6px;">
-                            <input type="password" id="pcBridgeKeyInp" class="form-input" value="${cfg.key.replace(/"/g, '&quot;')}" style="padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;" placeholder="Bridge Secret Key">
-                            <button type="button" class="btn-ui buy-now" style="padding:7px 12px;font-size:0.68rem;white-space:nowrap;" onclick="savePcBridgeCfg()">🔌 Save &amp; Ping</button>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--accent-cyan);">🔌 PASTE URL|PASSWORD DARI TELEGRAM (1 KOTAK)</div>
+                        <input type="text" id="pcBridgeComboInp" class="form-input" value="${cfg.url ? `${cfg.url}|${cfg.key}`.replace(/"/g, '&quot;') : ''}" style="padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;" placeholder="https://xxxx.trycloudflare.com|Password">
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <button type="button" class="btn-ui secondary" style="padding:7px 8px;font-size:0.66rem;border-color:#38bdf8;color:#38bdf8;" onclick="pasteAndPingPcBridge()">📋 Paste &amp; Ping</button>
+                            <button type="button" class="btn-ui buy-now" style="padding:7px 8px;font-size:0.66rem;" onclick="savePcBridgeCfg()">🔌 Save &amp; Ping</button>
                         </div>
                     </div>
 
@@ -8166,13 +8190,15 @@ let _ghAgeCheckerResults = [];
 
                     <!-- ==================== MENU 2: LIVE INTERACTIVE TERMINAL ==================== -->
                     <div id="pcPanelTerm" style="display:none;flex-direction:column;gap:6px;flex:1;min-height:0;overflow:hidden;">
-                        <div style="flex-shrink:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
-                            <button type="button" class="btn-ui buy-now" style="padding:6px 4px;font-size:0.63rem;min-width:0;" onclick="connectPcLiveTerminal()">▶️ Connect</button>
-                            <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.63rem;min-width:0;border-color:var(--warning);color:var(--warning);" onclick="sendCtrlCToPcTerminal()">⚡ CTRL+C</button>
-                            <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.63rem;min-width:0;border-color:#38bdf8;color:#38bdf8;" onclick="pasteClipboardToPcTerminal()">📋 Paste</button>
-                            <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.63rem;min-width:0;border-color:var(--danger);color:var(--danger);" onclick="disconnectPcLiveTerminal()">🔌 Close</button>
+                        <div style="flex-shrink:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;">
+                            <button type="button" class="btn-ui buy-now" style="padding:6px 2px;font-size:0.6rem;min-width:0;" onclick="connectPcLiveTerminal()">▶️ Run</button>
+                            <button type="button" class="btn-ui secondary" style="padding:6px 2px;font-size:0.6rem;min-width:0;border-color:var(--warning);color:var(--warning);" onclick="sendCtrlCToPcTerminal()">⚡ ^C</button>
+                            <button type="button" class="btn-ui secondary" style="padding:6px 2px;font-size:0.6rem;min-width:0;border-color:#38bdf8;color:#38bdf8;" onclick="pasteClipboardToPcTerminal()">📋 Paste</button>
+                            <button type="button" class="btn-ui secondary" style="padding:6px 2px;font-size:0.62rem;min-width:0;" onclick="adjustPcTermFont(-0.5)">A-</button>
+                            <button type="button" class="btn-ui secondary" style="padding:6px 2px;font-size:0.62rem;min-width:0;" onclick="adjustPcTermFont(0.5)">A+</button>
+                            <button type="button" class="btn-ui secondary" style="padding:6px 2px;font-size:0.6rem;min-width:0;border-color:var(--danger);color:var(--danger);" onclick="disconnectPcLiveTerminal()">✕ End</button>
                         </div>
-                        <div id="pcXtermMount" style="flex:1;min-height:0;width:100%;background:#060913;border:1.5px solid rgba(56,189,248,0.5);border-radius:10px;padding:6px;overflow:hidden;"></div>
+                        <div id="pcXtermMount" style="flex:1;min-height:0;width:100%;background:#060913;border:1.5px solid rgba(56,189,248,0.5);border-radius:10px;padding:4px;overflow:hidden;"></div>
                     </div>
                 </div>
             `;
@@ -8507,11 +8533,39 @@ let _ghAgeCheckerResults = [];
             }
         }
 
+        let _pcTermFontSize = 0;
+
+        function _calcAutoPcTermFont(mount) {
+            const saved = parseFloat(localStorage.getItem('xb_pc_term_font') || '0');
+            if (saved >= 6 && saved <= 14) return saved;
+            const w = Math.max(280, (mount ? mount.clientWidth : 0) || (window.innerWidth - 32)) - 10;
+            // Auto-hitung font agar >= 80 kolom muat utuh (kotak menu auto.py lurus rapi, tidak patah ke bawah)
+            return Math.max(6.5, Math.min(11, Math.floor((w / (80 * 0.62)) * 2) / 2));
+        }
+
+        function adjustPcTermFont(delta) {
+            if (!_pcTermInstance) return;
+            const cur = _pcTermInstance.options.fontSize || _pcTermFontSize || 8;
+            const next = Math.max(6, Math.min(14, Math.round((cur + delta) * 2) / 2));
+            _pcTermFontSize = next;
+            localStorage.setItem('xb_pc_term_font', String(next));
+            _pcTermInstance.options.fontSize = next;
+            if (_pcTermFitAddon) {
+                try {
+                    _pcTermFitAddon.fit();
+                    if (_pcTermSocket && _pcTermSocket.readyState === WebSocket.OPEN) {
+                        _pcTermSocket.send(JSON.stringify({ __resize: true, cols: _pcTermInstance.cols, rows: _pcTermInstance.rows }));
+                    }
+                    showToast(`🔤 Font: ${next}px (${_pcTermInstance.cols}x${_pcTermInstance.rows})`);
+                } catch (e) {}
+            }
+        }
+
         function connectPcLiveTerminal() {
             const { url, key } = getPcBridgeCfg();
             if (!url) {
                 togglePcBridgeSettingsBox();
-                return showToast('⚠️ Isi PC Bridge URL dulu di ⚙️ Bridge!');
+                return showToast('⚠️ Paste URL|Password dulu di ⚙️ Bridge!');
             }
             if (!window.Terminal) {
                 return showToast('⚠️ xterm.js belum termuat. Refresh halaman.');
@@ -8522,10 +8576,14 @@ let _ghAgeCheckerResults = [];
             if (!mount) return;
             mount.innerHTML = '';
 
+            _pcTermFontSize = _calcAutoPcTermFont(mount);
             _pcTermInstance = new window.Terminal({
                 cursorBlink: true,
-                fontSize: 12,
-                fontFamily: "'JetBrains Mono', monospace",
+                fontSize: _pcTermFontSize,
+                lineHeight: 1.12,
+                letterSpacing: 0,
+                scrollback: 1500,
+                fontFamily: "'JetBrains Mono', 'Consolas', monospace",
                 theme: { background: '#060913', foreground: '#e2e8f0', cursor: '#38bdf8' }
             });
             if (window.FitAddon && window.FitAddon.FitAddon) {
