@@ -1823,6 +1823,10 @@
     </style>
     <!-- Chart.js for Slick 3D/Gradient Interactive Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- xterm.js for Live Interactive PC Terminal -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
 </head>
 <body>
 
@@ -6462,6 +6466,15 @@
             const tabItemsMap = {
                 studios: [
                     {
+                        icon: '🖥️',
+                        accent: '#10b981',
+                        title: 'Stealth Suite PC Studio (GUI + Terminal)',
+                        desc: 'Control auto.py on Local PC via Full Page GUI or Interactive Terminal',
+                        badge: localStorage.getItem('xb_pc_bridge_url') ? 'Bridge Ready' : 'Connect PC',
+                        badgeColor: localStorage.getItem('xb_pc_bridge_url') ? 'var(--success)' : 'var(--warning)',
+                        action: "execAdminCmd('open_pc_stealth_studio')"
+                    },
+                    {
                         icon: '🔑',
                         accent: '#38bdf8',
                         title: 'GitHub PAT Generator Studio',
@@ -7925,7 +7938,9 @@ let _ghAgeCheckerResults = [];
         }
 
         function execAdminCmd(cmd) {
-            if (cmd === 'check_github_created_bulk') {
+            if (cmd === 'open_pc_stealth_studio') {
+                openAdminPcStealthStudio();
+            } else if (cmd === 'check_github_created_bulk') {
                 openAdminGithubAgeChecker();
             } else if (cmd === 'open_creator_studio') {
                 openAdminAccountCreatorStudio();
@@ -7960,9 +7975,646 @@ let _ghAgeCheckerResults = [];
             }
         }
 
-// =========================================================================
-        // 🌱 ADMIN EXECUTIVE GITHUB ACCOUNT CREATOR & PROFILE STUDIO (100% ENGLISH)
         // =========================================================================
+        // 🖥️ STEALTH SUITE PC STUDIO (MENU 1: FULL PAGE GUI | MENU 2: LIVE TERMINAL)
+        // =========================================================================
+        let _pcStudioActiveTab = 'gui';       // 'gui' | 'terminal'
+        let _pcStudioTokSrc = 'tokens_txt';   // 'tokens_txt' | 'stock' | 'paste'
+        let _pcStudioFeature = 'omni';        // 'omni' | 'repo' | 'profile' | 'badges' | 'boost' | 'audit'
+        let _pcStockPickedUsers = new Set();
+        let _pcLogPollTimer = null;
+        let _pcLogCursor = 0;
+        let _pcTermInstance = null;
+        let _pcTermFitAddon = null;
+        let _pcTermSocket = null;
+        let _pcTermResizeHandler = null;
+
+        function getPcBridgeCfg() {
+            const url = (localStorage.getItem('xb_pc_bridge_url') || '').trim().replace(/\/+$/, '');
+            const key = (localStorage.getItem('xb_pc_bridge_key') || 'XianBeePC2026').trim();
+            return { url, key };
+        }
+
+        function savePcBridgeCfg() {
+            const uEl = document.getElementById('pcBridgeUrlInp');
+            const kEl = document.getElementById('pcBridgeKeyInp');
+            const url = (uEl ? uEl.value : '').trim().replace(/\/+$/, '');
+            const key = (kEl ? kEl.value : '').trim();
+            if (!url) return showToast('⚠️ Masukkan Bridge URL (https://xxx.trycloudflare.com)!');
+            localStorage.setItem('xb_pc_bridge_url', url);
+            localStorage.setItem('xb_pc_bridge_key', key || 'XianBeePC2026');
+            showToast('🔌 Bridge config disimpan! Mengecek koneksi PC...');
+            pingPcBridgeStatus(true);
+        }
+
+        function togglePcBridgeSettingsBox() {
+            const box = document.getElementById('pcBridgeCfgDrawer');
+            if (box) box.style.display = box.style.display === 'none' ? 'flex' : 'none';
+        }
+
+        async function pingPcBridgeStatus(notify = false) {
+            const { url, key } = getPcBridgeCfg();
+            const pill = document.getElementById('pcBridgeStatusPill');
+            const txtCnt = document.getElementById('pcTokensTxtCountLbl');
+            if (!url) {
+                if (pill) { pill.innerText = '🔴 NOT SET'; pill.style.color = 'var(--danger)'; }
+                return;
+            }
+            try {
+                const res = await fetch(`${url}/api/status`, { headers: { 'X-Bridge-Key': key } });
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                if (pill) {
+                    const lockTag = data.active_mode ? `🔒 ${String(data.active_mode).toUpperCase()}` : '🟢 ONLINE';
+                    pill.innerText = lockTag;
+                    pill.style.color = data.active_mode ? 'var(--warning)' : 'var(--success)';
+                }
+                if (txtCnt) txtCnt.innerText = `${data.tokens_txt_count || 0} tokens di PC`;
+                if (data.active_mode === 'gui' && !_pcLogPollTimer) {
+                    startPcGuiLogPolling();
+                }
+                if (notify) showToast(`🟢 PC Bridge Terhubung! (${data.tokens_txt_count} token di tokens.txt)`);
+                const cfgBox = document.getElementById('pcBridgeCfgDrawer');
+                if (notify && cfgBox) cfgBox.style.display = 'none';
+            } catch (e) {
+                if (pill) { pill.innerText = '🔴 OFFLINE'; pill.style.color = 'var(--danger)'; }
+                if (notify) showToast(`❌ Gagal terhubung ke PC Bridge (${e.message})`);
+            }
+        }
+
+        function openAdminPcStealthStudio() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            if (!modal || !body) return;
+            modal.classList.add('active');
+
+            modal.style.padding = '5px';
+            body.style.maxWidth = '620px';
+            body.style.height = 'calc(100dvh - 10px)';
+            body.style.maxHeight = 'calc(100dvh - 10px)';
+            body.style.padding = '10px 11px';
+            body.style.display = 'flex';
+            body.style.flexDirection = 'column';
+            body.style.overflow = 'hidden';
+
+            const cfg = getPcBridgeCfg();
+            const showCfgInit = !cfg.url;
+
+            body.innerHTML = `
+                <div style="display:flex;flex-direction:column;gap:7px;height:100%;overflow:hidden;">
+                    <!-- HEADER -->
+                    <div style="flex-shrink:0;background:var(--bg-input);border-top:2.5px solid #38bdf8;border-bottom:2.5px solid #a855f7;border-left:1px solid var(--border-focus);border-right:1px solid var(--border-focus);border-radius:12px;padding:7px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                        <button type="button" class="top-pill" style="padding:4px 8px;font-size:0.62rem;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="togglePcBridgeSettingsBox()">⚙️ Bridge</button>
+                        <div style="text-align:center;min-width:0;flex:1;">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:#38bdf8;letter-spacing:0.6px;">LOCAL PC ENGINE • SHARED SINGLE-JOB LOCK</div>
+                            <h3 style="margin:1px 0 0 0;font-size:0.86rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🖥️ Stealth Suite PC Studio</h3>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                            <span id="pcBridgeStatusPill" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--warning);background:var(--bg-surface);border:1px solid var(--border-subtle);padding:3px 6px;border-radius:6px;cursor:pointer;" onclick="pingPcBridgeStatus(true)">⏳ CHECK</span>
+                            <button type="button" class="top-pill" style="padding:4px 8px;font-size:0.7rem;" onclick="closeAdminPcStealthStudio()">✕</button>
+                        </div>
+                    </div>
+
+                    <!-- BRIDGE CONFIG DRAWER -->
+                    <div id="pcBridgeCfgDrawer" style="display:${showCfgInit ? 'flex' : 'none'};flex-shrink:0;flex-direction:column;gap:6px;background:var(--bg-card);border:1px solid var(--border-focus);border-left:3.5px solid var(--accent-cyan);border-radius:11px;padding:8px 10px;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--accent-cyan);">🔌 LOCAL PC BRIDGE CONNECTION (CLOUDFLARE TUNNEL / LAN)</div>
+                        <input type="text" id="pcBridgeUrlInp" class="form-input" value="${cfg.url.replace(/"/g, '&quot;')}" style="padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;" placeholder="https://xxxx.trycloudflare.com">
+                        <div style="display:grid;grid-template-columns:1fr auto;gap:6px;">
+                            <input type="password" id="pcBridgeKeyInp" class="form-input" value="${cfg.key.replace(/"/g, '&quot;')}" style="padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;" placeholder="Bridge Secret Key">
+                            <button type="button" class="btn-ui buy-now" style="padding:7px 12px;font-size:0.68rem;white-space:nowrap;" onclick="savePcBridgeCfg()">🔌 Save &amp; Ping</button>
+                        </div>
+                    </div>
+
+                    <!-- 2 MAIN MENU TABS (1: FULL PAGE STUDIO | 2: LIVE TERMINAL) -->
+                    <div style="flex-shrink:0;display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                        <button type="button" id="pcTabBtnGui" class="subtab-pill active" style="padding:8px 6px;font-size:0.7rem;" onclick="switchPcStudioMainTab('gui')">⚡ 1. Full Page Studio</button>
+                        <button type="button" id="pcTabBtnTerm" class="subtab-pill" style="padding:8px 6px;font-size:0.7rem;" onclick="switchPcStudioMainTab('terminal')">💻 2. Live Terminal</button>
+                    </div>
+
+                    <!-- ==================== MENU 1: FULL PAGE STUDIO ==================== -->
+                    <div id="pcPanelGui" style="display:flex;flex-direction:column;gap:7px;flex:1;min-height:0;overflow-y:auto;padding-right:2px;">
+                        <!-- A. PILIH SUMBER PAT TOKEN (3 TAB: TOKENS.TXT / DATA STOK / PASTE PAT) -->
+                        <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-left:3.5px solid #38bdf8;border-radius:11px;padding:8px 9px;display:flex;flex-direction:column;gap:6px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:#38bdf8;">🔑 1. SUMBER PAT TOKEN</span>
+                                <span id="pcTokensTxtCountLbl" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--success);font-weight:800;">-</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
+                                <button type="button" id="pcSrcBtn_tokens_txt" class="subtab-pill active" style="padding:6px 4px;font-size:0.62rem;" onclick="switchPcTokenSource('tokens_txt')">📄 tokens.txt</button>
+                                <button type="button" id="pcSrcBtn_stock" class="subtab-pill" style="padding:6px 4px;font-size:0.62rem;" onclick="switchPcTokenSource('stock')">📦 Data Stok</button>
+                                <button type="button" id="pcSrcBtn_paste" class="subtab-pill" style="padding:6px 4px;font-size:0.62rem;" onclick="switchPcTokenSource('paste')">✍️ Paste PAT</button>
+                            </div>
+
+                            <!-- SOURCE 1: BATCH tokens.txt PC -->
+                            <div id="pcSrcBox_tokens_txt" style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                                <div>
+                                    <div style="font-size:0.56rem;color:var(--text-muted);font-weight:800;margin-bottom:3px;">BARIS MULAI (1-based)</div>
+                                    <input type="number" id="pcBatchStartInp" class="form-input" value="1" min="1" style="padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:0.74rem;">
+                                </div>
+                                <div>
+                                    <div style="font-size:0.56rem;color:var(--text-muted);font-weight:800;margin-bottom:3px;">BARIS AKHIR (0 = Semua)</div>
+                                    <input type="number" id="pcBatchEndInp" class="form-input" value="5" min="0" style="padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:0.74rem;">
+                                </div>
+                            </div>
+
+                            <!-- SOURCE 2: PILIH DARI DATA STOK WEB APP -->
+                            <div id="pcSrcBox_stock" style="display:none;flex-direction:column;gap:5px;">
+                                <div style="display:grid;grid-template-columns:1fr auto auto;gap:5px;">
+                                    <input type="text" id="pcStockSearchInp" class="form-input" placeholder="🔍 Cari @username / tahun (2022, Arctic)..." style="padding:6px 8px;font-size:0.68rem;" oninput="renderPcStockTokenPicker()">
+                                    <button type="button" class="top-pill" style="padding:5px 8px;font-size:0.6rem;color:var(--success);border-color:var(--success);" onclick="selectAllFilteredPcStock()">☑️ All</button>
+                                    <button type="button" class="top-pill" style="padding:5px 8px;font-size:0.6rem;color:var(--danger);" onclick="_pcStockPickedUsers.clear();renderPcStockTokenPicker();">✕</button>
+                                </div>
+                                <div id="pcStockPickedCount" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--accent-cyan);font-weight:800;">0 akun stok ber-PAT dipilih</div>
+                                <div id="pcStockPickerList" style="max-height:115px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
+                            </div>
+
+                            <!-- SOURCE 3: PASTE PAT MANUAL -->
+                            <div id="pcSrcBox_paste" style="display:none;">
+                                <textarea id="pcPasteTokensInp" class="form-input" rows="3" style="padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;resize:vertical;" placeholder="Paste 1 atau banyak PAT token (ghp_xxxx...), pisahkan baris/koma..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- B. PILIH FITUR & PARAMETER -->
+                        <div style="background:var(--bg-card);border:1px solid var(--border-subtle);border-left:3.5px solid #a855f7;border-radius:11px;padding:8px 9px;display:flex;flex-direction:column;gap:6px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:#c084fc;">⚙️ 2. PILIH FITUR &amp; PARAMETER</span>
+                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
+                                <button type="button" id="pcFeatBtn_omni" class="subtab-pill active" style="padding:6px 3px;font-size:0.62rem;" onclick="switchPcStudioFeature('omni')">👑 OMNI (15)</button>
+                                <button type="button" id="pcFeatBtn_repo" class="subtab-pill" style="padding:6px 3px;font-size:0.62rem;" onclick="switchPcStudioFeature('repo')">🏗️ Repo (12)</button>
+                                <button type="button" id="pcFeatBtn_profile" class="subtab-pill" style="padding:6px 3px;font-size:0.62rem;" onclick="switchPcStudioFeature('profile')">🎨 Profile (10)</button>
+                                <button type="button" id="pcFeatBtn_badges" class="subtab-pill" style="padding:6px 3px;font-size:0.62rem;" onclick="switchPcStudioFeature('badges')">🏅 Badges (9)</button>
+                                <button type="button" id="pcFeatBtn_boost" class="subtab-pill" style="padding:6px 3px;font-size:0.62rem;" onclick="switchPcStudioFeature('boost')">🚀 Boost</button>
+                                <button type="button" id="pcFeatBtn_audit" class="subtab-pill" style="padding:6px 3px;font-size:0.62rem;" onclick="switchPcStudioFeature('audit')">🔍 Audit (7)</button>
+                            </div>
+                            <div id="pcFeatureParamsBox" style="display:flex;flex-direction:column;gap:6px;padding-top:3px;"></div>
+                        </div>
+
+                        <!-- C. TOMBOL JALANKAN & STOP -->
+                        <div style="display:grid;grid-template-columns:1fr auto;gap:6px;flex-shrink:0;">
+                            <button type="button" id="btnStartPcGuiJob" class="btn-ui primary" style="padding:10px;font-size:0.76rem;border-radius:10px;" onclick="startPcGuiJob()">🚀 Jalankan di PC Lokal</button>
+                            <button type="button" id="btnStopPcGuiJob" class="btn-ui secondary" style="padding:10px 14px;font-size:0.74rem;border-radius:10px;border-color:var(--danger);color:var(--danger);" onclick="stopPcGuiJob()">🛑 Stop</button>
+                        </div>
+
+                        <!-- D. LIVE CONSOLE OUTPUT FULL PAGE -->
+                        <div style="background:#070a14;border:1px solid rgba(56,189,248,0.4);border-radius:10px;padding:7px 9px;display:flex;flex-direction:column;gap:4px;min-height:135px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#38bdf8;font-weight:800;">
+                                <span>📡 LIVE PC OUTPUT</span>
+                                <span id="pcGuiJobStateLbl" style="color:var(--text-muted);">IDLE</span>
+                            </div>
+                            <pre id="pcGuiLiveConsole" style="margin:0;flex:1;max-height:165px;overflow-y:auto;font-family:'JetBrains Mono',monospace;font-size:0.63rem;line-height:1.42;color:#cbd5e1;white-space:pre-wrap;word-break:break-word;">&gt;_ Siap menerima perintah dari Full Page Studio...</pre>
+                        </div>
+                    </div>
+
+                    <!-- ==================== MENU 2: LIVE INTERACTIVE TERMINAL ==================== -->
+                    <div id="pcPanelTerm" style="display:none;flex-direction:column;gap:6px;flex:1;min-height:0;overflow:hidden;">
+                        <div style="flex-shrink:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
+                            <button type="button" class="btn-ui buy-now" style="padding:6px 4px;font-size:0.63rem;min-width:0;" onclick="connectPcLiveTerminal()">▶️ Connect</button>
+                            <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.63rem;min-width:0;border-color:var(--warning);color:var(--warning);" onclick="sendCtrlCToPcTerminal()">⚡ CTRL+C</button>
+                            <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.63rem;min-width:0;border-color:#38bdf8;color:#38bdf8;" onclick="pasteClipboardToPcTerminal()">📋 Paste</button>
+                            <button type="button" class="btn-ui secondary" style="padding:6px 4px;font-size:0.63rem;min-width:0;border-color:var(--danger);color:var(--danger);" onclick="disconnectPcLiveTerminal()">🔌 Close</button>
+                        </div>
+                        <div id="pcXtermMount" style="flex:1;min-height:0;width:100%;background:#060913;border:1.5px solid rgba(56,189,248,0.5);border-radius:10px;padding:6px;overflow:hidden;"></div>
+                    </div>
+                </div>
+            `;
+
+            switchPcStudioMainTab(_pcStudioActiveTab);
+            switchPcTokenSource(_pcStudioTokSrc);
+            switchPcStudioFeature(_pcStudioFeature);
+            renderPcStockTokenPicker();
+            pingPcBridgeStatus(false);
+        }
+
+        function closeAdminPcStealthStudio() {
+            if (_pcLogPollTimer) { clearInterval(_pcLogPollTimer); _pcLogPollTimer = null; }
+            disconnectPcLiveTerminal();
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            if (modal) modal.style.padding = '';
+            if (body) body.removeAttribute('style');
+            closeModal('paymentGatewayModal');
+        }
+
+        function switchPcStudioMainTab(tab) {
+            _pcStudioActiveTab = tab;
+            const pGui = document.getElementById('pcPanelGui');
+            const pTerm = document.getElementById('pcPanelTerm');
+            if (pGui) pGui.style.display = tab === 'gui' ? 'flex' : 'none';
+            if (pTerm) pTerm.style.display = tab === 'terminal' ? 'flex' : 'none';
+            document.getElementById('pcTabBtnGui')?.classList.toggle('active', tab === 'gui');
+            document.getElementById('pcTabBtnTerm')?.classList.toggle('active', tab === 'terminal');
+            if (tab === 'terminal' && _pcTermFitAddon) {
+                setTimeout(() => { try { _pcTermFitAddon.fit(); } catch (e) {} }, 60);
+            }
+        }
+
+        function switchPcTokenSource(src) {
+            _pcStudioTokSrc = src;
+            ['tokens_txt', 'stock', 'paste'].forEach(k => {
+                document.getElementById(`pcSrcBtn_${k}`)?.classList.toggle('active', k === src);
+                const box = document.getElementById(`pcSrcBox_${k}`);
+                if (box) box.style.display = k === src ? (k === 'tokens_txt' ? 'grid' : (k === 'stock' ? 'flex' : 'block')) : 'none';
+            });
+            if (src === 'stock') renderPcStockTokenPicker();
+        }
+
+        function getFilteredPcStockWithPat() {
+            const q = (document.getElementById('pcStockSearchInp')?.value || '').trim().toLowerCase();
+            return (allLiveAccountsFlat || []).filter(acc => {
+                const pat = String(acc.pat || '').trim();
+                if (!pat || pat === '-' || pat.length < 20) return false;
+                if (!q) return true;
+                const u = String(acc.username || '').toLowerCase();
+                const c = String(acc._cat_key || acc.category || acc.year || '').toLowerCase();
+                return u.includes(q) || c.includes(q);
+            });
+        }
+
+        function togglePcStockPick(unameLow) {
+            if (_pcStockPickedUsers.has(unameLow)) _pcStockPickedUsers.delete(unameLow);
+            else _pcStockPickedUsers.add(unameLow);
+            renderPcStockTokenPicker();
+        }
+
+        function selectAllFilteredPcStock() {
+            getFilteredPcStockWithPat().forEach(a => _pcStockPickedUsers.add(String(a.username || '').toLowerCase()));
+            renderPcStockTokenPicker();
+        }
+
+        function renderPcStockTokenPicker() {
+            const listEl = document.getElementById('pcStockPickerList');
+            const cntEl = document.getElementById('pcStockPickedCount');
+            if (!listEl) return;
+            const filtered = getFilteredPcStockWithPat();
+            if (cntEl) cntEl.innerText = `${_pcStockPickedUsers.size} dipilih (${filtered.length} akun stok memiliki PAT)`;
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<div style="text-align:center;font-size:0.62rem;color:var(--text-muted);padding:10px;">Belum ada akun stok dengan PAT terdeteksi. Sync Sheet1 dulu atau pilih tokens.txt.</div>`;
+                return;
+            }
+            listEl.innerHTML = filtered.slice(0, 80).map(acc => {
+                const u = String(acc.username || '');
+                const uLow = u.toLowerCase();
+                const picked = _pcStockPickedUsers.has(uLow);
+                const yr = acc._cat_key || acc.year || '-';
+                return `
+                    <div onclick="togglePcStockPick('${uLow}')" style="background:var(--bg-input);border:1px solid ${picked ? 'var(--success)' : 'var(--border-subtle)'};border-left:3px solid ${picked ? 'var(--success)' : '#38bdf8'};border-radius:8px;padding:5px 8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:'JetBrains Mono',monospace;">
+                        <span style="font-size:0.67rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${picked ? '✅' : '⬜'} @${u} <span style="color:var(--accent-cyan);font-size:0.58rem;">(${yr})</span></span>
+                        <span style="font-size:0.57rem;color:var(--success);flex-shrink:0;">PAT OK</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchPcStudioFeature(feat) {
+            _pcStudioFeature = feat;
+            ['omni', 'repo', 'profile', 'badges', 'boost', 'audit'].forEach(k => {
+                document.getElementById(`pcFeatBtn_${k}`)?.classList.toggle('active', k === feat);
+            });
+            const box = document.getElementById('pcFeatureParamsBox');
+            if (!box) return;
+
+            if (feat === 'omni' || feat === 'repo') {
+                box.innerHTML = `
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">NICHE REPO</div>
+                            <select id="pcParamNiche" class="form-input" style="padding:6px 8px;font-size:0.7rem;">
+                                <option value="7" selected>🔮 7. Auto-Random per Akun</option>
+                                <option value="1">🪙 1. Crypto / Web3 / DeFi</option>
+                                <option value="2">🧠 2. AI &amp; Machine Learning</option>
+                                <option value="3">⚙️ 3. DevOps &amp; Automation</option>
+                                <option value="4">🛡️ 4. Cyber Security</option>
+                                <option value="5">☁️ 5. Cloud &amp; Microservices</option>
+                                <option value="6">🎲 6. Mix All Categories</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">MODE REPO LAMA</div>
+                            <select id="pcParamRepoMode" class="form-input" style="padding:6px 8px;font-size:0.7rem;">
+                                <option value="1" selected>♻️ 1. Renovasi Dulu + Buat Baru</option>
+                                <option value="2">♻️ 2. HANYA Renovasi Lama</option>
+                                <option value="3">🆕 3. Buat Repo Baru Semua</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">JUMLAH REPO (0 = Auto 2-4)</div>
+                            <input type="number" id="pcParamNumRepos" class="form-input" value="0" min="0" max="30" style="padding:6px 8px;font-size:0.72rem;font-family:'JetBrains Mono',monospace;">
+                        </div>
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">COMMITS/REPO (0 = Auto 20-35)</div>
+                            <input type="number" id="pcParamCommits" class="form-input" value="0" min="0" max="300" style="padding:6px 8px;font-size:0.72rem;font-family:'JetBrains Mono',monospace;">
+                        </div>
+                    </div>
+                    ${feat === 'omni' ? `
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">JADWAL WORKFLOW / CRONJOB (PHASE 3)</div>
+                            <select id="pcParamCron" class="form-input" style="padding:6px 8px;font-size:0.7rem;">
+                                <option value="5" selected>🌿 5. Organic Selang-Seling (2-3 hari) [SAFE]</option>
+                                <option value="4">⏰ 4. Every 12 Hours</option>
+                                <option value="3">⏰ 3. Every 6 Hours</option>
+                                <option value="2">⚡ 2. Every 3 Hours</option>
+                                <option value="1">🔥 1. Every 1 Hour (Agresif)</option>
+                                <option value="6">🔥 6. ALL-IN 5 Repos</option>
+                                <option value="0">⏭️ 0. Skip Workflow (Hanya Repo + Profile)</option>
+                            </select>
+                        </div>
+                    ` : ''}
+                `;
+            } else if (feat === 'profile') {
+                box.innerHTML = `<div style="background:var(--bg-input);border:1px dashed var(--success);border-radius:8px;padding:8px;font-size:0.65rem;color:var(--success);text-align:center;font-weight:700;">✨ Zero-Prompt Pro Profile Hunter: Auto-deteksi niche repo, pilih desain profil skor tertinggi, sinkron username PAT!</div>`;
+            } else if (feat === 'audit') {
+                box.innerHTML = `
+                    <label style="display:flex;align-items:center;gap:8px;font-size:0.7rem;font-weight:700;cursor:pointer;background:var(--bg-input);padding:8px 10px;border-radius:8px;border:1px solid var(--border-subtle);">
+                        <input type="checkbox" id="pcParamAudit404" checked style="width:15px;height:15px;accent-color:var(--accent-cyan);">
+                        <span>Cek juga profil publik GitHub (Deteksi 404 Shadowban + Export pat_*.txt)</span>
+                    </label>
+                `;
+            } else if (feat === 'boost') {
+                box.innerHTML = `
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">AKSI BOOST</div>
+                            <select id="pcParamBoostAct" class="form-input" style="padding:6px 8px;font-size:0.7rem;">
+                                <option value="star">⭐ Add Stars</option>
+                                <option value="follow">👥 Add Followers</option>
+                                <option value="fork">⎇ Fork Repos</option>
+                                <option value="watch">👁️ Add Watchers</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">SPEED MODE</div>
+                            <select id="pcParamBoostSpeed" class="form-input" style="padding:6px 8px;font-size:0.7rem;">
+                                <option value="2" selected>🌿 2. Natural Organic (9-15s)</option>
+                                <option value="1">⚡ 1. Fast Safe (4-9s)</option>
+                                <option value="3">🛡️ 3. Ultra Stealth (18-40s)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="text" id="pcParamBoostTargets" class="form-input" placeholder="Target: owner/repo atau @username (pisahkan koma jika >1)" style="padding:7px 9px;font-size:0.7rem;font-family:'JetBrains Mono',monospace;">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                        <input type="number" id="pcParamBoostLimit" class="form-input" value="0" min="0" placeholder="Limit (0=Semua)" style="padding:6px 8px;font-size:0.7rem;">
+                        <input type="number" id="pcParamBoostCap" class="form-input" value="0" min="0" placeholder="Daily Cap (0=Off)" style="padding:6px 8px;font-size:0.7rem;">
+                    </div>
+                `;
+            } else if (feat === 'badges') {
+                box.innerHTML = `
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">MODE BADGE</div>
+                            <select id="pcParamBadgeMode" class="form-input" style="padding:6px 8px;font-size:0.7rem;">
+                                <option value="ALL">🏅 ALL 5 Badges</option>
+                                <option value="PULL_SHARK">🦈 Pull Shark</option>
+                                <option value="YOLO">🎯 YOLO</option>
+                                <option value="PAIR_EXTRAORDINAIRE">🤝 Pair Extraordinaire</option>
+                                <option value="QUICKDRAW">⚡ Quickdraw</option>
+                                <option value="GALAXY_BRAIN">🧠 Galaxy Brain</option>
+                            </select>
+                        </div>
+                        <div>
+                            <div style="font-size:0.55rem;color:var(--text-muted);font-weight:800;margin-bottom:2px;">STRATEGI REPO</div>
+                            <select id="pcParamBadgeRepo" class="form-input" style="padding:6px 8px;font-size:0.7rem;">
+                                <option value="1" selected>♻️ Pakai Repo Asli</option>
+                                <option value="0">🆕 Buat Repo Baru Natural</option>
+                            </select>
+                        </div>
+                    </div>
+                    <input type="text" id="pcParamBadgeHelper" class="form-input" placeholder="Helper PAT (Opsional — kosongkan untuk Auto-Rotasi jika >=2 token)" style="padding:6px 8px;font-size:0.68rem;font-family:'JetBrains Mono',monospace;">
+                `;
+            }
+        }
+
+        async function startPcGuiJob() {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) {
+                togglePcBridgeSettingsBox();
+                return showToast('⚠️ Isi PC Bridge URL dulu di tombol ⚙️ Bridge!');
+            }
+
+            let tokensPayload = [];
+            let rangeStart = 1, rangeEnd = 0;
+
+            if (_pcStudioTokSrc === 'tokens_txt') {
+                rangeStart = parseInt(document.getElementById('pcBatchStartInp')?.value || '1', 10) || 1;
+                rangeEnd = parseInt(document.getElementById('pcBatchEndInp')?.value || '0', 10) || 0;
+            } else if (_pcStudioTokSrc === 'stock') {
+                tokensPayload = (allLiveAccountsFlat || [])
+                    .filter(a => _pcStockPickedUsers.has(String(a.username || '').toLowerCase()) && a.pat && a.pat.length >= 20)
+                    .map(a => String(a.pat).trim());
+                if (tokensPayload.length === 0) return showToast('⚠️ Pilih minimal 1 akun ber-PAT dari Data Stok!');
+            } else {
+                const raw = (document.getElementById('pcPasteTokensInp')?.value || '').trim();
+                if (!raw) return showToast('⚠️ Paste minimal 1 PAT token!');
+                tokensPayload = [raw];
+            }
+
+            const params = {};
+            if (_pcStudioFeature === 'omni' || _pcStudioFeature === 'repo') {
+                params.niche = document.getElementById('pcParamNiche')?.value || '7';
+                params.repo_mode = document.getElementById('pcParamRepoMode')?.value || '1';
+                params.num_repos = parseInt(document.getElementById('pcParamNumRepos')?.value || '0', 10) || 0;
+                params.commits = parseInt(document.getElementById('pcParamCommits')?.value || '0', 10) || 0;
+                if (_pcStudioFeature === 'omni') params.cron = document.getElementById('pcParamCron')?.value || '5';
+            } else if (_pcStudioFeature === 'audit') {
+                params.check_web_404 = Boolean(document.getElementById('pcParamAudit404')?.checked);
+            } else if (_pcStudioFeature === 'boost') {
+                params.boost_action = document.getElementById('pcParamBoostAct')?.value || 'star';
+                params.speed_mode = document.getElementById('pcParamBoostSpeed')?.value || '2';
+                params.targets = (document.getElementById('pcParamBoostTargets')?.value || '').trim();
+                params.target_limit = parseInt(document.getElementById('pcParamBoostLimit')?.value || '0', 10) || 0;
+                params.daily_cap = parseInt(document.getElementById('pcParamBoostCap')?.value || '0', 10) || 0;
+                if (!params.targets) return showToast('⚠️ Isi Target Boost (owner/repo atau @username)!');
+            } else if (_pcStudioFeature === 'badges') {
+                params.badge_mode = document.getElementById('pcParamBadgeMode')?.value || 'ALL';
+                params.prefer_existing = (document.getElementById('pcParamBadgeRepo')?.value || '1') === '1';
+                params.helper_token = (document.getElementById('pcParamBadgeHelper')?.value || '').trim();
+            }
+
+            const btn = document.getElementById('btnStartPcGuiJob');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Mengirim ke PC...'; }
+
+            try {
+                const res = await fetch(`${url}/api/job/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Bridge-Key': key },
+                    body: JSON.stringify({
+                        feature: _pcStudioFeature,
+                        token_source: _pcStudioTokSrc,
+                        range_start: rangeStart,
+                        range_end: rangeEnd,
+                        tokens: tokensPayload,
+                        params: params
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) {
+                    showToast(`❌ ${data.detail || 'Gagal memulai job'}`);
+                } else {
+                    _pcLogCursor = 0;
+                    const con = document.getElementById('pcGuiLiveConsole');
+                    if (con) con.textContent = '';
+                    showToast(`🚀 Job ${_pcStudioFeature.toUpperCase()} (${data.token_count} token) berjalan di PC!`);
+                    startPcGuiLogPolling();
+                    pingPcBridgeStatus(false);
+                }
+            } catch (e) {
+                showToast(`❌ Tidak bisa menghubungi PC Bridge (${e.message})`);
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = '🚀 Jalankan di PC Lokal'; }
+            }
+        }
+
+        function startPcGuiLogPolling() {
+            if (_pcLogPollTimer) clearInterval(_pcLogPollTimer);
+            const pollFn = async () => {
+                const { url, key } = getPcBridgeCfg();
+                if (!url) return;
+                try {
+                    const res = await fetch(`${url}/api/job/logs?since=${_pcLogCursor}`, {
+                        headers: { 'X-Bridge-Key': key }
+                    });
+                    if (!res.ok) return;
+                    const data = await res.json();
+                    const con = document.getElementById('pcGuiLiveConsole');
+                    const stLbl = document.getElementById('pcGuiJobStateLbl');
+                    if (Array.isArray(data.lines) && data.lines.length > 0 && con) {
+                        con.textContent += (con.textContent ? '\n' : '') + data.lines.join('\n');
+                        con.scrollTop = con.scrollHeight;
+                        _pcLogCursor = data.total_lines;
+                    }
+                    if (stLbl) {
+                        stLbl.innerText = data.running ? `🟢 RUNNING (${String(data.feature || '').toUpperCase()})` : `✅ IDLE (Exit: ${data.exit_code ?? '-'})`;
+                        stLbl.style.color = data.running ? 'var(--success)' : 'var(--accent-cyan)';
+                    }
+                    if (!data.running) {
+                        clearInterval(_pcLogPollTimer);
+                        _pcLogPollTimer = null;
+                        pingPcBridgeStatus(false);
+                    }
+                } catch (e) {}
+            };
+            pollFn();
+            _pcLogPollTimer = setInterval(pollFn, 1300);
+        }
+
+        async function stopPcGuiJob() {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) return;
+            try {
+                await fetch(`${url}/api/job/stop`, { method: 'POST', headers: { 'X-Bridge-Key': key } });
+                showToast('🛑 Perintah Stop dikirim ke PC!');
+                setTimeout(() => pingPcBridgeStatus(false), 1200);
+            } catch (e) {
+                showToast('⚠️ Gagal mengirim Stop.');
+            }
+        }
+
+        function connectPcLiveTerminal() {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) {
+                togglePcBridgeSettingsBox();
+                return showToast('⚠️ Isi PC Bridge URL dulu di ⚙️ Bridge!');
+            }
+            if (!window.Terminal) {
+                return showToast('⚠️ xterm.js belum termuat. Refresh halaman.');
+            }
+            disconnectPcLiveTerminal();
+
+            const mount = document.getElementById('pcXtermMount');
+            if (!mount) return;
+            mount.innerHTML = '';
+
+            _pcTermInstance = new window.Terminal({
+                cursorBlink: true,
+                fontSize: 12,
+                fontFamily: "'JetBrains Mono', monospace",
+                theme: { background: '#060913', foreground: '#e2e8f0', cursor: '#38bdf8' }
+            });
+            if (window.FitAddon && window.FitAddon.FitAddon) {
+                _pcTermFitAddon = new window.FitAddon.FitAddon();
+                _pcTermInstance.loadAddon(_pcTermFitAddon);
+            }
+            _pcTermInstance.open(mount);
+            if (_pcTermFitAddon) {
+                try { _pcTermFitAddon.fit(); } catch (e) {}
+            }
+
+            const wsProtoUrl = url.replace(/^http:\/\//i, 'ws://').replace(/^https:\/\//i, 'wss://');
+            const cols = _pcTermInstance.cols || 95;
+            const rows = _pcTermInstance.rows || 26;
+            _pcTermInstance.writeln('\x1b[96m[*] Menghubungkan ke PC Terminal (auto.py)...\x1b[0m');
+
+            _pcTermSocket = new WebSocket(`${wsProtoUrl}/ws/terminal?key=${encodeURIComponent(key)}&cols=${cols}&rows=${rows}`);
+            _pcTermSocket.onopen = () => {
+                pingPcBridgeStatus(false);
+                _pcTermInstance.focus();
+            };
+            _pcTermSocket.onmessage = (ev) => {
+                if (_pcTermInstance) _pcTermInstance.write(ev.data);
+            };
+            _pcTermSocket.onclose = () => {
+                if (_pcTermInstance) _pcTermInstance.writeln('\r\n\x1b[93m[Koneksi Terminal Terputus]\x1b[0m');
+                pingPcBridgeStatus(false);
+            };
+            _pcTermSocket.onerror = () => {
+                if (_pcTermInstance) _pcTermInstance.writeln('\r\n\x1b[91m[Gagal koneksi WebSocket ke PC Bridge]\x1b[0m');
+            };
+
+            _pcTermInstance.onData((data) => {
+                if (_pcTermSocket && _pcTermSocket.readyState === WebSocket.OPEN) {
+                    _pcTermSocket.send(data);
+                }
+            });
+
+            _pcTermResizeHandler = () => {
+                if (_pcTermFitAddon && _pcTermInstance) {
+                    try {
+                        _pcTermFitAddon.fit();
+                        if (_pcTermSocket && _pcTermSocket.readyState === WebSocket.OPEN) {
+                            _pcTermSocket.send(JSON.stringify({ __resize: true, cols: _pcTermInstance.cols, rows: _pcTermInstance.rows }));
+                        }
+                    } catch (e) {}
+                }
+            };
+            window.addEventListener('resize', _pcTermResizeHandler);
+        }
+
+        function sendCtrlCToPcTerminal() {
+            if (_pcTermSocket && _pcTermSocket.readyState === WebSocket.OPEN) {
+                _pcTermSocket.send('\x03');
+                showToast('⚡ CTRL+C dikirim ke terminal!');
+            }
+        }
+
+        async function pasteClipboardToPcTerminal() {
+            try {
+                const txt = await navigator.clipboard.readText();
+                if (txt && _pcTermSocket && _pcTermSocket.readyState === WebSocket.OPEN) {
+                    _pcTermSocket.send(txt);
+                    showToast('📋 Clipboard ditempel ke terminal!');
+                }
+            } catch (e) {
+                showToast('⚠️ Izinkan akses clipboard atau paste langsung di terminal.');
+            }
+        }
+
+        function disconnectPcLiveTerminal() {
+            if (_pcTermResizeHandler) {
+                window.removeEventListener('resize', _pcTermResizeHandler);
+                _pcTermResizeHandler = null;
+            }
+            if (_pcTermSocket) {
+                try { _pcTermSocket.close(); } catch (e) {}
+                _pcTermSocket = null;
+            }
+            if (_pcTermInstance) {
+                try { _pcTermInstance.dispose(); } catch (e) {}
+                _pcTermInstance = null;
+                _pcTermFitAddon = null;
+            }
+        }
+
+// =========================================================================
+// 🌱 ADMIN EXECUTIVE GITHUB ACCOUNT CREATOR & PROFILE STUDIO (100% ENGLISH)
+// =========================================================================
         let _crtPollTimer = null;
         let _crtActiveTab = 'create'; // 'create' | 'customize' | 'telemetry'
         let _crtCredMode = 'auto';    // 'auto' | 'custom'
