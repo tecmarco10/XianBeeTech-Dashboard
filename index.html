@@ -10,7 +10,7 @@
 
         /* =========================================================
            🎨 DUAL THEME ENGINE (OBSIDIAN DARK & PLATINUM LIGHT)
-           ========================================================= */ 
+           ========================================================= */
         :root,
         [data-theme="obsidian"] {
             --bg-base: #060913;
@@ -10030,9 +10030,19 @@ let _ghAgeCheckerResults = [];
         let _patSelectedManualSet = new Set();
         let _patCustomAccountsMap = new Map(); // username.toLowerCase() -> { username, password, twofa }
         let _patLogLines = [];
-        let _patSelectedScope = 'safe_5';
-        let _patSelectedExpiry = '90';
-        let _patSelectedDelay = '180,360';
+        function selectPatCooldownMode(val) {
+            _patSelectedDelay = val;
+            const idMap = { '60,180': 'fast', '180,360': 'safe', '600,1200': 'stealth' };
+            Object.entries(idMap).forEach(([k, suffix]) => {
+                const el = document.getElementById(`patDelayBtn_${suffix}`);
+                if (!el) return;
+                const active = (k === val);
+                el.style.background = active ? 'var(--grad-primary)' : 'var(--bg-surface)';
+                el.style.borderColor = active ? '#38bdf8' : 'rgba(148,163,184,0.32)';
+                el.style.color = active ? '#ffffff' : 'var(--text-secondary)';
+                el.style.boxShadow = active ? '0 2px 8px rgba(99,102,241,0.35)' : 'none';
+            });
+        }
 
         function switchPatPickerSource(mode) {
             _patPickerSourceTab = mode;
@@ -10215,6 +10225,25 @@ let _ghAgeCheckerResults = [];
                 el.style.color = active ? '#ffffff' : 'var(--text-secondary)';
                 el.style.boxShadow = active ? '0 2px 8px rgba(99,102,241,0.35)' : 'none';
             });
+        }
+
+        function selectPatRunnerTarget(val) {
+            _patSelectedRunner = (val === 'vps') ? 'vps' : 'pc';
+            ['pc', 'vps'].forEach(k => {
+                const el = document.getElementById(`patRunnerBtn_${k}`);
+                if (!el) return;
+                const active = (k === _patSelectedRunner);
+                el.style.background = active ? 'var(--grad-primary)' : 'var(--bg-surface)';
+                el.style.borderColor = active ? '#38bdf8' : 'rgba(148,163,184,0.32)';
+                el.style.color = active ? '#ffffff' : 'var(--text-secondary)';
+                el.style.boxShadow = active ? '0 2px 8px rgba(99,102,241,0.35)' : 'none';
+            });
+            const btn = document.getElementById('btnStartPatGen');
+            if (btn && !btn.disabled) {
+                btn.innerText = _patSelectedRunner === 'pc'
+                    ? '🚀 Generate PAT via Local PC (CMD)'
+                    : '🚀 Generate PAT via Cloud VPS';
+            }
         }
 
         function savePatStudioLocalCache(batchObj) {
@@ -11148,7 +11177,7 @@ let _ghAgeCheckerResults = [];
                     </div>
 
                     <!-- MANUAL ACCOUNT PICKER & CUSTOM CREDENTIALS PANEL -->
-                    <div style="background:var(--bg-input);border:1.5px solid rgba(245,158,11,0.5);border-radius:11px;padding:7px 8px;flex:1;min-height:175px;display:flex;flex-direction:column;">
+                    <div style="background:var(--bg-input);border:1.5px solid rgba(245,158,11,0.5);border-radius:11px;padding:7px 8px;flex:1;min-height:115px;display:flex;flex-direction:column;">
                         <div class="pat-double-line-hdr" style="padding:3px 6px;margin-bottom:5px;flex-shrink:0;border-top-color:var(--warning);border-bottom-color:var(--warning);">
                             <span style="font-size:0.57rem;font-weight:800;color:var(--warning);letter-spacing:0.5px;">
                                 ⚡ ACCOUNT SOURCE (<span id="patManualAvailBadge">${stats.missingCount} AVAILABLE</span>)
@@ -11240,9 +11269,24 @@ let _ghAgeCheckerResults = [];
                         </div>
                     </div>
 
+                    <!-- 4. EXECUTION ENGINE (LOCAL PC CMD VS CLOUD VPS) -->
+                    <div style="background:var(--bg-input);border:1px solid rgba(168,85,247,0.45);border-radius:10px;padding:5px 7px;flex-shrink:0;">
+                        <label class="pat-label-double-line" style="color:#c084fc;">🖥️ EXECUTION ENGINE</label>
+                        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px;">
+                            <button type="button" id="patRunnerBtn_pc" onclick="selectPatRunnerTarget('pc')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5px 3px;border-radius:8px;border:1px solid #38bdf8;background:var(--grad-primary);color:#ffffff;box-shadow:0 2px 8px rgba(99,102,241,0.35);font-family:'JetBrains Mono',monospace;font-size:0.61rem;font-weight:800;cursor:pointer;line-height:1.2;">
+                                <span>🖥️ Local PC (CMD)</span>
+                                <span style="font-size:0.5rem;opacity:0.9;">Safe Home IP</span>
+                            </button>
+                            <button type="button" id="patRunnerBtn_vps" onclick="selectPatRunnerTarget('vps')" style="display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:5px 3px;border-radius:8px;border:1px solid rgba(148,163,184,0.32);background:var(--bg-surface);color:var(--text-secondary);font-family:'JetBrains Mono',monospace;font-size:0.61rem;font-weight:800;cursor:pointer;line-height:1.2;">
+                                <span>☁️ Cloud VPS</span>
+                                <span style="font-size:0.5rem;opacity:0.85;">24/7 Auto Bot</span>
+                            </button>
+                        </div>
+                    </div>
+
                     <!-- TOMBOL GENERATE RINGKAS (FLEX: NONE AGAR TIDAK MELAR) -->
                     <button type="button" class="btn-ui primary" id="btnStartPatGen" style="flex:none;width:100%;height:38px;padding:8px 12px;font-size:0.74rem;border-radius:10px;" onclick="startAdminPatGeneration()">
-                        🚀 Generate PAT Token Now
+                        🚀 Generate PAT via Local PC (CMD)
                     </button>
                 </div>
 
@@ -11328,6 +11372,7 @@ let _ghAgeCheckerResults = [];
             selectPatScopePreset(_patSelectedScope);
             selectPatExpiryDays(_patSelectedExpiry);
             selectPatCooldownMode(_patSelectedDelay);
+            selectPatRunnerTarget(_patSelectedRunner);
 
             // Hanya pulihkan state lokal jika batch benar-benar masih RUNNING; jika sudah STOPPED/COMPLETED, mulai bersih!
             const cached = loadPatStudioLocalCache();
@@ -11374,10 +11419,12 @@ let _ghAgeCheckerResults = [];
                 btn.innerText = '⏳ Enqueueing Stealth Batch...';
             }
 
+            const runnerTarget = _patSelectedRunner || 'pc';
+            const runnerBadge = runnerTarget === 'pc' ? 'LOCAL PC (CMD)' : 'CLOUD VPS';
             _patLogLines = [{
                 time: new Date().toLocaleTimeString('en-GB', { hour12: false }),
                 tag: '[QUEUE]',
-                msg: `[0/4] Enqueued ${totalTargetCount} account(s) (${customAccountsArr.length} Custom, ${sheetOnlyUsernames.length} Sheet1) • Preset: [${scopePreset}]`,
+                msg: `[0/4] Enqueued ${totalTargetCount} account(s) via [${runnerBadge}] • Preset: [${scopePreset}]`,
                 isDone: false,
                 isErr: false
             }];
@@ -11398,6 +11445,7 @@ let _ghAgeCheckerResults = [];
                         action: 'admin_pat_job',
                         sub_action: 'enqueue',
                         secret: XB_PAT_SECRET,
+                        runner_target: runnerTarget,
                         usernames: sheetOnlyUsernames.join('\n'),
                         custom_accounts: customAccountsArr,
                         note: 'XianBee-Core',
