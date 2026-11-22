@@ -10,7 +10,7 @@
 
         /* =========================================================
            🎨 DUAL THEME ENGINE (OBSIDIAN DARK & PLATINUM LIGHT)
-           ========================================================= */ 
+           ========================================================= */
         :root,
         [data-theme="obsidian"] {
             --bg-base: #060913;
@@ -1819,6 +1819,65 @@
 
         .adm-toggle-pill.on .adm-toggle-knob {
             transform: translateX(21px);
+        }
+
+        /* FULL-PAGE 100DVH STUDIO FRAME & STANDALONE TITLE BAR */
+        #paymentGatewayModal.xb-fullpage-modal {
+            padding: 5px;
+        }
+        #paymentGatewayModal.xb-fullpage-modal > #paymentGatewayBody {
+            width: 100%;
+            max-width: 540px;
+            height: calc(100dvh - 10px);
+            max-height: calc(100dvh - 10px);
+            padding: 10px 11px;
+            border-radius: 16px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .xb-studio-title-bar {
+            position: relative;
+            flex-shrink: 0;
+            border-top: 3px double #38bdf8;
+            border-bottom: 3px double #a855f7;
+            background: linear-gradient(90deg, rgba(56,189,248,0.08) 0%, rgba(168,85,247,0.12) 50%, rgba(56,189,248,0.08) 100%);
+            padding: 7px 36px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        .xb-studio-title-bar h3 {
+            margin: 0;
+            font-size: 0.94rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            background: var(--grad-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .xb-studio-sub-bar {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            background: var(--bg-input);
+            border: 1px solid rgba(56,189,248,0.35);
+            border-radius: 9px;
+            padding: 5px 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.54rem;
+            font-weight: 800;
+            color: #38bdf8;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
     <!-- Chart.js for Slick 3D/Gradient Interactive Graphs -->
@@ -6700,22 +6759,18 @@ let _ghAgeCheckerResults = [];
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             if (!modal || !body) return;
-            modal.classList.add('active');
+            modal.classList.add('xb-fullpage-modal', 'active');
 
             body.innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:7px;height:calc(100dvh - 44px);max-height:88vh;overflow:hidden;">
-                    <!-- HEADER -->
-                    <div style="flex-shrink:0;background:var(--bg-input);border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;border-left:1px solid var(--border-focus);border-right:1px solid var(--border-focus);border-radius:12px;padding:6px 10px;display:flex;align-items:center;justify-content:space-between;gap:6px;">
-                        <div style="width:24px;"></div>
-                        <div style="text-align:center;flex:1;min-width:0;">
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.6px;text-transform:uppercase;">
-                                ULTRA-SAFE 50/BATCH PACING • ZERO SUSPEND SHIELD
-                            </div>
-                            <h3 style="margin:1px 0 0 0;font-size:0.86rem;font-weight:800;background:linear-gradient(90deg,#38bdf8 0%,#818cf8 50%,#c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">
-                                🔑 GitHub PAT & Creation Date Studio
-                            </h3>
-                        </div>
-                        <button type="button" class="top-pill" style="padding:4px 8px;font-size:0.7rem;" onclick="_ghPatAbortFlag=true;_ghAgeAbortFlag=true;closeModal('paymentGatewayModal')">✕</button>
+                <div style="display:flex;flex-direction:column;gap:7px;height:100%;flex:1;min-height:0;overflow:hidden;">
+                    <!-- STANDALONE CENTERED TITLE -->
+                    <div class="xb-studio-title-bar">
+                        <h3>🔑 GitHub PAT &amp; Age Auditor</h3>
+                        <button type="button" class="top-pill" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:4px 8px;font-size:0.68rem;" onclick="_ghPatAbortFlag=true;_ghAgeAbortFlag=true;closeModal('paymentGatewayModal')">✕</button>
+                    </div>
+                    <!-- SUBTITLE BAR BELOW LINES -->
+                    <div class="xb-studio-sub-bar">
+                        ULTRA-SAFE 40/BATCH PACING • ZERO SUSPEND SHIELD
                     </div>
 
                     <!-- 2 NAVIGATION TABS -->
@@ -8259,9 +8314,9 @@ let _ghAgeCheckerResults = [];
                 </button>
             `).join('');
 
-            modal.classList.add('pc-wide-modal');
+            modal.classList.add('xb-fullpage-modal');
             body.innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:7px;height:calc(95dvh - 26px);max-height:91dvh;overflow:hidden;">
+                <div style="display:flex;flex-direction:column;gap:7px;height:100%;flex:1;min-height:0;overflow:hidden;">
                     <!-- ROW 1: PROFESSIONAL CENTERED TITLE WITH TOP & BOTTOM DOUBLE LINES -->
                     <div class="pc-top-title-bar" style="flex-shrink:0;">
                         <h3 style="margin:0;font-size:0.94rem;font-weight:800;letter-spacing:0.3px;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
@@ -9309,22 +9364,18 @@ let _ghAgeCheckerResults = [];
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             if (!modal || !body) return;
-            modal.classList.add('active');
+            modal.classList.add('xb-fullpage-modal', 'active');
 
             body.innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:10px;max-height:84vh;overflow:hidden;">
-                    <!-- TOP DOUBLE-LINE CENTERED HEADER (MATCHING PAT STUDIO) -->
-                    <div style="background:#0f1629;border-top:2.5px solid #38bdf8;border-bottom:2.5px solid #a855f7;border-left:1px solid rgba(56,189,248,0.4);border-right:1px solid rgba(168,85,247,0.4);border-radius:14px;padding:9px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-shrink:0;">
-                        <div style="width:28px;"></div>
-                        <div style="text-align:center;min-width:0;flex:1;">
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#38bdf8;letter-spacing:0.8px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                STEALTH AUTOMATION • 3-SHOT TELEGRAM PROOF
-                            </div>
-                            <h3 style="margin:2px 0 0 0;font-size:0.94rem;font-weight:800;background:linear-gradient(90deg,#38bdf8 0%,#818cf8 50%,#c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                🌱 GitHub Account Creator Studio
-                            </h3>
-                        </div>
-                        <button type="button" class="top-pill" style="padding:5px 9px;font-size:0.74rem;flex-shrink:0;" onclick="closeAdminAccountCreatorStudio()">✕</button>
+                <div style="display:flex;flex-direction:column;gap:8px;height:100%;flex:1;min-height:0;overflow:hidden;">
+                    <!-- STANDALONE CENTERED TITLE -->
+                    <div class="xb-studio-title-bar">
+                        <h3>🌱 GitHub Account Creator</h3>
+                        <button type="button" class="top-pill" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:4px 8px;font-size:0.68rem;" onclick="closeAdminAccountCreatorStudio()">✕</button>
+                    </div>
+                    <!-- SUBTITLE BAR BELOW LINES -->
+                    <div class="xb-studio-sub-bar">
+                        STEALTH AUTOMATION • 3-SHOT TELEGRAM PROOF
                     </div>
 
                     <!-- 3-TAB SYMMETRICAL NAVIGATION BAR -->
@@ -11046,15 +11097,14 @@ let _ghAgeCheckerResults = [];
                     }
                 </style>
 
-                <!-- TOP STUDIO HEADER: RATA TENGAH GARIS DUA ATAS-BAWAH -->
-                <div class="pat-double-line-hdr" style="position:relative;margin-bottom:7px;flex-shrink:0;">
-                    <div style="font-size:0.52rem;font-weight:800;color:#38bdf8;letter-spacing:0.9px;text-transform:uppercase;">
-                        STEALTH AUTOMATION • 4-SHOT TELEGRAM PROOF
-                    </div>
-                    <h3 style="margin:2px 0 0 0;font-size:0.92rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;">
-                        🔑 GitHub PAT Token Studio
-                    </h3>
-                    <button type="button" class="top-pill" style="position:absolute;right:7px;top:50%;transform:translateY(-50%);padding:4px 8px;font-size:0.68rem;" onclick="closeAdminPatStudioV2()">✕</button>
+                <!-- STANDALONE CENTERED TITLE -->
+                <div class="xb-studio-title-bar" style="margin-bottom:5px;">
+                    <h3>🔑 GitHub PAT Token Studio</h3>
+                    <button type="button" class="top-pill" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:4px 8px;font-size:0.68rem;" onclick="closeAdminPatStudioV2()">✕</button>
+                </div>
+                <!-- SUBTITLE BAR BELOW LINES -->
+                <div class="xb-studio-sub-bar" style="margin-bottom:6px;">
+                    STEALTH AUTOMATION • 4-SHOT TELEGRAM PROOF
                 </div>
 
                 <!-- 2 VIEW TABS -->
@@ -13393,7 +13443,7 @@ let _ghAgeCheckerResults = [];
 
         function closeModal(id) {
             const el = document.getElementById(id);
-            if (el) el.classList.remove('active', 'pc-wide-modal');
+            if (el) el.classList.remove('active', 'pc-wide-modal', 'xb-fullpage-modal');
             if (id === 'paymentGatewayModal') {
                 const body = document.getElementById('paymentGatewayBody');
                 if (body) body.removeAttribute('style');
