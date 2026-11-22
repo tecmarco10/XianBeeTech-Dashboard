@@ -1924,6 +1924,78 @@
             color: #b91c1c;
         }
 
+        /* ASSET EXCHANGE THEME (OBSIDIAN • BLUE • PURPLE + WHITE HAIRLINE) */
+        :root, [data-theme="obsidian"] {
+            --bg-base: #05070e;
+            --bg-surface: #0a0f1f;
+            --bg-elevated: rgba(7, 10, 22, 0.94);
+            --bg-card: #0c1226;
+            --bg-card-hover: #121c3a;
+            --bg-input: #070b17;
+            --border-subtle: rgba(255, 255, 255, 0.13);
+            --border-focus: rgba(96, 165, 250, 0.55);
+            --ex-card-bg: linear-gradient(155deg, #070a14 0%, #0d1a3d 56%, #1f1142 100%);
+            --ex-shell-bg: linear-gradient(145deg, rgba(6, 9, 20, 0.96) 0%, rgba(12, 23, 56, 0.95) 55%, rgba(28, 16, 62, 0.95) 100%);
+            --ex-hairline: rgba(255, 255, 255, 0.16);
+            --ex-sheen: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.65), rgba(255, 255, 255, 0.8), rgba(168, 85, 247, 0.7), transparent);
+        }
+        [data-theme="platinum"] {
+            --bg-base: #f1f5f9;
+            --bg-surface: #ffffff;
+            --bg-elevated: rgba(255, 255, 255, 0.94);
+            --bg-card: #ffffff;
+            --bg-card-hover: #f8fafc;
+            --bg-input: #f8fafc;
+            --border-subtle: rgba(79, 70, 229, 0.18);
+            --border-focus: rgba(37, 99, 235, 0.55);
+            --ex-card-bg: linear-gradient(155deg, #ffffff 0%, #eff6ff 55%, #f5f3ff 100%);
+            --ex-shell-bg: linear-gradient(145deg, rgba(255, 255, 255, 0.96) 0%, rgba(239, 246, 255, 0.96) 55%, rgba(245, 243, 255, 0.96) 100%);
+            --ex-hairline: rgba(79, 70, 229, 0.2);
+            --ex-sheen: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.45), rgba(124, 58, 237, 0.5), transparent);
+        }
+        .main-area { padding-top: 108px !important; }
+        .xb-ex-topbar-shell { position: relative; width: 100%; background: var(--ex-shell-bg); border: 1px solid var(--ex-hairline); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.22); }
+        .xb-ex-topbar-shell::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: var(--ex-sheen); pointer-events: none; z-index: 2; }
+        .xb-ex-row1 { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 7px 10px; border-bottom: 1px solid var(--ex-hairline); }
+        .xb-ex-row2 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; padding: 6px 8px; background: rgba(3, 5, 12, 0.35); }
+        [data-theme="platinum"] .xb-ex-row2 { background: rgba(226, 232, 240, 0.48); }
+        .xb-ex-pill-btn { width: 100%; min-width: 0; height: 30px; padding: 0 5px; border-radius: 9px; border: 1px solid var(--ex-hairline); background: rgba(255, 255, 255, 0.05); color: var(--text-primary); font-family: inherit; font-size: 0.65rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; gap: 4px; cursor: pointer; white-space: nowrap; transition: 0.16s ease; }
+        .xb-ex-pill-btn:hover { border-color: rgba(255, 255, 255, 0.38); background: rgba(56, 189, 248, 0.14); }
+        .xb-ex-pill-btn.cart { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border-color: rgba(255, 255, 255, 0.32); color: #ffffff; box-shadow: 0 3px 12px rgba(79, 70, 229, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.25); }
+        .xb-ex-pill-btn.bal { background: rgba(16, 185, 129, 0.12); border-color: rgba(52, 211, 153, 0.45); color: var(--success); font-family: 'JetBrains Mono', monospace; font-size: 0.63rem; }
+        .xb-ex-pill-btn.vip { background: rgba(245, 158, 11, 0.12); border-color: rgba(251, 191, 36, 0.45); color: var(--cockpit-vip-color); }
+        [data-theme="platinum"] .xb-ex-pill-btn { background: #ffffff; border-color: rgba(79, 70, 229, 0.2); }
+        [data-theme="platinum"] .xb-ex-pill-btn.cart { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: #ffffff; }
+        .xb-ex-dock { position: relative; width: 100%; height: 100%; background: var(--ex-shell-bg); border: 1px solid var(--ex-hairline); border-radius: 18px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.22); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; padding: 0 4px; overflow: hidden; }
+        .xb-ex-dock::before { content: ''; position: absolute; top: 0; left: 12%; right: 12%; height: 1px; background: var(--ex-sheen); pointer-events: none; }
+        .xb-ex-dock .bnav-btn { color: var(--text-muted); padding: 5px 2px; border-radius: 12px; transition: 0.18s ease; }
+        .xb-ex-dock .bnav-btn.active { color: #ffffff; background: linear-gradient(135deg, rgba(29, 78, 216, 0.42) 0%, rgba(124, 58, 237, 0.42) 100%); box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3); text-shadow: none; }
+        [data-theme="platinum"] .xb-ex-dock .bnav-btn.active { color: #ffffff; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); }
+        .subtab-pill { background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-left: 1px solid var(--ex-hairline); border-bottom: 1px solid var(--ex-hairline); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14); }
+        .subtab-pill.active { background-image: linear-gradient(135deg, #0d1838 0%, #1d4ed8 52%, #7c3aed 100%) !important; border-color: rgba(255, 255, 255, 0.38) !important; border-left: 1px solid rgba(255, 255, 255, 0.38) !important; border-bottom: 1px solid rgba(255, 255, 255, 0.22) !important; box-shadow: 0 6px 16px rgba(79, 70, 229, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.36) !important; }
+        .item-card { position: relative; background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-left: 1px solid var(--ex-hairline); box-shadow: 0 8px 22px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.16); }
+        .item-card::before { content: ''; position: absolute; top: 0; left: 12%; right: 12%; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent); pointer-events: none; }
+        .item-card:hover { border-color: rgba(255, 255, 255, 0.34); border-left: 1px solid rgba(255, 255, 255, 0.34); box-shadow: 0 12px 26px rgba(37, 99, 235, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.32); }
+        [data-theme="platinum"] .item-card { box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff; }
+        .xb-ex-ticker { width: 100%; overflow: hidden; white-space: nowrap; background: linear-gradient(90deg, #060914 0%, #0b1636 50%, #170e33 100%); border: 1px solid var(--ex-hairline); border-radius: 10px; padding: 5px 0; margin-bottom: 10px; mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 5%, #000 95%, transparent); }
+        [data-theme="platinum"] .xb-ex-ticker { background: linear-gradient(90deg, #ffffff 0%, #eff6ff 50%, #f5f3ff 100%); }
+        .xb-ex-ticker-track { display: inline-flex; align-items: center; gap: 18px; font-family: 'JetBrains Mono', monospace; font-size: 0.61rem; font-weight: 800; color: var(--text-secondary); animation: authTickerSlide 24s linear infinite; }
+        .xb-ex-hero { position: relative; background: linear-gradient(145deg, #060914 0%, #0d1c45 52%, #23114a 100%); border: 1px solid var(--ex-hairline); border-radius: 16px; padding: 13px; margin-bottom: 14px; overflow: hidden; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.24); }
+        .xb-ex-hero::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: var(--ex-sheen); pointer-events: none; }
+        [data-theme="platinum"] .xb-ex-hero { background: linear-gradient(145deg, #ffffff 0%, #eff6ff 55%, #f3e8ff 100%); box-shadow: 0 8px 22px rgba(15, 23, 42, 0.08), inset 0 1px 0 #ffffff; }
+        .xb-ex-hero-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 10px 0; }
+        .xb-ex-hero-stat { background: rgba(4, 7, 16, 0.55); border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 10px; padding: 6px 4px; text-align: center; }
+        [data-theme="platinum"] .xb-ex-hero-stat { background: rgba(255, 255, 255, 0.85); border-color: rgba(79, 70, 229, 0.16); }
+        .xb-ex-art { position: relative; width: 100%; height: 68px; border-radius: 11px; background: radial-gradient(circle at 85% 20%, rgba(168, 85, 247, 0.34), transparent 55%), radial-gradient(circle at 15% 85%, rgba(56, 189, 248, 0.28), transparent 55%), linear-gradient(140deg, #060914 0%, #0d1c44 55%, #1d103d 100%); border: 1px solid rgba(255, 255, 255, 0.14); padding: 7px 8px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
+        .xb-ex-art::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 14px 14px; pointer-events: none; }
+        [data-theme="platinum"] .xb-ex-art { background: radial-gradient(circle at 85% 20%, rgba(124, 58, 237, 0.15), transparent 55%), radial-gradient(circle at 15% 85%, rgba(37, 99, 235, 0.14), transparent 55%), linear-gradient(140deg, #f8fafc 0%, #e0e7ff 55%, #ede9fe 100%); border-color: rgba(79, 70, 229, 0.18); }
+        .xb-ex-watermark { position: absolute; right: 6px; bottom: -4px; font-family: 'JetBrains Mono', monospace; font-size: 1.75rem; font-weight: 800; color: rgba(255, 255, 255, 0.09); letter-spacing: -1px; pointer-events: none; line-height: 1; }
+        [data-theme="platinum"] .xb-ex-watermark { color: rgba(79, 70, 229, 0.1); }
+        .xb-ex-chip { font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; font-weight: 800; padding: 2px 6px; border-radius: 99px; background: rgba(5, 8, 18, 0.72); border: 1px solid rgba(255, 255, 255, 0.2); white-space: nowrap; position: relative; z-index: 1; }
+        [data-theme="platinum"] .xb-ex-chip { background: rgba(255, 255, 255, 0.92); border-color: rgba(79, 70, 229, 0.25); }
+        .xb-ex-stat-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+        .xb-ex-stat-cell { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 8px; padding: 4px 3px; text-align: center; font-family: 'JetBrains Mono', monospace; }
+
         /* FULL-PAGE 100DVH STUDIO FRAME & STANDALONE TITLE BAR */
         #paymentGatewayModal.xb-fullpage-modal {
             padding: 5px;
@@ -2528,68 +2600,65 @@
 
         <!-- 📱 MAIN WORKSPACE -->
         <div class="main-area" style="padding-top:128px;">
-            <header class="topbar" style="background:var(--bg-base);padding:6px 10px;border-bottom:none;">
-                <!-- 1 KOTAK 3D UTUH 4 SISI (OTOMATIS ADAPTIF MODE TERANG & GELAP) -->
-                <div style="width:100%;background:var(--cockpit-bg);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #a855f7;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:18px;box-shadow:0 5px 0 var(--cockpit-ledge), 0 10px 24px var(--cockpit-shadow), inset 0 2px 0 rgba(255,255,255,0.28), inset 0 -3px 0 rgba(168,85,247,0.35);overflow:hidden;display:flex;flex-direction:column;transition:background 0.25s ease, box-shadow 0.25s ease;">
-                    
-                    <!-- BARIS 1: LOGO + NAMA TOKO (KIRI) + SIMBOL 📊 (TENGAH) + USDT, TEMA & ADMIN (KANAN) -->
-                    <div class="topbar-box-brand" style="padding:7px 10px;gap:6px;background:transparent;border:none;box-shadow:none;display:flex;align-items:center;justify-content:space-between;">
+            <header class="topbar" style="background:transparent;padding:7px 10px 4px 10px;border-bottom:none;">
+                <div class="xb-ex-topbar-shell">
+                    <div class="xb-ex-row1">
                         <div style="display:flex;align-items:center;gap:8px;cursor:pointer;min-width:0;flex:1;" onclick="switchTab('home')">
-                            <div class="brand-orb" style="width:38px;height:38px;background:var(--cockpit-orb-bg);border:1.5px solid rgba(56,189,248,0.7);box-shadow:0 3px 10px rgba(56,189,248,0.3);padding:3px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
-                                <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;" onerror="this.style.display='none'">
+                            <div style="width:34px;height:34px;background:var(--cockpit-orb-bg);border:1px solid rgba(255,255,255,0.28);padding:2px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;box-shadow:0 4px 12px rgba(37,99,235,0.28);">
+                                <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:8px;" onerror="this.style.display='none'">
                             </div>
-                            <div style="min-width:0;flex:1;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;">
-                                <div style="font-weight:800;font-size:0.88rem;letter-spacing:-0.2px;line-height:1.15;background:linear-gradient(90deg, #0284c7 0%, #6366f1 48%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">XianBee-Tech</div>
-                                <div style="font-size:0.55rem;font-weight:700;color:var(--cockpit-subtext);letter-spacing:0.25px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%;">Enterprise Asset Vault</div>
+                            <div style="min-width:0;flex:1;display:flex;flex-direction:column;">
+                                <div style="display:flex;align-items:center;gap:4px;">
+                                    <span style="font-weight:800;font-size:0.86rem;letter-spacing:-0.25px;color:var(--text-primary);white-space:nowrap;">XianBee-Tech</span>
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                                </div>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:700;color:var(--text-muted);letter-spacing:0.3px;white-space:nowrap;">ASSET EXCHANGE • 2011–2026</span>
                             </div>
                         </div>
 
-                        <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
-                            <!-- TOMBOL SIMBOL ANALYTICS 3D GLOBAL PENJUALAN TOKO DI TENGAH NAMA TOKO & USDT -->
-                            <button class="top-pill" type="button" onclick="openStoreGlobal3DTelemetry()" title="Global Store Sales 3D Telemetry" style="background:linear-gradient(135deg, rgba(6,182,212,0.2) 0%, rgba(168,85,247,0.2) 100%);border:1px solid rgba(56,189,248,0.65);color:var(--accent-cyan);padding:6px 8px;font-size:0.74rem;font-weight:800;border-radius:9px;">
-                                <span>📊</span>
+                        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+                            <button class="top-pill" type="button" onclick="openStoreGlobal3DTelemetry()" title="Global Store Sales 3D Telemetry" style="padding:5px 7px;font-size:0.68rem;border-radius:8px;background:rgba(255,255,255,0.06);border-color:var(--ex-hairline);color:#38bdf8;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
                             </button>
 
-                            <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:6px 8px;font-size:0.68rem;gap:4px;background:var(--cockpit-pill-bg);border-color:rgba(56,189,248,0.45);color:var(--cockpit-text);">
+                            <button class="top-pill" type="button" onclick="toggleCurrency()" title="Switch USDT / IDR" style="padding:5px 7px;font-size:0.64rem;gap:4px;border-radius:8px;background:rgba(255,255,255,0.06);border-color:var(--ex-hairline);color:var(--text-primary);">
                                 <span id="currSwitchIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                    <svg width="13" height="13" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
+                                    <svg width="12" height="12" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
                                 </span>
                                 <span id="currSwitchText">USDT</span>
                             </button>
-                            <button class="top-pill" type="button" onclick="toggleTheme()" title="Switch Theme" style="padding:6px 8px;font-size:0.7rem;background:var(--cockpit-pill-bg);border-color:rgba(168,85,247,0.45);color:var(--cockpit-text);">
+
+                            <button class="top-pill" type="button" onclick="toggleTheme()" title="Switch Theme" style="padding:5px 7px;font-size:0.68rem;border-radius:8px;background:rgba(255,255,255,0.06);border-color:var(--ex-hairline);color:var(--text-primary);">
                                 <span id="themeIcon">☀️</span>
                             </button>
-                            <button class="top-pill" type="button" id="topAdminBtn" onclick="switchTab('admin')" title="Admin Command Center" style="display:none;padding:6px 8px;background:rgba(99,102,241,0.18);border-color:var(--accent-cyan);color:var(--accent-cyan);">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+
+                            <button class="top-pill" type="button" id="topAdminBtn" onclick="switchTab('admin')" title="Admin Command Center" style="display:none;padding:5px 7px;border-radius:8px;background:linear-gradient(135deg,rgba(29,78,216,0.35),rgba(124,58,237,0.38));border-color:rgba(255,255,255,0.32);color:#ffffff;">
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
                             </button>
                         </div>
                     </div>
 
-                    <!-- GARIS PEMISAH PANJANG BERCAHAYA DI TENGAH -->
-                    <div style="width:100%;height:2.5px;background:linear-gradient(90deg, #38bdf8 0%, #818cf8 50%, #e879f9 100%);box-shadow:0 1px 8px rgba(56,189,248,0.5);"></div>
-
-                    <!-- BARIS 2: 4 TOMBOL SAMA RATA (CART | SALDO | VIP | NOTIFIKASI) -->
-                    <div class="topbar-box-actions" style="grid-template-columns: repeat(4, minmax(0, 1fr));gap:6px;padding:8px 10px;background:var(--cockpit-row2-bg);border:none;border-radius:0;box-shadow:none;">
-                        <button class="top-pill cart-top-pill" onclick="openCartModal()" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.68rem;border-radius:9px;min-width:0;gap:4px;">
+                    <div class="xb-ex-row2">
+                        <button class="xb-ex-pill-btn cart" onclick="openCartModal()">
                             <span>🛒 Cart</span>
-                            <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.4);font-size:0.6rem;padding:1px 5px;">0</span>
+                            <span class="badge-dot" id="cartCountBadge" style="background:rgba(0,0,0,0.35);font-size:0.56rem;padding:1px 5px;">0</span>
                         </button>
 
-                        <button class="top-pill wallet-top-pill" onclick="switchTab('wallet')" style="width:100%;justify-content:center;padding:7px 4px;font-size:0.64rem;border-radius:9px;min-width:0;gap:4px;overflow:hidden;background:rgba(16,185,129,0.16);border-color:rgba(16,185,129,0.55);color:var(--success);">
+                        <button class="xb-ex-pill-btn bal" onclick="switchTab('wallet')">
                             <span id="topBalCurrIcon" style="display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;">
-                                <svg width="12" height="12" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
+                                <svg width="11" height="11" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="16" fill="#26A17B"/><path d="M17.922 17.383v-.002c-.11.008-.677.042-1.942.042-1.01 0-1.721-.03-1.971-.042v.003c-3.888-.171-6.79-.848-6.79-1.658 0-.809 2.902-1.486 6.79-1.66v2.644c.254.018.982.061 1.988.061 1.207 0 1.812-.05 1.925-.06v-2.643c3.88.173 6.775.85 6.775 1.658 0 .81-2.895 1.485-6.775 1.657m0-3.59v-2.366h5.414V7.819H8.595v3.608h5.414v2.365c-4.4.202-7.709 1.074-7.709 2.118 0 1.044 3.309 1.915 7.709 2.118v7.582h3.913v-7.584c4.393-.202 7.694-1.073 7.694-2.116 0-1.043-3.301-1.914-7.694-2.117" fill="#ffffff"/></svg>
                             </span>
-                            <span id="topBalanceText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;letter-spacing:-0.3px;">0.00</span>
+                            <span id="topBalanceText" style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">0.00</span>
                         </button>
 
-                        <button class="top-pill" onclick="openLeaderboardModal()" title="VIP Rank Hall of Fame" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;background:linear-gradient(135deg, rgba(245,158,11,0.22) 0%, rgba(217,119,6,0.15) 100%);border:1px solid rgba(245,158,11,0.65);color:var(--cockpit-vip-color);font-size:0.68rem;font-weight:800;border-radius:9px;min-width:0;">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
+                        <button class="xb-ex-pill-btn vip" onclick="openLeaderboardModal()" title="VIP Rank Hall of Fame">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="flex-shrink:0;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"></path><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"></path><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"></path></svg>
                             <span>VIP</span>
                         </button>
 
-                        <button class="top-pill notif-top-pill" onclick="openNotificationsModal()" title="Live Notifications" style="width:100%;padding:7px 4px;justify-content:center;gap:5px;font-size:0.68rem;border-radius:9px;min-width:0;background:var(--cockpit-pill-bg);border-color:rgba(56,189,248,0.5);color:var(--cockpit-text);">
-                            <span>🔔</span>
-                            <span class="badge-dot" id="notifCountBadge" style="font-size:0.6rem;padding:1px 5px;">0</span>
+                        <button class="xb-ex-pill-btn" onclick="openNotificationsModal()" title="Live Notifications">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                            <span class="badge-dot" id="notifCountBadge" style="font-size:0.56rem;padding:1px 5px;">0</span>
                         </button>
                     </div>
                 </div>
@@ -2608,29 +2677,27 @@
         </div>
 
         <!-- 📱 MOBILE BOTTOM NAVIGATION (OTOMATIS ADAPTIF MODE TERANG & GELAP + 3D 4 SISI) -->
-        <nav class="bottom-nav" style="height:80px;background:var(--bg-base);border-top:none;padding:6px 10px 12px 10px;box-shadow:0 -10px 26px var(--cockpit-shadow);">
-            <div style="width:100%;height:100%;background:var(--cockpit-bg);border-top:2.5px solid #38bdf8;border-bottom:4.5px solid #a855f7;border-left:5px solid #38bdf8;border-right:5px solid #ec4899;border-radius:18px;box-shadow:0 5px 0 var(--cockpit-ledge), 0 10px 24px var(--cockpit-shadow), inset 0 2px 0 rgba(255,255,255,0.28), inset 0 -3px 0 rgba(168,85,247,0.35);display:flex;justify-content:space-around;align-items:center;padding:0 4px;transition:background 0.25s ease, box-shadow 0.25s ease;">
-                <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')" style="padding:4px 2px;">
-                    <span style="font-size:1.1rem;line-height:1;">🏠</span>
-                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Home</span>
+        <nav class="bottom-nav" style="height:74px;background:transparent;border-top:none;padding:6px 10px 10px 10px;backdrop-filter:none;">
+            <div class="xb-ex-dock">
+                <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    <span style="font-size:0.59rem;font-weight:800;">Home</span>
                 </button>
-                <button class="bnav-btn" data-tab="github" onclick="switchTab('github')" style="padding:4px 2px;">
-                    <span style="display:inline-flex;align-items:center;justify-content:center;width:22px;height:20px;border-radius:50%;background:rgba(56,189,248,0.2);border:1px solid rgba(56,189,248,0.65);box-shadow:0 0 10px rgba(56,189,248,0.6);">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#ffffff"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-                    </span>
-                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">GitHub</span>
+                <button class="bnav-btn" data-tab="github" onclick="switchTab('github')">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+                    <span style="font-size:0.59rem;font-weight:800;">GitHub</span>
                 </button>
-                <button class="bnav-btn" data-tab="catalog" onclick="switchTab('catalog')" style="padding:4px 2px;">
-                    <span style="font-size:1.1rem;line-height:1;">🌐</span>
-                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Catalog</span>
+                <button class="bnav-btn" data-tab="catalog" onclick="switchTab('catalog')">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+                    <span style="font-size:0.59rem;font-weight:800;">Catalog</span>
                 </button>
-                <button class="bnav-btn" data-tab="wallet" onclick="switchTab('wallet')" style="padding:4px 2px;">
-                    <span style="font-size:1.1rem;line-height:1;">💳</span>
-                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Wallet</span>
+                <button class="bnav-btn" data-tab="wallet" onclick="switchTab('wallet')">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    <span style="font-size:0.59rem;font-weight:800;">Wallet</span>
                 </button>
-                <button class="bnav-btn" data-tab="profile" onclick="switchTab('profile')" style="padding:4px 2px;">
-                    <span style="font-size:1.1rem;line-height:1;">👤</span>
-                    <span style="font-size:0.62rem;font-weight:800;letter-spacing:0.2px;">Profile</span>
+                <button class="bnav-btn" data-tab="profile" onclick="switchTab('profile')">
+                    <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    <span style="font-size:0.59rem;font-weight:800;">Profile</span>
                 </button>
             </div>
         </nav>
@@ -4991,45 +5058,131 @@
                     subContainer.appendChild(b);
                 });
 
-                const hero = document.createElement('div');
-                hero.style.cssText = 'background:var(--bg-card);border:1.5px solid var(--border-focus);border-left:4px solid var(--accent-primary);border-radius:16px;padding:12px 13px;margin-bottom:14px;box-shadow:var(--shadow-card);';
-                hero.innerHTML = `
-                    <div style="display:flex;flex-direction:column;gap:9px;">
-                        <!-- BARIS 1: BADGE STATUS KIRI & KANAN (1 BARIS RAPI) -->
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                            <span class="item-tag" style="margin:0;padding:3px 8px;font-size:0.57rem;background:rgba(16,185,129,0.14);color:var(--success);border-color:rgba(16,185,129,0.4);white-space:nowrap;">🟢 INSTANT DELIVERY VAULT</span>
-                            <span class="item-tag" style="margin:0;padding:3px 8px;font-size:0.57rem;white-space:nowrap;">⚡ 24/7 AUTO-DISPATCH</span>
-                        </div>
+                function createGithubYearCard(yObj) {
+            const list = liveGithubStock[yObj.yr] || [];
+            const hasStock = list.length > 0;
+            const isYearCard = /^\d{4}$/.test(yObj.yr);
+            const minPrice = hasStock ? Math.min(...list.map(a => a._computed_usdt || yObj.usdt)) : yObj.usdt;
+            const cleanTitle = isYearCard ? `GitHub ${yObj.yr}` : yObj.title;
+            const wmText = isYearCard ? yObj.yr : yObj.icon;
+            const tierColor = hasStock ? '#34d399' : '#94a3b8';
 
-                        <!-- BARIS 2: KOTAK 3D BERSIH (TERANG DI MODE SIANG & GELAP DI MODE MALAM + GRADIEN BIRU-UNGU) -->
-                        <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:10px 10px;text-align:center;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);">
-                            <div style="font-size:0.62rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.6px;text-transform:uppercase;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                👋 Welcome, @${currentUsername.replace(/^@/, '')}
-                            </div>
-                            <h2 style="margin:0 0 4px 0;font-size:0.96rem;font-weight:800;letter-spacing:-0.2px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                <span style="background:linear-gradient(90deg, #38bdf8 0%, #6366f1 48%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">XianBee-Tech</span>
-                                <span style="color:var(--text-primary);"> Enterprise Vault</span>
-                            </h2>
-                            <div style="font-size:0.65rem;font-weight:700;color:var(--text-primary);opacity:0.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                ✨ Authentic Aged GitHub Infrastructure (2011–2026)
-                            </div>
-                            <div style="font-size:0.62rem;font-weight:600;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                🛡️ Live Profile Inspector • Instant Automated Credentials
-                            </div>
-                        </div>
-
-                        <!-- BARIS 3: TOMBOL AKSI SEJAJAR 2 KOLOM (1 BARIS PENUH) -->
-                        <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;">
-                            <button class="btn-ui primary" style="padding:9px 8px;font-size:0.72rem;border-radius:10px;white-space:nowrap;" onclick="switchTab('github')">
-                                🐙 Explore GitHub (${totalLiveAccounts || 'Live'})
-                            </button>
-                            <button class="btn-ui buy-now" style="padding:9px 8px;font-size:0.72rem;border-radius:10px;white-space:nowrap;" onclick="switchTab('profile'); activeSub='🔐 Purchased Vault'; renderViewport();">
-                                🔐 Purchased Vault
-                            </button>
-                        </div>
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.style.padding = '9px';
+            card.style.gap = '8px';
+            card.innerHTML = `
+                <div class="xb-ex-art" onclick="openInPageYearVault('${yObj.yr}', '${cleanTitle}', ${yObj.usdt})" style="cursor:pointer;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;position:relative;z-index:1;">
+                        <span class="xb-ex-chip" style="color:${tierColor};border-color:${tierColor}55;">${hasStock ? `● ${list.length} LIVE` : '○ 0 LISTED'}</span>
+                        <span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.45);">${isYearCard ? 'AGED' : yObj.tag.split(' ')[0]}</span>
                     </div>
-                `;
-                vp.appendChild(hero);
+                    <div style="position:relative;z-index:1;">
+                        <span style="font-size:0.74rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;">${cleanTitle}</span>
+                    </div>
+                    <div class="xb-ex-watermark">${wmText}</div>
+                </div>
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 2px;">
+                    <div style="min-width:0;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;color:var(--text-muted);font-weight:700;">FLOOR PRICE</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:var(--success);white-space:nowrap;">${fmtPrice(minPrice)}</div>
+                    </div>
+                    <div style="text-align:right;min-width:0;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;color:var(--text-muted);font-weight:700;">ACCESS</div>
+                        <div style="font-size:0.58rem;font-weight:700;color:var(--accent-cyan);white-space:nowrap;">Full 2FA</div>
+                    </div>
+                </div>
+                <button class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;padding:7px 6px;font-size:0.68rem;border-radius:9px;white-space:nowrap;" onclick="openInPageYearVault('${yObj.yr}', '${cleanTitle}', ${yObj.usdt})">
+                    Inspect Vault (${list.length})
+                </button>
+            `;
+            return card;
+        }
+
+        function createSpecificAccountCard(acc, yrKey) {
+            const prc = acc._computed_usdt || computeAccountPrice(acc, yrKey);
+            const uname = acc.username;
+            const url = acc.url || `https://github.com/${uname}`;
+            const accId = `${yrKey}-${uname}`;
+            const dispYear = acc.year || yrKey;
+            const specLabel = yrKey === 'Contrib' ? '200K+ COMMITS'
+                : (yrKey === '6Badge' ? '6 BADGES'
+                : (yrKey === 'Arctic' ? 'ARCTIC 2020'
+                : (yrKey === 'StudentPack' ? 'DEV PACK' : `YEAR ${dispYear}`)));
+            ACCOUNT_CACHE_MAP[accId] = { acc: acc, yrKey: yrKey };
+
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.style.padding = '10px';
+            card.style.gap = '8px';
+            card.innerHTML = `
+                <div class="xb-ex-art" style="height:72px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;position:relative;z-index:1;">
+                        <span class="xb-ex-chip" style="color:#c084fc;border-color:rgba(192,132,252,0.5);">★ ${specLabel}</span>
+                        <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);font-size:0.62rem;">${fmtPrice(prc)}</span>
+                    </div>
+                    <div style="position:relative;z-index:1;display:flex;align-items:center;gap:5px;min-width:0;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${uname}</span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                    </div>
+                    <div class="xb-ex-watermark">${dispYear}</div>
+                </div>
+                <div class="xb-ex-stat-3">
+                    <div class="xb-ex-stat-cell">
+                        <div style="font-size:0.47rem;color:var(--text-muted);font-weight:700;">FOLLOWERS</div>
+                        <div style="font-size:0.68rem;font-weight:800;color:#38bdf8;">${acc.followers || 0}</div>
+                    </div>
+                    <div class="xb-ex-stat-cell">
+                        <div style="font-size:0.47rem;color:var(--text-muted);font-weight:700;">REPOS</div>
+                        <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${acc.repos || 0}</div>
+                    </div>
+                    <div class="xb-ex-stat-cell">
+                        <div style="font-size:0.47rem;color:var(--text-muted);font-weight:700;">ACCESS</div>
+                        <div style="font-size:0.64rem;font-weight:800;color:#34d399;">Full 2FA</div>
+                    </div>
+                </div>
+                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
+                    <a href="${url}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:7px 3px;font-size:0.64rem;border-radius:8px;white-space:nowrap;">🌐 View</a>
+                    <button class="btn-ui secondary" style="min-width:0;padding:7px 3px;font-size:0.64rem;border-radius:8px;white-space:nowrap;" onclick="openNegoModalById('${accId}')">🤝 Offer</button>
+                    <button class="btn-ui secondary" style="min-width:0;padding:7px 3px;font-size:0.64rem;border-radius:8px;white-space:nowrap;" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
+                    <button class="btn-ui buy-now" style="min-width:0;padding:7px 3px;font-size:0.64rem;border-radius:8px;white-space:nowrap;" onclick="buySpecificAccountById('${accId}')">⚡ Buy</button>
+                </div>
+            `;
+            return card;
+        }
+
+        function addSpecificAccountById(accId) {
+            const entry = ACCOUNT_CACHE_MAP[accId];
+            if (entry) addSpecificAccountToCart(entry.acc, entry.yrKey);
+        }
+
+        function buySpecificAccountById(accId) {
+            const entry = ACCOUNT_CACHE_MAP[accId];
+            if (entry) buySpecificAccountNow(entry.acc, entry.yrKey);
+        }
+
+        function createCatalogCard(item) {
+            const card = document.createElement('div');
+            card.className = 'item-card';
+            card.style.padding = '11px';
+            card.style.gap = '9px';
+            const suffix = item.isUnit ? '/u' : '';
+            card.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;width:100%;">
+                    <span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.4);">${item.tag}</span>
+                    <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.45);font-size:0.66rem;">${fmtPrice(item.usdt)}${suffix}</span>
+                </div>
+                <div style="display:flex;align-items:center;gap:10px;min-width:0;width:100%;">
+                    <div class="item-icon" style="width:38px;height:38px;font-size:1.05rem;border-radius:10px;border-color:var(--ex-hairline);flex-shrink:0;">${item.icon}</div>
+                    <div style="min-width:0;flex:1;overflow:hidden;">
+                        <h3 class="item-title" style="font-size:0.82rem;margin:0 0 2px 0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.title}</h3>
+                        <p class="item-desc" style="font-size:0.65rem;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${item.desc}</p>
+                    </div>
+                </div>
+                <button class="btn-ui primary" style="width:100%;padding:8px 10px;font-size:0.72rem;border-radius:9px;" onclick='openDirectOrderModal(${JSON.stringify(item)})'>⚡ Buy Now / Configure</button>
+            `;
+            return card;
+        }
 
                 // FEATURE 10: DYNAMIC FLASH SALE (AUTO-HIDES WHEN OFF, SOLD OUT, OR EXPIRED)
                 cleanupExpiredOrSoldFlashAccounts();
