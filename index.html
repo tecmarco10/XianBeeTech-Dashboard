@@ -10,7 +10,7 @@
 
         /* =========================================================
            🎨 DUAL THEME ENGINE (OBSIDIAN DARK & PLATINUM LIGHT)
-           ========================================================= */  
+           ========================================================= */
         :root,
         [data-theme="obsidian"] {
             --bg-base: #060913;
@@ -1525,317 +1525,403 @@
         }
 
         /* =========================================================
-           👑 EXECUTIVE ADMIN COCKPIT (SINGLE-SCREEN ENTERPRISE UI)
+           👑 BENTO GRID 2x2 — LOGO EDITION (BLACK • BLUE • PURPLE + WHITE HAIRLINE)
            ========================================================= */
-        .adm-cockpit {
+        .xb-adm-wrap {
             display: flex;
             flex-direction: column;
-            gap: 6px;
+            gap: 8px;
             max-width: 860px;
             margin: 0 auto;
         }
 
-        .adm-header-bar {
-            background: var(--bg-card);
-            border: 1px solid var(--border-focus);
-            border-top: 2px solid var(--accent-cyan);
-            border-bottom: 2px solid var(--accent-secondary);
-            border-radius: 12px;
-            padding: 7px 10px;
+        .xb-adm-console {
+            position: relative;
+            background: linear-gradient(145deg, #06080f 0%, #0b1636 52%, #1b0f3a 100%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 26px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+        }
+
+        .xb-adm-console::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 8%;
+            right: 8%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.7), rgba(255, 255, 255, 0.85), rgba(168, 85, 247, 0.75), transparent);
+            pointer-events: none;
+        }
+
+        .xb-adm-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            box-shadow: var(--shadow-card);
+            gap: 6px;
+            padding: 8px 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .adm-header-title-wrap {
+        .xb-adm-brand {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             min-width: 0;
-            flex: 1;
         }
 
-        .adm-live-dot {
-            width: 8px;
-            height: 8px;
+        .xb-adm-pulse {
+            width: 7px;
+            height: 7px;
             border-radius: 50%;
-            background: var(--success);
-            box-shadow: 0 0 8px var(--success);
+            background: #38bdf8;
+            box-shadow: 0 0 8px #38bdf8, 0 0 14px rgba(168, 85, 247, 0.75);
             flex-shrink: 0;
         }
 
-        .adm-header-title {
+        .xb-adm-title {
             margin: 0;
-            font-size: 0.86rem;
+            font-size: clamp(0.66rem, 3vw, 0.76rem);
             font-weight: 800;
-            letter-spacing: 0.3px;
-            color: var(--text-primary);
+            letter-spacing: 0.5px;
+            color: #ffffff;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        .adm-quick-pills {
+        .xb-adm-actions {
             display: flex;
-            align-items: center;
-            gap: 5px;
-            flex-shrink: 0;
-        }
-
-        .adm-quick-btn {
-            background: var(--bg-input);
-            border: 1px solid var(--border-subtle);
-            color: var(--text-primary);
-            padding: 5px 8px;
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.64rem;
-            font-weight: 800;
-            cursor: pointer;
-            display: inline-flex;
             align-items: center;
             gap: 4px;
-            transition: 0.18s ease;
+            flex-shrink: 0;
+        }
+
+        .xb-adm-mini-btn {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            color: #f8fafc;
+            padding: 4px 7px;
+            border-radius: 7px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
             white-space: nowrap;
+            transition: 0.16s ease;
         }
 
-        .adm-quick-btn:hover {
-            border-color: var(--accent-cyan);
-            color: var(--accent-cyan);
-            transform: translateY(-1px);
+        .xb-adm-mini-btn:hover {
+            background: rgba(56, 189, 248, 0.16);
+            border-color: rgba(255, 255, 255, 0.42);
         }
 
-        .adm-kpi-grid {
+        .xb-adm-kpi-row {
             display: grid;
             grid-template-columns: repeat(4, minmax(0, 1fr));
-            gap: 6px;
+            background: rgba(4, 6, 14, 0.48);
         }
 
-        .adm-kpi-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-top: 2.5px solid var(--accent-cyan);
-            border-radius: 10px;
-            padding: 5px 4px;
+        .xb-adm-kpi {
+            padding: 7px 3px;
             text-align: center;
-            box-shadow: var(--shadow-card);
+            border-right: 1px solid rgba(255, 255, 255, 0.08);
             min-width: 0;
         }
 
-        .adm-kpi-lbl {
+        .xb-adm-kpi:last-child {
+            border-right: none;
+        }
+
+        .xb-adm-kpi-lbl {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.53rem;
-            font-weight: 800;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
+            font-size: 0.48rem;
+            font-weight: 700;
+            color: rgba(226, 232, 240, 0.68);
+            letter-spacing: 0.3px;
             text-transform: uppercase;
             white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
         }
 
-        .adm-kpi-val {
+        .xb-adm-kpi-val {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.96rem;
+            font-size: 0.86rem;
             font-weight: 800;
-            color: var(--text-primary);
-            margin-top: 2px;
+            margin-top: 1px;
             line-height: 1.15;
+            white-space: nowrap;
         }
 
-        .adm-seg-tabs {
+        .xb-adm-tabs {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 6px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-subtle);
-            padding: 4px;
-            border-radius: 12px;
+            gap: 5px;
+            background: linear-gradient(135deg, #060810 0%, #0c1328 100%);
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            padding: 3px;
+            border-radius: 11px;
         }
 
-        .adm-seg-btn {
+        .xb-adm-tab {
             background: transparent;
             border: 1px solid transparent;
-            color: var(--text-secondary);
-            padding: 6px 5px;
+            color: rgba(203, 213, 225, 0.78);
+            padding: 7px 4px;
             border-radius: 8px;
             font-family: inherit;
-            font-size: 0.7rem;
+            font-size: 0.68rem;
             font-weight: 800;
             cursor: pointer;
-            transition: 0.18s ease;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .adm-seg-btn:hover {
-            color: var(--text-primary);
-            background: var(--bg-soft);
-        }
-
-        .adm-seg-btn.active {
-            background: var(--grad-primary);
-            color: #ffffff;
-            box-shadow: var(--shadow-glow);
-        }
-
-        .adm-launcher-list {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-
-        .adm-row-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-left: 4px solid var(--accent-cyan);
-            border-radius: 12px;
-            padding: 7px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            cursor: pointer;
-            box-shadow: var(--shadow-card);
-            transition: transform 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
-            text-align: left;
-            width: 100%;
-            font-family: inherit;
-        }
-
-        .adm-row-card:hover {
-            background: var(--bg-card-hover);
-            border-color: var(--border-focus);
-            transform: translateY(-1px);
-        }
-
-        .adm-row-head {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            width: 100%;
-            padding-bottom: 4px;
-            border-bottom: 1px dashed var(--border-subtle);
-            text-align: center;
-        }
-
-        .adm-row-icon {
-            width: 22px;
-            height: 22px;
-            border-radius: 7px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-subtle);
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.78rem;
-            flex-shrink: 0;
+            gap: 5px;
+            white-space: nowrap;
+            transition: 0.18s ease;
         }
 
-        .adm-row-title {
-            font-size: 0.78rem;
-            font-weight: 800;
-            color: var(--text-primary);
-            letter-spacing: 0.2px;
-            text-align: center;
-            line-height: 1.2;
+        .xb-adm-tab.active {
+            background: linear-gradient(135deg, #0c142c 0%, #1d4ed8 52%, #7c3aed 100%);
+            border-color: rgba(255, 255, 255, 0.34);
+            color: #ffffff;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.32);
         }
 
-        .adm-row-body {
-            display: flex;
-            align-items: flex-end;
-            justify-content: space-between;
+        .xb-bento-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 8px;
+        }
+
+        .xb-bento-card {
+            position: relative;
+            background: linear-gradient(155deg, #070912 0%, #0d1a3d 56%, #201144 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 14px;
+            padding: 10px 9px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 10px;
+            min-height: 92px;
+            cursor: pointer;
+            text-align: left;
+            width: 100%;
+            min-width: 0;
+            font-family: inherit;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        }
+
+        .xb-bento-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 12%;
+            right: 12%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+            pointer-events: none;
+        }
+
+        .xb-bento-card:hover {
+            transform: translateY(-2px);
+            border-color: rgba(255, 255, 255, 0.36);
+            box-shadow: 0 10px 24px rgba(59, 130, 246, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+        }
+
+        .xb-bento-card.span-2 {
+            grid-column: 1 / -1;
+            min-height: 76px;
+            gap: 7px;
+        }
+
+        .xb-bento-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5px;
             width: 100%;
         }
 
-        .adm-row-desc {
-            font-size: 0.62rem;
-            color: var(--text-secondary);
-            text-align: left;
-            white-space: normal;
-            overflow: visible;
-            line-height: 1.35;
-            flex: 1;
+        .xb-bento-ico {
+            width: 27px;
+            height: 27px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.07);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            color: #f8fafc;
+            flex-shrink: 0;
+        }
+
+        .xb-bento-pill {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.52rem;
+            font-weight: 800;
+            padding: 3px 6px;
+            border-radius: 99px;
+            background: rgba(6, 9, 20, 0.65);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            white-space: nowrap;
+            line-height: 1;
+        }
+
+        .xb-bento-text {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
             min-width: 0;
         }
 
-        .adm-row-foot {
-            display: inline-flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 5px;
-            flex-shrink: 0;
+        .xb-bento-title {
+            font-size: clamp(0.66rem, 3vw, 0.77rem);
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.15px;
+            line-height: 1.2;
             white-space: nowrap;
         }
 
-        .adm-badge {
+        .xb-bento-sub {
+            font-size: clamp(0.52rem, 2.4vw, 0.61rem);
+            font-weight: 600;
+            color: rgba(203, 213, 225, 0.84);
+            line-height: 1.25;
+            white-space: nowrap;
+        }
+
+        .xb-adm-dev-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+        }
+
+        .xb-adm-dev-btn {
+            background: linear-gradient(135deg, #070912 0%, #101a38 100%);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #e2e8f0;
+            padding: 8px 6px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            white-space: nowrap;
+            transition: 0.16s ease;
+        }
+
+        .xb-adm-dev-btn:hover {
+            border-color: rgba(255, 255, 255, 0.36);
+            color: #ffffff;
+        }
+
+        .xb-adm-flash-bar {
+            position: relative;
+            background: linear-gradient(135deg, #060811 0%, #0d193a 55%, #1d103c 100%);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            border-radius: 13px;
+            padding: 8px 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+
+        .xb-adm-flash-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-width: 0;
+        }
+
+        .xb-adm-flash-btn {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.56rem;
             font-weight: 800;
-            padding: 3px 7px;
-            border-radius: 6px;
-            border: 1px solid var(--border-subtle);
-            background: var(--bg-input);
-            color: var(--accent-cyan);
-            white-space: nowrap;
-        }
-
-        .adm-arrow {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.65rem;
-            font-weight: 800;
-            color: var(--text-muted);
-        }
-
-        .adm-status-bar {
-            background: var(--bg-card);
-            border: 1px solid var(--border-subtle);
-            border-left: 4px solid var(--warning);
-            border-radius: 12px;
-            padding: 7px 10px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            box-shadow: var(--shadow-card);
-        }
-
-        .adm-flash-action-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            padding: 5px 10px;
-            border-radius: 8px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.57rem;
-            font-weight: 800;
-            letter-spacing: 0.25px;
+            padding: 6px 10px;
+            border-radius: 99px;
             cursor: pointer;
             white-space: nowrap;
             flex-shrink: 0;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            transition: 0.18s ease;
         }
 
-        .adm-flash-action-btn.on {
-            background: linear-gradient(135deg, rgba(16,185,129,0.22) 0%, rgba(5,150,105,0.32) 100%);
-            border: 1.5px solid var(--success);
-            color: #6ee7b7;
-            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
+        .xb-adm-flash-btn.on {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.22), rgba(6, 182, 212, 0.2));
+            border: 1px solid rgba(110, 231, 183, 0.65);
+            color: #a7f3d0;
         }
 
-        .adm-flash-action-btn.off {
-            background: linear-gradient(135deg, rgba(239,68,68,0.16) 0%, rgba(185,28,28,0.26) 100%);
-            border: 1.5px solid var(--danger);
-            color: #fca5a5;
-            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
+        .xb-adm-flash-btn.off {
+            background: rgba(239, 68, 68, 0.16);
+            border: 1px solid rgba(252, 165, 165, 0.55);
+            color: #fecaca;
         }
 
-        .adm-flash-action-btn:hover {
-            transform: translateY(-1px);
+        /* PLATINUM LIGHT MODE ADAPTATION */
+        [data-theme="platinum"] .xb-adm-console,
+        [data-theme="platinum"] .xb-bento-card,
+        [data-theme="platinum"] .xb-adm-flash-bar,
+        [data-theme="platinum"] .xb-adm-dev-btn {
+            background: linear-gradient(150deg, #ffffff 0%, #eff6ff 55%, #f3e8ff 100%);
+            border-color: rgba(79, 70, 229, 0.22);
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.08), inset 0 1px 0 #ffffff;
+        }
+        [data-theme="platinum"] .xb-adm-top {
+            border-bottom-color: rgba(79, 70, 229, 0.12);
+        }
+        [data-theme="platinum"] .xb-adm-kpi-row {
+            background: rgba(241, 245, 249, 0.72);
+        }
+        [data-theme="platinum"] .xb-adm-kpi {
+            border-right-color: rgba(79, 70, 229, 0.12);
+        }
+        [data-theme="platinum"] .xb-adm-title,
+        [data-theme="platinum"] .xb-bento-title {
+            color: #0f172a;
+        }
+        [data-theme="platinum"] .xb-adm-kpi-lbl,
+        [data-theme="platinum"] .xb-bento-sub,
+        [data-theme="platinum"] .xb-adm-dev-btn {
+            color: #475569;
+        }
+        [data-theme="platinum"] .xb-adm-mini-btn,
+        [data-theme="platinum"] .xb-bento-ico,
+        [data-theme="platinum"] .xb-bento-pill {
+            background: #ffffff;
+            border-color: rgba(79, 70, 229, 0.22);
+            color: #1e293b;
+        }
+        [data-theme="platinum"] .xb-adm-tabs {
+            background: #e2e8f0;
+            border-color: rgba(79, 70, 229, 0.18);
+        }
+        [data-theme="platinum"] .xb-adm-tab {
+            color: #475569;
+        }
+        [data-theme="platinum"] .xb-adm-flash-btn.on {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: #059669;
+            color: #047857;
+        }
+        [data-theme="platinum"] .xb-adm-flash-btn.off {
+            background: rgba(220, 38, 38, 0.1);
+            border-color: #dc2626;
+            color: #b91c1c;
         }
 
         /* FULL-PAGE 100DVH STUDIO FRAME & STANDALONE TITLE BAR */
@@ -6514,8 +6600,8 @@
             const isAuthorized = ADMIN_IDS.includes(String(currentUserId));
             if (!isAuthorized) {
                 container.innerHTML = `
-                    <div class="inpage-drawer" style="border-color:var(--danger);text-align:center;padding:26px 18px;max-width:460px;margin:0 auto;">
-                        <h3 style="color:var(--danger);margin:0 0 8px 0;font-size:0.96rem;">⛔ RESTRICTED EXECUTIVE AREA</h3>
+                    <div class="xb-adm-console" style="padding:22px 16px;text-align:center;max-width:440px;margin:0 auto;">
+                        <h3 style="color:#f87171;margin:0 0 6px 0;font-size:0.92rem;">⛔ RESTRICTED EXECUTIVE AREA</h3>
                         <p class="item-desc" style="margin-bottom:14px;">Enter your authorized Executive Admin Telegram UID to unlock Command Center.</p>
                         <div style="display:flex;gap:8px;">
                             <input type="password" class="form-input" id="adminAuthInput" placeholder="Enter Admin UID..." onkeydown="if(event.key==='Enter') unlockAdminSession();">
@@ -6534,190 +6620,192 @@
             const patStats = (typeof getOrderedMissingPatGroups === 'function')
                 ? getOrderedMissingPatGroups()
                 : { totalEligible: 0, missingCount: 0, readyCount: 0 };
+            const hasBridge = Boolean(localStorage.getItem('xb_pc_bridge_url'));
 
-            const tabItemsMap = {
+            const svgIco = {
+                stealth: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>`,
+                patGen: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="15.5" r="4.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/></svg>`,
+                patAudit: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>`,
+                creator: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>`,
+                flash: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+                voucher: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9 15 6-6"/></svg>`,
+                chart: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>`,
+                bell: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>`,
+                sync: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"/><path d="M16 16h5v5"/></svg>`
+            };
+
+            const bentoTabMap = {
                 studios: [
                     {
-                        icon: '🖥️',
-                        accent: '#10b981',
-                        title: 'GitHub Stealth Command',
-                        desc: 'Local PC suite for Omni, Repo Sync, Profile, Booster & Badges with live telemetry.',
-                        badge: localStorage.getItem('xb_pc_bridge_url') ? 'Bridge Ready' : 'Connect PC',
-                        badgeColor: localStorage.getItem('xb_pc_bridge_url') ? 'var(--success)' : 'var(--warning)',
+                        icon: svgIco.stealth,
+                        accent: '#38bdf8',
+                        title: 'GitHub Stealth',
+                        sub: 'Local PC Suite & Logs',
+                        badge: hasBridge ? 'PC Ready' : 'Connect PC',
+                        badgeColor: hasBridge ? '#34d399' : '#fbbf24',
                         action: "execAdminCmd('open_pc_stealth_studio')"
                     },
                     {
-                        icon: '🔑',
-                        accent: '#38bdf8',
-                        title: 'GitHub PAT Generator',
-                        desc: 'Generate Classic PAT via Local PC or Cloud VPS with auto-2FA, Sheet1 save & 4-shot proof.',
+                        icon: svgIco.patGen,
+                        accent: '#a855f7',
+                        title: 'GitHub PAT Gen',
+                        sub: 'Auto 2FA • Sheet1 Save',
                         badge: patStats.missingCount > 0 ? `${patStats.missingCount} Missing` : 'All Ready',
-                        badgeColor: patStats.missingCount > 0 ? 'var(--warning)' : 'var(--success)',
+                        badgeColor: patStats.missingCount > 0 ? '#fbbf24' : '#34d399',
                         action: "execAdminCmd('generate_github_pat')"
                     },
                     {
-                        icon: '📅',
-                        accent: '#818cf8',
-                        title: 'GitHub PAT Checker & Audit',
-                        desc: 'Bulk validate PATs (40/batch), detect 404/renamed accounts & audit creation dates.',
+                        icon: svgIco.patAudit,
+                        accent: '#60a5fa',
+                        title: 'GitHub PAT Audit',
+                        sub: 'Check 404 & Age Audit',
                         badge: '40/Batch',
                         badgeColor: '#38bdf8',
                         action: "execAdminCmd('check_github_created_bulk')"
                     },
                     {
-                        icon: '🌱',
-                        accent: '#10b981',
-                        title: 'GitHub Account Creator',
-                        desc: 'Create GitHub accounts with Web Email OTP, auto-2FA & Creator_Vault bio/repo setup.',
+                        icon: svgIco.creator,
+                        accent: '#c084fc',
+                        title: 'GitHub Creator',
+                        sub: 'Web OTP • Auto 2FA Hub',
                         badge: '2FA Auto',
-                        badgeColor: 'var(--success)',
+                        badgeColor: '#34d399',
                         action: "execAdminCmd('open_creator_studio')"
                     }
                 ],
                 store: [
                     {
-                        icon: '⚡',
+                        icon: svgIco.flash,
                         accent: '#fbbf24',
-                        title: 'GitHub Flash Sale Manager',
-                        desc: 'Select live stock by @username or year, set discounted USDT price & active hours.',
+                        title: 'GitHub Flash Sale',
+                        sub: 'Set Deals & Countdown',
                         badge: `${activeFlashCount} Active`,
-                        badgeColor: 'var(--warning)',
+                        badgeColor: '#fbbf24',
                         action: "execAdminCmd('manage_flash_stock')"
                     },
                     {
-                        icon: '🎟️',
+                        icon: svgIco.voucher,
                         accent: '#c084fc',
-                        title: 'GitHub Promo Voucher Manager',
-                        desc: 'Create percentage discount codes with once-off or reusable store checkout rules.',
+                        title: 'GitHub Vouchers',
+                        sub: 'Manage Promo Codes',
                         badge: `${customVouchers.length} Codes`,
                         badgeColor: '#c084fc',
                         action: "execAdminCmd('manage_vouchers')"
                     },
                     {
-                        icon: '📊',
+                        icon: svgIco.chart,
                         accent: '#38bdf8',
-                        title: 'GitHub Store 3D Telemetry',
-                        desc: 'Inspect daily, weekly, yearly & all-time USDT revenue charts for accounts & boost.',
+                        title: 'GitHub 3D Sales Telemetry',
+                        sub: 'Daily, Weekly, Yearly & All-Time USDT',
                         badge: 'Live 3D',
                         badgeColor: '#38bdf8',
+                        span2: true,
                         action: 'openStoreGlobal3DTelemetry()'
                     }
                 ],
                 system: [
                     {
-                        icon: '🔔',
+                        icon: svgIco.bell,
                         accent: '#38bdf8',
-                        title: 'GitHub Admin Alert Center',
-                        desc: 'Review cart alerts, price offers, IDR transfer proofs, PAT audits & mission logs.',
+                        title: 'GitHub Alerts',
+                        sub: 'Orders, Offers & Logs',
                         badge: `${adminNotifs.length} Logs`,
-                        badgeColor: adminNotifs.length > 0 ? 'var(--warning)' : 'var(--text-muted)',
+                        badgeColor: adminNotifs.length > 0 ? '#fbbf24' : '#94a3b8',
                         action: "execAdminCmd('open_admin_notifs')"
                     },
                     {
-                        icon: '📥',
-                        accent: '#10b981',
-                        title: 'GitHub Sheet Inventory Sync',
-                        desc: 'Pull latest Sheet1 accounts immediately & broadcast restock alerts to buyers.',
+                        icon: svgIco.sync,
+                        accent: '#34d399',
+                        title: 'GitHub Sheet Sync',
+                        sub: 'Pull Sheet1 Live Stock',
                         badge: `${totalLiveAccounts} Live`,
-                        badgeColor: 'var(--success)',
+                        badgeColor: '#34d399',
                         action: "execAdminCmd('sync_gsheet')"
                     }
                 ]
             };
 
-            const activeRows = tabItemsMap[_adminActiveSubTab] || tabItemsMap.studios;
-            const rowsHtml = activeRows.map(item => `
-                <button type="button" class="adm-row-card" style="border-left-color:${item.accent};" onclick="${item.action}">
-                    <div class="adm-row-head">
-                        <span class="adm-row-icon" style="border-color:${item.accent};">${item.icon}</span>
-                        <span class="adm-row-title">${item.title}</span>
+            const activeCards = bentoTabMap[_adminActiveSubTab] || bentoTabMap.studios;
+            const cardsHtml = activeCards.map(item => `
+                <button type="button" class="xb-bento-card ${item.span2 ? 'span-2' : ''}" onclick="${item.action}">
+                    <div class="xb-bento-top">
+                        <span class="xb-bento-ico" style="color:${item.accent};border-color:${item.accent}55;">${item.icon}</span>
+                        <span class="xb-bento-pill" style="color:${item.badgeColor};border-color:${item.badgeColor}66;">${item.badge}</span>
                     </div>
-                    <div class="adm-row-body">
-                        <div class="adm-row-desc">${item.desc}</div>
-                        <div class="adm-row-foot">
-                            <span class="adm-badge" style="color:${item.badgeColor};border-color:${item.badgeColor};">${item.badge}</span>
-                            <span class="adm-arrow">➔</span>
-                        </div>
+                    <div class="xb-bento-text">
+                        <div class="xb-bento-title">${item.title}</div>
+                        <div class="xb-bento-sub">${item.sub}</div>
                     </div>
                 </button>
             `).join('');
 
-            const devUtilityHtml = _adminActiveSubTab === 'system' ? `
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                    <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.71rem;border-color:var(--border-focus);" onclick="execAdminCmd('test_tg_push')">
-                        📡 Test Telegram Push
-                    </button>
-                    <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.71rem;border-color:var(--success);color:var(--success);" onclick="execAdminCmd('set_test_bal')">
-                        💳 Set Test Balance
-                    </button>
+            const sysDevToolsHtml = _adminActiveSubTab === 'system' ? `
+                <div class="xb-adm-dev-row">
+                    <button type="button" class="xb-adm-dev-btn" onclick="execAdminCmd('test_tg_push')">📡 Test TG Push</button>
+                    <button type="button" class="xb-adm-dev-btn" onclick="execAdminCmd('set_test_bal')">💳 Test Balance</button>
                 </div>
             ` : '';
 
             container.innerHTML = `
-                <div class="adm-cockpit">
-                    <!-- 1. EXECUTIVE SINGLE-LINE BORDERED HEADER + QUICK ACTIONS -->
-                    <div class="adm-header-bar">
-                        <div class="adm-header-title-wrap">
-                            <span class="adm-live-dot"></span>
-                            <h3 class="adm-header-title">⚡ COMMAND CENTER</h3>
-                        </div>
-                        <div class="adm-quick-pills">
-                            <button type="button" class="adm-quick-btn" title="Sync Sheet1 Stock" onclick="execAdminCmd('sync_gsheet')">↻ Sync</button>
-                            <button type="button" class="adm-quick-btn" title="Admin Alerts" onclick="execAdminCmd('open_admin_notifs')">🔔 ${adminNotifs.length}</button>
-                            <button type="button" class="adm-quick-btn" title="3D Sales Telemetry" onclick="openStoreGlobal3DTelemetry()">📊 3D</button>
-                        </div>
-                    </div>
-
-                    <!-- 2. LIVE 4-COLUMN KPI SUMMARY STRIP -->
-                    <div class="adm-kpi-grid">
-                        <div class="adm-kpi-card" style="border-top-color:var(--success);">
-                            <div class="adm-kpi-lbl">Live Stock</div>
-                            <div class="adm-kpi-val" style="color:var(--success);">${totalLiveAccounts}</div>
-                        </div>
-                        <div class="adm-kpi-card" style="border-top-color:var(--warning);">
-                            <div class="adm-kpi-lbl">Need PAT</div>
-                            <div class="adm-kpi-val" style="color:var(--warning);">${patStats.missingCount}</div>
-                        </div>
-                        <div class="adm-kpi-card" style="border-top-color:#c084fc;">
-                            <div class="adm-kpi-lbl">Flash / Promo</div>
-                            <div class="adm-kpi-val" style="color:#c084fc;">${activeFlashCount}/${customVouchers.length}</div>
-                        </div>
-                        <div class="adm-kpi-card" style="border-top-color:var(--accent-cyan);">
-                            <div class="adm-kpi-lbl">Alerts</div>
-                            <div class="adm-kpi-val" style="color:var(--accent-cyan);">${adminNotifs.length}</div>
-                        </div>
-                    </div>
-
-                    <!-- 3. SEGMENTED 3-TAB NAVIGATION -->
-                    <div class="adm-seg-tabs">
-                        <button type="button" class="adm-seg-btn ${_adminActiveSubTab === 'studios' ? 'active' : ''}" onclick="switchAdminCockpitTab('studios')">🤖 Studios</button>
-                        <button type="button" class="adm-seg-btn ${_adminActiveSubTab === 'store' ? 'active' : ''}" onclick="switchAdminCockpitTab('store')">🛍️ Store</button>
-                        <button type="button" class="adm-seg-btn ${_adminActiveSubTab === 'system' ? 'active' : ''}" onclick="switchAdminCockpitTab('system')">⚙️ System</button>
-                    </div>
-
-                    <!-- 4. ACTIVE MODULE LAUNCHER LIST -->
-                    <div class="adm-launcher-list">
-                        ${rowsHtml}
-                        ${devUtilityHtml}
-                    </div>
-
-                    <!-- 5. PERSISTENT FLASH SALE VISIBILITY CONTROL CARD -->
-                    <div class="adm-status-bar">
-                        <div class="adm-row-head">
-                            <span class="adm-row-icon" style="border-color:var(--warning);">⚡</span>
-                            <span class="adm-row-title">GitHub Storefront Flash Sale Banner</span>
-                        </div>
-                        <div class="adm-row-body">
-                            <div class="adm-row-desc">
-                                Show or hide Flash Sale deals on Home.<br>
-                                <b style="color:${isFlashOn ? 'var(--success)' : 'var(--danger)'};">
-                                    ${isFlashOn ? `🟢 Live (${activeFlashCount} active deal${activeFlashCount === 1 ? '' : 's'})` : '🔴 Hidden from storefront'}
-                                </b>
+                <div class="xb-adm-wrap">
+                    <!-- 1. UNIFIED LOGO-EDITION CONSOLE (HEADER + 4 KPI) -->
+                    <div class="xb-adm-console">
+                        <div class="xb-adm-top">
+                            <div class="xb-adm-brand">
+                                <span class="xb-adm-pulse"></span>
+                                <h3 class="xb-adm-title">COMMAND CENTER</h3>
                             </div>
-                            <button type="button" class="adm-flash-action-btn ${isFlashOn ? 'on' : 'off'}" onclick="execAdminCmd('toggle_flash')">
-                                <span>${isFlashOn ? '🟢 LIVE • HIDE' : '🔴 OFF • SHOW'}</span>
-                            </button>
+                            <div class="xb-adm-actions">
+                                <button type="button" class="xb-adm-mini-btn" onclick="execAdminCmd('sync_gsheet')">↻ Sync</button>
+                                <button type="button" class="xb-adm-mini-btn" onclick="execAdminCmd('open_admin_notifs')">🔔 ${adminNotifs.length}</button>
+                                <button type="button" class="xb-adm-mini-btn" onclick="openStoreGlobal3DTelemetry()">📊 3D</button>
+                            </div>
                         </div>
+                        <div class="xb-adm-kpi-row">
+                            <div class="xb-adm-kpi">
+                                <div class="xb-adm-kpi-lbl">Live Stock</div>
+                                <div class="xb-adm-kpi-val" style="color:#34d399;">${totalLiveAccounts}</div>
+                            </div>
+                            <div class="xb-adm-kpi">
+                                <div class="xb-adm-kpi-lbl">Need PAT</div>
+                                <div class="xb-adm-kpi-val" style="color:#fbbf24;">${patStats.missingCount}</div>
+                            </div>
+                            <div class="xb-adm-kpi">
+                                <div class="xb-adm-kpi-lbl">Flash/Code</div>
+                                <div class="xb-adm-kpi-val" style="color:#c084fc;">${activeFlashCount}/${customVouchers.length}</div>
+                            </div>
+                            <div class="xb-adm-kpi">
+                                <div class="xb-adm-kpi-lbl">Alerts</div>
+                                <div class="xb-adm-kpi-val" style="color:#38bdf8;">${adminNotifs.length}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. SEGMENTED 3-TAB BAR -->
+                    <div class="xb-adm-tabs">
+                        <button type="button" class="xb-adm-tab ${_adminActiveSubTab === 'studios' ? 'active' : ''}" onclick="switchAdminCockpitTab('studios')">Studios</button>
+                        <button type="button" class="xb-adm-tab ${_adminActiveSubTab === 'store' ? 'active' : ''}" onclick="switchAdminCockpitTab('store')">Store</button>
+                        <button type="button" class="xb-adm-tab ${_adminActiveSubTab === 'system' ? 'active' : ''}" onclick="switchAdminCockpitTab('system')">System</button>
+                    </div>
+
+                    <!-- 3. BENTO GRID 2x2 -->
+                    <div class="xb-bento-grid">
+                        ${cardsHtml}
+                    </div>
+                    ${sysDevToolsHtml}
+
+                    <!-- 4. SLIM FLASH SALE CONTROL BAR -->
+                    <div class="xb-adm-flash-bar">
+                        <div class="xb-adm-flash-left">
+                            <span class="xb-bento-ico" style="color:#fbbf24;border-color:rgba(251,191,36,0.45);">${svgIco.flash}</span>
+                            <div class="xb-bento-text">
+                                <div class="xb-bento-title">GitHub Flash Sale</div>
+                                <div class="xb-bento-sub">${isFlashOn ? `Live • ${activeFlashCount} Active Deal${activeFlashCount === 1 ? '' : 's'}` : 'Hidden from Storefront'}</div>
+                            </div>
+                        </div>
+                        <button type="button" class="xb-adm-flash-btn ${isFlashOn ? 'on' : 'off'}" onclick="execAdminCmd('toggle_flash')">
+                            <span>${isFlashOn ? '● LIVE' : '○ HIDDEN'}</span>
+                        </button>
                     </div>
                 </div>
             `;
