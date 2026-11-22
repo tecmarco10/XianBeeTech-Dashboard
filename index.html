@@ -6464,8 +6464,8 @@
                     {
                         icon: '🖥️',
                         accent: '#10b981',
-                        title: 'Stealth PC Cockpit v2',
-                        desc: '8 Stealth Modules, Live Telemetry Monitor & PC Vault Control',
+                        title: 'GitHub Stealth Command',
+                        desc: 'Local PC Automation Suite, Live Telemetry & Checkpoint Vault',
                         badge: localStorage.getItem('xb_pc_bridge_url') ? 'Bridge Ready' : 'Connect PC',
                         badgeColor: localStorage.getItem('xb_pc_bridge_url') ? 'var(--success)' : 'var(--warning)',
                         action: "execAdminCmd('open_pc_stealth_studio')"
@@ -7549,6 +7549,27 @@ let _ghAgeCheckerResults = [];
             }
         }
 
+        function _cachePatAgeAuditLocal_(itemsArr) {
+            try {
+                const prev = JSON.parse(localStorage.getItem('xb_pat_age_audit_cache') || '[]');
+                const byKey = new Map();
+                prev.forEach(x => { if (x && x.patToken) byKey.set(String(x.patToken), x); });
+                (itemsArr || []).forEach(it => {
+                    if (!it || !it.patToken || it.isFlagged404 || it.isInvalidPat) return;
+                    const uname = String(it.username || '').replace(/^@/, '').trim();
+                    if (!uname || uname.startsWith('(')) return;
+                    const yrMatch = String(it.createdIso || it.createdText || '').match(/\b(20\d{2})\b/);
+                    byKey.set(String(it.patToken), {
+                        username: uname,
+                        patToken: String(it.patToken).trim(),
+                        year: yrMatch ? yrMatch[1] : 'Unknown',
+                        createdText: it.createdText || ''
+                    });
+                });
+                localStorage.setItem('xb_pat_age_audit_cache', JSON.stringify(Array.from(byKey.values())));
+            } catch (e) {}
+        }
+
         async function syncTab1DirectToPatAgeAudit_() {
             const directItems = (_ghPatCheckerResults || []).map(p => {
                 if (p.active && p.username) {
@@ -7588,6 +7609,7 @@ let _ghAgeCheckerResults = [];
                 };
             });
             if (directItems.length === 0) return;
+            _cachePatAgeAuditLocal_(directItems);
 
             const chunkSize = 100;
             for (let c = 0; c < directItems.length; c += chunkSize) {
@@ -7972,12 +7994,14 @@ let _ghAgeCheckerResults = [];
         }
 
 // =========================================================================
-        // 🖥️ STEALTH PC COCKPIT v2 (60FPS SMOOTH • PAT-STYLE LIVE MONITOR • VAULT)
+        // 🖥️ GITHUB STEALTH COMMAND (100% ENGLISH • AUDIT STOCK • SYNC TELEMETRY)
         // =========================================================================
         let _pcCockpitTab = 'mission';        // 'mission' | 'monitor' | 'vault'
-        let _pcTokSrc = 'tokens_txt';         // 'tokens_txt' | 'stock' | 'paste'
+        let _pcTokSrc = 'stock';              // 'stock' | 'paste'
         let _pcModule = 'omni';               // omni | repo | profile | workflow | boost | badges | commit | audit
         let _pcStockPicked = new Set();
+        let _pcAuditStockRows = [];
+        let _pcAuditStockLoaded = false;
         let _pcTelPollTimer = null;
         let _pcCdTickTimer = null;
         let _pcCdUntilMs = 0;
@@ -7989,14 +8013,14 @@ let _ghAgeCheckerResults = [];
         let _pcBoostSpeed = '2';
 
         const PC_MODULES_LIST = [
-            { id: 'omni',     icon: '👑', label: 'OMNI Suite' },
-            { id: 'repo',     icon: '🏗️', label: 'Repo Cloner' },
-            { id: 'profile',  icon: '🎨', label: 'Pro Profile' },
-            { id: 'workflow', icon: '⏰', label: 'Auto Workflow' },
-            { id: 'boost',    icon: '🚀', label: 'Boost Engine' },
-            { id: 'badges',   icon: '🏅', label: 'Badge V3' },
-            { id: 'commit',   icon: '🟩', label: 'Organic Commit' },
-            { id: 'audit',    icon: '🔍', label: 'Audit PAT' }
+            { id: 'omni',     icon: '👑', label: 'Omni Automation' },
+            { id: 'repo',     icon: '🏗️', label: 'Repository Sync' },
+            { id: 'profile',  icon: '🎨', label: 'Profile Builder' },
+            { id: 'workflow', icon: '⏰', label: 'Workflow Engine' },
+            { id: 'boost',    icon: '🚀', label: 'Growth Booster' },
+            { id: 'badges',   icon: '🏅', label: 'Achievement Lab' },
+            { id: 'commit',   icon: '🟩', label: 'Commit History' },
+            { id: 'audit',    icon: '🔍', label: 'Token Inspector' }
         ];
 
         function getPcBridgeCfg() {
@@ -8008,7 +8032,7 @@ let _ghAgeCheckerResults = [];
         function savePcBridgeCfg(rawOverride = null) {
             const cEl = document.getElementById('pcBridgeComboInp');
             const raw = String(rawOverride !== null ? rawOverride : (cEl ? cEl.value : '')).trim();
-            if (!raw) return showToast('⚠️ Paste URL|Password dari Telegram dulu!');
+            if (!raw) return showToast('⚠️ Paste URL|Password from Telegram first!');
             let url = '', key = '';
             if (raw.includes('|')) {
                 const idx = raw.indexOf('|');
@@ -8020,24 +8044,24 @@ let _ghAgeCheckerResults = [];
                 key = (parts[1] || '').trim();
             }
             url = url.replace(/\/+$/, '');
-            if (!/^https?:\/\//i.test(url)) return showToast('⚠️ Format wajib: https://xxx.trycloudflare.com|Password');
+            if (!/^https?:\/\//i.test(url)) return showToast('⚠️ Required format: https://xxx.trycloudflare.com|Password');
             if (!key) key = localStorage.getItem('xb_pc_bridge_key') || 'Tiana01';
             localStorage.setItem('xb_pc_bridge_url', url);
             localStorage.setItem('xb_pc_bridge_key', key);
             if (cEl) cEl.value = `${url}|${key}`;
-            showToast('🔌 Bridge disimpan! Mengecek koneksi PC...');
+            showToast('🔌 Bridge saved! Testing local PC connection...');
             pingPcBridgeStatus(true);
         }
 
         async function pasteAndPingPcBridge() {
             try {
                 const txt = (await navigator.clipboard.readText() || '').trim();
-                if (!txt) return showToast('⚠️ Clipboard kosong! Copy dulu dari Telegram.');
+                if (!txt) return showToast('⚠️ Clipboard is empty! Copy URL|Password from Telegram first.');
                 const cEl = document.getElementById('pcBridgeComboInp');
                 if (cEl) cEl.value = txt;
                 savePcBridgeCfg(txt);
             } catch (e) {
-                showToast('⚠️ Paste manual di kotak atas lalu klik Save & Ping.');
+                showToast('⚠️ Paste manually above, then click Save & Ping.');
             }
         }
 
@@ -8049,7 +8073,6 @@ let _ghAgeCheckerResults = [];
         async function pingPcBridgeStatus(notify = false) {
             const { url, key } = getPcBridgeCfg();
             const pill = document.getElementById('pcBridgeStatusPill');
-            const txtCnt = document.getElementById('pcTokensTxtCountLbl');
             if (!url) {
                 if (pill) { pill.innerText = '🔴 OFF'; pill.style.color = 'var(--danger)'; }
                 return;
@@ -8063,19 +8086,18 @@ let _ghAgeCheckerResults = [];
                     pill.innerText = isRun ? `⚡ ${data.pct || 0}%` : '🟢 ON';
                     pill.style.color = isRun ? 'var(--warning)' : 'var(--success)';
                 }
-                if (txtCnt) txtCnt.innerText = `${data.tokens_txt_count || 0} tokens di PC`;
                 if (data.status === 'RUNNING') {
                     switchPcCockpitTab('monitor');
                     startPcTelemetryPolling();
                 }
                 if (notify) {
-                    showToast(`🟢 PC Bridge Terhubung! (${data.tokens_txt_count} token di tokens.txt)`);
+                    showToast('🟢 Local PC Bridge connected & ready!');
                     const cfgBox = document.getElementById('pcBridgeCfgDrawer');
                     if (cfgBox) cfgBox.style.display = 'none';
                 }
             } catch (e) {
                 if (pill) { pill.innerText = '🔴 OFF'; pill.style.color = 'var(--danger)'; }
-                if (notify) showToast(`❌ Gagal terhubung ke PC Bridge (${e.message})`);
+                if (notify) showToast(`❌ Unable to reach PC Bridge (${e.message})`);
             }
         }
 
@@ -8084,11 +8106,37 @@ let _ghAgeCheckerResults = [];
             const st = document.createElement('style');
             st.id = 'xbPcCockpitCss';
             st.textContent = `
+                #paymentGatewayModal.pc-wide-modal { padding: 7px; }
+                #paymentGatewayModal.pc-wide-modal > #paymentGatewayBody {
+                    max-width: 590px;
+                    max-height: 95dvh;
+                    padding: 11px 12px;
+                    border-radius: 16px;
+                }
+                .pc-top-title-bar {
+                    position: relative;
+                    border-top: 3px double #38bdf8;
+                    border-bottom: 3px double #a855f7;
+                    background: linear-gradient(90deg, rgba(56,189,248,0.08) 0%, rgba(168,85,247,0.12) 50%, rgba(56,189,248,0.08) 100%);
+                    padding: 7px 36px;
+                    border-radius: 10px;
+                    text-align: center;
+                }
+                .pc-sub-status-row {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 6px;
+                    background: var(--bg-input);
+                    border: 1px solid rgba(56,189,248,0.35);
+                    border-radius: 9px;
+                    padding: 4px 7px;
+                }
                 .pc-dbl-hdr {
                     border-top: 3px double #38bdf8;
                     border-bottom: 3px double #a855f7;
                     background: linear-gradient(90deg, rgba(56,189,248,0.08) 0%, rgba(168,85,247,0.12) 50%, rgba(56,189,248,0.08) 100%);
-                    padding: 5px 10px;
+                    padding: 6px 10px;
                     border-radius: 10px;
                     text-align: center;
                     font-family: 'JetBrains Mono', monospace;
@@ -8108,6 +8156,47 @@ let _ghAgeCheckerResults = [];
                     color: #38bdf8;
                     text-transform: uppercase;
                 }
+                .pc-field-box {
+                    background: var(--bg-surface);
+                    border: 1px solid rgba(148,163,184,0.32);
+                    border-radius: 9px;
+                    padding: 5px 6px;
+                    min-width: 0;
+                    display: flex;
+                    flex-direction: column;
+                    gap: 4px;
+                }
+                .pc-field-lbl {
+                    display: block;
+                    width: 100%;
+                    text-align: center;
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 0.52rem;
+                    font-weight: 800;
+                    color: #38bdf8;
+                    letter-spacing: 0.45px;
+                    text-transform: uppercase;
+                    border-top: 1px solid rgba(56,189,248,0.38);
+                    border-bottom: 1px solid rgba(168,85,247,0.38);
+                    padding: 2px 3px;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                }
+                .pc-year-hdr {
+                    border-top: 2px solid rgba(56,189,248,0.55);
+                    border-bottom: 2px solid rgba(168,85,247,0.55);
+                    background: rgba(56,189,248,0.09);
+                    border-radius: 7px;
+                    padding: 4px 8px;
+                    text-align: center;
+                    font-family: 'JetBrains Mono', monospace;
+                    font-size: 0.58rem;
+                    font-weight: 800;
+                    color: #38bdf8;
+                    letter-spacing: 0.5px;
+                    cursor: pointer;
+                }
                 .pc-mod-btn {
                     width: 100%;
                     min-width: 0;
@@ -8117,7 +8206,7 @@ let _ghAgeCheckerResults = [];
                     background: var(--bg-surface);
                     color: var(--text-secondary);
                     font-family: 'Plus Jakarta Sans', sans-serif;
-                    font-size: 0.68rem;
+                    font-size: 0.67rem;
                     font-weight: 800;
                     cursor: pointer;
                     display: flex;
@@ -8170,26 +8259,29 @@ let _ghAgeCheckerResults = [];
                 </button>
             `).join('');
 
+            modal.classList.add('pc-wide-modal');
             body.innerHTML = `
-                <div style="display:flex;flex-direction:column;gap:7px;height:calc(100dvh - 44px);max-height:86vh;overflow:hidden;">
-                    <!-- TOP DOUBLE-LINE CENTERED HEADER (IDENTIK PAT GENERATOR) -->
-                    <div class="pc-dbl-hdr" style="position:relative;flex-shrink:0;padding:6px 68px 6px 46px;">
-                        <button type="button" class="top-pill" title="Bridge Settings" style="position:absolute;left:6px;top:50%;transform:translateY(-50%);padding:4px 7px;font-size:0.65rem;border-color:#38bdf8;color:#38bdf8;" onclick="togglePcBridgeSettingsBox()">⚙️</button>
-                        <div style="font-size:0.5rem;font-weight:800;color:#38bdf8;letter-spacing:0.8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                            LOCAL PC ENGINE • ZERO-LAG COCKPIT
-                        </div>
-                        <h3 style="margin:1px 0 0 0;font-size:0.88rem;font-weight:800;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                            🖥️ Stealth PC Cockpit v2
+                <div style="display:flex;flex-direction:column;gap:7px;height:calc(95dvh - 26px);max-height:91dvh;overflow:hidden;">
+                    <!-- ROW 1: PROFESSIONAL CENTERED TITLE WITH TOP & BOTTOM DOUBLE LINES -->
+                    <div class="pc-top-title-bar" style="flex-shrink:0;">
+                        <h3 style="margin:0;font-size:0.94rem;font-weight:800;letter-spacing:0.3px;background:var(--grad-primary);-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            🖥️ GitHub Stealth Command
                         </h3>
-                        <div style="position:absolute;right:6px;top:50%;transform:translateY(-50%);display:flex;align-items:center;gap:4px;">
-                            <span id="pcBridgeStatusPill" style="font-size:0.55rem;font-weight:800;color:var(--warning);background:var(--bg-surface);border:1px solid var(--border-subtle);padding:3px 5px;border-radius:6px;cursor:pointer;" onclick="pingPcBridgeStatus(true)">⏳</span>
-                            <button type="button" class="top-pill" style="padding:4px 7px;font-size:0.68rem;" onclick="closeAdminPcStealthStudio()">✕</button>
-                        </div>
+                        <button type="button" class="top-pill" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:4px 8px;font-size:0.68rem;" onclick="closeAdminPcStealthStudio()">✕</button>
                     </div>
 
-                    <!-- BRIDGE CONFIG DRAWER (1 KOTAK: URL|PASSWORD) -->
+                    <!-- ROW 2 (BELOW LINES): SETTINGS ICON | LOCAL PC ENGINE • ZERO-LAG | ON STATUS -->
+                    <div class="pc-sub-status-row" style="flex-shrink:0;">
+                        <button type="button" class="top-pill" title="Bridge Connection Settings" style="padding:4px 8px;font-size:0.62rem;border-color:#38bdf8;color:#38bdf8;" onclick="togglePcBridgeSettingsBox()">⚙️ Settings</button>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:#38bdf8;letter-spacing:0.7px;text-align:center;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            LOCAL PC ENGINE • ZERO-LAG
+                        </div>
+                        <span id="pcBridgeStatusPill" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--warning);background:var(--bg-surface);border:1px solid var(--border-subtle);padding:4px 7px;border-radius:7px;cursor:pointer;flex-shrink:0;" onclick="pingPcBridgeStatus(true)">⏳ CHECK</span>
+                    </div>
+
+                    <!-- BRIDGE CONFIG DRAWER (SINGLE INPUT: URL|PASSWORD) -->
                     <div id="pcBridgeCfgDrawer" style="display:${showCfgInit ? 'flex' : 'none'};flex-shrink:0;flex-direction:column;gap:5px;background:var(--bg-card);border:1px solid var(--border-focus);border-left:3.5px solid #38bdf8;border-radius:10px;padding:7px 9px;">
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#38bdf8;text-align:center;">🔌 PASTE URL|PASSWORD DARI TELEGRAM (1 KOTAK)</div>
+                        <div class="pc-field-lbl">🔌 PASTE URL|PASSWORD FROM TELEGRAM</div>
                         <input type="text" id="pcBridgeComboInp" class="form-input" value="${cfg.url ? `${cfg.url}|${cfg.key}`.replace(/"/g, '&quot;') : ''}" style="padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;" placeholder="https://xxxx.trycloudflare.com|Password">
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
                             <button type="button" class="btn-ui secondary" style="padding:6px 8px;font-size:0.64rem;border-color:#38bdf8;color:#38bdf8;" onclick="pasteAndPingPcBridge()">📋 Paste &amp; Ping</button>
@@ -8214,50 +8306,30 @@ let _ghAgeCheckerResults = [];
                             </div>
                         </div>
 
-                        <!-- 2. TOKEN SOURCE (3 CLEAN CENTERED TABS) -->
+                        <!-- 2. ACCOUNT SOURCE (2 CLEAN TABS: PAT_AGE_AUDIT STOCK & PASTE PAT) -->
                         <div style="background:var(--bg-input);border:1px solid rgba(168,85,247,0.4);border-radius:11px;padding:7px 8px;display:flex;flex-direction:column;gap:6px;">
-                            <span class="pc-sec-lbl" style="color:#c084fc;">🔑 PAT TOKEN SOURCE (<span id="pcTokensTxtCountLbl" style="color:var(--success);">-</span>)</span>
-                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
-                                <button type="button" id="pcSrcBtn_tokens_txt" class="pc-mod-btn active" style="padding:6px 3px;font-size:0.61rem;" onclick="switchPcTokenSource('tokens_txt')">📄 tokens.txt</button>
-                                <button type="button" id="pcSrcBtn_stock"      class="pc-mod-btn" style="padding:6px 3px;font-size:0.61rem;" onclick="switchPcTokenSource('stock')">📦 Data Stok</button>
-                                <button type="button" id="pcSrcBtn_paste"      class="pc-mod-btn" style="padding:6px 3px;font-size:0.61rem;" onclick="switchPcTokenSource('paste')">✍️ Paste PAT</button>
+                            <span class="pc-sec-lbl" style="color:#c084fc;">🔑 TARGET ACCOUNT SOURCE (PAT_AGE_AUDIT)</span>
+                            <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
+                                <button type="button" id="pcSrcBtn_stock" class="pc-mod-btn active" style="padding:6px 4px;font-size:0.63rem;" onclick="switchPcTokenSource('stock')">📦 Audit Stock</button>
+                                <button type="button" id="pcSrcBtn_paste" class="pc-mod-btn" style="padding:6px 4px;font-size:0.63rem;" onclick="switchPcTokenSource('paste')">✍️ Paste PAT</button>
                             </div>
 
-                            <!-- SOURCE 1: tokens.txt -->
-                            <div id="pcSrcBox_tokens_txt" style="display:flex;flex-direction:column;gap:5px;">
-                                <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
-                                    <div>
-                                        <div style="font-size:0.54rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">BARIS MULAI</div>
-                                        <input type="number" id="pcBatchStartInp" class="form-input" value="1" min="1" style="padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.74rem;">
-                                    </div>
-                                    <div>
-                                        <div style="font-size:0.54rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">BARIS AKHIR (0 = Semua)</div>
-                                        <input type="number" id="pcBatchEndInp" class="form-input" value="5" min="0" style="padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.74rem;">
-                                    </div>
+                            <!-- SOURCE 1: PAT_AGE_AUDIT STOCK GROUPED BY YEAR -->
+                            <div id="pcSrcBox_stock" style="display:flex;flex-direction:column;gap:5px;">
+                                <div style="display:grid;grid-template-columns:1fr auto auto auto;gap:4px;">
+                                    <input type="text" id="pcStockSearchInp" class="form-input" placeholder="🔍 Filter @username or year..." style="padding:6px 8px;font-size:0.67rem;" oninput="renderPcAuditStockList()">
+                                    <button type="button" class="top-pill" title="Refresh PAT_Age_Audit" style="padding:5px 7px;font-size:0.6rem;color:#38bdf8;border-color:#38bdf8;" onclick="loadPcAuditStock(true)">↻</button>
+                                    <button type="button" class="top-pill" style="padding:5px 7px;font-size:0.6rem;color:var(--success);border-color:var(--success);" onclick="selectAllFilteredPcStock()">☑️ All</button>
+                                    <button type="button" class="top-pill" style="padding:5px 7px;font-size:0.6rem;color:var(--danger);" onclick="_pcStockPicked.clear();renderPcAuditStockList();">✕</button>
                                 </div>
-                                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
-                                    <button type="button" class="top-pill" style="justify-content:center;padding:4px 2px;font-size:0.58rem;" onclick="setPcBatchPreset(1,5)">1–5</button>
-                                    <button type="button" class="top-pill" style="justify-content:center;padding:4px 2px;font-size:0.58rem;" onclick="setPcBatchPreset(1,10)">1–10</button>
-                                    <button type="button" class="top-pill" style="justify-content:center;padding:4px 2px;font-size:0.58rem;" onclick="setPcBatchPreset(1,25)">1–25</button>
-                                    <button type="button" class="top-pill" style="justify-content:center;padding:4px 2px;font-size:0.58rem;color:var(--success);border-color:var(--success);" onclick="setPcBatchPreset(1,0)">Semua</button>
-                                </div>
+                                <div id="pcStockPickedCount" style="font-family:'JetBrains Mono',monospace;font-size:0.57rem;color:var(--accent-cyan);font-weight:800;text-align:center;">0 selected • Loading PAT_Age_Audit...</div>
+                                <div id="pcStockPickerList" style="max-height:170px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;padding-right:2px;"></div>
                             </div>
 
-                            <!-- SOURCE 2: Data Stok Web App -->
-                            <div id="pcSrcBox_stock" style="display:none;flex-direction:column;gap:5px;">
-                                <div style="display:grid;grid-template-columns:1fr auto auto;gap:5px;">
-                                    <input type="text" id="pcStockSearchInp" class="form-input" placeholder="🔍 Cari @username / tahun..." style="padding:6px 8px;font-size:0.68rem;" oninput="renderPcStockPicker()">
-                                    <button type="button" class="top-pill" style="padding:5px 8px;font-size:0.6rem;color:var(--success);border-color:var(--success);" onclick="selectAllFilteredPcStock()">☑️ All</button>
-                                    <button type="button" class="top-pill" style="padding:5px 8px;font-size:0.6rem;color:var(--danger);" onclick="_pcStockPicked.clear();renderPcStockPicker();">✕</button>
-                                </div>
-                                <div id="pcStockPickedCount" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--accent-cyan);font-weight:800;text-align:center;">0 dipilih</div>
-                                <div id="pcStockPickerList" style="max-height:110px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
-                            </div>
-
-                            <!-- SOURCE 3: Paste PAT -->
+                            <!-- SOURCE 2: PASTE PAT -->
                             <div id="pcSrcBox_paste" style="display:none;flex-direction:column;gap:4px;">
-                                <textarea id="pcPasteTokensInp" class="form-input" rows="3" style="padding:6px 8px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;resize:none;" placeholder="Paste PAT token (ghp_xxxx...), pisahkan baris/koma..." oninput="updatePcPasteCount()"></textarea>
-                                <div id="pcPasteCountLbl" style="font-family:'JetBrains Mono',monospace;font-size:0.57rem;color:var(--success);font-weight:800;text-align:center;">0 PAT valid terdeteksi</div>
+                                <textarea id="pcPasteTokensInp" class="form-input" rows="4" style="padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:0.68rem;resize:none;" placeholder="Paste one or more PAT tokens (ghp_xxxx...), separated by newline or comma..." oninput="updatePcPasteCount()"></textarea>
+                                <div id="pcPasteCountLbl" style="font-family:'JetBrains Mono',monospace;font-size:0.57rem;color:var(--success);font-weight:800;text-align:center;">0 valid PAT tokens detected</div>
                             </div>
                         </div>
 
@@ -8269,25 +8341,25 @@ let _ghAgeCheckerResults = [];
 
                         <!-- LAUNCH CTA -->
                         <button type="button" id="btnLaunchPcMission" class="btn-ui primary" style="flex:none;width:100%;height:40px;font-size:0.78rem;border-radius:10px;" onclick="launchPcMission()">
-                            🚀 Launch Mission on PC
+                            🚀 Launch Mission on Local PC
                         </button>
                     </div>
 
-                    <!-- ==================== TAB 2: LIVE MONITOR (PAT GENERATOR STYLE) ==================== -->
+                    <!-- ==================== TAB 2: LIVE MONITOR ==================== -->
                     <div id="pcView_monitor" style="flex:1;min-height:0;display:none;flex-direction:column;justify-content:space-between;gap:6px;overflow:hidden;">
                         <!-- DOUBLE-LINE CENTERED TELEMETRY HEADER -->
                         <div class="pc-dbl-hdr" style="padding:5px 8px;flex-shrink:0;">
                             <div id="pcMonHeaderTitle" style="font-size:0.68rem;font-weight:800;color:#38bdf8;letter-spacing:0.5px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                ⏳ WAITING FOR PC MISSION QUEUE...
+                                ⏳ WAITING FOR MISSION QUEUE...
                             </div>
                             <div style="margin-top:3px;display:flex;justify-content:center;align-items:center;">
                                 <span id="pcMonHeaderBadge" style="font-size:0.58rem;font-weight:800;color:var(--success);background:rgba(16,185,129,0.14);border:1px solid rgba(16,185,129,0.45);padding:1px 9px;border-radius:99px;">
-                                    Mission 0/0 • 0%
+                                    Target 0/0 • 0%
                                 </span>
                             </div>
                         </div>
 
-                        <!-- EXECUTION PROGRESS GAUGE + 4-STAGE PIPELINE -->
+                        <!-- SYNCHRONIZED PROGRESS GAUGE + 4-STAGE PIPELINE -->
                         <div style="background:linear-gradient(180deg, rgba(15,23,42,0.95) 0%, rgba(11,13,20,0.98) 100%);border:1.5px solid rgba(129,140,248,0.5);border-radius:12px;padding:7px 9px;flex-shrink:0;">
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;font-family:'JetBrains Mono',monospace;">
                                 <span style="font-size:0.56rem;font-weight:800;color:#94a3b8;letter-spacing:0.6px;">⚡ EXECUTION PROGRESS</span>
@@ -8300,10 +8372,10 @@ let _ghAgeCheckerResults = [];
                                 <div style="position:absolute;left:75%;top:0;bottom:0;width:1px;background:rgba(255,255,255,0.16);pointer-events:none;"></div>
                             </div>
                             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;text-align:center;">
-                                <div id="pcStagePill1" style="padding:4px 2px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);">1. Init<div style="font-size:0.49rem;opacity:0.8;">25%</div></div>
-                                <div id="pcStagePill2" style="padding:4px 2px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);">2. Process<div style="font-size:0.49rem;opacity:0.8;">55%</div></div>
-                                <div id="pcStagePill3" style="padding:4px 2px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);">3. Sync<div style="font-size:0.49rem;opacity:0.8;">85%</div></div>
-                                <div id="pcStagePill4" style="padding:4px 2px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);">4. Done<div style="font-size:0.49rem;opacity:0.8;">100%</div></div>
+                                <div id="pcStagePill1" style="padding:4px 2px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);">1. Auth<div style="font-size:0.49rem;opacity:0.8;">Idle</div></div>
+                                <div id="pcStagePill2" style="padding:4px 2px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);">2. Execute<div style="font-size:0.49rem;opacity:0.8;">Idle</div></div>
+                                <div id="pcStagePill3" style="padding:4px 2px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);">3. Verify<div style="font-size:0.49rem;opacity:0.8;">Idle</div></div>
+                                <div id="pcStagePill4" style="padding:4px 2px;border-radius:7px;border:1px solid rgba(148,163,184,0.35);color:var(--text-muted);">4. Done<div style="font-size:0.49rem;opacity:0.8;">Idle</div></div>
                             </div>
                         </div>
 
@@ -8332,12 +8404,12 @@ let _ghAgeCheckerResults = [];
                                 </div>
                             </div>
                             <div id="pcMonStreamBox" style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;flex:1;min-height:0;overflow-y:auto;background:var(--bg-surface);border:1px solid rgba(148,163,184,0.28);border-radius:8px;padding:6px 7px;">
-                                <div style="color:var(--text-muted);text-align:center;padding:12px;">Siap menerima telemetry dari PC lokal...</div>
+                                <div style="color:var(--text-muted);text-align:center;padding:12px;">Ready to receive live telemetry from local PC...</div>
                             </div>
                         </div>
 
-                        <!-- MISSION TARGETS & STATUS VAULT -->
-                        <div style="background:var(--bg-input);border:1px solid rgba(16,185,129,0.5);border-radius:11px;padding:7px 9px;flex:0.95;min-height:88px;max-height:130px;display:flex;flex-direction:column;">
+                        <!-- MISSION TARGETS & STATUS -->
+                        <div style="background:var(--bg-input);border:1px solid rgba(16,185,129,0.5);border-radius:11px;padding:7px 9px;flex:0.95;min-height:88px;max-height:135px;display:flex;flex-direction:column;">
                             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;flex-shrink:0;">
                                 <span style="font-family:'JetBrains Mono',monospace;font-size:0.57rem;font-weight:800;color:var(--success);">📋 MISSION TARGETS &amp; STATUS</span>
                                 <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.55rem;color:var(--success);border-color:rgba(16,185,129,0.45);" onclick="copyPcMonitorLogs()">📋 Copy Log</button>
@@ -8364,14 +8436,14 @@ let _ghAgeCheckerResults = [];
                         </div>
 
                         <div style="background:var(--bg-input);border:1px solid rgba(245,158,11,0.45);border-radius:11px;padding:8px 9px;display:flex;flex-direction:column;gap:6px;">
-                            <span class="pc-sec-lbl" style="color:var(--warning);">♻️ PENDING CHECKPOINT JOBS (jobs/)</span>
+                            <span class="pc-sec-lbl" style="color:var(--warning);">♻️ PENDING CHECKPOINT JOBS</span>
                             <div id="pcPendingJobsList" style="display:flex;flex-direction:column;gap:5px;"></div>
                         </div>
 
                         <div style="background:var(--bg-input);border:1px solid rgba(56,189,248,0.45);border-radius:11px;padding:8px 9px;display:flex;flex-direction:column;gap:6px;">
                             <span class="pc-sec-lbl">🛡️ VAULT &amp; AUDIT EXPORT TOOLS</span>
                             <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
-                                <button type="button" class="btn-ui secondary" style="padding:8px 5px;font-size:0.63rem;color:var(--success);border-color:rgba(16,185,129,0.45);" onclick="copyPcExportFile('pat_active.txt')">📋 Copy pat_active</button>
+                                <button type="button" class="btn-ui secondary" style="padding:8px 5px;font-size:0.63rem;color:var(--success);border-color:rgba(16,185,129,0.45);" onclick="copyPcExportFile('pat_active.txt')">📋 Copy Active PATs</button>
                                 <button type="button" class="btn-ui secondary" style="padding:8px 5px;font-size:0.63rem;color:#c084fc;border-color:rgba(192,132,252,0.45);" onclick="copyPcExportFile('pat_flagged_404.txt')">📋 Copy 404 Flagged</button>
                                 <button type="button" class="btn-ui secondary" style="padding:8px 5px;font-size:0.63rem;color:var(--danger);border-color:rgba(239,68,68,0.45);" onclick="clearPcDeadQuarantine()">🧹 Clear Dead 401</button>
                                 <button type="button" class="btn-ui secondary" style="padding:8px 5px;font-size:0.63rem;color:#38bdf8;border-color:rgba(56,189,248,0.45);" onclick="loadPcVaultAndJobs(true)">↻ Refresh Vault</button>
@@ -8385,12 +8457,17 @@ let _ghAgeCheckerResults = [];
             switchPcTokenSource(_pcTokSrc);
             switchPcCockpitTab(_pcCockpitTab);
             modal.classList.add('active');
-            requestAnimationFrame(() => setTimeout(() => pingPcBridgeStatus(false), 90));
+            requestAnimationFrame(() => setTimeout(() => {
+                pingPcBridgeStatus(false);
+                loadPcAuditStock(false);
+            }, 80));
         }
 
         function closeAdminPcStealthStudio() {
             if (_pcTelPollTimer) { clearInterval(_pcTelPollTimer); _pcTelPollTimer = null; }
             stopPcCdTicker(true);
+            const modal = document.getElementById('paymentGatewayModal');
+            if (modal) modal.classList.remove('pc-wide-modal');
             closeModal('paymentGatewayModal');
         }
 
@@ -8405,21 +8482,14 @@ let _ghAgeCheckerResults = [];
             if (tab === 'vault') loadPcVaultAndJobs(false);
         }
 
-        function setPcBatchPreset(s, e) {
-            const si = document.getElementById('pcBatchStartInp');
-            const ei = document.getElementById('pcBatchEndInp');
-            if (si) si.value = s;
-            if (ei) ei.value = e;
-        }
-
         function switchPcTokenSource(src) {
             _pcTokSrc = src;
-            ['tokens_txt', 'stock', 'paste'].forEach(k => {
+            ['stock', 'paste'].forEach(k => {
                 document.getElementById(`pcSrcBtn_${k}`)?.classList.toggle('active', k === src);
                 const box = document.getElementById(`pcSrcBox_${k}`);
                 if (box) box.style.display = (k === src) ? 'flex' : 'none';
             });
-            if (src === 'stock') renderPcStockPicker();
+            if (src === 'stock') renderPcAuditStockList();
         }
 
         function updatePcPasteCount() {
@@ -8427,51 +8497,153 @@ let _ghAgeCheckerResults = [];
             const m = raw.match(/(ghp_[A-Za-z0-9]{20,60}|github_pat_[A-Za-z0-9_]{20,100})/g) || [];
             const uniq = new Set(m);
             const el = document.getElementById('pcPasteCountLbl');
-            if (el) el.innerText = `${uniq.size} PAT valid terdeteksi`;
+            if (el) el.innerText = `${uniq.size} valid PAT token(s) detected`;
         }
 
-        function getFilteredPcStockWithPat() {
+        function _collectLocalPatAuditFallback_() {
+            const map = new Map();
+            const addRow = (uname, pat, yrRaw) => {
+                const u = String(uname || '').replace(/^@/, '').trim();
+                const p = String(pat || '').trim();
+                if (!u || u.startsWith('(') || p.length < 20) return;
+                const ym = String(yrRaw || '').match(/\b(20\d{2})\b/);
+                const yr = ym ? ym[1] : 'Unknown';
+                map.set(p, { username: u, patToken: p, year: yr });
+            };
+            // 1. Live PAT Checker memory
+            (_ghAgeCheckerResults || []).forEach(r => {
+                if (r.patToken && !String(r.createdText || '').includes('404')) addRow(r.username, r.patToken, r.createdIso || r.createdText);
+            });
+            (_ghPatCheckerResults || []).forEach(r => {
+                if (r.active && r.token) addRow(r.username, r.token, r.createdAt);
+            });
+            // 2. LocalStorage PAT_Age_Audit cache
+            try {
+                const cached = JSON.parse(localStorage.getItem('xb_pat_age_audit_cache') || '[]');
+                cached.forEach(c => addRow(c.username, c.patToken, c.year || c.createdText));
+            } catch (e) {}
+            // 3. Fallback Sheet1 accounts that already have PAT
+            (allLiveAccountsFlat || []).forEach(a => {
+                if (a && a.pat && String(a.pat).trim().length >= 20) {
+                    addRow(a.username, a.pat, a.year || a._cat_key || a.category);
+                }
+            });
+            return Array.from(map.values());
+        }
+
+        async function loadPcAuditStock(forceRefresh = false) {
+            if (!_pcAuditStockLoaded || forceRefresh) {
+                _pcAuditStockRows = _collectLocalPatAuditFallback_();
+                renderPcAuditStockList();
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'pull_pat_age_audit' })
+                    });
+                    const json = await res.json();
+                    if (json && json.result && Array.isArray(json.items) && json.items.length > 0) {
+                        const merged = new Map();
+                        json.items.forEach(it => {
+                            const u = String(it.username || '').replace(/^@/, '').trim();
+                            const p = String(it.patToken || it.pat || '').trim();
+                            if (!u || p.length < 20) return;
+                            const ym = String(it.year || it.createdIso || it.createdText || '').match(/\b(20\d{2})\b/);
+                            merged.set(p, { username: u, patToken: p, year: ym ? ym[1] : 'Unknown' });
+                        });
+                        _pcAuditStockRows = Array.from(merged.values());
+                        localStorage.setItem('xb_pat_age_audit_cache', JSON.stringify(_pcAuditStockRows));
+                        if (forceRefresh) showToast(`↻ Synced ${_pcAuditStockRows.length} accounts from PAT_Age_Audit!`);
+                    } else if (forceRefresh) {
+                        showToast(`ℹ️ Loaded ${_pcAuditStockRows.length} cached Audit accounts.`);
+                    }
+                } catch (e) {}
+                _pcAuditStockLoaded = true;
+            }
+            renderPcAuditStockList();
+        }
+
+        function getFilteredPcAuditStock() {
             const q = (document.getElementById('pcStockSearchInp')?.value || '').trim().toLowerCase();
-            return (allLiveAccountsFlat || []).filter(acc => {
-                const pat = String(acc.pat || '').trim();
-                if (!pat || pat === '-' || pat.length < 20) return false;
+            return (_pcAuditStockRows || []).filter(row => {
                 if (!q) return true;
-                const u = String(acc.username || '').toLowerCase();
-                const c = String(acc._cat_key || acc.category || acc.year || '').toLowerCase();
-                return u.includes(q) || c.includes(q);
+                return row.username.toLowerCase().includes(q) || String(row.year).toLowerCase().includes(q);
             });
         }
 
-        function togglePcStockPick(uLow) {
-            if (_pcStockPicked.has(uLow)) _pcStockPicked.delete(uLow);
-            else _pcStockPicked.add(uLow);
-            renderPcStockPicker();
+        function togglePcStockPick(patTok) {
+            if (_pcStockPicked.has(patTok)) _pcStockPicked.delete(patTok);
+            else _pcStockPicked.add(patTok);
+            renderPcAuditStockList();
+        }
+
+        function togglePcYearGroupPick(yrKey) {
+            const inYear = getFilteredPcAuditStock().filter(r => String(r.year) === String(yrKey));
+            if (inYear.length === 0) return;
+            const allPicked = inYear.every(r => _pcStockPicked.has(r.patToken));
+            inYear.forEach(r => {
+                if (allPicked) _pcStockPicked.delete(r.patToken);
+                else _pcStockPicked.add(r.patToken);
+            });
+            renderPcAuditStockList();
         }
 
         function selectAllFilteredPcStock() {
-            getFilteredPcStockWithPat().forEach(a => _pcStockPicked.add(String(a.username || '').toLowerCase()));
-            renderPcStockPicker();
+            getFilteredPcAuditStock().forEach(r => _pcStockPicked.add(r.patToken));
+            renderPcAuditStockList();
         }
 
-        function renderPcStockPicker() {
+        function renderPcAuditStockList() {
             const listEl = document.getElementById('pcStockPickerList');
             const cntEl = document.getElementById('pcStockPickedCount');
             if (!listEl) return;
-            const filtered = getFilteredPcStockWithPat();
-            if (cntEl) cntEl.innerText = `${_pcStockPicked.size} dipilih (${filtered.length} stok ber-PAT)`;
+
+            const filtered = getFilteredPcAuditStock();
+            if (cntEl) cntEl.innerText = `${_pcStockPicked.size} Selected • ${filtered.length} Active in PAT_Age_Audit`;
+
             if (filtered.length === 0) {
-                listEl.innerHTML = `<div style="text-align:center;font-size:0.6rem;color:var(--text-muted);padding:8px;">Belum ada akun stok ber-PAT. Sync Sheet1 dulu atau pilih tokens.txt.</div>`;
+                listEl.innerHTML = `<div style="text-align:center;font-size:0.62rem;color:var(--text-muted);padding:12px;">No active accounts with PAT found in PAT_Age_Audit. Click ↻ or run PAT Checker first.</div>`;
                 return;
             }
-            listEl.innerHTML = filtered.slice(0, 60).map(acc => {
-                const u = String(acc.username || '');
-                const uLow = u.toLowerCase();
-                const picked = _pcStockPicked.has(uLow);
-                const yr = acc._cat_key || acc.year || '-';
+
+            // Group chronologically by year (Oldest -> Newest, Unknown at bottom)
+            const groups = new Map();
+            filtered.forEach(row => {
+                const yKey = String(row.year || 'Unknown');
+                if (!groups.has(yKey)) groups.set(yKey, []);
+                groups.get(yKey).push(row);
+            });
+
+            const sortedYears = Array.from(groups.keys()).sort((a, b) => {
+                const isA = /^20\d{2}$/.test(a);
+                const isB = /^20\d{2}$/.test(b);
+                if (isA && isB) return parseInt(a, 10) - parseInt(b, 10);
+                if (isA) return -1;
+                if (isB) return 1;
+                return a.localeCompare(b);
+            });
+
+            listEl.innerHTML = sortedYears.map(yr => {
+                const rows = groups.get(yr).sort((a, b) => a.username.localeCompare(b.username));
+                const pickedInYr = rows.filter(r => _pcStockPicked.has(r.patToken)).length;
+                const yrTitle = /^20\d{2}$/.test(yr) ? `GITHUB YEAR ${yr}` : `UNSORTED YEAR`;
+                const cards = rows.map(r => {
+                    const isPicked = _pcStockPicked.has(r.patToken);
+                    const masked = `${r.patToken.slice(0, 8)}•••${r.patToken.slice(-4)}`;
+                    return `
+                        <div onclick="togglePcStockPick('${r.patToken}')" style="background:var(--bg-surface);border:1px solid ${isPicked ? 'var(--success)' : 'var(--border-subtle)'};border-left:3.5px solid ${isPicked ? 'var(--success)' : '#38bdf8'};border-radius:8px;padding:5px 8px;display:flex;justify-content:space-between;align-items:center;gap:6px;cursor:pointer;font-family:'JetBrains Mono',monospace;">
+                            <span style="font-size:0.66rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${isPicked ? '✅' : '⬜'} @${r.username}</span>
+                            <span style="font-size:0.55rem;color:${isPicked ? 'var(--success)' : 'var(--text-muted)'};flex-shrink:0;">${masked}</span>
+                        </div>
+                    `;
+                }).join('');
+
                 return `
-                    <div onclick="togglePcStockPick('${uLow}')" style="background:var(--bg-surface);border:1px solid ${picked ? 'var(--success)' : 'var(--border-subtle)'};border-left:3px solid ${picked ? 'var(--success)' : '#38bdf8'};border-radius:8px;padding:5px 8px;display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-family:'JetBrains Mono',monospace;">
-                        <span style="font-size:0.65rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${picked ? '✅' : '⬜'} @${u} <span style="color:#38bdf8;font-size:0.57rem;">(${yr})</span></span>
-                        <span style="font-size:0.55rem;color:var(--success);flex-shrink:0;">PAT OK</span>
+                    <div style="display:flex;flex-direction:column;gap:4px;">
+                        <div class="pc-year-hdr" title="Tap to select/deselect all in ${yrTitle}" onclick="togglePcYearGroupPick('${yr}')">
+                            📅 ${yrTitle} • ${rows.length} ACCOUNT${rows.length > 1 ? 'S' : ''} ${pickedInYr > 0 ? `(${pickedInYr} PICKED)` : ''}
+                        </div>
+                        ${cards}
                     </div>
                 `;
             }).join('');
@@ -8502,87 +8674,96 @@ let _ghAgeCheckerResults = [];
             if (mod === 'omni' || mod === 'repo') {
                 box.innerHTML = `
                     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
-                        <div style="min-width:0;">
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">NICHE REPOSITORY</div>
-                            <select id="pcParamNiche" class="form-input" style="padding:6px 6px;font-size:0.66rem;">
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">REPOSITORY NICHE</span>
+                            <select id="pcParamNiche" class="form-input" style="padding:6px 6px;font-size:0.65rem;">
                                 <option value="7" selected>🔮 Auto-Random</option>
-                                <option value="1">🪙 Crypto / Web3</option>
+                                <option value="1">🪙 Crypto &amp; Web3</option>
                                 <option value="2">🧠 AI &amp; ML</option>
                                 <option value="3">⚙️ DevOps</option>
                                 <option value="4">🛡️ Cyber Security</option>
                                 <option value="5">☁️ Cloud &amp; Backend</option>
-                                <option value="6">🎲 Mix All</option>
+                                <option value="6">🎲 Mix All Niches</option>
                             </select>
                         </div>
-                        <div style="min-width:0;">
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">MODE REPO LAMA</div>
-                            <select id="pcParamRepoMode" class="form-input" style="padding:6px 6px;font-size:0.66rem;">
-                                <option value="1" selected>♻️ Renovasi + Baru</option>
-                                <option value="2">♻️ Renovasi Saja</option>
-                                <option value="3">🆕 Buat Baru Semua</option>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">EXISTING REPO MODE</span>
+                            <select id="pcParamRepoMode" class="form-input" style="padding:6px 6px;font-size:0.65rem;">
+                                <option value="1" selected>♻️ Renovate + New</option>
+                                <option value="2">♻️ Renovate Only</option>
+                                <option value="3">🆕 Create New Only</option>
                             </select>
                         </div>
-                        <div style="min-width:0;">
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">JUMLAH REPO (0=Auto)</div>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">REPO COUNT (0=AUTO)</span>
                             <input type="number" id="pcParamNumRepos" class="form-input" value="0" min="0" max="30" style="padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem;">
                         </div>
-                        <div style="min-width:0;">
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">COMMITS (0=Auto)</div>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">COMMITS / REPO (0=AUTO)</span>
                             <input type="number" id="pcParamCommits" class="form-input" value="0" min="0" max="300" style="padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem;">
                         </div>
                     </div>
                     ${mod === 'omni' ? `
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">JADWAL WORKFLOW (PHASE 3)</div>
-                            <select id="pcParamCron" class="form-input" style="padding:6px 8px;font-size:0.68rem;">
-                                <option value="5" selected>🌿 Organic Selang-Seling (2–3 hari) [SAFE]</option>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">WORKFLOW SCHEDULE (PHASE 3)</span>
+                            <select id="pcParamCron" class="form-input" style="padding:6px 8px;font-size:0.67rem;">
+                                <option value="5" selected>🌿 Organic Alternate (2–3 Days) [SAFE]</option>
                                 <option value="4">⏰ Every 12 Hours</option>
                                 <option value="3">⏰ Every 6 Hours</option>
                                 <option value="2">⚡ Every 3 Hours</option>
                                 <option value="1">🔥 Every 1 Hour</option>
-                                <option value="6">🔥 ALL-IN 5 Repos</option>
+                                <option value="6">🔥 All-In 5 Repos</option>
                                 <option value="0">⏭️ Skip Workflow</option>
                             </select>
                         </div>
                     ` : ''}
                 `;
             } else if (mod === 'profile') {
-                box.innerHTML = `<div style="background:var(--bg-surface);border:1px dashed var(--success);border-radius:8px;padding:8px;font-size:0.64rem;color:var(--success);text-align:center;font-weight:700;">✨ Zero-Prompt Pro Profile Hunter: Auto-deteksi niche repo, nilai kualitas desain (Pro Scorer), dan sinkron username PAT.</div>`;
+                box.innerHTML = `<div class="pc-field-box" style="border-style:dashed;border-color:var(--success);padding:9px;text-align:center;"><div style="font-size:0.64rem;color:var(--success);font-weight:700;">✨ Zero-Prompt Profile Builder: Automatically detects repository niche, scores top Pro README designs, and synchronizes identity.</div></div>`;
             } else if (mod === 'workflow') {
                 box.innerHTML = `
-                    <div>
-                        <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:3px;">JADWAL STEALTH WORKFLOW</div>
-                        <select id="pcParamCron" class="form-input" style="padding:7px 8px;font-size:0.69rem;">
-                            <option value="5" selected>🌿 Organic Selang-Seling (2–3 hari) [SAFE]</option>
+                    <div class="pc-field-box">
+                        <span class="pc-field-lbl">STEALTH CRON SCHEDULE</span>
+                        <select id="pcParamCron" class="form-input" style="padding:7px 8px;font-size:0.68rem;">
+                            <option value="5" selected>🌿 Organic Alternate (2–3 Days) [SAFE]</option>
                             <option value="4">⏰ Every 12 Hours</option>
                             <option value="3">⏰ Every 6 Hours</option>
                             <option value="2">⚡ Every 3 Hours</option>
                             <option value="1">🔥 Every 1 Hour</option>
-                            <option value="6">🔥 ALL-IN 5 Repos</option>
+                            <option value="6">🔥 All-In 5 Repos</option>
                         </select>
                     </div>
                 `;
             } else if (mod === 'boost') {
                 box.innerHTML = `
-                    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
-                        <button type="button" id="pcBAct_star"   class="pc-mod-btn ${_pcBoostAct==='star'?'active':''}"   style="padding:6px 2px;font-size:0.6rem;" onclick="selectPcBoostAct('star')">⭐ Stars</button>
-                        <button type="button" id="pcBAct_follow" class="pc-mod-btn ${_pcBoostAct==='follow'?'active':''}" style="padding:6px 2px;font-size:0.6rem;" onclick="selectPcBoostAct('follow')">👥 Follow</button>
-                        <button type="button" id="pcBAct_fork"   class="pc-mod-btn ${_pcBoostAct==='fork'?'active':''}"   style="padding:6px 2px;font-size:0.6rem;" onclick="selectPcBoostAct('fork')">⎇ Fork</button>
-                        <button type="button" id="pcBAct_watch"  class="pc-mod-btn ${_pcBoostAct==='watch'?'active':''}"  style="padding:6px 2px;font-size:0.6rem;" onclick="selectPcBoostAct('watch')">👁️ Watch</button>
+                    <div class="pc-field-box">
+                        <span class="pc-field-lbl">BOOST ACTION TYPE</span>
+                        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
+                            <button type="button" id="pcBAct_star"   class="pc-mod-btn ${_pcBoostAct==='star'?'active':''}"   style="padding:6px 2px;font-size:0.6rem;" onclick="selectPcBoostAct('star')">⭐ Stars</button>
+                            <button type="button" id="pcBAct_follow" class="pc-mod-btn ${_pcBoostAct==='follow'?'active':''}" style="padding:6px 2px;font-size:0.6rem;" onclick="selectPcBoostAct('follow')">👥 Follow</button>
+                            <button type="button" id="pcBAct_fork"   class="pc-mod-btn ${_pcBoostAct==='fork'?'active':''}"   style="padding:6px 2px;font-size:0.6rem;" onclick="selectPcBoostAct('fork')">⎇ Fork</button>
+                            <button type="button" id="pcBAct_watch"  class="pc-mod-btn ${_pcBoostAct==='watch'?'active':''}"  style="padding:6px 2px;font-size:0.6rem;" onclick="selectPcBoostAct('watch')">👁️ Watch</button>
+                        </div>
                     </div>
-                    <input type="text" id="pcParamBoostTargets" class="form-input" placeholder="Target: owner/repo atau @username (koma jika >1)" style="padding:6px 9px;font-size:0.68rem;font-family:'JetBrains Mono',monospace;">
-                    <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
-                        <button type="button" id="pcBSpd_1" class="pc-mod-btn ${_pcBoostSpeed==='1'?'active':''}" style="padding:5px 2px;font-size:0.59rem;" onclick="selectPcBoostSpeed('1')">⚡ Fast (4-9s)</button>
-                        <button type="button" id="pcBSpd_2" class="pc-mod-btn ${_pcBoostSpeed==='2'?'active':''}" style="padding:5px 2px;font-size:0.59rem;" onclick="selectPcBoostSpeed('2')">🌿 Organic</button>
-                        <button type="button" id="pcBSpd_3" class="pc-mod-btn ${_pcBoostSpeed==='3'?'active':''}" style="padding:5px 2px;font-size:0.59rem;" onclick="selectPcBoostSpeed('3')">🛡️ Stealth</button>
+                    <div class="pc-field-box">
+                        <span class="pc-field-lbl">TARGET REPOSITORY OR USERNAME</span>
+                        <input type="text" id="pcParamBoostTargets" class="form-input" placeholder="owner/repo or @username (comma-separated)" style="padding:6px 9px;font-size:0.67rem;font-family:'JetBrains Mono',monospace;">
+                    </div>
+                    <div class="pc-field-box">
+                        <span class="pc-field-lbl">SAFETY SPEED PROFILE</span>
+                        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
+                            <button type="button" id="pcBSpd_1" class="pc-mod-btn ${_pcBoostSpeed==='1'?'active':''}" style="padding:5px 2px;font-size:0.59rem;" onclick="selectPcBoostSpeed('1')">⚡ Fast (4-9s)</button>
+                            <button type="button" id="pcBSpd_2" class="pc-mod-btn ${_pcBoostSpeed==='2'?'active':''}" style="padding:5px 2px;font-size:0.59rem;" onclick="selectPcBoostSpeed('2')">🌿 Organic</button>
+                            <button type="button" id="pcBSpd_3" class="pc-mod-btn ${_pcBoostSpeed==='3'?'active':''}" style="padding:5px 2px;font-size:0.59rem;" onclick="selectPcBoostSpeed('3')">🛡️ Stealth</button>
+                        </div>
                     </div>
                     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">LIMIT TOTAL (0=Semua)</div>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">TOTAL LIMIT (0=ALL)</span>
                             <input type="number" id="pcParamBoostLimit" class="form-input" value="0" min="0" style="padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem;">
                         </div>
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">DAILY CAP (0=Off)</div>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">DAILY CAP (0=OFF)</span>
                             <input type="number" id="pcParamBoostCap" class="form-input" value="0" min="0" style="padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem;">
                         </div>
                     </div>
@@ -8590,10 +8771,10 @@ let _ghAgeCheckerResults = [];
             } else if (mod === 'badges') {
                 box.innerHTML = `
                     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">MODE BADGE</div>
-                            <select id="pcParamBadgeMode" class="form-input" style="padding:6px 6px;font-size:0.66rem;">
-                                <option value="ALL">🏅 ALL 5 Badges</option>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">ACHIEVEMENT MODE</span>
+                            <select id="pcParamBadgeMode" class="form-input" style="padding:6px 6px;font-size:0.65rem;">
+                                <option value="ALL">🏅 All 5 Badges</option>
                                 <option value="PULL_SHARK">🦈 Pull Shark</option>
                                 <option value="YOLO">🎯 YOLO</option>
                                 <option value="PAIR_EXTRAORDINAIRE">🤝 Pair Extra</option>
@@ -8601,54 +8782,60 @@ let _ghAgeCheckerResults = [];
                                 <option value="GALAXY_BRAIN">🧠 Galaxy Brain</option>
                             </select>
                         </div>
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">STRATEGI REPO</div>
-                            <select id="pcParamBadgeRepo" class="form-input" style="padding:6px 6px;font-size:0.66rem;">
-                                <option value="1" selected>♻️ Repo Asli</option>
-                                <option value="0">🆕 Repo Baru</option>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">REPO STRATEGY</span>
+                            <select id="pcParamBadgeRepo" class="form-input" style="padding:6px 6px;font-size:0.65rem;">
+                                <option value="1" selected>♻️ Existing Repo</option>
+                                <option value="0">🆕 Natural New Repo</option>
                             </select>
                         </div>
                     </div>
-                    <input type="text" id="pcParamBadgeHelper" class="form-input" placeholder="Helper PAT (Kosongkan = Auto-Rotasi jika >=2 token)" style="padding:6px 8px;font-size:0.66rem;font-family:'JetBrains Mono',monospace;">
+                    <div class="pc-field-box">
+                        <span class="pc-field-lbl">HELPER PAT (OPTIONAL • AUTO-ROTATE IF >=2)</span>
+                        <input type="text" id="pcParamBadgeHelper" class="form-input" placeholder="Leave blank for Auto-Rotation across picked accounts..." style="padding:6px 8px;font-size:0.65rem;font-family:'JetBrains Mono',monospace;">
+                    </div>
                 `;
             } else if (mod === 'commit') {
                 box.innerHTML = `
                     <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;">
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">RENTANG WAKTU</div>
-                            <select id="pcParamCommitRange" class="form-input" style="padding:6px 6px;font-size:0.66rem;">
-                                <option value="year" selected>📅 Tahun Ini</option>
-                                <option value="month">📅 Bulan Ini</option>
-                                <option value="last_n">📅 60 Hari Terakhir</option>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">TIME RANGE</span>
+                            <select id="pcParamCommitRange" class="form-input" style="padding:6px 6px;font-size:0.65rem;">
+                                <option value="year" selected>📅 This Year</option>
+                                <option value="month">📅 This Month</option>
+                                <option value="last_n">📅 Last 60 Days</option>
                             </select>
                         </div>
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">POLA GRAFIK</div>
-                            <select id="pcParamCommitPersona" class="form-input" style="padding:6px 6px;font-size:0.66rem;">
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">GRAPH PATTERN</span>
+                            <select id="pcParamCommitPersona" class="form-input" style="padding:6px 6px;font-size:0.65rem;">
                                 <option value="casual" selected>🌿 Casual Natural</option>
                                 <option value="sprint">⚡ Sprint Push</option>
                                 <option value="busy">💼 Busy Maintainer</option>
                             </select>
                         </div>
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">TOTAL COMMITS</div>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">TOTAL COMMITS</span>
                             <input type="number" id="pcParamCommitTotal" class="form-input" value="80" min="5" max="2000" style="padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.72rem;">
                         </div>
-                        <div>
-                            <div style="font-size:0.53rem;color:var(--text-muted);font-weight:800;text-align:center;margin-bottom:2px;">TARGET REPO</div>
-                            <select id="pcParamCommitRepo" class="form-input" style="padding:6px 6px;font-size:0.66rem;">
-                                <option value="existing" selected>♻️ Repo Lama</option>
-                                <option value="new">🆕 Buat 2 Repo Baru</option>
+                        <div class="pc-field-box">
+                            <span class="pc-field-lbl">TARGET REPOSITORY</span>
+                            <select id="pcParamCommitRepo" class="form-input" style="padding:6px 6px;font-size:0.65rem;">
+                                <option value="existing" selected>♻️ Existing Repos</option>
+                                <option value="new">🆕 Create 2 New</option>
                             </select>
                         </div>
                     </div>
                 `;
             } else if (mod === 'audit') {
                 box.innerHTML = `
-                    <label style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.66rem;font-weight:700;cursor:pointer;background:var(--bg-surface);padding:8px;border-radius:8px;border:1px solid var(--border-subtle);">
-                        <input type="checkbox" id="pcParamAudit404" checked style="width:15px;height:15px;accent-color:#38bdf8;">
-                        <span>Cek 404 Shadowban &amp; Export pat_*.txt</span>
-                    </label>
+                    <div class="pc-field-box">
+                        <span class="pc-field-lbl">INSPECTION OPTIONS</span>
+                        <label style="display:flex;align-items:center;justify-content:center;gap:8px;font-size:0.65rem;font-weight:700;cursor:pointer;padding:4px;">
+                            <input type="checkbox" id="pcParamAudit404" checked style="width:15px;height:15px;accent-color:#38bdf8;">
+                            <span>Verify Public 404 Shadowban &amp; Export pat_*.txt</span>
+                        </label>
+                    </div>
                 `;
             }
         }
@@ -8657,23 +8844,16 @@ let _ghAgeCheckerResults = [];
             const { url, key } = getPcBridgeCfg();
             if (!url) {
                 togglePcBridgeSettingsBox();
-                return showToast('⚠️ Paste URL|Password dulu di tombol ⚙️!');
+                return showToast('⚠️ Paste URL|Password first in ⚙️ Settings!');
             }
 
             let tokensPayload = [];
-            let rangeStart = 1, rangeEnd = 0;
-
-            if (_pcTokSrc === 'tokens_txt') {
-                rangeStart = parseInt(document.getElementById('pcBatchStartInp')?.value || '1', 10) || 1;
-                rangeEnd = parseInt(document.getElementById('pcBatchEndInp')?.value || '0', 10) || 0;
-            } else if (_pcTokSrc === 'stock') {
-                tokensPayload = (allLiveAccountsFlat || [])
-                    .filter(a => _pcStockPicked.has(String(a.username || '').toLowerCase()) && a.pat && a.pat.length >= 20)
-                    .map(a => String(a.pat).trim());
-                if (tokensPayload.length === 0) return showToast('⚠️ Pilih minimal 1 akun ber-PAT dari Data Stok!');
+            if (_pcTokSrc === 'stock') {
+                tokensPayload = Array.from(_pcStockPicked).filter(t => String(t).length >= 20);
+                if (tokensPayload.length === 0) return showToast('⚠️ Pick at least 1 account from Audit Stock!');
             } else {
                 const raw = (document.getElementById('pcPasteTokensInp')?.value || '').trim();
-                if (!raw) return showToast('⚠️ Paste minimal 1 PAT token!');
+                if (!raw) return showToast('⚠️ Paste at least 1 valid PAT token!');
                 tokensPayload = [raw];
             }
 
@@ -8694,7 +8874,7 @@ let _ghAgeCheckerResults = [];
                 params.targets = (document.getElementById('pcParamBoostTargets')?.value || '').trim();
                 params.target_limit = parseInt(document.getElementById('pcParamBoostLimit')?.value || '0', 10) || 0;
                 params.daily_cap = parseInt(document.getElementById('pcParamBoostCap')?.value || '0', 10) || 0;
-                if (!params.targets) return showToast('⚠️ Isi Target Boost (owner/repo atau @username)!');
+                if (!params.targets) return showToast('⚠️ Enter target repository or username!');
             } else if (_pcModule === 'badges') {
                 params.badge_mode = document.getElementById('pcParamBadgeMode')?.value || 'ALL';
                 params.prefer_existing = (document.getElementById('pcParamBadgeRepo')?.value || '1') === '1';
@@ -8708,7 +8888,7 @@ let _ghAgeCheckerResults = [];
             }
 
             const btn = document.getElementById('btnLaunchPcMission');
-            if (btn) { btn.disabled = true; btn.innerText = '⏳ Launching on PC...'; }
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Launching on Local PC...'; }
 
             try {
                 const res = await fetch(`${url}/api/job/start`, {
@@ -8716,43 +8896,39 @@ let _ghAgeCheckerResults = [];
                     headers: { 'Content-Type': 'application/json', 'X-Bridge-Key': key },
                     body: JSON.stringify({
                         feature: _pcModule,
-                        token_source: _pcTokSrc,
-                        range_start: rangeStart,
-                        range_end: rangeEnd,
                         tokens: tokensPayload,
                         params: params
                     })
                 });
                 const data = await res.json();
                 if (!res.ok) {
-                    showToast(`❌ ${data.detail || 'Gagal memulai misi'}`);
+                    showToast(`❌ ${data.detail || 'Failed to launch mission'}`);
                     return;
                 }
 
                 if (typeof playPatStudioTone === 'function') playPatStudioTone('start');
                 _pcLastNotifiedMissionId = '';
 
-                // Push ke Web Admin Notification Feed
                 const startCard = [
                     `════════════════════`,
                     `🚀 <b>PC MISSION STARTED</b>`,
                     `════════════════════`,
                     fmtAlignedNotifRow('Mission', `<code>${data.mission_id}</code>`),
                     fmtAlignedNotifRow('Module', `<b>${data.feature_label}</b>`),
-                    fmtAlignedNotifRow('Tokens', `<b>${data.token_count} PAT</b>`),
+                    fmtAlignedNotifRow('Accounts', `<b>${data.token_count} PAT(s)</b>`),
                     fmtAlignedNotifRow('Engine', `🖥️ Local PC Bridge`),
                     `════════════════════`,
-                    `⏳ <i>Misi berjalan di PC &amp; terhubung ke Telegram.</i>`
+                    `⏳ <i>Running on local PC &amp; synced to Telegram Bot.</i>`
                 ].join('\n');
-                pushInWebNotification('admin', `🚀 PC MISSION (${data.feature_label})`, startCard);
+                pushInWebNotification('admin', `🚀 MISSION STARTED (${data.feature_label})`, startCard);
 
-                showToast(`🚀 ${data.feature_label} (${data.token_count} token) berjalan di PC!`);
+                showToast(`🚀 ${data.feature_label} (${data.token_count} PATs) started on PC!`);
                 switchPcCockpitTab('monitor');
                 startPcTelemetryPolling();
             } catch (e) {
-                showToast(`❌ Tidak bisa menghubungi PC Bridge (${e.message})`);
+                showToast(`❌ Unable to reach PC Bridge (${e.message})`);
             } finally {
-                if (btn) { btn.disabled = false; btn.innerText = '🚀 Launch Mission on PC'; }
+                if (btn) { btn.disabled = false; btn.innerText = '🚀 Launch Mission on Local PC'; }
             }
         }
 
@@ -8801,7 +8977,7 @@ let _ghAgeCheckerResults = [];
         function startPcTelemetryPolling() {
             if (_pcTelPollTimer) clearInterval(_pcTelPollTimer);
             pollPcTelemetryOnce();
-            _pcTelPollTimer = setInterval(pollPcTelemetryOnce, 1800);
+            _pcTelPollTimer = setInterval(pollPcTelemetryOnce, 1600);
         }
 
         async function pollPcTelemetryOnce() {
@@ -8812,7 +8988,6 @@ let _ghAgeCheckerResults = [];
                 if (!res.ok) return;
                 const d = await res.json();
                 renderPcTelemetryUI(d);
-
                 if (d.status !== 'RUNNING' && _pcTelPollTimer) {
                     clearInterval(_pcTelPollTimer);
                     _pcTelPollTimer = null;
@@ -8827,7 +9002,7 @@ let _ghAgeCheckerResults = [];
             const isStopped = (st === 'STOPPED');
             const isDone = (st === 'COMPLETED');
             const isFail = (st === 'FAILED');
-            const pct = Number(d.pct || 0);
+            const pct = isDone ? 100 : Math.max(0, Math.min(100, Number(d.pct || 0)));
             const items = Array.isArray(d.items) ? d.items : [];
             const doneCnt = items.filter(x => x.status === 'COMPLETED').length;
             const failCnt = items.filter(x => x.status === 'FAILED').length;
@@ -8845,7 +9020,7 @@ let _ghAgeCheckerResults = [];
             const pctTxt = document.getElementById('pcMonPctText');
 
             if (hdrTitle) {
-                hdrTitle.innerText = d.stage_label || '⏳ WAITING FOR PC MISSION QUEUE...';
+                hdrTitle.innerText = d.stage_label || '⏳ WAITING FOR MISSION QUEUE...';
                 hdrTitle.style.color = isStopped || isFail ? 'var(--danger)' : (isDone ? 'var(--success)' : '#38bdf8');
             }
             if (hdrBadge) {
@@ -8854,18 +9029,19 @@ let _ghAgeCheckerResults = [];
             if (bar) bar.style.width = `${pct}%`;
             if (pctTxt) pctTxt.innerText = `${pct}%`;
 
-            const activeSt = Math.max(0, Number(d.stage || 0));
-            const stNames = ['1. Init', '2. Process', '3. Sync', '4. Done'];
-            const stPcts = [25, 55, 85, 100];
+            // Synchronized 4-stage pills derived cleanly from live pct & stage
+            const activeSt = isDone ? 4 : Math.max(0, Number(d.stage || 0));
+            const stNames = ['1. Auth', '2. Execute', '3. Verify', '4. Done'];
             [1, 2, 3, 4].forEach(n => {
                 const el = document.getElementById(`pcStagePill${n}`);
                 if (!el) return;
                 const passed = isDone || (activeSt > n);
                 const cur = isRunning && activeSt === n;
+                const subTxt = passed ? 'Done' : (cur ? `${pct}%` : (isRunning ? 'Next' : 'Idle'));
                 el.style.borderColor = cur ? '#fde047' : (passed ? 'var(--success)' : 'rgba(148,163,184,0.35)');
                 el.style.color = cur ? '#fde047' : (passed ? 'var(--success)' : 'var(--text-muted)');
                 el.style.background = cur ? 'rgba(250,204,21,0.14)' : (passed ? 'rgba(16,185,129,0.12)' : 'var(--bg-input)');
-                el.innerHTML = `${passed ? '✓ ' : (cur ? '⚡ ' : '')}${stNames[n-1]}<div style="font-size:0.49rem;opacity:0.85;">${passed ? '100%' : (cur ? pct + '%' : stPcts[n-1] + '%')}</div>`;
+                el.innerHTML = `${passed ? '✓ ' : (cur ? '⚡ ' : '')}${stNames[n-1]}<div style="font-size:0.49rem;opacity:0.88;">${subTxt}</div>`;
             });
 
             if (isRunning && Number(d.cooldown_until || 0) > Date.now()) {
@@ -8874,41 +9050,54 @@ let _ghAgeCheckerResults = [];
                 stopPcCdTicker(true);
             }
 
-            // Render Stream Cards (Identik PAT Generator)
             const sBox = document.getElementById('pcMonStreamBox');
             const logs = Array.isArray(d.logs) ? d.logs : [];
             if (sBox && logs.length > 0) {
                 sBox.innerHTML = logs.map(l => {
                     const col = l.isErr ? 'var(--danger)' : (l.isDone ? 'var(--success)' : '#38bdf8');
                     const bCol = l.isErr ? 'rgba(239,68,68,0.45)' : (l.isDone ? 'rgba(16,185,129,0.45)' : 'rgba(56,189,248,0.38)');
+                    let cleanMsg = String(l.msg || '').trim();
+                    let stageBadge = '';
+                    const sm = cleanMsg.match(/\[([1-4]\/4)\]/);
+                    if (sm) {
+                        stageBadge = `[${sm[1]}]`;
+                        cleanMsg = cleanMsg.replace(sm[0], '').trim();
+                    }
                     return `
                         <div style="background:var(--bg-input);border:1px solid ${bCol};border-radius:8px;padding:5px 7px;margin-bottom:5px;">
                             <div style="border-top:1px solid ${bCol};border-bottom:1px solid ${bCol};padding:2px 4px;margin-bottom:4px;text-align:center;font-size:0.56rem;font-weight:800;color:${col};">
                                 🕒 ${l.time} • ${l.tag}
                             </div>
-                            <div style="color:var(--text-primary);line-height:1.35;word-break:break-word;">${l.msg}</div>
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:6px;color:var(--text-primary);line-height:1.36;">
+                                <span style="flex:1;min-width:0;word-break:break-word;">${cleanMsg}</span>
+                                ${stageBadge ? `<span style="color:${col};font-weight:800;font-size:0.58rem;background:var(--bg-surface);border:1px solid ${bCol};padding:1px 5px;border-radius:5px;flex-shrink:0;">${stageBadge}</span>` : ''}
+                            </div>
                         </div>
                     `;
                 }).join('');
                 sBox.scrollTop = sBox.scrollHeight;
             }
 
-            // Render Targets List
             const iBox = document.getElementById('pcMonItemsList');
             if (iBox) {
                 if (items.length === 0) {
-                    iBox.innerHTML = `<div style="text-align:center;font-size:0.6rem;color:var(--text-muted);padding:10px;">Belum ada target misi aktif.</div>`;
+                    iBox.innerHTML = `<div style="text-align:center;font-size:0.6rem;color:var(--text-muted);padding:10px;">No active mission targets yet.</div>`;
                 } else {
                     iBox.innerHTML = items.map((it, idx) => {
                         let bdg = `<span style="color:var(--text-muted);font-size:0.57rem;">⏳ QUEUED</span>`;
                         let col = 'rgba(148,163,184,0.35)';
-                        if (it.status === 'RUNNING') { bdg = `<span style="color:#38bdf8;font-size:0.57rem;">⚡ RUNNING</span>`; col = '#38bdf8'; }
+                        if (it.status === 'RUNNING') { bdg = `<span style="color:#38bdf8;font-size:0.57rem;">⚡ RUNNING (${pct}%)</span>`; col = '#38bdf8'; }
                         else if (it.status === 'COMPLETED') { bdg = `<span style="color:var(--success);font-size:0.57rem;">✅ DONE</span>`; col = 'var(--success)'; }
-                        else if (it.status === 'FAILED') { bdg = `<span style="color:var(--danger);font-size:0.57rem;">✕ FAIL</span>`; col = 'var(--danger)'; }
+                        else if (it.status === 'FAILED') { bdg = `<span style="color:var(--danger);font-size:0.57rem;">✕ FAILED</span>`; col = 'var(--danger)'; }
+                        const rawLbl = String(it.label || '');
+                        const mU = rawLbl.match(/@([A-Za-z0-9\-]+)/);
+                        const lblHtml = mU
+                            ? `<a href="https://github.com/${mU[1]}" target="_blank" style="color:var(--text-primary);text-decoration:none;">#${idx+1} • ${rawLbl} ↗</a>`
+                            : `#${idx+1} • ${rawLbl}`;
                         return `
                             <div style="background:var(--bg-surface);border:1px solid ${col};border-left:3.5px solid ${col};border-radius:8px;padding:5px 8px;font-family:'JetBrains Mono',monospace;">
                                 <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.67rem;font-weight:800;gap:6px;">
-                                    <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">#${idx+1} • ${it.label}</span>
+                                    <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${lblHtml}</span>
                                     <span style="flex-shrink:0;">${bdg}</span>
                                 </div>
                                 ${it.detail ? `<div style="font-size:0.56rem;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${it.detail}</div>` : ''}
@@ -8918,7 +9107,6 @@ let _ghAgeCheckerResults = [];
                 }
             }
 
-            // SFX & Push Notif Web Admin 1x saat Misi Selesai / Stop
             const sig = `${d.mission_id}-${st}-${activeSt}`;
             if (sig !== _pcLastStageSig) {
                 _pcLastStageSig = sig;
@@ -8938,9 +9126,9 @@ let _ghAgeCheckerResults = [];
                     `════════════════════`,
                     fmtAlignedNotifRow('Mission', `<code>${d.mission_id}</code>`),
                     fmtAlignedNotifRow('Module', `<b>${d.feature_label || d.feature}</b>`),
-                    fmtAlignedNotifRow('Result', `<b>✅ ${doneCnt} OK | ❌ ${failCnt} Fail</b>`),
+                    fmtAlignedNotifRow('Summary', `<b>✅ ${doneCnt} OK | ❌ ${failCnt} Failed</b>`),
                     `════════════════════`,
-                    `📡 <i>Laporan lengkap juga dikirim ke Bot Telegram.</i>`
+                    `📡 <i>Full clickable report also sent to Telegram Bot.</i>`
                 ].join('\n');
                 pushInWebNotification('admin', `${finTitle} (${d.feature_label || d.feature})`, finCard);
             }
@@ -8951,10 +9139,10 @@ let _ghAgeCheckerResults = [];
             if (!url) return;
             try {
                 await fetch(`${url}/api/job/stop`, { method: 'POST', headers: { 'X-Bridge-Key': key } });
-                showToast('🛑 Safe Stop dikirim ke PC!');
+                showToast('🛑 Safe Stop signal sent to PC!');
                 setTimeout(pollPcTelemetryOnce, 900);
             } catch (e) {
-                showToast('⚠️ Gagal mengirim Stop.');
+                showToast('⚠️ Failed to send Stop signal.');
             }
         }
 
@@ -8965,28 +9153,28 @@ let _ghAgeCheckerResults = [];
                 const res = await fetch(`${url}/api/job/reset`, { method: 'POST', headers: { 'X-Bridge-Key': key } });
                 if (!res.ok) {
                     const d = await res.json();
-                    return showToast(`⚠️ ${d.detail || 'Stop misi dulu sebelum reset'}`);
+                    return showToast(`⚠️ ${d.detail || 'Stop mission before resetting'}`);
                 }
                 const sBox = document.getElementById('pcMonStreamBox');
-                if (sBox) sBox.innerHTML = `<div style="color:var(--text-muted);text-align:center;padding:12px;">Siap menerima telemetry dari PC lokal...</div>`;
+                if (sBox) sBox.innerHTML = `<div style="color:var(--text-muted);text-align:center;padding:12px;">Ready to receive live telemetry from local PC...</div>`;
                 pollPcTelemetryOnce();
                 switchPcCockpitTab('mission');
-                showToast('🔄 Monitor di-reset!');
+                showToast('🔄 Monitor reset!');
             } catch (e) {}
         }
 
         function copyPcMonitorLogs() {
             const box = document.getElementById('pcMonStreamBox');
-            if (!box || !box.innerText.trim()) return showToast('⚠️ Belum ada log.');
+            if (!box || !box.innerText.trim()) return showToast('⚠️ No logs to copy.');
             navigator.clipboard.writeText(box.innerText.trim());
-            showToast('📋 Log disalin ke clipboard!');
+            showToast('📋 Execution log copied to clipboard!');
         }
 
         async function loadPcVaultAndJobs(notify = false) {
             const { url, key } = getPcBridgeCfg();
             const listEl = document.getElementById('pcPendingJobsList');
             if (!url) {
-                if (listEl) listEl.innerHTML = `<div style="text-align:center;font-size:0.62rem;color:var(--text-muted);padding:8px;">Hubungkan PC Bridge dulu di tombol ⚙️.</div>`;
+                if (listEl) listEl.innerHTML = `<div style="text-align:center;font-size:0.62rem;color:var(--text-muted);padding:8px;">Connect PC Bridge first via ⚙️ Settings.</div>`;
                 return;
             }
             try {
@@ -9003,7 +9191,7 @@ let _ghAgeCheckerResults = [];
                 const jobs = Array.isArray(d.pending_jobs) ? d.pending_jobs : [];
                 if (listEl) {
                     if (jobs.length === 0) {
-                        listEl.innerHTML = `<div style="text-align:center;font-size:0.62rem;color:var(--success);padding:8px;font-weight:700;">✅ Tidak ada job tertunda di folder jobs/</div>`;
+                        listEl.innerHTML = `<div style="text-align:center;font-size:0.62rem;color:var(--success);padding:8px;font-weight:700;">✅ No pending checkpoint jobs in jobs/</div>`;
                     } else {
                         listEl.innerHTML = jobs.map(j => `
                             <div style="background:var(--bg-surface);border:1px solid rgba(245,158,11,0.45);border-left:3.5px solid var(--warning);border-radius:8px;padding:6px 8px;display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;">
@@ -9019,9 +9207,9 @@ let _ghAgeCheckerResults = [];
                         `).join('');
                     }
                 }
-                if (notify) showToast('↻ Vault & Jobs PC disinkronkan!');
+                if (notify) showToast('↻ Vault & checkpoints synchronized!');
             } catch (e) {
-                if (notify) showToast(`⚠️ Gagal load Vault (${e.message})`);
+                if (notify) showToast(`⚠️ Failed to load Vault (${e.message})`);
             }
         }
 
@@ -9035,11 +9223,11 @@ let _ghAgeCheckerResults = [];
                     body: JSON.stringify({ job_id: jobId })
                 });
                 const d = await res.json();
-                if (!res.ok) return showToast(`❌ ${d.detail || 'Gagal resume'}`);
-                showToast(`♻️ Melanjutkan job ${jobId}...`);
+                if (!res.ok) return showToast(`❌ ${d.detail || 'Resume failed'}`);
+                showToast(`♻️ Resuming checkpoint ${jobId}...`);
                 switchPcCockpitTab('monitor');
                 startPcTelemetryPolling();
-            } catch (e) { showToast('⚠️ Gagal menghubungi PC Bridge.'); }
+            } catch (e) { showToast('⚠️ Unable to reach PC Bridge.'); }
         }
 
         async function deletePcCheckpointJob(jobId) {
@@ -9051,7 +9239,7 @@ let _ghAgeCheckerResults = [];
                     headers: { 'Content-Type': 'application/json', 'X-Bridge-Key': key },
                     body: JSON.stringify({ job_id: jobId })
                 });
-                showToast('🗑️ Checkpoint job dihapus.');
+                showToast('🗑️ Checkpoint deleted.');
                 loadPcVaultAndJobs(false);
             } catch (e) {}
         }
@@ -9061,7 +9249,7 @@ let _ghAgeCheckerResults = [];
             if (!url) return;
             try {
                 await fetch(`${url}/api/vault/clear-dead`, { method: 'POST', headers: { 'X-Bridge-Key': key } });
-                showToast('🧹 Karantina Dead 401 di PC dibersihkan!');
+                showToast('🧹 Dead 401 quarantine cleared!');
                 loadPcVaultAndJobs(false);
             } catch (e) {}
         }
@@ -9072,10 +9260,10 @@ let _ghAgeCheckerResults = [];
             try {
                 const res = await fetch(`${url}/api/export-file?name=${encodeURIComponent(fname)}`, { headers: { 'X-Bridge-Key': key } });
                 const d = await res.json();
-                if (!d.content) return showToast(`⚠️ File ${fname} masih kosong.`);
+                if (!d.content) return showToast(`⚠️ ${fname} is currently empty.`);
                 navigator.clipboard.writeText(d.content);
-                showToast(`📋 Isi ${fname} disalin ke clipboard!`);
-            } catch (e) { showToast('⚠️ Gagal membaca file export.'); }
+                showToast(`📋 ${fname} copied to clipboard!`);
+            } catch (e) { showToast('⚠️ Failed to read export file.'); }
         }
 
 // =========================================================================
@@ -13205,7 +13393,7 @@ let _ghAgeCheckerResults = [];
 
         function closeModal(id) {
             const el = document.getElementById(id);
-            if (el) el.classList.remove('active');
+            if (el) el.classList.remove('active', 'pc-wide-modal');
             if (id === 'paymentGatewayModal') {
                 const body = document.getElementById('paymentGatewayBody');
                 if (body) body.removeAttribute('style');
