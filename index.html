@@ -1691,17 +1691,16 @@
         .adm-row-card {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-left: 4px solid var(--accent-cyan);
+            border-right: 4px solid var(--accent-cyan);
             border-radius: 13px;
-            padding: 11px 12px;
+            padding: 10px 12px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+            flex-direction: column;
+            gap: 6px;
             cursor: pointer;
             box-shadow: var(--shadow-card);
             transition: transform 0.18s ease, border-color 0.18s ease, background-color 0.18s ease;
-            text-align: left;
+            text-align: right;
             width: 100%;
             font-family: inherit;
         }
@@ -1712,55 +1711,63 @@
             transform: translateY(-1px);
         }
 
-        .adm-row-icon {
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            background: var(--bg-input);
-            border: 1px solid var(--border-subtle);
+        .adm-row-head {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            gap: 7px;
+            width: 100%;
+            padding-bottom: 6px;
+            border-bottom: 1px dashed var(--border-subtle);
+            text-align: center;
+        }
+
+        .adm-row-icon {
+            width: 26px;
+            height: 26px;
+            border-radius: 8px;
+            background: var(--bg-input);
+            border: 1px solid var(--border-subtle);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.88rem;
             flex-shrink: 0;
         }
 
-        .adm-row-meta {
-            min-width: 0;
-            flex: 1;
-        }
-
         .adm-row-title {
-            font-size: 0.82rem;
+            font-size: 0.84rem;
             font-weight: 800;
             color: var(--text-primary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            letter-spacing: 0.2px;
+            text-align: center;
             line-height: 1.25;
         }
 
         .adm-row-desc {
-            font-size: 0.66rem;
+            font-size: 0.67rem;
             color: var(--text-secondary);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-top: 2px;
+            text-align: right;
+            white-space: normal;
+            overflow: visible;
+            line-height: 1.45;
+            width: 100%;
         }
 
-        .adm-row-right {
+        .adm-row-foot {
             display: flex;
             align-items: center;
+            justify-content: flex-end;
             gap: 7px;
-            flex-shrink: 0;
+            width: 100%;
+            padding-top: 2px;
         }
 
         .adm-badge {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.6rem;
+            font-size: 0.59rem;
             font-weight: 800;
-            padding: 3px 7px;
+            padding: 3px 8px;
             border-radius: 6px;
             border: 1px solid var(--border-subtle);
             background: var(--bg-input);
@@ -1769,7 +1776,8 @@
         }
 
         .adm-arrow {
-            font-size: 0.8rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.61rem;
             font-weight: 800;
             color: var(--text-muted);
         }
@@ -1777,48 +1785,48 @@
         .adm-status-bar {
             background: var(--bg-card);
             border: 1px solid var(--border-subtle);
-            border-left: 4px solid var(--warning);
+            border-right: 4px solid var(--warning);
             border-radius: 13px;
-            padding: 10px 12px;
+            padding: 11px 12px;
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 10px;
+            flex-direction: column;
+            gap: 7px;
             box-shadow: var(--shadow-card);
         }
 
-        .adm-toggle-pill {
-            width: 46px;
-            height: 25px;
-            border-radius: 99px;
-            border: 1px solid var(--border-subtle);
-            background: var(--bg-input);
-            position: relative;
+        .adm-flash-action-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            margin: 2px auto 0 auto;
+            padding: 8px 18px;
+            min-width: 215px;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.67rem;
+            font-weight: 800;
+            letter-spacing: 0.35px;
             cursor: pointer;
-            transition: background-color 0.22s ease, border-color 0.22s ease;
-            flex-shrink: 0;
-            padding: 0;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
         }
 
-        .adm-toggle-pill.on {
-            background: var(--success);
-            border-color: var(--success);
+        .adm-flash-action-btn.on {
+            background: linear-gradient(135deg, rgba(16,185,129,0.22) 0%, rgba(5,150,105,0.32) 100%);
+            border: 1.5px solid var(--success);
+            color: #6ee7b7;
+            box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25);
         }
 
-        .adm-toggle-knob {
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            width: 19px;
-            height: 19px;
-            border-radius: 50%;
-            background: #ffffff;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-            transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+        .adm-flash-action-btn.off {
+            background: linear-gradient(135deg, rgba(239,68,68,0.16) 0%, rgba(185,28,28,0.26) 100%);
+            border: 1.5px solid var(--danger);
+            color: #fca5a5;
+            box-shadow: 0 4px 14px rgba(239, 68, 68, 0.2);
         }
 
-        .adm-toggle-pill.on .adm-toggle-knob {
-            transform: translateX(21px);
+        .adm-flash-action-btn:hover {
+            transform: translateY(-1px);
         }
 
         /* FULL-PAGE 100DVH STUDIO FRAME & STANDALONE TITLE BAR */
@@ -6524,7 +6532,7 @@
                         icon: '🖥️',
                         accent: '#10b981',
                         title: 'GitHub Stealth Command',
-                        desc: 'Local PC Automation Suite, Live Telemetry & Checkpoint Vault',
+                        desc: 'Run Omni Automation, Repo Sync, Profile Builder, Workflow Engine, Booster & Achievement Lab directly via Local PC Bridge with live telemetry.',
                         badge: localStorage.getItem('xb_pc_bridge_url') ? 'Bridge Ready' : 'Connect PC',
                         badgeColor: localStorage.getItem('xb_pc_bridge_url') ? 'var(--success)' : 'var(--warning)',
                         action: "execAdminCmd('open_pc_stealth_studio')"
@@ -6532,8 +6540,8 @@
                     {
                         icon: '🔑',
                         accent: '#38bdf8',
-                        title: 'GitHub PAT Generator Studio',
-                        desc: 'Batch-generate stealth PAT tokens with 2FA & auto-save to Sheet1',
+                        title: 'GitHub PAT Generator',
+                        desc: 'Generate Classic GitHub PAT tokens via Local PC (CMD) or Cloud VPS with automatic 2FA TOTP, safe scopes, Sheet1 Column H save & 4-shot Telegram proof.',
                         badge: patStats.missingCount > 0 ? `${patStats.missingCount} Missing` : 'All Ready',
                         badgeColor: patStats.missingCount > 0 ? 'var(--warning)' : 'var(--success)',
                         action: "execAdminCmd('generate_github_pat')"
@@ -6541,8 +6549,8 @@
                     {
                         icon: '📅',
                         accent: '#818cf8',
-                        title: 'PAT Checker & Creation Audit',
-                        desc: 'Bulk validate PAT tokens, detect renames/dead rows & audit account age',
+                        title: 'GitHub PAT Checker & Audit',
+                        desc: 'Bulk verify PAT tokens at ultra-safe 40/batch pacing, detect shadowbanned 404 or renamed usernames, audit exact creation dates & sync to Google Sheet.',
                         badge: '40/Batch',
                         badgeColor: '#38bdf8',
                         action: "execAdminCmd('check_github_created_bulk')"
@@ -6550,8 +6558,8 @@
                     {
                         icon: '🌱',
                         accent: '#10b981',
-                        title: 'Account Creator & Profile Hub',
-                        desc: 'Create GitHub accounts with Web OTP, auto-2FA & Bio/Repo setup',
+                        title: 'GitHub Account Creator',
+                        desc: 'Register fresh GitHub accounts with Web Email OTP bridge, automatic 2FA Authenticator activation, Bio/Avatar/Repo customization & Creator_Vault staging.',
                         badge: '2FA Auto',
                         badgeColor: 'var(--success)',
                         action: "execAdminCmd('open_creator_studio')"
@@ -6561,8 +6569,8 @@
                     {
                         icon: '⚡',
                         accent: '#fbbf24',
-                        title: 'Flash Sale Stock Manager',
-                        desc: 'Pick stock by @username or year, set discount price & active hours',
+                        title: 'GitHub Flash Sale Manager',
+                        desc: 'Select live GitHub accounts by @username or year, configure discounted Flash Sale USDT pricing & active countdown hours.',
                         badge: `${activeFlashCount} Active`,
                         badgeColor: 'var(--warning)',
                         action: "execAdminCmd('manage_flash_stock')"
@@ -6570,8 +6578,8 @@
                     {
                         icon: '🎟️',
                         accent: '#c084fc',
-                        title: 'Promo Voucher Manager',
-                        desc: 'Create percentage discount codes with once-off or reusable rules',
+                        title: 'GitHub Promo Voucher Manager',
+                        desc: 'Create percentage discount voucher codes for store checkout with customizable once-off or reusable rules.',
                         badge: `${customVouchers.length} Codes`,
                         badgeColor: '#c084fc',
                         action: "execAdminCmd('manage_vouchers')"
@@ -6579,8 +6587,8 @@
                     {
                         icon: '📊',
                         accent: '#38bdf8',
-                        title: 'Global Store 3D Sales Telemetry',
-                        desc: 'Inspect daily, weekly, yearly & all-time USDT revenue charts',
+                        title: 'GitHub Store 3D Telemetry',
+                        desc: 'Inspect real-time daily, weekly, yearly & all-time USDT revenue charts across accounts sold and GitHub boost orders.',
                         badge: 'Live 3D',
                         badgeColor: '#38bdf8',
                         action: 'openStoreGlobal3DTelemetry()'
@@ -6590,8 +6598,8 @@
                     {
                         icon: '🔔',
                         accent: '#38bdf8',
-                        title: 'Live Admin Notification Feed',
-                        desc: 'Review cart alerts, price offers, IDR transfer proofs & reminders',
+                        title: 'GitHub Admin Alert Center',
+                        desc: 'Monitor real-time cart alerts, buyer price offers, IDR transfer screenshots, PAT audit findings & mission logs in one feed.',
                         badge: `${adminNotifs.length} Logs`,
                         badgeColor: adminNotifs.length > 0 ? 'var(--warning)' : 'var(--text-muted)',
                         action: "execAdminCmd('open_admin_notifs')"
@@ -6599,8 +6607,8 @@
                     {
                         icon: '📥',
                         accent: '#10b981',
-                        title: 'Sync Google Sheet Inventory',
-                        desc: 'Pull latest Sheet1 stock & broadcast restock alerts to buyers',
+                        title: 'GitHub Sheet Inventory Sync',
+                        desc: 'Pull the latest available accounts from Google Sheet1 immediately and broadcast restock alerts to active buyers.',
                         badge: `${totalLiveAccounts} Live`,
                         badgeColor: 'var(--success)',
                         action: "execAdminCmd('sync_gsheet')"
@@ -6610,15 +6618,15 @@
 
             const activeRows = tabItemsMap[_adminActiveSubTab] || tabItemsMap.studios;
             const rowsHtml = activeRows.map(item => `
-                <button type="button" class="adm-row-card" style="border-left-color:${item.accent};" onclick="${item.action}">
-                    <div class="adm-row-icon" style="border-color:${item.accent};">${item.icon}</div>
-                    <div class="adm-row-meta">
-                        <div class="adm-row-title">${item.title}</div>
-                        <div class="adm-row-desc">${item.desc}</div>
+                <button type="button" class="adm-row-card" style="border-right-color:${item.accent};" onclick="${item.action}">
+                    <div class="adm-row-head">
+                        <span class="adm-row-icon" style="border-color:${item.accent};">${item.icon}</span>
+                        <span class="adm-row-title">${item.title}</span>
                     </div>
-                    <div class="adm-row-right">
+                    <div class="adm-row-desc">${item.desc}</div>
+                    <div class="adm-row-foot">
                         <span class="adm-badge" style="color:${item.badgeColor};border-color:${item.badgeColor};">${item.badge}</span>
-                        <span class="adm-arrow">➔</span>
+                        <span class="adm-arrow">Open ➔</span>
                     </div>
                 </button>
             `).join('');
@@ -6682,18 +6690,20 @@
                         ${devUtilityHtml}
                     </div>
 
-                    <!-- 5. PERSISTENT FLASH SALE VISIBILITY SWITCH BAR -->
+                    <!-- 5. PERSISTENT FLASH SALE VISIBILITY CONTROL CARD -->
                     <div class="adm-status-bar">
-                        <div style="min-width:0;flex:1;">
-                            <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                ⚡ Storefront Flash Sale Banner
-                            </div>
-                            <div style="font-size:0.64rem;color:${isFlashOn ? 'var(--success)' : 'var(--text-muted)'};font-weight:700;margin-top:1px;">
-                                ${isFlashOn ? `🟢 Live on Home (${activeFlashCount} active deal${activeFlashCount === 1 ? '' : 's'})` : '🔴 Hidden from storefront'}
-                            </div>
+                        <div class="adm-row-head">
+                            <span class="adm-row-icon" style="border-color:var(--warning);">⚡</span>
+                            <span class="adm-row-title">GitHub Storefront Flash Sale Banner</span>
                         </div>
-                        <button type="button" class="adm-toggle-pill ${isFlashOn ? 'on' : ''}" title="Toggle Flash Sale Visibility" onclick="execAdminCmd('toggle_flash')">
-                            <span class="adm-toggle-knob"></span>
+                        <div class="adm-row-desc">
+                            Controls whether discounted GitHub Flash Sale deals are displayed publicly on the Storefront Home page. Current status:
+                            <b style="color:${isFlashOn ? 'var(--success)' : 'var(--danger)'};">
+                                ${isFlashOn ? `🟢 Live on Home (${activeFlashCount} active deal${activeFlashCount === 1 ? '' : 's'})` : '🔴 Hidden from buyers'}
+                            </b>.
+                        </div>
+                        <button type="button" class="adm-flash-action-btn ${isFlashOn ? 'on' : 'off'}" onclick="execAdminCmd('toggle_flash')">
+                            <span>${isFlashOn ? '🟢 BANNER LIVE • TAP TO HIDE' : '🔴 BANNER HIDDEN • TAP TO SHOW'}</span>
                         </button>
                     </div>
                 </div>
@@ -9952,6 +9962,8 @@ let _ghAgeCheckerResults = [];
         let _patCooldownTotalSec = 0;
         let _patCooldownLabelText = 'SAFE COOLDOWN';
         let _patLatestBatchItems = [];
+        let _patSeenRunningBatchId = '';
+        let _patLastNotifiedDoneBatchId = '';
 
         function stopPatCooldownTicker(hideBanner = true) {
             if (_patCooldownTickTimer) {
@@ -10880,6 +10892,45 @@ let _ghAgeCheckerResults = [];
                 }).join('');
             }
 
+            const curBid = String(batch.batch_id || '');
+            if (!isCompleted && curBid) {
+                _patSeenRunningBatchId = curBid;
+            }
+            if (isCompleted && curBid && _patSeenRunningBatchId === curBid && _patLastNotifiedDoneBatchId !== curBid) {
+                _patLastNotifiedDoneBatchId = curBid;
+                const icoDone = isStoppedByAdmin ? '🛑' : (failCnt > 0 && doneCnt === 0 ? '❌' : '✅');
+                const stWord = isStoppedByAdmin ? 'STOPPED' : 'COMPLETED';
+                const runnerTxt = String(batch.runner_target || _patSelectedRunner || 'pc').toLowerCase() === 'pc' ? 'LOCAL PC (CMD)' : 'CLOUD VPS';
+                const itemSummaryLines = _patLatestBatchItems.slice(0, 15).map(it => {
+                    const stIc = it.status === 'COMPLETED' ? '✅' : (it.status === 'FAILED' ? '❌' : '⏳');
+                    const det = it.pat_token ? 'PAT Saved to Sheet1' : (it.error ? it.error.slice(0, 50) : it.status);
+                    return `• ${stIc} <a href="https://github.com/${it.username}"><b>@${it.username}</b></a> — <code>${det}</code>`;
+                }).join('\n');
+
+                const patFinTgMsg = (
+                    `${icoDone} <b>PAT GENERATOR ${stWord} — ${runnerTxt}</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🆔 <b>Batch</b>   : <code>${curBid}</code>\n` +
+                    `📊 <b>Summary</b> : ✅ <b>${doneCnt}</b> OK | ❌ <b>${failCnt}</b> Failed\n` +
+                    (itemSummaryLines ? `\n📋 <b>Account Results</b>\n${itemSummaryLines}\n` : '') +
+                    `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `<i>🌐 Synced via Web App PAT Studio</i>`
+                );
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, patFinTgMsg, true));
+
+                const patFinCard = [
+                    `════════════════════`,
+                    `${icoDone} <b>PAT GENERATOR ${stWord}</b>`,
+                    `════════════════════`,
+                    fmtAlignedNotifRow('Batch', `<code>${curBid}</code>`),
+                    fmtAlignedNotifRow('Engine', `<b>${runnerTxt}</b>`),
+                    fmtAlignedNotifRow('Summary', `<b>✅ ${doneCnt} OK | ❌ ${failCnt} Failed</b>`),
+                    `════════════════════`,
+                    `📡 <i>Full report also delivered to Telegram Bot.</i>`
+                ].join('\n');
+                pushInWebNotification('admin', `${icoDone} PAT GENERATOR ${stWord}`, patFinCard);
+            }
+
             savePatStudioLocalCache(batch);
         }
 
@@ -11479,6 +11530,40 @@ let _ghAgeCheckerResults = [];
                     });
                     showToast('⚠️ ' + warnMsg);
                 }
+
+                const batchIdNew = String(data.batch?.batch_id || ('BATCH-' + Date.now()));
+                _patSeenRunningBatchId = batchIdNew;
+                _patLastNotifiedDoneBatchId = '';
+
+                const targetLinksHtml = (data.batch?.items || []).slice(0, 12).map(it =>
+                    `• <a href="https://github.com/${it.username}"><b>@${it.username}</b></a>`
+                ).join('\n');
+                const expDisp = expiryDays === 'none' ? 'No Expiration' : `${expiryDays} Days`;
+                const patStartTgMsg = (
+                    `🚀 <b>PAT GENERATOR STARTED — ${runnerBadge}</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🆔 <b>Batch</b>    : <code>${batchIdNew}</code>\n` +
+                    `🔑 <b>Accounts</b> : <b>${data.batch?.total || totalTargetCount}</b> account(s)\n` +
+                    `🛡️ <b>Scopes</b>   : <code>${scopePreset}</code> | ⏳ <b>${expDisp}</b>\n` +
+                    `🖥️ <b>Engine</b>   : <b>${runnerBadge}</b>\n` +
+                    (targetLinksHtml ? `\n📋 <b>Target Queue</b>\n${targetLinksHtml}\n` : '') +
+                    `━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `<i>⏳ Generating stealth PAT tokens &amp; auto-saving to Sheet1...</i>`
+                );
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, patStartTgMsg, true));
+
+                const patStartCard = [
+                    `════════════════════`,
+                    `🚀 <b>PAT GENERATOR STARTED</b>`,
+                    `════════════════════`,
+                    fmtAlignedNotifRow('Batch', `<code>${batchIdNew}</code>`),
+                    fmtAlignedNotifRow('Engine', `<b>${runnerBadge}</b>`),
+                    fmtAlignedNotifRow('Accounts', `<b>${data.batch?.total || totalTargetCount} Account(s)</b>`),
+                    fmtAlignedNotifRow('Preset', `<code>${scopePreset} (${expDisp})</code>`),
+                    `════════════════════`,
+                    `⏳ <i>Running stealth PAT batch &amp; synced to Telegram Bot.</i>`
+                ].join('\n');
+                pushInWebNotification('admin', `🔑 PAT GENERATOR STARTED (${runnerBadge})`, patStartCard);
 
                 renderPatBatchTelemetry(data.batch);
                 clearInterval(_patPollTimer);
