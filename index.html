@@ -11474,27 +11474,17 @@ function copyActiveWalletReceipt() {
             let totalIn = null, totalOut = null, verifiedTx = null;
             const container = rootCard.parentElement || document.body;
 
-            // 1. Scan nearby stat boxes in Wallet tab and hide duplicate row if found
-            const candidates = Array.from(container.children).filter(el => el !== rootCard && el.tagName === 'DIV');
-            for (const sib of candidates) {
-                const t = (sib.innerText || '').trim();
-                if (!t || t.length > 260) continue;
-                const hasIn = /total\s*in|cash\s*in|deposited/i.test(t);
-                const hasOut = /total\s*out|total\s*spent|cash\s*out/i.test(t);
-                const hasTx = /verified\s*tx|total\s*tx|transactions/i.test(t);
-                if ((hasIn && hasOut) || (hasIn && hasTx) || (hasOut && hasTx)) {
-                    const mIn = t.match(/(?:total\s*in|cash\s*in|deposited)[^\d$Rp]*([+\-$Rp\s\d.,]+(?:USDT|IDR)?)/i);
-                    const mOut = t.match(/(?:total\s*out|total\s*spent|cash\s*out)[^\d$Rp]*([+\-$Rp\s\d.,]+(?:USDT|IDR)?)/i);
-                    const mTx = t.match(/(?:verified\s*tx|total\s*tx|transactions)[^\d]*(\d[\d,]*)/i);
-                    if (mIn && mIn[1]) totalIn = mIn[1].trim();
-                    if (mOut && mOut[1]) totalOut = mOut[1].trim();
-                    if (mTx && mTx[1]) verifiedTx = mTx[1].trim() + ' TX';
-                    sib.style.display = 'none';
-                    break;
-                }
-            }
+            // READ-ONLY scan (NEVER hide any sibling menus or ledger sections!)
+            const scanText = (rootCard.innerText || '') + '\n' + (container.innerText || '');
+            const mIn = scanText.match(/(?:total\s*in|cash\s*in|deposited)[^\d$Rp]*([+\-$Rp\s\d.,]+(?:USDT|IDR)?)/i);
+            const mOut = scanText.match(/(?:total\s*out|total\s*spent|cash\s*out)[^\d$Rp]*([+\-$Rp\s\d.,]+(?:USDT|IDR)?)/i);
+            const mTx = scanText.match(/(?:verified\s*tx|total\s*tx|transactions)[^\d]*(\d[\d,]*)/i);
 
-            // 2. Fallback: compute from global history/orders or rendered tx rows
+            if (mIn && mIn[1]) totalIn = mIn[1].trim();
+            if (mOut && mOut[1]) totalOut = mOut[1].trim();
+            if (mTx && mTx[1]) verifiedTx = mTx[1].trim() + ' TX';
+
+            // Fallback from live arrays if not present in text
             if (totalIn === null || totalOut === null || verifiedTx === null) {
                 let sumIn = 0, sumOut = 0, cntTx = 0;
                 const histArr = (typeof walletHistory !== 'undefined' && Array.isArray(walletHistory) && walletHistory)
@@ -11510,15 +11500,9 @@ function copyActiveWalletReceipt() {
                         if (/deposit|topup|in|credit|receive|refund|cashback|bonus/.test(typ)) sumIn += amt;
                         else sumOut += amt;
                     });
-                } else {
-                    const pageText = container.innerText || '';
-                    const plusMatches = pageText.match(/\+\s*\$?\s*(\d+(?:[.,]\d+)?)/g) || [];
-                    const minusMatches = pageText.match(/-\s*\$?\s*(\d+(?:[.,]\d+)?)/g) || [];
-                    plusMatches.forEach(m => { sumIn += parseFloat(m.replace(/[^\d.]/g, '')) || 0; cntTx++; });
-                    minusMatches.forEach(m => { sumOut += parseFloat(m.replace(/[^\d.]/g, '')) || 0; cntTx++; });
                 }
 
-                const fmtUsdShort = n => '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                const fmtUsdShort = n => Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' USDT';
                 if (totalIn === null) totalIn = fmtUsdShort(sumIn);
                 if (totalOut === null) totalOut = fmtUsdShort(sumOut);
                 if (verifiedTx === null) verifiedTx = cntTx + ' TX';
@@ -11531,7 +11515,6 @@ function copyActiveWalletReceipt() {
             if (!card || card.dataset.xbVgrid === 'wallet') return;
 
             const rawText = (card.innerText || '').trim();
-            const btns = Array.from(card.querySelectorAll('button'));
             const containerBtns = Array.from((card.parentElement || card).querySelectorAll('button'));
 
             // Extract real live balance
@@ -11548,7 +11531,6 @@ function copyActiveWalletReceipt() {
             const idrRate = (typeof getCyberTelemIdrRate === 'function') ? getCyberTelemIdrRate() : 16250;
             const idrDisplay = '≈ Rp ' + Math.round(balNum * idrRate).toLocaleString('id-ID') + ' IDR';
 
-            // Extract VIP tier metadata
             const vipMeta = getCachedVipGridMeta();
             let tierKey = vipMeta.tierKey || 'bronze';
             let rankText = vipMeta.rank || 'BRONZE VIP MEMBER';
@@ -11557,13 +11539,11 @@ function copyActiveWalletReceipt() {
                 tierKey = detectVipTierKeyFromText(rawText);
             }
 
-            // Extract username & UID
             const rawUser = (typeof currentUsername !== 'undefined' && currentUsername)
                 ? String(currentUsername).replace(/^@+/, '')
                 : ((rawText.match(/@([a-zA-Z0-9_.-]+)/) || [])[1] || 'Member');
             const uidStr = (typeof currentUserId !== 'undefined' && currentUserId) ? String(currentUserId) : 'GUEST';
 
-            // Extract Total In, Total Out, Verified TX
             const stats = extractWalletStatsSmart(card);
 
             // Preserve original buttons inside hidden bridge so real click handlers stay 100% intact
@@ -11682,7 +11662,6 @@ function copyActiveWalletReceipt() {
             const uidStr = ((rawText.match(/UID:\s*([A-Za-z0-9_-]+)/i) || [])[1])
                 || (typeof currentUserId !== 'undefined' ? String(currentUserId) : '0');
 
-            // Read Vault Count & Total Spent from page for Profile-specific 3-stat strip
             const allBtns = Array.from(card.querySelectorAll('button'));
             const origVipBtn = allBtns.find(b => /cashback|vip/i.test(b.innerText || '') && !/UID:/i.test(b.innerText || ''));
             const origVaultBtn = allBtns.find(b => /vault/i.test(b.innerText || ''));
@@ -11699,7 +11678,6 @@ function copyActiveWalletReceipt() {
 
             saveCachedVipGridMeta({ tierKey, rank: cleanRank, emblem, cashback: cashbackStr, ringCls });
 
-            // Preserve original DOM inside hidden bridge (keeps file input & click handlers alive)
             const origBridge = document.createElement('div');
             origBridge.className = 'xb-orig-bridge';
             origBridge.style.display = 'none';
@@ -11712,14 +11690,12 @@ function copyActiveWalletReceipt() {
 
             const wrap = document.createElement('div');
             wrap.innerHTML = `
-                <div class="xb-vg-top">
-                    <button type="button" class="xb-vg-corner-btn" data-act="photo">📷 Photo</button>
-                    <div class="xb-vg-tier-pill">${emblem} ${cleanRank}</div>
-                    <span class="xb-vg-corner-btn" style="cursor:default;color:#34d399;border-color:rgba(52,211,153,0.45);">● Verified</span>
+                <div class="xb-vg-top" style="justify-content:center;">
+                    <div class="xb-vg-tier-pill" style="padding:5px 14px;">${emblem} ${cleanRank}</div>
                 </div>
 
                 <div class="xb-vg-center">
-                    <div class="xb-vg-prf-av ${ringCls}" data-act="photo" title="Tap to change photo">
+                    <div class="xb-vg-prf-av ${ringCls}" data-act="photo" title="Tap photo to change avatar">
                         <div class="xb-vg-prf-av-inner">${avatarHtml}</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:5px;">
@@ -11773,41 +11749,38 @@ function copyActiveWalletReceipt() {
         }
 
         function scanAndUpgradeVipGridCards() {
-            // 1. Upgrade Profile Hero Card
-            const prfCrown = document.querySelector('.xb-prf-vip-crown');
-            if (prfCrown) {
-                const prfCard = prfCrown.closest('.xb-wal-card');
+            // 1. Upgrade Profile Hero Card (instant, zero-flicker)
+            const prfCrowns = document.querySelectorAll('.xb-prf-vip-crown');
+            prfCrowns.forEach(crown => {
+                if (crown.closest('.xb-orig-bridge')) return;
+                const prfCard = crown.closest('.xb-wal-card');
                 if (prfCard && !prfCard.dataset.xbVgrid) {
                     upgradeProfileHeroToMemberGrid(prfCard);
                 }
-            }
+            });
 
-            // 2. Upgrade Wallet Hero Card
+            // 2. Upgrade ONLY the Wallet Balance Card (strictly skip Ledger/History/Menus)
             const cards = Array.from(document.querySelectorAll('.xb-wal-card'));
             for (const c of cards) {
-                if (c.dataset.xbVgrid || c.closest('#paymentGatewayModal')) continue;
-                if (c.querySelector('.xb-prf-vip-crown, .xb-prf-avatar-wrap')) continue;
+                if (c.dataset.xbVgrid || c.closest('#paymentGatewayModal') || c.closest('.xb-orig-bridge')) continue;
+                if (c.querySelector('.xb-prf-vip-crown, .xb-prf-avatar-wrap, .xb-wal-card')) continue;
                 const txt = (c.innerText || '');
-                if (/available\s+balance|total\s+balance|wallet\s+balance|send\s+balance|receive\s+balance/i.test(txt)
-                    || (/USDT/i.test(txt) && /deposit|top\s*up|send|receive|withdraw/i.test(txt))) {
+                const isBalanceBox = /available\s+balance|total\s+balance|wallet\s+balance/i.test(txt);
+                const isHistoryOrOther = /transaction\s+history|recent\s+activity|ledger|personal\s+spend|security\s*&\s*pin/i.test(txt);
+                if (isBalanceBox && !isHistoryOrOther) {
                     upgradeWalletHeroToClassicGrid(c);
                     break;
                 }
             }
         }
 
-        let _vgObsTimer = null;
         if (typeof MutationObserver !== 'undefined') {
             const _vgObserver = new MutationObserver(() => {
-                if (_vgObsTimer) return;
-                _vgObsTimer = setTimeout(() => {
-                    _vgObsTimer = null;
-                    scanAndUpgradeVipGridCards();
-                }, 30);
+                scanAndUpgradeVipGridCards();
             });
             if (document.body) _vgObserver.observe(document.body, { childList: true, subtree: true });
         }
-        setTimeout(scanAndUpgradeVipGridCards, 500);
+        setTimeout(scanAndUpgradeVipGridCards, 250);
 
         function openProfileSlide(slideKey) {
             if (slideKey === 'helpdesk' && typeof openLiveHelpdeskModal === 'function') {
