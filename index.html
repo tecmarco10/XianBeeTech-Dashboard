@@ -2021,10 +2021,14 @@
         .xb-ex-art { position: relative; width: 100%; height: 78px; border-radius: 11px; background: radial-gradient(circle at 85% 18%, rgba(168,85,247,0.34), transparent 55%), radial-gradient(circle at 15% 85%, rgba(56,189,248,0.28), transparent 55%), linear-gradient(140deg, #060914 0%, #0d1c44 55%, #1d103d 100%); border: 1px solid rgba(255,255,255,0.14); padding: 7px; display: flex; flex-direction: column; justify-content: space-between; overflow: hidden; }
         .xb-ex-art::after { content: ''; position: absolute; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: 14px 14px; pointer-events: none; }
         [data-theme="platinum"] .xb-ex-art { background: radial-gradient(circle at 85% 18%, rgba(124,58,237,0.15), transparent 55%), radial-gradient(circle at 15% 85%, rgba(37,99,235,0.14), transparent 55%), linear-gradient(140deg, #f8fafc 0%, #e0e7ff 55%, #ede9fe 100%); border-color: rgba(79,70,229,0.2); }
-        .xb-ex-gh-badge { width: 24px; height: 24px; border-radius: 7px; background: rgba(5,8,18,0.78); border: 1px solid rgba(255,255,255,0.24); display: inline-flex; align-items: center; justify-content: center; color: #ffffff; flex-shrink: 0; position: relative; z-index: 1; }
+        .xb-ex-gh-badge { width: 22px; height: 22px; border-radius: 7px; background: rgba(5,8,18,0.82); border: 1px solid rgba(255,255,255,0.24); display: inline-flex; align-items: center; justify-content: center; color: #ffffff; flex-shrink: 0; position: relative; z-index: 1; }
         [data-theme="platinum"] .xb-ex-gh-badge { background: #0f172a; color: #ffffff; }
-        .xb-ex-watermark { position: absolute; right: 6px; bottom: -4px; font-family: 'JetBrains Mono', monospace; font-size: 1.75rem; font-weight: 800; color: rgba(255,255,255,0.1); letter-spacing: -1px; pointer-events: none; line-height: 1; }
-        [data-theme="platinum"] .xb-ex-watermark { color: rgba(79,70,229,0.12); }
+        .xb-ex-stock-pill { height: 22px; padding: 0 6px; border-radius: 7px; background: rgba(5,8,18,0.76); border: 1px solid rgba(255,255,255,0.2); font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; font-weight: 800; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; flex-shrink: 0; position: relative; z-index: 1; }
+        [data-theme="platinum"] .xb-ex-stock-pill { background: rgba(255,255,255,0.92); border-color: rgba(79,70,229,0.25); }
+        .xb-ex-year-tag { font-family: 'JetBrains Mono', monospace; font-size: 1.06rem; font-weight: 800; letter-spacing: -0.4px; line-height: 1; background: linear-gradient(180deg, #ffffff 10%, #7dd3fc 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; flex-shrink: 0; white-space: nowrap; position: relative; z-index: 1; }
+        .xb-ex-year-tag.sm { font-size: 0.82rem; }
+        [data-theme="platinum"] .xb-ex-year-tag { background: linear-gradient(180deg, #0f172a 10%, #4f46e5 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .xb-ex-span-2 { grid-column: 1 / -1; }
         .xb-ex-chip { font-family: 'JetBrains Mono', monospace; font-size: 0.51rem; font-weight: 800; padding: 2px 6px; border-radius: 99px; background: rgba(5,8,18,0.75); border: 1px solid rgba(255,255,255,0.22); white-space: nowrap; position: relative; z-index: 1; letter-spacing: 0.3px; }
         [data-theme="platinum"] .xb-ex-chip { background: rgba(255,255,255,0.92); border-color: rgba(79,70,229,0.25); }
         .xb-tier-mythic { color: #f472b6 !important; border-color: rgba(244,114,182,0.65) !important; background: rgba(219,39,119,0.22) !important; }
@@ -5341,13 +5345,17 @@
                 `;
                 vp.appendChild(spDiv);
 
-                const spOrder = ['Followers', 'Arctic', 'Contrib', '6Badge', 'StudentPack'];
-                const spList = sortVaultCategoryList(
-                    spOrder.map(k => GITHUB_VAULT_CATEGORIES.find(y => y.yr === k)).filter(Boolean)
-                );
                 const spGrid = document.createElement('div');
                 spGrid.className = 'grid-years-2col';
-                spList.forEach(y => spGrid.appendChild(createGithubYearCard(y)));
+
+                const follVault = GITHUB_VAULT_CATEGORIES.find(y => y.yr === 'Followers');
+                if (follVault) spGrid.appendChild(createGithubYearCard(follVault, true));
+
+                const otherSpOrder = ['Arctic', 'Contrib', '6Badge', 'StudentPack'];
+                const otherSpList = sortVaultCategoryList(
+                    otherSpOrder.map(k => GITHUB_VAULT_CATEGORIES.find(y => y.yr === k)).filter(Boolean)
+                );
+                otherSpList.forEach(y => spGrid.appendChild(createGithubYearCard(y, false)));
                 vp.appendChild(spGrid);
                 return;
             }
@@ -5449,31 +5457,34 @@
             return { label: 'RARE', cls: 'xb-tier-rare' };
         }
 
-        function createGithubYearCard(yObj) {
+        function createGithubYearCard(yObj, isFullWidth = false) {
             const list = liveGithubStock[yObj.yr] || [];
             const hasStock = list.length > 0;
             const isYearCard = /^\d{4}$/.test(yObj.yr);
             const minPrice = hasStock ? Math.min(...list.map(a => a._computed_usdt || yObj.usdt)) : yObj.usdt;
-            const cleanTitle = isYearCard ? `GitHub ${yObj.yr}` : yObj.title.replace(/^GitHub\s+/i, '');
+            const cleanTitle = isYearCard ? 'Aged Vault' : yObj.title.replace(/^GitHub\s+/i, '');
             const tier = getAssetRarityTier(yObj.yr);
-            const wmText = isYearCard ? yObj.yr : yObj.icon;
+            const specBadgeMap = { Followers: '50+ FLW', Arctic: '2020', Contrib: '200K+', '6Badge': '6★', StudentPack: 'PRO' };
+            const rightTag = isYearCard ? yObj.yr : (specBadgeMap[yObj.yr] || yObj.icon);
             const stockColor = hasStock ? '#34d399' : '#94a3b8';
 
             const card = document.createElement('div');
-            card.className = 'item-card';
+            card.className = 'item-card' + (isFullWidth ? ' xb-ex-span-2' : '');
             card.style.padding = '9px';
             card.style.gap = '7px';
             card.innerHTML = `
                 <div class="xb-ex-art" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usdt})" style="cursor:pointer;">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;position:relative;z-index:1;">
-                        <span class="xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
+                        <div style="display:flex;align-items:center;gap:4px;min-width:0;">
+                            <span class="xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
+                            <span class="xb-ex-stock-pill" style="color:${stockColor};border-color:${hasStock ? 'rgba(52,211,153,0.42)' : 'var(--ex-hairline)'};">${hasStock ? `● ${list.length}` : '○ 0'}</span>
+                        </div>
                         <span class="xb-ex-chip ${tier.cls}">★ ${tier.label}</span>
                     </div>
-                    <div style="position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:4px;">
-                        <span style="font-size:0.74rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTitle}</span>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;color:${stockColor};flex-shrink:0;">${hasStock ? `● ${list.length}` : '○ 0'}</span>
+                    <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:6px;">
+                        <span style="font-size:${isFullWidth ? '0.82rem' : '0.68rem'};font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15;">${cleanTitle}</span>
+                        <span class="xb-ex-year-tag ${isYearCard ? '' : 'sm'}">${rightTag}</span>
                     </div>
-                    <div class="xb-ex-watermark">${wmText}</div>
                 </div>
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 2px;">
                     <div style="min-width:0;">
@@ -5497,7 +5508,7 @@
             const uname = acc.username;
             const url = acc.url || `https://github.com/${uname}`;
             const accId = `${yrKey}-${uname}`;
-            const dispYear = acc.year || yrKey;
+            const dispYear = String(acc.year || yrKey);
             const tier = getAssetRarityTier(yrKey === 'Followers' || yrKey === 'Arctic' || yrKey === 'Contrib' || yrKey === '6Badge' ? yrKey : dispYear);
             ACCOUNT_CACHE_MAP[accId] = { acc: acc, yrKey: yrKey };
 
@@ -5508,14 +5519,19 @@
             card.innerHTML = `
                 <div class="xb-ex-art" style="height:72px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;position:relative;z-index:1;">
-                        <span class="xb-ex-gh-badge" style="width:22px;height:22px;">${GH_SVG_EMBLEM}</span>
+                        <div style="display:flex;align-items:center;gap:4px;min-width:0;">
+                            <span class="xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
+                            <span class="xb-ex-stock-pill" style="color:#34d399;border-color:rgba(52,211,153,0.42);">● LIVE</span>
+                        </div>
                         <span class="xb-ex-chip ${tier.cls}">★ ${tier.label}</span>
                     </div>
-                    <div style="position:relative;z-index:1;display:flex;align-items:center;gap:3px;min-width:0;">
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${uname}</span>
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                    <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:5px;min-width:0;">
+                        <div style="display:flex;align-items:center;gap:3px;min-width:0;flex:1;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.69rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${uname}</span>
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                        </div>
+                        <span class="xb-ex-year-tag sm">${dispYear}</span>
                     </div>
-                    <div class="xb-ex-watermark" style="font-size:1.45rem;">${dispYear}</div>
                 </div>
                 <div class="xb-ex-stat-2">
                     <div class="xb-ex-stat-cell">
