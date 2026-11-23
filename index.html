@@ -2042,6 +2042,60 @@
         /* SYNC ADMIN THEME WITH ASSET EXCHANGE */
         .xb-adm-console, .xb-bento-card, .xb-adm-flash-bar { background: var(--ex-card-bg) !important; border-color: var(--ex-hairline) !important; }
 
+        /* =========================================================
+           ⚡ GITHUB BOOST TERMINAL — ASSET EXCHANGE EDITION
+           ========================================================= */
+        .xb-bst-seg { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; background: var(--bg-input); border: 1px solid var(--ex-hairline); padding: 4px; border-radius: 12px; margin-bottom: 10px; }
+        .xb-bst-seg-btn { border: 1px solid transparent; background: transparent; color: var(--text-secondary); padding: 8px 4px; border-radius: 9px; font-family: inherit; font-size: 0.65rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 4px; white-space: nowrap; transition: 0.16s ease; }
+        .xb-bst-seg-btn.active { background: linear-gradient(135deg, #0d1838 0%, #1d4ed8 52%, #7c3aed 100%); border-color: rgba(255,255,255,0.36); color: #ffffff; box-shadow: 0 4px 14px rgba(79,70,229,0.42), inset 0 1px 0 rgba(255,255,255,0.3); }
+
+        .xb-bst-terminal { position: relative; background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-radius: 16px; padding: 12px; display: flex; flex-direction: column; gap: 10px; overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.2); }
+        .xb-bst-terminal::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: var(--ex-sheen); pointer-events: none; }
+        [data-theme="platinum"] .xb-bst-terminal { box-shadow: 0 8px 22px rgba(15,23,42,0.08), inset 0 1px 0 #ffffff; }
+
+        .xb-bst-head { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding-bottom: 8px; border-bottom: 1px solid var(--ex-hairline); }
+        .xb-bst-lbl { display: flex; align-items: center; justify-content: space-between; font-family: 'JetBrains Mono', monospace; font-size: 0.54rem; font-weight: 800; color: var(--text-muted); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 5px; }
+
+        .xb-bst-svc-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+        .xb-bst-svc-btn { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 10px; padding: 8px 3px; color: var(--text-secondary); font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; transition: 0.16s ease; }
+        .xb-bst-svc-btn span.t { font-size: 0.62rem; font-weight: 800; white-space: nowrap; }
+        .xb-bst-svc-btn span.p { font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+        .xb-bst-svc-btn.active { background: linear-gradient(145deg, rgba(29,78,216,0.44) 0%, rgba(124,58,237,0.46) 100%); border-color: rgba(56,189,248,0.75); color: #ffffff; box-shadow: 0 4px 12px rgba(59,130,246,0.3), inset 0 1px 0 rgba(255,255,255,0.28); }
+        .xb-bst-svc-btn.active span.p { color: #7dd3fc; }
+        [data-theme="platinum"] .xb-bst-svc-btn.active { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: #ffffff; }
+        [data-theme="platinum"] .xb-bst-svc-btn.active span.p { color: #e0f2fe; }
+
+        .xb-bst-input-row { display: flex; align-items: center; gap: 5px; }
+        .xb-bst-target-inp { flex: 1; min-width: 0; height: 35px; padding: 0 10px; border-radius: 9px; border: 1px solid var(--ex-hairline); background: var(--bg-input); color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 700; outline: none; }
+        .xb-bst-target-inp:focus { border-color: #38bdf8; box-shadow: 0 0 0 2px rgba(56,189,248,0.18); }
+
+        .xb-bst-proj { background: var(--bg-input); border: 1px solid rgba(52,211,153,0.45); border-left: 3px solid #34d399; border-radius: 10px; padding: 8px 9px; display: none; flex-direction: column; gap: 6px; }
+        .xb-bst-proj.err { border-color: rgba(248,113,113,0.5); border-left-color: #f87171; }
+        .xb-bst-proj-grid { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 6px; text-align: center; font-family: 'JetBrains Mono', monospace; }
+        .xb-bst-proj-box { background: rgba(255,255,255,0.04); border: 1px solid var(--ex-hairline); border-radius: 8px; padding: 5px 4px; }
+        [data-theme="platinum"] .xb-bst-proj-box { background: #ffffff; }
+
+        .xb-bst-speed-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+        .xb-bst-speed-btn { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 9px; padding: 7px 4px; text-align: center; cursor: pointer; font-family: inherit; transition: 0.16s ease; }
+        .xb-bst-speed-btn .sn { font-size: 0.64rem; font-weight: 800; color: var(--text-primary); display: block; }
+        .xb-bst-speed-btn .sp { font-family: 'JetBrains Mono', monospace; font-size: 0.52rem; font-weight: 700; color: var(--text-muted); display: block; margin-top: 2px; }
+        .xb-bst-speed-btn.active { background: linear-gradient(135deg, rgba(29,78,216,0.38) 0%, rgba(124,58,237,0.42) 100%); border-color: rgba(255,255,255,0.42); box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); }
+        .xb-bst-speed-btn.active .sn { color: #ffffff; }
+        .xb-bst-speed-btn.active .sp { color: #7dd3fc; }
+        [data-theme="platinum"] .xb-bst-speed-btn.active { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); }
+
+        .xb-bst-qty-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)) 1.35fr; gap: 5px; }
+        .xb-bst-qty-pill { height: 32px; border-radius: 8px; border: 1px solid var(--ex-hairline); background: var(--bg-input); color: var(--text-secondary); font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; font-weight: 800; cursor: pointer; transition: 0.15s ease; }
+        .xb-bst-qty-pill.active { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border-color: rgba(255,255,255,0.42); color: #ffffff; }
+        .xb-bst-qty-inp { width: 100%; height: 32px; border-radius: 8px; border: 1px solid var(--ex-hairline); background: var(--bg-input); color: var(--text-primary); text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; font-weight: 800; outline: none; }
+        .xb-bst-qty-inp:focus { border-color: #38bdf8; }
+
+        .xb-bst-summary { background: rgba(4,7,16,0.52); border: 1px solid var(--ex-hairline); border-radius: 11px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        [data-theme="platinum"] .xb-bst-summary { background: rgba(241,245,249,0.85); }
+
+        .xb-bst-packs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+        .xb-bst-tool-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-bottom: 10px; }
+
         /* FULL-PAGE 100DVH STUDIO FRAME & STANDALONE TITLE BAR */
         #paymentGatewayModal.xb-fullpage-modal {
             padding: 5px;
@@ -5360,37 +5414,79 @@
                 return;
             }
 
-            // 2. BOOST & STORE TAB (GITHUB BOOST + STORE CATALOGS + FREE 2FA & SHADOWBAN TOOLS)
+            // 2. BOOST & STORE TAB (3 CLEAN SEGMENTS: GITHUB BOOST TERMINAL • FREE TOOLS • OTHER STORE)
             if (activeTab === 'boost') {
-                const boostSubs = [
-                    '🚀 GitHub Boost',
-                    '👑 Pro Apps & AI',
-                    '📱 Aged Socials',
-                    '🪙 Crypto & Exchange',
-                    '📈 SMM Boost',
-                    '🎮 PPOB & Games',
-                    '🔍 Scan Shadowban',
-                    '🔑 Live 2FA Code'
-                ];
-                if (activeSub === 'ALL' || !boostSubs.includes(activeSub)) activeSub = boostSubs[0];
-                subContainer.style.display = 'grid';
-                boostSubs.forEach(bs => {
-                    const b = document.createElement('button');
-                    b.className = 'subtab-pill' + (activeSub === bs ? ' active' : '');
-                    b.innerText = bs;
-                    b.onclick = () => { activeSub = bs; renderViewport(); };
-                    subContainer.appendChild(b);
-                });
+                subContainer.style.display = 'none';
+                window._bstSeg = window._bstSeg || 'terminal';
+                window._bstToolTab = window._bstToolTab || 'scan';
+                window._bstStoreCat = window._bstStoreCat || 'ALL';
 
-                if (activeSub.includes('2FA')) { render2faTool(vp); return; }
-                if (activeSub.includes('Scan')) { renderDiagnosticTools(vp); return; }
+                const segBar = document.createElement('div');
+                segBar.className = 'xb-bst-seg';
+                segBar.innerHTML = `
+                    <button type="button" class="xb-bst-seg-btn ${window._bstSeg === 'terminal' ? 'active' : ''}" onclick="window._bstSeg='terminal'; renderViewport();">⚡ GitHub Boost</button>
+                    <button type="button" class="xb-bst-seg-btn ${window._bstSeg === 'tools' ? 'active' : ''}" onclick="window._bstSeg='tools'; renderViewport();">🛠️ Free Tools</button>
+                    <button type="button" class="xb-bst-seg-btn ${window._bstSeg === 'store' ? 'active' : ''}" onclick="window._bstSeg='store'; renderViewport();">🌐 Other Store</button>
+                `;
+                vp.appendChild(segBar);
+
+                // SEGMENT 1: GITHUB BOOST TERMINAL
+                if (window._bstSeg === 'terminal') {
+                    if (typeof renderBoostTerminal === 'function') {
+                        renderBoostTerminal(vp);
+                    }
+                    return;
+                }
+
+                // SEGMENT 2: FREE TOOLS (SHADOWBAN SCANNER & LIVE 2FA CODE)
+                if (window._bstSeg === 'tools') {
+                    const tTabs = document.createElement('div');
+                    tTabs.className = 'xb-bst-tool-tabs';
+                    tTabs.innerHTML = `
+                        <button type="button" class="xb-ex-filter-chip ${window._bstToolTab === 'scan' ? 'active' : ''}" onclick="window._bstToolTab='scan'; renderViewport();">🔍 Scan Shadowban</button>
+                        <button type="button" class="xb-ex-filter-chip ${window._bstToolTab === '2fa' ? 'active' : ''}" onclick="window._bstToolTab='2fa'; renderViewport();">🔑 Live 2FA Code</button>
+                    `;
+                    vp.appendChild(tTabs);
+
+                    const toolBody = document.createElement('div');
+                    vp.appendChild(toolBody);
+                    if (window._bstToolTab === '2fa') {
+                        render2faTool(toolBody);
+                    } else {
+                        renderDiagnosticTools(toolBody);
+                    }
+                    return;
+                }
+
+                // SEGMENT 3: OTHER STORE CATALOGS (2-ROW SYMMETRICAL 3x2 CHIPS)
+                const storeR1 = [
+                    { k: 'ALL', lbl: '📦 All Store' },
+                    { k: 'Pro Apps & AI', lbl: '👑 Pro Apps' },
+                    { k: 'Aged Socials', lbl: '📱 Socials' }
+                ];
+                const storeR2 = [
+                    { k: 'Crypto & Exchange', lbl: '🪙 Crypto' },
+                    { k: 'SMM Boost', lbl: '📈 SMM Boost' },
+                    { k: 'PPOB & Games', lbl: '🎮 PPOB' }
+                ];
+                const chipsWrap = document.createElement('div');
+                chipsWrap.className = 'xb-ex-chips-wrap';
+                chipsWrap.innerHTML = `
+                    <div class="xb-ex-chips-r1">
+                        ${storeR1.map(c => `<button type="button" class="xb-ex-filter-chip ${window._bstStoreCat === c.k ? 'active' : ''}" onclick="window._bstStoreCat='${c.k}'; renderViewport();">${c.lbl}</button>`).join('')}
+                    </div>
+                    <div class="xb-ex-chips-r1">
+                        ${storeR2.map(c => `<button type="button" class="xb-ex-filter-chip ${window._bstStoreCat === c.k ? 'active' : ''}" onclick="window._bstStoreCat='${c.k}'; renderViewport();">${c.lbl}</button>`).join('')}
+                    </div>
+                `;
+                vp.appendChild(chipsWrap);
 
                 const grid = document.createElement('div');
                 grid.className = 'grid-cards';
                 CATALOG_ITEMS.filter(i => {
-                    if (activeSub.includes('GitHub Boost')) return i.hub === 'github_boost';
-                    const cleanSub = activeSub.replace(/^[^\s]+\s/, '');
-                    return i.sub === cleanSub;
+                    if (i.hub === 'github_boost') return false;
+                    if (window._bstStoreCat === 'ALL') return true;
+                    return i.sub === window._bstStoreCat;
                 }).forEach(i => grid.appendChild(createCatalogCard(i)));
                 vp.appendChild(grid);
                 return;
@@ -13408,6 +13504,454 @@ let _ghAgeCheckerResults = [];
                 date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
             });
             localStorage.setItem('xb_tx_history', JSON.stringify(list.slice(0, 40)));
+        }
+
+        // =========================================================
+        // ⚡ 12B. GITHUB BOOST TERMINAL ENGINE (ASSET EXCHANGE EDITION)
+        // =========================================================
+        const XB_BOOST_SVCS = {
+            followers: {
+                key: 'followers', label: 'Followers', fullTitle: 'GitHub Followers Service', unitLbl: 'Followers',
+                isRepo: false, placeholder: 'Enter @username or github.com/user',
+                ico: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+                tiers: { reg: { name: 'Regular Track', p: 0.50 }, fast: { name: 'Fast Track', p: 0.55 }, ultra: { name: 'Ultra Track', p: 0.60 } }
+            },
+            stars: {
+                key: 'stars', label: 'Stars', fullTitle: 'GitHub Repository Stars Service', unitLbl: 'Stars',
+                isRepo: true, placeholder: 'Enter owner/repo or repo URL',
+                ico: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+                tiers: { reg: { name: 'Regular Track', p: 0.35 }, fast: { name: 'Fast Track', p: 0.40 }, ultra: { name: 'Ultra Track', p: 0.45 } }
+            },
+            forks: {
+                key: 'forks', label: 'Forks', fullTitle: 'GitHub Repository Forks Service', unitLbl: 'Forks',
+                isRepo: true, placeholder: 'Enter owner/repo or repo URL',
+                ico: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><path d="M18 9v2c0 .6-.4 1-1 1H7c-.6 0-1-.4-1-1V9"/><path d="M12 12v3"/></svg>`,
+                tiers: { reg: { name: 'Regular Track', p: 0.40 }, fast: { name: 'Fast Track', p: 0.45 }, ultra: { name: 'Ultra Track', p: 0.50 } }
+            },
+            watch: {
+                key: 'watch', label: 'Watchers', fullTitle: 'GitHub Repository Watchers Service', unitLbl: 'Watchers',
+                isRepo: true, placeholder: 'Enter owner/repo or repo URL',
+                ico: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>`,
+                tiers: { reg: { name: 'Regular Track', p: 0.30 }, fast: { name: 'Fast Track', p: 0.35 }, ultra: { name: 'Ultra Track', p: 0.40 } }
+            }
+        };
+
+        window._bstState = window._bstState || {
+            svc: 'followers',
+            speed: 'reg',
+            qty: 100,
+            target: '',
+            liveData: null,
+            liveError: ''
+        };
+        let _bstScanDebounce = null;
+
+        function computeBoostTerminalTotals() {
+            const st = window._bstState;
+            const cfg = XB_BOOST_SVCS[st.svc] || XB_BOOST_SVCS.followers;
+            const tier = cfg.tiers[st.speed] || cfg.tiers.reg;
+            const qty = Math.max(10, parseInt(st.qty, 10) || 10);
+            const rawUsdt = qty * tier.p;
+            const hasBulkDisc = qty >= 200;
+            const finalUsdt = hasBulkDisc ? rawUsdt * 0.95 : rawUsdt;
+            return { cfg, tier, qty, rawUsdt, finalUsdt, hasBulkDisc };
+        }
+
+        function renderBoostTerminal(vp) {
+            const st = window._bstState;
+            const calc = computeBoostTerminalTotals();
+            const safeTarget = String(st.target || '').replace(/"/g, '&quot;');
+
+            const termWrap = document.createElement('div');
+            termWrap.className = 'xb-bst-terminal';
+            termWrap.id = 'xbBoostTerminalCard';
+            termWrap.innerHTML = `
+                <div class="xb-bst-head">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span class="xb-ex-gh-badge" style="width:28px;height:28px;">${GH_SVG_EMBLEM}</span>
+                        <div style="min-width:0;">
+                            <div style="display:flex;align-items:center;gap:4px;">
+                                <span style="font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">GitHub Boost Terminal</span>
+                                <svg width="13" height="13" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--text-muted);font-weight:700;">LIVE API TRACKER • AUTO 5% BULK OFF</div>
+                        </div>
+                    </div>
+                    <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">● LIVE DESK</span>
+                </div>
+
+                <!-- 1. METRIC SELECTOR -->
+                <div>
+                    <div class="xb-bst-lbl">
+                        <span>1. SELECT GITHUB METRIC</span>
+                        <span style="color:#38bdf8;">${calc.cfg.isRepo ? 'REPOSITORY' : 'PROFILE'}</span>
+                    </div>
+                    <div class="xb-bst-svc-grid">
+                        ${Object.values(XB_BOOST_SVCS).map(s => `
+                            <button type="button" class="xb-bst-svc-btn ${st.svc === s.key ? 'active' : ''}" onclick="setBoostTerminalSvc('${s.key}')">
+                                ${s.ico}
+                                <span class="t">${s.label}</span>
+                                <span class="p">${fmtPrice(s.tiers[st.speed].p)}/u</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+
+                <!-- 2. TARGET INPUT + LIVE BEFORE -> AFTER PREVIEW -->
+                <div>
+                    <div class="xb-bst-lbl">
+                        <span>2. TARGET ${calc.cfg.isRepo ? 'REPOSITORY (OWNER/REPO)' : 'GITHUB USERNAME'}</span>
+                        <span style="color:#c084fc;">AUTO-VERIFY</span>
+                    </div>
+                    <div class="xb-bst-input-row">
+                        <input type="text" id="bstTargetInp" class="xb-bst-target-inp" value="${safeTarget}" placeholder="${calc.cfg.placeholder}" oninput="onBoostTargetInput(this.value)">
+                        <button type="button" class="xb-ex-icon-btn" style="height:35px;padding:0 10px;border-color:rgba(56,189,248,0.55);color:#38bdf8;" onclick="scanBoostTerminalTarget(true)">🔍 Scan</button>
+                    </div>
+                    <div id="bstProjectionBox" class="xb-bst-proj" style="margin-top:6px;"></div>
+                </div>
+
+                <!-- 3. SPEED TRACK -->
+                <div>
+                    <div class="xb-bst-lbl">
+                        <span>3. DELIVERY SPEED TRACK</span>
+                        <span style="color:#34d399;">HIGH RETENTION</span>
+                    </div>
+                    <div class="xb-bst-speed-grid">
+                        ${['reg', 'fast', 'ultra'].map(spKey => {
+                            const tObj = calc.cfg.tiers[spKey];
+                            const subTxt = spKey === 'reg' ? 'Natural' : (spKey === 'fast' ? 'Priority' : 'Instant');
+                            return `
+                                <button type="button" class="xb-bst-speed-btn ${st.speed === spKey ? 'active' : ''}" onclick="setBoostTerminalSpeed('${spKey}')">
+                                    <span class="sn">${tObj.name.replace(' Track', '')} • ${subTxt}</span>
+                                    <span class="sp">${fmtPrice(tObj.p)} / unit</span>
+                                </button>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+
+                <!-- 4. QUANTITY & BULK DISCOUNT -->
+                <div>
+                    <div class="xb-bst-lbl">
+                        <span>4. QUANTITY (MIN 10 UNITS)</span>
+                        <span id="bstBulkBadge" style="color:${calc.hasBulkDisc ? '#34d399' : '#fbbf24'};">${calc.hasBulkDisc ? '✓ 5% BULK OFF APPLIED' : '200+ UNITS = 5% OFF'}</span>
+                    </div>
+                    <div class="xb-bst-qty-row">
+                        ${[50, 100, 200, 500].map(q => `
+                            <button type="button" class="xb-bst-qty-pill ${Number(st.qty) === q ? 'active' : ''}" onclick="setBoostTerminalQty(${q})">${q}</button>
+                        `).join('')}
+                        <input type="number" id="bstQtyManualInp" class="xb-bst-qty-inp" min="10" value="${calc.qty}" oninput="setBoostTerminalQty(this.value, true)">
+                    </div>
+                </div>
+
+                <!-- 5. LIVE TOTAL SUMMARY & DIRECT ACTIONS -->
+                <div class="xb-bst-summary">
+                    <div style="min-width:0;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:800;">ESTIMATED TOTAL</div>
+                        <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
+                            <span id="bstTotalPriceVal" style="font-family:'JetBrains Mono',monospace;font-size:0.96rem;font-weight:800;color:#34d399;">${fmtPrice(calc.finalUsdt)}</span>
+                            <s id="bstRawPriceVal" style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;color:var(--text-muted);display:${calc.hasBulkDisc ? 'inline' : 'none'};">${fmtPrice(calc.rawUsdt)}</s>
+                        </div>
+                    </div>
+                    <div style="text-align:right;font-family:'JetBrains Mono',monospace;">
+                        <div style="font-size:0.5rem;color:var(--text-muted);font-weight:800;">WALLET BAL</div>
+                        <div style="font-size:0.7rem;font-weight:800;color:var(--text-primary);">${fmtPrice(userBalanceUsdt)}</div>
+                    </div>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1.45fr;gap:7px;">
+                    <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.72rem;border-radius:10px;" onclick="addBoostTerminalToCart()">🛒 +Cart</button>
+                    <button type="button" class="btn-ui primary" style="padding:10px 8px;font-size:0.72rem;border-radius:10px;" onclick="openBoostTerminalCheckout()">⚡ Checkout Now</button>
+                </div>
+            `;
+            vp.appendChild(termWrap);
+
+            // Render projection if already scanned
+            updateBoostProjectionBox();
+
+            // QUICK BOOST PACKS SECTION BELOW TERMINAL
+            const packHdr = document.createElement('div');
+            packHdr.className = 'xb-ex-special-hdr';
+            packHdr.innerHTML = `
+                <div class="xb-ex-special-title">★ QUICK BOOST PACKS ★</div>
+                <div class="xb-ex-special-sub">One-Tap Presets • Auto-Load to Order Terminal</div>
+            `;
+            vp.appendChild(packHdr);
+
+            const presets = [
+                { title: 'Dev Authority', sub: '100 Followers • Fast Track', svc: 'followers', speed: 'fast', qty: 100, tier: 'MYTHIC', cls: 'xb-tier-mythic', tag: '100 FLW' },
+                { title: 'Repo Trending', sub: '200 Stars • 5% Bulk Off', svc: 'stars', speed: 'reg', qty: 200, tier: 'LEGENDARY', cls: 'xb-tier-legendary', tag: '200 ★' },
+                { title: 'Fork Velocity', sub: '100 Forks • Fast Track', svc: 'forks', speed: 'fast', qty: 100, tier: 'EPIC', cls: 'xb-tier-epic', tag: '100 FRK' },
+                { title: 'Watcher Surge', sub: '200 Watchers • Ultra Track', svc: 'watch', speed: 'ultra', qty: 200, tier: 'RARE', cls: 'xb-tier-rare', tag: '200 WCH' }
+            ];
+
+            const packsGrid = document.createElement('div');
+            packsGrid.className = 'xb-bst-packs';
+            packsGrid.innerHTML = presets.map(pk => {
+                const sCfg = XB_BOOST_SVCS[pk.svc];
+                const rawP = pk.qty * sCfg.tiers[pk.speed].p;
+                const finalP = pk.qty >= 200 ? rawP * 0.95 : rawP;
+                return `
+                    <div class="item-card" style="padding:9px;gap:7px;">
+                        <div class="xb-ex-art" style="height:68px;cursor:pointer;" onclick="applyBoostPreset('${pk.svc}','${pk.speed}',${pk.qty})">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;position:relative;z-index:1;">
+                                <span class="xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
+                                <span class="xb-ex-chip ${pk.cls}">★ ${pk.tier}</span>
+                            </div>
+                            <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:4px;">
+                                <span style="font-size:0.7rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${pk.title}</span>
+                                <span class="xb-ex-year-tag sm">${pk.tag}</span>
+                            </div>
+                        </div>
+                        <div style="font-size:0.57rem;color:var(--text-secondary);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${pk.sub}</div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:var(--success);">${fmtPrice(finalP)}</span>
+                            <button type="button" class="btn-ui primary" style="flex:0 0 auto;min-width:0;padding:5px 9px;font-size:0.6rem;border-radius:8px;" onclick="applyBoostPreset('${pk.svc}','${pk.speed}',${pk.qty})">Load ➔</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            vp.appendChild(packsGrid);
+        }
+
+        function setBoostTerminalSvc(svcKey) {
+            const prevIsRepo = XB_BOOST_SVCS[window._bstState.svc]?.isRepo;
+            const nextIsRepo = XB_BOOST_SVCS[svcKey]?.isRepo;
+            window._bstState.svc = svcKey;
+            if (prevIsRepo !== nextIsRepo) {
+                window._bstState.liveData = null;
+                window._bstState.liveError = '';
+            }
+            renderViewport();
+            if (window._bstState.target.trim().length >= 2) {
+                scanBoostTerminalTarget(false);
+            }
+        }
+
+        function setBoostTerminalSpeed(spKey) {
+            window._bstState.speed = spKey;
+            renderViewport();
+        }
+
+        function setBoostTerminalQty(val, fromInput = false) {
+            const num = parseInt(val, 10);
+            window._bstState.qty = isNaN(num) ? 10 : Math.max(1, num);
+            if (!fromInput) {
+                renderViewport();
+                return;
+            }
+            const calc = computeBoostTerminalTotals();
+            const totEl = document.getElementById('bstTotalPriceVal');
+            const rawEl = document.getElementById('bstRawPriceVal');
+            const bulkEl = document.getElementById('bstBulkBadge');
+            if (totEl) totEl.innerText = fmtPrice(calc.finalUsdt);
+            if (rawEl) {
+                rawEl.innerText = fmtPrice(calc.rawUsdt);
+                rawEl.style.display = calc.hasBulkDisc ? 'inline' : 'none';
+            }
+            if (bulkEl) {
+                bulkEl.innerText = calc.hasBulkDisc ? '✓ 5% BULK OFF APPLIED' : '200+ UNITS = 5% OFF';
+                bulkEl.style.color = calc.hasBulkDisc ? '#34d399' : '#fbbf24';
+            }
+            document.querySelectorAll('.xb-bst-qty-pill').forEach(btn => {
+                btn.classList.toggle('active', parseInt(btn.innerText, 10) === calc.qty);
+            });
+            updateBoostProjectionBox();
+        }
+
+        function applyBoostPreset(svc, speed, qty) {
+            window._bstState.svc = svc;
+            window._bstState.speed = speed;
+            window._bstState.qty = qty;
+            renderViewport();
+            const inp = document.getElementById('bstTargetInp');
+            if (inp) {
+                inp.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                inp.focus();
+            }
+            showToast(`Loaded ${qty} ${XB_BOOST_SVCS[svc].label} (${XB_BOOST_SVCS[svc].tiers[speed].name}) to Terminal!`);
+        }
+
+        function onBoostTargetInput(val) {
+            window._bstState.target = val;
+            clearTimeout(_bstScanDebounce);
+            const cleaned = String(val || '').trim();
+            if (cleaned.length < 2) {
+                window._bstState.liveData = null;
+                window._bstState.liveError = '';
+                updateBoostProjectionBox();
+                return;
+            }
+            _bstScanDebounce = setTimeout(() => scanBoostTerminalTarget(false), 600);
+        }
+
+        async function scanBoostTerminalTarget(showAlert = false) {
+            const st = window._bstState;
+            const cfg = XB_BOOST_SVCS[st.svc] || XB_BOOST_SVCS.followers;
+            const raw = String(st.target || '').trim();
+            if (!raw) {
+                if (showAlert) showToast('⚠️ Enter a GitHub username or owner/repo first!');
+                return;
+            }
+            const clean = raw.replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@/, '').replace(/\/+$/, '');
+            const box = document.getElementById('bstProjectionBox');
+            if (box) {
+                box.style.display = 'flex';
+                box.classList.remove('err');
+                box.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;color:#38bdf8;font-weight:700;">⏳ Scanning live GitHub API for <b>${clean}</b>...</div>`;
+            }
+
+            if (cfg.isRepo && !clean.includes('/')) {
+                st.liveData = null;
+                st.liveError = `Format must be owner/repo (example: vercel/next.js) for ${cfg.label}.`;
+                updateBoostProjectionBox();
+                return;
+            }
+
+            const apiUrl = cfg.isRepo
+                ? `https://api.github.com/repos/${clean}`
+                : `https://api.github.com/users/${clean.split('/')[0]}`;
+
+            try {
+                const res = await fetch(apiUrl);
+                if (!res.ok) throw new Error('404');
+                const data = await res.json();
+                st.liveData = {
+                    isRepo: cfg.isRepo,
+                    name: cfg.isRepo ? data.full_name : `@${data.login}`,
+                    avatar: cfg.isRepo ? (data.owner ? data.owner.avatar_url : '') : data.avatar_url,
+                    followers: Number(data.followers || 0),
+                    stars: Number(data.stargazers_count || 0),
+                    forks: Number(data.forks_count || 0),
+                    watch: Number(data.subscribers_count || data.watchers_count || 0)
+                };
+                st.liveError = '';
+                updateBoostProjectionBox();
+            } catch (e) {
+                st.liveData = null;
+                st.liveError = `Target "${clean}" not found on GitHub (404 / Private).`;
+                updateBoostProjectionBox();
+            }
+        }
+
+        function updateBoostProjectionBox() {
+            const box = document.getElementById('bstProjectionBox');
+            if (!box) return;
+            const st = window._bstState;
+            const calc = computeBoostTerminalTotals();
+
+            if (st.liveError) {
+                box.style.display = 'flex';
+                box.classList.add('err');
+                box.innerHTML = `<div style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;color:#f87171;font-weight:800;">❌ ${st.liveError}</div>`;
+                return;
+            }
+            if (!st.liveData) {
+                box.style.display = 'none';
+                return;
+            }
+
+            const d = st.liveData;
+            const curVal = st.svc === 'followers' ? d.followers : (st.svc === 'stars' ? d.stars : (st.svc === 'forks' ? d.forks : d.watch));
+            const afterVal = curVal + calc.qty;
+
+            box.style.display = 'flex';
+            box.classList.remove('err');
+            box.innerHTML = `
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                    <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                        ${d.avatar ? `<img src="${d.avatar}" style="width:20px;height:20px;border-radius:50%;border:1px solid #34d399;flex-shrink:0;">` : ''}
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${d.name}</span>
+                    </div>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:#34d399;flex-shrink:0;">● 200 OK</span>
+                </div>
+                <div class="xb-bst-proj-grid">
+                    <div class="xb-bst-proj-box">
+                        <div style="font-size:0.46rem;color:var(--text-muted);font-weight:700;">CURRENT ${calc.cfg.unitLbl.toUpperCase()}</div>
+                        <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">${curVal.toLocaleString()}</div>
+                    </div>
+                    <div style="font-size:0.75rem;font-weight:800;color:#38bdf8;">➔</div>
+                    <div class="xb-bst-proj-box" style="border-color:rgba(52,211,153,0.45);">
+                        <div style="font-size:0.46rem;color:#34d399;font-weight:800;">AFTER (+${calc.qty})</div>
+                        <div style="font-size:0.78rem;font-weight:800;color:#34d399;">${afterVal.toLocaleString()}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function buildBoostTerminalOrder() {
+            const st = window._bstState;
+            const calc = computeBoostTerminalTotals();
+            const rawTarget = String(st.target || '').trim();
+            if (!rawTarget || rawTarget.length < 2) {
+                showToast(`⚠️ Enter a valid GitHub ${calc.cfg.isRepo ? 'owner/repo' : '@username'} first!`);
+                const inp = document.getElementById('bstTargetInp');
+                if (inp) inp.focus();
+                return null;
+            }
+            if (calc.cfg.isRepo && !rawTarget.includes('/')) {
+                showToast('⚠️ Repository boost requires owner/repo format!');
+                return null;
+            }
+            return {
+                id: `jasa_${st.svc}-${Date.now()}`,
+                yearKey: '2026',
+                isAccount: false,
+                accountData: null,
+                isUnit: true,
+                ghType: st.svc,
+                speed: st.speed,
+                qty: calc.qty,
+                title: `${calc.cfg.fullTitle} (${calc.qty} Units • ${calc.tier.name})`,
+                target: rawTarget,
+                usdt: parseFloat(calc.finalUsdt.toFixed(2))
+            };
+        }
+
+        function addBoostTerminalToCart() {
+            const ord = buildBoostTerminalOrder();
+            if (!ord) return;
+            cart.push(ord);
+            updateCartUI();
+            showToast(`🛒 Added ${ord.qty} ${XB_BOOST_SVCS[ord.ghType].label} to Cart!`);
+            triggerCartAlertNotifications(ord.title, ord.usdt);
+        }
+
+        function openBoostTerminalCheckout() {
+            const ord = buildBoostTerminalOrder();
+            if (!ord) return;
+            window._pendingBoostTermOrd = ord;
+
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            modal.classList.add('active');
+            body.innerHTML = `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+                    <span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.5);">⚡ BOOST TERMINAL CHECKOUT</span>
+                    <button type="button" class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <h3 style="margin:0 0 8px 0;font-size:0.98rem;">${ord.title}</h3>
+                <div style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:11px;padding:10px 12px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:0.72rem;display:flex;flex-direction:column;gap:5px;">
+                    <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Target</span><b style="color:#38bdf8;overflow:hidden;text-overflow:ellipsis;">${ord.target}</b></div>
+                    <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Quantity</span><b>+${ord.qty} Units</b></div>
+                    <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Total Price</span><b style="color:var(--success);">${fmtPrice(ord.usdt)}</b></div>
+                    <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Your Balance</span><b>${fmtPrice(userBalanceUsdt)}</b></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <button type="button" class="btn-ui buy-now" style="width:100%;padding:12px;" onclick="execBoostTerminalPay('balance')">⚡ Pay with Balance (PIN Verified)</button>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                        <button type="button" class="btn-ui primary" style="padding:11px 8px;" onclick="execBoostTerminalPay('crypto')">🪙 Pay USDT</button>
+                        <button type="button" class="btn-ui secondary" style="padding:11px 8px;border-color:#38bdf8;color:#38bdf8;" onclick="execBoostTerminalPay('idr')">🇮🇩 Pay IDR</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function execBoostTerminalPay(method) {
+            const ord = window._pendingBoostTermOrd;
+            if (!ord) return;
+            closeModal('paymentGatewayModal');
+            processPaymentFlow([ord], ord.usdt, method, false);
         }
 
         // =========================================================
