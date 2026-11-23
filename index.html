@@ -15465,25 +15465,30 @@ let _ghAgeCheckerResults = [];
             const solidDockBg = isPlat ? '#ffffff' : '#070b18';
             const solidCartBg = isPlat ? '#ffffff' : '#0b1124';
 
-            // 1. Detect Bottom Navigation Dock
+            // 1. Detect Bottom Navigation Dock Reliably (By Position + Tab Labels)
             let dockEl = null;
-            const navTrigger = document.querySelector("[onclick*=\"switchTab('home')\"]") || document.querySelector("[onclick*=\"switchTab('boost')\"]");
-            if (navTrigger) {
-                let p = navTrigger.parentElement;
-                while (p && p !== document.body) {
-                    if (getComputedStyle(p).position === 'fixed') {
-                        dockEl = p;
+            const allFixed = document.querySelectorAll('nav, footer, div, section, aside');
+            for (let k = 0; k < allFixed.length; k++) {
+                const el = allFixed[k];
+                if (el.id === 'xbBottomOpaqueGuard') continue;
+                const st = getComputedStyle(el);
+                if (st.position !== 'fixed') continue;
+                const txt = el.innerText || '';
+                if (txt.includes('Market') && txt.includes('Boost') && (txt.includes('Wallet') || txt.includes('Profile'))) {
+                    const rc = el.getBoundingClientRect();
+                    if (rc.height > 25 && rc.height < 130) {
+                        dockEl = el;
                         break;
                     }
-                    p = p.parentElement;
                 }
             }
 
             let dockH = 66;
-            let dockZ = 950;
+            let dockZ = 100;
             if (dockEl) {
-                const dStyle = getComputedStyle(dockEl);
-                dockZ = parseInt(dStyle.zIndex, 10) || 950;
+                const rawZ = parseInt(getComputedStyle(dockEl).zIndex, 10);
+                dockZ = (!isNaN(rawZ) && rawZ >= 20) ? rawZ : 100;
+                dockEl.style.setProperty('z-index', String(dockZ), 'important');
                 dockEl.style.setProperty('bottom', '0px', 'important');
                 dockEl.style.setProperty('left', '0px', 'important');
                 dockEl.style.setProperty('right', '0px', 'important');
@@ -15505,10 +15510,8 @@ let _ghAgeCheckerResults = [];
             let cartEl = null;
             let cartVisible = false;
             let cartH = 0;
-            let cartZ = dockZ;
-            const fixedNodes = document.querySelectorAll('div, section, aside');
-            for (let i = 0; i < fixedNodes.length; i++) {
-                const el = fixedNodes[i];
+            for (let i = 0; i < allFixed.length; i++) {
+                const el = allFixed[i];
                 if (el === dockEl || el.id === 'xbBottomOpaqueGuard') continue;
                 const st = getComputedStyle(el);
                 if (st.position !== 'fixed') continue;
@@ -15520,28 +15523,34 @@ let _ghAgeCheckerResults = [];
                 if (st.display !== 'none' && st.visibility !== 'hidden' && rc.height > 20) {
                     cartVisible = true;
                     cartH = Math.ceil(rc.height);
-                    cartZ = parseInt(st.zIndex, 10) || dockZ;
                 }
                 break;
             }
 
             if (cartEl && cartVisible) {
+                cartEl.style.setProperty('z-index', String(dockZ), 'important');
                 cartEl.style.setProperty('bottom', (dockH + 6) + 'px', 'important');
                 cartEl.style.setProperty('background', solidCartBg, 'important');
                 cartEl.style.setProperty('backdrop-filter', 'none', 'important');
                 cartEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
             }
 
-            // 3. Solid Opaque Bottom Shield (Prevents Any Card Bleed-Through Behind Dock & Cart)
+            // 3. Solid Opaque Bottom Shield — Locked STRICTLY BEHIND Dock & Cart
             let guard = document.getElementById('xbBottomOpaqueGuard');
-            if (!guard) {
-                guard = document.createElement('div');
-                guard.id = 'xbBottomOpaqueGuard';
-                document.body.appendChild(guard);
+            if (!dockEl) {
+                if (guard) guard.style.display = 'none';
+            } else {
+                if (!guard) {
+                    guard = document.createElement('div');
+                    guard.id = 'xbBottomOpaqueGuard';
+                }
+                if (dockEl.parentNode && guard.parentNode !== dockEl.parentNode) {
+                    dockEl.parentNode.insertBefore(guard, dockEl);
+                }
+                guard.style.display = 'block';
+                guard.style.zIndex = String(Math.max(10, dockZ - 1));
+                guard.style.height = (cartVisible ? (dockH + cartH + 10) : dockH) + 'px';
             }
-            guard.style.display = 'block';
-            guard.style.zIndex = String(Math.max(50, Math.min(dockZ, cartZ) - 1));
-            guard.style.height = (cartVisible ? (dockH + cartH + 12) : dockH) + 'px';
 
             // 4. Safe Bottom Padding So Last Row (+Cart & View) Is Never Cut Off
             const safePad = cartVisible ? (dockH + cartH + 34) : (dockH + 26);
