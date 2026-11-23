@@ -2142,6 +2142,73 @@
         .xb-ops-qbar { width: 100%; height: 7px; background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 99px; overflow: hidden; }
         .xb-ops-qfill { height: 100%; background: linear-gradient(90deg, #2563eb 0%, #38bdf8 50%, #34d399 100%); border-radius: 99px; transition: width 0.35s ease; }
 
+        /* =========================================================
+           💳 WALLET & TREASURY VAULT — ASSET EXCHANGE EDITION
+           ========================================================= */
+        .xb-wal-wrap { display: flex; flex-direction: column; gap: 10px; }
+        .xb-wal-card { position: relative; background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-radius: 15px; padding: 12px; overflow: hidden; box-shadow: 0 10px 26px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.2); }
+        .xb-wal-card::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: var(--ex-sheen); pointer-events: none; }
+        [data-theme="platinum"] .xb-wal-card { box-shadow: 0 8px 20px rgba(15,23,42,0.08), inset 0 1px 0 #ffffff; }
+
+        .xb-wal-hr { height: 1px; width: 100%; background: linear-gradient(90deg, transparent, var(--ex-hairline), transparent); margin: 8px 0; border: 0; }
+
+        /* MAIN BALANCE HERO */
+        .xb-wal-hero-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+        .xb-wal-bal-row { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 8px 0 6px 0; }
+        .xb-wal-bal-val { font-family: 'JetBrains Mono', monospace; font-size: 1.48rem; font-weight: 800; letter-spacing: -0.6px; color: var(--text-primary); line-height: 1.1; }
+        .xb-wal-eye-btn { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--ex-hairline); background: var(--bg-input); color: var(--text-secondary); cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .xb-wal-kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: 8px; }
+        .xb-wal-kpi-box { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 9px; padding: 6px 7px; }
+        .xb-wal-kpi-lbl { font-family: 'JetBrains Mono', monospace; font-size: 0.46rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+        .xb-wal-kpi-val { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; font-weight: 800; color: var(--text-primary); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+        /* 4 QUICK ACTIONS + SECURITY STRIP */
+        .xb-wal-act-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+        .xb-wal-act-btn { background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-radius: 12px; padding: 9px 4px; color: var(--text-primary); font-family: inherit; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; transition: 0.16s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,0.14); }
+        .xb-wal-act-btn:active { transform: scale(0.97); }
+        .xb-wal-act-ico { width: 30px; height: 30px; border-radius: 9px; background: var(--bg-input); border: 1px solid var(--ex-hairline); display: inline-flex; align-items: center; justify-content: center; }
+        .xb-wal-act-btn.primary .xb-wal-act-ico { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border-color: rgba(255,255,255,0.42); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
+        .xb-wal-act-lbl { font-size: 0.6rem; font-weight: 800; white-space: nowrap; }
+
+        /* MULTI-SLIDE SUB-VIEW HEADER */
+        .xb-wal-sub-hdr { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-radius: 12px; padding: 8px 10px; box-shadow: inset 0 1px 0 rgba(255,255,255,0.16); }
+        .xb-wal-back-btn { height: 28px; padding: 0 9px; border-radius: 8px; border: 1px solid var(--ex-hairline); background: var(--bg-input); color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
+        .xb-wal-sub-title { font-size: 0.8rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; flex: 1; text-align: center; }
+
+        /* DEPOSIT GATEWAY: OXAPAY AUTO + 4-BOX AMOUNT + 2x2 IDR BRAND GRID */
+        .xb-wal-dep-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; background: var(--bg-input); border: 1px solid var(--ex-hairline); padding: 4px; border-radius: 11px; }
+        .xb-wal-dep-tab { border: 1px solid transparent; background: transparent; color: var(--text-secondary); padding: 8px 6px; border-radius: 8px; font-family: inherit; font-size: 0.66rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; transition: 0.16s ease; }
+        .xb-wal-dep-tab.active { background: linear-gradient(135deg, #0d1838 0%, #1d4ed8 52%, #7c3aed 100%); border-color: rgba(255,255,255,0.38); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
+
+        .xb-wal-oxapay-strip { background: linear-gradient(135deg, rgba(29,78,216,0.22) 0%, rgba(124,58,237,0.24) 100%); border: 1px solid rgba(56,189,248,0.45); border-left: 3.5px solid #38bdf8; border-radius: 11px; padding: 9px 10px; display: flex; flex-direction: column; gap: 4px; }
+        .xb-wal-amt-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+        .xb-wal-amt-btn { height: 38px; border-radius: 9px; border: 1px solid var(--ex-hairline); background: var(--bg-input); color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; white-space: nowrap; transition: 0.15s ease; }
+        .xb-wal-amt-btn.active { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border-color: rgba(255,255,255,0.45); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.38); }
+
+        .xb-wal-idr-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+        .xb-wal-idr-btn { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 11px; padding: 9px 10px; cursor: pointer; display: flex; align-items: center; gap: 8px; text-align: left; color: var(--text-primary); font-family: inherit; transition: 0.16s ease; }
+        .xb-wal-idr-btn.active { background: linear-gradient(145deg, rgba(29,78,216,0.34) 0%, rgba(124,58,237,0.38) 100%); border-color: rgba(56,189,248,0.75); box-shadow: 0 4px 14px rgba(59,130,246,0.28), inset 0 1px 0 rgba(255,255,255,0.28); }
+        [data-theme="platinum"] .xb-wal-idr-btn.active { background: linear-gradient(135deg, rgba(37,99,235,0.12) 0%, rgba(124,58,237,0.12) 100%); border-color: #2563eb; }
+        .xb-wal-brand-ico { width: 32px; height: 32px; border-radius: 8px; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; }
+
+        /* P2P TRANSFER & CUSTOM 6-DIGIT PIN KEYPAD */
+        .xb-wal-pin-dots { display: flex; align-items: center; justify-content: center; gap: 10px; margin: 10px 0 12px 0; }
+        .xb-wal-pin-dot { width: 13px; height: 13px; border-radius: 50%; border: 1.5px solid var(--ex-hairline); background: var(--bg-input); transition: 0.15s ease; }
+        .xb-wal-pin-dot.filled { background: #38bdf8; border-color: #7dd3fc; box-shadow: 0 0 10px rgba(56,189,248,0.65); transform: scale(1.1); }
+        .xb-wal-pin-dot.err { background: #f87171; border-color: #fca5a5; }
+        .xb-wal-keypad { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; max-width: 270px; margin: 0 auto; }
+        .xb-wal-key { height: 42px; border-radius: 10px; border: 1px solid var(--ex-hairline); background: var(--bg-input); color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 0.96rem; font-weight: 800; cursor: pointer; transition: 0.12s ease; }
+        .xb-wal-key:active { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); color: #ffffff; transform: scale(0.95); }
+        @keyframes xbPinShake { 0%,100%{transform:translateX(0)} 20%,60%{transform:translateX(-6px)} 40%,80%{transform:translateX(6px)} }
+        .xb-pin-shake { animation: xbPinShake 0.34s ease; }
+
+        /* VIP MILESTONES & LEDGER LIST */
+        .xb-wal-prog-bar { width: 100%; height: 7px; border-radius: 99px; background: var(--bg-input); border: 1px solid var(--ex-hairline); overflow: hidden; margin: 6px 0; }
+        .xb-wal-prog-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #1d4ed8 0%, #38bdf8 55%, #34d399 100%); transition: width 0.35s ease; }
+        .xb-wal-tx-list { display: flex; flex-direction: column; gap: 6px; }
+        .xb-wal-tx-row { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 11px; padding: 9px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; transition: 0.15s ease; }
+        .xb-wal-tx-row:hover { border-color: rgba(56,189,248,0.55); }
+
         /* UNIFIED FULL-PAGE 100DVH STUDIO FRAME (ASSET EXCHANGE EDITION) */
         #paymentGatewayModal.xb-fullpage-modal { padding: 5px; }
         #paymentGatewayModal.xb-fullpage-modal > #paymentGatewayBody {
@@ -5553,10 +5620,14 @@
                 return;
             }
 
-            // 3. WALLET TAB
+            // 3. WALLET TAB (ASSET EXCHANGE MULTI-SLIDE TREASURY VAULT)
             if (activeTab === 'wallet') {
                 subContainer.style.display = 'none';
-                renderWalletTab(vp);
+                if (typeof renderWalletVaultV2 === 'function') {
+                    renderWalletVaultV2(vp);
+                } else {
+                    renderWalletTab(vp);
+                }
                 return;
             }
 
@@ -6109,7 +6180,698 @@
         }
 
         // =========================================================
-        // 💳 9. WALLET & DEPOSIT TAB (DEPOSIT ON TOP, PROMO AT BOTTOM + AUTO-SYNC)
+        // 💳 9A. WALLET & TREASURY VAULT V2 (MULTI-SLIDE ASSET EXCHANGE)
+        // =========================================================
+        window._walSlide = window._walSlide || 'main'; // 'main' | 'deposit' | 'transfer' | 'vip' | 'voucher' | 'security' | 'receipt'
+        window._walLedgerFilter = window._walLedgerFilter || 'ALL';
+        window._walActiveReceipt = null;
+
+        function openWalletSlide(slideKey) {
+            window._walSlide = slideKey || 'main';
+            renderViewport();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToWalletMain() {
+            window._walSlide = 'main';
+            window._walActiveReceipt = null;
+            renderViewport();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setWalletLedgerFilter(fKey) {
+            window._walLedgerFilter = fKey;
+            renderViewport();
+        }
+
+        function openWalletReceiptByIdx(idx) {
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            const tx = history[idx];
+            if (!tx) return;
+            window._walActiveReceipt = tx;
+            openWalletSlide('receipt');
+        }
+
+        function classifyWalletTxCategory(tx) {
+            if (!tx) return 'ORDER';
+            if (typeof isP2pTransferTx === 'function' && isP2pTransferTx(tx)) return 'P2P';
+            const titleLow = String(tx.title || '').toLowerCase();
+            if (tx.type === 'IN') {
+                if (titleLow.includes('bonus') || titleLow.includes('cashback') || titleLow.includes('reward') || titleLow.includes('voucher')) return 'BONUS';
+                return 'TOPUP';
+            }
+            return 'ORDER';
+        }
+
+        function buildWalletSubHeaderHtml(titleText, rightChipHtml = '') {
+            return `
+                <div class="xb-wal-sub-hdr">
+                    <button type="button" class="xb-wal-back-btn" onclick="backToWalletMain()">← Back</button>
+                    <div class="xb-wal-sub-title">${titleText}</div>
+                    <div style="min-width:56px;display:flex;justify-content:flex-end;">${rightChipHtml}</div>
+                </div>
+            `;
+        }
+
+        function renderWalletVaultV2(container) {
+            const slide = window._walSlide || 'main';
+            container.innerHTML = '';
+
+            if (slide === 'deposit' && typeof renderWalletDepositSlide === 'function') {
+                renderWalletDepositSlide(container);
+                return;
+            }
+            if (slide === 'transfer' && typeof renderWalletTransferSlide === 'function') {
+                renderWalletTransferSlide(container);
+                return;
+            }
+            if (slide === 'vip' && typeof renderWalletVipSlide === 'function') {
+                renderWalletVipSlide(container);
+                return;
+            }
+            if (slide === 'voucher' && typeof renderWalletVoucherSlide === 'function') {
+                renderWalletVoucherSlide(container);
+                return;
+            }
+            if (slide === 'security' && typeof renderWalletSecuritySlide === 'function') {
+                renderWalletSecuritySlide(container);
+                return;
+            }
+            if (slide === 'receipt' && window._walActiveReceipt) {
+                renderWalletReceiptSlide(container, window._walActiveReceipt);
+                return;
+            }
+
+            // DEFAULT: MAIN WALLET VAULT SCREEN
+            const vip = getUserVipRankMeta();
+            const stats = computeVerifiedLoyaltyStats();
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            const pendingInvoices = JSON.parse(localStorage.getItem('xb_pending_invoices') || '[]');
+            const cleanU = String(currentUsername || 'Client').replace(/^@/, '');
+
+            // Compute Total In & Total Out from real ledger
+            let totalInUsdt = 0, totalOutUsdt = 0;
+            history.forEach(tx => {
+                const v = parseFloat(tx && tx.usdt ? tx.usdt : 0) || 0;
+                if (tx && tx.type === 'IN') totalInUsdt += v;
+                else if (tx && tx.type === 'OUT') totalOutUsdt += v;
+            });
+
+            const mainBalDisplay = isWalletBalanceHidden
+                ? '••••••'
+                : fmtPrice(userBalanceUsdt);
+            const altBalDisplay = isWalletBalanceHidden
+                ? 'Hidden Balance'
+                : (currentCurrency === 'IDR'
+                    ? `≈ ${userBalanceUsdt.toFixed(2)} USDT • 1 USDT = Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')}`
+                    : `≈ Rp ${Math.round(userBalanceUsdt * liveUsdtIdrRate).toLocaleString('id-ID')} • 1 USDT = Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')}`);
+
+            const eyeSvg = isWalletBalanceHidden
+                ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`
+                : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+
+            const actIcons = {
+                dep: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m19 12-7 7-7-7"/></svg>`,
+                trf: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>`,
+                vip: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/></svg>`,
+                vch: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="m9 15 6-6"/></svg>`
+            };
+
+            const pendingHtml = pendingInvoices.length > 0 ? `
+                <div class="xb-wal-card" style="border-color:rgba(251,191,36,0.55);padding:10px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#fbbf24;">⏳ PENDING INVOICES (${pendingInvoices.length})</span>
+                        <span style="font-size:0.55rem;color:var(--text-muted);font-weight:700;">Tap to resume</span>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:6px;">
+                        ${pendingInvoices.slice(0, 4).map(p => {
+                            const amtTxt = p.gateway === 'IDR'
+                                ? ('Rp ' + Math.round(parseFloat(p.amountUsdt || 0) * liveUsdtIdrRate).toLocaleString('id-ID'))
+                                : (parseFloat(p.amountUsdt || 0).toFixed(2) + ' USDT');
+                            return `
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:9px;padding:7px 9px;">
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                            ${p.invId} • <span style="color:#34d399;">${amtTxt}</span>
+                                        </div>
+                                        <div style="font-size:0.55rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.gateway || 'USDT'} • ${p.savedAt || 'Pending'}</div>
+                                    </div>
+                                    <div style="display:flex;gap:4px;flex-shrink:0;">
+                                        <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;border-color:rgba(56,189,248,0.45);" onclick="resumePendingTopUpInvoice('${p.invId}')">Resume</button>
+                                        <button type="button" class="xb-adm-mini-btn" style="color:#f87171;" onclick="removePendingTopUpInvoice('${p.invId}')">✕</button>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            ` : '';
+
+            // Filter Ledger Items
+            const indexedHistory = history.map((tx, idx) => ({ tx, idx, cat: classifyWalletTxCategory(tx) }));
+            const filteredTx = indexedHistory.filter(row => window._walLedgerFilter === 'ALL' || row.cat === window._walLedgerFilter);
+
+            const ledgerFilterDefs = [
+                { k: 'ALL', lbl: 'All' },
+                { k: 'TOPUP', lbl: 'Top-Up' },
+                { k: 'P2P', lbl: 'P2P' },
+                { k: 'ORDER', lbl: 'Orders' },
+                { k: 'BONUS', lbl: 'Bonus' }
+            ];
+
+            const txListHtml = filteredTx.length === 0
+                ? `<div style="text-align:center;padding:18px 10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.62rem;">No transactions in this filter yet.</div>`
+                : filteredTx.slice(0, 25).map(({ tx, idx, cat }) => {
+                    const isIn = tx.type === 'IN';
+                    const amtUsdt = parseFloat(tx.usdt || 0) || 0;
+                    const catIco = cat === 'TOPUP' ? '💳' : (cat === 'P2P' ? (isIn ? '📥' : '📤') : (cat === 'BONUS' ? '🎁' : '🛒'));
+                    return `
+                        <div class="xb-wal-tx-row" onclick="openWalletReceiptByIdx(${idx})">
+                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
+                                <span style="width:29px;height:29px;border-radius:8px;background:rgba(255,255,255,0.05);border:1px solid var(--ex-hairline);display:inline-flex;align-items:center;justify-content:center;font-size:0.82rem;flex-shrink:0;">${catIco}</span>
+                                <div style="min-width:0;flex:1;">
+                                    <div style="font-size:0.69rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${tx.title || 'Wallet Transaction'}</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                        ${tx.invoice || '-'} • ${tx.date || ''}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align:right;flex-shrink:0;">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;color:${isIn ? '#34d399' : '#f87171'};">
+                                    ${isIn ? '+' : '-'}${fmtPrice(amtUsdt)}
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);">${tx.method || cat} ➔</div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            container.innerHTML = `
+                <div class="xb-wal-wrap">
+                    <!-- 1. TREASURY BALANCE HERO CARD -->
+                    <div class="xb-wal-card">
+                        <div class="xb-wal-hero-top">
+                            <div style="display:flex;align-items:center;gap:6px;min-width:0;">
+                                <span class="xb-ex-chip" style="color:${vip.badgeColor || '#38bdf8'};border-color:${vip.badgeBorder || 'rgba(56,189,248,0.5)'};">${vip.emblem} ${vip.rank}</span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:700;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${cleanU}</span>
+                            </div>
+                            <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                                <button type="button" id="btnWebSyncBal" class="xb-adm-mini-btn" style="color:#34d399;border-color:rgba(52,211,153,0.45);" onclick="syncWalletBalanceInWeb()">↻ Sync</button>
+                                <button type="button" class="xb-wal-eye-btn" title="Hide / Show Balance" onclick="toggleWalletBalanceVisibility()">${eyeSvg}</button>
+                            </div>
+                        </div>
+
+                        <div class="xb-wal-bal-row">
+                            <div style="min-width:0;">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--text-muted);letter-spacing:0.6px;">TOTAL TREASURY BALANCE</div>
+                                <div class="xb-wal-bal-val">${mainBalDisplay}</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:700;color:#38bdf8;margin-top:3px;">${altBalDisplay}</div>
+                            </div>
+                        </div>
+
+                        <hr class="xb-wal-hr">
+
+                        <div class="xb-wal-kpi-grid">
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">TOTAL IN</div>
+                                <div class="xb-wal-kpi-val" style="color:#34d399;">+${fmtPrice(totalInUsdt)}</div>
+                            </div>
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">TOTAL OUT</div>
+                                <div class="xb-wal-kpi-val" style="color:#f472b6;">-${fmtPrice(totalOutUsdt)}</div>
+                            </div>
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">VERIFIED TX</div>
+                                <div class="xb-wal-kpi-val" style="color:#38bdf8;">${stats.totalRealTxCount} Orders</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. 4 QUICK ACTIONS (DEPOSIT • TRANSFER • VIP HUB • VOUCHER) -->
+                    <div class="xb-wal-act-grid">
+                        <button type="button" class="xb-wal-act-btn primary" onclick="openWalletSlide('deposit')">
+                            <span class="xb-wal-act-ico">${actIcons.dep}</span>
+                            <span class="xb-wal-act-lbl">Deposit</span>
+                        </button>
+                        <button type="button" class="xb-wal-act-btn" onclick="openWalletSlide('transfer')">
+                            <span class="xb-wal-act-ico">${actIcons.trf}</span>
+                            <span class="xb-wal-act-lbl">Transfer</span>
+                        </button>
+                        <button type="button" class="xb-wal-act-btn" onclick="openWalletSlide('vip')">
+                            <span class="xb-wal-act-ico">${actIcons.vip}</span>
+                            <span class="xb-wal-act-lbl">VIP Hub</span>
+                        </button>
+                        <button type="button" class="xb-wal-act-btn" onclick="openWalletSlide('voucher')">
+                            <span class="xb-wal-act-ico">${actIcons.vch}</span>
+                            <span class="xb-wal-act-lbl">Voucher</span>
+                        </button>
+                    </div>
+
+                    <!-- 3. RECEIVE ID & SECURITY PIN STRIP -->
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                        <button type="button" class="xb-adm-dev-btn" style="padding:9px 8px;border-color:rgba(52,211,153,0.35);color:#34d399;" onclick="openWalletReceiveModal()">📥 Receive USDT ID</button>
+                        <button type="button" class="xb-adm-dev-btn" style="padding:9px 8px;border-color:rgba(56,189,248,0.35);color:#38bdf8;" onclick="openWalletSlide('security')">🛡️ Security &amp; PIN</button>
+                    </div>
+
+                    <!-- 4. PENDING INVOICES (IF ANY) -->
+                    ${pendingHtml}
+
+                    <!-- 5. LEDGER EXPLORER (TAP ANY ROW FOR DIGITAL RECEIPT) -->
+                    <div class="xb-wal-card" style="padding:11px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--text-primary);letter-spacing:0.4px;">🧾 TREASURY LEDGER (${filteredTx.length})</span>
+                            <span style="font-size:0.54rem;color:var(--text-muted);font-weight:700;">Tap row for receipt</span>
+                        </div>
+                        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;margin-bottom:9px;">
+                            ${ledgerFilterDefs.map(f => `
+                                <button type="button" class="xb-ex-filter-chip ${window._walLedgerFilter === f.k ? 'active' : ''}" style="padding:6px 2px;font-size:0.57rem;" onclick="setWalletLedgerFilter('${f.k}')">${f.lbl}</button>
+                            `).join('')}
+                        </div>
+                        <div class="xb-wal-tx-list">${txListHtml}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderWalletReceiptSlide(container, tx) {
+            const isIn = tx.type === 'IN';
+            const amtUsdt = parseFloat(tx.usdt || 0) || 0;
+            const idrEquiv = 'Rp ' + Math.round(amtUsdt * liveUsdtIdrRate).toLocaleString('id-ID');
+            const copyText = [
+                '=== XIANBEE-TECH DIGITAL RECEIPT ===',
+                `Invoice : ${tx.invoice || '-'}`,
+                `Title   : ${tx.title || '-'}`,
+                `Type    : ${isIn ? 'CREDIT (IN)' : 'DEBIT (OUT)'}`,
+                `Amount  : ${amtUsdt.toFixed(2)} USDT (${idrEquiv})`,
+                `Method  : ${tx.method || '-'}`,
+                `Target  : ${tx.target || '-'}`,
+                `Date    : ${tx.date || '-'}`
+            ].join('\n');
+
+            container.innerHTML = `
+                <div class="xb-wal-wrap">
+                    ${buildWalletSubHeaderHtml('Digital Receipt', `<span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">✓ VERIFIED</span>`)}
+
+                    <div class="xb-wal-card" style="text-align:center;">
+                        <div style="font-size:1.8rem;margin-bottom:4px;">${isIn ? '📥' : '📤'}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);font-weight:800;">${isIn ? 'FUNDS CREDITED' : 'PAYMENT SETTLED'}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:1.45rem;font-weight:800;color:${isIn ? '#34d399' : '#f472b6'};margin:4px 0;">
+                            ${isIn ? '+' : '-'}${fmtPrice(amtUsdt)}
+                        </div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#38bdf8;font-weight:700;">
+                            ${amtUsdt.toFixed(2)} USDT • ${idrEquiv}
+                        </div>
+
+                        <hr class="xb-wal-hr" style="margin:12px 0;">
+
+                        <div style="display:flex;flex-direction:column;gap:7px;text-align:left;font-family:'JetBrains Mono',monospace;font-size:0.66rem;">
+                            <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Invoice ID</span><b style="color:var(--text-primary);">${tx.invoice || '-'}</b></div>
+                            <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Description</span><b style="color:var(--text-primary);text-align:right;">${tx.title || '-'}</b></div>
+                            <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Payment Method</span><b style="color:#38bdf8;">${tx.method || '-'}</b></div>
+                            <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Target / Ref</span><b style="color:var(--text-primary);text-align:right;word-break:break-all;">${tx.target || '-'}</b></div>
+                            <div style="display:flex;justify-content:space-between;gap:8px;"><span style="color:var(--text-muted);">Timestamp</span><b style="color:var(--text-secondary);">${tx.date || '-'}</b></div>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px;">
+                            <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.7rem;" onclick="navigator.clipboard.writeText(${JSON.stringify(copyText)}); showToast('📋 Receipt copied!');">📋 Copy Receipt</button>
+                            <button type="button" class="btn-ui primary" style="padding:10px 8px;font-size:0.7rem;" onclick="backToWalletMain()">← Back to Wallet</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================
+        // 💳 9B. DEPOSIT GATEWAY (OXAPAY 100% AUTO + LOCAL IDR 4 METODE)
+        // =========================================================
+        const XB_IDR_ACCOUNTS_CFG = {
+            QRIS:    { name: 'QRIS',    sub: 'All E-Wallet & Bank', number: 'Scan QRIS Official', holder: 'XianBee-Tech Store', qrisImg: 'qris.jpg', fallbackImg: 'qris.png', color: '#ef4444' },
+            SEABANK: { name: 'SeaBank', sub: 'Transfer Bank',       number: '901234567890',       holder: 'Abie Haryatmo',      color: '#ff5722' },
+            DANA:    { name: 'DANA',    sub: 'E-Wallet Instant',    number: '081234567890',       holder: 'Abie Haryatmo',      color: '#118eea' },
+            GOPAY:   { name: 'GoPay',   sub: 'E-Wallet Instant',    number: '081234567890',       holder: 'Abie Haryatmo',      color: '#00aed6' }
+        };
+
+        const XB_IDR_BRAND_SVGS = {
+            QRIS: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#ffffff"/><rect x="4" y="4" width="9" height="9" rx="1.8" stroke="#dc2626" stroke-width="2.2"/><rect x="7" y="7" width="3" height="3" fill="#0f172a"/><rect x="19" y="4" width="9" height="9" rx="1.8" stroke="#0f172a" stroke-width="2.2"/><rect x="22" y="7" width="3" height="3" fill="#dc2626"/><rect x="4" y="19" width="9" height="9" rx="1.8" stroke="#0f172a" stroke-width="2.2"/><rect x="7" y="22" width="3" height="3" fill="#0f172a"/><path d="M19 19h4v4h-4zm5 0h4v3h-4zm-5 5h3v4h-3zm5-1h4v5h-4z" fill="#dc2626"/></svg>`,
+            SEABANK: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#FF5722"/><path d="M22.5 11.2c-1.3-1.4-3.7-2.2-6.4-2.2-3.7 0-6.1 1.7-6.1 4.2 0 2.7 2.2 3.7 5.7 4.3 2.5.4 3.5.9 3.5 1.9 0 1.1-1.2 1.8-3.1 1.8-2 0-3.7-.7-4.9-1.9l-2 2.4c1.6 1.5 4 2.4 6.8 2.4 4.1 0 6.7-1.9 6.7-4.7 0-2.6-1.9-3.9-5.6-4.5-2.6-.4-3.6-.8-3.6-1.8 0-.9 1-1.5 2.7-1.5 1.7 0 3.1.5 4.2 1.4l2.1-1.8z" fill="#ffffff"/></svg>`,
+            DANA: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#118EEA"/><path d="M6.5 12.8c2.6-1.5 5.4-1.5 8.2-.2 2.8 1.3 5.7 1.3 8.8-.3l2 3.3c-3.5 1.9-7.1 2-10.7.3-2.3-1.1-4.3-1.1-6.4.1l-1.9-3.2zm0 5.6c2.6-1.5 5.4-1.5 8.2-.2 2.8 1.3 5.7 1.3 8.8-.3l2 3.3c-3.5 1.9-7.1 2-10.7.3-2.3-1.1-4.3-1.1-6.4.1l-1.9-3.2z" fill="#ffffff"/></svg>`,
+            GOPAY: `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect width="32" height="32" rx="8" fill="#00AED6"/><rect x="6" y="9" width="20" height="14" rx="4" fill="#ffffff"/><path d="M18.5 13.5h7.5v5h-7.5a2.5 2.5 0 0 1 0-5z" fill="#00AED6"/><circle cx="19" cy="16" r="1.4" fill="#ffffff"/></svg>`
+        };
+
+        window._walDepState = window._walDepState || {
+            mode: 'USDT',       // 'USDT' | 'IDR'
+            usdtAmt: 25,
+            idrAmt: 250000,
+            idrMethod: 'QRIS',  // 'QRIS' | 'SEABANK' | 'DANA' | 'GOPAY'
+            activeIdrInv: null, // { invId, method, idrAmt, usdtAmt, proofDataUrl }
+            proofDataUrl: ''
+        };
+
+        function setWalDepMode(m) {
+            window._walDepState.mode = m;
+            window._walDepState.activeIdrInv = null;
+            window._walDepState.proofDataUrl = '';
+            renderViewport();
+        }
+
+        function setWalDepUsdt(val, fromInput = false) {
+            const num = parseFloat(val);
+            window._walDepState.usdtAmt = (!isNaN(num) && num > 0) ? num : 0;
+            if (!fromInput) {
+                renderViewport();
+                return;
+            }
+            const eq = document.getElementById('walDepUsdtIdrEq');
+            if (eq) eq.innerText = '≈ Rp ' + Math.round(window._walDepState.usdtAmt * liveUsdtIdrRate).toLocaleString('id-ID');
+            const btn = document.getElementById('walDepOxaBtn');
+            if (btn) btn.innerText = `⚡ Pay ${window._walDepState.usdtAmt.toFixed(2)} USDT via OxaPay`;
+            document.querySelectorAll('.xb-wal-amt-usdt').forEach(b => {
+                b.classList.toggle('active', parseFloat(b.dataset.amt) === window._walDepState.usdtAmt);
+            });
+        }
+
+        function setWalDepIdrMethod(mKey) {
+            window._walDepState.idrMethod = mKey;
+            renderViewport();
+        }
+
+        function setWalDepIdr(val, fromInput = false) {
+            const num = parseInt(String(val).replace(/[^\d]/g, ''), 10);
+            window._walDepState.idrAmt = (!isNaN(num) && num > 0) ? num : 0;
+            if (!fromInput) {
+                renderViewport();
+                return;
+            }
+            const usdtEq = window._walDepState.idrAmt / liveUsdtIdrRate;
+            const eq = document.getElementById('walDepIdrUsdtEq');
+            if (eq) eq.innerText = `≈ +${usdtEq.toFixed(2)} USDT Credited`;
+            const btn = document.getElementById('walDepIdrGenBtn');
+            if (btn) btn.innerText = `🇮🇩 Continue (${'Rp ' + window._walDepState.idrAmt.toLocaleString('id-ID')})`;
+            document.querySelectorAll('.xb-wal-amt-idr').forEach(b => {
+                b.classList.toggle('active', parseInt(b.dataset.amt, 10) === window._walDepState.idrAmt);
+            });
+        }
+
+        function launchWalDepOxaPay() {
+            const amt = parseFloat(window._walDepState.usdtAmt || 0);
+            if (isNaN(amt) || amt < 5) {
+                return showToast('⚠️ Minimum OxaPay deposit is 5.00 USDT!');
+            }
+            if (typeof initiateTopUp === 'function') {
+                initiateTopUp(amt, 'USDT');
+            } else if (typeof openOxaPayInstantGateway === 'function') {
+                const invId = 'DEP-USDT-' + Math.floor(10000 + Math.random() * 89999);
+                openOxaPayInstantGateway(invId, `Wallet Top-Up ($${amt.toFixed(2)} USDT)`, `@${currentUsername}`, amt, true, false, [], false);
+            }
+        }
+
+        function createWalDepIdrInvoice() {
+            const idrAmt = parseInt(window._walDepState.idrAmt || 0, 10);
+            if (isNaN(idrAmt) || idrAmt < 50000) {
+                return showToast('⚠️ Minimum IDR deposit is Rp 50.000!');
+            }
+            const usdtAmt = parseFloat((idrAmt / liveUsdtIdrRate).toFixed(2));
+            const invId = 'DEP-IDR-' + Math.floor(10000 + Math.random() * 89999);
+            const methodKey = window._walDepState.idrMethod || 'QRIS';
+
+            window._walDepState.activeIdrInv = {
+                invId: invId,
+                method: methodKey,
+                idrAmt: idrAmt,
+                usdtAmt: usdtAmt
+            };
+            window._walDepState.proofDataUrl = '';
+
+            if (typeof savePendingTopUpInvoice === 'function') {
+                savePendingTopUpInvoice({
+                    invId: invId,
+                    gateway: 'IDR',
+                    methodType: methodKey,
+                    title: `Wallet Top-Up (${XB_IDR_ACCOUNTS_CFG[methodKey].name})`,
+                    targetStr: `@${currentUsername}`,
+                    amountUsdt: usdtAmt,
+                    isTopup: true,
+                    pendingItems: []
+                });
+            }
+            renderViewport();
+        }
+
+        function handleWalDepProofFile(inputEl) {
+            const file = inputEl && inputEl.files && inputEl.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                window._walDepState.proofDataUrl = ev.target.result || '';
+                const prev = document.getElementById('walDepProofPreview');
+                if (prev && window._walDepState.proofDataUrl) {
+                    prev.innerHTML = `<img src="${window._walDepState.proofDataUrl}" style="max-width:100%;max-height:180px;border-radius:10px;border:1px solid rgba(52,211,153,0.6);">`;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        async function submitWalDepIdrProof() {
+            const inv = window._walDepState.activeIdrInv;
+            if (!inv) return;
+            if (!window._walDepState.proofDataUrl) {
+                return showToast('⚠️ Please upload your transfer receipt screenshot first!');
+            }
+
+            const btn = document.getElementById('walDepSubmitProofBtn');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Sending Proof to Admin...'; }
+
+            const cfg = XB_IDR_ACCOUNTS_CFG[inv.method] || XB_IDR_ACCOUNTS_CFG.QRIS;
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const actionKey = `IDR_PROOF_${inv.invId}`;
+            const idrFmt = 'Rp ' + inv.idrAmt.toLocaleString('id-ID');
+
+            const proofHtml = [
+                `════════════════════`,
+                `📸 <b>IDR PAYMENT PROOF</b>`,
+                `════════════════════`,
+                fmtAlignedNotifRow('Invoice', `<code>${inv.invId}</code>`),
+                fmtAlignedNotifRow('Client', `<b>${dispUser}</b>`),
+                fmtAlignedNotifRow('User ID', `<code>${currentUserId}</code>`),
+                fmtAlignedNotifRow('Method', `<b>${cfg.name} (Manual IDR)</b>`),
+                fmtAlignedNotifRow('Amount', `<b>${idrFmt} (+$${inv.usdtAmt.toFixed(2)} USDT)</b>`),
+                `════════════════════`,
+                `⏳ <i>Awaiting Admin approval to credit wallet balance.</i>`
+            ].join('\n');
+
+            const metaObj = {
+                type: 'idr_proof',
+                actionKey: actionKey,
+                invId: inv.invId,
+                buyerId: String(currentUserId),
+                buyerUname: dispUser,
+                amountUsdt: inv.usdtAmt,
+                idrAmount: inv.idrAmt,
+                methodName: cfg.name,
+                isTopup: true,
+                proofDataUrl: window._walDepState.proofDataUrl
+            };
+
+            const notifId = pushInWebNotification('admin', `📸 IDR PROOF (${cfg.name} • +$${inv.usdtAmt.toFixed(2)})`, proofHtml, metaObj);
+            pushInWebNotification('buyer', `⏳ DEPOSIT PROOF SENT (${inv.invId})`, proofHtml);
+
+            const tgMsgIdsMap = {};
+            for (const admId of ADMIN_IDS) {
+                const mid = await sendTelegramSilentPush(admId, proofHtml, true);
+                if (mid) tgMsgIdsMap[admId] = mid;
+            }
+            attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
+
+            if (typeof removePendingTopUpInvoice === 'function') {
+                removePendingTopUpInvoice(inv.invId);
+            }
+            window._walDepState.activeIdrInv = null;
+            window._walDepState.proofDataUrl = '';
+            showToast(`✅ Proof for ${inv.invId} sent! Admin will credit +$${inv.usdtAmt.toFixed(2)} USDT shortly.`);
+            backToWalletMain();
+        }
+
+        function renderWalletDepositSlide(container) {
+            const st = window._walDepState;
+
+            // STEP 2: ACTIVE LOCAL IDR PAYMENT SHEET & PROOF UPLOAD
+            if (st.mode === 'IDR' && st.activeIdrInv) {
+                const inv = st.activeIdrInv;
+                const cfg = XB_IDR_ACCOUNTS_CFG[inv.method] || XB_IDR_ACCOUNTS_CFG.QRIS;
+                const idrFmt = 'Rp ' + inv.idrAmt.toLocaleString('id-ID');
+                const isQris = inv.method === 'QRIS';
+
+                container.innerHTML = `
+                    <div class="xb-wal-wrap">
+                        ${buildWalletSubHeaderHtml('Complete IDR Payment', `<span class="xb-ex-chip" style="color:#fbbf24;border-color:rgba(251,191,36,0.5);">⏳ PENDING</span>`)}
+
+                        <div class="xb-wal-card">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
+                                <div style="display:flex;align-items:center;gap:8px;">
+                                    <span class="xb-wal-brand-ico">${XB_IDR_BRAND_SVGS[inv.method]}</span>
+                                    <div>
+                                        <div style="font-size:0.82rem;font-weight:800;color:var(--text-primary);">${cfg.name} Transfer</div>
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);">${inv.invId}</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="xb-adm-mini-btn" style="color:#f87171;" onclick="window._walDepState.activeIdrInv=null; renderViewport();">Change</button>
+                            </div>
+
+                            <div style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:11px;padding:10px;text-align:center;margin-bottom:10px;">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:800;">EXACT AMOUNT TO TRANSFER</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:1.28rem;font-weight:800;color:#34d399;margin:2px 0;">${idrFmt}</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#38bdf8;font-weight:700;">Wallet Credit: +${inv.usdtAmt.toFixed(2)} USDT</div>
+                                <button type="button" class="xb-adm-mini-btn" style="margin-top:6px;color:#38bdf8;" onclick="navigator.clipboard.writeText('${inv.idrAmt}'); showToast('Nominal ${idrFmt} copied!');">📋 Copy Exact Nominal</button>
+                            </div>
+
+                            ${isQris ? `
+                                <div style="background:#ffffff;border-radius:12px;padding:12px;text-align:center;margin-bottom:10px;border:1px solid var(--ex-hairline);">
+                                    <img src="${cfg.qrisImg}" alt="QRIS Official" style="max-width:210px;width:100%;border-radius:8px;display:block;margin:0 auto;" onerror="this.onerror=null;this.src='${cfg.fallbackImg}';">
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:#0f172a;margin-top:6px;">${cfg.holder} • Scan via Bank / E-Wallet</div>
+                                </div>
+                            ` : `
+                                <div style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-left:3.5px solid ${cfg.color};border-radius:11px;padding:10px;margin-bottom:10px;display:flex;flex-direction:column;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.7rem;">
+                                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                        <span style="color:var(--text-muted);">Account No</span>
+                                        <div style="display:flex;align-items:center;gap:6px;">
+                                            <b style="color:var(--text-primary);font-size:0.8rem;">${cfg.number}</b>
+                                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="navigator.clipboard.writeText('${cfg.number}'); showToast('${cfg.name} number copied!');">📋 Copy</button>
+                                        </div>
+                                    </div>
+                                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                        <span style="color:var(--text-muted);">Account Name</span>
+                                        <b style="color:#34d399;">${cfg.holder}</b>
+                                    </div>
+                                </div>
+                            `}
+
+                            <div class="xb-bst-lbl"><span>UPLOAD TRANSFER RECEIPT</span><span style="color:#fbbf24;">REQUIRED</span></div>
+                            <label style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px;border-radius:11px;border:1.5px dashed rgba(56,189,248,0.55);background:var(--bg-input);cursor:pointer;text-align:center;margin-bottom:8px;">
+                                <span style="font-size:0.72rem;font-weight:800;color:#38bdf8;">📸 Tap to Choose Transfer Screenshot</span>
+                                <span style="font-size:0.56rem;color:var(--text-muted);">JPG / PNG Receipt Proof</span>
+                                <input type="file" accept="image/*" style="display:none;" onchange="handleWalDepProofFile(this)">
+                            </label>
+                            <div id="walDepProofPreview" style="text-align:center;margin-bottom:10px;"></div>
+
+                            <button type="button" id="walDepSubmitProofBtn" class="btn-ui buy-now" style="width:100%;padding:11px;font-size:0.76rem;border-radius:10px;" onclick="submitWalDepIdrProof()">
+                                📤 Submit Payment Proof (+${inv.usdtAmt.toFixed(2)} USDT)
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // STEP 1: CHOOSE GATEWAY (OXAPAY 100% AUTO OR LOCAL IDR MANUAL)
+            const isCrypto = st.mode === 'USDT';
+            const usdtPresets = [10, 25, 50, 100];
+            const idrPresets = [
+                { val: 100000, lbl: '100K' },
+                { val: 250000, lbl: '250K' },
+                { val: 500000, lbl: '500K' },
+                { val: 1000000, lbl: '1JT' }
+            ];
+            const idrUsdtEq = (st.idrAmt / liveUsdtIdrRate).toFixed(2);
+
+            container.innerHTML = `
+                <div class="xb-wal-wrap">
+                    ${buildWalletSubHeaderHtml('Deposit Funds', `<span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">${isCrypto ? 'AUTO' : 'MANUAL'}</span>`)}
+
+                    <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:11px;">
+                        <div class="xb-wal-dep-tabs">
+                            <button type="button" class="xb-wal-dep-tab ${isCrypto ? 'active' : ''}" onclick="setWalDepMode('USDT')">🪙 Crypto (OxaPay)</button>
+                            <button type="button" class="xb-wal-dep-tab ${!isCrypto ? 'active' : ''}" onclick="setWalDepMode('IDR')">🇮🇩 Local IDR</button>
+                        </div>
+
+                        ${isCrypto ? `
+                            <!-- OXAPAY 100% AUTOMATIC GATEWAY (NO MANUAL NETWORK SELECTION) -->
+                            <div class="xb-wal-oxapay-strip">
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                    <span style="font-size:0.72rem;font-weight:800;color:var(--text-primary);">⚡ OxaPay Automatic Gateway</span>
+                                    <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.55);">● INSTANT</span>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-secondary);line-height:1.4;">
+                                    Auto-detects all chains &amp; coins (USDT • TON • TRX • SOL • BTC) inside OxaPay. Zero manual confirmation — balance credits automatically.
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="xb-bst-lbl">
+                                    <span>SELECT DEPOSIT AMOUNT (USDT)</span>
+                                    <span style="color:#38bdf8;">MIN $5</span>
+                                </div>
+                                <div class="xb-wal-amt-grid">
+                                    ${usdtPresets.map(a => `
+                                        <button type="button" class="xb-wal-amt-btn xb-wal-amt-usdt ${Number(st.usdtAmt) === a ? 'active' : ''}" data-amt="${a}" onclick="setWalDepUsdt(${a})">$${a}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="xb-bst-lbl">
+                                    <span>CUSTOM AMOUNT (USDT)</span>
+                                    <span id="walDepUsdtIdrEq" style="color:#34d399;">≈ Rp ${Math.round((st.usdtAmt || 0) * liveUsdtIdrRate).toLocaleString('id-ID')}</span>
+                                </div>
+                                <input type="number" class="xb-bst-target-inp" style="width:100%;height:38px;font-size:0.82rem;" min="5" step="1" value="${st.usdtAmt}" placeholder="Enter USDT amount..." oninput="setWalDepUsdt(this.value, true)">
+                            </div>
+
+                            <button type="button" id="walDepOxaBtn" class="btn-ui primary" style="width:100%;padding:12px;font-size:0.78rem;border-radius:11px;" onclick="launchWalDepOxaPay()">
+                                ⚡ Pay ${Number(st.usdtAmt || 0).toFixed(2)} USDT via OxaPay
+                            </button>
+                        ` : `
+                            <!-- LOCAL IDR MANUAL (QRIS • SEABANK • DANA • GOPAY WITH SHARP VECTOR LOGOS) -->
+                            <div>
+                                <div class="xb-bst-lbl">
+                                    <span>SELECT LOCAL IDR METHOD</span>
+                                    <span style="color:#fbbf24;">MANUAL PROOF</span>
+                                </div>
+                                <div class="xb-wal-idr-grid">
+                                    ${['QRIS', 'SEABANK', 'DANA', 'GOPAY'].map(mKey => {
+                                        const c = XB_IDR_ACCOUNTS_CFG[mKey];
+                                        return `
+                                            <button type="button" class="xb-wal-idr-btn ${st.idrMethod === mKey ? 'active' : ''}" onclick="setWalDepIdrMethod('${mKey}')">
+                                                <span class="xb-wal-brand-ico">${XB_IDR_BRAND_SVGS[mKey]}</span>
+                                                <div style="min-width:0;">
+                                                    <div style="font-size:0.74rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${c.name}</div>
+                                                    <div style="font-size:0.54rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.sub}</div>
+                                                </div>
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="xb-bst-lbl">
+                                    <span>SELECT DEPOSIT AMOUNT (IDR)</span>
+                                    <span style="color:#38bdf8;">MIN RP 50K</span>
+                                </div>
+                                <div class="xb-wal-amt-grid">
+                                    ${idrPresets.map(p => `
+                                        <button type="button" class="xb-wal-amt-btn xb-wal-amt-idr ${Number(st.idrAmt) === p.val ? 'active' : ''}" data-amt="${p.val}" onclick="setWalDepIdr(${p.val})">${p.lbl}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="xb-bst-lbl">
+                                    <span>CUSTOM AMOUNT (IDR)</span>
+                                    <span id="walDepIdrUsdtEq" style="color:#34d399;">≈ +${idrUsdtEq} USDT Credited</span>
+                                </div>
+                                <input type="number" class="xb-bst-target-inp" style="width:100%;height:38px;font-size:0.82rem;" min="50000" step="10000" value="${st.idrAmt}" placeholder="Enter IDR amount..." oninput="setWalDepIdr(this.value, true)">
+                            </div>
+
+                            <button type="button" id="walDepIdrGenBtn" class="btn-ui buy-now" style="width:100%;padding:12px;font-size:0.78rem;border-radius:11px;" onclick="createWalDepIdrInvoice()">
+                                🇮🇩 Continue (Rp ${Number(st.idrAmt || 0).toLocaleString('id-ID')})
+                            </button>
+                        `}
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================
+        // 💳 9. WALLET & DEPOSIT TAB (LEGACY HELPERS KEPT INTACT)
         // =========================================================
         async function syncWalletBalanceInWeb() {
             const btn = document.getElementById('btnWebSyncBal');
