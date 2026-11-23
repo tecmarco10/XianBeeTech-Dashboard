@@ -1956,8 +1956,9 @@
             --ex-sheen: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.45), rgba(124, 58, 237, 0.5), transparent);
         }
 
-        .main-area { padding-top: 112px !important; padding-bottom: 92px !important; }
-        @media (min-width: 1100px) { .main-area { padding-top: 112px !important; padding-bottom: 40px !important; } }
+        .main-area { padding-top: 90px !important; padding-bottom: 92px !important; }
+        .container { padding: 8px 12px 16px 12px !important; }
+        @media (min-width: 1100px) { .main-area { padding-top: 90px !important; padding-bottom: 40px !important; } }
 
         /* TOPBAR ASSET EXCHANGE */
         .xb-ex-topbar-shell { position: relative; width: 100%; background: var(--ex-shell-bg); border: 1px solid var(--ex-hairline); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.22); }
@@ -1993,17 +1994,21 @@
         .xb-ex-col-stat { background: rgba(4,7,16,0.52); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; }
         [data-theme="platinum"] .xb-ex-col-stat { background: rgba(255,255,255,0.88); border-color: rgba(79,70,229,0.16); }
 
-        /* HORIZONTAL FILTER CHIPS & SORT BAR */
-        .xb-ex-chips-row { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 2px 1px 6px 1px; margin-bottom: 6px; scrollbar-width: none; }
-        .xb-ex-chips-row::-webkit-scrollbar { display: none; }
-        .xb-ex-filter-chip { flex: 0 0 auto; padding: 6px 11px; border-radius: 99px; border: 1px solid var(--ex-hairline); background: var(--ex-card-bg); color: var(--text-secondary); font-family: inherit; font-size: 0.65rem; font-weight: 800; cursor: pointer; white-space: nowrap; transition: 0.16s ease; }
-        .xb-ex-filter-chip.active { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border-color: rgba(255,255,255,0.42); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
+        /* 2-ROW FILTER CHIPS GRID (NO SCROLL) & SORT BAR */
+        .xb-ex-chips-wrap { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
+        .xb-ex-chips-r1 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+        .xb-ex-chips-r2 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+        .xb-ex-filter-chip { width: 100%; min-width: 0; padding: 7px 4px; border-radius: 9px; border: 1px solid var(--ex-hairline); background: var(--ex-card-bg); color: var(--text-secondary); font-family: inherit; font-size: 0.63rem; font-weight: 800; cursor: pointer; white-space: nowrap; text-align: center; transition: 0.16s ease; }
+        .xb-ex-filter-chip.active { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border-color: rgba(255,255,255,0.45); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.42), inset 0 1px 0 rgba(255,255,255,0.28); }
         .xb-ex-sort-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
         .xb-ex-sort-select { background: var(--bg-input); border: 1px solid var(--ex-hairline); color: var(--text-primary); border-radius: 9px; padding: 5px 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; outline: none; cursor: pointer; }
 
-        /* SECTION DIVIDER (YEAR VAULTS VS SPECIAL TIERS) */
-        .xb-ex-divider { display: flex; align-items: center; gap: 8px; margin: 16px 0 10px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--accent-cyan); text-transform: uppercase; }
+        /* SECTION DIVIDER & 2-LINE SPECIAL TIERS HEADER */
+        .xb-ex-divider { display: flex; align-items: center; gap: 8px; margin: 14px 0 10px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--accent-cyan); text-transform: uppercase; }
         .xb-ex-divider::before, .xb-ex-divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--ex-hairline), transparent); }
+        .xb-ex-special-hdr { margin: 16px 0 10px 0; display: flex; flex-direction: column; align-items: center; gap: 5px; text-align: center; }
+        .xb-ex-special-title { width: 100%; padding: 6px 10px; border-top: 1.5px solid rgba(56, 189, 248, 0.55); border-bottom: 1.5px solid rgba(168, 85, 247, 0.55); background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.1), rgba(168, 85, 247, 0.12), transparent); font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; font-weight: 800; letter-spacing: 1.6px; color: var(--text-primary); text-transform: uppercase; }
+        .xb-ex-special-sub { font-size: 0.62rem; font-weight: 700; color: var(--text-secondary); letter-spacing: 0.2px; }
 
         /* ASSET EXCHANGE CARDS + GITHUB EMBLEM + RARITY BADGES */
         .subtab-pill { background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-left: 1px solid var(--ex-hairline); border-bottom: 1px solid var(--ex-hairline); box-shadow: 0 4px 12px rgba(0,0,0,0.24), inset 0 1px 0 rgba(255,255,255,0.14); }
@@ -4694,7 +4699,7 @@
             { yr: '6Badge', icon: '🏅', tag: '6 BADGES', title: 'GitHub 6 Premium Badges', line1: '✨ 6 Official Badges Unlocked', line2: '🛡️ Pull Shark, YOLO, Starstruck & Galaxy Brain', desc: 'Unlocked Pull Shark, YOLO, Quickdraw, Starstruck & Galaxy Brain', usdt: 10.00 },
             { yr: 'Followers', icon: '👥', tag: '50+ FOLLOWERS', title: 'GitHub High Followers Vault', line1: '✨ Aged Profile + 50+ Followers', line2: '🛡️ Instant Developer Authority • Full Access & 2FA', desc: 'Aged GitHub profiles pre-warmed with 50+ organic followers', usdt: 10.00 },
             { yr: 'StudentPack', icon: '🎒', tag: 'DEV PACK', title: 'GitHub Student Dev Pack', line1: '✨ Verified Dev Pack Benefits', line2: '🛡️ Cloud Credits, Pro Tools & Full Account Access', desc: 'Approved developer pack with cloud & pro tool benefits', usdt: 5.00 },
-            { yr: 'Contrib', icon: '📈', tag: '200K+ COMMITS', title: 'GitHub High Contributions (200K+)', line1: '🔥 200,000+ Green Matrix Commits', line2: '🛡️ High Authority Graph • Full Access & 2FA', desc: '200K+ green contribution commits & populated repositories', usdt: 10.00 }
+            { yr: 'Contrib', icon: '📈', tag: '200K+ COMMITS', title: 'GitHub High Contribution', line1: '🔥 200,000+ Green Matrix Commits', line2: '🛡️ High Authority Graph • Full Access & 2FA', desc: '200K+ green contribution commits & populated repositories', usdt: 10.00 }
         ];
 
         const CATALOG_ITEMS = [
@@ -5135,7 +5140,7 @@
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;" title="Verified Collection"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
                             </div>
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:700;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                Authentic 2011–2026 Accounts • Full 2FA &amp; Instant Dispatch
+                                Verified Aged Vault • Full 2FA Ready
                             </div>
                         </div>
                         <button type="button" class="xb-ex-icon-btn" style="height:26px;padding:0 8px;font-size:0.58rem;border-color:rgba(251,191,36,0.45);color:var(--cockpit-vip-color);" onclick="openLeaderboardModal()">🏆 VIP</button>
@@ -5199,24 +5204,29 @@
                     vp.appendChild(megaStrip);
                 }
 
-                // FILTER CHIPS ROW (ALL ASSETS • 2011–2016 • 2017–2019 • 2020–2023 • 2024–2026 • SPECIALS)
-                const filterDefs = [
+                // 2-ROW FILTER CHIPS (ROW 1: ALL ASSETS • HIGH FOLLOWERS • 6 BADGES | ROW 2: YEAR RANGES)
+                const row1Filters = [
                     { k: 'ALL', lbl: 'All Assets' },
+                    { k: 'Followers', lbl: 'High Followers' },
+                    { k: '6Badge', lbl: '6 Badges' }
+                ];
+                const row2Filters = [
                     { k: '2011-2016', lbl: '2011–2016' },
                     { k: '2017-2019', lbl: '2017–2019' },
                     { k: '2020-2023', lbl: '2020–2023' },
-                    { k: '2024-2026', lbl: '2024–2026' },
-                    { k: 'Followers', lbl: 'High Followers' },
-                    { k: 'Arctic', lbl: 'Arctic Badge' },
-                    { k: 'Contrib', lbl: 'High Contrib' },
-                    { k: '6Badge', lbl: '6 Badges' }
+                    { k: '2024-2026', lbl: '2024–2026' }
                 ];
-                const chipsRow = document.createElement('div');
-                chipsRow.className = 'xb-ex-chips-row';
-                chipsRow.innerHTML = filterDefs.map(f =>
-                    `<button type="button" class="xb-ex-filter-chip ${_exFilter === f.k ? 'active' : ''}" onclick="setExchangeFilter('${f.k}')">${f.lbl}</button>`
-                ).join('');
-                vp.appendChild(chipsRow);
+                const chipsWrap = document.createElement('div');
+                chipsWrap.className = 'xb-ex-chips-wrap';
+                chipsWrap.innerHTML = `
+                    <div class="xb-ex-chips-r1">
+                        ${row1Filters.map(f => `<button type="button" class="xb-ex-filter-chip ${_exFilter === f.k ? 'active' : ''}" onclick="setExchangeFilter('${f.k}')">${f.lbl}</button>`).join('')}
+                    </div>
+                    <div class="xb-ex-chips-r2">
+                        ${row2Filters.map(f => `<button type="button" class="xb-ex-filter-chip ${_exFilter === f.k ? 'active' : ''}" onclick="setExchangeFilter('${f.k}')">${f.lbl}</button>`).join('')}
+                    </div>
+                `;
+                vp.appendChild(chipsWrap);
 
                 // SORT & LIVE COUNT BAR
                 const sortBar = document.createElement('div');
@@ -5272,19 +5282,13 @@
                     return;
                 }
 
-                // FILTERED SPECIAL CATEGORY VIEW (DIRECT VAULT CARD + LIVE ACCOUNTS FROM SHEET)
+                // DIRECT LIVE ACCOUNTS FOR SPECIAL FILTERS (HIGH FOLLOWERS & 6 BADGES)
                 if (['Followers', 'Arctic', 'Contrib', '6Badge'].includes(_exFilter)) {
-                    const spObj = GITHUB_VAULT_CATEGORIES.find(y => y.yr === _exFilter);
-                    if (spObj) {
-                        const wrap = document.createElement('div');
-                        wrap.style.marginBottom = '12px';
-                        wrap.appendChild(createGithubYearCard(spObj));
-                        vp.appendChild(wrap);
-                    }
                     const spAccs = sortSpecificAccountList(liveGithubStock[_exFilter] || [], _exFilter);
+                    const spLabel = _exFilter === 'Followers' ? 'HIGH FOLLOWERS' : (_exFilter === '6Badge' ? '6 PREMIUM BADGES' : _exFilter.toUpperCase());
                     const spDiv = document.createElement('div');
                     spDiv.className = 'xb-ex-divider';
-                    spDiv.innerHTML = `<span>LIVE ${spObj ? spObj.title.toUpperCase() : _exFilter} (${spAccs.length})</span>`;
+                    spDiv.innerHTML = `<span>${spLabel} • ${spAccs.length} LIVE ACCOUNTS</span>`;
                     vp.appendChild(spDiv);
 
                     if (spAccs.length > 0) {
@@ -5293,26 +5297,36 @@
                         spAccs.forEach(acc => accGrid.appendChild(createSpecificAccountCard(acc, _exFilter)));
                         vp.appendChild(accGrid);
                     } else {
-                        vp.innerHTML += `<div class="item-card" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;font-weight:700;">0 live accounts currently listed in this vault.</div>`;
+                        vp.innerHTML += `<div class="item-card" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;font-weight:700;">0 live accounts currently available in ${spLabel}.</div>`;
                     }
                     return;
                 }
 
-                // YEAR RANGE FILTER (2011–2016, 2017–2019, 2020–2023, 2024–2026)
+                // DIRECT LIVE ACCOUNTS FOR YEAR RANGES (2011–2016, 2017–2019, 2020–2023, 2024–2026)
                 if (/^\d{4}-\d{4}$/.test(_exFilter)) {
                     const [minY, maxY] = _exFilter.split('-').map(Number);
-                    const yrList = sortVaultCategoryList(GITHUB_VAULT_CATEGORIES.filter(y => {
-                        const n = parseInt(y.yr, 10);
-                        return /^\d{4}$/.test(y.yr) && n >= minY && n <= maxY;
-                    }));
-                    const yrGrid = document.createElement('div');
-                    yrGrid.className = 'grid-years-2col';
-                    yrList.forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
-                    vp.appendChild(yrGrid);
+                    const rawRangeAccs = allLiveAccountsFlat.filter(a => {
+                        const yNum = parseInt(a.year || a._cat_key || a.category, 10);
+                        return !isNaN(yNum) && yNum >= minY && yNum <= maxY;
+                    });
+                    const rangeAccs = sortSpecificAccountList(rawRangeAccs);
+                    const yrDiv = document.createElement('div');
+                    yrDiv.className = 'xb-ex-divider';
+                    yrDiv.innerHTML = `<span>GITHUB ${minY}–${maxY} • ${rangeAccs.length} LIVE ACCOUNTS</span>`;
+                    vp.appendChild(yrDiv);
+
+                    if (rangeAccs.length > 0) {
+                        const accGrid = document.createElement('div');
+                        accGrid.className = 'xb-ex-acc-grid';
+                        rangeAccs.forEach(acc => accGrid.appendChild(createSpecificAccountCard(acc, acc._cat_key || String(acc.year || minY))));
+                        vp.appendChild(accGrid);
+                    } else {
+                        vp.innerHTML += `<div class="item-card" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;font-weight:700;">0 live accounts currently available for ${minY}–${maxY}.</div>`;
+                    }
                     return;
                 }
 
-                // DEFAULT "ALL ASSETS": 2011–2026 VAULTS + DIVIDER + SPECIAL TIERS BELOW
+                // DEFAULT "ALL ASSETS": 2011–2026 VAULTS + 2-LINE SPECIAL TIERS HEADER + SPECIAL VAULTS
                 const allYearVaults = sortVaultCategoryList(GITHUB_VAULT_CATEGORIES.filter(y => /^\d{4}$/.test(y.yr)));
                 const yrGrid = document.createElement('div');
                 yrGrid.className = 'grid-years-2col';
@@ -5320,8 +5334,11 @@
                 vp.appendChild(yrGrid);
 
                 const spDiv = document.createElement('div');
-                spDiv.className = 'xb-ex-divider';
-                spDiv.innerHTML = '<span>★ SPECIAL TIERS • HIGH FOLLOWERS • ARCTIC • CONTRIB • 6 BADGES</span>';
+                spDiv.className = 'xb-ex-special-hdr';
+                spDiv.innerHTML = `
+                    <div class="xb-ex-special-title">★ SPECIAL TIERS ★</div>
+                    <div class="xb-ex-special-sub">High Followers • Arctic Badge • High Contribution • 6 Badges</div>
+                `;
                 vp.appendChild(spDiv);
 
                 const spOrder = ['Followers', 'Arctic', 'Contrib', '6Badge', 'StudentPack'];
