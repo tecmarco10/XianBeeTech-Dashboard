@@ -3201,6 +3201,368 @@
         }
         .xb-cyb-close-btn:active { transform: scale(0.99); }
 
+        /* =========================================================
+           💎 CLASSIC VIP GRID CARD — WALLET & PROFILE EDITION
+           ========================================================= */
+        .xb-vgrid-card {
+            --vg-accent: #d97706;
+            --vg-accent-hi: #f59e0b;
+            --vg-border: rgba(245, 158, 11, 0.58);
+            --vg-glow: rgba(217, 119, 6, 0.24);
+            --vg-bg-1: #3b1c08;
+            --vg-bg-2: #1c0d04;
+            --vg-grid: rgba(251, 191, 36, 0.085);
+            --vg-pill-bg: rgba(217, 119, 6, 0.2);
+            --vg-pill-txt: #fde68a;
+            --vg-cta-txt: #ffffff;
+
+            position: relative !important;
+            border-radius: 18px !important;
+            padding: 13px 13px 12px !important;
+            border: 1.5px solid var(--vg-border) !important;
+            background:
+                linear-gradient(var(--vg-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--vg-grid) 1px, transparent 1px),
+                radial-gradient(circle at 50% 0%, var(--vg-glow), transparent 64%),
+                linear-gradient(165deg, var(--vg-bg-1) 0%, var(--vg-bg-2) 100%) !important;
+            background-size: 20px 20px, 20px 20px, 100% 100%, 100% 100% !important;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45), inset 0 0 0 1px rgba(255, 255, 255, 0.07) !important;
+            overflow: hidden !important;
+            color: #f8fafc !important;
+        }
+        .xb-vgrid-card.is-profile-grid {
+            background:
+                linear-gradient(var(--vg-grid) 1px, transparent 1px),
+                linear-gradient(90deg, var(--vg-grid) 1px, transparent 1px),
+                radial-gradient(circle at 15% 10%, var(--vg-glow), transparent 55%),
+                radial-gradient(circle at 85% 90%, rgba(124, 58, 237, 0.2), transparent 55%),
+                linear-gradient(155deg, var(--vg-bg-1) 0%, #090e1e 100%) !important;
+            background-size: 18px 18px, 18px 18px, 100% 100%, 100% 100%, 100% 100% !important;
+        }
+
+        /* VIP TIER COLOR PALETTES */
+        .xb-vgrid-card.tier-bronze {
+            --vg-accent: #d97706; --vg-accent-hi: #f59e0b; --vg-border: rgba(245, 158, 11, 0.62);
+            --vg-glow: rgba(217, 119, 6, 0.28); --vg-bg-1: #3b1c07; --vg-bg-2: #190c04;
+            --vg-grid: rgba(251, 146, 60, 0.085); --vg-pill-bg: rgba(180, 83, 9, 0.28); --vg-pill-txt: #fed7aa;
+        }
+        .xb-vgrid-card.tier-silver {
+            --vg-accent: #64748b; --vg-accent-hi: #94a3b8; --vg-border: rgba(203, 213, 225, 0.56);
+            --vg-glow: rgba(148, 163, 184, 0.26); --vg-bg-1: #1e293b; --vg-bg-2: #0f172a;
+            --vg-grid: rgba(226, 232, 240, 0.075); --vg-pill-bg: rgba(148, 163, 184, 0.22); --vg-pill-txt: #f1f5f9;
+        }
+        .xb-vgrid-card.tier-gold {
+            --vg-accent: #ca8a04; --vg-accent-hi: #eab308; --vg-border: rgba(250, 204, 21, 0.65);
+            --vg-glow: rgba(234, 179, 8, 0.28); --vg-bg-1: #3b2a06; --vg-bg-2: #171003;
+            --vg-grid: rgba(250, 204, 21, 0.085); --vg-pill-bg: rgba(202, 138, 4, 0.28); --vg-pill-txt: #fef08a;
+        }
+        .xb-vgrid-card.tier-diamond {
+            --vg-accent: #0284c7; --vg-accent-hi: #38bdf8; --vg-border: rgba(56, 189, 248, 0.64);
+            --vg-glow: rgba(56, 189, 248, 0.26); --vg-bg-1: #0c2445; --vg-bg-2: #080f24;
+            --vg-grid: rgba(56, 189, 248, 0.09); --vg-pill-bg: rgba(2, 132, 199, 0.26); --vg-pill-txt: #bae6fd;
+        }
+        .xb-vgrid-card.tier-founder {
+            --vg-accent: #dc2626; --vg-accent-hi: #f59e0b; --vg-border: rgba(250, 204, 21, 0.62);
+            --vg-glow: rgba(239, 68, 68, 0.3); --vg-bg-1: #3a0d16; --vg-bg-2: #14060d;
+            --vg-grid: rgba(251, 113, 133, 0.085); --vg-pill-bg: rgba(220, 38, 38, 0.26); --vg-pill-txt: #fef08a;
+        }
+
+        [data-theme="platinum"] .xb-vgrid-card {
+            box-shadow: 0 10px 26px rgba(15, 23, 42, 0.16), inset 0 0 0 1px rgba(255, 255, 255, 0.12) !important;
+        }
+
+        .xb-vg-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .xb-vg-corner-btn {
+            height: 27px;
+            padding: 0 9px;
+            border-radius: 8px;
+            border: 1px solid var(--vg-border);
+            background: rgba(5, 8, 18, 0.48);
+            color: #f8fafc;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.62rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            flex-shrink: 0;
+            transition: transform 0.14s ease, filter 0.14s ease;
+        }
+        .xb-vg-corner-btn:active { transform: scale(0.95); }
+        .xb-vg-tier-pill {
+            min-width: 0;
+            padding: 4px 10px;
+            border-radius: 8px;
+            border: 1px solid var(--vg-border);
+            background: var(--vg-pill-bg);
+            color: var(--vg-pill-txt);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.56rem;
+            font-weight: 800;
+            letter-spacing: 0.45px;
+            text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+
+        .xb-vg-center {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 5px;
+        }
+        .xb-vg-vip-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 10px;
+            border-radius: 7px;
+            background: linear-gradient(135deg, #facc15 0%, #d97706 100%);
+            color: #1c1002;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            font-weight: 900;
+            letter-spacing: 0.4px;
+            box-shadow: 0 3px 10px rgba(245, 158, 11, 0.35);
+        }
+        .xb-vg-handle {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+        .xb-vg-handle span {
+            color: rgba(226, 232, 240, 0.65);
+            font-weight: 600;
+            font-size: 0.64rem;
+        }
+
+        .xb-vg-divider {
+            width: 100%;
+            height: 0;
+            border-top: 1px dashed rgba(255, 255, 255, 0.2);
+            margin: 10px 0 9px;
+        }
+
+        .xb-vg-bal-lbl {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.56rem;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            color: rgba(226, 232, 240, 0.78);
+        }
+        .xb-vg-eye-btn {
+            width: 24px;
+            height: 20px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            background: rgba(5, 8, 18, 0.45);
+            color: #e2e8f0;
+            font-size: 0.65rem;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .xb-vg-bal-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 2px;
+        }
+        .xb-vg-bal-num {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.68rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: #ffffff;
+            line-height: 1.1;
+        }
+        .xb-vg-usdt-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 8px;
+            border-radius: 7px;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(52, 211, 153, 0.55);
+            color: #34d399;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            font-weight: 800;
+        }
+        .xb-vg-idr-sub {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.6rem;
+            font-weight: 700;
+            color: rgba(226, 232, 240, 0.76);
+            margin-top: 2px;
+        }
+
+        /* 3 MINI STATS INSIDE CARD (TOTAL IN / TOTAL OUT / VERIFIED TX) */
+        .xb-vg-stats-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            margin: 10px 0;
+        }
+        .xb-vg-stat-box {
+            background: rgba(5, 8, 18, 0.48);
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            border-radius: 10px;
+            padding: 6px 5px;
+            text-align: center;
+            min-width: 0;
+        }
+        .xb-vg-stat-k {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.46rem;
+            font-weight: 800;
+            letter-spacing: 0.35px;
+            color: rgba(203, 213, 225, 0.74);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .xb-vg-stat-v {
+            margin-top: 2px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.64rem;
+            font-weight: 800;
+            color: #ffffff;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .xb-vg-stat-v.in { color: #34d399; }
+        .xb-vg-stat-v.out { color: #fb7185; }
+        .xb-vg-stat-v.tx { color: #38bdf8; }
+        .xb-vg-stat-v.gold { color: #fbbf24; }
+
+        /* 2 ACTION BUTTONS AT BOTTOM */
+        .xb-vg-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px;
+            margin-top: 4px;
+        }
+        .xb-vg-btn {
+            height: 36px;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.68rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            padding: 0 8px;
+            transition: transform 0.14s ease, filter 0.14s ease;
+        }
+        .xb-vg-btn:active { transform: scale(0.97); }
+        .xb-vg-btn.outline {
+            background: rgba(5, 8, 18, 0.5);
+            border: 1px solid var(--vg-border);
+            color: #f8fafc;
+        }
+        .xb-vg-btn.solid {
+            background: linear-gradient(90deg, var(--vg-accent) 0%, var(--vg-accent-hi) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            color: var(--vg-cta-txt);
+            box-shadow: 0 5px 14px var(--vg-glow);
+        }
+
+        /* PROFILE GRID SPECIFIC CENTER AVATAR */
+        .xb-vg-prf-av {
+            width: 58px;
+            height: 58px;
+            border-radius: 15px;
+            padding: 2.5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2px;
+        }
+        .xb-vg-prf-av-inner {
+            width: 100%;
+            height: 100%;
+            border-radius: 12.5px;
+            overflow: hidden;
+            background: #0a1020;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #f8fafc;
+        }
+        .xb-vg-prf-av-inner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* UNIFORM BOLD ARROW BUTTON ON ALL PROFILE MENU ROWS */
+        .xb-prf-menu-row > span:last-child {
+            font-size: 0 !important;
+            line-height: 0 !important;
+            color: transparent !important;
+            width: 30px !important;
+            height: 30px !important;
+            min-width: 30px !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(124, 58, 237, 0.18) 100%) !important;
+            border: 1px solid rgba(56, 189, 248, 0.4) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+            transition: transform 0.14s ease, border-color 0.14s ease !important;
+        }
+        .xb-prf-menu-row > span:last-child::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            display: block;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m13 6 6 6-6 6'/%3E%3C/svg%3E");
+        }
+        [data-theme="platinum"] .xb-prf-menu-row > span:last-child {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(124, 58, 237, 0.12) 100%) !important;
+            border-color: rgba(37, 99, 235, 0.34) !important;
+        }
+        [data-theme="platinum"] .xb-prf-menu-row > span:last-child::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d4ed8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m13 6 6 6-6 6'/%3E%3C/svg%3E");
+        }
+        .xb-prf-menu-row:active > span:last-child {
+            transform: translateX(2px) scale(0.95);
+        }
+
         /* ADMIN LIVE LOGO STUDIO */
         .xb-logo-prev-stage {
             background: var(--bg-input);
@@ -11064,6 +11426,388 @@ function copyActiveWalletReceipt() {
                 openCyberGlobalTelemetryModal();
             }
         }, true);
+
+        // =========================================================
+        // 💎 CLASSIC VIP GRID CARD ENGINE (WALLET & PROFILE DISTINCT)
+        // =========================================================
+        window._xbWalHideBal = localStorage.getItem('xb_wal_hide_bal') === '1';
+
+        function getCachedVipGridMeta() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('xb_vip_grid_meta') || 'null');
+                if (saved && saved.tierKey) return saved;
+            } catch (e) {}
+            return { tierKey: 'bronze', rank: 'BRONZE VIP MEMBER', emblem: '🥉', cashback: 'VIP PASS', ringCls: 'xb-vip-ring-bronze' };
+        }
+
+        function saveCachedVipGridMeta(meta) {
+            if (!meta || !meta.tierKey) return;
+            try { localStorage.setItem('xb_vip_grid_meta', JSON.stringify(meta)); } catch (e) {}
+        }
+
+        function detectVipTierKeyFromText(txt) {
+            const s = String(txt || '').toLowerCase();
+            if (s.includes('founder') || s.includes('king') || s.includes('royal')) return 'founder';
+            if (s.includes('diamond')) return 'diamond';
+            if (s.includes('gold')) return 'gold';
+            if (s.includes('silver')) return 'silver';
+            return 'bronze';
+        }
+
+        function getDefaultCashbackByTier(tierKey) {
+            const map = { founder: '10% BACK', diamond: '8% BACK', gold: '5% BACK', silver: '3% BACK', bronze: '1% BACK' };
+            return map[tierKey] || 'VIP PASS';
+        }
+
+        function toggleXbWalletBalEye() {
+            window._xbWalHideBal = !window._xbWalHideBal;
+            localStorage.setItem('xb_wal_hide_bal', window._xbWalHideBal ? '1' : '0');
+            document.querySelectorAll('.xb-vgrid-card[data-xb-vgrid="wallet"]').forEach(card => {
+                const numEl = card.querySelector('.xb-vg-bal-num');
+                const idrEl = card.querySelector('.xb-vg-idr-txt');
+                if (numEl) numEl.textContent = window._xbWalHideBal ? '••••••' : (numEl.dataset.realVal || '0.00');
+                if (idrEl) idrEl.textContent = window._xbWalHideBal ? '≈ Rp •••••• IDR' : (idrEl.dataset.realVal || '≈ Rp 0 IDR');
+            });
+        }
+
+        function extractWalletStatsSmart(rootCard) {
+            let totalIn = null, totalOut = null, verifiedTx = null;
+            const container = rootCard.parentElement || document.body;
+
+            // 1. Scan nearby stat boxes in Wallet tab and hide duplicate row if found
+            const candidates = Array.from(container.children).filter(el => el !== rootCard && el.tagName === 'DIV');
+            for (const sib of candidates) {
+                const t = (sib.innerText || '').trim();
+                if (!t || t.length > 260) continue;
+                const hasIn = /total\s*in|cash\s*in|deposited/i.test(t);
+                const hasOut = /total\s*out|total\s*spent|cash\s*out/i.test(t);
+                const hasTx = /verified\s*tx|total\s*tx|transactions/i.test(t);
+                if ((hasIn && hasOut) || (hasIn && hasTx) || (hasOut && hasTx)) {
+                    const mIn = t.match(/(?:total\s*in|cash\s*in|deposited)[^\d$Rp]*([+\-$Rp\s\d.,]+(?:USDT|IDR)?)/i);
+                    const mOut = t.match(/(?:total\s*out|total\s*spent|cash\s*out)[^\d$Rp]*([+\-$Rp\s\d.,]+(?:USDT|IDR)?)/i);
+                    const mTx = t.match(/(?:verified\s*tx|total\s*tx|transactions)[^\d]*(\d[\d,]*)/i);
+                    if (mIn && mIn[1]) totalIn = mIn[1].trim();
+                    if (mOut && mOut[1]) totalOut = mOut[1].trim();
+                    if (mTx && mTx[1]) verifiedTx = mTx[1].trim() + ' TX';
+                    sib.style.display = 'none';
+                    break;
+                }
+            }
+
+            // 2. Fallback: compute from global history/orders or rendered tx rows
+            if (totalIn === null || totalOut === null || verifiedTx === null) {
+                let sumIn = 0, sumOut = 0, cntTx = 0;
+                const histArr = (typeof walletHistory !== 'undefined' && Array.isArray(walletHistory) && walletHistory)
+                    || (typeof userTransactions !== 'undefined' && Array.isArray(userTransactions) && userTransactions)
+                    || (typeof txHistory !== 'undefined' && Array.isArray(txHistory) && txHistory)
+                    || null;
+
+                if (histArr && histArr.length > 0) {
+                    histArr.forEach(item => {
+                        const amt = Math.abs(parseFloat(item.amount || item.usdt || item.total || 0) || 0);
+                        const typ = String(item.type || item.action || item.kind || '').toLowerCase();
+                        cntTx++;
+                        if (/deposit|topup|in|credit|receive|refund|cashback|bonus/.test(typ)) sumIn += amt;
+                        else sumOut += amt;
+                    });
+                } else {
+                    const pageText = container.innerText || '';
+                    const plusMatches = pageText.match(/\+\s*\$?\s*(\d+(?:[.,]\d+)?)/g) || [];
+                    const minusMatches = pageText.match(/-\s*\$?\s*(\d+(?:[.,]\d+)?)/g) || [];
+                    plusMatches.forEach(m => { sumIn += parseFloat(m.replace(/[^\d.]/g, '')) || 0; cntTx++; });
+                    minusMatches.forEach(m => { sumOut += parseFloat(m.replace(/[^\d.]/g, '')) || 0; cntTx++; });
+                }
+
+                const fmtUsdShort = n => '$' + Number(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                if (totalIn === null) totalIn = fmtUsdShort(sumIn);
+                if (totalOut === null) totalOut = fmtUsdShort(sumOut);
+                if (verifiedTx === null) verifiedTx = cntTx + ' TX';
+            }
+
+            return { totalIn, totalOut, verifiedTx };
+        }
+
+        function upgradeWalletHeroToClassicGrid(card) {
+            if (!card || card.dataset.xbVgrid === 'wallet') return;
+
+            const rawText = (card.innerText || '').trim();
+            const btns = Array.from(card.querySelectorAll('button'));
+            const containerBtns = Array.from((card.parentElement || card).querySelectorAll('button'));
+
+            // Extract real live balance
+            let balNum = 0;
+            if (typeof userBalance !== 'undefined' && !isNaN(parseFloat(userBalance))) {
+                balNum = parseFloat(userBalance);
+            } else if (typeof currentBalance !== 'undefined' && !isNaN(parseFloat(currentBalance))) {
+                balNum = parseFloat(currentBalance);
+            } else {
+                const mBal = rawText.match(/(\d[\d,]*\.\d{2})/);
+                if (mBal) balNum = parseFloat(mBal[1].replace(/,/g, '')) || 0;
+            }
+            const balDisplay = balNum.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const idrRate = (typeof getCyberTelemIdrRate === 'function') ? getCyberTelemIdrRate() : 16250;
+            const idrDisplay = '≈ Rp ' + Math.round(balNum * idrRate).toLocaleString('id-ID') + ' IDR';
+
+            // Extract VIP tier metadata
+            const vipMeta = getCachedVipGridMeta();
+            let tierKey = vipMeta.tierKey || 'bronze';
+            let rankText = vipMeta.rank || 'BRONZE VIP MEMBER';
+            let emblem = vipMeta.emblem || '🥉';
+            if (/founder|diamond|gold|silver|bronze/i.test(rawText)) {
+                tierKey = detectVipTierKeyFromText(rawText);
+            }
+
+            // Extract username & UID
+            const rawUser = (typeof currentUsername !== 'undefined' && currentUsername)
+                ? String(currentUsername).replace(/^@+/, '')
+                : ((rawText.match(/@([a-zA-Z0-9_.-]+)/) || [])[1] || 'Member');
+            const uidStr = (typeof currentUserId !== 'undefined' && currentUserId) ? String(currentUserId) : 'GUEST';
+
+            // Extract Total In, Total Out, Verified TX
+            const stats = extractWalletStatsSmart(card);
+
+            // Preserve original buttons inside hidden bridge so real click handlers stay 100% intact
+            const origBridge = document.createElement('div');
+            origBridge.className = 'xb-orig-bridge';
+            origBridge.style.display = 'none';
+            while (card.firstChild) origBridge.appendChild(card.firstChild);
+
+            const origBtns = Array.from(origBridge.querySelectorAll('button'));
+            const findBtn = (list, re) => list.find(b => re.test((b.innerText || '') + ' ' + (b.getAttribute('onclick') || '')));
+
+            const origSyncBtn = findBtn(origBtns, /sync|refresh|reload/i);
+            const origAlertBtn = findBtn(origBtns, /alert|notif/i);
+            const origSendBtn = findBtn(origBtns, /send|transfer|withdraw|kirim/i) || findBtn(containerBtns, /send|transfer|withdraw/i);
+            const origRecvBtn = findBtn(origBtns, /receive|deposit|top\s*up|add\s*fund|isi/i) || findBtn(containerBtns, /receive|deposit|top\s*up/i);
+
+            card.classList.add('xb-vgrid-card', 'tier-' + tierKey);
+            card.dataset.xbVgrid = 'wallet';
+
+            const wrap = document.createElement('div');
+            wrap.innerHTML = `
+                <div class="xb-vg-top">
+                    <button type="button" class="xb-vg-corner-btn" data-act="sync">↻ Sync</button>
+                    <div class="xb-vg-tier-pill">${emblem} ${rankText}</div>
+                    <button type="button" class="xb-vg-corner-btn" data-act="alerts">🔔 Alerts</button>
+                </div>
+
+                <div class="xb-vg-center">
+                    <div class="xb-vg-vip-chip">👑 VIP</div>
+                    <div class="xb-vg-handle">@${rawUser} <span>(#${uidStr})</span></div>
+                </div>
+
+                <div class="xb-vg-divider"></div>
+
+                <div class="xb-vg-center">
+                    <div class="xb-vg-bal-lbl">
+                        <span>TOTAL AVAILABLE BALANCE</span>
+                        <button type="button" class="xb-vg-eye-btn" onclick="toggleXbWalletBalEye()" title="Show / Hide Balance">👁</button>
+                    </div>
+                    <div class="xb-vg-bal-row">
+                        <span class="xb-vg-bal-num" data-real-val="${balDisplay}">${window._xbWalHideBal ? '••••••' : balDisplay}</span>
+                        <span class="xb-vg-usdt-pill">₮ USDT</span>
+                    </div>
+                    <div class="xb-vg-idr-sub">
+                        <span style="width:6px;height:6px;border-radius:50%;background:#10b981;box-shadow:0 0 6px #10b981;display:inline-block;"></span>
+                        <span class="xb-vg-idr-txt" data-real-val="${idrDisplay}">${window._xbWalHideBal ? '≈ Rp •••••• IDR' : idrDisplay}</span>
+                    </div>
+                </div>
+
+                <div class="xb-vg-stats-3">
+                    <div class="xb-vg-stat-box">
+                        <div class="xb-vg-stat-k">TOTAL IN</div>
+                        <div class="xb-vg-stat-v in">${stats.totalIn}</div>
+                    </div>
+                    <div class="xb-vg-stat-box">
+                        <div class="xb-vg-stat-k">TOTAL OUT</div>
+                        <div class="xb-vg-stat-v out">${stats.totalOut}</div>
+                    </div>
+                    <div class="xb-vg-stat-box">
+                        <div class="xb-vg-stat-k">VERIFIED TX</div>
+                        <div class="xb-vg-stat-v tx">${stats.verifiedTx}</div>
+                    </div>
+                </div>
+
+                <div class="xb-vg-actions">
+                    <button type="button" class="xb-vg-btn outline" data-act="send">↗ Send Balance</button>
+                    <button type="button" class="xb-vg-btn solid" data-act="recv">↙ Receive Balance</button>
+                </div>
+            `;
+
+            card.appendChild(origBridge);
+            card.appendChild(wrap);
+
+            wrap.querySelector('[data-act="sync"]').onclick = () => {
+                if (origSyncBtn) origSyncBtn.click();
+                else if (typeof fetchCyberTelemetryLive === 'function') { fetchCyberTelemetryLive(true); if (typeof renderViewport === 'function') renderViewport(); }
+                else if (typeof showToast === 'function') showToast('↻ Wallet synced!');
+            };
+            wrap.querySelector('[data-act="alerts"]').onclick = () => {
+                if (origAlertBtn) origAlertBtn.click();
+                else if (typeof openNotificationsModal === 'function') openNotificationsModal();
+                else {
+                    const bell = document.querySelector('[onclick*="openNotificationsModal"]');
+                    if (bell) bell.click();
+                }
+            };
+            wrap.querySelector('[data-act="send"]').onclick = () => {
+                if (origSendBtn) origSendBtn.click();
+                else if (typeof showToast === 'function') showToast('↗ Open Transfer / Send Balance');
+            };
+            wrap.querySelector('[data-act="recv"]').onclick = () => {
+                if (origRecvBtn) origRecvBtn.click();
+                else if (typeof showToast === 'function') showToast('↙ Open Deposit / Receive Balance');
+            };
+        }
+
+        function upgradeProfileHeroToMemberGrid(card) {
+            if (!card || card.dataset.xbVgrid === 'profile') return;
+
+            const crownEl = card.querySelector('.xb-prf-vip-crown');
+            const avatarEl = card.querySelector('.xb-prf-avatar');
+            const avatarWrapEl = card.querySelector('.xb-prf-avatar-wrap');
+            const rawText = (card.innerText || '').trim();
+
+            const rankText = crownEl ? crownEl.innerText.replace(/\s+/g, ' ').trim() : 'VIP MEMBER';
+            const tierKey = detectVipTierKeyFromText(rankText + ' ' + (crownEl ? crownEl.className : ''));
+            const ringCls = avatarWrapEl
+                ? (Array.from(avatarWrapEl.classList).find(c => c.startsWith('xb-vip-ring-')) || ('xb-vip-ring-' + tierKey))
+                : ('xb-vip-ring-' + tierKey);
+            const emblem = (rankText.match(/^([^\w\s]+)/) || [])[1] || '👑';
+            const cleanRank = rankText.replace(/^([^\w\s]+)\s*/, '').trim() || 'VIP MEMBER';
+            const avatarHtml = avatarEl ? avatarEl.innerHTML : '👤';
+
+            const rawUser = ((rawText.match(/@([a-zA-Z0-9_.-]+)/) || [])[1])
+                || (typeof currentUsername !== 'undefined' && currentUsername ? String(currentUsername).replace(/^@+/, '') : 'Member');
+            const uidStr = ((rawText.match(/UID:\s*([A-Za-z0-9_-]+)/i) || [])[1])
+                || (typeof currentUserId !== 'undefined' ? String(currentUserId) : '0');
+
+            // Read Vault Count & Total Spent from page for Profile-specific 3-stat strip
+            const allBtns = Array.from(card.querySelectorAll('button'));
+            const origVipBtn = allBtns.find(b => /cashback|vip/i.test(b.innerText || '') && !/UID:/i.test(b.innerText || ''));
+            const origVaultBtn = allBtns.find(b => /vault/i.test(b.innerText || ''));
+            const vaultLabel = origVaultBtn ? origVaultBtn.innerText.replace(/➔|→/g, '').trim() : 'My Vault';
+            const vaultCountMatch = vaultLabel.match(/\((\d+)\)/);
+            const vaultCountStr = (vaultCountMatch ? vaultCountMatch[1] : '0') + ' Vaults';
+
+            const parentText = (card.parentElement ? card.parentElement.innerText : '') || '';
+            const spentMatch = parentText.match(/TOTAL\s+SPENT[\s\n]*([$Rp\d.,]+\s*(?:USDT|IDR)?)/i);
+            const totalSpentStr = spentMatch && spentMatch[1] ? spentMatch[1].trim() : '$0.00';
+
+            const perkEl = card.querySelector('.xb-prf-perk-tag');
+            const cashbackStr = (perkEl && perkEl.innerText.trim()) ? perkEl.innerText.trim() : getDefaultCashbackByTier(tierKey);
+
+            saveCachedVipGridMeta({ tierKey, rank: cleanRank, emblem, cashback: cashbackStr, ringCls });
+
+            // Preserve original DOM inside hidden bridge (keeps file input & click handlers alive)
+            const origBridge = document.createElement('div');
+            origBridge.className = 'xb-orig-bridge';
+            origBridge.style.display = 'none';
+            while (card.firstChild) origBridge.appendChild(card.firstChild);
+
+            const origFileInp = origBridge.querySelector('input[type="file"]');
+
+            card.classList.add('xb-vgrid-card', 'is-profile-grid', 'tier-' + tierKey);
+            card.dataset.xbVgrid = 'profile';
+
+            const wrap = document.createElement('div');
+            wrap.innerHTML = `
+                <div class="xb-vg-top">
+                    <button type="button" class="xb-vg-corner-btn" data-act="photo">📷 Photo</button>
+                    <div class="xb-vg-tier-pill">${emblem} ${cleanRank}</div>
+                    <span class="xb-vg-corner-btn" style="cursor:default;color:#34d399;border-color:rgba(52,211,153,0.45);">● Verified</span>
+                </div>
+
+                <div class="xb-vg-center">
+                    <div class="xb-vg-prf-av ${ringCls}" data-act="photo" title="Tap to change photo">
+                        <div class="xb-vg-prf-av-inner">${avatarHtml}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:5px;">
+                        <span class="xb-vg-handle" style="font-size:0.86rem;">@${rawUser}</span>
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="#38bdf8"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                    </div>
+                    <button type="button" class="xb-vg-corner-btn" data-act="uid" style="height:22px;font-family:'JetBrains Mono',monospace;font-size:0.55rem;">
+                        UID: ${uidStr} 📋
+                    </button>
+                </div>
+
+                <div class="xb-vg-divider"></div>
+
+                <div class="xb-vg-stats-3">
+                    <div class="xb-vg-stat-box">
+                        <div class="xb-vg-stat-k">TOTAL SPENT</div>
+                        <div class="xb-vg-stat-v in">${totalSpentStr}</div>
+                    </div>
+                    <div class="xb-vg-stat-box">
+                        <div class="xb-vg-stat-k">VAULT ASSETS</div>
+                        <div class="xb-vg-stat-v tx">${vaultCountStr}</div>
+                    </div>
+                    <div class="xb-vg-stat-box">
+                        <div class="xb-vg-stat-k">VIP REWARD</div>
+                        <div class="xb-vg-stat-v gold">${cashbackStr}</div>
+                    </div>
+                </div>
+
+                <div class="xb-vg-actions">
+                    <button type="button" class="xb-vg-btn outline" data-act="vip">👑 VIP Cashback Hub</button>
+                    <button type="button" class="xb-vg-btn solid" data-act="vault">🔐 ${vaultLabel}</button>
+                </div>
+            `;
+
+            card.appendChild(origBridge);
+            card.appendChild(wrap);
+
+            wrap.querySelectorAll('[data-act="photo"]').forEach(el => {
+                el.onclick = () => { if (origFileInp) origFileInp.click(); };
+            });
+            wrap.querySelector('[data-act="uid"]').onclick = () => {
+                if (navigator.clipboard) navigator.clipboard.writeText(uidStr);
+                if (typeof showToast === 'function') showToast('UID ' + uidStr + ' copied!');
+            };
+            wrap.querySelector('[data-act="vip"]').onclick = () => {
+                if (origVipBtn) origVipBtn.click();
+            };
+            wrap.querySelector('[data-act="vault"]').onclick = () => {
+                if (origVaultBtn) origVaultBtn.click();
+            };
+        }
+
+        function scanAndUpgradeVipGridCards() {
+            // 1. Upgrade Profile Hero Card
+            const prfCrown = document.querySelector('.xb-prf-vip-crown');
+            if (prfCrown) {
+                const prfCard = prfCrown.closest('.xb-wal-card');
+                if (prfCard && !prfCard.dataset.xbVgrid) {
+                    upgradeProfileHeroToMemberGrid(prfCard);
+                }
+            }
+
+            // 2. Upgrade Wallet Hero Card
+            const cards = Array.from(document.querySelectorAll('.xb-wal-card'));
+            for (const c of cards) {
+                if (c.dataset.xbVgrid || c.closest('#paymentGatewayModal')) continue;
+                if (c.querySelector('.xb-prf-vip-crown, .xb-prf-avatar-wrap')) continue;
+                const txt = (c.innerText || '');
+                if (/available\s+balance|total\s+balance|wallet\s+balance|send\s+balance|receive\s+balance/i.test(txt)
+                    || (/USDT/i.test(txt) && /deposit|top\s*up|send|receive|withdraw/i.test(txt))) {
+                    upgradeWalletHeroToClassicGrid(c);
+                    break;
+                }
+            }
+        }
+
+        let _vgObsTimer = null;
+        if (typeof MutationObserver !== 'undefined') {
+            const _vgObserver = new MutationObserver(() => {
+                if (_vgObsTimer) return;
+                _vgObsTimer = setTimeout(() => {
+                    _vgObsTimer = null;
+                    scanAndUpgradeVipGridCards();
+                }, 30);
+            });
+            if (document.body) _vgObserver.observe(document.body, { childList: true, subtree: true });
+        }
+        setTimeout(scanAndUpgradeVipGridCards, 500);
 
         function openProfileSlide(slideKey) {
             if (slideKey === 'helpdesk' && typeof openLiveHelpdeskModal === 'function') {
