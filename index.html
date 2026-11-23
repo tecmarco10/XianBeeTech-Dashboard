@@ -2086,10 +2086,10 @@
         /* ASSET EXCHANGE OVERHAUL: CHAT FAB, VIP HALL OF FAME, CART & NOTIFICATION CENTER */
         .xb-chat-fab {
             position: fixed;
-            right: 14px;
-            width: 46px;
-            height: 46px;
-            border-radius: 14px;
+            right: 12px;
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
             background: linear-gradient(145deg, #0d1a3d 0%, #1d4ed8 55%, #7c3aed 100%);
             border: 1px solid rgba(255,255,255,0.34);
             color: #ffffff;
@@ -2098,8 +2098,38 @@
             justify-content: center;
             cursor: pointer;
             z-index: 95;
-            box-shadow: 0 8px 22px rgba(79,70,229,0.48), inset 0 1px 0 rgba(255,255,255,0.35);
+            box-shadow: 0 6px 18px rgba(79,70,229,0.45), inset 0 1px 0 rgba(255,255,255,0.35);
             transition: bottom 0.22s ease, transform 0.16s ease;
+        }
+        .xb-brand-companion-bar {
+            position: fixed;
+            left: 12px;
+            right: 62px;
+            height: 42px;
+            border-radius: 13px;
+            background: var(--ex-card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-top: 1.5px solid rgba(56, 189, 248, 0.5);
+            border-bottom: 1.5px solid rgba(168, 85, 247, 0.5);
+            border-left: 1px solid var(--ex-hairline);
+            border-right: 1px solid var(--ex-hairline);
+            padding: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            z-index: 94;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+            transition: bottom 0.22s ease, border-color 0.16s ease;
+        }
+        .xb-brand-companion-bar:active { transform: scale(0.99); }
+        [data-theme="platinum"] .xb-brand-companion-bar {
+            border-top-color: rgba(37, 99, 235, 0.45);
+            border-bottom-color: rgba(124, 58, 237, 0.45);
+            box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08), inset 0 1px 0 #ffffff;
         }
         .xb-chat-fab:active { transform: scale(0.94); }
         .xb-chat-fab-dot { position: absolute; top: -2px; right: -2px; width: 11px; height: 11px; border-radius: 50%; background: #34d399; border: 2px solid var(--bg-base); box-shadow: 0 0 8px #34d399; }
@@ -2282,7 +2312,16 @@
             border: 1px solid var(--ex-hairline);
             border-bottom-left-radius: 4px;
         }
-        .xb-msg-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; color: var(--text-muted); padding: 0 3px; }
+        .xb-msg-bub { cursor: pointer; }
+        .xb-msg-meta {
+            display: none;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            color: var(--text-muted);
+            padding: 2px 3px 0 3px;
+            animation: fadeIn 0.15s ease;
+        }
+        .xb-msg-row.show-time .xb-msg-meta { display: block; }
 
         .xb-rail-quick {
             display: flex;
@@ -18509,23 +18548,19 @@ let _ghAgeCheckerResults = [];
                 guard.style.height = (cartVisible ? (dockH + cartH + 10) : dockH) + 'px';
             }
 
-            // 4. Safe Bottom Padding So Last Row (+Cart & View) Is Never Cut Off
-            const safePad = cartVisible ? (dockH + cartH + 34) : (dockH + 26);
+            // 4. Safe Bottom Padding So Last Card Clears Both Dock & Floating Chat FAB
+            const safePad = cartVisible ? (dockH + cartH + 58) : (dockH + 56);
             document.documentElement.style.setProperty('--xb-safe-pad-bottom', safePad + 'px');
 
-            // 5. Reposition Floating Chat FAB Above Cart Bar
-            const fabCands = document.querySelectorAll('button, a, div');
-            for (let j = 0; j < fabCands.length; j++) {
-                const fb = fabCands[j];
-                if (fb === dockEl || fb === cartEl || fb.id === 'xbBottomOpaqueGuard') continue;
-                if ((dockEl && dockEl.contains(fb)) || (cartEl && cartEl.contains(fb))) continue;
-                const fst = getComputedStyle(fb);
-                if (fst.position !== 'fixed') continue;
-                const frc = fb.getBoundingClientRect();
-                if (frc.width >= 38 && frc.width <= 64 && frc.height >= 38 && frc.height <= 64 && frc.right > window.innerWidth - 36 && frc.bottom > window.innerHeight - 260) {
-                    fb.style.setProperty('bottom', (cartVisible ? (dockH + cartH + 16) : (dockH + 12)) + 'px', 'important');
-                    break;
-                }
+            // 5. Reposition Floating Chat FAB & Companion Brand Bar Tightly Above Dock / Cart Bar
+            const fabBottomPx = (cartVisible ? (dockH + cartH + 10) : (dockH + 6)) + 'px';
+            const fabEl = document.getElementById('liveHelpdeskFab');
+            if (fabEl) {
+                fabEl.style.setProperty('bottom', fabBottomPx, 'important');
+            }
+            const brandBarEl = document.getElementById('xbBrandCompanionBar');
+            if (brandBarEl) {
+                brandBarEl.style.setProperty('bottom', fabBottomPx, 'important');
             }
         }
 
@@ -19220,6 +19255,22 @@ let _ghAgeCheckerResults = [];
         chatFab.onclick = openLiveHelpdeskModal;
         document.body.appendChild(chatFab);
 
+        const brandCompBar = document.createElement('div');
+        brandCompBar.id = 'xbBrandCompanionBar';
+        brandCompBar.className = 'xb-brand-companion-bar';
+        brandCompBar.title = 'Back to Top';
+        brandCompBar.style.bottom = (cart.length > 0 ? '144px' : '78px');
+        brandCompBar.innerHTML = `
+            <div style="display:flex;align-items:center;gap:5px;min-width:0;flex-shrink:0;">
+                <span style="width:6px;height:6px;border-radius:50%;background:#38bdf8;box-shadow:0 0 6px #38bdf8;flex-shrink:0;"></span>
+                <span class="xb-brand-grad" style="font-weight:800;font-size:0.71rem;letter-spacing:-0.2px;white-space:nowrap;">XianBee-Tech</span>
+            </div>
+            <span style="color:var(--text-muted);font-size:0.62rem;flex-shrink:0;">•</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.35px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">POWERED BY ABIE HARYATMO</span>
+        `;
+        brandCompBar.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+        document.body.appendChild(brandCompBar);
+
         window._railChatState = window._railChatState || {
             threads: JSON.parse(localStorage.getItem('xb_rail_chat_cache_v1') || '[]'),
             activeKey: '',
@@ -19509,10 +19560,10 @@ let _ghAgeCheckerResults = [];
             } else {
                 hdrEl.innerHTML = `
                     <div style="display:flex;align-items:center;gap:7px;min-width:0;">
-                        <span style="width:9px;height:9px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;flex-shrink:0;"></span>
+                        <span style="width:8px;height:8px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;flex-shrink:0;"></span>
                         <div style="min-width:0;">
-                            <div style="font-size:0.75rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">XianBee Priority Desk</div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#34d399;font-weight:700;">● ONLINE • ENCRYPTED CLOUD HISTORY</div>
+                            <div style="font-size:0.75rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">XianBee-Tech Support Team</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#34d399;font-weight:700;">● ONLINE • AVG. REPLY &lt; 5 MIN</div>
                         </div>
                     </div>
                     <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
@@ -19522,20 +19573,23 @@ let _ghAgeCheckerResults = [];
                 `;
             }
 
-            // 3. RENDER MESSAGES STREAM (PRESERVE SCROLL POSITION UNLESS NEAR BOTTOM OR FORCED)
+            // 3. RENDER MESSAGES STREAM (TAP BUBBLE TO SHOW/HIDE TIMESTAMP)
+            window._railChatRevealedIds = window._railChatRevealedIds || new Set();
             const wasNearBottom = (msgEl.scrollHeight - msgEl.scrollTop - msgEl.clientHeight) < 80;
             const msgs = (activeTh && Array.isArray(activeTh.messages)) ? activeTh.messages : [];
 
             if (!activeTh) {
-                msgEl.innerHTML = `<div style="margin:auto;text-align:center;color:var(--text-muted);font-size:0.68rem;padding:18px;line-height:1.5;">Tap <b>+</b> on the left rail to start a conversation, or wait for incoming buyer messages.</div>`;
+                msgEl.innerHTML = `<div style="margin:auto;text-align:center;color:var(--text-muted);font-size:0.68rem;padding:18px;line-height:1.5;">Tap <b>+</b> on the left rail to start a conversation, or wait for incoming client messages.</div>`;
             } else if (msgs.length === 0) {
-                msgEl.innerHTML = `<div style="margin:auto;text-align:center;color:var(--text-muted);font-size:0.68rem;padding:18px;line-height:1.5;">👋 Welcome to <b style="color:var(--text-primary);">XianBee-Tech Executive Support</b>.<br>Your conversation is saved permanently unless deleted.</div>`;
+                msgEl.innerHTML = `<div style="margin:auto;text-align:center;color:var(--text-muted);font-size:0.68rem;padding:18px;line-height:1.5;">👋 Welcome to <b style="color:var(--text-primary);">XianBee-Tech Live Support</b>.<br>Ask us anything about GitHub Vault, Boost Services, or payments.</div>`;
             } else {
-                msgEl.innerHTML = msgs.map(m => {
+                msgEl.innerHTML = msgs.map((m, idx) => {
                     const isMe = isAdm ? (m.sender === 'admin') : (m.sender === 'buyer');
-                    const whoLbl = m.sender === 'admin' ? 'XianBee Support ✓' : `@${xbEscChatHtml(activeTh.username)}`;
+                    const whoLbl = m.sender === 'admin' ? 'XianBee-Tech Support ✓' : `@${xbEscChatHtml(activeTh.username)}`;
+                    const mKey = String(m.msg_id || (activeTh.thread_key + '_' + idx));
+                    const isShown = window._railChatRevealedIds.has(mKey);
                     return `
-                        <div class="xb-msg-row ${isMe ? 'me' : 'them'}">
+                        <div class="xb-msg-row ${isMe ? 'me' : 'them'} ${isShown ? 'show-time' : ''}" onclick="toggleRailMsgTime('${xbEscChatHtml(mKey)}', this)">
                             <div class="xb-msg-bub">${xbEscChatHtml(m.message)}</div>
                             <div class="xb-msg-meta">${whoLbl} • ${xbEscChatHtml(m.time_wib || '')}</div>
                         </div>
@@ -19626,6 +19680,17 @@ let _ghAgeCheckerResults = [];
             }
         }
 
+        function toggleRailMsgTime(msgKey, rowEl) {
+            window._railChatRevealedIds = window._railChatRevealedIds || new Set();
+            if (window._railChatRevealedIds.has(msgKey)) {
+                window._railChatRevealedIds.delete(msgKey);
+                if (rowEl) rowEl.classList.remove('show-time');
+            } else {
+                window._railChatRevealedIds.add(msgKey);
+                if (rowEl) rowEl.classList.add('show-time');
+            }
+        }
+
         function openLiveHelpdeskModal() {
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
@@ -19647,8 +19712,8 @@ let _ghAgeCheckerResults = [];
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
                             </span>
                             <div style="min-width:0;">
-                                <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">${isAdm ? 'Executive Support Rail Dock' : 'XianBee Live Support'}</h3>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:#34d399;">${isAdm ? '👑 ADMIN 2-WAY MESSENGER • PERMANENT CLOUD' : '● ONLINE • PERMANENT 2-WAY CHAT'}</div>
+                                <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">${isAdm ? 'XianBee-Tech Support' : 'XianBee-Tech Live Support'}</h3>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:#34d399;">${isAdm ? '👑 OFFICIAL SUPPORT CONSOLE • LIVE' : '● OFFICIAL CONCIERGE • PRIORITY DESK'}</div>
                             </div>
                         </div>
                         <button type="button" class="xb-ex-mclose" onclick="closeLiveSupportMessenger()">✕</button>
