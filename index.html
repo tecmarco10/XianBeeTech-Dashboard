@@ -2135,6 +2135,200 @@
         .xb-ntf-kv { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 9px; padding: 7px 9px; display: flex; flex-direction: column; gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; }
         .xb-ntf-stock-acc { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 10px; padding: 8px 9px; display: flex; flex-direction: column; gap: 6px; }
 
+        /* =========================================================
+           💬 RAIL DOCK MESSENGER & PROFILE AVATAR UPLOAD
+           ========================================================= */
+        .xb-chat-fab-badge {
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            min-width: 19px;
+            height: 19px;
+            padding: 0 5px;
+            border-radius: 99px;
+            background: #ef4444;
+            border: 2px solid var(--bg-base);
+            color: #ffffff;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            font-weight: 800;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 3px 8px rgba(239,68,68,0.55);
+        }
+
+        .xb-rail-shell {
+            display: flex;
+            flex: 1;
+            min-height: 0;
+            border: 1px solid var(--ex-hairline);
+            border-radius: 14px;
+            overflow: hidden;
+            background: var(--bg-input);
+        }
+        .xb-rail-bar {
+            width: 60px;
+            flex-shrink: 0;
+            background: var(--bg-surface);
+            border-right: 1px solid var(--ex-hairline);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 4px;
+            overflow-y: auto;
+        }
+        .xb-rail-item {
+            position: relative;
+            width: 44px;
+            height: 44px;
+            border-radius: 13px;
+            border: 1.5px solid var(--ex-hairline);
+            background: var(--ex-card-bg);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            padding: 0;
+            transition: 0.16s ease;
+        }
+        .xb-rail-item img { width: 100%; height: 100%; object-fit: cover; border-radius: 11px; display: block; }
+        .xb-rail-item.active {
+            border-color: #38bdf8;
+            box-shadow: 0 0 0 2px rgba(56,189,248,0.28), 0 4px 12px rgba(56,189,248,0.35);
+            transform: scale(1.04);
+        }
+        .xb-rail-item.active::before {
+            content: '';
+            position: absolute;
+            left: -8px;
+            top: 9px;
+            bottom: 9px;
+            width: 3.5px;
+            border-radius: 0 4px 4px 0;
+            background: linear-gradient(180deg, #38bdf8, #a855f7);
+        }
+        .xb-rail-unread {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            min-width: 17px;
+            height: 17px;
+            padding: 0 4px;
+            border-radius: 99px;
+            background: #ef4444;
+            border: 1.5px solid var(--bg-surface);
+            color: #ffffff;
+            font-size: 0.52rem;
+            font-weight: 800;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .xb-rail-main {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-input);
+        }
+        .xb-rail-hdr {
+            padding: 8px 10px;
+            background: var(--ex-card-bg);
+            border-bottom: 1px solid var(--ex-hairline);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+        .xb-rail-msgs {
+            flex: 1;
+            min-height: 0;
+            overflow-y: auto;
+            padding: 10px 9px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .xb-msg-row { display: flex; flex-direction: column; max-width: 85%; gap: 2px; }
+        .xb-msg-row.me { align-self: flex-end; align-items: flex-end; }
+        .xb-msg-row.them { align-self: flex-start; align-items: flex-start; }
+        .xb-msg-bub {
+            padding: 8px 10px;
+            border-radius: 12px;
+            font-size: 0.72rem;
+            line-height: 1.42;
+            word-break: break-word;
+            white-space: pre-wrap;
+        }
+        .xb-msg-row.me .xb-msg-bub {
+            background: linear-gradient(135deg, #1d4ed8 0%, #6d28d9 100%);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.22);
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 12px rgba(79,70,229,0.28);
+        }
+        .xb-msg-row.them .xb-msg-bub {
+            background: var(--ex-card-bg);
+            color: var(--text-primary);
+            border: 1px solid var(--ex-hairline);
+            border-bottom-left-radius: 4px;
+        }
+        .xb-msg-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.5rem; color: var(--text-muted); padding: 0 3px; }
+
+        .xb-rail-quick {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            padding: 5px 8px 0 8px;
+            flex-shrink: 0;
+            background: var(--bg-surface);
+            border-top: 1px solid var(--ex-hairline);
+        }
+        .xb-rail-composer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 8px;
+            background: var(--bg-surface);
+            flex-shrink: 0;
+        }
+
+        /* PROFILE UPLOADABLE AVATAR */
+        .xb-prf-avatar-wrap {
+            position: relative;
+            width: 50px;
+            height: 50px;
+            flex-shrink: 0;
+            cursor: pointer;
+        }
+        .xb-prf-avatar { width: 50px !important; height: 50px !important; overflow: hidden; }
+        .xb-prf-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .xb-prf-cam-dot {
+            position: absolute;
+            right: -3px;
+            bottom: -3px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #0284c7, #7c3aed);
+            border: 2px solid var(--bg-surface);
+            color: #ffffff;
+            font-size: 0.56rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+        }
+
         /* SECTION DIVIDER & 2-LINE SPECIAL TIERS HEADER */
         .xb-ex-divider { display: flex; align-items: center; gap: 8px; margin: 14px 0 10px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--accent-cyan); text-transform: uppercase; }
         .xb-ex-divider::before, .xb-ex-divider::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--ex-hairline), transparent); }
@@ -8748,7 +8942,156 @@ function copyActiveWalletReceipt() {
             range: 'ALL'   // '7D' | '30D' | 'ALL'
         };
 
+        // =========================================================
+        // 🖼️ PERMANENT USER PROFILE AVATAR ENGINE (160x160 AUTO-CROP)
+        // =========================================================
+        function getOwnAvatarKey() {
+            if (typeof getOwnSupportThreadKey === 'function') return getOwnSupportThreadKey();
+            const cleanU = String(currentUsername || '').trim().replace(/^@/, '').toLowerCase();
+            return cleanU ? ('user_' + cleanU) : ('uid_' + String(currentUserId || 'client').toLowerCase());
+        }
+
+        function getOwnSavedAvatarData() {
+            try {
+                return localStorage.getItem('xb_user_avatar_' + getOwnAvatarKey()) || '';
+            } catch (e) {
+                return '';
+            }
+        }
+
+        function compressAvatarImageFile(file, targetSize = 160) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('Failed to read image'));
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error('Invalid image file'));
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = targetSize;
+                        canvas.height = targetSize;
+                        const ctx = canvas.getContext('2d');
+                        const side = Math.min(img.width, img.height);
+                        const sx = Math.floor((img.width - side) / 2);
+                        const sy = Math.floor((img.height - side) / 2);
+                        ctx.drawImage(img, sx, sy, side, side, 0, 0, targetSize, targetSize);
+
+                        let out = canvas.toDataURL('image/jpeg', 0.78);
+                        if (out.length > 44000) out = canvas.toDataURL('image/jpeg', 0.55);
+                        if (out.length > 44000) out = canvas.toDataURL('image/jpeg', 0.40);
+                        resolve(out);
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function handleProfileAvatarFileChange(inputEl) {
+            const file = inputEl && inputEl.files && inputEl.files[0];
+            if (!file) return;
+            if (!file.type || !file.type.startsWith('image/')) {
+                return showToast('⚠️ Please select a valid JPG / PNG / WebP image!');
+            }
+            try {
+                showToast('⏳ Optimizing profile photo...');
+                const b64 = await compressAvatarImageFile(file, 160);
+                const aKey = getOwnAvatarKey();
+                localStorage.setItem('xb_user_avatar_' + aKey, b64);
+
+                // Immediately reflect new avatar in own Rail Dock thread cache
+                if (window._railChatState && Array.isArray(window._railChatState.threads)) {
+                    const ownTh = window._railChatState.threads.find(t => t.thread_key === aKey);
+                    if (ownTh) {
+                        ownTh.avatar = b64;
+                        localStorage.setItem('xb_rail_chat_cache_v1', JSON.stringify(window._railChatState.threads));
+                    }
+                }
+
+                renderViewport();
+
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_user_avatar',
+                        mode: 'save',
+                        avatar_key: aKey,
+                        username: String(currentUsername || 'Client').replace(/^@/, ''),
+                        avatar_data: b64
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    showToast('✅ Profile photo updated & synced to Cloud!');
+                } else {
+                    showToast('✅ Profile photo saved locally!');
+                }
+            } catch (e) {
+                showToast('⚠️ Failed to process image. Try another photo.');
+            } finally {
+                if (inputEl) inputEl.value = '';
+            }
+        }
+
+        async function removeProfileAvatar() {
+            const aKey = getOwnAvatarKey();
+            localStorage.removeItem('xb_user_avatar_' + aKey);
+            if (window._railChatState && Array.isArray(window._railChatState.threads)) {
+                const ownTh = window._railChatState.threads.find(t => t.thread_key === aKey);
+                if (ownTh) {
+                    ownTh.avatar = '';
+                    localStorage.setItem('xb_rail_chat_cache_v1', JSON.stringify(window._railChatState.threads));
+                }
+            }
+            renderViewport();
+            try {
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_user_avatar',
+                        mode: 'save',
+                        avatar_key: aKey,
+                        username: String(currentUsername || 'Client').replace(/^@/, ''),
+                        avatar_data: ''
+                    })
+                });
+            } catch (e) {}
+            showToast('🗑️ Profile photo removed.');
+        }
+
+        async function pullUserAvatarFromCloud(silent = true) {
+            try {
+                const aKey = getOwnAvatarKey();
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_user_avatar',
+                        mode: 'pull',
+                        avatar_key: aKey
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result && typeof json.avatar_data === 'string') {
+                    if (json.avatar_data) {
+                        localStorage.setItem('xb_user_avatar_' + aKey, json.avatar_data);
+                    } else {
+                        localStorage.removeItem('xb_user_avatar_' + aKey);
+                    }
+                    if (activeTab === 'profile') renderViewport();
+                    if (!silent) showToast('🖼️ Profile photo synced!');
+                }
+            } catch (e) {}
+        }
+        setTimeout(() => pullUserAvatarFromCloud(true), 2200);
+
         function openProfileSlide(slideKey) {
+            if (slideKey === 'helpdesk' && typeof openLiveHelpdeskModal === 'function') {
+                openLiveHelpdeskModal();
+                return;
+            }
             window._prfState.slide = slideKey || 'main';
             renderViewport();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -8836,9 +9179,10 @@ function copyActiveWalletReceipt() {
             try {
                 await fetchRealTimeUsdtIdrRate();
                 await syncCloudStateWithGSheet('pull', { force_sync: true });
+                await pullUserAvatarFromCloud(true);
                 await syncGoogleSheetInventory(false);
                 updateTopBalance();
-                showToast('☁️ Cloud Profile, Balance & Vault synced!');
+                showToast('☁️ Cloud Profile, Avatar & Vault synced!');
             } catch (e) {
                 showToast('⚠️ Cloud sync completed with local fallback.');
             } finally {
@@ -8885,15 +9229,37 @@ function copyActiveWalletReceipt() {
             const isAdmin = ADMIN_IDS.includes(String(currentUserId));
             const vaultCount = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]').length;
 
-            // SLIDE 1: EDIT USERNAME
+            const savedAvatar = getOwnSavedAvatarData();
+            const avatarInnerHtml = savedAvatar
+                ? `<img src="${savedAvatar}" alt="${cleanU}">`
+                : `<span>${initials}</span>`;
+
+            // SLIDE 1: EDIT IDENTITY & PROFILE PHOTO
             if (slide === 'username') {
                 container.innerHTML = `
                     <div class="xb-vp-wrap">
-                        ${buildProfileSubHeaderHtml('Edit Identity', `<span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.5);">PROFILE</span>`)}
-                        <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:10px;">
-                            <div style="font-size:0.66rem;color:var(--text-secondary);line-height:1.45;">
-                                Update your display username used across Web Store orders, P2P receipts, and Telegram notifications.
+                        ${buildProfileSubHeaderHtml('Edit Identity & Photo', `<span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.5);">PROFILE</span>`)}
+
+                        <div class="xb-wal-card" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;">
+                            <label class="xb-prf-avatar-wrap" style="width:76px;height:76px;" title="Tap to upload photo">
+                                <div class="xb-prf-avatar" style="width:76px !important;height:76px !important;border-radius:20px;font-size:1.5rem;">${avatarInnerHtml}</div>
+                                <span class="xb-prf-cam-dot" style="width:24px;height:24px;font-size:0.68rem;">📷</span>
+                                <input type="file" accept="image/*" style="display:none;" onchange="handleProfileAvatarFileChange(this)">
+                            </label>
+                            <div>
+                                <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">Profile Avatar</div>
+                                <div style="font-size:0.58rem;color:var(--text-secondary);margin-top:2px;">Auto-cropped 160×160px • Shown in Profile &amp; Live Support</div>
                             </div>
+                            <div style="display:grid;grid-template-columns:${savedAvatar ? '1.3fr 1fr' : '1fr'};gap:7px;width:100%;">
+                                <label class="btn-ui primary" style="padding:9px 8px;font-size:0.7rem;border-radius:9px;cursor:pointer;margin:0;">
+                                    📷 ${savedAvatar ? 'Change Photo' : 'Upload Photo'}
+                                    <input type="file" accept="image/*" style="display:none;" onchange="handleProfileAvatarFileChange(this)">
+                                </label>
+                                ${savedAvatar ? `<button type="button" class="btn-ui secondary" style="padding:9px 8px;font-size:0.7rem;border-radius:9px;color:#f87171;border-color:rgba(248,113,113,0.45);" onclick="removeProfileAvatar()">🗑️ Remove</button>` : ''}
+                            </div>
+                        </div>
+
+                        <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:10px;">
                             <div>
                                 <div class="xb-bst-lbl"><span>DISPLAY USERNAME (WITHOUT @)</span><span style="color:#34d399;">CLOUD SYNCED</span></div>
                                 <input type="text" id="prfEditUnameInp" class="xb-bst-target-inp" style="width:100%;height:40px;font-size:0.82rem;" value="${cleanU.replace(/"/g, '&quot;')}" placeholder="Enter username..." onkeydown="if(event.key==='Enter') saveProfileUsernameV2();">
@@ -9051,19 +9417,23 @@ function copyActiveWalletReceipt() {
             const othShare = an.totalSpend > 0 ? Math.max(0, 100 - accShare - bstShare) : 0;
 
             const menuItems = [
-                { key: 'username', ico: '✏️', title: 'Edit Display Username', sub: `Current identity: @${cleanU}`, right: 'Edit' },
+                { key: 'username', ico: '✏️', title: 'Edit Identity & Photo', sub: `@${cleanU} • ${savedAvatar ? 'Custom Avatar Active' : 'Tap to upload photo'}`, right: 'Edit' },
                 { key: 'prefs',    ico: '⚙️', title: 'App Preferences',       sub: `${currentTheme === 'obsidian' ? 'Obsidian Dark' : 'Platinum Light'} • ${currentCurrency}`, right: 'Setup' },
                 { key: 'sync',     ico: '☁️', title: 'Cloud Sync & Session',  sub: `UID ${currentUserId} • Auto-Synced`, right: 'Sync' },
                 { key: 'policy',   ico: '🛡️', title: 'Warranty & 24h Policy', sub: 'First-login guarantee & anti-flag guide', right: 'Read' },
-                { key: 'helpdesk', ico: '💬', title: 'Executive Helpdesk',    sub: 'Direct message to Admin Bot & Telegram', right: 'Chat' }
+                { key: 'helpdesk', ico: '💬', title: 'Live Support Messenger', sub: 'Permanent 2-way encrypted support desk', right: 'Open' }
             ];
 
             container.innerHTML = `
                 <div class="xb-vp-wrap">
-                    <!-- 1. CLEAN IDENTITY HERO CARD (NO DUPLICATE BALANCE / PIN / VAULT CREDS) -->
+                    <!-- 1. CLEAN IDENTITY HERO CARD (1-TAP UPLOAD AVATAR + ZERO DUPLICATION) -->
                     <div class="xb-wal-card">
                         <div style="display:flex;align-items:center;gap:10px;">
-                            <div class="xb-prf-avatar">${initials}</div>
+                            <label class="xb-prf-avatar-wrap" title="Tap to change profile photo">
+                                <div class="xb-prf-avatar">${avatarInnerHtml}</div>
+                                <span class="xb-prf-cam-dot">📷</span>
+                                <input type="file" accept="image/*" style="display:none;" onchange="handleProfileAvatarFileChange(this)">
+                            </label>
                             <div style="min-width:0;flex:1;">
                                 <div style="display:flex;align-items:center;gap:5px;">
                                     <span style="font-size:0.92rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${cleanU}</span>
@@ -18782,105 +19152,493 @@ let _ghAgeCheckerResults = [];
         }, 1000);
 
         // =========================================================
-        // 💬 FEATURE 6: FLOATING EXECUTIVE HELPDESK FAB & MODAL (ASSET EXCHANGE EDITION)
+        // 💬 FEATURE 6: RAIL DOCK PERMANENT LIVE SUPPORT MESSENGER
         // =========================================================
         const chatFab = document.createElement('button');
         chatFab.id = 'liveHelpdeskFab';
         chatFab.type = 'button';
         chatFab.className = 'xb-chat-fab';
-        chatFab.title = 'Live Executive Support';
+        chatFab.title = 'Live Support Messenger';
         chatFab.style.bottom = (cart.length > 0 ? '144px' : '78px');
         chatFab.innerHTML = `
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
             <span class="xb-chat-fab-dot"></span>
+            <span class="xb-chat-fab-badge" id="liveHelpdeskFabBadge">0</span>
         `;
         chatFab.onclick = openLiveHelpdeskModal;
         document.body.appendChild(chatFab);
 
+        window._railChatState = window._railChatState || {
+            threads: JSON.parse(localStorage.getItem('xb_rail_chat_cache_v1') || '[]'),
+            activeKey: '',
+            isOpen: false,
+            sending: false,
+            pollTimer: null
+        };
+
+        function xbEscChatHtml(str) {
+            return String(str || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        }
+
+        function isCurrentUserSupportAdmin() {
+            return ADMIN_IDS.includes(String(currentUserId));
+        }
+
+        function getOwnSupportThreadKey() {
+            const cleanU = String(currentUsername || '').trim().replace(/^@/, '').toLowerCase();
+            if (cleanU && cleanU !== 'xianbeeclient' && cleanU !== 'guestpreview' && cleanU !== 'guestclient') {
+                return 'user_' + cleanU;
+            }
+            return 'uid_' + String(currentUserId || 'client').trim().toLowerCase();
+        }
+
+        function getRailVipRingColor(rankStr) {
+            const r = String(rankStr || '').toUpperCase();
+            if (r.includes('FOUNDER')) return '#f87171';
+            if (r.includes('DIAMOND')) return '#38bdf8';
+            if (r.includes('GOLD')) return '#facc15';
+            if (r.includes('SILVER')) return '#cbd5e1';
+            return '#fb923c';
+        }
+
+        function updateChatFabUnreadBadge() {
+            const badge = document.getElementById('liveHelpdeskFabBadge');
+            if (!badge) return;
+            const isAdm = isCurrentUserSupportAdmin();
+            const list = Array.isArray(window._railChatState.threads) ? window._railChatState.threads : [];
+            const totalUnread = list.reduce((sum, th) => sum + (isAdm ? Number(th.unread_admin || 0) : Number(th.unread_buyer || 0)), 0);
+            if (totalUnread > 0) {
+                badge.innerText = totalUnread > 99 ? '99+' : String(totalUnread);
+                badge.style.display = 'inline-flex';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function ensureBuyerSelfThreadExists() {
+            const st = window._railChatState;
+            const ownKey = getOwnSupportThreadKey();
+            let th = st.threads.find(t => t.thread_key === ownKey);
+            if (!th) {
+                const cleanU = String(currentUsername || 'Client').replace(/^@/, '');
+                const vipMeta = (typeof getUserVipRankMeta === 'function') ? getUserVipRankMeta() : { rank: 'BRONZE VIP' };
+                const myAv = (typeof getOwnSavedAvatarData === 'function') ? getOwnSavedAvatarData() : '';
+                th = {
+                    thread_key: ownKey,
+                    user_id: String(currentUserId || ''),
+                    username: cleanU,
+                    vip_rank: vipMeta.rank || 'BRONZE VIP',
+                    avatar: myAv || '',
+                    unread_admin: 0,
+                    unread_buyer: 0,
+                    last_ts: 0,
+                    messages: []
+                };
+                st.threads.unshift(th);
+            }
+            st.activeKey = ownKey;
+            return th;
+        }
+
+        function getActiveRailThread() {
+            const st = window._railChatState;
+            const isAdm = isCurrentUserSupportAdmin();
+            if (!isAdm) return ensureBuyerSelfThreadExists();
+            if (!st.threads.length) return null;
+            let found = st.threads.find(t => t.thread_key === st.activeKey);
+            if (!found) {
+                found = st.threads[0];
+                st.activeKey = found.thread_key;
+            }
+            return found;
+        }
+
+        async function markRailThreadRead(threadKey) {
+            if (!threadKey) return;
+            const isAdm = isCurrentUserSupportAdmin();
+            const th = window._railChatState.threads.find(t => t.thread_key === threadKey);
+            if (th) {
+                if (isAdm) th.unread_admin = 0;
+                else th.unread_buyer = 0;
+                localStorage.setItem('xb_rail_chat_cache_v1', JSON.stringify(window._railChatState.threads));
+                updateChatFabUnreadBadge();
+            }
+            try {
+                fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'live_support_chat',
+                        sub_action: 'mark_read',
+                        thread_key: threadKey,
+                        reader: isAdm ? 'admin' : 'buyer'
+                    })
+                });
+            } catch (e) {}
+        }
+
+        async function pullRailSupportThreads(silent = true) {
+            const isAdm = isCurrentUserSupportAdmin();
+            const ownKey = getOwnSupportThreadKey();
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'live_support_chat',
+                        sub_action: 'pull',
+                        is_admin: isAdm,
+                        thread_key: ownKey
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result && Array.isArray(json.threads)) {
+                    const prevEmptyLocal = window._railChatState.threads.filter(t => t._localNew && (!t.messages || t.messages.length === 0));
+                    const serverKeys = new Set(json.threads.map(t => t.thread_key));
+                    const merged = [...json.threads, ...prevEmptyLocal.filter(t => !serverKeys.has(t.thread_key))];
+
+                    window._railChatState.threads = merged;
+                    localStorage.setItem('xb_rail_chat_cache_v1', JSON.stringify(merged.slice(0, 60)));
+                    updateChatFabUnreadBadge();
+
+                    const modalActive = document.getElementById('paymentGatewayModal')?.classList.contains('active');
+                    if (window._railChatState.isOpen && modalActive) {
+                        const activeTh = getActiveRailThread();
+                        if (activeTh && ((isAdm && activeTh.unread_admin > 0) || (!isAdm && activeTh.unread_buyer > 0))) {
+                            markRailThreadRead(activeTh.thread_key);
+                        }
+                        renderRailMessengerDynamic(false);
+                    }
+                    if (!silent) showToast('↻ Live Support synced!');
+                }
+            } catch (e) {
+                if (!silent) showToast('⚠️ Connection slow — showing cached messages.');
+            }
+        }
+
+        function stopRailMessengerPolling() {
+            window._railChatState.isOpen = false;
+            if (window._railChatState.pollTimer) {
+                clearInterval(window._railChatState.pollTimer);
+                window._railChatState.pollTimer = null;
+            }
+        }
+
+        function closeLiveSupportMessenger() {
+            stopRailMessengerPolling();
+            closeModal('paymentGatewayModal');
+        }
+
+        function selectRailSupportThread(tKey) {
+            window._railChatState.activeKey = tKey;
+            markRailThreadRead(tKey);
+            renderRailMessengerDynamic(true);
+        }
+
+        function adminSpawnNewRailThread() {
+            const raw = prompt('Start new support thread with client @username:', '');
+            if (!raw) return;
+            const cleanU = raw.trim().replace(/^@/, '').replace(/\s+/g, '');
+            if (cleanU.length < 2) return showToast('⚠️ Invalid username!');
+            const tKey = 'user_' + cleanU.toLowerCase();
+            let existing = window._railChatState.threads.find(t => t.thread_key === tKey);
+            if (!existing) {
+                existing = {
+                    thread_key: tKey,
+                    user_id: '',
+                    username: cleanU,
+                    vip_rank: 'CLIENT',
+                    avatar: '',
+                    unread_admin: 0,
+                    unread_buyer: 0,
+                    last_ts: Date.now(),
+                    _localNew: true,
+                    messages: []
+                };
+                window._railChatState.threads.unshift(existing);
+            }
+            window._railChatState.activeKey = tKey;
+            renderRailMessengerDynamic(true);
+            const inp = document.getElementById('railChatInput');
+            if (inp) inp.focus();
+        }
+
+        async function deleteActiveRailThread() {
+            const th = getActiveRailThread();
+            if (!th) return;
+            if (!confirm(`Permanently delete entire chat history with @${th.username}? This cannot be undone.`)) return;
+
+            const delKey = th.thread_key;
+            window._railChatState.threads = window._railChatState.threads.filter(t => t.thread_key !== delKey);
+            window._railChatState.activeKey = window._railChatState.threads[0] ? window._railChatState.threads[0].thread_key : '';
+            localStorage.setItem('xb_rail_chat_cache_v1', JSON.stringify(window._railChatState.threads));
+            updateChatFabUnreadBadge();
+            renderRailMessengerDynamic(true);
+
+            try {
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'live_support_chat',
+                        sub_action: 'delete_thread',
+                        thread_key: delKey
+                    })
+                });
+                showToast(`🗑️ Conversation with @${th.username} permanently deleted.`);
+            } catch (e) {
+                showToast('⚠️ Deleted locally — retry if still visible after sync.');
+            }
+        }
+
+        function renderRailMessengerDynamic(forceScroll = false) {
+            const st = window._railChatState;
+            const isAdm = isCurrentUserSupportAdmin();
+            const railEl = document.getElementById('xbRailSidebar');
+            const hdrEl = document.getElementById('xbRailHeader');
+            const msgEl = document.getElementById('xbRailMessages');
+            if (!hdrEl || !msgEl) return;
+
+            const activeTh = getActiveRailThread();
+
+            // 1. RENDER ADMIN VERTICAL AVATAR RAIL
+            if (isAdm && railEl) {
+                const itemsHtml = st.threads.map(th => {
+                    const isAct = activeTh && th.thread_key === activeTh.thread_key;
+                    const ringCol = getRailVipRingColor(th.vip_rank);
+                    const init = String(th.username || 'CL').replace(/^@/, '').slice(0, 2).toUpperCase();
+                    const unr = Number(th.unread_admin || 0);
+                    return `
+                        <button type="button" class="xb-rail-item ${isAct ? 'active' : ''}" style="border-color:${isAct ? '#38bdf8' : ringCol};" title="@${xbEscChatHtml(th.username)}" onclick="selectRailSupportThread('${th.thread_key}')">
+                            ${th.avatar ? `<img src="${th.avatar}" alt="${xbEscChatHtml(init)}">` : `<span>${xbEscChatHtml(init)}</span>`}
+                            ${unr > 0 ? `<span class="xb-rail-unread">${unr > 9 ? '9+' : unr}</span>` : ''}
+                        </button>
+                    `;
+                }).join('');
+
+                railEl.innerHTML = `
+                    <button type="button" class="xb-rail-item" style="border-style:dashed;border-color:rgba(56,189,248,0.6);color:#38bdf8;font-size:1rem;" title="New Client Chat" onclick="adminSpawnNewRailThread()">+</button>
+                    ${itemsHtml}
+                `;
+            }
+
+            // 2. RENDER ACTIVE THREAD HEADER
+            if (isAdm) {
+                if (!activeTh) {
+                    hdrEl.innerHTML = `
+                        <div style="min-width:0;">
+                            <div style="font-size:0.75rem;font-weight:800;color:var(--text-primary);">Executive Support Inbox</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--text-muted);">No active client threads yet</div>
+                        </div>
+                        <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="pullRailSupportThreads(false)">↻ Sync</button>
+                    `;
+                } else {
+                    const ringCol = getRailVipRingColor(activeTh.vip_rank);
+                    hdrEl.innerHTML = `
+                        <div style="min-width:0;flex:1;">
+                            <div style="display:flex;align-items:center;gap:5px;min-width:0;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${xbEscChatHtml(activeTh.username)}</span>
+                                <span class="xb-ex-chip" style="color:${ringCol};border-color:${ringCol}66;font-size:0.46rem;">${xbEscChatHtml(String(activeTh.vip_rank || 'CLIENT').replace(' VIP', '').replace(' HOLDER', '').replace(' MEMBER', ''))}</span>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                ${activeTh.user_id ? `UID: ${xbEscChatHtml(activeTh.user_id)} • ` : ''}${activeTh.messages.length} saved msg(s)
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" title="Refresh Chat" onclick="pullRailSupportThreads(false)">↻</button>
+                            <button type="button" class="xb-adm-mini-btn" style="color:#f87171;border-color:rgba(248,113,113,0.4);" title="Delete Conversation Permanently" onclick="deleteActiveRailThread()">🗑️</button>
+                        </div>
+                    `;
+                }
+            } else {
+                hdrEl.innerHTML = `
+                    <div style="display:flex;align-items:center;gap:7px;min-width:0;">
+                        <span style="width:9px;height:9px;border-radius:50%;background:#34d399;box-shadow:0 0 8px #34d399;flex-shrink:0;"></span>
+                        <div style="min-width:0;">
+                            <div style="font-size:0.75rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">XianBee Priority Desk</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#34d399;font-weight:700;">● ONLINE • ENCRYPTED CLOUD HISTORY</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
+                        <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="pullRailSupportThreads(false)">↻</button>
+                        <a href="https://t.me/XianBeeTechStore" target="_blank" class="xb-adm-mini-btn" style="color:#38bdf8;text-decoration:none;">✈️ TG</a>
+                    </div>
+                `;
+            }
+
+            // 3. RENDER MESSAGES STREAM (PRESERVE SCROLL POSITION UNLESS NEAR BOTTOM OR FORCED)
+            const wasNearBottom = (msgEl.scrollHeight - msgEl.scrollTop - msgEl.clientHeight) < 80;
+            const msgs = (activeTh && Array.isArray(activeTh.messages)) ? activeTh.messages : [];
+
+            if (!activeTh) {
+                msgEl.innerHTML = `<div style="margin:auto;text-align:center;color:var(--text-muted);font-size:0.68rem;padding:18px;line-height:1.5;">Tap <b>+</b> on the left rail to start a conversation, or wait for incoming buyer messages.</div>`;
+            } else if (msgs.length === 0) {
+                msgEl.innerHTML = `<div style="margin:auto;text-align:center;color:var(--text-muted);font-size:0.68rem;padding:18px;line-height:1.5;">👋 Welcome to <b style="color:var(--text-primary);">XianBee-Tech Executive Support</b>.<br>Your conversation is saved permanently unless deleted.</div>`;
+            } else {
+                msgEl.innerHTML = msgs.map(m => {
+                    const isMe = isAdm ? (m.sender === 'admin') : (m.sender === 'buyer');
+                    const whoLbl = m.sender === 'admin' ? 'XianBee Support ✓' : `@${xbEscChatHtml(activeTh.username)}`;
+                    return `
+                        <div class="xb-msg-row ${isMe ? 'me' : 'them'}">
+                            <div class="xb-msg-bub">${xbEscChatHtml(m.message)}</div>
+                            <div class="xb-msg-meta">${whoLbl} • ${xbEscChatHtml(m.time_wib || '')}</div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (forceScroll || wasNearBottom) {
+                msgEl.scrollTop = msgEl.scrollHeight;
+            }
+        }
+
+        async function sendHelpdeskMessage() {
+            const st = window._railChatState;
+            if (st.sending) return;
+            const inp = document.getElementById('railChatInput');
+            const msgText = String(inp ? inp.value : '').trim();
+            if (!msgText) return showToast('⚠️ Type a message first!');
+
+            const isAdm = isCurrentUserSupportAdmin();
+            const activeTh = getActiveRailThread();
+            if (!activeTh) return showToast('⚠️ Select or create a client thread first!');
+
+            st.sending = true;
+            const nowTs = Date.now();
+            const dObj = new Date(nowTs);
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            const timeWib = `${String(dObj.getDate()).padStart(2, '0')} ${months[dObj.getMonth()]} ${String(dObj.getHours()).padStart(2, '0')}:${String(dObj.getMinutes()).padStart(2, '0')}`;
+            const msgId = `MSG-${nowTs}-${Math.floor(Math.random() * 999)}`;
+            const senderRole = isAdm ? 'admin' : 'buyer';
+
+            // Optimistic UI append
+            activeTh.messages.push({ msg_id: msgId, sender: senderRole, message: msgText, time_wib: timeWib, ts: nowTs });
+            activeTh.last_ts = nowTs;
+            delete activeTh._localNew;
+            st.threads.sort((a, b) => (b.last_ts || 0) - (a.last_ts || 0));
+            localStorage.setItem('xb_rail_chat_cache_v1', JSON.stringify(st.threads.slice(0, 60)));
+
+            if (inp) inp.value = '';
+            renderRailMessengerDynamic(true);
+
+            try {
+                const vipRank = isAdm
+                    ? (activeTh.vip_rank || 'CLIENT')
+                    : ((typeof getUserVipRankMeta === 'function') ? getUserVipRankMeta().rank : 'BRONZE VIP');
+
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'live_support_chat',
+                        sub_action: 'send',
+                        thread_key: activeTh.thread_key,
+                        user_id: isAdm ? String(activeTh.user_id || '') : String(currentUserId || ''),
+                        username: activeTh.username,
+                        msg_id: msgId,
+                        sender: senderRole,
+                        message: msgText,
+                        time_wib: timeWib,
+                        ts: nowTs,
+                        vip_rank: vipRank
+                    })
+                });
+
+                if (!isAdm) {
+                    const dispUser = '@' + String(activeTh.username || currentUsername).replace(/^@/, '');
+                    const admAlert = (
+                        `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                        `   💬 <b>L I V E  S U P P O R T  C H A T</b>\n` +
+                        `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                        `👤 <b>Client:</b> ${dispUser} (<code>${currentUserId}</code>)\n` +
+                        `📝 <b>Message:</b> ${xbEscChatHtml(msgText)}\n` +
+                        `🕒 <b>Time:</b> ${timeWib} WIB`
+                    );
+                    pushInWebNotification('admin', `💬 NEW CHAT (${dispUser})`, admAlert);
+                    ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, admAlert, true));
+                } else if (activeTh.user_id && /^\d+$/.test(String(activeTh.user_id))) {
+                    sendTelegramSilentPush(
+                        activeTh.user_id,
+                        `💬 <b>[XIANBEE SUPPORT REPLY]</b>\n\n${xbEscChatHtml(msgText)}\n\n<i>Reply directly inside XianBee-Tech Live Support Messenger.</i>`,
+                        true
+                    );
+                }
+            } catch (e) {
+                showToast('⚠️ Network slow — message saved locally, tap ↻ to sync.');
+            } finally {
+                st.sending = false;
+            }
+        }
+
         function openLiveHelpdeskModal() {
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
-            modal.classList.add('active');
+            if (!modal || !body) return;
 
-            const chatLogs = JSON.parse(localStorage.getItem('xb_helpdesk_logs') || '[]');
-            const quickPrompts = [
-                'Check custom aged GitHub stock',
-                'Bulk order discount inquiry',
-                'Deposit / payment assistance'
-            ];
-            const logsHtml = chatLogs.length === 0
-                ? `<div style="padding:18px 10px;text-align:center;color:var(--text-muted);font-size:0.68rem;line-height:1.5;">👋 Welcome to <b style="color:var(--text-primary);">XianBee-Tech Executive Desk</b>.<br>Send a message below for instant priority support.</div>`
-                : chatLogs.map(c => `
-                    <div style="background:var(--ex-card-bg);border:1px solid var(--ex-hairline);border-radius:10px;padding:8px 10px;margin-bottom:7px;">
-                        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#38bdf8;font-weight:800;margin-bottom:3px;">
-                            <span>👤 @${String(currentUsername || 'Client').replace(/^@/,'')}</span>
-                            <span style="color:var(--text-muted);">${c.time}</span>
-                        </div>
-                        <div style="font-size:0.71rem;color:var(--text-primary);line-height:1.4;">${c.msg}</div>
-                    </div>
-                `).join('');
+            const isAdm = isCurrentUserSupportAdmin();
+            modal.classList.add('xb-fullpage-modal', 'active');
+            window._railChatState.isOpen = true;
+
+            const quickBtns = isAdm
+                ? ['Ready & verified! Silakan checkout.', 'Saldo sudah masuk ya bro ✅', 'Tunggu 24 jam sebelum ganti password.', 'Siap, stok sedang dicek.']
+                : ['Check aged GitHub stock', 'Bulk order discount', 'Deposit / payment help'];
 
             body.innerHTML = `
-                <div class="xb-ex-modal-hdr">
-                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
-                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-color:rgba(255,255,255,0.35);">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-                        </span>
-                        <div style="min-width:0;">
-                            <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">Executive Live Support</h3>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:#34d399;">● ONLINE • PRIORITY RESPONSE</div>
+                <div style="display:flex;flex-direction:column;gap:8px;height:100%;flex:1;min-height:0;overflow:hidden;">
+                    <div class="xb-ex-modal-hdr" style="margin-bottom:0;flex-shrink:0;">
+                        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                            <span class="xb-ex-gh-badge" style="width:30px;height:30px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-color:rgba(255,255,255,0.35);">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                            </span>
+                            <div style="min-width:0;">
+                                <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">${isAdm ? 'Executive Support Rail Dock' : 'XianBee Live Support'}</h3>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:#34d399;">${isAdm ? '👑 ADMIN 2-WAY MESSENGER • PERMANENT CLOUD' : '● ONLINE • PERMANENT 2-WAY CHAT'}</div>
+                            </div>
+                        </div>
+                        <button type="button" class="xb-ex-mclose" onclick="closeLiveSupportMessenger()">✕</button>
+                    </div>
+
+                    <div class="xb-rail-shell">
+                        ${isAdm ? `<div class="xb-rail-bar" id="xbRailSidebar"></div>` : ''}
+                        <div class="xb-rail-main">
+                            <div class="xb-rail-hdr" id="xbRailHeader"></div>
+                            <div class="xb-rail-msgs" id="xbRailMessages"></div>
+                            <div class="xb-rail-quick">
+                                ${quickBtns.map(q => `<button type="button" class="xb-adm-mini-btn" style="font-size:0.54rem;color:#38bdf8;flex-shrink:0;" onclick="const i=document.getElementById('railChatInput'); if(i){ i.value=${JSON.stringify(q).replace(/"/g, '&quot;')}; i.focus(); }">${xbEscChatHtml(q)}</button>`).join('')}
+                            </div>
+                            <div class="xb-rail-composer">
+                                <input type="text" id="railChatInput" class="xb-bst-target-inp" style="height:36px;font-size:0.74rem;" placeholder="${isAdm ? 'Reply to client...' : 'Type your message...'}" onkeydown="if(event.key==='Enter'){ event.preventDefault(); sendHelpdeskMessage(); }">
+                                <button type="button" class="btn-ui primary" style="flex:0 0 auto;min-width:0;height:36px;padding:0 13px;font-size:0.7rem;border-radius:9px;" onclick="sendHelpdeskMessage()">Send ➤</button>
+                            </div>
                         </div>
                     </div>
-                    <button type="button" class="xb-ex-mclose" onclick="closeModal('paymentGatewayModal')">✕</button>
-                </div>
-
-                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px;">
-                    ${quickPrompts.map(q => `<button type="button" class="xb-adm-mini-btn" style="font-size:0.55rem;color:#38bdf8;" onclick="document.getElementById('helpdeskMsgInput').value='${q}'; document.getElementById('helpdeskMsgInput').focus();">${q}</button>`).join('')}
-                </div>
-
-                <div id="helpdeskHistoryBox" style="max-height:195px;overflow-y:auto;background:var(--bg-input);border:1px solid var(--ex-hairline);padding:9px;border-radius:11px;margin-bottom:10px;">
-                    ${logsHtml}
-                </div>
-
-                <div style="margin-bottom:10px;">
-                    <div class="xb-bst-lbl"><span>YOUR MESSAGE / CUSTOM REQUEST</span><span style="color:#38bdf8;">DIRECT DESK</span></div>
-                    <input type="text" class="xb-bst-target-inp" id="helpdeskMsgInput" style="width:100%;height:38px;" placeholder="Ask about stock, custom orders, or payment..." onkeydown="if(event.key==='Enter') sendHelpdeskMessage();">
-                </div>
-
-                <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:7px;">
-                    <a href="https://t.me/XianBeeTechStore" target="_blank" class="btn-ui secondary" style="padding:10px 8px;font-size:0.71rem;border-radius:10px;color:#38bdf8;border-color:rgba(56,189,248,0.45);">✈️ Telegram Chat</a>
-                    <button type="button" class="btn-ui primary" style="padding:10px 8px;font-size:0.71rem;border-radius:10px;" onclick="sendHelpdeskMessage()">📨 Send Message</button>
                 </div>
             `;
+
+            const activeTh = getActiveRailThread();
+            if (activeTh) markRailThreadRead(activeTh.thread_key);
+            renderRailMessengerDynamic(true);
+            pullRailSupportThreads(true);
+
+            if (window._railChatState.pollTimer) clearInterval(window._railChatState.pollTimer);
+            window._railChatState.pollTimer = setInterval(() => {
+                if (!document.getElementById('paymentGatewayModal')?.classList.contains('active')) {
+                    stopRailMessengerPolling();
+                    return;
+                }
+                pullRailSupportThreads(true);
+            }, 4500);
         }
 
-        function sendHelpdeskMessage() {
-            const msg = document.getElementById('helpdeskMsgInput').value.trim();
-            if (!msg) return showToast('Please enter a message!');
-            const nowTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-
-            const logs = JSON.parse(localStorage.getItem('xb_helpdesk_logs') || '[]');
-            logs.push({ time: nowTime, msg: msg });
-            localStorage.setItem('xb_helpdesk_logs', JSON.stringify(logs.slice(-20)));
-
-            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
-            const admChatCard = (
-                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                `   💬 <b>W E B  H E L P D E S K  M E S S A G E</b>\n` +
-                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                `👤 <b>Client:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
-                `📝 <b>Message:</b> ${msg}\n` +
-                `🕒 <b>Time:</b> ${nowTime} WIB`
-            );
-
-            pushInWebNotification('admin', '💬 HELPDESK MESSAGE', admChatCard);
-            pushInWebNotification('buyer', '💬 MESSAGE SENT TO ADMIN', `Your message: <i>"${msg}"</i> has been delivered to Executive Admin.`);
-            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, admChatCard, true));
-            sendTelegramSilentPush(currentUserId, `✅ <b>[HELPDESK SENT]</b>\nYour message has been forwarded to Executive Admin:\n<i>"${msg}"</i>`, true);
-
-            openLiveHelpdeskModal();
-            showToast('Message delivered to Admin Telegram Bot!');
-        }
+        // Background unread checker every 18 seconds
+        setTimeout(() => { updateChatFabUnreadBadge(); pullRailSupportThreads(true); }, 2500);
+        setInterval(() => {
+            if (!window._railChatState.isOpen) pullRailSupportThreads(true);
+        }, 18000);
 
         // =========================================================
         // 🚪 FEATURE 12: HYBRID AUTH PORTAL & GOOGLE SHEET CLOUD SYNC
