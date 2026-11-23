@@ -2909,20 +2909,60 @@
             background: #f8fafc;
             border-color: rgba(15, 23, 42, 0.12);
         }
-        .xb-cyb-log-row {
-            background: rgba(7, 13, 28, 0.88);
-            border: 1px solid rgba(148, 163, 184, 0.18);
+        .xb-cyb-sales-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+        }
+        .xb-cyb-sale-card {
+            background: rgba(7, 13, 28, 0.9);
+            border: 1px solid rgba(16, 185, 129, 0.28);
             border-radius: 10px;
-            padding: 7px 9px;
+            padding: 7px 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 5px;
+            font-family: 'JetBrains Mono', monospace;
+            min-width: 0;
+        }
+        .xb-cyb-sale-card.is-boost {
+            border-color: rgba(168, 85, 247, 0.34);
+        }
+        [data-theme="platinum"] .xb-cyb-sale-card {
+            background: #f8fafc;
+            border-color: rgba(5, 150, 105, 0.28);
+        }
+        [data-theme="platinum"] .xb-cyb-sale-card.is-boost {
+            border-color: rgba(124, 58, 237, 0.28);
+        }
+        .xb-cyb-sold-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            padding: 1px 5px;
+            border-radius: 4px;
+            font-size: 0.48rem;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(16, 185, 129, 0.45);
+            color: #34d399;
+        }
+        .xb-cyb-sale-card.is-boost .xb-cyb-sold-pill {
+            background: rgba(168, 85, 247, 0.18);
+            border-color: rgba(168, 85, 247, 0.45);
+            color: #e879f9;
+        }
+        [data-theme="platinum"] .xb-cyb-sold-pill { color: #047857; }
+        [data-theme="platinum"] .xb-cyb-sale-card.is-boost .xb-cyb-sold-pill { color: #7c3aed; }
+        .xb-cyb-sale-foot {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            gap: 8px;
-            font-family: 'JetBrains Mono', monospace;
-        }
-        [data-theme="platinum"] .xb-cyb-log-row {
-            background: #f8fafc;
-            border-color: rgba(15, 23, 42, 0.12);
+            gap: 4px;
+            padding-top: 4px;
+            border-top: 1px dashed rgba(148, 163, 184, 0.2);
         }
 
         .xb-cyb-close-btn {
@@ -10236,9 +10276,9 @@ function copyActiveWalletReceipt() {
                 const p2 = n => String(n).padStart(2, '0');
                 const days = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
                 const mos = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
-                return `${days[wib.getDay()]}, ${p2(wib.getDate())} ${mos[wib.getMonth()]} • ${p2(wib.getHours())}:${p2(wib.getMinutes())}:${p2(wib.getSeconds())} WIB`;
+                return `${days[wib.getDay()]}, ${p2(wib.getDate())} ${mos[wib.getMonth()]} • ${p2(wib.getHours())}:${p2(wib.getMinutes())}:${p2(wib.getSeconds())} UTC+7`;
             } catch (e) {
-                return 'LIVE TELEMETRY • WIB';
+                return 'LIVE STORE FEED • UTC+7';
             }
         }
 
@@ -10479,7 +10519,7 @@ function copyActiveWalletReceipt() {
                 deckHtml = `
                     <div class="xb-cyb-panel">
                         <div class="xb-cyb-phdr">
-                            <span class="xb-cyb-ptitle">📦 1. GITHUB ACCOUNTS SOLD</span>
+                            <span class="xb-cyb-ptitle">📦 GITHUB ACCOUNTS SOLD</span>
                             <span class="xb-cyb-pbadge">${d.totalSoldAccs.toLocaleString('en-US')} Sold • ${fmtCyberMoney(d.totalAccRevUsdt, true)}</span>
                         </div>
                         <div class="xb-cyb-stage">
@@ -10497,7 +10537,7 @@ function copyActiveWalletReceipt() {
 
                     <div class="xb-cyb-panel purple">
                         <div class="xb-cyb-phdr">
-                            <span class="xb-cyb-ptitle">🚀 2. GITHUB BOOST SERVICES</span>
+                            <span class="xb-cyb-ptitle">🚀 GITHUB BOOST SERVICES</span>
                             <span class="xb-cyb-pbadge">${d.totalBoostOrders.toLocaleString('en-US')} Orders • ${fmtCyberMoney(d.totalBoostRevUsdt, true)}</span>
                         </div>
                         <div class="xb-cyb-stage">
@@ -10553,27 +10593,32 @@ function copyActiveWalletReceipt() {
                 deckHtml = `
                     <div class="xb-cyb-panel" style="flex:1;border-color:rgba(56,189,248,0.36);">
                         <div class="xb-cyb-phdr">
-                            <span class="xb-cyb-ptitle" style="color:#38bdf8;">📜 RECENT LIVE SALES (WIB)</span>
-                            <span class="xb-cyb-pbadge">${logs.length} Latest TX</span>
+                            <span class="xb-cyb-ptitle" style="color:#38bdf8;">📜 RECENT VERIFIED SALES</span>
+                            <span class="xb-cyb-pbadge">${logs.length} Verified Sold</span>
                         </div>
                         <div class="xb-cyb-scroll-inner">
                             ${logs.length === 0
-                                ? `<div style="margin:auto;text-align:center;color:#94a3b8;font-size:0.68rem;padding:24px 12px;line-height:1.5;">Tap <b>↻</b> at top right to pull the latest timestamped WIB transactions from Cloud.</div>`
-                                : logs.map(tx => `
-                                    <div class="xb-cyb-log-row">
-                                        <div style="min-width:0;flex:1;">
-                                            <div style="font-size:0.62rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                                ${String(tx.item || 'Order')}
-                                                <span style="font-size:0.5rem;padding:1px 5px;border-radius:4px;background:rgba(56,189,248,0.16);color:#38bdf8;margin-left:4px;">${String(tx.category || 'LIVE')}</span>
+                                ? `<div style="margin:auto;text-align:center;color:#94a3b8;font-size:0.68rem;padding:24px 12px;line-height:1.5;">Tap <b>↻</b> at the top right to load the latest verified sales feed.</div>`
+                                : `<div class="xb-cyb-sales-grid">${logs.map(tx => {
+                                    const isBoost = tx.kind === 'boost';
+                                    const cleanDate = String(tx.dateStr || '-').replace(/\s*WIB/gi, '').trim();
+                                    return `
+                                        <div class="xb-cyb-sale-card ${isBoost ? 'is-boost' : ''}">
+                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                                                <span class="xb-cyb-sold-pill">● SOLD</span>
+                                                <span style="font-size:0.48rem;font-weight:800;padding:1px 5px;border-radius:4px;background:rgba(56,189,248,0.14);color:#38bdf8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${String(tx.category || 'VAULT')}</span>
                                             </div>
-                                            <div style="font-size:0.5rem;color:#94a3b8;margin-top:2px;">${String(tx.ref || '-')} • ${String(tx.dateStr || '-')}</div>
+                                            <div style="min-width:0;">
+                                                <div style="font-size:0.6rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${String(tx.item || 'Verified Order')}</div>
+                                                <div style="font-size:0.5rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">${isBoost ? 'Order:' : 'Account:'} ${String(tx.ref || '-')}</div>
+                                            </div>
+                                            <div class="xb-cyb-sale-foot">
+                                                <span style="font-size:0.46rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanDate}</span>
+                                                <span style="font-size:0.6rem;font-weight:800;color:${isBoost ? '#e879f9' : '#34d399'};flex-shrink:0;">${fmtCyberMoney(tx.usdt, true)}</span>
+                                            </div>
                                         </div>
-                                        <div style="text-align:right;flex-shrink:0;">
-                                            <div style="font-size:0.64rem;font-weight:800;color:#34d399;">$${Number(tx.usdt || 0).toFixed(2)}</div>
-                                            <div style="font-size:0.48rem;color:#94a3b8;">Rp ${Math.round(Number(tx.usdt || 0) * getCyberTelemIdrRate()).toLocaleString('id-ID')}</div>
-                                        </div>
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}</div>`}
                         </div>
                     </div>
                 `;
@@ -10611,7 +10656,7 @@ function copyActiveWalletReceipt() {
                     <div class="xb-cyb-tabs">
                         <button type="button" class="xb-cyb-tab ${st.tab === 'charts' ? 'active' : ''}" onclick="setCyberTelemTab('charts')">📊 3D CHARTS</button>
                         <button type="button" class="xb-cyb-tab ${st.tab === 'matrix' ? 'active' : ''}" onclick="setCyberTelemTab('matrix')">🧬 MATRIX</button>
-                        <button type="button" class="xb-cyb-tab ${st.tab === 'logs' ? 'active' : ''}" onclick="setCyberTelemTab('logs')">📜 WIB LOGS</button>
+                        <button type="button" class="xb-cyb-tab ${st.tab === 'logs' ? 'active' : ''}" onclick="setCyberTelemTab('logs')">📜 RECENT SALES</button>
                     </div>
 
                     <div class="xb-cyb-deck">${deckHtml}</div>
