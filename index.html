@@ -2063,23 +2063,22 @@
         .xb-ex-filter-chip { width: 100%; min-width: 0; padding: 7px 4px; border-radius: 9px; border: 1px solid var(--ex-hairline); background: var(--ex-card-bg); color: var(--text-secondary); font-family: inherit; font-size: 0.63rem; font-weight: 800; cursor: pointer; white-space: nowrap; text-align: center; transition: 0.16s ease; }
         .xb-ex-filter-chip.active { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border-color: rgba(255,255,255,0.45); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.42), inset 0 1px 0 rgba(255,255,255,0.28); }
         .xb-ex-sort-bar {
-            display: flex;
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
             align-items: center;
-            justify-content: space-between;
-            gap: 8px;
             margin-bottom: 10px;
             height: 36px;
-            padding: 0 6px 0 10px;
+            padding: 0;
             background: var(--ex-card-bg);
             border: 1px solid var(--ex-hairline);
             border-radius: 10px;
             box-shadow: 0 4px 14px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.16);
         }
         [data-theme="platinum"] .xb-ex-sort-bar { box-shadow: 0 3px 10px rgba(15,23,42,0.06), inset 0 1px 0 #ffffff; }
-        .xb-ex-live-wrap { display: inline-flex; align-items: center; gap: 6px; min-width: 0; flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .xb-ex-live-wrap { display: flex; align-items: center; justify-content: center; gap: 6px; min-width: 0; padding: 0 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .xb-ex-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px #34d399; flex-shrink: 0; }
-        .xb-ex-sort-divider { width: 1px; height: 18px; background: var(--ex-hairline); flex-shrink: 0; }
-        .xb-ex-sort-select { background: transparent; border: none; color: #38bdf8; border-radius: 7px; padding: 0 4px; height: 28px; font-family: 'JetBrains Mono', monospace; font-size: 0.61rem; font-weight: 800; outline: none; cursor: pointer; flex-shrink: 0; }
+        .xb-ex-sort-divider { width: 1px; height: 18px; background: var(--ex-hairline); justify-self: center; }
+        .xb-ex-sort-select { width: 100%; height: 100%; background: transparent; border: none; color: #38bdf8; border-radius: 0 9px 9px 0; padding: 0 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.61rem; font-weight: 800; text-align: center; text-align-last: center; outline: none; cursor: pointer; }
         [data-theme="platinum"] .xb-ex-sort-select { color: #2563eb; }
         .xb-ex-sort-select option { background: var(--bg-surface); color: var(--text-primary); }
 
@@ -2402,6 +2401,50 @@
             background-size: 240% 240%;
             animation: xbVipRingFlow 2.6s ease infinite, xbVipAuraPulse 2.4s ease-in-out infinite;
             box-shadow: 0 0 18px rgba(239, 68, 68, 0.58), 0 0 10px rgba(250, 204, 21, 0.35);
+        }
+
+        /* ADMIN LIVE LOGO STUDIO */
+        .xb-logo-prev-stage {
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 13px;
+            padding: 14px 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+        }
+        .xb-logo-prev-box {
+            width: 68px;
+            height: 68px;
+            border-radius: 16px;
+            background: #070b17;
+            border: 1.5px solid rgba(56, 189, 248, 0.55);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 6px 18px rgba(56, 189, 248, 0.25);
+        }
+        .xb-logo-prev-box img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            transition: transform 0.12s ease;
+        }
+        .xb-logo-range {
+            width: 100%;
+            accent-color: #38bdf8;
+            cursor: pointer;
+            height: 6px;
+        }
+        .xb-custom-gh-img {
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: inherit;
+            pointer-events: none;
         }
 
         /* SECTION DIVIDER & 2-LINE SPECIAL TIERS HEADER */
@@ -9162,6 +9205,381 @@ function copyActiveWalletReceipt() {
         }
         setTimeout(() => pullUserAvatarFromCloud(true), 2200);
 
+        // =========================================================
+        // 🎨 ADMIN LIVE LOGO STUDIO (GITHUB BADGE & BRAND LOGO + SIZE CONTROL)
+        // =========================================================
+        const XB_LOGO_KEYS = {
+            github: 'xb_store_logo_github',
+            brand: 'xb_store_logo_brand'
+        };
+
+        window._logoStudioDraft = window._logoStudioDraft || {
+            target: 'github', // 'github' | 'brand'
+            img: '',
+            scale: 100,
+            fit: 'contain'
+        };
+
+        function getSavedStoreLogoCfg(target) {
+            try {
+                const raw = localStorage.getItem(XB_LOGO_KEYS[target] || '');
+                if (!raw) return null;
+                const parsed = JSON.parse(raw);
+                if (parsed && typeof parsed === 'object' && parsed.img) {
+                    return {
+                        img: String(parsed.img || ''),
+                        scale: Math.min(180, Math.max(40, Number(parsed.scale || 100))),
+                        fit: parsed.fit === 'cover' ? 'cover' : 'contain'
+                    };
+                }
+            } catch (e) {}
+            return null;
+        }
+
+        function compressLogoFileKeepAlpha(file, targetSize = 192) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onerror = () => reject(new Error('Read error'));
+                reader.onload = (ev) => {
+                    const img = new Image();
+                    img.onerror = () => reject(new Error('Invalid image'));
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        canvas.width = targetSize;
+                        canvas.height = targetSize;
+                        const ctx = canvas.getContext('2d');
+                        ctx.clearRect(0, 0, targetSize, targetSize);
+
+                        // Preserve aspect ratio without cropping transparent edges
+                        const ratio = Math.min(targetSize / img.width, targetSize / img.height);
+                        const dw = Math.round(img.width * ratio);
+                        const dh = Math.round(img.height * ratio);
+                        const dx = Math.floor((targetSize - dw) / 2);
+                        const dy = Math.floor((targetSize - dh) / 2);
+                        ctx.drawImage(img, dx, dy, dw, dh);
+
+                        let out = canvas.toDataURL('image/webp', 0.88);
+                        if (!out.startsWith('data:image/webp') || out.length > 43000) {
+                            out = canvas.toDataURL('image/png');
+                        }
+                        if (out.length > 43000) {
+                            out = canvas.toDataURL('image/webp', 0.65);
+                        }
+                        if (out.length > 43000) {
+                            out = canvas.toDataURL('image/jpeg', 0.75);
+                        }
+                        resolve(out);
+                    };
+                    img.src = ev.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function isGithubEmblemBadgeEl(el) {
+            if (!el || !el.classList || !el.classList.contains('xb-ex-gh-badge')) return false;
+            if (el.dataset.xbGhLogo === '1') return true;
+            const st = String(el.getAttribute('style') || '');
+            if (st.includes('linear-gradient')) return false; // Skip modal header icons
+            const html = el.innerHTML || '';
+            if (!html.includes('<svg')) return false;
+            if (html.includes('cx="8"') || html.includes('M21 11.5') || html.includes('M6 8a6')) return false;
+            return true;
+        }
+
+        function applyStoreCustomLogos() {
+            // 1. Apply Custom GitHub Card / Vault Emblem Logo
+            const ghCfg = getSavedStoreLogoCfg('github');
+            const ghSig = ghCfg ? `${ghCfg.img.length}_${ghCfg.scale}_${ghCfg.fit}` : 'DEFAULT';
+            const badges = document.querySelectorAll('.xb-ex-gh-badge');
+
+            badges.forEach(el => {
+                if (!isGithubEmblemBadgeEl(el)) return;
+                if (el.dataset.xbLogoSig === ghSig) return;
+                if (!el.dataset.xbOrigHtml) {
+                    el.dataset.xbOrigHtml = el.innerHTML;
+                }
+                el.dataset.xbGhLogo = '1';
+                el.dataset.xbLogoSig = ghSig;
+
+                if (ghCfg && ghCfg.img) {
+                    el.style.overflow = 'hidden';
+                    el.style.padding = '0';
+                    el.innerHTML = `<img src="${ghCfg.img}" alt="GitHub" class="xb-custom-gh-img" style="object-fit:${ghCfg.fit};transform:scale(${(ghCfg.scale / 100).toFixed(2)});">`;
+                } else {
+                    el.style.padding = '';
+                    el.innerHTML = el.dataset.xbOrigHtml;
+                }
+            });
+
+            // 2. Apply Custom Store Brand Logo (Header & Collection Banner)
+            const brCfg = getSavedStoreLogoCfg('brand');
+            const brSig = brCfg ? `${brCfg.img.length}_${brCfg.scale}_${brCfg.fit}` : 'DEFAULT';
+            const brandImgs = document.querySelectorAll('img[src*="logo.png"], img[data-xb-brand-logo="1"]');
+
+            brandImgs.forEach(img => {
+                if (img.dataset.xbLogoSig === brSig) return;
+                if (!img.dataset.xbOrigSrc) {
+                    img.dataset.xbOrigSrc = img.getAttribute('src') || 'logo.png';
+                }
+                img.dataset.xbBrandLogo = '1';
+                img.dataset.xbLogoSig = brSig;
+
+                if (brCfg && brCfg.img) {
+                    img.src = brCfg.img;
+                    img.style.objectFit = brCfg.fit;
+                    img.style.transform = `scale(${(brCfg.scale / 100).toFixed(2)})`;
+                } else {
+                    img.src = img.dataset.xbOrigSrc;
+                    img.style.objectFit = 'contain';
+                    img.style.transform = '';
+                }
+            });
+        }
+
+        // Auto-apply custom logos whenever viewport / modals re-render
+        let _logoObsTimer = null;
+        if (typeof MutationObserver !== 'undefined') {
+            const _logoObserver = new MutationObserver(() => {
+                if (_logoObsTimer) return;
+                _logoObsTimer = setTimeout(() => {
+                    _logoObsTimer = null;
+                    applyStoreCustomLogos();
+                }, 40);
+            });
+            if (document.body) {
+                _logoObserver.observe(document.body, { childList: true, subtree: true });
+            }
+        }
+
+        async function pullStoreLogosFromCloud() {
+            const targets = ['github', 'brand'];
+            for (let i = 0; i < targets.length; i++) {
+                const tgt = targets[i];
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'web_user_avatar',
+                            mode: 'pull',
+                            avatar_key: XB_LOGO_KEYS[tgt]
+                        })
+                    });
+                    const json = await res.json();
+                    if (json && json.result && typeof json.avatar_data === 'string') {
+                        if (json.avatar_data) {
+                            localStorage.setItem(XB_LOGO_KEYS[tgt], json.avatar_data);
+                        } else {
+                            localStorage.removeItem(XB_LOGO_KEYS[tgt]);
+                        }
+                    }
+                } catch (e) {}
+            }
+            applyStoreCustomLogos();
+        }
+        setTimeout(() => { applyStoreCustomLogos(); pullStoreLogosFromCloud(); }, 1600);
+
+        function openAdminLogoStudioModal(targetKey = 'github') {
+            if (!ADMIN_IDS.includes(String(currentUserId))) {
+                return showToast('🔒 Admin access only.');
+            }
+            const tKey = targetKey === 'brand' ? 'brand' : 'github';
+            const saved = getSavedStoreLogoCfg(tKey);
+            window._logoStudioDraft = {
+                target: tKey,
+                img: saved ? saved.img : '',
+                scale: saved ? saved.scale : 100,
+                fit: saved ? saved.fit : 'contain'
+            };
+            renderAdminLogoStudioModal();
+        }
+
+        function switchLogoStudioTarget(tKey) {
+            openAdminLogoStudioModal(tKey);
+        }
+
+        async function onLogoStudioFilePick(inputEl) {
+            const file = inputEl && inputEl.files && inputEl.files[0];
+            if (!file) return;
+            if (!file.type || !file.type.startsWith('image/')) {
+                return showToast('⚠️ Pilih file gambar PNG / JPG / WebP!');
+            }
+            try {
+                showToast('⏳ Memproses foto logo...');
+                const dataUrl = await compressLogoFileKeepAlpha(file, 192);
+                window._logoStudioDraft.img = dataUrl;
+                renderAdminLogoStudioModal();
+                showToast('✅ Foto dimuat! Atur ukuran lalu klik Confirm.');
+            } catch (e) {
+                showToast('⚠️ Gagal memproses gambar, coba file lain.');
+            } finally {
+                if (inputEl) inputEl.value = '';
+            }
+        }
+
+        function onLogoStudioScaleChange(val) {
+            const num = Math.min(180, Math.max(40, parseInt(val, 10) || 100));
+            window._logoStudioDraft.scale = num;
+            const lbl = document.getElementById('xbLogoScaleLbl');
+            if (lbl) lbl.innerText = num + '%';
+            const prevImg = document.getElementById('xbLogoPrevImg');
+            if (prevImg) prevImg.style.transform = `scale(${(num / 100).toFixed(2)})`;
+            const miniImg = document.getElementById('xbLogoMiniPrevImg');
+            if (miniImg) miniImg.style.transform = `scale(${(num / 100).toFixed(2)})`;
+        }
+
+        function setLogoStudioFit(fitMode) {
+            window._logoStudioDraft.fit = fitMode === 'cover' ? 'cover' : 'contain';
+            renderAdminLogoStudioModal();
+        }
+
+        async function confirmSaveAdminStoreLogo() {
+            const d = window._logoStudioDraft;
+            if (!d.img) return showToast('⚠️ Pilih foto logo terlebih dahulu!');
+            const btn = document.getElementById('btnConfirmStoreLogo');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Updating Live...'; }
+
+            const payloadStr = JSON.stringify({ img: d.img, scale: d.scale, fit: d.fit });
+            localStorage.setItem(XB_LOGO_KEYS[d.target], payloadStr);
+            applyStoreCustomLogos();
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_user_avatar',
+                        mode: 'save',
+                        avatar_key: XB_LOGO_KEYS[d.target],
+                        username: 'ADMIN_LOGO_' + d.target.toUpperCase(),
+                        avatar_data: payloadStr
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    showToast('✅ Logo & ukuran berhasil diupdate permanen ke seluruh Web App!');
+                } else {
+                    showToast('✅ Logo diupdate lokal (Cloud response lambat).');
+                }
+            } catch (e) {
+                showToast('✅ Logo diupdate lokal — cek koneksi untuk sync Cloud.');
+            } finally {
+                closeModal('paymentGatewayModal');
+            }
+        }
+
+        async function resetAdminStoreLogoDefault() {
+            const d = window._logoStudioDraft;
+            if (!confirm(`Kembalikan ${d.target === 'github' ? 'Logo GitHub Kartu' : 'Logo Brand Toko'} ke default?`)) return;
+            localStorage.removeItem(XB_LOGO_KEYS[d.target]);
+            applyStoreCustomLogos();
+            try {
+                await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_user_avatar',
+                        mode: 'save',
+                        avatar_key: XB_LOGO_KEYS[d.target],
+                        username: 'ADMIN_LOGO_' + d.target.toUpperCase(),
+                        avatar_data: ''
+                    })
+                });
+            } catch (e) {}
+            showToast('♻️ Logo dikembalikan ke default!');
+            closeModal('paymentGatewayModal');
+        }
+
+        function renderAdminLogoStudioModal() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            if (!modal || !body) return;
+
+            modal.classList.remove('xb-fullpage-modal');
+            modal.classList.add('active');
+
+            const d = window._logoStudioDraft;
+            const isGh = d.target === 'github';
+            const scaleDec = (d.scale / 100).toFixed(2);
+            const fallbackPreview = isGh
+                ? `<span style="font-size:1.5rem;opacity:0.75;">🐙</span>`
+                : `<img src="logo.png" style="width:100%;height:100%;object-fit:contain;" onerror="this.outerHTML='<span>🐙</span>'">`;
+
+            body.innerHTML = `
+                <div class="xb-ex-modal-hdr">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-color:rgba(255,255,255,0.35);">🎨</span>
+                        <div style="min-width:0;">
+                            <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">Live Logo Studio</h3>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#34d399;font-weight:800;">ADMIN CUSTOMIZER • CLOUD SYNC</div>
+                        </div>
+                    </div>
+                    <button type="button" class="xb-ex-mclose" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+
+                <div class="xb-vp-seg" style="margin-bottom:10px;">
+                    <button type="button" class="xb-vp-seg-btn ${isGh ? 'active' : ''}" onclick="switchLogoStudioTarget('github')">🐙 Logo GitHub Kartu</button>
+                    <button type="button" class="xb-vp-seg-btn ${!isGh ? 'active' : ''}" onclick="switchLogoStudioTarget('brand')">🏷️ Logo Header &amp; Banner</button>
+                </div>
+
+                <!-- LIVE PREVIEW STAGE (LARGE + REAL CARD SIZE) -->
+                <div class="xb-logo-prev-stage" style="margin-bottom:10px;">
+                    <div class="xb-logo-prev-box">
+                        ${d.img
+                            ? `<img id="xbLogoPrevImg" src="${d.img}" style="object-fit:${d.fit};transform:scale(${scaleDec});">`
+                            : fallbackPreview}
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:6px;min-width:0;flex:1;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);font-weight:800;">ACTUAL STORE PREVIEW</div>
+                        <div style="display:flex;align-items:center;gap:7px;background:var(--ex-card-bg);border:1px solid var(--ex-hairline);border-radius:10px;padding:7px 9px;">
+                            <div style="width:${isGh ? '28px' : '36px'};height:${isGh ? '28px' : '36px'};border-radius:${isGh ? '8px' : '10px'};background:#070b17;border:1px solid rgba(255,255,255,0.24);overflow:hidden;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                                ${d.img
+                                    ? `<img id="xbLogoMiniPrevImg" src="${d.img}" style="width:100%;height:100%;object-fit:${d.fit};transform:scale(${scaleDec});display:block;">`
+                                    : fallbackPreview}
+                            </div>
+                            <div style="min-width:0;">
+                                <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${isGh ? 'GitHub Vault 2016' : 'XianBee-Tech'}</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#38bdf8;">${isGh ? '● Live Card Icon' : 'Header & Banner'}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEP 1: PILIH FOTO -->
+                <div style="margin-bottom:10px;">
+                    <label class="btn-ui secondary" style="width:100%;padding:10px;font-size:0.72rem;border-radius:10px;border-color:rgba(56,189,248,0.5);color:#38bdf8;cursor:pointer;margin:0;display:flex;justify-content:center;align-items:center;gap:6px;">
+                        📁 ${d.img ? 'Ganti Foto Logo (PNG / WebP / JPG)' : 'Pilih Foto Logo dari Galeri'}
+                        <input type="file" accept="image/*" style="display:none;" onchange="onLogoStudioFilePick(this)">
+                    </label>
+                </div>
+
+                <!-- STEP 2: ATUR SIZE & FIT -->
+                <div class="xb-wal-card" style="padding:10px 11px;margin-bottom:12px;display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;">
+                        <span style="color:var(--text-secondary);">ATUR UKURAN (ZOOM)</span>
+                        <span id="xbLogoScaleLbl" style="color:#38bdf8;">${d.scale}%</span>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <button type="button" class="xb-adm-mini-btn" onclick="onLogoStudioScaleChange(${d.scale - 5}); document.getElementById('xbLogoScaleRange').value=window._logoStudioDraft.scale;">−</button>
+                        <input type="range" id="xbLogoScaleRange" class="xb-logo-range" min="40" max="180" step="2" value="${d.scale}" oninput="onLogoStudioScaleChange(this.value)">
+                        <button type="button" class="xb-adm-mini-btn" onclick="onLogoStudioScaleChange(${d.scale + 5}); document.getElementById('xbLogoScaleRange').value=window._logoStudioDraft.scale;">+</button>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr 0.8fr;gap:5px;">
+                        <button type="button" class="xb-ex-filter-chip ${d.fit === 'contain' ? 'active' : ''}" style="padding:6px 4px;font-size:0.6rem;" onclick="setLogoStudioFit('contain')">Fit (Full Logo)</button>
+                        <button type="button" class="xb-ex-filter-chip ${d.fit === 'cover' ? 'active' : ''}" style="padding:6px 4px;font-size:0.6rem;" onclick="setLogoStudioFit('cover')">Fill (Crop)</button>
+                        <button type="button" class="xb-adm-mini-btn" style="justify-content:center;" onclick="onLogoStudioScaleChange(100); document.getElementById('xbLogoScaleRange').value=100;">100%</button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: CONFIRM & RESET -->
+                <div style="display:grid;grid-template-columns:0.85fr 1.5fr;gap:7px;">
+                    <button type="button" class="btn-ui secondary" style="padding:10px 6px;font-size:0.69rem;border-radius:10px;color:#f87171;border-color:rgba(248,113,113,0.45);" onclick="resetAdminStoreLogoDefault()">♻️ Default</button>
+                    <button type="button" id="btnConfirmStoreLogo" class="btn-ui buy-now" style="padding:10px 8px;font-size:0.72rem;border-radius:10px;" onclick="confirmSaveAdminStoreLogo()">✅ Confirm &amp; Update</button>
+                </div>
+            `;
+        }
+
         function openProfileSlide(slideKey) {
             if (slideKey === 'helpdesk' && typeof openLiveHelpdeskModal === 'function') {
                 openLiveHelpdeskModal();
@@ -9607,6 +10025,16 @@ function copyActiveWalletReceipt() {
                         `).join('')}
 
                         ${isAdmin ? `
+                            <button type="button" class="xb-prf-menu-row" style="border-color:rgba(192,132,252,0.48);" onclick="openAdminLogoStudioModal('github')">
+                                <div style="display:flex;align-items:center;gap:9px;min-width:0;flex:1;">
+                                    <span class="xb-prf-menu-ico" style="color:#c084fc;">🎨</span>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.74rem;font-weight:800;color:#c084fc;">Live Logo Studio (Admin)</div>
+                                        <div style="font-size:0.58rem;color:var(--text-secondary);">Change GitHub &amp; Brand Logo + Adjust Size</div>
+                                    </div>
+                                </div>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;flex-shrink:0;">Edit ➔</span>
+                            </button>
                             <button type="button" class="xb-prf-menu-row" style="border-color:rgba(56,189,248,0.45);" onclick="switchTab('admin')">
                                 <div style="display:flex;align-items:center;gap:9px;min-width:0;flex:1;">
                                     <span class="xb-prf-menu-ico" style="color:#38bdf8;">⚙️</span>
