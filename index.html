@@ -4800,6 +4800,10 @@
         // Send message directly via Telegram Bot HTTP API with Anti-Duplicate Guard
         async function sendTelegramSilentPush(chatId, htmlText, withFooter = true, replyMarkup = null) {
             if (!chatId || !String(chatId).match(/^-?\d+$/)) return null;
+            const isPublicDest = (String(chatId) === String(CHANNEL_ID) || String(chatId) === String(GROUP_ID));
+            if (isPublicDest && localStorage.getItem('xb_public_notifs_on') === 'false') {
+                return null;
+            }
             const cleanSig = String(chatId) + '|' + String(htmlText).replace(/\s+/g, ' ').slice(0, 180);
             const nowMs = Date.now();
             if (_recentTgPushCache[cleanSig] && (nowMs - _recentTgPushCache[cleanSig] < 8000)) {
@@ -6576,6 +6580,10 @@
                     if (json.data.length > 0) {
                         localStorage.setItem('xb_known_stock_unames', JSON.stringify(currentUnames));
                         localStorage.setItem('xb_cached_live_stock_arr', JSON.stringify(json.data));
+                    }
+
+                    if (typeof json.public_notifs_enabled === 'boolean') {
+                        localStorage.setItem('xb_public_notifs_on', String(json.public_notifs_enabled));
                     }
 
                     if (json.global_flash_sale && typeof json.global_flash_sale === 'object') {
@@ -12266,6 +12274,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
 
             cleanupExpiredOrSoldFlashAccounts();
             const isFlashOn = JSON.parse(localStorage.getItem('xb_admin_flash_cfg') || '{"active":true}').active;
+            const isPubNotifOn = localStorage.getItem('xb_public_notifs_on') !== 'false';
             const activeFlashCount = JSON.parse(localStorage.getItem('xb_admin_flash_accs') || '[]').length;
             const customVouchers = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
             const adminNotifs = JSON.parse(localStorage.getItem('xb_admin_notifs') || '[]');
@@ -14346,6 +14355,20 @@ let _ghAgeCheckerResults = [];
                 localStorage.setItem('xb_admin_flash_cfg', JSON.stringify(cfg));
                 showToast(`Flash Sale section is now ${cfg.active ? 'ONLINE (ON)' : 'OFFLINE (OFF)'}!`);
                 renderViewport();
+            } else if (cmd === 'toggle_public_notifs') {
+                const nextPub = localStorage.getItem('xb_public_notifs_on') === 'false';
+                localStorage.setItem('xb_public_notifs_on', String(nextPub));
+                renderViewport();
+                showToast(nextPub ? '📢 Public Channel & Group Notifs: ON!' : '🔇 Public Channel & Group Notifs: MUTED (Test Mode)');
+                fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'set_public_notifs_config',
+                        secret: XB_PAT_SECRET,
+                        enabled: nextPub
+                    })
+                }).catch(() => {});
             } else if (cmd === 'manage_vouchers') {
                 openAdminVouchersManagerModal();
             } else if (cmd === 'manage_flash_stock') {
