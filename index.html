@@ -1956,9 +1956,29 @@
             --ex-sheen: linear-gradient(90deg, transparent, rgba(37, 99, 235, 0.45), rgba(124, 58, 237, 0.5), transparent);
         }
 
-        .main-area { padding-top: 90px !important; padding-bottom: 92px !important; }
-        .container { padding: 8px 12px 16px 12px !important; }
-        @media (min-width: 1100px) { .main-area { padding-top: 90px !important; padding-bottom: 40px !important; } }
+        :root { --xb-safe-pad-bottom: 102px; }
+        .main-area { padding-top: 90px !important; padding-bottom: var(--xb-safe-pad-bottom) !important; }
+        .container { padding: 8px 12px 24px 12px !important; }
+        #xbBottomOpaqueGuard {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            height: 68px;
+            background: #060913;
+            border-top: 1px solid rgba(148, 163, 184, 0.22);
+            pointer-events: none;
+            z-index: 880;
+            transition: height 0.16s ease;
+        }
+        [data-theme="platinum"] #xbBottomOpaqueGuard {
+            background: #f1f5f9;
+            border-top-color: rgba(15, 23, 42, 0.14);
+        }
+        @media (min-width: 1100px) {
+            .main-area { padding-top: 90px !important; padding-bottom: 44px !important; }
+            #xbBottomOpaqueGuard { display: none !important; }
+        }
 
         /* TOPBAR ASSET EXCHANGE */
         .xb-ex-topbar-shell { position: relative; width: 100%; background: var(--ex-shell-bg); border: 1px solid var(--ex-hairline); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.22); }
@@ -13865,29 +13885,27 @@ let _ghAgeCheckerResults = [];
             }
         };
 
+        const XB_BOOST_MAX_QTY = 400;
         const XB_BOOST_SPEED_META = {
             reg: {
                 title: 'Regular Track • Organic Drip-Feed',
                 cls: '',
                 hrsPer10: 3,
-                paceText: '10 units / ±3 hrs (14–22m/act)',
-                safetyText: 'Max Natural • Anti-Drop',
+                paceText: '10 units / ±3 hours',
                 desc: 'Safest organic pacing designed to mimic natural developer discovery.'
             },
             fast: {
                 title: 'Fast Track • Priority Pacing',
                 cls: 'fast',
                 hrsPer10: 2,
-                paceText: '10 units / ±2 hrs (9–15m/act)',
-                safetyText: 'High Safety • Priority',
+                paceText: '10 units / ±2 hours',
                 desc: 'Balanced priority execution with smart multi-order rotation.'
             },
             ultra: {
                 title: 'Ultra Track • Express Execution',
                 cls: 'ultra',
                 hrsPer10: 1,
-                paceText: '10 units / ±1 hr (4–8m/act)',
-                safetyText: 'Express • Top Priority',
+                paceText: '10 units / ±1 hour',
                 desc: 'Fastest safe drip-feed queue dispatched immediately by Local PC Engine.'
             }
         };
@@ -13904,12 +13922,16 @@ let _ghAgeCheckerResults = [];
         };
         let _bstScanDebounce = null;
 
+        function getBoostMaxQtyCap() {
+            return window._xbActivePatPoolCount > 0
+                ? Math.min(XB_BOOST_MAX_QTY, window._xbActivePatPoolCount)
+                : XB_BOOST_MAX_QTY;
+        }
+
         function fmtBoostEtaHours(qty, hrsPer10) {
             const totalHrs = (Math.max(10, qty) / 10) * hrsPer10;
-            if (totalHrs < 24) return `±${Number(totalHrs.toFixed(1))} Hours`;
-            const days = Math.floor(totalHrs / 24);
-            const remH = Math.round(totalHrs % 24);
-            return remH > 0 ? `±${days}d ${remH}h` : `±${days} Days`;
+            const cleanH = Number(totalHrs.toFixed(1));
+            return cleanH === 1 ? '±1 hour' : `±${cleanH} hours`;
         }
 
         function buildBoostSpeedInfoHtml() {
@@ -13928,11 +13950,11 @@ let _ghAgeCheckerResults = [];
                     <div class="xb-bst-speed-meta">
                         <div class="xb-bst-speed-stat">
                             <div style="font-size:0.45rem;color:var(--text-muted);font-weight:700;">PACING RATE</div>
-                            <div style="font-size:0.55rem;font-weight:800;color:#38bdf8;margin-top:1px;">${meta.paceText}</div>
+                            <div style="font-size:0.58rem;font-weight:800;color:#38bdf8;margin-top:1px;white-space:nowrap;">${meta.paceText}</div>
                         </div>
                         <div class="xb-bst-speed-stat">
-                            <div style="font-size:0.45rem;color:var(--text-muted);font-weight:700;">EST. TIME (${calc.qty} U)</div>
-                            <div id="bstSpeedEtaVal" style="font-size:0.58rem;font-weight:800;color:#34d399;margin-top:1px;">${etaTxt}</div>
+                            <div style="font-size:0.45rem;color:var(--text-muted);font-weight:700;">EST. TIME (${calc.qty} UNITS)</div>
+                            <div id="bstSpeedEtaVal" style="font-size:0.58rem;font-weight:800;color:#34d399;margin-top:1px;white-space:nowrap;">${etaTxt}</div>
                         </div>
                     </div>
                 </div>
@@ -13962,7 +13984,7 @@ let _ghAgeCheckerResults = [];
                     window._xbActivePatPoolCount = activeOnly.length;
                     localStorage.setItem('xb_active_pat_pool_cnt', String(activeOnly.length));
                     const capEl = document.getElementById('bstPoolCapBadge');
-                    if (capEl) capEl.innerText = activeOnly.length > 0 ? `MAX ${activeOnly.length} LIVE` : 'AUTO-QUEUE';
+                    if (capEl) capEl.innerText = `MAX ${getBoostMaxQtyCap()}`;
                     if (!silent) showToast(`🔑 Active PAT Pool synced: ${activeOnly.length} ready!`);
                 }
             } catch (e) {}
@@ -13973,7 +13995,8 @@ let _ghAgeCheckerResults = [];
             const st = window._bstState;
             const cfg = XB_BOOST_SVCS[st.svc] || XB_BOOST_SVCS.followers;
             const tier = cfg.tiers[st.speed] || cfg.tiers.reg;
-            const qty = Math.max(10, parseInt(st.qty, 10) || 10);
+            const maxCap = getBoostMaxQtyCap();
+            const qty = Math.min(maxCap, Math.max(10, parseInt(st.qty, 10) || 10));
             const rawUsdt = qty * tier.p;
             const hasBulkDisc = qty >= 200;
             const finalUsdt = hasBulkDisc ? rawUsdt * 0.95 : rawUsdt;
@@ -13983,6 +14006,7 @@ let _ghAgeCheckerResults = [];
         function renderBoostTerminal(vp) {
             const st = window._bstState;
             const calc = computeBoostTerminalTotals();
+            const maxCap = getBoostMaxQtyCap();
             const safeTarget = String(st.target || '').replace(/"/g, '&quot;');
 
             const termWrap = document.createElement('div');
@@ -13994,19 +14018,19 @@ let _ghAgeCheckerResults = [];
                         <span class="xb-ex-gh-badge" style="width:28px;height:28px;">${GH_SVG_EMBLEM}</span>
                         <div style="min-width:0;">
                             <div style="display:flex;align-items:center;gap:4px;">
-                                <span style="font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">GitHub Boost Terminal</span>
+                                <span style="font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">GitHub Boost Service</span>
                                 <svg width="13" height="13" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
                             </div>
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--text-muted);font-weight:700;">LIVE API TRACKER • AUTO 5% BULK OFF</div>
                         </div>
                     </div>
-                    <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">● LIVE DESK</span>
+                    <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">● LIVE</span>
                 </div>
 
-                <!-- 1. METRIC SELECTOR -->
+                <!-- METRIC SELECTOR -->
                 <div>
                     <div class="xb-bst-lbl">
-                        <span>1. SELECT GITHUB METRIC</span>
+                        <span>SELECT GITHUB METRIC</span>
                         <span style="color:#38bdf8;">${calc.cfg.isRepo ? 'REPOSITORY' : 'PROFILE'}</span>
                     </div>
                     <div class="xb-bst-svc-grid">
@@ -14020,10 +14044,10 @@ let _ghAgeCheckerResults = [];
                     </div>
                 </div>
 
-                <!-- 2. TARGET INPUT + LIVE BEFORE -> AFTER PREVIEW -->
+                <!-- TARGET INPUT + LIVE BEFORE -> AFTER PREVIEW -->
                 <div>
                     <div class="xb-bst-lbl">
-                        <span>2. TARGET ${calc.cfg.isRepo ? 'REPOSITORY (OWNER/REPO)' : 'GITHUB USERNAME'}</span>
+                        <span>TARGET ${calc.cfg.isRepo ? 'REPOSITORY (OWNER/REPO)' : 'GITHUB USERNAME'}</span>
                         <span style="color:#c084fc;">AUTO-VERIFY</span>
                     </div>
                     <div class="xb-bst-input-row">
@@ -14033,19 +14057,18 @@ let _ghAgeCheckerResults = [];
                     <div id="bstProjectionBox" class="xb-bst-proj" style="margin-top:6px;"></div>
                 </div>
 
-                <!-- 3. SPEED TRACK (CLICK TO VIEW/RE-OPEN DETAILS) -->
+                <!-- SPEED TRACK (TAP TO VIEW / RE-OPEN DETAILS) -->
                 <div>
                     <div class="xb-bst-lbl">
-                        <span>3. DELIVERY SPEED TRACK (TAP FOR INFO)</span>
-                        <span style="color:#34d399;">3H / 2H / 1H PER 10U</span>
+                        <span>DELIVERY SPEED TRACK</span>
+                        <span style="color:#34d399;">TAP FOR INFO</span>
                     </div>
                     <div class="xb-bst-speed-grid">
                         ${['reg', 'fast', 'ultra'].map(spKey => {
                             const tObj = calc.cfg.tiers[spKey];
-                            const hrsLbl = spKey === 'reg' ? '3h/10u' : (spKey === 'fast' ? '2h/10u' : '1h/10u');
                             return `
                                 <button type="button" class="xb-bst-speed-btn ${st.speed === spKey ? 'active' : ''}" onclick="setBoostTerminalSpeed('${spKey}')">
-                                    <span class="sn">${tObj.name.replace(' Track', '')} • ${hrsLbl}</span>
+                                    <span class="sn">${tObj.name.replace(' Track', '')}</span>
                                     <span class="sp">${fmtPrice(tObj.p)} / unit</span>
                                 </button>
                             `;
@@ -14054,17 +14077,17 @@ let _ghAgeCheckerResults = [];
                     <div id="bstSpeedInfoSlot">${buildBoostSpeedInfoHtml()}</div>
                 </div>
 
-                <!-- 4. QUANTITY, LIVE PAT POOL CAPACITY & BULK DISCOUNT -->
+                <!-- QUANTITY, MAX 400 CAP & BULK DISCOUNT -->
                 <div>
                     <div class="xb-bst-lbl">
-                        <span>4. QUANTITY <b id="bstPoolCapBadge" style="color:#38bdf8;margin-left:4px;">${window._xbActivePatPoolCount > 0 ? `MAX ${window._xbActivePatPoolCount} LIVE` : 'MIN 10 UNITS'}</b></span>
+                        <span>QUANTITY <b id="bstPoolCapBadge" style="color:#38bdf8;margin-left:4px;">MAX ${maxCap}</b></span>
                         <span id="bstBulkBadge" style="color:${calc.hasBulkDisc ? '#34d399' : '#fbbf24'};">${calc.hasBulkDisc ? '✓ 5% BULK OFF APPLIED' : '200+ UNITS = 5% OFF'}</span>
                     </div>
                     <div class="xb-bst-qty-row">
-                        ${[50, 100, 200, 500].map(q => `
+                        ${[10, 50, 100, 250].map(q => `
                             <button type="button" class="xb-bst-qty-pill ${Number(st.qty) === q ? 'active' : ''}" onclick="setBoostTerminalQty(${q})">${q}</button>
                         `).join('')}
-                        <input type="number" id="bstQtyManualInp" class="xb-bst-qty-inp" min="10" value="${calc.qty}" oninput="setBoostTerminalQty(this.value, true)">
+                        <input type="number" id="bstQtyManualInp" class="xb-bst-qty-inp" min="10" max="${maxCap}" value="${calc.qty}" oninput="setBoostTerminalQty(this.value, true)">
                     </div>
                 </div>
 
@@ -14159,8 +14182,17 @@ let _ghAgeCheckerResults = [];
         }
 
         function setBoostTerminalQty(val, fromInput = false) {
-            const num = parseInt(val, 10);
-            window._bstState.qty = isNaN(num) ? 10 : Math.max(1, num);
+            const maxCap = getBoostMaxQtyCap();
+            let num = parseInt(val, 10);
+            if (isNaN(num)) {
+                num = 10;
+            } else if (num > maxCap) {
+                num = maxCap;
+                const inpEl = document.getElementById('bstQtyManualInp');
+                if (inpEl) inpEl.value = String(maxCap);
+                showToast(`⚠️ Maximum quantity is ${maxCap} units!`);
+            }
+            window._bstState.qty = Math.max(1, num);
             if (!fromInput) {
                 renderViewport();
                 return;
@@ -14323,8 +14355,9 @@ let _ghAgeCheckerResults = [];
                 showToast('⚠️ Repository boost requires owner/repo format!');
                 return null;
             }
-            if (window._xbActivePatPoolCount > 0 && calc.qty > window._xbActivePatPoolCount) {
-                showToast(`⚠️ Max capacity right now is ${window._xbActivePatPoolCount} units (Active PAT Pool)!`);
+            const maxCap = getBoostMaxQtyCap();
+            if (calc.qty > maxCap) {
+                showToast(`⚠️ Maximum quantity allowed is ${maxCap} units!`);
                 return null;
             }
             let liveStartCnt = 0;
@@ -15418,6 +15451,135 @@ let _ghAgeCheckerResults = [];
         // 📱 SWIPE GESTURE ENGINE (SLIDE LEFT / RIGHT BETWEEN TABS)
         // =========================================================
         const APP_TAB_SEQUENCE = ['home', 'boost', 'wallet', 'vault', 'profile'];
+
+        // SOLID FOOTER SHIELD + TIGHT CART SPACING + SAFE BOTTOM SCROLL CLEARANCE
+        function syncExchangeBottomLayout() {
+            if (window.innerWidth >= 1100) {
+                const gDesk = document.getElementById('xbBottomOpaqueGuard');
+                if (gDesk) gDesk.style.display = 'none';
+                document.documentElement.style.setProperty('--xb-safe-pad-bottom', '44px');
+                return;
+            }
+
+            const isPlat = document.documentElement.getAttribute('data-theme') === 'platinum';
+            const solidDockBg = isPlat ? '#ffffff' : '#070b18';
+            const solidCartBg = isPlat ? '#ffffff' : '#0b1124';
+
+            // 1. Detect Bottom Navigation Dock
+            let dockEl = null;
+            const navTrigger = document.querySelector("[onclick*=\"switchTab('home')\"]") || document.querySelector("[onclick*=\"switchTab('boost')\"]");
+            if (navTrigger) {
+                let p = navTrigger.parentElement;
+                while (p && p !== document.body) {
+                    if (getComputedStyle(p).position === 'fixed') {
+                        dockEl = p;
+                        break;
+                    }
+                    p = p.parentElement;
+                }
+            }
+
+            let dockH = 66;
+            let dockZ = 950;
+            if (dockEl) {
+                const dStyle = getComputedStyle(dockEl);
+                dockZ = parseInt(dStyle.zIndex, 10) || 950;
+                dockEl.style.setProperty('bottom', '0px', 'important');
+                dockEl.style.setProperty('left', '0px', 'important');
+                dockEl.style.setProperty('right', '0px', 'important');
+                dockEl.style.setProperty('width', '100%', 'important');
+                dockEl.style.setProperty('max-width', '100%', 'important');
+                dockEl.style.setProperty('margin', '0', 'important');
+                dockEl.style.setProperty('border-radius', '14px 14px 0 0', 'important');
+                dockEl.style.setProperty('background', solidDockBg, 'important');
+                dockEl.style.setProperty('backdrop-filter', 'none', 'important');
+                dockEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+                dockEl.style.setProperty('box-shadow', isPlat
+                    ? '0 -6px 20px rgba(15,23,42,0.10), inset 0 1px 0 #ffffff'
+                    : '0 -8px 24px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.2)', 'important');
+                const dRect = dockEl.getBoundingClientRect();
+                if (dRect.height > 30) dockH = Math.ceil(dRect.height);
+            }
+
+            // 2. Detect Floating Cart Bar (Exclude Fullscreen Modals)
+            let cartEl = null;
+            let cartVisible = false;
+            let cartH = 0;
+            let cartZ = dockZ;
+            const fixedNodes = document.querySelectorAll('div, section, aside');
+            for (let i = 0; i < fixedNodes.length; i++) {
+                const el = fixedNodes[i];
+                if (el === dockEl || el.id === 'xbBottomOpaqueGuard') continue;
+                const st = getComputedStyle(el);
+                if (st.position !== 'fixed') continue;
+                const txt = el.innerText || '';
+                if (!txt.includes('in Cart') && !txt.includes('Make Offer')) continue;
+                const rc = el.getBoundingClientRect();
+                if (rc.height > 140) continue;
+                cartEl = el;
+                if (st.display !== 'none' && st.visibility !== 'hidden' && rc.height > 20) {
+                    cartVisible = true;
+                    cartH = Math.ceil(rc.height);
+                    cartZ = parseInt(st.zIndex, 10) || dockZ;
+                }
+                break;
+            }
+
+            if (cartEl && cartVisible) {
+                cartEl.style.setProperty('bottom', (dockH + 6) + 'px', 'important');
+                cartEl.style.setProperty('background', solidCartBg, 'important');
+                cartEl.style.setProperty('backdrop-filter', 'none', 'important');
+                cartEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
+            }
+
+            // 3. Solid Opaque Bottom Shield (Prevents Any Card Bleed-Through Behind Dock & Cart)
+            let guard = document.getElementById('xbBottomOpaqueGuard');
+            if (!guard) {
+                guard = document.createElement('div');
+                guard.id = 'xbBottomOpaqueGuard';
+                document.body.appendChild(guard);
+            }
+            guard.style.display = 'block';
+            guard.style.zIndex = String(Math.max(50, Math.min(dockZ, cartZ) - 1));
+            guard.style.height = (cartVisible ? (dockH + cartH + 12) : dockH) + 'px';
+
+            // 4. Safe Bottom Padding So Last Row (+Cart & View) Is Never Cut Off
+            const safePad = cartVisible ? (dockH + cartH + 34) : (dockH + 26);
+            document.documentElement.style.setProperty('--xb-safe-pad-bottom', safePad + 'px');
+
+            // 5. Reposition Floating Chat FAB Above Cart Bar
+            const fabCands = document.querySelectorAll('button, a, div');
+            for (let j = 0; j < fabCands.length; j++) {
+                const fb = fabCands[j];
+                if (fb === dockEl || fb === cartEl || fb.id === 'xbBottomOpaqueGuard') continue;
+                if ((dockEl && dockEl.contains(fb)) || (cartEl && cartEl.contains(fb))) continue;
+                const fst = getComputedStyle(fb);
+                if (fst.position !== 'fixed') continue;
+                const frc = fb.getBoundingClientRect();
+                if (frc.width >= 38 && frc.width <= 64 && frc.height >= 38 && frc.height <= 64 && frc.right > window.innerWidth - 36 && frc.bottom > window.innerHeight - 260) {
+                    fb.style.setProperty('bottom', (cartVisible ? (dockH + cartH + 16) : (dockH + 12)) + 'px', 'important');
+                    break;
+                }
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            setTimeout(syncExchangeBottomLayout, 180);
+            if (typeof window.updateCartUI === 'function' && !window._xbCartLayoutHooked) {
+                window._xbCartLayoutHooked = true;
+                const _origCartUI = window.updateCartUI;
+                window.updateCartUI = function () {
+                    const r = _origCartUI.apply(this, arguments);
+                    setTimeout(syncExchangeBottomLayout, 30);
+                    return r;
+                };
+            }
+            try {
+                new MutationObserver(() => syncExchangeBottomLayout()).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+            } catch (e) {}
+        });
+        window.addEventListener('resize', () => setTimeout(syncExchangeBottomLayout, 80));
+        setInterval(syncExchangeBottomLayout, 900);
         let touchStartX = 0;
         let touchStartY = 0;
         let touchEndX = 0;
