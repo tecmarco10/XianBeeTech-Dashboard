@@ -2008,20 +2008,132 @@
         /* VERIFIED COLLECTION BANNER (XIANBEE AGED GITHUB VAULT + CHECKMARK) */
         .xb-ex-collection { position: relative; background: linear-gradient(145deg, #060914 0%, #0d1c45 54%, #23114a 100%); border: 1px solid var(--ex-hairline); border-radius: 16px; padding: 12px; margin-bottom: 10px; overflow: hidden; box-shadow: 0 12px 28px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.24); }
         [data-theme="platinum"] .xb-ex-collection { background: linear-gradient(145deg, #ffffff 0%, #eff6ff 55%, #f3e8ff 100%); box-shadow: 0 8px 22px rgba(15,23,42,0.08), inset 0 1px 0 #ffffff; }
-        .xb-ex-col-head { display: flex; align-items: center; gap: 10px; }
-        .xb-ex-col-logo { width: 42px; height: 42px; border-radius: 12px; background: #070b17; border: 1px solid rgba(255,255,255,0.26); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 14px rgba(56,189,248,0.28); }
-        .xb-ex-col-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+        /* BLUE-PURPLE LOGO GRADIENT TEXT */
+        .xb-brand-grad {
+            background: linear-gradient(95deg, #38bdf8 0%, #60a5fa 32%, #818cf8 66%, #c084fc 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        [data-theme="platinum"] .xb-brand-grad {
+            background: linear-gradient(95deg, #0284c7 0%, #2563eb 38%, #6d28d9 72%, #9333ea 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* COLLECTION HEADER: 4-COL GRID SO VIP MATCHES "DELIVERY INSTANT" BOX PIXEL-FOR-PIXEL */
+        .xb-ex-col-head { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; align-items: center; }
+        .xb-ex-col-brand { grid-column: 1 / 4; display: flex; align-items: center; gap: 8px; min-width: 0; }
+        .xb-ex-col-logo { width: 40px; height: 40px; border-radius: 11px; background: #070b17; border: 1px solid rgba(255,255,255,0.26); display: flex; align-items: center; justify-content: center; flex-shrink: 0; overflow: hidden; box-shadow: 0 4px 14px rgba(56,189,248,0.28); }
+        .xb-ex-vip-btn {
+            grid-column: 4 / 5;
+            width: 100%;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid rgba(251, 191, 36, 0.55);
+            background: linear-gradient(145deg, rgba(245, 158, 11, 0.24) 0%, rgba(124, 58, 237, 0.28) 100%);
+            color: #fde047;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1px;
+            padding: 3px 2px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.16), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+            transition: 0.16s ease;
+        }
+        .xb-ex-vip-btn:hover { border-color: #fde047; transform: translateY(-1px); }
+        [data-theme="platinum"] .xb-ex-vip-btn {
+            background: linear-gradient(145deg, rgba(254, 243, 199, 0.96) 0%, rgba(237, 233, 254, 0.96) 100%);
+            border-color: rgba(217, 119, 6, 0.52);
+            color: #b45309;
+            box-shadow: 0 4px 10px rgba(217, 119, 6, 0.12), inset 0 1px 0 #ffffff;
+        }
+        .xb-ex-col-stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 9px; }
         .xb-ex-col-stat { background: rgba(4,7,16,0.52); border: 1px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 6px 4px; text-align: center; }
         [data-theme="platinum"] .xb-ex-col-stat { background: rgba(255,255,255,0.88); border-color: rgba(79,70,229,0.16); }
 
-        /* 2-ROW FILTER CHIPS GRID (NO SCROLL) & SORT BAR */
+        /* 2-ROW FILTER CHIPS GRID (NO SCROLL) & UNIFIED 1-BOX LIVE COUNT + SORT BAR */
         .xb-ex-chips-wrap { display: flex; flex-direction: column; gap: 5px; margin-bottom: 8px; }
         .xb-ex-chips-r1 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
         .xb-ex-chips-r2 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
         .xb-ex-filter-chip { width: 100%; min-width: 0; padding: 7px 4px; border-radius: 9px; border: 1px solid var(--ex-hairline); background: var(--ex-card-bg); color: var(--text-secondary); font-family: inherit; font-size: 0.63rem; font-weight: 800; cursor: pointer; white-space: nowrap; text-align: center; transition: 0.16s ease; }
         .xb-ex-filter-chip.active { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border-color: rgba(255,255,255,0.45); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.42), inset 0 1px 0 rgba(255,255,255,0.28); }
-        .xb-ex-sort-bar { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 10px; }
-        .xb-ex-sort-select { background: var(--bg-input); border: 1px solid var(--ex-hairline); color: var(--text-primary); border-radius: 9px; padding: 5px 8px; font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 700; outline: none; cursor: pointer; }
+        .xb-ex-sort-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            margin-bottom: 10px;
+            height: 36px;
+            padding: 0 6px 0 10px;
+            background: var(--ex-card-bg);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 10px;
+            box-shadow: 0 4px 14px rgba(0,0,0,0.26), inset 0 1px 0 rgba(255,255,255,0.16);
+        }
+        [data-theme="platinum"] .xb-ex-sort-bar { box-shadow: 0 3px 10px rgba(15,23,42,0.06), inset 0 1px 0 #ffffff; }
+        .xb-ex-live-wrap { display: inline-flex; align-items: center; gap: 6px; min-width: 0; flex: 1; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 800; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .xb-ex-live-dot { width: 7px; height: 7px; border-radius: 50%; background: #34d399; box-shadow: 0 0 8px #34d399; flex-shrink: 0; }
+        .xb-ex-sort-divider { width: 1px; height: 18px; background: var(--ex-hairline); flex-shrink: 0; }
+        .xb-ex-sort-select { background: transparent; border: none; color: #38bdf8; border-radius: 7px; padding: 0 4px; height: 28px; font-family: 'JetBrains Mono', monospace; font-size: 0.61rem; font-weight: 800; outline: none; cursor: pointer; flex-shrink: 0; }
+        [data-theme="platinum"] .xb-ex-sort-select { color: #2563eb; }
+        .xb-ex-sort-select option { background: var(--bg-surface); color: var(--text-primary); }
+
+        /* ASSET EXCHANGE OVERHAUL: CHAT FAB, VIP HALL OF FAME, CART & NOTIFICATION CENTER */
+        .xb-chat-fab {
+            position: fixed;
+            right: 14px;
+            width: 46px;
+            height: 46px;
+            border-radius: 14px;
+            background: linear-gradient(145deg, #0d1a3d 0%, #1d4ed8 55%, #7c3aed 100%);
+            border: 1px solid rgba(255,255,255,0.34);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 95;
+            box-shadow: 0 8px 22px rgba(79,70,229,0.48), inset 0 1px 0 rgba(255,255,255,0.35);
+            transition: bottom 0.22s ease, transform 0.16s ease;
+        }
+        .xb-chat-fab:active { transform: scale(0.94); }
+        .xb-chat-fab-dot { position: absolute; top: -2px; right: -2px; width: 11px; height: 11px; border-radius: 50%; background: #34d399; border: 2px solid var(--bg-base); box-shadow: 0 0 8px #34d399; }
+
+        .xb-ex-modal-hdr {
+            position: relative;
+            background: var(--ex-card-bg);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 13px;
+            padding: 9px 11px;
+            margin-bottom: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            overflow: hidden;
+            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+        }
+        .xb-ex-modal-hdr::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px; background: var(--ex-sheen); pointer-events: none; }
+        .xb-ex-mclose { width: 28px; height: 28px; border-radius: 8px; border: 1px solid var(--ex-hairline); background: var(--bg-input); color: var(--text-primary); font-size: 0.72rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+        .xb-vip-podium { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-bottom: 10px; align-items: end; }
+        .xb-vip-pod-card { background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-radius: 12px; padding: 8px 5px; text-align: center; display: flex; flex-direction: column; gap: 3px; position: relative; overflow: hidden; }
+        .xb-vip-pod-card.first { border-color: rgba(251,191,36,0.65); padding: 11px 5px; box-shadow: 0 6px 18px rgba(245,158,11,0.2); }
+        .xb-vip-row { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+
+        .xb-cart-item { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 11px; padding: 9px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 7px; }
+        .xb-ntf-card { position: relative; background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-radius: 13px; padding: 10px; margin-bottom: 9px; overflow: hidden; box-shadow: 0 6px 16px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.14); }
+        .xb-ntf-card.pinned-flash { border-color: rgba(251,191,36,0.6); }
+        .xb-ntf-card.pinned-stock { border-color: rgba(52,211,153,0.55); }
+        .xb-ntf-card.selected { border-color: rgba(248,113,113,0.7); }
+        [data-theme="platinum"] .xb-ntf-card { box-shadow: 0 4px 12px rgba(15,23,42,0.06), inset 0 1px 0 #ffffff; }
+        .xb-ntf-kv { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 9px; padding: 7px 9px; display: flex; flex-direction: column; gap: 4px; font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; }
+        .xb-ntf-stock-acc { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 10px; padding: 8px 9px; display: flex; flex-direction: column; gap: 6px; }
 
         /* SECTION DIVIDER & 2-LINE SPECIAL TIERS HEADER */
         .xb-ex-divider { display: flex; align-items: center; gap: 8px; margin: 14px 0 10px 0; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; font-weight: 800; letter-spacing: 0.7px; color: var(--accent-cyan); text-transform: uppercase; }
@@ -2871,12 +2983,12 @@
                             <div style="width:31px;height:31px;background:var(--cockpit-orb-bg);border:1px solid rgba(255,255,255,0.28);padding:2px;border-radius:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0;overflow:hidden;">
                                 <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:7px;" onerror="this.style.display='none'">
                             </div>
-                            <div style="min-width:0;display:flex;flex-direction:column;">
+<div style="min-width:0;display:flex;flex-direction:column;">
                                 <div style="display:flex;align-items:center;gap:3px;">
-                                    <span style="font-weight:800;font-size:0.78rem;letter-spacing:-0.3px;color:var(--text-primary);white-space:nowrap;">XianBee-Tech</span>
+                                    <span class="xb-brand-grad" style="font-weight:800;font-size:0.82rem;letter-spacing:-0.3px;white-space:nowrap;">XianBee-Tech</span>
                                     <svg width="12" height="12" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
                                 </div>
-                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;font-weight:800;color:#38bdf8;letter-spacing:0.35px;white-space:nowrap;">GITHUB ENTERPRISE MARKET</span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.44rem;font-weight:800;color:#38bdf8;letter-spacing:0.2px;white-space:nowrap;">GITHUB VAULT &amp; BOOST HUB</span>
                             </div>
                         </div>
 
@@ -3035,112 +3147,117 @@
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 2: SHOPPING CART (WITH MAKE AN OFFER & IDR CHECKOUT)
+         🪟 MODAL 2: EXECUTIVE SHOPPING CART (ASSET EXCHANGE EDITION)
          ========================================================= -->
     <div class="modal-overlay" id="cartModal">
-        <div class="modal-box" style="padding:18px;">
-            <!-- KOTAK 3D RATA TENGAH UNTUK JUDUL KERANJANG -->
-            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--accent-cyan);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-                <div></div>
-                <h3 style="margin:0;font-size:0.92rem;font-weight:800;color:var(--text-primary);">🛒 Executive Shopping Cart</h3>
-                <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('cartModal')">✕</button>
+        <div class="modal-box" style="padding:14px;border:1px solid var(--ex-hairline);background:var(--bg-surface);">
+            <div class="xb-ex-modal-hdr">
+                <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                    <span class="xb-ex-gh-badge" style="width:30px;height:30px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-color:rgba(255,255,255,0.35);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                    </span>
+                    <div style="min-width:0;">
+                        <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;white-space:nowrap;">Executive Shopping Cart</h3>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:700;color:var(--text-muted);letter-spacing:0.35px;">INSTANT MULTI-ASSET CHECKOUT</div>
+                    </div>
+                </div>
+                <button type="button" class="xb-ex-mclose" onclick="closeModal('cartModal')">✕</button>
             </div>
 
-            <div id="cartItemsContainer" style="max-height:220px;overflow-y:auto;margin-bottom:12px;"></div>
+            <div id="cartItemsContainer" style="max-height:230px;overflow-y:auto;margin-bottom:10px;"></div>
 
-            <!-- GRAND TOTAL & WALLET BALANCE SUMMARY -->
-            <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);padding:10px 12px;border-radius:11px;margin-bottom:12px;">
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;">
-                    <span style="font-size:0.8rem;font-weight:800;">Grand Total:</span>
-                    <span class="price-chip" id="cartGrandTotal" style="padding:4px 8px;font-size:0.76rem;">0.00 USDT</span>
+            <!-- GRAND TOTAL & WALLET BALANCE CARD -->
+            <div class="xb-wal-card" style="padding:10px 11px;margin-bottom:10px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:var(--text-secondary);">GRAND TOTAL</span>
+                    <span id="cartGrandTotal" style="font-family:'JetBrains Mono',monospace;font-size:0.95rem;font-weight:800;color:#34d399;">0.00 USDT</span>
                 </div>
-                <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;color:var(--text-muted);font-weight:700;">
-                    <span>Your Wallet Balance:</span>
-                    <span id="cartUserBal" style="font-family:'JetBrains Mono',monospace;color:var(--text-primary);">0.00 USDT</span>
-                </div>
-            </div>
-
-            <!-- DISCOUNT VOUCHER CODE DI BAWAH (SEBELUM TOMBOL PEMBAYARAN) -->
-            <div class="form-group" style="margin-bottom:14px;">
-                <label style="font-size:0.62rem;color:var(--accent-cyan);letter-spacing:0.8px;">DISCOUNT VOUCHER CODE:</label>
-                <div style="display:flex;gap:7px;">
-                    <input type="text" class="form-input" id="cartPromoInput" style="padding:9px 12px;font-size:0.8rem;" placeholder="Enter voucher code (e.g. XIANBEE5)">
-                    <button class="btn-ui primary" style="flex:0 0 auto;padding:9px 14px;font-size:0.74rem;white-space:nowrap;" onclick="applyCartVoucher()">Apply</button>
+                <hr class="xb-wal-hr" style="margin:5px 0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.62rem;">
+                    <span style="color:var(--text-muted);font-weight:700;">Wallet Balance</span>
+                    <span id="cartUserBal" style="font-weight:800;color:#38bdf8;">0.00 USDT</span>
                 </div>
             </div>
 
-            <!-- TOMBOL PEMBAYARAN BERSIH TANPA TEKS BERLEBIHAN -->
+            <!-- PROMO VOUCHER INPUT -->
+            <div style="margin-bottom:11px;">
+                <div class="xb-bst-lbl" style="margin-bottom:4px;"><span>PROMO VOUCHER CODE</span><span style="color:#c084fc;">INSTANT OFF</span></div>
+                <div class="xb-bst-input-row">
+                    <input type="text" class="xb-bst-target-inp" id="cartPromoInput" style="height:36px;text-transform:uppercase;" placeholder="Enter code (e.g. XIANBEE5)">
+                    <button type="button" class="btn-ui primary" style="flex:0 0 auto;min-width:0;padding:8px 14px;font-size:0.7rem;border-radius:9px;" onclick="applyCartVoucher()">Apply</button>
+                </div>
+            </div>
+
+            <!-- CHECKOUT ACTION STACK -->
             <div style="display:flex;flex-direction:column;gap:7px;">
-                <!-- BARIS 1: PAY WITH BALANCE (PANJANG PENUH) -->
-                <button class="btn-ui buy-now" style="width:100%;padding:11px 12px;font-size:0.76rem;" onclick="checkoutCartWith('balance')">
-                    ⚡ Pay with Balance
+                <button type="button" class="btn-ui buy-now" style="width:100%;padding:11px 12px;font-size:0.75rem;border-radius:10px;" onclick="checkoutCartWith('balance')">
+                    ⚡ Pay with Wallet Balance
                 </button>
-
-                <!-- BARIS 2: PAY WITH USDT & PAY WITH IDR (BERDAMPINGAN KIRI-KANAN) -->
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                    <button class="btn-ui primary" style="padding:10px 8px;font-size:0.72rem;" onclick="checkoutCartWith('crypto')">
-                        🪙 Pay with USDT
+                    <button type="button" class="btn-ui primary" style="padding:10px 8px;font-size:0.71rem;border-radius:10px;" onclick="checkoutCartWith('crypto')">
+                        🪙 Pay USDT
                     </button>
-                    <button class="btn-ui secondary" style="padding:10px 8px;font-size:0.72rem;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="checkoutCartWith('idr')">
-                        🇮🇩 Pay with IDR
+                    <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.71rem;border-radius:10px;border-color:rgba(56,189,248,0.5);color:#38bdf8;" onclick="checkoutCartWith('idr')">
+                        🇮🇩 Pay IDR
                     </button>
                 </div>
-
-                <!-- BARIS 3: MAKE AN OFFER (PANJANG PENUH DI PALING BAWAH) -->
-                <button class="btn-ui secondary" style="width:100%;padding:10px 12px;font-size:0.74rem;border-color:var(--warning);color:var(--warning);" onclick="openCartMakeOfferModal()">
-                    🤝 Make an Offer
+                <button type="button" class="btn-ui secondary" style="width:100%;padding:10px 12px;font-size:0.72rem;border-radius:10px;border-color:rgba(251,191,36,0.5);color:#fbbf24;" onclick="openCartMakeOfferModal()">
+                    🤝 Make a Bundle Offer
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- FLOATING CART BAR AT BOTTOM WHEN CART HAS ITEMS -->
-    <div class="floating-cart-bar" id="floatingCartBar">
-        <div style="display:flex;align-items:center;gap:10px;min-width:0;cursor:pointer;" onclick="openCartModal()">
-            <div style="width:38px;height:38px;border-radius:10px;background:var(--grad-primary);color:#fff;display:flex;align-items:center;justify-content:center;font-size:1.1rem;font-weight:800;flex-shrink:0;">🛒</div>
+    <!-- FLOATING CART BAR (ASSET EXCHANGE EDITION) -->
+    <div class="floating-cart-bar" id="floatingCartBar" style="border:1px solid var(--ex-hairline);border-radius:14px;padding:7px 10px;">
+        <div style="display:flex;align-items:center;gap:8px;min-width:0;cursor:pointer;" onclick="openCartModal()">
+            <div style="width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border:1px solid rgba(255,255,255,0.32);color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px rgba(79,70,229,0.4);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+            </div>
             <div style="min-width:0;">
-                <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="floatingCartTitle">0 Items in Cart</div>
-                <div style="font-size:0.72rem;font-family:'JetBrains Mono',monospace;color:var(--success);font-weight:800;" id="floatingCartTotal">0.00 USDT</div>
+                <div style="font-size:0.74rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" id="floatingCartTitle">0 Items in Cart</div>
+                <div style="font-size:0.68rem;font-family:'JetBrains Mono',monospace;color:#34d399;font-weight:800;" id="floatingCartTotal">0.00 USDT</div>
             </div>
         </div>
-        <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
-            <button class="top-pill" style="border-color:var(--warning);color:var(--warning);padding:8px 10px;font-size:0.73rem;" onclick="openCartMakeOfferModal()">🤝 Make Offer</button>
-            <button class="top-pill cart-top-pill" style="padding:8px 12px;font-size:0.75rem;" onclick="openCartModal()">⚡ Checkout</button>
+        <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+            <button type="button" class="xb-ex-icon-btn" style="height:31px;padding:0 9px;border-color:rgba(251,191,36,0.5);color:#fbbf24;font-size:0.65rem;" onclick="openCartMakeOfferModal()">🤝 Make Offer</button>
+            <button type="button" class="xb-ex-icon-btn cart" style="height:31px;padding:0 11px;font-size:0.67rem;" onclick="openCartModal()">⚡ Checkout</button>
         </div>
     </div>
 
     <!-- =========================================================
-         🪟 MODAL 3: LIVE NOTIFICATION CENTER (TELEGRAM-STYLE ALERTS IN WEB)
+         🪟 MODAL 3: LIVE NOTIFICATION CENTER (ASSET EXCHANGE EDITION)
          ========================================================= -->
     <div class="modal-overlay" id="notificationsModal">
-        <div class="modal-box" style="padding:16px;">
-            <!-- KOTAK LUAR DENGAN GARIS ATAS-BAWAH + KOTAK DALAM UNTUK LIVE NOTIFICATION CENTER -->
-            <div style="background:var(--bg-input);border-top:2.5px solid #38bdf8;border-bottom:2.5px solid #a855f7;border-left:1.5px solid var(--border-focus);border-right:1.5px solid var(--border-focus);border-radius:15px;padding:10px 11px;margin-bottom:12px;text-align:center;box-shadow:var(--shadow-card);">
-                <!-- KOTAK DALAM: LIVE NOTIFICATION CENTER DENGAN GARIS ATAS-BAWAH -->
-                <div style="background:var(--bg-surface);border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);border-radius:10px;padding:8px 12px;margin-bottom:9px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.05);">
-                    <h3 style="margin:0;font-size:0.98rem;font-weight:800;color:var(--text-primary);text-align:center;letter-spacing:0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                        🔔 Live Notification Center
-                    </h3>
+        <div class="modal-box" style="padding:14px;border:1px solid var(--ex-hairline);background:var(--bg-surface);">
+            <div class="xb-ex-modal-hdr" style="margin-bottom:9px;">
+                <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                    <span class="xb-ex-gh-badge" style="width:30px;height:30px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-color:rgba(255,255,255,0.35);">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                    </span>
+                    <div style="min-width:0;">
+                        <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;white-space:nowrap;">Live Notification Center</h3>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:700;color:var(--text-muted);letter-spacing:0.35px;">LIVE RESTOCKS • FLASH DEALS • ACTIVITY</div>
+                    </div>
                 </div>
-                <div style="display:grid;grid-template-columns:1fr 1.25fr auto;gap:6px;align-items:center;">
-                    <button type="button" class="top-pill" id="btnSelectAllNotifs" style="justify-content:center;padding:7px 8px;font-size:0.68rem;border-color:var(--accent-cyan);color:var(--accent-cyan);" onclick="toggleSelectAllWebNotifications()">
-                        ☑️ Select All
-                    </button>
-                    <button type="button" class="top-pill" id="btnClearOrDeleteNotifs" style="justify-content:center;padding:7px 8px;font-size:0.68rem;color:var(--danger);border-color:rgba(239,68,68,0.45);background:rgba(239,68,68,0.08);" onclick="deleteSelectedOrClearWebNotifications()">
-                        🗑️ Clear All
-                    </button>
-                    <button type="button" class="top-pill" style="justify-content:center;padding:7px 11px;font-size:0.72rem;" onclick="closeModal('notificationsModal')">
-                        ✕
-                    </button>
-                </div>
+                <button type="button" class="xb-ex-mclose" onclick="closeModal('notificationsModal')">✕</button>
             </div>
 
-            <div class="subtabs-grid" id="notifModeTabs" style="margin-bottom:12px;grid-template-columns:1fr 1fr;display:none;">
-                <button class="subtab-pill active" id="tabNotifBuyer" onclick="switchNotifFeed('buyer')">📩 Buyer Alerts</button>
-                <button class="subtab-pill" id="tabNotifAdmin" onclick="switchNotifFeed('admin')">🕵️ Admin Logs</button>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:9px;">
+                <button type="button" class="xb-adm-mini-btn" id="btnSelectAllNotifs" style="justify-content:center;padding:7px 8px;font-size:0.62rem;border-color:rgba(56,189,248,0.45);color:#38bdf8;" onclick="toggleSelectAllWebNotifications()">
+                    ☑️ Select All
+                </button>
+                <button type="button" class="xb-adm-mini-btn" id="btnClearOrDeleteNotifs" style="justify-content:center;padding:7px 8px;font-size:0.62rem;color:#f87171;border-color:rgba(248,113,113,0.45);background:rgba(239,68,68,0.08);" onclick="deleteSelectedOrClearWebNotifications()">
+                    🗑️ Clear All
+                </button>
             </div>
 
-            <div id="notificationsListContainer" style="max-height:60vh;overflow-y:auto;"></div>
+            <div class="xb-vp-seg" id="notifModeTabs" style="margin-bottom:10px;display:none;">
+                <button type="button" class="xb-vp-seg-btn active" id="tabNotifBuyer" onclick="switchNotifFeed('buyer')">📩 Store Alerts</button>
+                <button type="button" class="xb-vp-seg-btn" id="tabNotifAdmin" onclick="switchNotifFeed('admin')">🕵️ Admin Logs</button>
+            </div>
+
+            <div id="notificationsListContainer" style="max-height:62vh;overflow-y:auto;padding-right:2px;"></div>
         </div>
     </div>
 
@@ -3980,25 +4097,24 @@
             }
 
             const headerBoxHtml = `
-                <div style="border-top:3px double var(--accent-cyan);border-bottom:3px double var(--accent-cyan);background:rgba(6,182,212,0.08);padding:6px 8px;margin-bottom:8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.69rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.5px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                    ${bannerHeading}
+                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:7px;">
+                    <span style="font-size:0.74rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${bannerHeading}</span>
                 </div>
             `;
 
             const kvBoxHtml = kvRows.length > 0 ? `
-                <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-primary);border-radius:9px;padding:8px 10px;display:flex;flex-direction:column;gap:5px;font-family:'JetBrains Mono',monospace;font-size:0.69rem;line-height:1.45;">
+                <div class="xb-ntf-kv">
                     ${kvRows.map(r => `
-                        <div style="display:flex;align-items:center;gap:6px;min-width:0;width:100%;">
-                            <span style="color:var(--text-muted);font-weight:700;flex-shrink:0;">🔹 ${r.key}</span>
-                            <span style="color:var(--accent-cyan);font-weight:800;flex-shrink:0;">▸</span>
-                            <span style="color:var(--text-primary);font-weight:700;min-width:0;flex:1;word-break:break-word;">${r.val}</span>
+                        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;min-width:0;width:100%;">
+                            <span style="color:var(--text-muted);font-weight:700;flex-shrink:0;">${r.key}</span>
+                            <span style="color:var(--text-primary);font-weight:700;text-align:right;min-width:0;flex:1;word-break:break-word;">${r.val}</span>
                         </div>
                     `).join('')}
                 </div>
             ` : '';
 
             const footerNotesHtml = noteLines.length > 0 ? `
-                <div style="margin-top:7px;font-size:0.68rem;color:var(--text-secondary);line-height:1.4;padding-left:2px;">
+                <div style="margin-top:6px;font-size:0.63rem;color:var(--text-secondary);line-height:1.42;">
                     ${noteLines.join('<br>')}
                 </div>
             ` : '';
@@ -4012,7 +4128,7 @@
                 : getMergedBuyerNotifsWithPinned();
             const container = document.getElementById('notificationsListContainer');
             if (list.length === 0) {
-                container.innerHTML = `<div style="padding:26px;text-align:center;color:var(--text-muted);font-weight:700;">No notifications in this feed yet.</div>`;
+                container.innerHTML = `<div class="xb-wal-card" style="padding:24px;text-align:center;color:var(--text-muted);font-size:0.72rem;font-weight:700;">No notifications in this feed yet.</div>`;
                 return;
             }
             const isAdmin = ADMIN_IDS.includes(String(currentUserId));
@@ -4021,46 +4137,47 @@
                 let imgPreviewHtml = '';
                 const isPinned = isPinnedNotifItem(n);
                 const isFlashAlert = Boolean(n.meta && n.meta.type === 'flash_sale');
+                const isStockAlert = Boolean(n.meta && n.meta.type === 'stock_alert');
 
                 if (n.meta && n.meta.proofDataUrl) {
-                    imgPreviewHtml = `<div style="margin-top:8px;"><img src="${n.meta.proofDataUrl}" style="max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border-focus);"></div>`;
+                    imgPreviewHtml = `<div style="margin-top:8px;"><img src="${n.meta.proofDataUrl}" style="max-width:100%;max-height:210px;border-radius:10px;border:1px solid var(--ex-hairline);"></div>`;
                 }
+
                 if (activeNotifFeed === 'admin' && isAdmin && n.meta) {
                     const m = n.meta;
                     if (m.type === 'nego') {
                         actionBtnsHtml = `
-                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);">
-                                <button class="btn-ui buy-now" style="padding:7px 4px;font-size:0.67rem;min-width:0;white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Accept ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
-                                <button class="btn-ui primary" style="padding:7px 4px;font-size:0.67rem;min-width:0;white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'counter')">✍️ Counter</button>
-                                <button class="btn-ui secondary" style="padding:7px 4px;font-size:0.67rem;min-width:0;color:var(--danger);white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'reject')">❌ Decline</button>
+                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:8px;">
+                                <button type="button" class="btn-ui buy-now" style="padding:7px 4px;font-size:0.64rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'accept')">✅ Accept ($${parseFloat(m.offerUsdt).toFixed(2)})</button>
+                                <button type="button" class="btn-ui primary" style="padding:7px 4px;font-size:0.64rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'counter')">✍️ Counter</button>
+                                <button type="button" class="btn-ui secondary" style="padding:7px 4px;font-size:0.64rem;min-width:0;border-radius:8px;color:#f87171;white-space:nowrap;" onclick="adminWebNegoDecision(${idx}, 'reject')">✕ Decline</button>
                             </div>
                         `;
                     } else if (m.type === 'remind_cart' || m.type === 'remind_topup') {
                         actionBtnsHtml = `
-                            <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);">
-                                <button class="btn-ui primary" style="width:100%;padding:8px 10px;font-size:0.7rem;" onclick="adminSendBuyerReminder(${idx})">🔔 Remind Buyer Now</button>
+                            <div style="margin-top:8px;">
+                                <button type="button" class="btn-ui primary" style="width:100%;padding:8px 10px;font-size:0.68rem;border-radius:9px;" onclick="adminSendBuyerReminder(${idx})">🔔 Remind Buyer Now</button>
                             </div>
                         `;
                     } else if (m.type === 'idr_proof') {
                         actionBtnsHtml = `
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);">
-                                <button class="btn-ui buy-now" style="padding:7px 8px;font-size:0.69rem;min-width:0;" onclick="adminWebIdrDecision(${idx}, 'approve')">✅ Approve (+$${parseFloat(m.amountUsdt).toFixed(2)})</button>
-                                <button class="btn-ui secondary" style="padding:7px 8px;font-size:0.69rem;min-width:0;color:var(--danger);" onclick="adminWebIdrDecision(${idx}, 'reject')">❌ Reject Proof</button>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;">
+                                <button type="button" class="btn-ui buy-now" style="padding:7px 8px;font-size:0.67rem;min-width:0;border-radius:8px;" onclick="adminWebIdrDecision(${idx}, 'approve')">✅ Approve (+$${parseFloat(m.amountUsdt).toFixed(2)})</button>
+                                <button type="button" class="btn-ui secondary" style="padding:7px 8px;font-size:0.67rem;min-width:0;border-radius:8px;color:#f87171;" onclick="adminWebIdrDecision(${idx}, 'reject')">✕ Reject</button>
                             </div>
                         `;
                     }
                 } else if (activeNotifFeed === 'buyer' && n.meta && n.meta.type === 'nego_approved') {
                     const m = n.meta;
                     actionBtnsHtml = `
-                        <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);">
-                            <button class="btn-ui buy-now" style="width:100%;padding:9px;font-size:0.72rem;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt}, ${!!m.isCartOffer})">💳 Accept & Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
+                        <div style="margin-top:8px;">
+                            <button type="button" class="btn-ui buy-now" style="width:100%;padding:9px;font-size:0.7rem;border-radius:9px;" onclick="claimApprovedWebNego('${m.accId}', ${m.dealUsdt}, ${!!m.isCartOffer})">⚡ Accept &amp; Checkout ($${parseFloat(m.dealUsdt).toFixed(2)} USDT)</button>
                         </div>
                     `;
-                } else if (n.meta && n.meta.type === 'flash_sale' && Array.isArray(n.meta.accounts)) {
+                } else if (isFlashAlert && Array.isArray(n.meta.accounts)) {
                     const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
                     let availFlashCount = 0;
 
-                    // Urutkan otomatis: Akun Flash Sale yang masih Available di atas, yang SOLD OUT / EXPIRED pindah ke bawah
                     const sortedFlashAccounts = [...n.meta.accounts].sort((a, b) => {
                         const uA = String(a.username || '').toLowerCase();
                         const uB = String(b.username || '').toLowerCase();
@@ -4073,11 +4190,11 @@
                     const flashRowsHtml = sortedFlashAccounts.map(fItem => {
                         const uLow = String(fItem.username || '').toLowerCase();
                         const remMs = Math.max(0, (fItem.expiresAt || (Date.now() + 3600000)) - Date.now());
-                        const isNotExpired = remMs > 0;
-                        const isStillAvail = isNotExpired && (liveSet.size === 0 || liveSet.has(uLow));
+                        const isStillAvail = (remMs > 0) && (liveSet.size === 0 || liveSet.has(uLow));
                         const remHrs = Math.floor(remMs / 3600000);
                         const remMins = Math.floor((remMs % 3600000) / 60000);
                         const accId = `${fItem.yearKey || '2026'}-${fItem.username}`;
+                        const tier = getAssetRarityTier(fItem.yearKey || '2026');
 
                         if (isStillAvail) {
                             availFlashCount++;
@@ -4089,30 +4206,32 @@
                         }
 
                         return `
-                            <div style="background:var(--bg-surface);border:1px solid ${isStillAvail ? 'var(--warning)' : 'rgba(239,68,68,0.4)'};border-left:3.5px solid ${isStillAvail ? 'var(--warning)' : 'var(--danger)'};border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;">
+                            <div class="xb-ntf-stock-acc" style="border-color:${isStillAvail ? 'rgba(251,191,36,0.5)' : 'rgba(248,113,113,0.35)'};">
                                 <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:${isStillAvail ? 'var(--text-primary)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                        ${isStillAvail ? '🔥' : '🔴'} @${fItem.username} <span style="font-size:0.62rem;color:var(--warning);">(${fItem.yearKey || 'GitHub'})</span>
+                                    <div style="display:flex;align-items:center;gap:5px;min-width:0;flex:1;">
+                                        <span class="xb-ex-gh-badge" style="width:22px;height:22px;">${GH_SVG_EMBLEM}</span>
+                                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:${isStillAvail ? 'var(--text-primary)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${fItem.username}</span>
+                                        <span class="xb-ex-chip ${tier.cls}" style="font-size:0.46rem;">${fItem.yearKey || 'GH'}</span>
                                     </div>
-                                    <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
-                                        <s style="font-size:0.6rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">${fmtPrice(fItem.origUsdt)}</s>
-                                        <span class="price-chip" style="padding:2px 7px;font-size:0.65rem;border-color:var(--warning);color:var(--warning);">${fmtPrice(fItem.flashUsdt)}</span>
+                                    <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;font-family:'JetBrains Mono',monospace;">
+                                        <s style="font-size:0.56rem;color:var(--text-muted);">${fmtPrice(fItem.origUsdt)}</s>
+                                        <span style="font-size:0.7rem;font-weight:800;color:#fbbf24;">${fmtPrice(fItem.flashUsdt)}</span>
                                     </div>
                                 </div>
-                                <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.62rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
-                                    <span>👥 ${fItem.followers || 0} Followers • 📁 ${fItem.repos || 0} Repository</span>
-                                    <span style="color:var(--warning);font-weight:800;">⏳ ${remHrs}h ${remMins}m Left</span>
+                                <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-secondary);">
+                                    <span>👥 ${fItem.followers || 0} Flw • 📁 ${fItem.repos || 0} Repos</span>
+                                    <span style="color:#fbbf24;font-weight:800;">⏳ ${remHrs}h ${remMins}m left</span>
                                 </div>
                                 ${isStillAvail ? `
-                                    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
-                                        <a href="https://github.com/${fItem.username}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;">🌐 Profile</a>
-                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;border-color:var(--warning);color:var(--warning);" onclick="closeModal('notificationsModal'); openNegoModalById('${accId}')">🤝 Offer</button>
-                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
-                                        <button type="button" class="btn-ui buy-now" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="closeModal('notificationsModal'); buySpecificAccountById('${accId}')">⚡ Claim</button>
+                                    <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
+                                        <a href="https://github.com/${fItem.username}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:5px 2px;font-size:0.59rem;border-radius:7px;">🌐 View</a>
+                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:5px 2px;font-size:0.59rem;border-radius:7px;color:#fbbf24;border-color:rgba(251,191,36,0.45);" onclick="closeModal('notificationsModal'); openNegoModalById('${accId}')">🤝 Offer</button>
+                                        <button type="button" class="btn-ui secondary" style="min-width:0;padding:5px 2px;font-size:0.59rem;border-radius:7px;" onclick="addSpecificAccountById('${accId}')">🛒 +Cart</button>
+                                        <button type="button" class="btn-ui buy-now" style="min-width:0;padding:5px 2px;font-size:0.59rem;border-radius:7px;" onclick="closeModal('notificationsModal'); buySpecificAccountById('${accId}')">⚡ Claim</button>
                                     </div>
                                 ` : `
-                                    <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:var(--danger);border-radius:7px;padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;">
-                                        🔴 SOLD OUT / EXPIRED
+                                    <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(248,113,113,0.35);color:#f87171;border-radius:7px;padding:4px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;">
+                                        ● SOLD OUT / EXPIRED
                                     </div>
                                 `}
                             </div>
@@ -4120,26 +4239,25 @@
                     }).join('');
 
                     actionBtnsHtml = `
-                        <div style="margin-top:9px;padding-top:9px;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:7px;">
-                            <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-surface);border:1px solid rgba(245,158,11,0.45);padding:6px 10px;border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;">
-                                <span style="color:var(--warning);">FLASH SALE STATUS:</span>
-                                <span style="color:${availFlashCount > 0 ? 'var(--success)' : 'var(--danger)'};">
-                                    ${availFlashCount > 0 ? `🟢 ${availFlashCount} Active Deal(s)` : `🔴 All Deals Sold Out`}
+                        <div style="display:flex;flex-direction:column;gap:7px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-size:0.76rem;font-weight:800;color:#fbbf24;">⚡ Limited Flash Sale</span>
+                                <span class="xb-ex-chip" style="color:${availFlashCount > 0 ? '#34d399' : '#f87171'};border-color:${availFlashCount > 0 ? 'rgba(52,211,153,0.5)' : 'rgba(248,113,113,0.5)'};">
+                                    ${availFlashCount > 0 ? `● ${availFlashCount} ACTIVE` : '● ENDED'}
                                 </span>
                             </div>
-                            <div style="display:flex;flex-direction:column;gap:6px;max-height:240px;overflow-y:auto;">
+                            <div style="display:flex;flex-direction:column;gap:6px;max-height:230px;overflow-y:auto;">
                                 ${flashRowsHtml}
                             </div>
                         </div>
                     `;
-                } else if (n.meta && n.meta.type === 'stock_alert' && Array.isArray(n.meta.accounts)) {
+                } else if (isStockAlert && Array.isArray(n.meta.accounts)) {
                     const liveSet = new Set(allLiveAccountsFlat.map(a => String(a.username || '').toLowerCase()));
                     const mergedAccounts = mergeStockAlertAccountsList(n.meta.accounts, []);
                     const totalInit = mergedAccounts.length;
                     let availNowCount = 0;
                     let soldNowCount = 0;
 
-                    // Kelompokkan berdasarkan Tahun / Kategori, lalu urutkan dari Tahun Terlama ke Terbaru (misal 2022 di atas, 2024 di bawah, dst.)
                     const groupedByCat = {};
                     mergedAccounts.forEach(item => {
                         const cKey = String(item.yearKey || item.category || '2026').trim();
@@ -4147,8 +4265,6 @@
                         groupedByCat[cKey].push(item);
                     });
                     const sortedCatKeys = Object.keys(groupedByCat).sort(compareStockCatalogOrder);
-
-                    const catalogSummaryRowsHtml = [];
                     const groupedSectionsHtml = [];
 
                     sortedCatKeys.forEach(catKey => {
@@ -4156,7 +4272,6 @@
                         let catAvail = 0;
                         let catSold = 0;
 
-                        // Di dalam setiap Tahun: Akun Available (🟢) di atas, Akun SOLD OUT (🔴) tetap tampil di bawahnya
                         const sortedCatItems = [...catItems].sort((a, b) => {
                             const uA = String(a.username || '').toLowerCase();
                             const uB = String(b.username || '').toLowerCase();
@@ -4166,6 +4281,7 @@
                             return isAvA ? -1 : 1;
                         });
 
+                        const tier = getAssetRarityTier(catKey);
                         const cardsInCatHtml = sortedCatItems.map(item => {
                             const uLow = String(item.username || '').toLowerCase();
                             const isStillAvail = liveSet.size === 0 ? (item.status !== 'SOLD OUT') : liveSet.has(uLow);
@@ -4179,26 +4295,28 @@
                                 catSold++;
                             }
                             return `
-                                <div style="background:var(--bg-surface);border:1px solid ${isStillAvail ? 'var(--border-focus)' : 'rgba(239,68,68,0.4)'};border-left:3.5px solid ${isStillAvail ? 'var(--success)' : 'var(--danger)'};border-radius:10px;padding:8px 10px;display:flex;flex-direction:column;gap:6px;">
+                                <div class="xb-ntf-stock-acc" style="border-color:${isStillAvail ? 'var(--ex-hairline)' : 'rgba(248,113,113,0.35)'};">
                                     <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:${isStillAvail ? 'var(--text-primary)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                            ${isStillAvail ? '🟢' : '🔴'} @${item.username} <span style="font-size:0.62rem;color:var(--accent-cyan);">(${catKey})</span>
+                                        <div style="display:flex;align-items:center;gap:5px;min-width:0;flex:1;">
+                                            <span class="xb-ex-gh-badge" style="width:22px;height:22px;">${GH_SVG_EMBLEM}</span>
+                                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:${isStillAvail ? 'var(--text-primary)' : 'var(--text-muted)'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${item.username}</span>
+                                            <span class="xb-ex-chip ${tier.cls}" style="font-size:0.45rem;">${catKey}</span>
                                         </div>
-                                        <span class="price-chip" style="padding:2px 7px;font-size:0.65rem;">${fmtPrice(item.usdt)}</span>
+                                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;color:${isStillAvail ? '#34d399' : 'var(--text-muted)'};flex-shrink:0;">${fmtPrice(item.usdt)}</span>
                                     </div>
-                                    <div style="font-size:0.63rem;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;">
-                                        👥 ${item.followers || 0} Followers • 📁 ${item.repos || 0} Repository${catKey === 'Contrib' ? ' • 🔥 200K+ Commits' : ''}
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-secondary);">
+                                        👥 ${item.followers || 0} Flw • 📁 ${item.repos || 0} Repos${catKey === 'Contrib' ? ' • 🔥 200K+ Commits' : ''}
                                     </div>
                                     ${isStillAvail ? `
-                                        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;">
-                                            <a href="${item.url}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;">🌐 Profile</a>
-                                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;border-color:var(--warning);color:var(--warning);" onclick="closeModal('notificationsModal'); openNegoModalById('${item.accId}')">🤝 Offer</button>
-                                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="addSpecificAccountById('${item.accId}')">🛒 +Cart</button>
-                                            <button type="button" class="btn-ui buy-now" style="min-width:0;padding:6px 3px;font-size:0.62rem;" onclick="closeModal('notificationsModal'); buySpecificAccountById('${item.accId}')">⚡ Buy</button>
+                                        <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;">
+                                            <a href="${item.url}" target="_blank" class="btn-ui secondary" style="min-width:0;padding:5px 2px;font-size:0.59rem;border-radius:7px;">🌐 View</a>
+                                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:5px 2px;font-size:0.59rem;border-radius:7px;color:#fbbf24;border-color:rgba(251,191,36,0.45);" onclick="closeModal('notificationsModal'); openNegoModalById('${item.accId}')">🤝 Offer</button>
+                                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:5px 2px;font-size:0.59rem;border-radius:7px;" onclick="addSpecificAccountById('${item.accId}')">🛒 +Cart</button>
+                                            <button type="button" class="btn-ui buy-now" style="min-width:0;padding:5px 2px;font-size:0.59rem;border-radius:7px;" onclick="closeModal('notificationsModal'); buySpecificAccountById('${item.accId}')">⚡ Buy</button>
                                         </div>
                                     ` : `
-                                        <div style="background:rgba(239,68,68,0.12);border:1px solid rgba(239,68,68,0.35);color:var(--danger);border-radius:7px;padding:5px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;">
-                                            🔴 SOLD OUT — Purchased by another client
+                                        <div style="background:rgba(239,68,68,0.1);border:1px solid rgba(248,113,113,0.35);color:#f87171;border-radius:7px;padding:4px 8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.57rem;font-weight:800;">
+                                            ● SOLD OUT
                                         </div>
                                     `}
                                 </div>
@@ -4206,75 +4324,34 @@
                         }).join('');
 
                         const catLabel = /^\d{4}$/.test(catKey) ? `GitHub ${catKey}` : `GitHub ${catKey}`;
-                        catalogSummaryRowsHtml.push(`
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:2px solid var(--accent-cyan);border-radius:10px;padding:7px 10px;display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;">
-                                <div style="font-size:0.74rem;font-weight:800;color:var(--text-primary);letter-spacing:0.3px;white-space:nowrap;">
-                                    📂 <span style="color:var(--accent-cyan);">${catLabel}</span> <span style="color:var(--text-secondary);font-size:0.66rem;">(+${catItems.length} Accounts)</span>
-                                </div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;width:100%;">
-                                    <div style="background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.35);border-radius:7px;padding:4px 6px;font-size:0.63rem;font-weight:800;color:var(--success);text-align:center;white-space:nowrap;">
-                                        🟢 ${catAvail} Available
-                                    </div>
-                                    <div style="background:${catSold > 0 ? 'rgba(239,68,68,0.12)' : 'rgba(255,255,255,0.03)'};border:1px solid ${catSold > 0 ? 'rgba(239,68,68,0.38)' : 'var(--border-subtle)'};border-radius:7px;padding:4px 6px;font-size:0.63rem;font-weight:800;color:${catSold > 0 ? 'var(--danger)' : 'var(--text-muted)'};text-align:center;white-space:nowrap;">
-                                        🔴 ${catSold} Sold
-                                    </div>
-                                </div>
-                            </div>
-                        `);
-
                         groupedSectionsHtml.push(`
-                            <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:8px;">
-                                <div style="border-top:2px solid #38bdf8;border-bottom:2px solid #a855f7;border-left:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);background:rgba(6,182,212,0.08);padding:7px 10px;border-radius:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;font-family:'JetBrains Mono',monospace;text-align:center;">
-                                    <div style="font-size:0.74rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.5px;white-space:nowrap;">
-                                        📂 ${catLabel.toUpperCase()}
-                                    </div>
-                                    <div style="font-size:0.63rem;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;white-space:nowrap;">
-                                        <span style="color:var(--success);">🟢 ${catAvail} Available</span>
-                                        <span style="color:var(--text-muted);">•</span>
-                                        <span style="color:${catSold > 0 ? 'var(--danger)' : 'var(--text-muted)'};">🔴 ${catSold} Sold</span>
-                                    </div>
+                            <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:7px;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 8px;border-radius:8px;background:rgba(56,189,248,0.08);border:1px solid var(--ex-hairline);font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;">
+                                    <span style="color:#38bdf8;">📂 ${catLabel.toUpperCase()}</span>
+                                    <span><span style="color:#34d399;">● ${catAvail} Ready</span> <span style="color:var(--text-muted);">•</span> <span style="color:${catSold > 0 ? '#f87171' : 'var(--text-muted)'};">${catSold} Sold</span></span>
                                 </div>
                                 ${cardsInCatHtml}
                             </div>
                         `);
                     });
 
-                    // Buat tampilan Header & Tabel Catalogs tersusun rata tengah ke bawah per tahun
-                    const customStockHeaderHtml = `
-                        <div style="border-top:2.5px solid #38bdf8;border-bottom:2.5px solid #a855f7;background:rgba(6,182,212,0.08);padding:7px 8px;margin-bottom:8px;border-radius:8px;text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;color:var(--accent-cyan);letter-spacing:0.5px;text-transform:uppercase;">
-                            🔥 NEW STOCK ALERT (+${totalInit} ACCOUNTS)
-                        </div>
-                        <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:11px;padding:9px 10px;display:flex;flex-direction:column;gap:7px;font-family:'JetBrains Mono',monospace;">
-                            <div style="font-size:0.6rem;font-weight:800;color:var(--text-muted);letter-spacing:0.7px;text-transform:uppercase;text-align:center;">
-                                📋 RESTOCKED CATALOGS BY YEAR
-                            </div>
-                            ${catalogSummaryRowsHtml.join('')}
-                            <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-radius:8px;padding:6px 10px;text-align:center;font-size:0.65rem;font-weight:800;color:var(--text-primary);">
-                                📦 Total Restocked: <span style="color:var(--accent-cyan);">+${totalInit} Verified Accounts</span>
-                            </div>
-                        </div>
-                    `;
-
                     actionBtnsHtml = `
-                        ${customStockHeaderHtml}
-                        <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--border-subtle);display:flex;flex-direction:column;gap:8px;">
-                            <!-- KOTAK LIVE STOCK STATUS DENGAN 2 KOTAK READY & SOLD TERPISAH -->
-                            <div style="background:var(--bg-surface);border:1px solid var(--border-subtle);border-radius:11px;padding:8px 10px;font-family:'JetBrains Mono',monospace;display:flex;flex-direction:column;gap:6px;">
-                                <div style="font-size:0.6rem;font-weight:800;color:var(--text-secondary);text-align:center;letter-spacing:0.7px;text-transform:uppercase;">
-                                    📊 LIVE STOCK STATUS (${totalInit} TOTAL)
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">🔥 New Stock Restocked</span>
+                                <span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.5);">+${totalInit} TOTAL</span>
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                                <div class="xb-wal-kpi-box" style="text-align:center;border-color:rgba(52,211,153,0.45);">
+                                    <div class="xb-wal-kpi-lbl">AVAILABLE</div>
+                                    <div class="xb-wal-kpi-val" style="color:#34d399;">● ${availNowCount} Ready</div>
                                 </div>
-                                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                                    <div style="background:rgba(16,185,129,0.12);border:1.5px solid rgba(16,185,129,0.45);border-radius:9px;padding:6px 8px;text-align:center;">
-                                        <div style="font-size:0.54rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.5px;">AVAILABLE</div>
-                                        <div style="font-size:0.76rem;font-weight:800;color:var(--success);margin-top:1px;">🟢 ${availNowCount} Ready</div>
-                                    </div>
-                                    <div style="background:${soldNowCount > 0 ? 'rgba(239,68,68,0.12)' : 'var(--bg-input)'};border:1.5px solid ${soldNowCount > 0 ? 'rgba(239,68,68,0.45)' : 'var(--border-subtle)'};border-radius:9px;padding:6px 8px;text-align:center;">
-                                        <div style="font-size:0.54rem;font-weight:800;color:var(--text-secondary);letter-spacing:0.5px;">SOLD OUT</div>
-                                        <div style="font-size:0.76rem;font-weight:800;color:${soldNowCount > 0 ? 'var(--danger)' : 'var(--text-muted)'};margin-top:1px;">🔴 ${soldNowCount} Sold</div>
-                                    </div>
+                                <div class="xb-wal-kpi-box" style="text-align:center;border-color:${soldNowCount > 0 ? 'rgba(248,113,113,0.45)' : 'var(--ex-hairline)'};">
+                                    <div class="xb-wal-kpi-lbl">SOLD OUT</div>
+                                    <div class="xb-wal-kpi-val" style="color:${soldNowCount > 0 ? '#f87171' : 'var(--text-muted)'};">● ${soldNowCount} Sold</div>
                                 </div>
                             </div>
-                            <div style="display:flex;flex-direction:column;gap:8px;max-height:290px;overflow-y:auto;padding-right:2px;">
+                            <div style="display:flex;flex-direction:column;gap:4px;max-height:280px;overflow-y:auto;padding-right:2px;">
                                 ${groupedSectionsHtml.join('')}
                             </div>
                         </div>
@@ -4282,30 +4359,31 @@
                 }
 
                 const isChecked = _selectedNotifIds.has(String(n.id));
+                const cardCls = isFlashAlert ? 'pinned-flash' : (isStockAlert ? 'pinned-stock' : (isChecked ? 'selected' : ''));
                 const topBarHtml = isPinned ? `
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;">
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:${isFlashAlert ? 'var(--warning)' : 'var(--success)'};background:${isFlashAlert ? 'rgba(245,158,11,0.14)' : 'rgba(16,185,129,0.14)'};border:1px solid ${isFlashAlert ? 'rgba(245,158,11,0.45)' : 'rgba(16,185,129,0.45)'};padding:2px 8px;border-radius:6px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;">
+                        <span class="xb-ex-chip" style="color:${isFlashAlert ? '#fbbf24' : '#34d399'};border-color:${isFlashAlert ? 'rgba(251,191,36,0.55)' : 'rgba(52,211,153,0.55)'};">
                             📌 PINNED ${isFlashAlert ? 'FLASH DEAL' : 'LIVE STOCK'}
                         </span>
-                        <span style="font-size:0.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;">🕒 ${n.time}</span>
+                        <span style="font-size:0.55rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">🕒 ${n.time}</span>
                     </div>
                 ` : `
-                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:6px;">
-                        <label style="display:inline-flex;align-items:center;gap:6px;cursor:pointer;user-select:none;font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;color:${isChecked ? 'var(--accent-cyan)' : 'var(--text-secondary)'};background:var(--bg-surface);border:1px solid ${isChecked ? 'var(--accent-cyan)' : 'var(--border-subtle)'};padding:3px 8px;border-radius:7px;" onclick="event.stopPropagation();">
-                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSingleNotifSelection('${n.id}', this.checked)" style="width:14px;height:14px;accent-color:var(--accent-cyan);cursor:pointer;margin:0;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-bottom:7px;">
+                        <label style="display:inline-flex;align-items:center;gap:5px;cursor:pointer;user-select:none;font-family:'JetBrains Mono',monospace;font-size:0.57rem;font-weight:800;color:${isChecked ? '#38bdf8' : 'var(--text-muted)'};background:var(--bg-input);border:1px solid ${isChecked ? '#38bdf8' : 'var(--ex-hairline)'};padding:2px 7px;border-radius:7px;" onclick="event.stopPropagation();">
+                            <input type="checkbox" ${isChecked ? 'checked' : ''} onchange="toggleSingleNotifSelection('${n.id}', this.checked)" style="width:12px;height:12px;accent-color:#38bdf8;cursor:pointer;margin:0;">
                             <span>${isChecked ? 'Selected' : 'Select'}</span>
                         </label>
-                        <div style="display:flex;align-items:center;gap:6px;">
-                            <span style="font-size:0.62rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;">🕒 ${n.time}</span>
-                            <button type="button" class="top-pill" title="Delete this notification" style="padding:2px 6px;font-size:0.62rem;color:var(--danger);border-color:rgba(239,68,68,0.35);" onclick="deleteSingleWebNotification('${n.id}')">🗑️</button>
+                        <div style="display:flex;align-items:center;gap:5px;">
+                            <span style="font-size:0.55rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;">🕒 ${n.time}</span>
+                            <button type="button" class="xb-adm-mini-btn" style="padding:2px 6px;color:#f87171;border-color:rgba(248,113,113,0.35);" onclick="deleteSingleWebNotification('${n.id}')">🗑️</button>
                         </div>
                     </div>
                 `;
 
                 return `
-                    <div class="tg-notif-card" style="padding:11px 12px;border-left:4px solid ${isFlashAlert ? 'var(--warning)' : (isPinned ? 'var(--success)' : (isChecked ? 'var(--danger)' : 'var(--accent-cyan)'))};${isChecked ? 'border-color:rgba(239,68,68,0.55);background:rgba(239,68,68,0.05);' : ''}">
+                    <div class="xb-ntf-card ${cardCls}">
                         ${topBarHtml}
-                        ${(n.meta && n.meta.type === 'stock_alert') ? '' : formatWebNotifBodyToCleanCard(n.body, n.title)}
+                        ${(isStockAlert || isFlashAlert) ? '' : formatWebNotifBodyToCleanCard(n.body, n.title)}
                         ${imgPreviewHtml}
                         ${actionBtnsHtml}
                     </div>
@@ -5355,24 +5433,29 @@
                     ? Math.min(...allLiveAccountsFlat.map(a => a._computed_usdt || 4.5))
                     : 4.5;
 
-                // VERIFIED COLLECTION BANNER (XIANBEE AGED GITHUB VAULT + CHECKMARK)
+                // VERIFIED COLLECTION BANNER (XIANBEE AGED GITHUB VAULT GRADIENT + VIP ALIGNED TO DELIVERY BOX)
                 const colBanner = document.createElement('div');
                 colBanner.className = 'xb-ex-collection';
                 colBanner.innerHTML = `
                     <div class="xb-ex-col-head">
-                        <div class="xb-ex-col-logo">
-                            <img src="logo.png" alt="XianBee" style="width:100%;height:100%;object-fit:contain;" onerror="this.outerHTML='<span style=\\'font-size:1.3rem;\\'>🐙</span>'">
-                        </div>
-                        <div style="min-width:0;flex:1;">
-                            <div style="display:flex;align-items:center;gap:5px;min-width:0;">
-                                <h2 style="margin:0;font-size:0.94rem;font-weight:800;letter-spacing:-0.25px;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">XianBee Aged GitHub Vault</h2>
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;" title="Verified Collection"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                        <div class="xb-ex-col-brand">
+                            <div class="xb-ex-col-logo">
+                                <img src="logo.png" alt="XianBee" style="width:100%;height:100%;object-fit:contain;" onerror="this.outerHTML='<span style=\\'font-size:1.3rem;\\'>🐙</span>'">
                             </div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:700;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                Verified Aged Vault • Full 2FA Ready
+                            <div style="min-width:0;flex:1;">
+                                <div style="display:flex;align-items:center;gap:4px;min-width:0;">
+                                    <h2 class="xb-brand-grad" style="margin:0;font-size:clamp(0.76rem,3.4vw,0.92rem);font-weight:800;letter-spacing:-0.25px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">XianBee Aged GitHub Vault</h2>
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;" title="Verified Collection"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;font-weight:700;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    Verified Aged Vault • Full 2FA Ready
+                                </div>
                             </div>
                         </div>
-                        <button type="button" class="xb-ex-icon-btn" style="height:26px;padding:0 8px;font-size:0.58rem;border-color:rgba(251,191,36,0.45);color:var(--cockpit-vip-color);" onclick="openLeaderboardModal()">🏆 VIP</button>
+                        <button type="button" class="xb-ex-vip-btn" onclick="openLeaderboardModal()" title="VIP Hall of Fame">
+                            <span style="font-size:0.68rem;font-weight:800;line-height:1.1;display:inline-flex;align-items:center;gap:3px;">👑 VIP</span>
+                            <span style="font-size:0.44rem;font-weight:800;letter-spacing:0.55px;opacity:0.9;">RANKING</span>
+                        </button>
                     </div>
                     <div class="xb-ex-col-stats">
                         <div class="xb-ex-col-stat">
@@ -5457,13 +5540,15 @@
                 `;
                 vp.appendChild(chipsWrap);
 
-                // SORT & LIVE COUNT BAR
+                // UNIFIED 1-BOX LIVE COUNT + SORT BAR
                 const sortBar = document.createElement('div');
                 sortBar.className = 'xb-ex-sort-bar';
                 sortBar.innerHTML = `
-                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--text-secondary);">
-                        ● ${_exSearchQuery ? `SEARCH: "${_exSearchQuery}"` : `${totalLiveAccounts} LIVE ACCOUNTS`}
-                    </span>
+                    <div class="xb-ex-live-wrap">
+                        <span class="xb-ex-live-dot"></span>
+                        <span style="overflow:hidden;text-overflow:ellipsis;">${_exSearchQuery ? `SEARCH: "${_exSearchQuery}"` : `${totalLiveAccounts} LIVE ACCOUNTS`}</span>
+                    </div>
+                    <span class="xb-ex-sort-divider"></span>
                     <select class="xb-ex-sort-select" onchange="setExchangeSort(this.value)">
                         <option value="default" ${_exSort === 'default' ? 'selected' : ''}>↕ Sort: Default</option>
                         <option value="price_asc" ${_exSort === 'price_asc' ? 'selected' : ''}>Price: Low → High</option>
@@ -17211,23 +17296,23 @@ let _ghAgeCheckerResults = [];
 
         function openCartModal() {
             cart = JSON.parse(localStorage.getItem('xb_saved_cart') || '[]');
-            updateCartUI();
+            updateCartUI(true);
             const box = document.getElementById('cartItemsContainer');
             if (cart.length === 0) {
                 box.innerHTML = `
-                    <div style="padding:22px 12px;text-align:center;color:var(--text-muted);font-weight:700;">
-                        <div style="font-size:1.6rem;margin-bottom:6px;">🛒</div>
-                        <div>Your shopping cart is empty.</div>
-                        <div style="font-size:0.74rem;font-weight:500;margin-top:4px;">Click <b>📂 Inspect Vault</b> on any GitHub year to pick an account.</div>
+                    <div class="xb-wal-card" style="padding:22px 12px;text-align:center;">
+                        <div style="font-size:1.5rem;margin-bottom:5px;">🛒</div>
+                        <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">Your Shopping Cart is Empty</div>
+                        <div style="font-size:0.62rem;color:var(--text-secondary);margin-top:3px;">Tap <b>Inspect Vault</b> on any GitHub tier to pick an account.</div>
                     </div>
                 `;
                 document.getElementById('cartGrandTotal').innerText = fmtPrice(0);
             } else {
                 let sum = 0;
                 box.innerHTML = `
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
-                        <span style="font-size:0.74rem;font-weight:800;color:var(--text-secondary);">SELECTED ITEMS (${cart.length})</span>
-                        <button class="top-pill" style="font-size:0.7rem;color:var(--danger);padding:4px 8px;" onclick="clearEntireCart()">🗑️ Clear All</button>
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.57rem;font-weight:800;color:#38bdf8;">SELECTED ASSETS (${cart.length})${cartDiscountPct > 0 ? ` • -${cartDiscountPct}% OFF` : ''}</span>
+                        <button type="button" class="xb-adm-mini-btn" style="color:#f87171;border-color:rgba(248,113,113,0.4);" onclick="clearEntireCart()">🗑️ Clear All</button>
                     </div>
                 ` + cart.map((c, idx) => {
                     const itemPrice = parseFloat(c.usdt) || 0;
@@ -17237,23 +17322,31 @@ let _ghAgeCheckerResults = [];
                     const accData = c.accountData || {};
                     const follCnt = accData.followers !== undefined ? accData.followers : (c.followers || 0);
                     const repoCnt = accData.repos !== undefined ? accData.repos : (c.repos || 0);
-                    const metaInfo = c.isAccount ? `👥 ${follCnt} • 📁 ${repoCnt} Repos` : cleanTarget;
+                    const tier = c.isAccount ? getAssetRarityTier(c.yearKey || accData.year || '2026') : { label: 'SERVICE', cls: 'xb-tier-rare' };
                     return `
-                        <div style="display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:10px;background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3.5px solid var(--accent-cyan);margin-bottom:8px;gap:8px;">
-                            <div style="flex:1;min-width:0;">
-                                <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTitle}</div>
-                                <div style="font-size:0.7rem;color:var(--accent-cyan);font-family:'JetBrains Mono',monospace;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTarget}</div>
-                                ${c.isAccount ? `<div style="font-size:0.62rem;color:var(--text-secondary);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${metaInfo}</div>` : ''}
+                        <div class="xb-cart-item">
+                            <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
+                                <span class="xb-ex-gh-badge" style="width:28px;height:28px;">${GH_SVG_EMBLEM}</span>
+                                <div style="min-width:0;flex:1;">
+                                    <div style="display:flex;align-items:center;gap:4px;">
+                                        <span style="font-size:0.74rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTitle}</span>
+                                        <span class="xb-ex-chip ${tier.cls}" style="font-size:0.46rem;">${tier.label}</span>
+                                    </div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.61rem;color:#38bdf8;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTarget}</div>
+                                    ${c.isAccount ? `<div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);margin-top:1px;">👥 ${follCnt} • 📁 ${repoCnt} Repos</div>` : ''}
+                                </div>
                             </div>
-                            <div style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
-                                <span style="font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--success);">${fmtPrice(itemPrice)}</span>
-                                <button class="top-pill" style="color:var(--danger);padding:5px 9px;" onclick="removeItemFromCart(${idx})">🗑️</button>
+                            <div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:#34d399;">${fmtPrice(itemPrice)}</span>
+                                <button type="button" class="xb-ex-mclose" style="width:26px;height:26px;color:#f87171;border-color:rgba(248,113,113,0.4);" onclick="removeItemFromCart(${idx})">✕</button>
                             </div>
                         </div>
                     `;
                 }).join('');
                 const finalUsdt = sum * (1 - cartDiscountPct / 100);
-                document.getElementById('cartGrandTotal').innerText = fmtPrice(finalUsdt);
+                document.getElementById('cartGrandTotal').innerHTML = cartDiscountPct > 0
+                    ? `<s style="font-size:0.68rem;color:var(--text-muted);margin-right:5px;">${fmtPrice(sum)}</s>${fmtPrice(finalUsdt)}`
+                    : fmtPrice(finalUsdt);
             }
             document.getElementById('cartUserBal').innerText = fmtPrice(userBalanceUsdt);
             document.getElementById('cartModal').classList.add('active');
@@ -18123,49 +18216,46 @@ let _ghAgeCheckerResults = [];
             const body = document.getElementById('paymentGatewayBody');
             modal.classList.add('active');
 
+            const tier = getAssetRarityTier(yrKey);
             body.innerHTML = `
-                <!-- KOTAK 3D RATA TENGAH UNTUK JUDUL MODAL -->
-                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--warning);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-                    <div></div>
-                    <h3 style="margin:0;font-size:0.9rem;font-weight:800;color:var(--warning);">🤝 Make a Price Offer</h3>
-                    <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
+                <div class="xb-ex-modal-hdr">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;border-color:rgba(251,191,36,0.55);color:#fbbf24;">🤝</span>
+                        <div style="min-width:0;">
+                            <h3 style="margin:0;font-size:0.88rem;font-weight:800;color:#fbbf24;">Make a Price Offer</h3>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:700;">DIRECT NEGOTIATION DESK</div>
+                        </div>
+                    </div>
+                    <button type="button" class="xb-ex-mclose" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
 
-                <!-- KOTAK 3D RAPI BERISI KETERANGAN LENGKAP USERNAME, FOLLOWERS, REPOS & HARGA STANDARD -->
-                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);padding:11px 13px;border-radius:11px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:0.73rem;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
-                        <span style="color:var(--text-muted);font-weight:700;">Standard Price :</span>
-                        <span class="price-chip" style="padding:3px 8px;font-size:0.72rem;">${fmtPrice(origPrice)}</span>
+                <div class="xb-wal-card" style="padding:10px 11px;margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                        <span class="xb-ex-chip ${tier.cls}">★ ${tier.label}</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:800;color:#34d399;">List: ${fmtPrice(origPrice)}</span>
                     </div>
-                    <div style="font-size:0.82rem;font-weight:800;color:var(--text-primary);margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                        @${acc.username}
-                    </div>
-                    <div style="font-size:0.67rem;color:var(--accent-cyan);font-weight:700;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                        📂 GitHub Vault ${yrKey} • ID: ${accId}
-                    </div>
-                    <div style="font-size:0.65rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                        👥 Followers: <b>${acc.followers || 0}</b> • 📁 Public Repos: <b>${acc.repos || 0}</b>
-                    </div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${acc.username}</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#38bdf8;margin-top:2px;">GitHub Vault ${yrKey} • 👥 ${acc.followers || 0} Flw • 📁 ${acc.repos || 0} Repos</div>
                 </div>
 
-                <div class="form-group" style="margin-bottom:12px;">
-                    <label style="font-size:0.64rem;color:var(--accent-cyan);letter-spacing:0.8px;">YOUR OFFER AMOUNT (IN USDT):</label>
-                    <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origPrice - 0.5).toFixed(2)}" value="${Math.max(1, (origPrice * 0.85)).toFixed(1)}" style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.95rem;">
+                <div style="margin-bottom:10px;">
+                    <div class="xb-bst-lbl"><span>YOUR OFFER AMOUNT (USDT)</span><span style="color:#fbbf24;">MAX $${(origPrice - 0.5).toFixed(2)}</span></div>
+                    <input type="number" class="xb-bst-target-inp" id="negoOfferUsdt" step="0.5" min="1" max="${(origPrice - 0.5).toFixed(2)}" value="${Math.max(1, (origPrice * 0.85)).toFixed(1)}" style="width:100%;height:40px;font-size:0.9rem;">
                 </div>
 
-                <div class="form-group" style="margin-bottom:14px;">
-                    <label style="font-size:0.64rem;color:var(--text-muted);letter-spacing:0.8px;">NOTE / MESSAGE FOR ADMIN (OPTIONAL):</label>
-                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Ready to checkout immediately via balance!" style="font-size:0.78rem;">
+                <div style="margin-bottom:13px;">
+                    <div class="xb-bst-lbl"><span>NOTE FOR EXECUTIVE DESK (OPTIONAL)</span><span style="color:var(--text-muted);">MEMO</span></div>
+                    <input type="text" class="xb-bst-target-inp" id="negoBuyerNote" placeholder="e.g. Ready to checkout immediately via balance!" style="width:100%;height:36px;font-size:0.74rem;">
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                    <button class="btn-ui secondary" style="padding:10px 8px;font-size:0.74rem;" onclick="closeModal('paymentGatewayModal')">Cancel</button>
-                    <button class="btn-ui buy-now" style="padding:10px 8px;font-size:0.74rem;" onclick="submitWebNegoOffer()">🚀 Submit Offer</button>
+                <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:7px;">
+                    <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.72rem;border-radius:10px;" onclick="closeModal('paymentGatewayModal')">Cancel</button>
+                    <button type="button" class="btn-ui buy-now" style="padding:10px 8px;font-size:0.72rem;border-radius:10px;" onclick="submitWebNegoOffer()">🚀 Submit Offer</button>
                 </div>
             `;
         }
 
-        // FEATURE 2: MAKE AN OFFER FOR ALL ITEMS IN SHOPPING CART
+        // FEATURE 2: MAKE AN OFFER FOR ALL ITEMS IN SHOPPING CART (ASSET EXCHANGE EDITION)
         function openCartMakeOfferModal() {
             if (cart.length === 0) return showToast('Your shopping cart is empty!');
             closeModal('cartModal');
@@ -18173,21 +18263,15 @@ let _ghAgeCheckerResults = [];
             const origTotal = cart.reduce((a, b) => a + (parseFloat(b.usdt) || 0), 0);
 
             const itemsCardsHtml = cart.map((c, i) => {
-                const accData = c.accountData || {};
-                const follCnt = accData.followers !== undefined ? accData.followers : (c.followers || 0);
-                const repoCnt = accData.repos !== undefined ? accData.repos : (c.repos || 0);
                 const cleanTitle = String(c.title || '').split('(')[0].trim() || 'GitHub Asset';
                 const cleanTarget = String(c.target || '').split('(')[0].trim() || '@client';
                 return `
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:3px solid var(--accent-cyan);border-radius:8px;padding:7px 9px;margin-bottom:5px;display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                    <div class="xb-cart-item" style="padding:7px 9px;margin-bottom:5px;">
                         <div style="min-width:0;flex:1;">
-                            <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i + 1}. ${cleanTitle}</div>
-                            <div style="font-size:0.66rem;color:var(--accent-cyan);font-family:'JetBrains Mono',monospace;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTarget}</div>
-                            ${c.isAccount ? `<div style="font-size:0.59rem;color:var(--text-secondary);margin-top:1px;">👥 ${follCnt} • 📁 ${repoCnt} Repos</div>` : ''}
+                            <div style="font-size:0.72rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${i + 1}. ${cleanTitle}</div>
+                            <div style="font-size:0.6rem;color:#38bdf8;font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanTarget}</div>
                         </div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.74rem;font-weight:800;color:var(--success);flex-shrink:0;">
-                            ${fmtPrice(c.usdt)}
-                        </div>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;color:#34d399;flex-shrink:0;">${fmtPrice(c.usdt)}</span>
                     </div>
                 `;
             }).join('');
@@ -18197,38 +18281,38 @@ let _ghAgeCheckerResults = [];
             modal.classList.add('active');
 
             body.innerHTML = `
-                <!-- KOTAK 3D RATA TENGAH UNTUK JUDUL BUNDLE OFFER -->
-                <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-left:4px solid var(--warning);border-radius:12px;padding:9px 12px;text-align:center;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;">
-                    <div></div>
-                    <h3 style="margin:0;font-size:0.9rem;font-weight:800;color:var(--warning);">🤝 Bundle Offer (${cart.length} Items)</h3>
-                    <button class="top-pill" style="padding:4px 9px;font-size:0.7rem;" onclick="closeModal('paymentGatewayModal'); openCartModal();">✕</button>
-                </div>
-
-                <!-- KOTAK 3D RAPI BERISI LIST ITEM & TOTAL STANDARD -->
-                <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);border-left:3.5px solid var(--success);padding:11px 13px;border-radius:11px;margin-bottom:14px;font-size:0.72rem;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--border-subtle);">
-                        <span style="color:var(--text-muted);font-weight:700;font-size:0.75rem;">Standard Total :</span>
-                        <span class="price-chip" style="padding:3px 8px;font-size:0.74rem;">${fmtPrice(origTotal)}</span>
+                <div class="xb-ex-modal-hdr">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;border-color:rgba(251,191,36,0.55);color:#fbbf24;">🤝</span>
+                        <div style="min-width:0;">
+                            <h3 style="margin:0;font-size:0.88rem;font-weight:800;color:#fbbf24;">Bundle Offer (${cart.length} Assets)</h3>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:700;">CUSTOM BUNDLE PRICING</div>
+                        </div>
                     </div>
-                    <div style="color:var(--accent-cyan);font-weight:800;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;font-size:0.62rem;">Selected Cart Items Details:</div>
-                    <div style="max-height:130px;overflow-y:auto;display:flex;flex-direction:column;">
-                        ${itemsCardsHtml}
+                    <button type="button" class="xb-ex-mclose" onclick="closeModal('paymentGatewayModal'); openCartModal();">✕</button>
+                </div>
+
+                <div class="xb-wal-card" style="padding:10px 11px;margin-bottom:12px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:7px;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:var(--text-muted);">STANDARD TOTAL</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.82rem;font-weight:800;color:#34d399;">${fmtPrice(origTotal)}</span>
                     </div>
+                    <div style="max-height:130px;overflow-y:auto;">${itemsCardsHtml}</div>
                 </div>
 
-                <div class="form-group" style="margin-bottom:12px;">
-                    <label style="font-size:0.64rem;color:var(--accent-cyan);letter-spacing:0.8px;">YOUR BUNDLE OFFER AMOUNT (IN USDT):</label>
-                    <input type="number" class="form-input" id="negoOfferUsdt" step="0.5" min="1" max="${(origTotal - 0.5).toFixed(2)}" value="${Math.max(1, (origTotal * 0.85)).toFixed(1)}" style="font-family:'JetBrains Mono',monospace;font-weight:800;font-size:0.95rem;">
+                <div style="margin-bottom:10px;">
+                    <div class="xb-bst-lbl"><span>YOUR BUNDLE OFFER (USDT)</span><span style="color:#fbbf24;">MAX $${(origTotal - 0.5).toFixed(2)}</span></div>
+                    <input type="number" class="xb-bst-target-inp" id="negoOfferUsdt" step="0.5" min="1" max="${(origTotal - 0.5).toFixed(2)}" value="${Math.max(1, (origTotal * 0.85)).toFixed(1)}" style="width:100%;height:40px;font-size:0.9rem;">
                 </div>
 
-                <div class="form-group" style="margin-bottom:14px;">
-                    <label style="font-size:0.64rem;color:var(--text-muted);letter-spacing:0.8px;">NOTE / MESSAGE FOR ADMIN (OPTIONAL):</label>
-                    <input type="text" class="form-input" id="negoBuyerNote" placeholder="e.g. Taking all ${cart.length} accounts right now!" style="font-size:0.78rem;">
+                <div style="margin-bottom:13px;">
+                    <div class="xb-bst-lbl"><span>NOTE FOR EXECUTIVE DESK (OPTIONAL)</span><span style="color:var(--text-muted);">MEMO</span></div>
+                    <input type="text" class="xb-bst-target-inp" id="negoBuyerNote" placeholder="e.g. Taking all ${cart.length} accounts right now!" style="width:100%;height:36px;font-size:0.74rem;">
                 </div>
 
-                <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                    <button class="btn-ui secondary" style="padding:10px 8px;font-size:0.74rem;" onclick="closeModal('paymentGatewayModal'); openCartModal();">Back to Cart</button>
-                    <button class="btn-ui buy-now" style="padding:10px 8px;font-size:0.74rem;" onclick="submitWebNegoOffer()">🚀 Submit Bundle Offer</button>
+                <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:7px;">
+                    <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.72rem;border-radius:10px;" onclick="closeModal('paymentGatewayModal'); openCartModal();">← Back to Cart</button>
+                    <button type="button" class="btn-ui buy-now" style="padding:10px 8px;font-size:0.72rem;border-radius:10px;" onclick="submitWebNegoOffer()">🚀 Submit Offer</button>
                 </div>
             `;
         }
@@ -18497,10 +18581,20 @@ let _ghAgeCheckerResults = [];
             modal.classList.add('active');
 
             body.innerHTML = `
-                <div style="text-align:center;padding:24px 10px;">
-                    <div style="font-size:1.8rem;margin-bottom:8px;">👑</div>
-                    <div style="font-weight:800;">Syncing Real-Time VIP Holders from Google Sheet...</div>
-                    <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:4px;">Fetching verified balances, top-ups & purchase volumes...</div>
+                <div class="xb-ex-modal-hdr">
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;border-color:rgba(251,191,36,0.55);color:#fde047;">👑</span>
+                        <div>
+                            <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">VIP Hall of Fame</h3>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:700;">VERIFIED MEMBER RANKINGS</div>
+                        </div>
+                    </div>
+                    <button type="button" class="xb-ex-mclose" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+                <div class="xb-wal-card" style="text-align:center;padding:22px 12px;">
+                    <div style="font-size:1.7rem;margin-bottom:6px;">👑</div>
+                    <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);">Loading Verified VIP Rankings...</div>
+                    <div style="font-size:0.64rem;color:var(--text-secondary);margin-top:4px;">Fetching live member volumes and reward tiers...</div>
                 </div>
             `;
 
@@ -18592,32 +18686,83 @@ let _ghAgeCheckerResults = [];
                 .sort((a, b) => b.totalVolume - a.totalVolume)
                 .slice(0, 10);
 
-            const medals = ['🥇 1', '🥈 2', '🥉 3', '4', '5', '6', '7', '8', '9', '10'];
+            const myVip = getUserVipRankMeta();
+            let boardHtml = '';
 
-            const rowsHtml = sortedLeaders.length === 0
-                ? `<div style="padding:20px;text-align:center;color:var(--text-muted);font-weight:700;font-size:0.8rem;">
-                    No verified holder records found yet. Click <b>👑 Sync Data User & Loyalty (Sheet4)</b> in the Telegram Bot Admin Menu to push all historical user records to Google Sheet!
-                   </div>`
-                : sortedLeaders.map((l, idx) => `
-                    <div class="cred-field-row" style="padding:10px 12px;">
-                        <span style="font-weight:800;min-width:42px;color:var(--warning);">${medals[idx] || (idx+1)}</span>
-                        <div style="flex:1;">
-                            <div style="font-weight:800;color:var(--text-primary);">${l.maskedUser} <span style="font-size:0.68rem;color:var(--accent-cyan);margin-left:4px;">${l.tier}</span></div>
-                            <div style="font-size:0.68rem;color:var(--text-muted);">💳 Bal: $${l.balance.toFixed(2)} • 🛒 Spent: $${l.spent.toFixed(2)} (${l.txCount} TX)</div>
+            if (sortedLeaders.length === 0) {
+                boardHtml = `
+                    <div class="xb-wal-card" style="padding:20px 12px;text-align:center;margin-bottom:10px;">
+                        <div style="font-size:1.5rem;margin-bottom:5px;">🏆</div>
+                        <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">Leaderboard Updating</div>
+                        <div style="font-size:0.63rem;color:var(--text-secondary);margin-top:3px;line-height:1.45;">
+                            Rankings populate automatically from verified member deposits and store volume.
                         </div>
-                        <span style="color:var(--success);font-weight:800;">$${l.totalVolume.toFixed(2)} USDT</span>
                     </div>
-                `).join('');
+                `;
+            } else {
+                const top3 = sortedLeaders.slice(0, 3);
+                const rest = sortedLeaders.slice(3);
+                const podOrder = top3.length === 3
+                    ? [{ item: top3[1], rank: '#2', ico: '🥈', cls: '', col: '#cbd5e1' }, { item: top3[0], rank: '#1', ico: '🥇', cls: 'first', col: '#fde047' }, { item: top3[2], rank: '#3', ico: '🥉', cls: '', col: '#fb923c' }]
+                    : top3.map((it, i) => ({ item: it, rank: `#${i + 1}`, ico: i === 0 ? '🥇' : (i === 1 ? '🥈' : '🥉'), cls: i === 0 ? 'first' : '', col: i === 0 ? '#fde047' : '#cbd5e1' }));
+
+                const podiumHtml = `
+                    <div class="xb-vip-podium" style="grid-template-columns:repeat(${podOrder.length},minmax(0,1fr));">
+                        ${podOrder.map(p => `
+                            <div class="xb-vip-pod-card ${p.cls}">
+                                <div style="font-size:1.15rem;line-height:1;">${p.ico}</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:${p.col};">${p.rank}</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.63rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.item.maskedUser}</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;color:#34d399;">${fmtPrice(p.item.totalVolume)}</div>
+                                <div style="font-size:0.5rem;color:var(--text-muted);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${p.item.txCount} Verified TX</div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+
+                const restHtml = rest.length > 0 ? `
+                    <div style="display:flex;flex-direction:column;gap:5px;max-height:190px;overflow-y:auto;margin-bottom:10px;">
+                        ${rest.map((l, idx) => `
+                            <div class="xb-vip-row">
+                                <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.66rem;font-weight:800;color:#38bdf8;min-width:22px;">#${idx + 4}</span>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${l.maskedUser} <span style="font-size:0.55rem;color:#c084fc;">${l.tier}</span></div>
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);">Spent: ${fmtPrice(l.spent)} • ${l.txCount} TX</div>
+                                    </div>
+                                </div>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;color:#34d399;flex-shrink:0;">${fmtPrice(l.totalVolume)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : '';
+
+                boardHtml = podiumHtml + restHtml;
+            }
 
             body.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">👑 HALL OF FAME (REAL-TIME GSHEET SYNC)</span>
-                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                <div class="xb-ex-modal-hdr">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;border-color:rgba(251,191,36,0.55);color:#fde047;">👑</span>
+                        <div style="min-width:0;">
+                            <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">VIP Hall of Fame</h3>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:700;">VERIFIED MEMBER RANKINGS &amp; REWARDS</div>
+                        </div>
+                    </div>
+                    <button type="button" class="xb-ex-mclose" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
-                <h3 style="margin:0 0 6px 0;">🏆 Real-Time Top VIP Holders</h3>
-                <p style="font-size:0.78rem;color:var(--text-secondary);margin:0 0 14px 0;">Ranked automatically from verified Top-Up Volume, Active Balance, and Total Store Purchases.</p>
-                <div>${rowsHtml}</div>
-                <button class="btn-ui primary" style="width:100%;margin-top:10px;" onclick="closeModal('paymentGatewayModal')">Close Leaderboard</button>
+
+                ${boardHtml}
+
+                <div class="xb-wal-card" style="padding:9px 11px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                    <div style="min-width:0;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:800;">YOUR CURRENT TIER</div>
+                        <div style="font-size:0.74rem;font-weight:800;color:${myVip.badgeColor || '#fde047'};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${myVip.emblem} ${myVip.rank}</div>
+                    </div>
+                    <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;border-color:rgba(56,189,248,0.45);padding:6px 9px;" onclick="closeModal('paymentGatewayModal'); openWalletSlide('vip'); switchTab('wallet');">🎁 Cashback ➔</button>
+                </div>
+
+                <button type="button" class="btn-ui primary" style="width:100%;padding:10px;font-size:0.74rem;border-radius:10px;" onclick="closeModal('paymentGatewayModal')">Done</button>
             `;
         }
 
@@ -18637,13 +18782,18 @@ let _ghAgeCheckerResults = [];
         }, 1000);
 
         // =========================================================
-        // 💬 FEATURE 6: FLOATING LIVE HELPDESK CHAT WIDGET (DIRECT TO ADMIN BOT)
+        // 💬 FEATURE 6: FLOATING EXECUTIVE HELPDESK FAB & MODAL (ASSET EXCHANGE EDITION)
         // =========================================================
         const chatFab = document.createElement('button');
         chatFab.id = 'liveHelpdeskFab';
-        chatFab.innerHTML = '💬';
-        chatFab.title = 'Live Executive Helpdesk';
-        chatFab.style.cssText = 'position:fixed;bottom:' + (cart.length > 0 ? '144px' : '78px') + ';right:14px;width:46px;height:46px;border-radius:50%;background:var(--grad-primary);color:#fff;border:1.5px solid rgba(255,255,255,0.25);font-size:1.25rem;box-shadow:var(--shadow-glow);cursor:pointer;z-index:95;display:flex;align-items:center;justify-content:center;transition:bottom 0.25s ease;';
+        chatFab.type = 'button';
+        chatFab.className = 'xb-chat-fab';
+        chatFab.title = 'Live Executive Support';
+        chatFab.style.bottom = (cart.length > 0 ? '144px' : '78px');
+        chatFab.innerHTML = `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+            <span class="xb-chat-fab-dot"></span>
+        `;
         chatFab.onclick = openLiveHelpdeskModal;
         document.body.appendChild(chatFab);
 
@@ -18653,34 +18803,53 @@ let _ghAgeCheckerResults = [];
             modal.classList.add('active');
 
             const chatLogs = JSON.parse(localStorage.getItem('xb_helpdesk_logs') || '[]');
+            const quickPrompts = [
+                'Check custom aged GitHub stock',
+                'Bulk order discount inquiry',
+                'Deposit / payment assistance'
+            ];
             const logsHtml = chatLogs.length === 0
-                ? `<div style="padding:14px;text-align:center;color:var(--text-muted);font-size:0.78rem;">👋 Welcome to XianBee Executive Desk! Send a message below and our Admin will receive it in real-time on Telegram.</div>`
+                ? `<div style="padding:18px 10px;text-align:center;color:var(--text-muted);font-size:0.68rem;line-height:1.5;">👋 Welcome to <b style="color:var(--text-primary);">XianBee-Tech Executive Desk</b>.<br>Send a message below for instant priority support.</div>`
                 : chatLogs.map(c => `
-                    <div style="background:var(--bg-soft);border:1px solid var(--border-subtle);padding:9px 12px;border-radius:10px;margin-bottom:8px;font-size:0.78rem;">
-                        <div style="display:flex;justify-content:space-between;color:var(--accent-cyan);font-size:0.68rem;font-weight:800;margin-bottom:3px;">
-                            <span>👤 You (@${currentUsername})</span>
-                            <span>${c.time}</span>
+                    <div style="background:var(--ex-card-bg);border:1px solid var(--ex-hairline);border-radius:10px;padding:8px 10px;margin-bottom:7px;">
+                        <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#38bdf8;font-weight:800;margin-bottom:3px;">
+                            <span>👤 @${String(currentUsername || 'Client').replace(/^@/,'')}</span>
+                            <span style="color:var(--text-muted);">${c.time}</span>
                         </div>
-                        <div>${c.msg}</div>
+                        <div style="font-size:0.71rem;color:var(--text-primary);line-height:1.4;">${c.msg}</div>
                     </div>
                 `).join('');
 
             body.innerHTML = `
-                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
-                    <span class="item-tag" style="margin:0;">💬 LIVE EXECUTIVE HELPDESK</span>
-                    <button class="top-pill" onclick="closeModal('paymentGatewayModal')">✕</button>
+                <div class="xb-ex-modal-hdr">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-color:rgba(255,255,255,0.35);">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+                        </span>
+                        <div style="min-width:0;">
+                            <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">Executive Live Support</h3>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:#34d399;">● ONLINE • PRIORITY RESPONSE</div>
+                        </div>
+                    </div>
+                    <button type="button" class="xb-ex-mclose" onclick="closeModal('paymentGatewayModal')">✕</button>
                 </div>
-                <h3 style="margin:0 0 6px 0;">Direct Message to Admin</h3>
-                <div id="helpdeskHistoryBox" style="max-height:200px;overflow-y:auto;background:var(--bg-input);border:1px solid var(--border-subtle);padding:10px;border-radius:12px;margin-bottom:12px;">
+
+                <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:9px;">
+                    ${quickPrompts.map(q => `<button type="button" class="xb-adm-mini-btn" style="font-size:0.55rem;color:#38bdf8;" onclick="document.getElementById('helpdeskMsgInput').value='${q}'; document.getElementById('helpdeskMsgInput').focus();">${q}</button>`).join('')}
+                </div>
+
+                <div id="helpdeskHistoryBox" style="max-height:195px;overflow-y:auto;background:var(--bg-input);border:1px solid var(--ex-hairline);padding:9px;border-radius:11px;margin-bottom:10px;">
                     ${logsHtml}
                 </div>
-                <div class="form-group">
-                    <label>Your Message / Custom Request:</label>
-                    <input type="text" class="form-input" id="helpdeskMsgInput" placeholder="Ask about stock, custom orders, or payment...">
+
+                <div style="margin-bottom:10px;">
+                    <div class="xb-bst-lbl"><span>YOUR MESSAGE / CUSTOM REQUEST</span><span style="color:#38bdf8;">DIRECT DESK</span></div>
+                    <input type="text" class="xb-bst-target-inp" id="helpdeskMsgInput" style="width:100%;height:38px;" placeholder="Ask about stock, custom orders, or payment..." onkeydown="if(event.key==='Enter') sendHelpdeskMessage();">
                 </div>
-                <div style="display:flex;gap:8px;">
-                    <a href="https://t.me/XianBeeTechStore" target="_blank" class="btn-ui secondary">✈️ Open TG Chat</a>
-                    <button class="btn-ui primary" onclick="sendHelpdeskMessage()">📨 Send to Admin Bot</button>
+
+                <div style="display:grid;grid-template-columns:1fr 1.35fr;gap:7px;">
+                    <a href="https://t.me/XianBeeTechStore" target="_blank" class="btn-ui secondary" style="padding:10px 8px;font-size:0.71rem;border-radius:10px;color:#38bdf8;border-color:rgba(56,189,248,0.45);">✈️ Telegram Chat</a>
+                    <button type="button" class="btn-ui primary" style="padding:10px 8px;font-size:0.71rem;border-radius:10px;" onclick="sendHelpdeskMessage()">📨 Send Message</button>
                 </div>
             `;
         }
