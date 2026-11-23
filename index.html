@@ -2511,6 +2511,107 @@
             cursor: pointer;
             transition: border-color 0.14s ease;
         }
+
+        /* PROFILE HERO CARD RIGHT-SIDE VIP STATUS PILL (FILLS RIGHT GAP) */
+        .xb-prf-hero-card {
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(155deg, rgba(22, 33, 62, 0.94) 0%, rgba(11, 17, 34, 0.96) 100%) !important;
+            border-color: rgba(129, 140, 248, 0.32) !important;
+        }
+        [data-theme="platinum"] .xb-prf-hero-card {
+            background: linear-gradient(155deg, #ffffff 0%, #f1f5f9 100%) !important;
+            border-color: rgba(79, 70, 229, 0.22) !important;
+        }
+        .xb-prf-right-pill {
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: center;
+            gap: 4px;
+            padding: 6px 9px;
+            border-radius: 11px;
+            background: rgba(15, 23, 42, 0.72);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            cursor: pointer;
+            transition: transform 0.14s ease, border-color 0.14s ease;
+        }
+        .xb-prf-right-pill:active { transform: scale(0.96); }
+        .xb-prf-right-pill:hover { border-color: rgba(56, 189, 248, 0.58); }
+        [data-theme="platinum"] .xb-prf-right-pill {
+            background: #ffffff;
+            border-color: rgba(37, 99, 235, 0.24);
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+        }
+        .xb-prf-live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.48rem;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            color: #34d399;
+        }
+        [data-theme="platinum"] .xb-prf-live-badge { color: #059669; }
+        .xb-prf-live-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 7px #10b981;
+        }
+        .xb-prf-perk-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.54rem;
+            font-weight: 800;
+            color: #fbbf24;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        [data-theme="platinum"] .xb-prf-perk-tag { color: #b45309; }
+
+        /* UNIFORM BOLD ARROW BUTTON ON ALL PROFILE MENU ROWS (NO UNEVEN TEXT) */
+        .xb-prf-menu-row > span:last-child {
+            font-size: 0 !important;
+            line-height: 0 !important;
+            color: transparent !important;
+            width: 30px !important;
+            height: 30px !important;
+            min-width: 30px !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(124, 58, 237, 0.18) 100%) !important;
+            border: 1px solid rgba(56, 189, 248, 0.38) !important;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+            transition: transform 0.14s ease, border-color 0.14s ease !important;
+        }
+        .xb-prf-menu-row > span:last-child::after {
+            content: '';
+            width: 14px;
+            height: 14px;
+            display: block;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2338bdf8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m13 6 6 6-6 6'/%3E%3C/svg%3E");
+        }
+        [data-theme="platinum"] .xb-prf-menu-row > span:last-child {
+            background: linear-gradient(135deg, rgba(37, 99, 235, 0.1) 0%, rgba(124, 58, 237, 0.12) 100%) !important;
+            border-color: rgba(37, 99, 235, 0.32) !important;
+        }
+        [data-theme="platinum"] .xb-prf-menu-row > span:last-child::after {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231d4ed8' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12h14'/%3E%3Cpath d='m13 6 6 6-6 6'/%3E%3C/svg%3E");
+        }
+        .xb-prf-menu-row:active > span:last-child {
+            transform: translateX(2px) scale(0.95);
+            border-color: rgba(56, 189, 248, 0.72) !important;
+        }
         .xb-prf-uid-sub:hover { border-color: rgba(56,189,248,0.55); color: var(--text-primary); }
 
         /* =========================================================
@@ -2889,25 +2990,144 @@
             gap: 6px;
             padding-right: 2px;
         }
+        /* OVERHAULED ALL-TIME SALES SUMMARY */
+        .xb-sum-hero {
+            background: rgba(7, 13, 28, 0.92);
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            border-radius: 10px;
+            padding: 8px 9px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+        }
+        [data-theme="platinum"] .xb-sum-hero {
+            background: #f8fafc;
+            border-color: rgba(37, 99, 235, 0.22);
+        }
+        .xb-sum-split-bar {
+            width: 100%;
+            height: 6px;
+            border-radius: 99px;
+            background: rgba(148, 163, 184, 0.18);
+            overflow: hidden;
+            display: flex;
+        }
+        .xb-sum-split-acc { background: linear-gradient(90deg, #059669, #34d399); height: 100%; }
+        .xb-sum-split-bst { background: linear-gradient(90deg, #7c3aed, #e879f9); height: 100%; }
+        .xb-sum-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+        }
+        .xb-sum-pill {
+            background: rgba(15, 23, 42, 0.65);
+            border: 1px solid rgba(148, 163, 184, 0.16);
+            border-radius: 8px;
+            padding: 5px 7px;
+        }
+        [data-theme="platinum"] .xb-sum-pill {
+            background: #ffffff;
+            border-color: rgba(15, 23, 42, 0.1);
+        }
+
+        .xb-sum-sec-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin-top: 4px;
+            padding: 2px 2px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.54rem;
+            font-weight: 800;
+        }
         .xb-cyb-mgrid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 5px;
+            gap: 6px;
         }
         .xb-cyb-mcard {
-            background: rgba(7, 13, 28, 0.88);
-            border: 1px solid rgba(148, 163, 184, 0.18);
-            border-radius: 9px;
-            padding: 6px 8px;
+            background: rgba(7, 13, 28, 0.9);
+            border: 1px solid rgba(16, 185, 129, 0.24);
+            border-radius: 10px;
+            padding: 7px 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            min-width: 0;
+        }
+        .xb-cyb-mcard.is-boost {
+            border-color: rgba(168, 85, 247, 0.28);
+        }
+        [data-theme="platinum"] .xb-cyb-mcard {
+            background: #ffffff;
+            border-color: rgba(5, 150, 105, 0.25);
+        }
+        [data-theme="platinum"] .xb-cyb-mcard.is-boost {
+            border-color: rgba(124, 58, 237, 0.25);
+        }
+        .xb-sum-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
             gap: 4px;
-            font-family: 'JetBrains Mono', monospace;
         }
-        [data-theme="platinum"] .xb-cyb-mcard {
-            background: #f8fafc;
-            border-color: rgba(15, 23, 42, 0.12);
+        .xb-sum-name {
+            font-size: 0.58rem;
+            font-weight: 800;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .xb-sum-pct {
+            font-size: 0.46rem;
+            font-weight: 800;
+            padding: 1px 4px;
+            border-radius: 4px;
+            background: rgba(16, 185, 129, 0.16);
+            color: #34d399;
+            flex-shrink: 0;
+        }
+        .xb-cyb-mcard.is-boost .xb-sum-pct {
+            background: rgba(168, 85, 247, 0.16);
+            color: #e879f9;
+        }
+        [data-theme="platinum"] .xb-sum-pct { color: #047857; }
+        [data-theme="platinum"] .xb-cyb-mcard.is-boost .xb-sum-pct { color: #7c3aed; }
+        .xb-sum-top-tag {
+            font-size: 0.44rem;
+            font-weight: 800;
+            padding: 1px 4px;
+            border-radius: 4px;
+            background: rgba(245, 158, 11, 0.2);
+            border: 1px solid rgba(250, 204, 21, 0.45);
+            color: #fbbf24;
+            flex-shrink: 0;
+        }
+        .xb-sum-desc {
+            font-size: 0.46rem;
+            color: #94a3b8;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .xb-sum-bar {
+            width: 100%;
+            height: 4px;
+            border-radius: 99px;
+            background: rgba(148, 163, 184, 0.16);
+            overflow: hidden;
+        }
+        .xb-sum-fill-acc { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #059669, #34d399); }
+        .xb-sum-fill-bst { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #7c3aed, #e879f9); }
+        .xb-sum-foot {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            padding-top: 2px;
         }
         .xb-cyb-sales-grid {
             display: grid;
@@ -10554,54 +10774,163 @@ function copyActiveWalletReceipt() {
                     </div>
                 `;
             } else if (st.tab === 'matrix') {
+                const totalRevCombined = Math.max(1, Number(d.totalAccRevUsdt || 0) + Number(d.totalBoostRevUsdt || 0));
+                const accSharePct = Math.round((Number(d.totalAccRevUsdt || 0) / totalRevCombined) * 100);
+                const bstSharePct = Math.max(0, 100 - accSharePct);
+
+                const accMetaMap = {
+                    '11-13':  { title: 'Aged 2011–2013',   desc: 'Ultra-Rare OG Accounts' },
+                    '14-16':  { title: 'Aged 2014–2016',   desc: 'Legacy Aged Accounts' },
+                    '17-19':  { title: 'Aged 2017–2019',   desc: 'Classic Aged Vault' },
+                    '20-22':  { title: 'Aged 2020–2022',   desc: 'Mid-Aged Active Vault' },
+                    '23-25':  { title: 'Aged 2023–2025',   desc: 'Most Popular Daily Tier' },
+                    '2026':   { title: 'Fresh 2026 Vault', desc: 'Verified Ready-to-Use' },
+                    'Arctic': { title: 'Arctic Code Vault',desc: '2020 Official Badge' },
+                    '6Badge+':{ title: '6+ Premium Badges',desc: 'Badges, Contrib & Pack' }
+                };
+                const bstMetaMap = {
+                    'Followers': { title: 'GitHub Followers',  desc: 'Profile Authority Boost' },
+                    'Stars':     { title: 'Repository Stars',  desc: 'Repo Ranking & Trust' },
+                    'Forks':     { title: 'Repository Forks',  desc: 'Developer Activity' },
+                    'Watchers':  { title: 'Repo Watchers',     desc: 'Live Repo Monitoring' }
+                };
+
+                const maxAccSold = Math.max(1, ...d.accBuckets.map(x => Number(x.sold || 0)));
+                const maxBstOrd  = Math.max(1, ...d.bstBuckets.map(x => Number(x.orders || 0)));
+                const sumAccSold = Math.max(1, d.accBuckets.reduce((a, b) => a + Number(b.sold || 0), 0));
+                const sumBstOrd  = Math.max(1, d.bstBuckets.reduce((a, b) => a + Number(b.orders || 0), 0));
+
                 deckHtml = `
-                    <div class="xb-cyb-panel" style="flex:1;">
+                    <div class="xb-cyb-panel" style="flex:1;border-color:rgba(56,189,248,0.34);">
                         <div class="xb-cyb-phdr">
-                            <span class="xb-cyb-ptitle">🧬 COMPLETE YEAR &amp; SERVICE MATRIX</span>
-                            <span class="xb-cyb-pbadge">${d.allTimeTx.toLocaleString('en-US')} Total TX</span>
+                            <span class="xb-cyb-ptitle" style="color:#38bdf8;">📈 ALL-TIME SALES SUMMARY</span>
+                            <span class="xb-cyb-pbadge">${d.allTimeTx.toLocaleString('en-US')} Completed</span>
                         </div>
                         <div class="xb-cyb-scroll-inner">
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:#34d399;">GITHUB ACCOUNTS (${d.totalSoldAccs.toLocaleString('en-US')} SOLD • ${fmtCyberMoney(d.totalAccRevUsdt, false)})</div>
-                            <div class="xb-cyb-mgrid">
-                                ${d.accBuckets.map(b => `
-                                    <div class="xb-cyb-mcard">
-                                        <div>
-                                            <div style="font-size:0.62rem;font-weight:800;">${b.label}</div>
-                                            <div style="font-size:0.5rem;color:#94a3b8;">${b.sold.toLocaleString('en-US')} sold</div>
-                                        </div>
-                                        <div style="font-size:0.6rem;font-weight:800;color:#34d399;text-align:right;">${fmtCyberMoney(b.rev, true)}</div>
+                            <!-- REVENUE SHARE SUMMARY -->
+                            <div class="xb-sum-hero">
+                                <div style="display:flex;justify-content:space-between;align-items:center;font-size:0.5rem;color:#94a3b8;font-weight:800;">
+                                    <span>TOTAL STORE REVENUE SPLIT</span>
+                                    <span style="color:#38bdf8;">${fmtCyberMoney(totalRevCombined, false)}</span>
+                                </div>
+                                <div class="xb-sum-split-bar">
+                                    <div class="xb-sum-split-acc" style="width:${accSharePct}%;"></div>
+                                    <div class="xb-sum-split-bst" style="width:${bstSharePct}%;"></div>
+                                </div>
+                                <div class="xb-sum-grid">
+                                    <div class="xb-sum-pill">
+                                        <div style="font-size:0.5rem;color:#34d399;font-weight:800;">📦 ACCOUNTS (${accSharePct}%)</div>
+                                        <div style="font-size:0.66rem;font-weight:800;margin-top:2px;">${fmtCyberMoney(d.totalAccRevUsdt, true)}</div>
+                                        <div style="font-size:0.46rem;color:#94a3b8;">${d.totalSoldAccs.toLocaleString('en-US')} Accounts Sold</div>
                                     </div>
-                                `).join('')}
+                                    <div class="xb-sum-pill">
+                                        <div style="font-size:0.5rem;color:#e879f9;font-weight:800;">🚀 BOOSTS (${bstSharePct}%)</div>
+                                        <div style="font-size:0.66rem;font-weight:800;margin-top:2px;">${fmtCyberMoney(d.totalBoostRevUsdt, true)}</div>
+                                        <div style="font-size:0.46rem;color:#94a3b8;">${d.totalBoostOrders.toLocaleString('en-US')} Orders Done</div>
+                                    </div>
+                                </div>
                             </div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:#e879f9;margin-top:4px;">BOOST SERVICES (${d.totalBoostOrders.toLocaleString('en-US')} ORDERS • ${fmtCyberMoney(d.totalBoostRevUsdt, false)})</div>
+
+                            <!-- GITHUB ACCOUNTS BY YEAR & TIER -->
+                            <div class="xb-sum-sec-hdr">
+                                <span style="color:#34d399;">📦 GITHUB ACCOUNTS (BY YEAR &amp; TIER)</span>
+                                <span style="color:#94a3b8;font-size:0.48rem;">SOLD • REVENUE</span>
+                            </div>
                             <div class="xb-cyb-mgrid">
-                                ${d.bstBuckets.map(s => `
-                                    <div class="xb-cyb-mcard">
-                                        <div>
-                                            <div style="font-size:0.62rem;font-weight:800;">${s.label}</div>
-                                            <div style="font-size:0.5rem;color:#94a3b8;">${s.orders.toLocaleString('en-US')} orders</div>
+                                ${d.accBuckets.map(b => {
+                                    const meta = accMetaMap[b.label] || { title: b.name || b.label, desc: 'Verified Vault Tier' };
+                                    const soldN = Number(b.sold || 0);
+                                    const pct = Math.round((soldN / sumAccSold) * 100);
+                                    const barW = Math.max(4, Math.round((soldN / maxAccSold) * 100));
+                                    const isTop = soldN === maxAccSold && soldN > 0;
+                                    return `
+                                        <div class="xb-cyb-mcard">
+                                            <div class="xb-sum-top">
+                                                <span class="xb-sum-name">${meta.title}</span>
+                                                ${isTop ? `<span class="xb-sum-top-tag">🔥 TOP</span>` : `<span class="xb-sum-pct">${pct}%</span>`}
+                                            </div>
+                                            <div class="xb-sum-desc">${meta.desc}</div>
+                                            <div class="xb-sum-bar"><div class="xb-sum-fill-acc" style="width:${barW}%;"></div></div>
+                                            <div class="xb-sum-foot">
+                                                <span style="font-size:0.48rem;color:#94a3b8;"><b>${soldN.toLocaleString('en-US')}</b> Sold</span>
+                                                <span style="font-size:0.58rem;font-weight:800;color:#34d399;">${fmtCyberMoney(b.rev, true)}</span>
+                                            </div>
                                         </div>
-                                        <div style="font-size:0.6rem;font-weight:800;color:#e879f9;text-align:right;">${fmtCyberMoney(s.rev, true)}</div>
-                                    </div>
-                                `).join('')}
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <!-- GITHUB BOOST SERVICES BY TYPE -->
+                            <div class="xb-sum-sec-hdr" style="margin-top:6px;">
+                                <span style="color:#e879f9;">🚀 GITHUB BOOST (BY SERVICE TYPE)</span>
+                                <span style="color:#94a3b8;font-size:0.48rem;">ORDERS • REVENUE</span>
+                            </div>
+                            <div class="xb-cyb-mgrid">
+                                ${d.bstBuckets.map(s => {
+                                    const meta = bstMetaMap[s.label] || { title: 'GitHub ' + s.label, desc: 'Boost Service' };
+                                    const ordN = Number(s.orders || 0);
+                                    const pct = Math.round((ordN / sumBstOrd) * 100);
+                                    const barW = Math.max(4, Math.round((ordN / maxBstOrd) * 100));
+                                    const isTop = ordN === maxBstOrd && ordN > 0;
+                                    return `
+                                        <div class="xb-cyb-mcard is-boost">
+                                            <div class="xb-sum-top">
+                                                <span class="xb-sum-name">${meta.title}</span>
+                                                ${isTop ? `<span class="xb-sum-top-tag">🔥 TOP</span>` : `<span class="xb-sum-pct">${pct}%</span>`}
+                                            </div>
+                                            <div class="xb-sum-desc">${meta.desc}</div>
+                                            <div class="xb-sum-bar"><div class="xb-sum-fill-bst" style="width:${barW}%;"></div></div>
+                                            <div class="xb-sum-foot">
+                                                <span style="font-size:0.48rem;color:#94a3b8;"><b>${ordN.toLocaleString('en-US')}</b> Orders</span>
+                                                <span style="font-size:0.58rem;font-weight:800;color:#e879f9;">${fmtCyberMoney(s.rev, true)}</span>
+                                            </div>
+                                        </div>
+                                    `;
+                                }).join('')}
                             </div>
                         </div>
                     </div>
                 `;
             } else {
-                const logs = d.recentSales || [];
+                const cutoff30d = Date.now() - (30 * 86400000);
+                const logs = (d.recentSales || []).filter(tx => {
+                    if (!tx) return false;
+                    let ts = Number(tx.ts || 0);
+                    if (!ts && tx.dateStr) {
+                        const m = String(tx.dateStr).match(/(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2}))?/);
+                        if (m) ts = new Date(Number(m[3]), Number(m[2]) - 1, Number(m[1]), Number(m[4] || 0), Number(m[5] || 0)).getTime();
+                    }
+                    return ts > 0 && ts >= cutoff30d;
+                });
+
                 deckHtml = `
                     <div class="xb-cyb-panel" style="flex:1;border-color:rgba(56,189,248,0.36);">
                         <div class="xb-cyb-phdr">
-                            <span class="xb-cyb-ptitle" style="color:#38bdf8;">📜 RECENT VERIFIED SALES</span>
-                            <span class="xb-cyb-pbadge">${logs.length} Verified Sold</span>
+                            <span class="xb-cyb-ptitle" style="color:#38bdf8;">📜 RECENT SALES (LAST 30 DAYS)</span>
+                            <span class="xb-cyb-pbadge">${logs.length} Sold • 30D</span>
+                        </div>
+                        <div style="flex-shrink:0;margin-bottom:6px;padding:5px 8px;border-radius:8px;background:rgba(56,189,248,0.1);border:1px solid rgba(56,189,248,0.28);font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#94a3b8;line-height:1.35;">
+                            🛡️ <b style="color:#38bdf8;">30-Day Rolling Feed:</b> Displays verified sales from the last 30 days only. Older records are archived into All-Time telemetry.
                         </div>
                         <div class="xb-cyb-scroll-inner">
                             ${logs.length === 0
-                                ? `<div style="margin:auto;text-align:center;color:#94a3b8;font-size:0.68rem;padding:24px 12px;line-height:1.5;">Tap <b>↻</b> at the top right to load the latest verified sales feed.</div>`
+                                ? `<div style="margin:auto;text-align:center;color:#94a3b8;font-size:0.68rem;padding:24px 12px;line-height:1.5;">No sales recorded in the last 30 days yet.<br>Tap <b>↻</b> at the top right to refresh live feed.</div>`
                                 : `<div class="xb-cyb-sales-grid">${logs.map(tx => {
                                     const isBoost = tx.kind === 'boost';
                                     const cleanDate = String(tx.dateStr || '-').replace(/\s*WIB/gi, '').trim();
+                                    const rawRef = String(tx.ref || '-').trim();
+                                    let maskedRef = rawRef;
+                                    if (!rawRef || rawRef === '-') {
+                                        maskedRef = 'Private';
+                                    } else if (!rawRef.includes('**') && !/^INV-/i.test(rawRef)) {
+                                        const hasAt = rawRef.startsWith('@');
+                                        const cl = rawRef.replace(/^@+/, '');
+                                        maskedRef = cl.length <= 2
+                                            ? (hasAt ? '@' : '') + cl.charAt(0) + '**'
+                                            : (cl.length <= 4
+                                                ? (hasAt ? '@' : '') + cl.charAt(0) + '**' + cl.slice(-1)
+                                                : (hasAt ? '@' : '') + cl.slice(0, 2) + '***' + cl.slice(-2));
+                                    }
                                     return `
                                         <div class="xb-cyb-sale-card ${isBoost ? 'is-boost' : ''}">
                                             <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
@@ -10610,7 +10939,7 @@ function copyActiveWalletReceipt() {
                                             </div>
                                             <div style="min-width:0;">
                                                 <div style="font-size:0.6rem;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${String(tx.item || 'Verified Order')}</div>
-                                                <div style="font-size:0.5rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">${isBoost ? 'Order:' : 'Account:'} ${String(tx.ref || '-')}</div>
+                                                <div style="font-size:0.5rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">${isBoost ? 'Buyer:' : 'Account:'} ${maskedRef}</div>
                                             </div>
                                             <div class="xb-cyb-sale-foot">
                                                 <span style="font-size:0.46rem;color:#94a3b8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cleanDate}</span>
@@ -10655,8 +10984,8 @@ function copyActiveWalletReceipt() {
 
                     <div class="xb-cyb-tabs">
                         <button type="button" class="xb-cyb-tab ${st.tab === 'charts' ? 'active' : ''}" onclick="setCyberTelemTab('charts')">📊 3D CHARTS</button>
-                        <button type="button" class="xb-cyb-tab ${st.tab === 'matrix' ? 'active' : ''}" onclick="setCyberTelemTab('matrix')">🧬 MATRIX</button>
-                        <button type="button" class="xb-cyb-tab ${st.tab === 'logs' ? 'active' : ''}" onclick="setCyberTelemTab('logs')">📜 RECENT SALES</button>
+                        <button type="button" class="xb-cyb-tab ${st.tab === 'matrix' ? 'active' : ''}" onclick="setCyberTelemTab('matrix')">📈 SUMMARY</button>
+                        <button type="button" class="xb-cyb-tab ${st.tab === 'logs' ? 'active' : ''}" onclick="setCyberTelemTab('logs')">📜 30D SALES</button>
                     </div>
 
                     <div class="xb-cyb-deck">${deckHtml}</div>
@@ -11083,21 +11412,21 @@ function copyActiveWalletReceipt() {
 
             container.innerHTML = `
                 <div class="xb-vp-wrap">
-                    <!-- 1. CLEAN IDENTITY HERO CARD (TOP CENTERED VIP CROWN + SIDE NAME & UID) -->
-                    <div class="xb-wal-card">
+                    <!-- 1. CLEAN IDENTITY HERO CARD (TOP CENTERED VIP CROWN + BALANCED STATUS PILL) -->
+                    <div class="xb-wal-card xb-prf-hero-card">
                         <div class="xb-prf-vip-crown ${vipRingCls.replace('xb-vip-ring-', 'tier-')}">
                             <span>${vip.emblem}</span>
                             <span>${vip.rank}</span>
                         </div>
 
-                        <div style="display:flex;align-items:center;gap:11px;">
+                        <div style="display:flex;align-items:center;gap:10px;">
                             <label class="xb-prf-avatar-wrap ${vipRingCls}" title="Tap to change profile photo">
                                 <div class="xb-prf-avatar">${avatarInnerHtml}</div>
                                 <input type="file" accept="image/*" style="display:none;" onchange="handleProfileAvatarFileChange(this)">
                             </label>
                             <div class="xb-prf-side-stack">
                                 <div style="display:flex;align-items:center;gap:5px;min-width:0;">
-                                    <span style="font-size:0.94rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${cleanU}</span>
+                                    <span style="font-size:0.92rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${cleanU}</span>
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
                                 </div>
                                 <button type="button" class="xb-prf-uid-sub" onclick="navigator.clipboard.writeText('${currentUserId}'); showToast('UID ${currentUserId} copied!');">
@@ -11105,6 +11434,10 @@ function copyActiveWalletReceipt() {
                                     <span style="opacity:0.75;">📋</span>
                                 </button>
                             </div>
+                            <button type="button" class="xb-prf-right-pill" onclick="openProfileSlide('identity')" title="VIP Status & Identity">
+                                <span class="xb-prf-live-badge"><span class="xb-prf-live-dot"></span>VERIFIED</span>
+                                <span class="xb-prf-perk-tag">${vip.cashback ? (String(vip.cashback).includes('%') ? vip.cashback : vip.cashback + '%') + ' BACK' : 'VIP PASS'}</span>
+                            </button>
                         </div>
 
                         <hr class="xb-wal-hr">
