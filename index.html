@@ -6453,7 +6453,9 @@
             `;
         }
 
-        function renderWalletReceiptSlide(container, tx) {
+        function copyActiveWalletReceipt() {
+            const tx = window._walActiveReceipt;
+            if (!tx) return;
             const isIn = tx.type === 'IN';
             const amtUsdt = parseFloat(tx.usdt || 0) || 0;
             const idrEquiv = 'Rp ' + Math.round(amtUsdt * liveUsdtIdrRate).toLocaleString('id-ID');
@@ -6467,6 +6469,34 @@
                 `Target  : ${tx.target || '-'}`,
                 `Date    : ${tx.date || '-'}`
             ].join('\n');
+            navigator.clipboard.writeText(copyText);
+            showToast('📋 Receipt copied!');
+        }
+
+function copyActiveWalletReceipt() {
+            const tx = window._walActiveReceipt;
+            if (!tx) return;
+            const isIn = tx.type === 'IN';
+            const amtUsdt = parseFloat(tx.usdt || 0) || 0;
+            const idrEquiv = 'Rp ' + Math.round(amtUsdt * liveUsdtIdrRate).toLocaleString('id-ID');
+            const copyText = [
+                '=== XIANBEE-TECH DIGITAL RECEIPT ===',
+                `Invoice : ${tx.invoice || '-'}`,
+                `Title   : ${tx.title || '-'}`,
+                `Type    : ${isIn ? 'CREDIT (IN)' : 'DEBIT (OUT)'}`,
+                `Amount  : ${amtUsdt.toFixed(2)} USDT (${idrEquiv})`,
+                `Method  : ${tx.method || '-'}`,
+                `Target  : ${tx.target || '-'}`,
+                `Date    : ${tx.date || '-'}`
+            ].join('\n');
+            navigator.clipboard.writeText(copyText);
+            showToast('📋 Receipt copied!');
+        }
+
+        function renderWalletReceiptSlide(container, tx) {
+            const isIn = tx.type === 'IN';
+            const amtUsdt = parseFloat(tx.usdt || 0) || 0;
+            const idrEquiv = 'Rp ' + Math.round(amtUsdt * liveUsdtIdrRate).toLocaleString('id-ID');
 
             container.innerHTML = `
                 <div class="xb-wal-wrap">
@@ -6493,7 +6523,7 @@
                         </div>
 
                         <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:14px;">
-                            <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.7rem;" onclick="navigator.clipboard.writeText(${JSON.stringify(copyText)}); showToast('📋 Receipt copied!');">📋 Copy Receipt</button>
+                            <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.7rem;" onclick="copyActiveWalletReceipt()">📋 Copy Receipt</button>
                             <button type="button" class="btn-ui primary" style="padding:10px 8px;font-size:0.7rem;" onclick="backToWalletMain()">← Back to Wallet</button>
                         </div>
                     </div>
@@ -6505,10 +6535,10 @@
         // 💳 9B. DEPOSIT GATEWAY (OXAPAY 100% AUTO + LOCAL IDR 4 METODE)
         // =========================================================
         const XB_IDR_ACCOUNTS_CFG = {
-            QRIS:    { name: 'QRIS',    sub: 'All E-Wallet & Bank', number: 'Scan QRIS Official', holder: 'XianBee-Tech Store', qrisImg: 'qris.jpg', fallbackImg: 'qris.png', color: '#ef4444' },
-            SEABANK: { name: 'SeaBank', sub: 'Transfer Bank',       number: '901234567890',       holder: 'Abie Haryatmo',      color: '#ff5722' },
-            DANA:    { name: 'DANA',    sub: 'E-Wallet Instant',    number: '081234567890',       holder: 'Abie Haryatmo',      color: '#118eea' },
-            GOPAY:   { name: 'GoPay',   sub: 'E-Wallet Instant',    number: '081234567890',       holder: 'Abie Haryatmo',      color: '#00aed6' }
+            QRIS:    { name: 'QRIS',    sub: 'All E-Wallet & Bank', number: 'Scan QRIS Official', holder: 'XianBee-Tech Store', qrisImg: 'QRIS.JPG', fallbackImg: 'qris.png', color: '#ef4444' },
+            SEABANK: { name: 'SeaBank', sub: 'Transfer Bank',       number: '901016712730',       holder: 'Abie Haryatmo',      color: '#ff5722' },
+            DANA:    { name: 'DANA',    sub: 'E-Wallet Instant',    number: '089638423184',       holder: 'Abie Haryatmo',      color: '#118eea' },
+            GOPAY:   { name: 'GoPay',   sub: 'E-Wallet Instant',    number: '089638423184',       holder: 'Abie Haryatmo',      color: '#00aed6' }
         };
 
         const XB_IDR_BRAND_SVGS = {
@@ -6620,6 +6650,7 @@
         function handleWalDepProofFile(inputEl) {
             const file = inputEl && inputEl.files && inputEl.files[0];
             if (!file) return;
+            window._walDepState.proofFile = file;
             const reader = new FileReader();
             reader.onload = function (ev) {
                 window._walDepState.proofDataUrl = ev.target.result || '';
@@ -6645,6 +6676,7 @@
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
             const actionKey = `IDR_PROOF_${inv.invId}`;
             const idrFmt = 'Rp ' + inv.idrAmt.toLocaleString('id-ID');
+            const depTitle = `Wallet Deposit (${cfg.name} • $${inv.usdtAmt.toFixed(2)} USDT)`;
 
             const proofHtml = [
                 `════════════════════`,
@@ -6659,35 +6691,60 @@
                 `⏳ <i>Awaiting Admin approval to credit wallet balance.</i>`
             ].join('\n');
 
+            const inlineKb = {
+                inline_keyboard: [[
+                    { text: `✅ Approve (+$${inv.usdtAmt.toFixed(2)})`, callback_data: `webidr_app_${currentUserId}_${inv.usdtAmt.toFixed(2)}_${inv.invId}` },
+                    { text: `❌ Reject`, callback_data: `webidr_rej_${currentUserId}_${inv.usdtAmt.toFixed(2)}_${inv.invId}` }
+                ]]
+            };
+
+            const tgMsgIdsMap = {};
+            const proofFile = window._walDepState.proofFile || null;
+            for (const admId of ADMIN_IDS) {
+                if (proofFile) {
+                    try {
+                        const fd = new FormData();
+                        fd.append('chat_id', String(admId));
+                        fd.append('photo', proofFile);
+                        fd.append('caption', proofHtml + FOOTER_BRANDING);
+                        fd.append('parse_mode', 'HTML');
+                        fd.append('reply_markup', JSON.stringify(inlineKb));
+                        const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
+                        const d = await r.json();
+                        if (d && d.ok && d.result) { tgMsgIdsMap[admId] = d.result.message_id; continue; }
+                    } catch (e) {}
+                }
+                const mid = await sendTelegramSilentPush(admId, proofHtml, true, inlineKb);
+                if (mid) tgMsgIdsMap[admId] = mid;
+            }
+
             const metaObj = {
                 type: 'idr_proof',
                 actionKey: actionKey,
                 invId: inv.invId,
                 buyerId: String(currentUserId),
                 buyerUname: dispUser,
+                title: depTitle,
+                targetStr: dispUser,
                 amountUsdt: inv.usdtAmt,
                 idrAmount: inv.idrAmt,
                 methodName: cfg.name,
                 isTopup: true,
-                proofDataUrl: window._walDepState.proofDataUrl
+                proofDataUrl: window._walDepState.proofDataUrl,
+                tgMsgIds: tgMsgIdsMap
             };
 
-            const notifId = pushInWebNotification('admin', `📸 IDR PROOF (${cfg.name} • +$${inv.usdtAmt.toFixed(2)})`, proofHtml, metaObj);
+            pushInWebNotification('admin', `📸 IDR PROOF (${cfg.name} • +$${inv.usdtAmt.toFixed(2)})`, proofHtml, metaObj);
             pushInWebNotification('buyer', `⏳ DEPOSIT PROOF SENT (${inv.invId})`, proofHtml);
-
-            const tgMsgIdsMap = {};
-            for (const admId of ADMIN_IDS) {
-                const mid = await sendTelegramSilentPush(admId, proofHtml, true);
-                if (mid) tgMsgIdsMap[admId] = mid;
-            }
-            attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
+            sendTelegramSilentPush(currentUserId, `🎉 <b>[IDR PAYMENT PROOF RECEIVED]</b>\nInvoice: <code>${inv.invId}</code>\nMethod: <b>${cfg.name}</b>\nAmount: <b>${idrFmt}</b> (+$${inv.usdtAmt.toFixed(2)} USDT)\n⏳ <i>Admin is verifying your transfer receipt.</i>`, true);
 
             if (typeof removePendingTopUpInvoice === 'function') {
                 removePendingTopUpInvoice(inv.invId);
             }
             window._walDepState.activeIdrInv = null;
             window._walDepState.proofDataUrl = '';
-            showToast(`✅ Proof for ${inv.invId} sent! Admin will credit +$${inv.usdtAmt.toFixed(2)} USDT shortly.`);
+            window._walDepState.proofFile = null;
+            showToast(`✅ Proof for ${inv.invId} sent to Admin Bot & Web Feed!`);
             backToWalletMain();
         }
 
@@ -6865,6 +6922,566 @@
                                 🇮🇩 Continue (Rp ${Number(st.idrAmt || 0).toLocaleString('id-ID')})
                             </button>
                         `}
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================
+        // 💳 9C. P2P TRANSFER (6-DIGIT PIN KEYPAD), VIP HUB, VOUCHER & SECURITY
+        // =========================================================
+        window._walTrfState = window._walTrfState || {
+            step: 'form',
+            recipient: '',
+            amount: 10,
+            note: '',
+            pinBuf: '',
+            pinErr: false,
+            busy: false
+        };
+        window._walVipTab = window._walVipTab || 'milestones';
+        window._walSecState = window._walSecState || {
+            mode: 'overview',
+            step: 1,
+            oldPin: '',
+            newPin: '',
+            buf: '',
+            errMsg: ''
+        };
+
+        function verifyWalletSecurityPin(pinStr) {
+            const p = String(pinStr || '').trim();
+            if (!/^\d{6}$/.test(p)) return false;
+            return (typeof isPinValidWithBot === 'function') ? Boolean(isPinValidWithBot(p)) : false;
+        }
+
+        function setWalTrfAmount(val, fromInput = false) {
+            const num = parseFloat(val);
+            window._walTrfState.amount = (!isNaN(num) && num > 0) ? num : 0;
+            if (!fromInput) {
+                renderViewport();
+                return;
+            }
+            const eq = document.getElementById('walTrfIdrEq');
+            if (eq) eq.innerText = '≈ Rp ' + Math.round(window._walTrfState.amount * liveUsdtIdrRate).toLocaleString('id-ID');
+            document.querySelectorAll('.xb-wal-trf-amt').forEach(b => {
+                b.classList.toggle('active', parseFloat(b.dataset.amt) === window._walTrfState.amount);
+            });
+        }
+
+        function proceedWalTrfToPin() {
+            const st = window._walTrfState;
+            const rec = String(st.recipient || '').trim().replace(/^@/, '');
+            const amt = parseFloat(st.amount || 0);
+            if (!rec || rec.length < 2) return showToast('⚠️ Enter a valid recipient @username or User ID!');
+            if (rec.toLowerCase() === String(currentUsername || '').replace(/^@/, '').toLowerCase() || rec === String(currentUserId)) {
+                return showToast('⚠️ You cannot transfer balance to your own account!');
+            }
+            if (isNaN(amt) || amt < 1) return showToast('⚠️ Minimum transfer is 1.00 USDT!');
+            if (amt > userBalanceUsdt) return showToast('⚠️ Insufficient USDT balance in your wallet!');
+
+            st.recipient = rec;
+            st.step = 'pin';
+            st.pinBuf = '';
+            st.pinErr = false;
+            st.busy = false;
+            renderViewport();
+        }
+
+        function onWalTrfPinKey(digit) {
+            const st = window._walTrfState;
+            if (st.busy) return;
+            st.pinErr = false;
+            if (digit === 'DEL') { st.pinBuf = st.pinBuf.slice(0, -1); updateWalTrfPinDots(); return; }
+            if (digit === 'CLR') { st.pinBuf = ''; updateWalTrfPinDots(); return; }
+            if (st.pinBuf.length >= 6) return;
+            st.pinBuf += String(digit);
+            updateWalTrfPinDots();
+
+            if (st.pinBuf.length === 6) {
+                if (!verifyWalletSecurityPin(st.pinBuf)) {
+                    st.pinErr = true;
+                    updateWalTrfPinDots(true);
+                    showToast('❌ Invalid 6-Digit Security PIN!');
+                    setTimeout(() => {
+                        st.pinBuf = '';
+                        st.pinErr = false;
+                        updateWalTrfPinDots(false);
+                    }, 420);
+                    return;
+                }
+                executeWalTrfV2Transfer();
+            }
+        }
+
+        function updateWalTrfPinDots(shake = false) {
+            const st = window._walTrfState;
+            const row = document.getElementById('walTrfPinDotsRow');
+            if (!row) return;
+            row.classList.remove('xb-pin-shake');
+            if (shake) { void row.offsetWidth; row.classList.add('xb-pin-shake'); }
+            row.querySelectorAll('.xb-wal-pin-dot').forEach((d, idx) => {
+                d.classList.toggle('filled', idx < st.pinBuf.length);
+                d.classList.toggle('err', Boolean(st.pinErr));
+            });
+        }
+
+        async function executeWalTrfV2Transfer() {
+            const st = window._walTrfState;
+            if (st.busy) return;
+            st.busy = true;
+            const statusEl = document.getElementById('walTrfPinStatus');
+            if (statusEl) statusEl.innerText = '⏳ Settling instant P2P transfer...';
+
+            const rawTarget = String(st.recipient || '').trim().replace(/^@/, '');
+            const amt = parseFloat(st.amount || 0);
+            const newSenderBal = Math.max(0, userBalanceUsdt - amt);
+            const trfId = 'TRF-' + Math.floor(10000 + Math.random() * 89999);
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_transfer_balance',
+                        tx_id: trfId,
+                        sender_uid: String(currentUserId),
+                        sender_uname: String(currentUsername || '').replace(/^@/, ''),
+                        sender_new_bal: newSenderBal,
+                        receiver_query: rawTarget,
+                        amount_usdt: amt
+                    })
+                });
+                const data = await res.json();
+                if (!data || !data.result) {
+                    st.busy = false;
+                    st.pinBuf = '';
+                    st.step = 'form';
+                    renderViewport();
+                    return showToast('❌ ' + ((data && data.error) ? data.error : 'Recipient username not found!'));
+                }
+
+                const cleanRecUname = String(data.receiver_uname || rawTarget).replace(/^@/, '');
+                const confirmedSenderBal = !isNaN(parseFloat(data.sender_new_bal)) ? parseFloat(data.sender_new_bal) : newSenderBal;
+                const recNewBal = !isNaN(parseFloat(data.receiver_new_bal)) ? parseFloat(data.receiver_new_bal) : amt;
+                const finalTrfId = String(data.tx_id || trfId);
+
+                setAuthoritativeBalance(confirmedSenderBal, true);
+
+                const receiptTxObj = data.sender_tx || {
+                    invoice: finalTrfId,
+                    title: `Sent Balance to @${cleanRecUname}`,
+                    target: `@${cleanRecUname}${st.note ? ' (' + st.note + ')' : ''}`,
+                    usdt: amt.toFixed(2),
+                    type: 'OUT',
+                    method: 'P2P Wallet Transfer',
+                    date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+                };
+
+                const txList = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+                if (!txList.some(t => t && t.invoice === receiptTxObj.invoice)) {
+                    txList.unshift(receiptTxObj);
+                    localStorage.setItem('xb_tx_history', JSON.stringify(txList.slice(0, 40)));
+                }
+
+                const recents = JSON.parse(localStorage.getItem('xb_p2p_recent_contacts') || '[]').filter(u => u.toLowerCase() !== cleanRecUname.toLowerCase());
+                recents.unshift(cleanRecUname);
+                localStorage.setItem('xb_p2p_recent_contacts', JSON.stringify(recents.slice(0, 4)));
+
+                const senderMsg = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   📤 <b>B A L A N C E  T R A N S F E R  S E N T</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Transfer ID:</b> <code>${finalTrfId}</code>\n` +
+                    `🔸 <b>Recipient:</b> <b>@${cleanRecUname}</b>\n` +
+                    `🔸 <b>Amount Sent:</b> <b>-$${amt.toFixed(2)} USDT</b>\n` +
+                    `🔸 <b>Remaining Balance:</b> <b>$${confirmedSenderBal.toFixed(2)} USDT</b>`
+                );
+                const receiverMsg = (
+                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                    `   📥 <b>B A L A N C E  R E C E I V E D</b>\n` +
+                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                    `🔸 <b>Transfer ID:</b> <code>${finalTrfId}</code>\n` +
+                    `🔸 <b>From Sender:</b> <b>@${String(currentUsername || '').replace(/^@/, '')}</b>\n` +
+                    `🔸 <b>Amount Received:</b> <b>+$${amt.toFixed(2)} USDT</b>\n` +
+                    `🔸 <b>Updated Balance:</b> <b>$${recNewBal.toFixed(2)} USDT</b>`
+                );
+
+                if (data.sender_notif) {
+                    const bNotifs = JSON.parse(localStorage.getItem('xb_buyer_notifs') || '[]');
+                    if (!bNotifs.some(n => n && n.id === data.sender_notif.id)) {
+                        bNotifs.unshift(data.sender_notif);
+                        localStorage.setItem('xb_buyer_notifs', JSON.stringify(bNotifs.slice(0, 50)));
+                    }
+                    updateNotifBadgeCount();
+                } else {
+                    pushInWebNotification('buyer', `📤 TRANSFER SENT (@${cleanRecUname})`, senderMsg);
+                }
+
+                sendTelegramSilentPush(currentUserId, senderMsg, true);
+                if (data.receiver_uid) sendTelegramSilentPush(data.receiver_uid, receiverMsg, true);
+
+                st.step = 'form';
+                st.pinBuf = '';
+                st.busy = false;
+                st.recipient = '';
+                st.note = '';
+                window._walActiveReceipt = receiptTxObj;
+                showToast(`✅ Sent $${amt.toFixed(2)} USDT to @${cleanRecUname}!`);
+                openWalletSlide('receipt');
+            } catch (e) {
+                st.busy = false;
+                st.pinBuf = '';
+                if (statusEl) statusEl.innerText = '⚠️ Network error — please re-enter PIN.';
+                updateWalTrfPinDots(true);
+                showToast('⚠️ Network error while transferring balance.');
+            }
+        }
+
+        function renderWalletTransferSlide(container) {
+            const st = window._walTrfState;
+            if (st.step === 'pin') {
+                const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'CLR', '0', 'DEL'];
+                container.innerHTML = `
+                    <div class="xb-wal-wrap">
+                        <div class="xb-wal-sub-hdr">
+                            <button type="button" class="xb-wal-back-btn" onclick="window._walTrfState.step='form'; window._walTrfState.pinBuf=''; renderViewport();">← Edit</button>
+                            <div class="xb-wal-sub-title">Authorize Transfer</div>
+                            <span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.5);">PIN 6D</span>
+                        </div>
+                        <div class="xb-wal-card" style="text-align:center;">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);font-weight:800;">SENDING TO @${st.recipient}</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:800;color:#34d399;margin:4px 0;">${fmtPrice(st.amount)}</div>
+                            <div id="walTrfPinStatus" style="font-size:0.62rem;color:var(--text-secondary);font-weight:700;">Enter your 6-digit Security PIN</div>
+                            <div class="xb-wal-pin-dots" id="walTrfPinDotsRow">
+                                ${[0, 1, 2, 3, 4, 5].map(() => `<span class="xb-wal-pin-dot"></span>`).join('')}
+                            </div>
+                            <div class="xb-wal-keypad">
+                                ${keys.map(k => `
+                                    <button type="button" class="xb-wal-key" style="${k === 'CLR' || k === 'DEL' ? 'font-size:0.7rem;color:var(--text-secondary);' : ''}" onclick="onWalTrfPinKey('${k}')">${k === 'DEL' ? '⌫' : k}</button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                updateWalTrfPinDots(false);
+                return;
+            }
+
+            const recents = JSON.parse(localStorage.getItem('xb_p2p_recent_contacts') || '[]');
+            const quickContacts = recents.length > 0 ? recents : ['xianbeetechstore', 'abieharyatmo'];
+            const safeRec = String(st.recipient || '').replace(/"/g, '&quot;');
+            const safeNote = String(st.note || '').replace(/"/g, '&quot;');
+
+            container.innerHTML = `
+                <div class="xb-wal-wrap">
+                    ${buildWalletSubHeaderHtml('P2P Transfer', `<span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">0% FEE</span>`)}
+                    <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:10px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:10px;padding:8px 10px;">
+                            <div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;color:var(--text-muted);font-weight:800;">AVAILABLE BALANCE</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.86rem;font-weight:800;color:#34d399;">${fmtPrice(userBalanceUsdt)}</div>
+                            </div>
+                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="openWalletReceiveModal()">📥 My Receive ID</button>
+                        </div>
+                        <div>
+                            <div class="xb-bst-lbl"><span>RECIPIENT @USERNAME / UID</span><span style="color:#38bdf8;">INSTANT</span></div>
+                            <input type="text" class="xb-bst-target-inp" style="width:100%;height:38px;" value="${safeRec}" placeholder="Enter @username or User ID..." oninput="window._walTrfState.recipient=this.value">
+                            <div style="display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;">
+                                ${quickContacts.map(u => `<button type="button" class="xb-adm-mini-btn" onclick="window._walTrfState.recipient='${u}'; renderViewport();">@${u}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="xb-bst-lbl"><span>QUICK AMOUNT (USDT)</span><span style="color:#fbbf24;">MIN $1</span></div>
+                            <div class="xb-wal-amt-grid">
+                                ${[5, 10, 25, 50].map(a => `<button type="button" class="xb-wal-amt-btn xb-wal-trf-amt ${Number(st.amount) === a ? 'active' : ''}" data-amt="${a}" onclick="setWalTrfAmount(${a})">$${a}</button>`).join('')}
+                            </div>
+                        </div>
+                        <div>
+                            <div class="xb-bst-lbl">
+                                <span>CUSTOM AMOUNT (USDT)</span>
+                                <span id="walTrfIdrEq" style="color:#34d399;">≈ Rp ${Math.round((st.amount || 0) * liveUsdtIdrRate).toLocaleString('id-ID')}</span>
+                            </div>
+                            <input type="number" class="xb-bst-target-inp" style="width:100%;height:38px;font-size:0.82rem;" min="1" step="0.5" value="${st.amount}" oninput="setWalTrfAmount(this.value, true)">
+                        </div>
+                        <div>
+                            <div class="xb-bst-lbl"><span>NOTE (OPTIONAL)</span><span style="color:var(--text-muted);">MEMO</span></div>
+                            <input type="text" class="xb-bst-target-inp" style="width:100%;height:35px;font-size:0.72rem;" value="${safeNote}" placeholder="e.g. Payment split / Team fund" oninput="window._walTrfState.note=this.value">
+                        </div>
+                        <button type="button" class="btn-ui primary" style="width:100%;padding:12px;font-size:0.78rem;border-radius:11px;" onclick="proceedWalTrfToPin()">
+                            🔐 Continue to 6-Digit PIN
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function requestVipMilestoneClaim(cycleName, rewardUsdt) {
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const claimHtml = [
+                `════════════════════`,
+                `🎁 <b>VIP ROYALTY BONUS CLAIM</b>`,
+                `════════════════════`,
+                fmtAlignedNotifRow('Client', `<b>${dispUser}</b>`),
+                fmtAlignedNotifRow('User ID', `<code>${currentUserId}</code>`),
+                fmtAlignedNotifRow('Milestone', `<b>${cycleName}</b>`),
+                fmtAlignedNotifRow('Reward', `<b>+$${rewardUsdt.toFixed(2)} USDT (10% Cashback)</b>`),
+                `════════════════════`,
+                `⏳ <i>Submitted from Wallet VIP Hub — awaiting Admin verification.</i>`
+            ].join('\n');
+
+            pushInWebNotification('admin', `🎁 VIP CLAIM (${dispUser} • +$${rewardUsdt.toFixed(2)})`, claimHtml);
+            pushInWebNotification('buyer', `🎁 BONUS CLAIM SUBMITTED ($${rewardUsdt.toFixed(2)})`, claimHtml);
+            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, claimHtml, true));
+            showToast(`🎁 ${cycleName} bonus claim (+$${rewardUsdt.toFixed(2)} USDT) sent to Admin!`);
+        }
+
+        function renderWalletVipSlide(container) {
+            const vip = getUserVipRankMeta();
+            const st = computeVerifiedLoyaltyStats();
+            const isMs = window._walVipTab !== 'ranks';
+
+            const cycles = [
+                { name: 'Account Spend Cycle', cur: st.accCycle, target: 500, total: st.accTotal, reward: 50, color: '#38bdf8' },
+                { name: 'GitHub Boost Cycle', cur: st.svcCycle, target: 200, total: st.svcTotal, reward: 20, color: '#c084fc' },
+                { name: 'Wallet Top-Up Cycle', cur: st.topupCycle, target: 500, total: st.topupTotal, reward: 50, color: '#34d399' }
+            ];
+            const ranks = [
+                { ico: '🥉', name: 'BRONZE VIP', req: '$0+ Vol', perk: 'Standard Instant Delivery & Web Vault Access', col: '#fb923c' },
+                { ico: '🥈', name: 'SILVER VIP', req: '$50+ Vol / 20 TX', perk: 'Priority Vault Access & Flash Deal Alerts', col: '#cbd5e1' },
+                { ico: '🥇', name: 'GOLD VIP', req: '$200+ Vol / 50 TX', perk: '10% Milestone Cashback & Priority Support', col: '#facc15' },
+                { ico: '💎', name: 'DIAMOND VIP', req: '$500+ Vol / 100 TX', perk: 'All 10% Royalty Cycles + Private Restock Queue', col: '#38bdf8' },
+                { ico: '👑', name: 'ROYAL FOUNDER', req: 'Executive Tier', perk: 'Zero Fee Transfers & Full Infrastructure Access', col: '#f87171' }
+            ];
+
+            container.innerHTML = `
+                <div class="xb-wal-wrap">
+                    ${buildWalletSubHeaderHtml('VIP & Royalty Hub', `<span class="xb-ex-chip" style="color:${vip.badgeColor || '#fbbf24'};border-color:${vip.badgeBorder || 'rgba(251,191,36,0.5)'};">${vip.emblem} VIP</span>`)}
+                    <div class="xb-wal-card" style="text-align:center;">
+                        <div style="font-size:1.75rem;">${vip.emblem}</div>
+                        <div style="font-size:0.88rem;font-weight:800;color:var(--text-primary);margin-top:2px;">${vip.rank}</div>
+                        <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:3px;">${vip.perk}</div>
+                    </div>
+                    <div class="xb-wal-dep-tabs">
+                        <button type="button" class="xb-wal-dep-tab ${isMs ? 'active' : ''}" onclick="window._walVipTab='milestones'; renderViewport();">🎁 Cashback Cycles</button>
+                        <button type="button" class="xb-wal-dep-tab ${!isMs ? 'active' : ''}" onclick="window._walVipTab='ranks'; renderViewport();">👑 VIP Ranks</button>
+                    </div>
+                    ${isMs ? `
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            ${cycles.map(c => {
+                                const pct = Math.min(100, Math.round((c.cur / c.target) * 100));
+                                const canClaim = c.total >= c.target;
+                                return `
+                                    <div class="xb-wal-card" style="padding:10px 11px;">
+                                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                            <span style="font-size:0.72rem;font-weight:800;color:var(--text-primary);">${c.name}</span>
+                                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:${c.color};">+$${c.reward} Bonus</span>
+                                        </div>
+                                        <div class="xb-wal-prog-bar"><div class="xb-wal-prog-fill" style="width:${pct}%;"></div></div>
+                                        <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.57rem;color:var(--text-secondary);">
+                                            <span>$${c.cur.toFixed(2)} / $${c.target.toFixed(2)} (${pct}%)</span>
+                                            <span>Lifetime: $${c.total.toFixed(2)}</span>
+                                        </div>
+                                        ${canClaim ? `<button type="button" class="btn-ui buy-now" style="width:100%;margin-top:8px;padding:7px;font-size:0.66rem;border-radius:8px;" onclick="requestVipMilestoneClaim('${c.name}', ${c.reward})">🎁 Claim $${c.reward}.00 Cashback</button>` : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    ` : `
+                        <div style="display:flex;flex-direction:column;gap:7px;">
+                            ${ranks.map(r => `
+                                <div class="xb-wal-card" style="padding:10px 11px;display:flex;align-items:center;gap:10px;">
+                                    <span style="width:34px;height:34px;border-radius:10px;background:var(--bg-input);border:1px solid ${r.col}66;display:inline-flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;">${r.ico}</span>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                            <span style="font-size:0.73rem;font-weight:800;color:${r.col};">${r.name}</span>
+                                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);font-weight:700;">${r.req}</span>
+                                        </div>
+                                        <div style="font-size:0.6rem;color:var(--text-secondary);margin-top:2px;">${r.perk}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function applyVoucherFromWalletVault(codeStr) {
+            const clean = String(codeStr || '').trim().toUpperCase();
+            if (!clean) return showToast('⚠️ Enter a voucher code first!');
+            const cartInp = document.getElementById('cartPromoInput');
+            if (cartInp) cartInp.value = clean;
+            navigator.clipboard.writeText(clean).catch(() => {});
+
+            if (clean === 'XIANBEE5' || clean === 'VIP5') {
+                cartDiscountPct = 5;
+                if (typeof updateCartUI === 'function') updateCartUI(true);
+                return showToast(`🎟️ Code "${clean}" (5% OFF) activated for your checkout!`);
+            }
+            const list = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
+            const found = list.find(x => String(x.code || '').toUpperCase() === clean);
+            if (!found) return showToast('❌ Invalid or expired voucher code!');
+            if (found.type === 'once' && found.used) return showToast('❌ This once-off voucher has already been used!');
+
+            const pctVal = Number(found.disc || found.pct || 5);
+            cartDiscountPct = pctVal;
+            if (found.type === 'once') {
+                found.used = true;
+                localStorage.setItem('xb_custom_vouchers', JSON.stringify(list));
+            }
+            if (typeof updateCartUI === 'function') updateCartUI(true);
+            renderViewport();
+            showToast(`✅ Voucher "${clean}" (${pctVal}% OFF) activated for your checkout!`);
+        }
+
+        function renderWalletVoucherSlide(container) {
+            const customVouchers = JSON.parse(localStorage.getItem('xb_custom_vouchers') || '[]');
+            const builtIn = [{ code: 'XIANBEE5', disc: 5, desc: 'Storewide 5% Discount on Cart Checkout', used: false }];
+            const allCodes = [
+                ...customVouchers.filter(v => !(v.type === 'once' && v.used)).map(v => ({
+                    code: String(v.code || '').toUpperCase(),
+                    disc: Number(v.disc || v.pct || 5),
+                    desc: v.type === 'once' ? 'Single-Use Admin Promo Code' : 'Reusable Executive Promo Code'
+                })),
+                ...builtIn
+            ].filter(v => v.code);
+
+            container.innerHTML = `
+                <div class="xb-wal-wrap">
+                    ${buildWalletSubHeaderHtml('Voucher Vault', `<span class="xb-ex-chip" style="color:#c084fc;border-color:rgba(192,132,252,0.5);">${allCodes.length} ACTIVE</span>`)}
+                    <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:9px;">
+                        <div class="xb-bst-lbl"><span>REDEEM / APPLY PROMO CODE</span><span style="color:#c084fc;">CART SYNC</span></div>
+                        <div class="xb-bst-input-row">
+                            <input type="text" id="walVoucherManualInp" class="xb-bst-target-inp" placeholder="Enter code (e.g. XIANBEE5)" style="text-transform:uppercase;">
+                            <button type="button" class="btn-ui primary" style="flex:0 0 auto;min-width:0;padding:8px 13px;font-size:0.68rem;border-radius:9px;" onclick="applyVoucherFromWalletVault(document.getElementById('walVoucherManualInp').value)">Apply</button>
+                        </div>
+                    </div>
+                    <div style="display:flex;flex-direction:column;gap:7px;">
+                        ${allCodes.map(v => `
+                            <div class="xb-wal-card" style="padding:10px 11px;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                                <div style="min-width:0;flex:1;">
+                                    <div style="display:flex;align-items:center;gap:6px;">
+                                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:#c084fc;">${v.code}</span>
+                                        <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">${v.disc}% OFF</span>
+                                    </div>
+                                    <div style="font-size:0.59rem;color:var(--text-secondary);margin-top:3px;">${v.desc}</div>
+                                </div>
+                                <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;border-color:rgba(56,189,248,0.45);padding:6px 10px;" onclick="applyVoucherFromWalletVault('${v.code}')">Use ➔</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function onWalSecPinKey(digit) {
+            const st = window._walSecState;
+            st.errMsg = '';
+            if (digit === 'DEL') { st.buf = st.buf.slice(0, -1); renderViewport(); return; }
+            if (digit === 'CLR') { st.buf = ''; renderViewport(); return; }
+            if (st.buf.length >= 6) return;
+            st.buf += String(digit);
+
+            if (st.buf.length === 6) {
+                if (st.step === 1) {
+                    if (!verifyWalletSecurityPin(st.buf)) {
+                        st.errMsg = '❌ Current 6-digit PIN is incorrect.';
+                        st.buf = '';
+                        renderViewport();
+                        return;
+                    }
+                    st.oldPin = st.buf; st.buf = ''; st.step = 2;
+                    renderViewport();
+                    return;
+                }
+                if (st.step === 2) {
+                    st.newPin = st.buf; st.buf = ''; st.step = 3;
+                    renderViewport();
+                    return;
+                }
+                if (st.step === 3) {
+                    if (st.buf !== st.newPin) {
+                        st.errMsg = '❌ Confirmation PIN does not match. Try again.';
+                        st.buf = ''; st.step = 2; st.newPin = '';
+                        renderViewport();
+                        return;
+                    }
+                    const newHash = (typeof md5Hash === 'function') ? md5Hash(st.newPin) : '';
+                    if (newHash) localStorage.setItem('xb_bot_pin_hash', newHash);
+                    localStorage.setItem('xb_user_pin', st.newPin);
+                    if (typeof scheduleCloudStatePush === 'function' && newHash) {
+                        scheduleCloudStatePush({ pin_hash: newHash });
+                    }
+                    st.mode = 'overview'; st.step = 1; st.buf = ''; st.oldPin = ''; st.newPin = '';
+                    showToast('🛡️ 6-Digit Security PIN updated & synced!');
+                    renderViewport();
+                    return;
+                }
+            }
+            renderViewport();
+        }
+
+        function renderWalletSecuritySlide(container) {
+            const st = window._walSecState;
+            const hasPin = Boolean(
+                (localStorage.getItem('xb_bot_pin_hash') && localStorage.getItem('xb_bot_pin_hash').length === 32) ||
+                (localStorage.getItem('xb_user_pin') && /^\d{6}$/.test(localStorage.getItem('xb_user_pin')))
+            );
+
+            if (st.mode === 'change_pin') {
+                const stepTitle = st.step === 1
+                    ? 'Step 1/3 • Enter Current 6-Digit PIN'
+                    : (st.step === 2 ? 'Step 2/3 • Enter New 6-Digit PIN' : 'Step 3/3 • Confirm New 6-Digit PIN');
+                const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'CLR', '0', 'DEL'];
+                container.innerHTML = `
+                    <div class="xb-wal-wrap">
+                        <div class="xb-wal-sub-hdr">
+                            <button type="button" class="xb-wal-back-btn" onclick="window._walSecState.mode='overview'; window._walSecState.buf=''; window._walSecState.step=1; renderViewport();">← Cancel</button>
+                            <div class="xb-wal-sub-title">Change Security PIN</div>
+                            <span class="xb-ex-chip" style="color:#38bdf8;">${st.step}/3</span>
+                        </div>
+                        <div class="xb-wal-card" style="text-align:center;">
+                            <div style="font-size:0.74rem;font-weight:800;color:var(--text-primary);">${stepTitle}</div>
+                            ${st.errMsg ? `<div style="font-size:0.62rem;color:#f87171;font-weight:700;margin-top:4px;">${st.errMsg}</div>` : ''}
+                            <div class="xb-wal-pin-dots">
+                                ${[0, 1, 2, 3, 4, 5].map(i => `<span class="xb-wal-pin-dot ${i < st.buf.length ? 'filled' : ''}"></span>`).join('')}
+                            </div>
+                            <div class="xb-wal-keypad">
+                                ${keys.map(k => `
+                                    <button type="button" class="xb-wal-key" style="${k === 'CLR' || k === 'DEL' ? 'font-size:0.7rem;color:var(--text-secondary);' : ''}" onclick="onWalSecPinKey('${k}')">${k === 'DEL' ? '⌫' : k}</button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = `
+                <div class="xb-wal-wrap">
+                    ${buildWalletSubHeaderHtml('Security & PIN', `<span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">${hasPin ? 'SHIELD ON' : 'SET PIN'}</span>`)}
+                    <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:9px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <div>
+                                <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">6-Digit Transaction PIN</div>
+                                <div style="font-size:0.59rem;color:var(--text-secondary);">Required for P2P Transfers &amp; Balance Checkout</div>
+                            </div>
+                            <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">${hasPin ? 'ACTIVE' : 'NEW'}</span>
+                        </div>
+                        <hr class="xb-wal-hr">
+                        <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.63rem;">
+                            <span style="color:var(--text-muted);">Bound User ID</span>
+                            <b style="color:var(--text-primary);">${currentUserId}</b>
+                        </div>
+                        <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.63rem;">
+                            <span style="color:var(--text-muted);">Cloud Wallet Sync</span>
+                            <b style="color:#34d399;">● Active (Auto-Locked)</b>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:4px;">
+                            <button type="button" class="btn-ui primary" style="padding:10px 8px;font-size:0.7rem;" onclick="window._walSecState={mode:'change_pin',step:${hasPin ? 1 : 2},oldPin:'',newPin:'',buf:'',errMsg:''}; renderViewport();">🔑 ${hasPin ? 'Change PIN' : 'Create PIN'}</button>
+                            <button type="button" class="btn-ui secondary" style="padding:10px 8px;font-size:0.7rem;" onclick="syncWalletBalanceInWeb()">↻ Force Sync</button>
+                        </div>
                     </div>
                 </div>
             `;
@@ -14070,18 +14687,38 @@ let _ghAgeCheckerResults = [];
                         <div style="font-size:0.75rem;color:var(--text-secondary);margin-top:8px;">Transfer Exact Amount: <b style="color:var(--success);font-family:'JetBrains Mono',monospace;">${idrFmt}</b></div>
                     </div>
                 `;
-            } else if (methodType === 'BANK') {
+            } else if (methodType === 'BANK' || methodType === 'SEABANK') {
                 paymentInstructionHtml = `
                     <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:14px;border-radius:14px;margin-bottom:14px;">
-                        <div style="font-size:0.72rem;font-weight:800;color:var(--accent-cyan);margin-bottom:8px;">🏦 BANK TRANSFER — SEABANK INDONESIA</div>
+                        <div style="font-size:0.72rem;font-weight:800;color:#ff5722;margin-bottom:8px;">🏦 BANK TRANSFER — SEABANK INDONESIA</div>
                         <div class="cred-field-row">
                             <span class="lbl">BANK NAME</span>
                             <span class="val">SeaBank Indonesia</span>
                         </div>
                         <div class="cred-field-row">
                             <span class="lbl">ACCOUNT NO.</span>
-                            <span class="val" style="color:var(--success);font-size:0.95rem;">901016712730</span>
-                            <button class="top-pill" onclick="navigator.clipboard.writeText('901016712730'); showToast('SeaBank account number copied!');">📋 Copy</button>
+                            <span class="val" style="color:var(--success);font-size:0.95rem;">${XB_IDR_ACCOUNTS_CFG.SEABANK.number}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${XB_IDR_ACCOUNTS_CFG.SEABANK.number}'); showToast('SeaBank account number copied!');">📋 Copy</button>
+                        </div>
+                        <div class="cred-field-row" style="margin-bottom:0;">
+                            <span class="lbl">AMOUNT</span>
+                            <span class="val" style="color:var(--warning);">${idrFmt}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${idrAmount}'); showToast('Exact IDR amount copied!');">📋 Copy</button>
+                        </div>
+                    </div>
+                `;
+            } else if (methodType === 'GOPAY') {
+                paymentInstructionHtml = `
+                    <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:14px;border-radius:14px;margin-bottom:14px;">
+                        <div style="font-size:0.72rem;font-weight:800;color:#00aed6;margin-bottom:8px;">🟢 E-WALLET TRANSFER — GOPAY</div>
+                        <div class="cred-field-row">
+                            <span class="lbl">PROVIDER</span>
+                            <span class="val">GoPay Indonesia</span>
+                        </div>
+                        <div class="cred-field-row">
+                            <span class="lbl">GOPAY NO.</span>
+                            <span class="val" style="color:var(--success);font-size:0.95rem;">${XB_IDR_ACCOUNTS_CFG.GOPAY.number}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${XB_IDR_ACCOUNTS_CFG.GOPAY.number}'); showToast('GoPay number copied!');">📋 Copy</button>
                         </div>
                         <div class="cred-field-row" style="margin-bottom:0;">
                             <span class="lbl">AMOUNT</span>
@@ -14093,15 +14730,15 @@ let _ghAgeCheckerResults = [];
             } else {
                 paymentInstructionHtml = `
                     <div style="background:var(--bg-input);border:1px solid var(--border-focus);padding:14px;border-radius:14px;margin-bottom:14px;">
-                        <div style="font-size:0.72rem;font-weight:800;color:var(--accent-cyan);margin-bottom:8px;">🔵 E-WALLET TRANSFER — DANA</div>
+                        <div style="font-size:0.72rem;font-weight:800;color:#118eea;margin-bottom:8px;">🔵 E-WALLET TRANSFER — DANA</div>
                         <div class="cred-field-row">
                             <span class="lbl">PROVIDER</span>
                             <span class="val">DANA Indonesia</span>
                         </div>
                         <div class="cred-field-row">
                             <span class="lbl">DANA NO.</span>
-                            <span class="val" style="color:var(--success);font-size:0.95rem;">089638423184</span>
-                            <button class="top-pill" onclick="navigator.clipboard.writeText('089638423184'); showToast('DANA number copied!');">📋 Copy</button>
+                            <span class="val" style="color:var(--success);font-size:0.95rem;">${XB_IDR_ACCOUNTS_CFG.DANA.number}</span>
+                            <button class="top-pill" onclick="navigator.clipboard.writeText('${XB_IDR_ACCOUNTS_CFG.DANA.number}'); showToast('DANA number copied!');">📋 Copy</button>
                         </div>
                         <div class="cred-field-row" style="margin-bottom:0;">
                             <span class="lbl">AMOUNT</span>
@@ -14114,17 +14751,18 @@ let _ghAgeCheckerResults = [];
 
             body.innerHTML = `
                 <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
-                    <span class="item-tag" style="margin:0;">🇮🇩 IDR PAYMENT GATEWAY (QRIS / SEABANK / DANA)</span>
+                    <span class="item-tag" style="margin:0;">🇮🇩 IDR GATEWAY (QRIS • SEABANK • DANA • GOPAY)</span>
                     <button class="top-pill" onclick="closeModal('paymentGatewayModal'); showToast('Invoice saved in Pending Top-Up list.');">✕</button>
                 </div>
                 <h3 style="margin:0 0 4px 0;font-family:'JetBrains Mono',monospace;">${invId}</h3>
                 <p style="margin:0 0 12px 0;font-size:0.78rem;color:var(--text-secondary);">${title} • <b style="color:var(--success);">${idrFmt}</b> (${amountUsdt.toFixed(2)} USDT)</p>
 
-                <!-- 3 IDR CHANNEL TABS -->
-                <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:14px;">
-                    <button class="subtab-pill ${methodType === 'QRIS' ? 'active' : ''}" style="padding:9px 6px;font-size:0.72rem;" onclick="renderIdrGatewayView('QRIS')">📸 QRIS</button>
-                    <button class="subtab-pill ${methodType === 'BANK' ? 'active' : ''}" style="padding:9px 6px;font-size:0.72rem;" onclick="renderIdrGatewayView('BANK')">🏦 SeaBank</button>
-                    <button class="subtab-pill ${methodType === 'DANA' ? 'active' : ''}" style="padding:9px 6px;font-size:0.72rem;" onclick="renderIdrGatewayView('DANA')">🔵 DANA</button>
+                <!-- 4 IDR CHANNEL TABS -->
+                <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:6px;margin-bottom:14px;">
+                    <button class="xb-wal-idr-btn ${methodType === 'QRIS' ? 'active' : ''}" style="padding:7px 8px;" onclick="renderIdrGatewayView('QRIS')"><span class="xb-wal-brand-ico" style="width:24px;height:24px;">${XB_IDR_BRAND_SVGS.QRIS}</span><b style="font-size:0.7rem;">QRIS</b></button>
+                    <button class="xb-wal-idr-btn ${methodType === 'BANK' || methodType === 'SEABANK' ? 'active' : ''}" style="padding:7px 8px;" onclick="renderIdrGatewayView('SEABANK')"><span class="xb-wal-brand-ico" style="width:24px;height:24px;">${XB_IDR_BRAND_SVGS.SEABANK}</span><b style="font-size:0.7rem;">SeaBank</b></button>
+                    <button class="xb-wal-idr-btn ${methodType === 'DANA' ? 'active' : ''}" style="padding:7px 8px;" onclick="renderIdrGatewayView('DANA')"><span class="xb-wal-brand-ico" style="width:24px;height:24px;">${XB_IDR_BRAND_SVGS.DANA}</span><b style="font-size:0.7rem;">DANA</b></button>
+                    <button class="xb-wal-idr-btn ${methodType === 'GOPAY' ? 'active' : ''}" style="padding:7px 8px;" onclick="renderIdrGatewayView('GOPAY')"><span class="xb-wal-brand-ico" style="width:24px;height:24px;">${XB_IDR_BRAND_SVGS.GOPAY}</span><b style="font-size:0.7rem;">GoPay</b></button>
                 </div>
 
                 ${paymentInstructionHtml}
@@ -16551,11 +17189,6 @@ let _ghAgeCheckerResults = [];
                     <button class="btn-ui buy-now" style="padding:10px 8px;font-size:0.74rem;" onclick="submitWebNegoOffer()">🚀 Submit Bundle Offer</button>
                 </div>
             `;
-        }
-
-        function fmtAlignedNotifRow(label, valueHtml) {
-            const padded = String(label).padEnd(9, '\u00A0');
-            return `<code>${padded}:</code> ${valueHtml}`;
         }
 
         async function submitWebNegoOffer() {
