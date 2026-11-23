@@ -2403,6 +2403,116 @@
             box-shadow: 0 0 18px rgba(239, 68, 68, 0.58), 0 0 10px rgba(250, 204, 21, 0.35);
         }
 
+        /* PROFILE VIP RANK CROWN FRAME (CENTERED TOP) + SIDE IDENTITY STACK */
+        .xb-prf-vip-crown {
+            position: relative;
+            width: 100%;
+            padding: 6px 12px;
+            border-radius: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.64rem;
+            font-weight: 800;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            text-align: center;
+            overflow: hidden;
+            margin-bottom: 10px;
+            transition: transform 0.16s ease;
+        }
+        .xb-prf-vip-crown::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg, transparent 25%, rgba(255,255,255,0.22) 50%, transparent 75%);
+            pointer-events: none;
+        }
+        .xb-prf-vip-crown.tier-bronze {
+            background: linear-gradient(135deg, rgba(120,53,15,0.35) 0%, rgba(180,83,9,0.24) 55%, rgba(253,186,116,0.2) 100%);
+            border-top: 2px solid #fb923c;
+            border-bottom: 2px solid #b45309;
+            border-left: 1px solid rgba(251,146,60,0.45);
+            border-right: 1px solid rgba(251,146,116,0.45);
+            color: #fdba74;
+            box-shadow: 0 4px 12px rgba(180,83,9,0.22);
+        }
+        .xb-prf-vip-crown.tier-silver {
+            background: linear-gradient(135deg, rgba(71,85,105,0.38) 0%, rgba(203,213,225,0.22) 55%, rgba(148,163,184,0.28) 100%);
+            border-top: 2px solid #f1f5f9;
+            border-bottom: 2px solid #94a3b8;
+            border-left: 1px solid rgba(226,232,240,0.5);
+            border-right: 1px solid rgba(226,232,240,0.5);
+            color: #f8fafc;
+            box-shadow: 0 4px 14px rgba(148,163,184,0.25);
+        }
+        .xb-prf-vip-crown.tier-gold {
+            background: linear-gradient(135deg, rgba(161,98,7,0.38) 0%, rgba(250,204,21,0.25) 52%, rgba(217,119,6,0.35) 100%);
+            background-size: 200% 200%;
+            animation: xbVipRingFlow 3.4s ease infinite;
+            border-top: 2px solid #fef08a;
+            border-bottom: 2px solid #eab308;
+            border-left: 1px solid rgba(250,204,21,0.6);
+            border-right: 1px solid rgba(250,204,21,0.6);
+            color: #fde047;
+            box-shadow: 0 0 16px rgba(250,204,21,0.34);
+        }
+        .xb-prf-vip-crown.tier-diamond {
+            background: linear-gradient(135deg, rgba(2,132,199,0.36) 0%, rgba(124,58,237,0.32) 52%, rgba(56,189,248,0.28) 100%);
+            background-size: 220% 220%;
+            animation: xbVipRingFlow 3s ease infinite;
+            border-top: 2px solid #7dd3fc;
+            border-bottom: 2px solid #c084fc;
+            border-left: 1.5px solid rgba(56,189,248,0.65);
+            border-right: 1.5px solid rgba(192,132,252,0.65);
+            color: #e0f2fe;
+            box-shadow: 0 0 18px rgba(56,189,248,0.38), 0 0 10px rgba(168,85,247,0.28);
+        }
+        .xb-prf-vip-crown.tier-founder {
+            background: linear-gradient(135deg, rgba(153,27,27,0.48) 0%, rgba(220,38,38,0.32) 50%, rgba(202,138,4,0.38) 100%);
+            background-size: 220% 220%;
+            animation: xbVipRingFlow 2.6s ease infinite, xbVipAuraPulse 2.5s ease-in-out infinite;
+            border-top: 2px solid #facc15;
+            border-bottom: 2px solid #f87171;
+            border-left: 1.5px solid rgba(250,204,21,0.72);
+            border-right: 1.5px solid rgba(248,113,113,0.72);
+            color: #fef08a;
+            box-shadow: 0 0 20px rgba(239,68,68,0.42), 0 0 12px rgba(250,204,21,0.32);
+        }
+        [data-theme="platinum"] .xb-prf-vip-crown.tier-bronze { background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%); color: #9a3412; border-color: #ea580c; }
+        [data-theme="platinum"] .xb-prf-vip-crown.tier-silver { background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); color: #1e293b; border-color: #64748b; }
+        [data-theme="platinum"] .xb-prf-vip-crown.tier-gold { background: linear-gradient(135deg, #fef9c3 0%, #fef08a 100%); color: #854d0e; border-color: #ca8a04; }
+        [data-theme="platinum"] .xb-prf-vip-crown.tier-diamond { background: linear-gradient(135deg, #e0f2fe 0%, #ede9fe 100%); color: #1d4ed8; border-color: #0284c7; }
+        [data-theme="platinum"] .xb-prf-vip-crown.tier-founder { background: linear-gradient(135deg, #fee2e2 0%, #fef9c3 100%); color: #991b1b; border-color: #dc2626; }
+
+        .xb-prf-side-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            min-width: 0;
+            flex: 1;
+        }
+        .xb-prf-uid-sub {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            width: fit-content;
+            max-width: 100%;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.56rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 7px;
+            padding: 2px 7px;
+            cursor: pointer;
+            transition: border-color 0.14s ease;
+        }
+        .xb-prf-uid-sub:hover { border-color: rgba(56,189,248,0.55); color: var(--text-primary); }
+
         /* ADMIN LIVE LOGO STUDIO */
         .xb-logo-prev-stage {
             background: var(--bg-input);
@@ -9927,22 +10037,27 @@ function copyActiveWalletReceipt() {
 
             container.innerHTML = `
                 <div class="xb-vp-wrap">
-                    <!-- 1. CLEAN IDENTITY HERO CARD (AUTO-UPGRADING VIP AVATAR BORDER) -->
+                    <!-- 1. CLEAN IDENTITY HERO CARD (TOP CENTERED VIP CROWN + SIDE NAME & UID) -->
                     <div class="xb-wal-card">
-                        <div style="display:flex;align-items:center;gap:10px;">
+                        <div class="xb-prf-vip-crown ${vipRingCls.replace('xb-vip-ring-', 'tier-')}">
+                            <span>${vip.emblem}</span>
+                            <span>${vip.rank}</span>
+                        </div>
+
+                        <div style="display:flex;align-items:center;gap:11px;">
                             <label class="xb-prf-avatar-wrap ${vipRingCls}" title="Tap to change profile photo">
                                 <div class="xb-prf-avatar">${avatarInnerHtml}</div>
                                 <input type="file" accept="image/*" style="display:none;" onchange="handleProfileAvatarFileChange(this)">
                             </label>
-                            <div style="min-width:0;flex:1;">
-                                <div style="display:flex;align-items:center;gap:5px;">
-                                    <span style="font-size:0.92rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${cleanU}</span>
+                            <div class="xb-prf-side-stack">
+                                <div style="display:flex;align-items:center;gap:5px;min-width:0;">
+                                    <span style="font-size:0.94rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${cleanU}</span>
                                     <svg width="13" height="13" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
                                 </div>
-                                <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:3px;">
-                                    <span class="xb-ex-chip" style="color:${vip.badgeColor || '#fbbf24'};border-color:${vip.badgeBorder || 'rgba(251,191,36,0.5)'};">${vip.emblem} ${vip.rank}</span>
-                                    <button type="button" class="xb-adm-mini-btn" style="padding:2px 6px;font-size:0.52rem;" onclick="navigator.clipboard.writeText('${currentUserId}'); showToast('UID ${currentUserId} copied!');">UID: ${currentUserId} 📋</button>
-                                </div>
+                                <button type="button" class="xb-prf-uid-sub" onclick="navigator.clipboard.writeText('${currentUserId}'); showToast('UID ${currentUserId} copied!');">
+                                    <span>UID: <b style="color:var(--text-primary);">${currentUserId}</b></span>
+                                    <span style="opacity:0.75;">📋</span>
+                                </button>
                             </div>
                         </div>
 
