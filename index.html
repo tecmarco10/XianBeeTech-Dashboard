@@ -2302,31 +2302,76 @@
             flex-shrink: 0;
         }
 
-        /* PROFILE UPLOADABLE AVATAR */
+        /* PROFILE AVATAR — AUTO-UPGRADING VIP METALLIC BORDER (NO CAMERA DOT) */
+        @keyframes xbVipRingFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes xbVipAuraPulse {
+            0%, 100% { filter: brightness(1); }
+            50% { filter: brightness(1.18); }
+        }
         .xb-prf-avatar-wrap {
             position: relative;
-            width: 50px;
-            height: 50px;
-            flex-shrink: 0;
-            cursor: pointer;
-        }
-        .xb-prf-avatar { width: 50px !important; height: 50px !important; overflow: hidden; }
-        .xb-prf-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .xb-prf-cam-dot {
-            position: absolute;
-            right: -3px;
-            bottom: -3px;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #0284c7, #7c3aed);
-            border: 2px solid var(--bg-surface);
-            color: #ffffff;
-            font-size: 0.56rem;
-            display: flex;
+            width: 54px;
+            height: 54px;
+            padding: 2.5px;
+            border-radius: 15px;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.45);
+            flex-shrink: 0;
+            cursor: pointer;
+            transition: transform 0.16s ease;
+        }
+        .xb-prf-avatar-wrap:active { transform: scale(0.96); }
+        .xb-prf-avatar-wrap.lg {
+            width: 82px;
+            height: 82px;
+            padding: 3.5px;
+            border-radius: 22px;
+        }
+        .xb-prf-avatar {
+            width: 100% !important;
+            height: 100% !important;
+            border-radius: 12px !important;
+            border: 2px solid var(--bg-surface) !important;
+            box-shadow: none !important;
+            overflow: hidden;
+        }
+        .xb-prf-avatar-wrap.lg .xb-prf-avatar {
+            border-radius: 18px !important;
+            font-size: 1.55rem;
+        }
+        .xb-prf-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+        /* 5 AUTO-UPGRADING VIP BORDER TIERS */
+        .xb-vip-ring-bronze {
+            background: linear-gradient(135deg, #78350f 0%, #d97706 45%, #fdba74 70%, #92400e 100%);
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.32);
+        }
+        .xb-vip-ring-silver {
+            background: linear-gradient(135deg, #64748b 0%, #e2e8f0 45%, #ffffff 68%, #94a3b8 100%);
+            box-shadow: 0 4px 14px rgba(203, 213, 225, 0.36);
+        }
+        .xb-vip-ring-gold {
+            background: linear-gradient(135deg, #a16207 0%, #facc15 35%, #fef08a 58%, #d97706 82%, #facc15 100%);
+            background-size: 220% 220%;
+            animation: xbVipRingFlow 3.4s ease infinite;
+            box-shadow: 0 0 16px rgba(250, 204, 21, 0.45);
+        }
+        .xb-vip-ring-diamond {
+            background: linear-gradient(135deg, #0284c7 0%, #38bdf8 28%, #c084fc 56%, #34d399 82%, #2563eb 100%);
+            background-size: 240% 240%;
+            animation: xbVipRingFlow 3s ease infinite, xbVipAuraPulse 2.8s ease-in-out infinite;
+            box-shadow: 0 0 18px rgba(56, 189, 248, 0.55), 0 0 8px rgba(168, 85, 247, 0.4);
+        }
+        .xb-vip-ring-founder {
+            background: linear-gradient(135deg, #991b1b 0%, #ef4444 30%, #fb7185 52%, #facc15 76%, #dc2626 100%);
+            background-size: 240% 240%;
+            animation: xbVipRingFlow 2.6s ease infinite, xbVipAuraPulse 2.4s ease-in-out infinite;
+            box-shadow: 0 0 18px rgba(239, 68, 68, 0.58), 0 0 10px rgba(250, 204, 21, 0.35);
         }
 
         /* SECTION DIVIDER & 2-LINE SPECIAL TIERS HEADER */
@@ -9234,6 +9279,15 @@ function copyActiveWalletReceipt() {
                 ? `<img src="${savedAvatar}" alt="${cleanU}">`
                 : `<span>${initials}</span>`;
 
+            const vipRankUp = String(vip.rank || '').toUpperCase();
+            const vipRingCls = vipRankUp.includes('FOUNDER')
+                ? 'xb-vip-ring-founder'
+                : (vipRankUp.includes('DIAMOND')
+                    ? 'xb-vip-ring-diamond'
+                    : (vipRankUp.includes('GOLD')
+                        ? 'xb-vip-ring-gold'
+                        : (vipRankUp.includes('SILVER') ? 'xb-vip-ring-silver' : 'xb-vip-ring-bronze')));
+
             // SLIDE 1: EDIT IDENTITY & PROFILE PHOTO
             if (slide === 'username') {
                 container.innerHTML = `
@@ -9241,14 +9295,13 @@ function copyActiveWalletReceipt() {
                         ${buildProfileSubHeaderHtml('Edit Identity & Photo', `<span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.5);">PROFILE</span>`)}
 
                         <div class="xb-wal-card" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;">
-                            <label class="xb-prf-avatar-wrap" style="width:76px;height:76px;" title="Tap to upload photo">
-                                <div class="xb-prf-avatar" style="width:76px !important;height:76px !important;border-radius:20px;font-size:1.5rem;">${avatarInnerHtml}</div>
-                                <span class="xb-prf-cam-dot" style="width:24px;height:24px;font-size:0.68rem;">📷</span>
+                            <label class="xb-prf-avatar-wrap lg ${vipRingCls}" title="Tap to upload photo">
+                                <div class="xb-prf-avatar">${avatarInnerHtml}</div>
                                 <input type="file" accept="image/*" style="display:none;" onchange="handleProfileAvatarFileChange(this)">
                             </label>
                             <div>
-                                <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">Profile Avatar</div>
-                                <div style="font-size:0.58rem;color:var(--text-secondary);margin-top:2px;">Auto-cropped 160×160px • Shown in Profile &amp; Live Support</div>
+                                <span class="xb-ex-chip" style="color:${vip.badgeColor || '#fbbf24'};border-color:${vip.badgeBorder || 'rgba(251,191,36,0.5)'};">${vip.emblem} ${vip.rank} FRAME</span>
+                                <div style="font-size:0.58rem;color:var(--text-secondary);margin-top:5px;">Border upgrades automatically with your VIP tier • Tap photo to change</div>
                             </div>
                             <div style="display:grid;grid-template-columns:${savedAvatar ? '1.3fr 1fr' : '1fr'};gap:7px;width:100%;">
                                 <label class="btn-ui primary" style="padding:9px 8px;font-size:0.7rem;border-radius:9px;cursor:pointer;margin:0;">
@@ -9426,12 +9479,11 @@ function copyActiveWalletReceipt() {
 
             container.innerHTML = `
                 <div class="xb-vp-wrap">
-                    <!-- 1. CLEAN IDENTITY HERO CARD (1-TAP UPLOAD AVATAR + ZERO DUPLICATION) -->
+                    <!-- 1. CLEAN IDENTITY HERO CARD (AUTO-UPGRADING VIP AVATAR BORDER) -->
                     <div class="xb-wal-card">
                         <div style="display:flex;align-items:center;gap:10px;">
-                            <label class="xb-prf-avatar-wrap" title="Tap to change profile photo">
+                            <label class="xb-prf-avatar-wrap ${vipRingCls}" title="Tap to change profile photo">
                                 <div class="xb-prf-avatar">${avatarInnerHtml}</div>
-                                <span class="xb-prf-cam-dot">📷</span>
                                 <input type="file" accept="image/*" style="display:none;" onchange="handleProfileAvatarFileChange(this)">
                             </label>
                             <div style="min-width:0;flex:1;">
