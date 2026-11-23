@@ -2209,6 +2209,49 @@
         .xb-wal-tx-row { background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 11px; padding: 9px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; transition: 0.15s ease; }
         .xb-wal-tx-row:hover { border-color: rgba(56,189,248,0.55); }
 
+        /* =========================================================
+           🔐 VAULT & 👤 PROFILE V2 — ZERO-DUPLICATION ASSET EXCHANGE
+           ========================================================= */
+        .xb-vp-wrap { display: flex; flex-direction: column; gap: 10px; }
+        .xb-vp-seg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; background: var(--bg-input); border: 1px solid var(--ex-hairline); padding: 4px; border-radius: 12px; }
+        .xb-vp-seg-btn { border: 1px solid transparent; background: transparent; color: var(--text-secondary); padding: 8px 6px; border-radius: 9px; font-family: inherit; font-size: 0.67rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; transition: 0.16s ease; }
+        .xb-vp-seg-btn.active { background: linear-gradient(135deg, #0d1838 0%, #1d4ed8 52%, #7c3aed 100%); border-color: rgba(255,255,255,0.38); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
+
+        .xb-vlt-search-row { display: flex; align-items: center; gap: 6px; }
+        .xb-vlt-filter-row { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 5px; }
+        .xb-vlt-acc-card { position: relative; background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-radius: 14px; padding: 11px; display: flex; flex-direction: column; gap: 8px; overflow: hidden; box-shadow: 0 8px 22px rgba(0,0,0,0.36), inset 0 1px 0 rgba(255,255,255,0.16); }
+        .xb-vlt-acc-card::before { content: ''; position: absolute; top: 0; left: 10%; right: 10%; height: 1px; background: var(--ex-sheen); pointer-events: none; }
+        [data-theme="platinum"] .xb-vlt-acc-card { box-shadow: 0 6px 16px rgba(15,23,42,0.07), inset 0 1px 0 #ffffff; }
+
+        .xb-vlt-otp-box { background: var(--bg-input); border: 1px solid rgba(52,211,153,0.45); border-left: 3.5px solid #34d399; border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; gap: 8px; cursor: pointer; }
+        .xb-vlt-otp-code { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 800; letter-spacing: 3px; color: #34d399; line-height: 1; }
+        .xb-vlt-otp-track { width: 100%; height: 4px; border-radius: 99px; background: rgba(148,163,184,0.2); overflow: hidden; margin-top: 5px; }
+        .xb-vlt-otp-fill { height: 100%; background: linear-gradient(90deg, #38bdf8 0%, #34d399 100%); transition: width 0.5s linear; }
+
+        .xb-vlt-cred-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 9px; padding: 8px 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; }
+        .xb-vlt-check-item { display: flex; align-items: flex-start; gap: 8px; background: var(--bg-input); border: 1px solid var(--ex-hairline); border-radius: 10px; padding: 8px 10px; cursor: pointer; font-size: 0.66rem; color: var(--text-secondary); line-height: 1.35; }
+        .xb-vlt-check-item.done { border-color: rgba(52,211,153,0.5); color: var(--text-primary); }
+
+        /* PROFILE IDENTITY, ANALYTICS & SETTINGS MENU */
+        .xb-prf-avatar { width: 46px; height: 46px; border-radius: 13px; background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); border: 1.5px solid rgba(255,255,255,0.4); color: #ffffff; font-family: 'JetBrains Mono', monospace; font-size: 1.08rem; font-weight: 800; display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 6px 16px rgba(79,70,229,0.4); }
+        .xb-prf-range-tabs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; background: var(--bg-input); border: 1px solid var(--ex-hairline); padding: 3px; border-radius: 9px; }
+        .xb-prf-range-btn { border: none; background: transparent; color: var(--text-muted); padding: 5px 4px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.58rem; font-weight: 800; cursor: pointer; transition: 0.15s ease; }
+        .xb-prf-range-btn.active { background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); color: #ffffff; }
+
+        .xb-prf-bars { display: flex; flex-direction: column; gap: 7px; margin-top: 8px; }
+        .xb-prf-bar-row { display: flex; flex-direction: column; gap: 3px; font-family: 'JetBrains Mono', monospace; font-size: 0.6rem; }
+        .xb-prf-bar-track { width: 100%; height: 6px; border-radius: 99px; background: var(--bg-input); border: 1px solid var(--ex-hairline); overflow: hidden; }
+        .xb-prf-bar-fill { height: 100%; border-radius: 99px; transition: width 0.35s ease; }
+
+        .xb-prf-menu-list { display: flex; flex-direction: column; gap: 6px; }
+        .xb-prf-menu-row { width: 100%; background: var(--ex-card-bg); border: 1px solid var(--ex-hairline); border-radius: 12px; padding: 10px 11px; display: flex; align-items: center; justify-content: space-between; gap: 10px; cursor: pointer; text-align: left; color: var(--text-primary); font-family: inherit; transition: 0.15s ease; box-shadow: inset 0 1px 0 rgba(255,255,255,0.14); }
+        .xb-prf-menu-row:hover { border-color: rgba(56,189,248,0.55); }
+        .xb-prf-menu-ico { width: 32px; height: 32px; border-radius: 9px; background: var(--bg-input); border: 1px solid var(--ex-hairline); display: inline-flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 0.9rem; }
+        .xb-prf-toggle-pill { width: 40px; height: 22px; border-radius: 99px; border: 1px solid var(--ex-hairline); background: var(--bg-input); position: relative; cursor: pointer; flex-shrink: 0; transition: 0.2s ease; }
+        .xb-prf-toggle-pill.on { background: linear-gradient(135deg, #1d4ed8 0%, #34d399 100%); border-color: rgba(255,255,255,0.45); }
+        .xb-prf-toggle-pill::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #ffffff; transition: transform 0.2s ease; }
+        .xb-prf-toggle-pill.on::after { transform: translateX(18px); }
+
         /* UNIFIED FULL-PAGE 100DVH STUDIO FRAME (ASSET EXCHANGE EDITION) */
         #paymentGatewayModal.xb-fullpage-modal { padding: 5px; }
         #paymentGatewayModal.xb-fullpage-modal > #paymentGatewayBody {
@@ -5631,31 +5674,25 @@
                 return;
             }
 
-            // 4. VAULT TAB (DIRECT PURCHASED CREDENTIALS VAULT)
+            // 4. VAULT TAB (OWNED GITHUB ACCOUNTS + ACTIVE BOOST TRACKER)
             if (activeTab === 'vault') {
                 subContainer.style.display = 'none';
-                renderProfileTab(vp, '🔐 Purchased Vault');
+                if (typeof renderVaultTabV2 === 'function') {
+                    renderVaultTabV2(vp);
+                } else {
+                    renderProfileTab(vp, '🔐 Purchased Vault');
+                }
                 return;
             }
 
-            // 5. PROFILE TAB (LOYALTY • HISTORY • LIVE BOOST TRACKER • VAULT)
+            // 5. PROFILE TAB (ZERO-DUPLICATION IDENTITY • ANALYTICS • SETTINGS & SUPPORT)
             if (activeTab === 'profile') {
-                const profSubs = [
-                    '👤 Profile & Loyalty',
-                    '🧾 Order History',
-                    '📡 Live Boost Tracker',
-                    '🔐 Purchased Vault'
-                ];
-                if (activeSub === 'ALL' || !profSubs.includes(activeSub)) activeSub = profSubs[0];
-                subContainer.style.display = 'grid';
-                profSubs.forEach(ps => {
-                    const b = document.createElement('button');
-                    b.className = 'subtab-pill' + (activeSub === ps ? ' active' : '');
-                    b.innerText = ps;
-                    b.onclick = () => { activeSub = ps; renderViewport(); };
-                    subContainer.appendChild(b);
-                });
-                renderProfileTab(vp, activeSub);
+                subContainer.style.display = 'none';
+                if (typeof renderProfileTabV2 === 'function') {
+                    renderProfileTabV2(vp);
+                } else {
+                    renderProfileTab(vp, '👤 Profile & Loyalty');
+                }
                 return;
             }
 
@@ -8051,7 +8088,1012 @@ function copyActiveWalletReceipt() {
         }
 
         // =========================================================
-        // 👤 10. PROFILE, PURCHASED VAULT & HISTORY TAB
+        // 🔐 9D. VAULT V2 (OWNED ACCOUNTS + LIVE 30s OTP + ACTIVE BOOSTS)
+        // =========================================================
+        window._vltState = window._vltState || {
+            seg: 'accounts',   // 'accounts' | 'boosts'
+            slide: 'list',     // 'list' | 'detail'
+            selectedIdx: -1,
+            search: '',
+            filter: 'ALL',     // 'ALL' | 'OLD' | 'NEW' | 'SPECIAL'
+            showPass: false,
+            healthMap: {},     // username -> { ok, text, ts }
+            liveQueueOrders: null
+        };
+        let _vltOtpInterval = null;
+
+        function stopVaultOtpTicker() {
+            if (_vltOtpInterval) {
+                clearInterval(_vltOtpInterval);
+                _vltOtpInterval = null;
+            }
+        }
+
+        async function refreshVisibleVaultOtps() {
+            if (activeTab !== 'vault') {
+                stopVaultOtpTicker();
+                return;
+            }
+            const nodes = document.querySelectorAll('.xb-vlt-live-otp[data-secret]');
+            if (nodes.length === 0) return;
+
+            const rem = 30 - (Math.floor(Date.now() / 1000) % 30);
+            const pct = Math.max(3, Math.round((rem / 30) * 100));
+
+            for (let i = 0; i < nodes.length; i++) {
+                const el = nodes[i];
+                const sec = el.getAttribute('data-secret') || '';
+                const codeEl = el.querySelector('.xb-vlt-otp-code');
+                const timerEl = el.querySelector('.xb-vlt-otp-rem');
+                const fillEl = el.querySelector('.xb-vlt-otp-fill');
+                if (timerEl) timerEl.innerText = `${rem}s`;
+                if (fillEl) {
+                    fillEl.style.width = `${pct}%`;
+                    fillEl.style.background = rem <= 6
+                        ? 'linear-gradient(90deg, #ef4444 0%, #fbbf24 100%)'
+                        : 'linear-gradient(90deg, #38bdf8 0%, #34d399 100%)';
+                }
+                if (sec.length >= 8 && typeof generateTotpCode === 'function') {
+                    try {
+                        const rawCode = await generateTotpCode(sec);
+                        el.setAttribute('data-code', rawCode);
+                        if (codeEl) codeEl.innerText = `${rawCode.slice(0, 3)} ${rawCode.slice(3)}`;
+                    } catch (e) {
+                        if (codeEl) codeEl.innerText = 'INVALID';
+                    }
+                }
+            }
+        }
+
+        function startVaultOtpTicker() {
+            stopVaultOtpTicker();
+            refreshVisibleVaultOtps();
+            _vltOtpInterval = setInterval(refreshVisibleVaultOtps, 1000);
+        }
+
+        function copyVaultLiveOtpBox(boxEl) {
+            const code = boxEl && boxEl.getAttribute('data-code');
+            if (!code || code.length !== 6) return showToast('⏳ Generating live 6-digit OTP...');
+            navigator.clipboard.writeText(code);
+            showToast(`🔑 Live 2FA OTP (${code}) copied!`);
+        }
+
+        function setVaultSegment(segKey) {
+            window._vltState.seg = segKey;
+            window._vltState.slide = 'list';
+            renderViewport();
+            if (segKey === 'boosts') syncVaultMyBoostQueue();
+        }
+
+        function setVaultFilter(fKey) {
+            window._vltState.filter = fKey;
+            renderViewport();
+        }
+
+        function onVaultSearchInput(val) {
+            window._vltState.search = String(val || '');
+            const listEl = document.getElementById('xbVaultAccListBody');
+            if (listEl) {
+                listEl.innerHTML = buildVaultAccountsListHtml();
+                startVaultOtpTicker();
+            } else {
+                renderViewport();
+            }
+        }
+
+        function openVaultAccountDetail(vaultIdx) {
+            window._vltState.selectedIdx = vaultIdx;
+            window._vltState.slide = 'detail';
+            window._vltState.showPass = false;
+            renderViewport();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToVaultList() {
+            window._vltState.slide = 'list';
+            window._vltState.selectedIdx = -1;
+            renderViewport();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function downloadAllVaultTxtV2() {
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            if (!vault.length) return showToast('Your vault is empty!');
+            downloadBatchCredentialsTxt(vault, 'ALL-VAULT');
+        }
+
+        function getVaultChecklistMap() {
+            try { return JSON.parse(localStorage.getItem('xb_vlt_checklist_v2') || '{}'); } catch (e) { return {}; }
+        }
+
+        function toggleVaultChecklistStep(uname, stepIdx) {
+            const map = getVaultChecklistMap();
+            const k = `${String(uname || '').toLowerCase()}_${stepIdx}`;
+            map[k] = !map[k];
+            localStorage.setItem('xb_vlt_checklist_v2', JSON.stringify(map));
+            renderViewport();
+        }
+
+        async function recheckVaultAccountHealth(username) {
+            const clean = String(username || '').replace(/^@/, '').trim();
+            if (!clean) return;
+            const btn = document.getElementById('btnVltHealthCheck');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Checking GitHub...'; }
+
+            try {
+                const res = await fetch(`https://api.github.com/users/${encodeURIComponent(clean)}`);
+                if (res.status === 200) {
+                    const d = await res.json();
+                    window._vltState.healthMap[clean.toLowerCase()] = {
+                        ok: true,
+                        text: `● 200 OK • ${d.followers || 0} FLW • ${d.public_repos || 0} REPOS`,
+                        ts: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+                    };
+                    showToast(`🟢 @${clean} is HEALTHY (Public HTTP 200 OK)!`);
+                } else if (res.status === 404) {
+                    window._vltState.healthMap[clean.toLowerCase()] = {
+                        ok: false,
+                        text: '● 404 NOT FOUND / SUSPENDED',
+                        ts: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })
+                    };
+                    showToast(`🔴 @${clean} returned 404 — Contact Support if within warranty.`);
+                } else {
+                    showToast(`⚠️ GitHub API returned HTTP ${res.status}. Try again shortly.`);
+                }
+            } catch (e) {
+                showToast('⚠️ Network error checking GitHub profile.');
+            }
+            renderViewport();
+        }
+
+        async function syncVaultMyBoostQueue() {
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'pull_boost_queue', secret: XB_PAT_SECRET })
+                });
+                const json = await res.json();
+                if (json && json.result && Array.isArray(json.orders)) {
+                    const myUid = String(currentUserId || '').trim();
+                    const myU = String(currentUsername || '').replace(/^@/, '').toLowerCase();
+                    window._vltState.liveQueueOrders = json.orders.filter(o => {
+                        if (!o) return false;
+                        const oUid = String(o.buyer_uid || '').trim();
+                        const oName = String(o.buyer_username || '').toLowerCase();
+                        return (myUid && oUid === myUid) || (myU && oName.includes(myU));
+                    });
+                    if (activeTab === 'vault' && window._vltState.seg === 'boosts') {
+                        renderViewport();
+                    }
+                }
+            } catch (e) {}
+        }
+
+        function buildVaultAccountsListHtml() {
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            const st = window._vltState;
+            const q = String(st.search || '').trim().toLowerCase();
+
+            const indexed = vault.map((entry, idx) => ({ entry, idx })).filter(({ entry }) => {
+                if (!entry) return false;
+                const cat = String(entry.category || '2026').trim();
+                const yrNum = parseInt(cat, 10);
+                if (st.filter === 'OLD' && (isNaN(yrNum) || yrNum > 2019)) return false;
+                if (st.filter === 'NEW' && (isNaN(yrNum) || yrNum < 2020)) return false;
+                if (st.filter === 'SPECIAL' && !isNaN(yrNum)) return false;
+
+                if (q) {
+                    const hay = `${entry.username || ''} ${cat} ${entry.invoice || ''}`.toLowerCase();
+                    if (!hay.includes(q)) return false;
+                }
+                return true;
+            });
+
+            if (vault.length === 0) {
+                return `
+                    <div class="xb-wal-card" style="text-align:center;padding:24px 14px;">
+                        <div style="font-size:1.7rem;margin-bottom:6px;">🔐</div>
+                        <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);margin-bottom:4px;">Your Asset Vault is Empty</div>
+                        <div style="font-size:0.66rem;color:var(--text-secondary);line-height:1.45;margin-bottom:12px;">
+                            Purchased GitHub accounts, full credentials, and live 30s 2FA codes will automatically unlock and stay backed up here.
+                        </div>
+                        <button type="button" class="btn-ui primary" style="padding:10px 16px;font-size:0.72rem;" onclick="switchTab('home')">🏪 Browse Marketplace</button>
+                    </div>
+                `;
+            }
+
+            if (indexed.length === 0) {
+                return `<div class="xb-wal-card" style="text-align:center;padding:18px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;font-size:0.65rem;">No owned accounts match your current filter.</div>`;
+            }
+
+            return indexed.map(({ entry, idx }) => {
+                const tier = getAssetRarityTier(entry.category);
+                const safeSecret = String(entry.twofa || '').replace(/[^A-Za-z2-7]/gi, '');
+                const hInfo = st.healthMap[String(entry.username || '').toLowerCase()];
+
+                return `
+                    <div class="xb-vlt-acc-card">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                            <div style="display:flex;align-items:center;gap:7px;min-width:0;flex:1;">
+                                <span class="xb-ex-gh-badge" style="width:28px;height:28px;">${GH_SVG_EMBLEM}</span>
+                                <div style="min-width:0;flex:1;">
+                                    <div style="display:flex;align-items:center;gap:4px;">
+                                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${entry.username}</span>
+                                        <span class="xb-ex-chip ${tier.cls}">★ ${tier.label}</span>
+                                    </div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                        ${entry.category} • ${entry.invoice || '-'} • ${fmtPrice(entry.priceUsdt || 0)}
+                                    </div>
+                                </div>
+                            </div>
+                            ${hInfo ? `<span class="xb-ex-chip" style="color:${hInfo.ok ? '#34d399' : '#f87171'};border-color:${hInfo.ok ? 'rgba(52,211,153,0.5)' : 'rgba(248,113,113,0.5)'};">${hInfo.ok ? '● 200' : '● 404'}</span>` : ''}
+                        </div>
+
+                        ${safeSecret.length >= 8 ? `
+                            <div class="xb-vlt-otp-box xb-vlt-live-otp" data-secret="${safeSecret}" onclick="copyVaultLiveOtpBox(this)" title="Tap to copy 6-digit OTP">
+                                <div style="min-width:0;flex:1;">
+                                    <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:800;color:var(--text-muted);letter-spacing:0.5px;">LIVE 2FA OTP (TAP TO COPY)</span>
+                                        <span class="xb-vlt-otp-rem" style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;color:#38bdf8;">30s</span>
+                                    </div>
+                                    <div class="xb-vlt-otp-code">••• •••</div>
+                                    <div class="xb-vlt-otp-track"><div class="xb-vlt-otp-fill" style="width:100%;"></div></div>
+                                </div>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:#34d399;flex-shrink:0;">📋</span>
+                            </div>
+                        ` : `
+                            <div style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:9px;padding:6px 9px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);">
+                                🔐 Credentials Stored • Tap Inspect to view Password &amp; Recovery
+                            </div>
+                        `}
+
+                        <div style="display:grid;grid-template-columns:1.45fr 1fr 0.85fr;gap:5px;">
+                            <button type="button" class="btn-ui primary" style="min-width:0;padding:7px 4px;font-size:0.64rem;border-radius:8px;white-space:nowrap;" onclick="openVaultAccountDetail(${idx})">🔍 Inspect &amp; Creds</button>
+                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:7px 4px;font-size:0.64rem;border-radius:8px;white-space:nowrap;" onclick="copyFullCredentialBlock(${idx})">📋 Copy</button>
+                            <button type="button" class="btn-ui buy-now" style="min-width:0;padding:7px 4px;font-size:0.64rem;border-radius:8px;white-space:nowrap;" onclick="downloadCredentialTxt(${idx})">💾 .TXT</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderVaultAccountDetailSlide(container, vault, idx) {
+            const entry = vault[idx];
+            if (!entry) {
+                backToVaultList();
+                return;
+            }
+            const st = window._vltState;
+            const tier = getAssetRarityTier(entry.category);
+            const safeSecret = String(entry.twofa || '').replace(/[^A-Za-z2-7]/gi, '');
+            const hInfo = st.healthMap[String(entry.username || '').toLowerCase()];
+            const maskedPass = '••••••••••••';
+            const chkMap = getVaultChecklistMap();
+            const uLow = String(entry.username || '').toLowerCase();
+
+            const checklistSteps = [
+                'Sign in cleanly on GitHub using Username, Password & the live 6-digit 2FA OTP above.',
+                'Wait 24 hours on a consistent IP/device before changing account password or email.',
+                'Download a local .TXT backup & avoid mass-following or burst commits on Day 1.'
+            ];
+
+            container.innerHTML = `
+                <div class="xb-vp-wrap">
+                    <div class="xb-wal-sub-hdr">
+                        <button type="button" class="xb-wal-back-btn" onclick="backToVaultList()">← Vault</button>
+                        <div class="xb-wal-sub-title">@${entry.username}</div>
+                        <span class="xb-ex-chip ${tier.cls}">★ ${tier.label}</span>
+                    </div>
+
+                    <!-- 1. LIVE 30s 2FA AUTHENTICATOR HERO -->
+                    ${safeSecret.length >= 8 ? `
+                        <div class="xb-wal-card" style="padding:11px;">
+                            <div class="xb-vlt-otp-box xb-vlt-live-otp" data-secret="${safeSecret}" onclick="copyVaultLiveOtpBox(this)" style="margin:0;">
+                                <div style="min-width:0;flex:1;">
+                                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:#38bdf8;letter-spacing:0.6px;">🔑 LIVE 2FA AUTHENTICATOR (TAP TO COPY)</span>
+                                        <span class="xb-vlt-otp-rem" style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:#34d399;">30s</span>
+                                    </div>
+                                    <div class="xb-vlt-otp-code" style="font-size:1.38rem;margin-top:4px;">••• •••</div>
+                                    <div class="xb-vlt-otp-track"><div class="xb-vlt-otp-fill" style="width:100%;"></div></div>
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <!-- 2. ENCRYPTED CREDENTIALS CARD -->
+                    <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:7px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#38bdf8;">🔐 FULL ACCOUNT CREDENTIALS</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#34d399;font-weight:800;">${entry.invoice || '-'}</span>
+                        </div>
+
+                        <div class="xb-vlt-cred-row">
+                            <span style="color:var(--text-muted);min-width:62px;">Username</span>
+                            <b style="color:var(--text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;">${entry.username}</b>
+                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'username', 'Username')">📋</button>
+                        </div>
+
+                        <div class="xb-vlt-cred-row">
+                            <span style="color:var(--text-muted);min-width:62px;">Password</span>
+                            <b style="color:var(--text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;">${st.showPass ? entry.password : maskedPass}</b>
+                            <div style="display:flex;gap:4px;flex-shrink:0;">
+                                <button type="button" class="xb-adm-mini-btn" onclick="window._vltState.showPass=!window._vltState.showPass; renderViewport();">${st.showPass ? '🙈' : '👁️'}</button>
+                                <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'password', 'Password')">📋</button>
+                            </div>
+                        </div>
+
+                        <div class="xb-vlt-cred-row">
+                            <span style="color:var(--text-muted);min-width:62px;">2FA Key</span>
+                            <b style="color:#34d399;flex:1;overflow:hidden;text-overflow:ellipsis;">${entry.twofa || '-'}</b>
+                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'twofa', '2FA Key')">📋</button>
+                        </div>
+
+                        ${entry.email && entry.email !== '-' ? `
+                            <div class="xb-vlt-cred-row">
+                                <span style="color:var(--text-muted);min-width:62px;">Email</span>
+                                <b style="color:var(--text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;">${entry.email}</b>
+                                <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'email', 'Email')">📋</button>
+                            </div>
+                        ` : ''}
+
+                        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;margin-top:3px;">
+                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:8px 4px;font-size:0.65rem;border-radius:8px;" onclick="copyFullCredentialBlock(${idx})">📋 Copy All</button>
+                            <button type="button" class="btn-ui buy-now" style="min-width:0;padding:8px 4px;font-size:0.65rem;border-radius:8px;" onclick="downloadCredentialTxt(${idx})">💾 Save .TXT</button>
+                            <a href="${entry.url || ('https://github.com/' + entry.username)}" target="_blank" class="btn-ui primary" style="min-width:0;padding:8px 4px;font-size:0.65rem;border-radius:8px;">🌐 GitHub</a>
+                        </div>
+                    </div>
+
+                    <!-- 3. LIVE GITHUB HEALTH RE-CHECK -->
+                    <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:7px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:var(--text-primary);">🛡️ LIVE PROFILE HEALTH CHECK</span>
+                            <button type="button" id="btnVltHealthCheck" class="xb-adm-mini-btn" style="color:#38bdf8;border-color:rgba(56,189,248,0.45);" onclick="recheckVaultAccountHealth('${entry.username}')">↻ Re-Check Now</button>
+                        </div>
+                        <div style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:9px;padding:7px 9px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:${hInfo ? (hInfo.ok ? '#34d399' : '#f87171') : 'var(--text-muted)'};">
+                            ${hInfo ? `${hInfo.text} (Checked ${hInfo.ts})` : 'Tap "Re-Check Now" to verify public HTTP 200 status directly on GitHub.'}
+                        </div>
+                    </div>
+
+                    <!-- 4. 24-HOUR ANTI-FLAG SECURITY CHECKLIST -->
+                    <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:6px;">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#fbbf24;">⚠️ 24-HOUR ANTI-FLAG LOGIN CHECKLIST</div>
+                        ${checklistSteps.map((txt, sIdx) => {
+                            const done = Boolean(chkMap[`${uLow}_${sIdx}`]);
+                            return `
+                                <div class="xb-vlt-check-item ${done ? 'done' : ''}" onclick="toggleVaultChecklistStep('${entry.username}', ${sIdx})">
+                                    <span style="font-size:0.78rem;flex-shrink:0;">${done ? '✅' : '⬜'}</span>
+                                    <span>${txt}</span>
+                                </div>
+                            `;
+                        }).join('')}
+                    </div>
+                </div>
+            `;
+            startVaultOtpTicker();
+        }
+
+        function renderVaultBoostsSegmentHtml() {
+            const st = window._vltState;
+            const queueList = Array.isArray(st.liveQueueOrders) ? st.liveQueueOrders : [];
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            const localBoostTxs = history.filter(tx => typeof isBoostServiceOrderTx === 'function' && isBoostServiceOrderTx(tx));
+
+            // Merge live queue orders with local boost history (deduplicated by invoice)
+            const seenInv = new Set();
+            const merged = [];
+            queueList.forEach(o => {
+                const inv = String(o.invoice_id || '');
+                if (inv) seenInv.add(inv);
+                const qty = Math.max(1, parseInt(o.qty || 1, 10));
+                const done = Math.min(qty, Math.max(0, parseInt(o.done_count || 0, 10)));
+                const stUp = String(o.status || 'QUEUED').toUpperCase();
+                merged.push({
+                    inv: inv || '-',
+                    svc: String(o.service_type || 'followers').toUpperCase(),
+                    spd: String(o.speed_track || 'reg').toUpperCase(),
+                    target: String(o.target_clean || o.target_url || '-').replace(/^https?:\/\/github\.com\//i, ''),
+                    qty: qty,
+                    done: stUp === 'COMPLETED' ? qty : done,
+                    pct: stUp === 'COMPLETED' ? 100 : Math.round((done / qty) * 100),
+                    status: stUp,
+                    nextWib: o.next_run_wib || ''
+                });
+            });
+
+            localBoostTxs.forEach(tx => {
+                const inv = String(tx.invoice || '');
+                if (inv && seenInv.has(inv)) return;
+                const qtyM = String(tx.title || '').match(/(\d+)\s*Units/i);
+                const qty = qtyM ? parseInt(qtyM[1], 10) : 100;
+                merged.push({
+                    inv: inv || '-',
+                    svc: String(tx.title || 'BOOST').split('(')[0].replace(/GitHub\s+|Service|Repository\s+/gi, '').trim().toUpperCase(),
+                    spd: 'TRACKED',
+                    target: String(tx.target || '-').replace(/^https?:\/\/github\.com\//i, ''),
+                    qty: qty,
+                    done: 0,
+                    pct: 0,
+                    status: 'ACTIVE',
+                    nextWib: tx.date || ''
+                });
+            });
+
+            const ordersHtml = merged.length === 0
+                ? `
+                    <div class="xb-wal-card" style="text-align:center;padding:20px 14px;">
+                        <div style="font-size:1.5rem;margin-bottom:5px;">📡</div>
+                        <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);margin-bottom:4px;">No Active Boost Orders Yet</div>
+                        <div style="font-size:0.64rem;color:var(--text-secondary);margin-bottom:11px;">
+                            Orders placed in GitHub Boost Service appear here with live progress tracking.
+                        </div>
+                        <button type="button" class="btn-ui primary" style="padding:9px 14px;font-size:0.7rem;" onclick="switchTab('boost')">🚀 Open Boost Service</button>
+                    </div>
+                `
+                : merged.map(ord => {
+                    const stCol = ord.status === 'COMPLETED' ? '#34d399' : (ord.status === 'RUNNING' ? '#38bdf8' : (ord.status === 'CANCELLED' ? '#f87171' : '#fbbf24'));
+                    return `
+                        <div class="xb-ops-qcard">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    ${ord.inv} • <span style="color:#38bdf8;">${ord.svc}</span>
+                                </span>
+                                <span class="xb-ex-chip" style="color:${stCol};border-color:${stCol}66;">${ord.status}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.62rem;">
+                                <a href="https://github.com/${ord.target}" target="_blank" style="color:var(--text-primary);font-weight:800;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">🎯 ${ord.target} ↗</a>
+                                <span style="color:#34d399;font-weight:800;flex-shrink:0;">${ord.done}/${ord.qty} (${ord.pct}%)</span>
+                            </div>
+                            <div class="xb-ops-qbar"><div class="xb-ops-qfill" style="width:${ord.pct}%;"></div></div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);">
+                                <span>Track: ${ord.spd}</span>
+                                <span>${ord.nextWib ? `Next / Date: ${ord.nextWib}` : 'Live Synced'}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+
+            return `
+                <div style="display:flex;flex-direction:column;gap:8px;">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;">📡 MY BOOST ORDERS (${merged.length})</span>
+                        <button type="button" class="xb-adm-mini-btn" style="color:#34d399;border-color:rgba(52,211,153,0.45);" onclick="syncVaultMyBoostQueue(); showToast('↻ Syncing live boost queue...');">↻ Refresh</button>
+                    </div>
+                    ${ordersHtml}
+
+                    <!-- QUICK LIVE GITHUB METRIC CHECKER -->
+                    <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:8px;margin-top:2px;">
+                        <div class="xb-bst-lbl" style="margin:0;"><span>QUICK LIVE METRIC &amp; BADGE CHECK</span><span style="color:#34d399;">REAL-TIME API</span></div>
+                        <div class="xb-bst-input-row">
+                            <input type="text" id="profBoostInput" class="xb-bst-target-inp" placeholder="e.g. username or owner/repo">
+                            <button type="button" class="btn-ui primary" style="flex:0 0 auto;min-width:0;padding:8px 12px;font-size:0.68rem;border-radius:9px;" onclick="checkLiveGithubBoost()">📡 Scan</button>
+                        </div>
+                        <div id="profBoostOutput"></div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderVaultTabV2(container) {
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            const st = window._vltState;
+
+            if (st.seg === 'accounts' && st.slide === 'detail' && st.selectedIdx >= 0) {
+                renderVaultAccountDetailSlide(container, vault, st.selectedIdx);
+                return;
+            }
+
+            const totalValUsdt = vault.reduce((sum, a) => sum + (parseFloat(a && a.priceUsdt ? a.priceUsdt : 0) || 0), 0);
+            const tfaCount = vault.filter(a => a && String(a.twofa || '').replace(/[^A-Za-z2-7]/gi, '').length >= 8).length;
+            const safeSearch = String(st.search || '').replace(/"/g, '&quot;');
+
+            const filterChips = [
+                { k: 'ALL', lbl: 'All' },
+                { k: 'OLD', lbl: '2011–2019' },
+                { k: 'NEW', lbl: '2020–2026' },
+                { k: 'SPECIAL', lbl: 'Special' }
+            ];
+
+            container.innerHTML = `
+                <div class="xb-vp-wrap">
+                    <!-- 1. VAULT SUMMARY HERO -->
+                    <div class="xb-wal-card">
+                        <div class="xb-wal-hero-top">
+                            <div style="display:flex;align-items:center;gap:7px;min-width:0;">
+                                <span style="font-size:1.1rem;">🔐</span>
+                                <div style="min-width:0;">
+                                    <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">Encrypted Asset Vault</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:#38bdf8;font-weight:700;">OWNED CREDENTIALS • LIVE 30s 2FA • BOOST TRACKER</div>
+                                </div>
+                            </div>
+                            ${vault.length > 0 ? `<button type="button" class="xb-adm-mini-btn" style="color:#34d399;border-color:rgba(52,211,153,0.45);" onclick="downloadAllVaultTxtV2()">💾 .TXT All</button>` : ''}
+                        </div>
+                        <div class="xb-wal-kpi-grid">
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">OWNED ASSETS</div>
+                                <div class="xb-wal-kpi-val" style="color:#38bdf8;">${vault.length} Accs</div>
+                            </div>
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">LIVE 2FA READY</div>
+                                <div class="xb-wal-kpi-val" style="color:#34d399;">${tfaCount} Active</div>
+                            </div>
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">VAULT VALUE</div>
+                                <div class="xb-wal-kpi-val" style="color:#c084fc;">${fmtPrice(totalValUsdt)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. 2-SEGMENT VAULT SWITCHER -->
+                    <div class="xb-vp-seg">
+                        <button type="button" class="xb-vp-seg-btn ${st.seg === 'accounts' ? 'active' : ''}" onclick="setVaultSegment('accounts')">🔑 Owned Accounts (${vault.length})</button>
+                        <button type="button" class="xb-vp-seg-btn ${st.seg === 'boosts' ? 'active' : ''}" onclick="setVaultSegment('boosts')">📡 Active Boosts</button>
+                    </div>
+
+                    <!-- 3. ACTIVE SEGMENT CONTENT -->
+                    ${st.seg === 'accounts' ? `
+                        <div class="xb-vlt-search-row">
+                            <input type="text" class="xb-bst-target-inp" value="${safeSearch}" placeholder="🔍 Search @username, year, or invoice..." oninput="onVaultSearchInput(this.value)">
+                        </div>
+                        <div class="xb-vlt-filter-row">
+                            ${filterChips.map(f => `
+                                <button type="button" class="xb-ex-filter-chip ${st.filter === f.k ? 'active' : ''}" style="padding:6px 2px;font-size:0.59rem;" onclick="setVaultFilter('${f.k}')">${f.lbl}</button>
+                            `).join('')}
+                        </div>
+                        <div id="xbVaultAccListBody" style="display:flex;flex-direction:column;gap:8px;">
+                            ${buildVaultAccountsListHtml()}
+                        </div>
+                    ` : renderVaultBoostsSegmentHtml()}
+                </div>
+            `;
+
+            if (st.seg === 'accounts') {
+                startVaultOtpTicker();
+            } else {
+                stopVaultOtpTicker();
+            }
+        }
+
+        // =========================================================
+        // 👤 10A. PROFILE V2 (ZERO-DUPLICATION IDENTITY • ANALYTICS • SETTINGS)
+        // =========================================================
+        window._prfState = window._prfState || {
+            slide: 'main', // 'main' | 'username' | 'prefs' | 'sync' | 'policy' | 'helpdesk'
+            range: 'ALL'   // '7D' | '30D' | 'ALL'
+        };
+
+        function openProfileSlide(slideKey) {
+            window._prfState.slide = slideKey || 'main';
+            renderViewport();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function backToProfileMain() {
+            window._prfState.slide = 'main';
+            renderViewport();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function setProfileAnalyticsRange(rKey) {
+            window._prfState.range = rKey;
+            renderViewport();
+        }
+
+        function buildProfileSubHeaderHtml(titleText, rightChipHtml = '') {
+            return `
+                <div class="xb-wal-sub-hdr">
+                    <button type="button" class="xb-wal-back-btn" onclick="backToProfileMain()">← Back</button>
+                    <div class="xb-wal-sub-title">${titleText}</div>
+                    <div style="min-width:56px;display:flex;justify-content:flex-end;">${rightChipHtml}</div>
+                </div>
+            `;
+        }
+
+        function computeProfileSpendAnalytics(rangeKey) {
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            const nowMs = Date.now();
+            const curYear = new Date().getFullYear();
+            const cutoffMs = rangeKey === '7D'
+                ? (nowMs - 7 * 86400000)
+                : (rangeKey === '30D' ? (nowMs - 30 * 86400000) : 0);
+
+            let accSpend = 0, boostSpend = 0, otherSpend = 0;
+            let accCount = 0, boostCount = 0, totalOrders = 0;
+
+            history.forEach(tx => {
+                if (!tx || tx.type !== 'OUT') return;
+                if (typeof isP2pTransferTx === 'function' && isP2pTransferTx(tx)) return;
+                const amt = parseFloat(tx.usdt || 0);
+                if (isNaN(amt) || amt <= 0) return;
+
+                if (cutoffMs > 0 && tx.date) {
+                    const parsed = Date.parse(`${tx.date}, ${curYear}`);
+                    if (!isNaN(parsed) && parsed < cutoffMs) return;
+                }
+
+                totalOrders++;
+                if (typeof isBoostServiceOrderTx === 'function' && isBoostServiceOrderTx(tx)) {
+                    boostSpend += amt;
+                    boostCount++;
+                } else {
+                    const tLow = String(tx.title || '').toLowerCase();
+                    if (tLow.includes('github') || tLow.includes('vault') || tLow.includes('arctic') || tLow.includes('badge')) {
+                        accSpend += amt;
+                        accCount++;
+                    } else {
+                        otherSpend += amt;
+                    }
+                }
+            });
+
+            const totalSpend = accSpend + boostSpend + otherSpend;
+            const avgOrder = totalOrders > 0 ? (totalSpend / totalOrders) : 0;
+            return { totalSpend, accSpend, boostSpend, otherSpend, accCount, boostCount, totalOrders, avgOrder };
+        }
+
+        function saveProfileUsernameV2() {
+            const inp = document.getElementById('prfEditUnameInp');
+            const val = String(inp ? inp.value : '').trim().replace(/^@/, '').replace(/\s+/g, '');
+            if (!val || val.length < 2) return showToast('⚠️ Username must be at least 2 characters!');
+            currentUsername = val;
+            currentFullName = val;
+            localStorage.setItem('xb_uname', val);
+            if (typeof updateAuthPortalTickers === 'function') updateAuthPortalTickers();
+            if (typeof scheduleCloudStatePush === 'function') scheduleCloudStatePush();
+            showToast(`✅ Display username updated to @${val}!`);
+            backToProfileMain();
+        }
+
+        async function runProfileFullCloudSync() {
+            const btn = document.getElementById('btnPrfForceSync');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Syncing Cloud...'; }
+            try {
+                await fetchRealTimeUsdtIdrRate();
+                await syncCloudStateWithGSheet('pull', { force_sync: true });
+                await syncGoogleSheetInventory(false);
+                updateTopBalance();
+                showToast('☁️ Cloud Profile, Balance & Vault synced!');
+            } catch (e) {
+                showToast('⚠️ Cloud sync completed with local fallback.');
+            } finally {
+                renderViewport();
+            }
+        }
+
+        function sendProfileHelpdeskMsgV2() {
+            const inp = document.getElementById('prfHelpdeskMsgInp');
+            const msg = String(inp ? inp.value : '').trim();
+            if (!msg) return showToast('⚠️ Please type your message first!');
+
+            const nowTime = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+            const logs = JSON.parse(localStorage.getItem('xb_helpdesk_logs') || '[]');
+            logs.push({ time: nowTime, msg: msg });
+            localStorage.setItem('xb_helpdesk_logs', JSON.stringify(logs.slice(-25)));
+
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const admChatCard = (
+                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                `   💬 <b>W E B  H E L P D E S K  M E S S A G E</b>\n` +
+                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                `👤 <b>Client:</b> ${currentFullName} (${dispUser} | <code>${currentUserId}</code>)\n` +
+                `📝 <b>Message:</b> ${msg}\n` +
+                `🕒 <b>Time:</b> ${nowTime} WIB`
+            );
+
+            pushInWebNotification('admin', '💬 HELPDESK MESSAGE', admChatCard);
+            pushInWebNotification('buyer', '💬 MESSAGE SENT TO ADMIN', `Your message: <i>"${msg}"</i> has been delivered to Executive Admin.`);
+            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, admChatCard, true));
+            sendTelegramSilentPush(currentUserId, `✅ <b>[HELPDESK SENT]</b>\nYour message has been forwarded to Executive Admin:\n<i>"${msg}"</i>`, true);
+
+            if (inp) inp.value = '';
+            showToast('📨 Message delivered to Admin Telegram Bot!');
+            renderViewport();
+        }
+
+        function renderProfileTabV2(container) {
+            const st = window._prfState;
+            const slide = st.slide || 'main';
+            const cleanU = String(currentUsername || 'Client').replace(/^@/, '');
+            const initials = cleanU.slice(0, 2).toUpperCase();
+            const vip = getUserVipRankMeta();
+            const isAdmin = ADMIN_IDS.includes(String(currentUserId));
+            const vaultCount = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]').length;
+
+            // SLIDE 1: EDIT USERNAME
+            if (slide === 'username') {
+                container.innerHTML = `
+                    <div class="xb-vp-wrap">
+                        ${buildProfileSubHeaderHtml('Edit Identity', `<span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.5);">PROFILE</span>`)}
+                        <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:10px;">
+                            <div style="font-size:0.66rem;color:var(--text-secondary);line-height:1.45;">
+                                Update your display username used across Web Store orders, P2P receipts, and Telegram notifications.
+                            </div>
+                            <div>
+                                <div class="xb-bst-lbl"><span>DISPLAY USERNAME (WITHOUT @)</span><span style="color:#34d399;">CLOUD SYNCED</span></div>
+                                <input type="text" id="prfEditUnameInp" class="xb-bst-target-inp" style="width:100%;height:40px;font-size:0.82rem;" value="${cleanU.replace(/"/g, '&quot;')}" placeholder="Enter username..." onkeydown="if(event.key==='Enter') saveProfileUsernameV2();">
+                            </div>
+                            <div style="display:grid;grid-template-columns:1fr 1.3fr;gap:7px;">
+                                <button type="button" class="btn-ui secondary" style="padding:10px;" onclick="backToProfileMain()">Cancel</button>
+                                <button type="button" class="btn-ui primary" style="padding:10px;" onclick="saveProfileUsernameV2()">💾 Save Username</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // SLIDE 2: APP PREFERENCES
+            if (slide === 'prefs') {
+                const isDark = currentTheme === 'obsidian';
+                const isIdr = currentCurrency === 'IDR';
+                container.innerHTML = `
+                    <div class="xb-vp-wrap">
+                        ${buildProfileSubHeaderHtml('App Preferences', `<span class="xb-ex-chip" style="color:#c084fc;border-color:rgba(192,132,252,0.5);">UI</span>`)}
+                        <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:10px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                <div>
+                                    <div style="font-size:0.75rem;font-weight:800;color:var(--text-primary);">Obsidian Dark Theme</div>
+                                    <div style="font-size:0.59rem;color:var(--text-secondary);">Active: <b>${isDark ? 'Obsidian Dark' : 'Platinum Light'}</b></div>
+                                </div>
+                                <button type="button" class="xb-prf-toggle-pill ${isDark ? 'on' : ''}" onclick="toggleTheme(); renderViewport();" aria-label="Toggle theme"></button>
+                            </div>
+                            <hr class="xb-wal-hr">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                <div>
+                                    <div style="font-size:0.75rem;font-weight:800;color:var(--text-primary);">Display Currency in IDR</div>
+                                    <div style="font-size:0.59rem;color:var(--text-secondary);">Live Rate: <b>1 USDT = Rp ${Math.round(liveUsdtIdrRate).toLocaleString('id-ID')}</b></div>
+                                </div>
+                                <button type="button" class="xb-prf-toggle-pill ${isIdr ? 'on' : ''}" onclick="toggleCurrency();" aria-label="Toggle currency"></button>
+                            </div>
+                            <hr class="xb-wal-hr">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+                                <div>
+                                    <div style="font-size:0.75rem;font-weight:800;color:var(--text-primary);">Privacy Balance Mask</div>
+                                    <div style="font-size:0.59rem;color:var(--text-secondary);">Hide balance numbers inside Wallet Vault</div>
+                                </div>
+                                <button type="button" class="xb-prf-toggle-pill ${isWalletBalanceHidden ? 'on' : ''}" onclick="toggleWalletBalanceVisibility();" aria-label="Toggle balance privacy"></button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // SLIDE 3: CLOUD SYNC & SESSIONS
+            if (slide === 'sync') {
+                const sessionType = isFromTelegramSession ? 'Telegram WebApp Linked' : (isWebCloudAuthenticated ? 'Web Cloud Account' : 'Guest Preview Session');
+                container.innerHTML = `
+                    <div class="xb-vp-wrap">
+                        ${buildProfileSubHeaderHtml('Cloud Sync & Session', `<span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">● LIVE</span>`)}
+                        <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;">
+                                <span style="color:var(--text-muted);">Session Mode</span>
+                                <b style="color:#38bdf8;">${sessionType}</b>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;">
+                                <span style="color:var(--text-muted);">Account UID</span>
+                                <b style="color:var(--text-primary);">${currentUserId}</b>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;">
+                                <span style="color:var(--text-muted);">Sync Key</span>
+                                <b style="color:#34d399;">${getCloudSyncAccountKey()}</b>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.65rem;">
+                                <span style="color:var(--text-muted);">Live Store Stock</span>
+                                <b style="color:var(--text-primary);">${totalLiveAccounts} Accounts Cached</b>
+                            </div>
+                            <hr class="xb-wal-hr">
+                            <button type="button" id="btnPrfForceSync" class="btn-ui primary" style="width:100%;padding:11px;font-size:0.74rem;" onclick="runProfileFullCloudSync()">
+                                ↻ Force Full Cloud Sync Now
+                            </button>
+                            ${!isFromTelegramSession ? `
+                                <button type="button" class="btn-ui secondary" style="width:100%;padding:10px;font-size:0.72rem;color:#f87171;border-color:rgba(248,113,113,0.45);" onclick="handleTopAuthButtonClick()">
+                                    ${isWebCloudAuthenticated ? '🚪 Sign Out from Cloud Session' : '🔐 Sign In / Create Account'}
+                                </button>
+                            ` : ''}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // SLIDE 4: WARRANTY & 24H ANTI-FLAG POLICY
+            if (slide === 'policy') {
+                const rules = [
+                    { ico: '🛡️', title: 'First-Login Replacement Warranty', desc: 'Every GitHub account is verified HTTP 200 live before delivery. Report any login/404 issue on first check immediately via Executive Helpdesk for instant replacement.' },
+                    { ico: '⏳', title: '24-Hour Anti-Flag Warm-Up Rule', desc: 'Wait at least 24 hours on a clean IP/device after your initial login before changing passwords, recovery emails, or removing existing 2FA.' },
+                    { ico: '🚀', title: 'Organic Boost Drip-Feed Guarantee', desc: 'Followers, Stars, Forks, and Watchers execute in natural pacing (3h / 2h / 1h per 10 units) to protect target repositories from GitHub anti-spam drops.' },
+                    { ico: '🔐', title: 'Zero-Knowledge Local & Cloud Vault', desc: 'Credentials stay bound exclusively to your UID & Cloud Vault. Always save a .TXT backup from the Vault tab after checkout.' }
+                ];
+                container.innerHTML = `
+                    <div class="xb-vp-wrap">
+                        ${buildProfileSubHeaderHtml('Warranty & Policy', `<span class="xb-ex-chip" style="color:#fbbf24;border-color:rgba(251,191,36,0.5);">RULES</span>`)}
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            ${rules.map(r => `
+                                <div class="xb-wal-card" style="padding:10px 11px;display:flex;align-items:flex-start;gap:9px;">
+                                    <span class="xb-prf-menu-ico">${r.ico}</span>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.73rem;font-weight:800;color:var(--text-primary);">${r.title}</div>
+                                        <div style="font-size:0.61rem;color:var(--text-secondary);line-height:1.45;margin-top:3px;">${r.desc}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // SLIDE 5: EXECUTIVE HELPDESK
+            if (slide === 'helpdesk') {
+                const chatLogs = JSON.parse(localStorage.getItem('xb_helpdesk_logs') || '[]');
+                const logsHtml = chatLogs.length === 0
+                    ? `<div style="text-align:center;padding:18px 10px;color:var(--text-muted);font-size:0.64rem;line-height:1.45;">👋 Need warranty support, bulk pricing, or custom GitHub requests? Send a direct message below — Admin receives it live on Telegram.</div>`
+                    : chatLogs.map(c => `
+                        <div style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-left:3px solid #38bdf8;border-radius:9px;padding:7px 9px;">
+                            <div style="display:flex;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#38bdf8;font-weight:800;margin-bottom:2px;">
+                                <span>👤 @${cleanU}</span>
+                                <span style="color:var(--text-muted);">${c.time}</span>
+                            </div>
+                            <div style="font-size:0.67rem;color:var(--text-primary);line-height:1.4;">${c.msg}</div>
+                        </div>
+                    `).join('');
+
+                container.innerHTML = `
+                    <div class="xb-vp-wrap">
+                        ${buildProfileSubHeaderHtml('Executive Helpdesk', `<span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);">24/7</span>`)}
+                        <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:9px;">
+                            <div style="max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;">
+                                ${logsHtml}
+                            </div>
+                            <hr class="xb-wal-hr">
+                            <div class="xb-bst-input-row">
+                                <input type="text" id="prfHelpdeskMsgInp" class="xb-bst-target-inp" placeholder="Type message to Admin..." onkeydown="if(event.key==='Enter') sendProfileHelpdeskMsgV2();">
+                                <button type="button" class="btn-ui primary" style="flex:0 0 auto;min-width:0;padding:8px 12px;font-size:0.68rem;border-radius:9px;" onclick="sendProfileHelpdeskMsgV2()">📨 Send</button>
+                            </div>
+                            <a href="https://t.me/XianBeeTechStore" target="_blank" class="btn-ui secondary" style="width:100%;padding:9px;font-size:0.7rem;color:#38bdf8;border-color:rgba(56,189,248,0.45);">✈️ Open Direct Telegram Support</a>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // DEFAULT: PROFILE MAIN VIEW (ZERO DUPLICATION WITH WALLET & VAULT)
+            const an = computeProfileSpendAnalytics(st.range);
+            const accShare = an.totalSpend > 0 ? Math.round((an.accSpend / an.totalSpend) * 100) : 0;
+            const bstShare = an.totalSpend > 0 ? Math.round((an.boostSpend / an.totalSpend) * 100) : 0;
+            const othShare = an.totalSpend > 0 ? Math.max(0, 100 - accShare - bstShare) : 0;
+
+            const menuItems = [
+                { key: 'username', ico: '✏️', title: 'Edit Display Username', sub: `Current identity: @${cleanU}`, right: 'Edit' },
+                { key: 'prefs',    ico: '⚙️', title: 'App Preferences',       sub: `${currentTheme === 'obsidian' ? 'Obsidian Dark' : 'Platinum Light'} • ${currentCurrency}`, right: 'Setup' },
+                { key: 'sync',     ico: '☁️', title: 'Cloud Sync & Session',  sub: `UID ${currentUserId} • Auto-Synced`, right: 'Sync' },
+                { key: 'policy',   ico: '🛡️', title: 'Warranty & 24h Policy', sub: 'First-login guarantee & anti-flag guide', right: 'Read' },
+                { key: 'helpdesk', ico: '💬', title: 'Executive Helpdesk',    sub: 'Direct message to Admin Bot & Telegram', right: 'Chat' }
+            ];
+
+            container.innerHTML = `
+                <div class="xb-vp-wrap">
+                    <!-- 1. CLEAN IDENTITY HERO CARD (NO DUPLICATE BALANCE / PIN / VAULT CREDS) -->
+                    <div class="xb-wal-card">
+                        <div style="display:flex;align-items:center;gap:10px;">
+                            <div class="xb-prf-avatar">${initials}</div>
+                            <div style="min-width:0;flex:1;">
+                                <div style="display:flex;align-items:center;gap:5px;">
+                                    <span style="font-size:0.92rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${cleanU}</span>
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="#38bdf8" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                                </div>
+                                <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-top:3px;">
+                                    <span class="xb-ex-chip" style="color:${vip.badgeColor || '#fbbf24'};border-color:${vip.badgeBorder || 'rgba(251,191,36,0.5)'};">${vip.emblem} ${vip.rank}</span>
+                                    <button type="button" class="xb-adm-mini-btn" style="padding:2px 6px;font-size:0.52rem;" onclick="navigator.clipboard.writeText('${currentUserId}'); showToast('UID ${currentUserId} copied!');">UID: ${currentUserId} 📋</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="xb-wal-hr">
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <button type="button" class="xb-adm-dev-btn" style="padding:8px 6px;color:#38bdf8;border-color:rgba(56,189,248,0.35);" onclick="openWalletSlide('vip'); switchTab('wallet');">👑 VIP Cashback Hub ➔</button>
+                            <button type="button" class="xb-adm-dev-btn" style="padding:8px 6px;color:#34d399;border-color:rgba(52,211,153,0.35);" onclick="switchTab('vault');">🔐 My Vault (${vaultCount}) ➔</button>
+                        </div>
+                    </div>
+
+                    <!-- 2. PERSONAL SPEND ANALYTICS (7D / 30D / ALL + 3D GRAPH LAUNCHER) -->
+                    <div class="xb-wal-card">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:8px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:var(--text-primary);">📊 PERSONAL SPEND ANALYTICS</span>
+                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;border-color:rgba(56,189,248,0.45);" onclick="openUserPersonal3DAnalyticsModal()">📈 3D Charts</button>
+                        </div>
+
+                        <div class="xb-prf-range-tabs">
+                            ${['7D', '30D', 'ALL'].map(rk => `
+                                <button type="button" class="xb-prf-range-btn ${st.range === rk ? 'active' : ''}" onclick="setProfileAnalyticsRange('${rk}')">${rk === 'ALL' ? 'ALL-TIME' : `LAST ${rk}`}</button>
+                            `).join('')}
+                        </div>
+
+                        <div class="xb-wal-kpi-grid">
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">TOTAL SPENT</div>
+                                <div class="xb-wal-kpi-val" style="color:#34d399;">${fmtPrice(an.totalSpend)}</div>
+                            </div>
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">ORDERS</div>
+                                <div class="xb-wal-kpi-val" style="color:#38bdf8;">${an.totalOrders} TX</div>
+                            </div>
+                            <div class="xb-wal-kpi-box">
+                                <div class="xb-wal-kpi-lbl">AVG ORDER</div>
+                                <div class="xb-wal-kpi-val" style="color:#c084fc;">${fmtPrice(an.avgOrder)}</div>
+                            </div>
+                        </div>
+
+                        <div class="xb-prf-bars">
+                            <div class="xb-prf-bar-row">
+                                <div style="display:flex;justify-content:space-between;">
+                                    <span style="color:var(--text-secondary);">🐙 GitHub Accounts (${an.accCount})</span>
+                                    <b style="color:#38bdf8;">${fmtPrice(an.accSpend)} (${accShare}%)</b>
+                                </div>
+                                <div class="xb-prf-bar-track"><div class="xb-prf-bar-fill" style="width:${accShare}%;background:linear-gradient(90deg,#1d4ed8,#38bdf8);"></div></div>
+                            </div>
+                            <div class="xb-prf-bar-row">
+                                <div style="display:flex;justify-content:space-between;">
+                                    <span style="color:var(--text-secondary);">🚀 GitHub Boost (${an.boostCount})</span>
+                                    <b style="color:#c084fc;">${fmtPrice(an.boostSpend)} (${bstShare}%)</b>
+                                </div>
+                                <div class="xb-prf-bar-track"><div class="xb-prf-bar-fill" style="width:${bstShare}%;background:linear-gradient(90deg,#7c3aed,#f472b6);"></div></div>
+                            </div>
+                            ${an.otherSpend > 0 ? `
+                                <div class="xb-prf-bar-row">
+                                    <div style="display:flex;justify-content:space-between;">
+                                        <span style="color:var(--text-secondary);">🌐 Other Store Services</span>
+                                        <b style="color:#34d399;">${fmtPrice(an.otherSpend)} (${othShare}%)</b>
+                                    </div>
+                                    <div class="xb-prf-bar-track"><div class="xb-prf-bar-fill" style="width:${othShare}%;background:linear-gradient(90deg,#059669,#34d399);"></div></div>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <!-- 3. ACCOUNT SETTINGS, POLICY & EXECUTIVE SUPPORT MENU -->
+                    <div class="xb-prf-menu-list">
+                        ${menuItems.map(m => `
+                            <button type="button" class="xb-prf-menu-row" onclick="openProfileSlide('${m.key}')">
+                                <div style="display:flex;align-items:center;gap:9px;min-width:0;flex:1;">
+                                    <span class="xb-prf-menu-ico">${m.ico}</span>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.74rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.title}</div>
+                                        <div style="font-size:0.58rem;color:var(--text-secondary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m.sub}</div>
+                                    </div>
+                                </div>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;flex-shrink:0;">${m.right} ➔</span>
+                            </button>
+                        `).join('')}
+
+                        ${isAdmin ? `
+                            <button type="button" class="xb-prf-menu-row" style="border-color:rgba(56,189,248,0.45);" onclick="switchTab('admin')">
+                                <div style="display:flex;align-items:center;gap:9px;min-width:0;flex:1;">
+                                    <span class="xb-prf-menu-ico" style="color:#38bdf8;">⚙️</span>
+                                    <div style="min-width:0;flex:1;">
+                                        <div style="font-size:0.74rem;font-weight:800;color:#38bdf8;">Executive Admin Command Center</div>
+                                        <div style="font-size:0.58rem;color:var(--text-secondary);">Boost Ops • Studios • Store &amp; Telemetry</div>
+                                    </div>
+                                </div>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#34d399;flex-shrink:0;">Open ➔</span>
+                            </button>
+                        ` : ''}
+                    </div>
+
+                    <!-- 4. FOOTER ATTRIBUTION -->
+                    <div style="display:flex;align-items:center;justify-content:space-between;padding:4px 4px 0 4px;font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);">
+                        <span>POWERED BY ABIE HARYATMO</span>
+                        <button type="button" onclick="switchTab('admin')" style="background:transparent;border:none;color:var(--text-muted);opacity:0.4;cursor:pointer;font-size:0.68rem;padding:2px 4px;" title="Admin Access">🔒</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // =========================================================
+        // 👤 10. PROFILE, PURCHASED VAULT & HISTORY TAB (LEGACY FALLBACK)
         // =========================================================
         function renderProfileTab(container, subSection) {
             const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
@@ -15231,8 +16273,8 @@ let _ghAgeCheckerResults = [];
                 </div>
                 ${credsHtml}
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-                    <button class="btn-ui secondary" style="padding:11px;" onclick="closeModal('paymentGatewayModal'); switchTab('profile'); activeSub='🔐 Purchased Vault'; renderViewport();">
-                        🔐 Purchased Vault
+                    <button class="btn-ui secondary" style="padding:11px;" onclick="closeModal('paymentGatewayModal'); switchTab('vault');">
+                        🔐 Open Vault
                     </button>
                     <button class="btn-ui primary" style="padding:11px;" onclick="closeModal('paymentGatewayModal')">
                         ✅ Done
