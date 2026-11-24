@@ -3868,6 +3868,42 @@
 
         .xb-bst-packs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
         .xb-bst-tool-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin-bottom: 10px; }
+        .xb-smm-svc-picker-btn {
+            width: 100%;
+            text-align: left;
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 11px;
+            padding: 9px 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            color: var(--text-primary);
+            transition: border-color 0.16s ease;
+        }
+        .xb-smm-svc-picker-btn:hover { border-color: #38bdf8; }
+        .xb-smm-sub-chips {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 4px;
+        }
+        .xb-smm-svc-item {
+            width: 100%;
+            text-align: left;
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 11px;
+            padding: 8px 10px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: var(--text-primary);
+            transition: border-color 0.15s ease;
+        }
+        .xb-smm-svc-item:hover, .xb-smm-svc-item.active { border-color: #38bdf8; background: rgba(56, 189, 248, 0.08); }
 
         /* INTERACTIVE SPEED TRACK INFO CARD (DISMISSABLE + RE-OPENABLE) */
         .xb-bst-speed-info { position: relative; margin-top: 6px; background: var(--bg-input); border: 1px solid rgba(56,189,248,0.45); border-left: 3.5px solid #38bdf8; border-radius: 10px; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; animation: fadeIn 0.18s ease; }
@@ -9884,10 +9920,7 @@
             // --- RETAIL GAS QUICK SHORTCUT ---
             { id: 'gas_eth', hub: 'crypto_hub', sub: 'Crypto & Exchange', hot: true, icon: '⛽', tag: 'INSTANT GAS', title: 'Instant Retail Crypto & L2 Gas (ETH / BNB / SOL / TON / SUI)', desc: 'Instant retail gas delivery to your personal wallet via OxaPay.', usdt: 2.00, tiers: [{ name: 'Starter Gas (2 USDT)', p: 2.00 }, { name: 'Standard Gas (5 USDT)', p: 5.00 }, { name: 'Whale Gas (15 USDT)', p: 15.00 }], prompt: 'Network (e.g. Base/Arb/BSC/SOL/TON) + Wallet Address:' },
 
-            // --- SMM BOOST SERVICES ---
-            { id: 'ig_svc', hub: 'smm_hub', sub: 'SMM Boost', hot: false, isUnit: true, icon: '📸', tag: 'SMM BOOST', title: 'Instagram / TikTok / YouTube / X Followers & Views', desc: 'High-speed social media engagement boost.', usdt: 0.15, prompt: 'Target Profile or Post Link:' },
-            { id: 'tg_svc', hub: 'smm_hub', sub: 'SMM Boost', hot: false, isUnit: true, icon: '✈️', tag: 'COMMUNITY SMM', title: 'Telegram Members / Discord Members / Reddit Upvotes', desc: 'Grow your Web3 community server and channel metrics.', usdt: 0.15, prompt: 'Target Channel or Invite Link:' },
-            { id: 'cmc', hub: 'smm_hub', sub: 'SMM Boost', hot: false, isUnit: true, icon: '🪙', tag: 'WEB3 & SEO', title: 'CoinMarketCap Watchlist, Shopee/Tokopedia & Web Traffic', desc: 'Organic website traffic and e-commerce store metrics.', usdt: 0.25, prompt: 'Target Website or Store Link:' },
+            // --- SMM BOOST SERVICES MOVED TO DEDICATED LIVE INDOSMM TERMINAL IN BOOST TAB ---
 
             // --- PPOB BILLS, E-WALLET & GAMES ---
             { id: 'ppob_games', hub: 'ppob_hub', sub: 'PPOB & Games', hot: true, icon: '🎮', tag: 'INSTANT GAME', title: 'Top-Up Games (Mobile Legends / Free Fire / Valorant / Genshin / Steam)', desc: 'Real-time game diamond & voucher top-up via main server.', usdt: 2.00, tiers: [{ name: 'Small Pack (2 USDT)', p: 2.00 }, { name: 'Medium Pack (5 USDT)', p: 5.00 }, { name: 'Large Pack (12 USDT)', p: 12.00 }, { name: 'Sultan Pack (25 USDT)', p: 25.00 }], prompt: 'Game Name + User ID (and Server ID):' },
@@ -11082,10 +11115,17 @@
                 `;
                 vp.appendChild(segBar);
 
-                // SEGMENT 1: GITHUB BOOST TERMINAL
+                // SEGMENT 1: BOOST SERVICE (OPTION A SWITCHER — GITHUB BOOST 100% PRIMARY & UNTOUCHED)
                 if (window._bstSeg === 'terminal') {
-                    if (typeof renderBoostTerminal === 'function') {
-                        renderBoostTerminal(vp);
+                    if (typeof buildBoostOptionASwitcherEl === 'function') {
+                        vp.appendChild(buildBoostOptionASwitcherEl());
+                    }
+                    if (!window._bstPlatform || window._bstPlatform === 'github') {
+                        if (typeof renderBoostTerminal === 'function') {
+                            renderBoostTerminal(vp);
+                        }
+                    } else if (typeof renderSmmBoostTerminal === 'function') {
+                        renderSmmBoostTerminal(vp, window._bstPlatform);
                     }
                     return;
                 }
@@ -11118,7 +11158,6 @@
                 ];
                 const storeR2 = [
                     { k: 'Crypto & Exchange', lbl: '🪙 Crypto' },
-                    { k: 'SMM Boost', lbl: '📈 SMM Boost' },
                     { k: 'PPOB & Games', lbl: '🎮 PPOB' }
                 ];
                 const chipsWrap = document.createElement('div');
@@ -11127,7 +11166,7 @@
                     <div class="xb-ex-chips-r1">
                         ${storeR1.map(c => `<button type="button" class="xb-ex-filter-chip ${window._bstStoreCat === c.k ? 'active' : ''}" onclick="window._bstStoreCat='${c.k}'; renderViewport();">${c.lbl}</button>`).join('')}
                     </div>
-                    <div class="xb-ex-chips-r1">
+                    <div class="xb-ex-pay-grid">
                         ${storeR2.map(c => `<button type="button" class="xb-ex-filter-chip ${window._bstStoreCat === c.k ? 'active' : ''}" onclick="window._bstStoreCat='${c.k}'; renderViewport();">${c.lbl}</button>`).join('')}
                     </div>
                 `;
@@ -13781,24 +13820,44 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
         }
 
         async function syncVaultMyBoostQueue() {
-            try {
-                const res = await fetch(GSHEET_WEBHOOK_URL, {
+            const uidStr = String(currentUserId || '').trim();
+            const unmStr = String(currentUsername || '').replace(/^@/, '').trim();
+            const isAdm = ADMIN_IDS.includes(uidStr);
+
+            await Promise.allSettled([
+                fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'pull_buyer_boosts',
-                        buyer_uid: String(currentUserId || '').trim(),
-                        buyer_username: String(currentUsername || '').replace(/^@/, '').trim()
+                        buyer_uid: uidStr,
+                        buyer_username: unmStr
                     })
-                });
-                const json = await res.json();
-                if (json && json.result && Array.isArray(json.orders)) {
-                    window._vltState.liveQueueOrders = json.orders;
-                    if (activeTab === 'vault' && window._vltState.seg === 'boosts') {
-                        renderViewport();
+                }).then(r => r.json()).then(json => {
+                    if (json && json.result && Array.isArray(json.orders)) {
+                        window._vltState.liveQueueOrders = json.orders;
                     }
-                }
-            } catch (e) {}
+                }),
+                fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'smm_indosmm',
+                        sub_action: 'pull_buyer_orders',
+                        buyer_uid: uidStr,
+                        buyer_username: unmStr,
+                        is_admin: isAdm
+                    })
+                }).then(r => r.json()).then(json => {
+                    if (json && json.result && Array.isArray(json.orders)) {
+                        window._vltState.liveSmmOrders = json.orders;
+                    }
+                })
+            ]);
+
+            if (activeTab === 'vault' && window._vltState.seg === 'boosts') {
+                renderViewport();
+            }
         }
 
         function boostAgainFromVault(svcKey, cleanTarget) {
@@ -14236,13 +14295,83 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                     `;
                 }).join('');
 
+            const smmOrders = Array.isArray(st.liveSmmOrders) ? st.liveSmmOrders : [];
+            const smmCardsHtml = smmOrders.length > 0 ? `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px;">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#c084fc;">🌐 SOCIAL MEDIA BOOST ORDERS (${smmOrders.length})</span>
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);">LIVE API TRACKER</span>
+                </div>
+                ${smmOrders.map(ord => {
+                    const pInfo = (typeof XB_SMM_PLATFORMS !== 'undefined' && XB_SMM_PLATFORMS[ord.platform]) ? XB_SMM_PLATFORMS[ord.platform] : { ico: '🌐', name: String(ord.platform || 'SMM').toUpperCase(), accent: '#c084fc' };
+                    const stUp = String(ord.status || 'Pending').toUpperCase();
+                    const isDone = stUp.includes('COMPLET');
+                    const isCancel = stUp.includes('CANCEL') || stUp.includes('FAIL') || stUp.includes('REFUND');
+                    const isRun = stUp.includes('PROGRESS') || stUp.includes('PROCESS') || stUp.includes('PARTIAL');
+                    const qtyN = Math.max(1, Number(ord.qty || 1));
+                    const doneN = isDone ? qtyN : Math.max(0, Math.min(qtyN, Number(ord.done_count || 0)));
+                    const pctN = isDone ? 100 : Math.round((doneN / qtyN) * 100);
+                    const stCol = isDone ? '#34d399' : (isRun ? '#38bdf8' : (isCancel ? '#f87171' : '#fbbf24'));
+                    const stBadge = isDone ? '✅ COMPLETED' : (isRun ? '⚡ DELIVERING' : (isCancel ? '✕ ' + stUp : '⏳ PENDING'));
+                    const step2Cls = (isRun || isDone) ? 'done' : (!isCancel ? 'active' : '');
+                    const step3Cls = isDone ? 'done' : (isRun ? 'active' : '');
+                    const step4Cls = isDone ? 'done' : '';
+                    const safeLink = String(ord.target_link || '').replace(/'/g, '');
+
+                    return `
+                        <div class="xb-vb-card">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                <button type="button" class="xb-adm-mini-btn" style="padding:3px 7px;font-size:0.58rem;color:var(--text-primary);" onclick="navigator.clipboard.writeText('${ord.invoice_id}'); showToast('📋 Invoice ${ord.invoice_id} copied!');">${ord.invoice_id} 📋</button>
+                                <span class="xb-ex-chip" style="color:${stCol};border-color:${stCol}66;flex-shrink:0;">${stBadge}</span>
+                            </div>
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                <span class="xb-ex-chip" style="color:${pInfo.accent};border-color:${pInfo.accent}55;font-size:0.52rem;padding:3px 8px;">${pInfo.ico} ${pInfo.name.toUpperCase()}</span>
+                                <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);font-size:0.56rem;padding:3px 8px;flex-shrink:0;">💰 ${fmtPrice(ord.price_usd)}</span>
+                            </div>
+                            <div style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:9px;padding:7px 9px;font-family:'JetBrains Mono',monospace;">
+                                <div style="font-size:0.64rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escSmmHtml(ord.service_name)}</div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:3px;">
+                                    <span style="font-size:0.54rem;color:#38bdf8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">🎯 ${escSmmHtml(ord.target_link)}</span>
+                                    <span style="font-size:0.62rem;font-weight:800;color:${stCol};flex-shrink:0;">${pctN}%</span>
+                                </div>
+                            </div>
+                            <div class="xb-vb-stepper">
+                                <div class="xb-vb-step done">✓ Paid</div>
+                                <div class="xb-vb-step ${step2Cls}">${step2Cls === 'done' ? '✓ ' : ''}Queued</div>
+                                <div class="xb-vb-step ${step3Cls}">${step3Cls === 'done' ? '✓ ' : (step3Cls === 'active' ? '⚡ ' : '')}Delivering</div>
+                                <div class="xb-vb-step ${step4Cls}">${step4Cls === 'done' ? '✓ ' : ''}Done</div>
+                            </div>
+                            <div class="xb-ops-qbar"><div class="xb-ops-qfill" style="width:${pctN}%;"></div></div>
+                            <div class="xb-vb-kpis">
+                                <div class="xb-vb-kpi">
+                                    <div class="xb-vb-kpi-k">PROGRESS</div>
+                                    <div class="xb-vb-kpi-v" style="color:#34d399;">${doneN.toLocaleString()} / ${qtyN.toLocaleString()}</div>
+                                </div>
+                                <div class="xb-vb-kpi">
+                                    <div class="xb-vb-kpi-k">ORDER ID</div>
+                                    <div class="xb-vb-kpi-v" style="color:#c084fc;">#${ord.smm_order_id}</div>
+                                </div>
+                                <div class="xb-vb-kpi">
+                                    <div class="xb-vb-kpi-k">REMAINS</div>
+                                    <div class="xb-vb-kpi-v" style="color:#38bdf8;">${Number(ord.remains || 0).toLocaleString()} left</div>
+                                </div>
+                            </div>
+                            <div class="xb-vb-actions">
+                                <button type="button" class="btn-ui secondary" style="min-width:0;padding:8px 6px;font-size:0.65rem;border-radius:9px;" onclick="checkSmmOrderStatusLive('${ord.smm_order_id}', this)">↻ Cek Status</button>
+                                <button type="button" class="btn-ui primary" style="min-width:0;padding:8px 6px;font-size:0.65rem;border-radius:9px;" onclick="boostSmmAgainFromVault('${ord.platform}', '${safeLink}')">⚡ Boost Again</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('')}
+            ` : '';
+
             return `
                 <div style="display:flex;flex-direction:column;gap:8px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;">
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;">📡 MY BOOST ORDERS (${merged.length})</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;">📡 MY GITHUB BOOST ORDERS (${merged.length})</span>
                         <button type="button" class="xb-adm-mini-btn" style="color:#34d399;border-color:rgba(52,211,153,0.45);" onclick="syncVaultMyBoostQueue(); showToast('↻ Syncing live boost progress...');">↻ Refresh</button>
                     </div>
                     ${ordersHtml}
+                    ${smmCardsHtml}
 
                     <!-- QUICK LIVE GITHUB METRIC CHECKER -->
                     <div class="xb-wal-card" style="display:flex;flex-direction:column;gap:8px;margin-top:2px;">
@@ -24261,6 +24390,650 @@ let _ghAgeCheckerResults = [];
             if (!ord) return;
             closeModal('paymentGatewayModal');
             processPaymentFlow([ord], ord.usdt, method, false);
+        }
+
+        // =========================================================
+        // 🌐 12C. MULTI-PLATFORM SMM BOOST TERMINAL (INDOSMM API v2)
+        // =========================================================
+        window._bstPlatform = window._bstPlatform || 'github';
+        window._smmState = window._smmState || {
+            cacheByPlat: {},      // platKey -> [services...]
+            loadingPlat: '',
+            loadErr: '',
+            subFilter: 'ALL',     // 'ALL' | 'FOLLOWERS' | 'LIKES' | 'VIEWS' | 'ENGAGE'
+            selectedSvcByPlat: {},
+            target: '',
+            qty: 0,
+            pickerSearch: '',
+            pendingPinOrd: null,
+            submitting: false
+        };
+
+        const XB_SMM_PLATFORMS = {
+            instagram: { key: 'instagram', name: 'Instagram',  sub: 'Flw • Likes • Views', accent: '#f472b6', glow: 'rgba(244,114,182,0.32)', bg1: '#190814', bg2: '#3b102f', ico: '📸', placeholder: 'https://instagram.com/username atau link post/reel' },
+            tiktok:    { key: 'tiktok',    name: 'TikTok',     sub: 'Flw • Views • Likes', accent: '#38bdf8', glow: 'rgba(56,189,248,0.32)',  bg1: '#06121c', bg2: '#0f293e', ico: '🎵', placeholder: 'https://tiktok.com/@username atau link video' },
+            youtube:   { key: 'youtube',   name: 'YouTube',    sub: 'Subs • Views • Watch',accent: '#ef4444', glow: 'rgba(239,68,68,0.32)',   bg1: '#1c0808', bg2: '#3d1010', ico: '▶️', placeholder: 'https://youtube.com/@channel atau link video' },
+            twitter:   { key: 'twitter',   name: 'X (Twitter)',sub: 'Flw • RT • Views',    accent: '#60a5fa', glow: 'rgba(96,165,250,0.3)',   bg1: '#070c17', bg2: '#0e2240', ico: '𝕏',  placeholder: 'https://x.com/username atau link tweet' },
+            telegram:  { key: 'telegram',  name: 'Telegram',   sub: 'Members • Post View', accent: '#0ea5e9', glow: 'rgba(14,165,233,0.32)',  bg1: '#06131f', bg2: '#0c2c47', ico: '✈️', placeholder: 'https://t.me/channel atau link post' },
+            facebook:  { key: 'facebook',  name: 'Facebook',   sub: 'Page • Likes • Views',accent: '#3b82f6', glow: 'rgba(59,130,246,0.32)',  bg1: '#070e1f', bg2: '#102657', ico: '📘', placeholder: 'https://facebook.com/page atau link postingan' },
+            ecommerce: { key: 'ecommerce', name: 'E-Commerce', sub: 'Shopee • Tokopedia',  accent: '#fb923c', glow: 'rgba(251,146,60,0.3)',   bg1: '#1a0e06', bg2: '#3d1f0a', ico: '🛒', placeholder: 'Link toko atau produk Shopee / Tokopedia' },
+            stream:    { key: 'stream',    name: 'Stream&Chat',sub: 'Spotify • DC • WA',   accent: '#a855f7', glow: 'rgba(168,85,247,0.32)',  bg1: '#12081f', bg2: '#291247', ico: '🎧', placeholder: 'Link Spotify, Twitch, Discord, Threads, atau WA' },
+            webpro:    { key: 'webpro',    name: 'Web & Pro',  sub: 'Traffic • LinkedIn',  accent: '#10b981', glow: 'rgba(16,185,129,0.32)',  bg1: '#061a14', bg2: '#0c382a', ico: '🌐', placeholder: 'https://yourwebsite.com atau link LinkedIn' }
+        };
+
+        function escSmmHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function switchBoostPlatform(platKey) {
+            window._bstPlatform = platKey || 'github';
+            window._smmState.subFilter = 'ALL';
+            window._smmState.loadErr = '';
+            renderViewport();
+            if (window._bstPlatform !== 'github') {
+                loadSmmServicesForPlatform(window._bstPlatform, false);
+            }
+        }
+
+        function buildBoostOptionASwitcherEl() {
+            const wrap = document.createElement('div');
+            wrap.className = 'xb-mp-switcher';
+            const isGh = !window._bstPlatform || window._bstPlatform === 'github';
+            const smmKeys = ['instagram', 'tiktok', 'youtube', 'twitter', 'telegram', 'facebook', 'ecommerce', 'stream', 'webpro'];
+
+            wrap.innerHTML = `
+                <button type="button" class="xb-mp-gh-btn ${isGh ? 'active' : ''}" onclick="switchBoostPlatform('github')">
+                    <span class="xb-mp-gh-left">
+                        <span class="xb-mp-gh-ico">${GH_SVG_EMBLEM}</span>
+                        <span style="min-width:0;text-align:left;">
+                            <div style="font-size:0.76rem;font-weight:800;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">GitHub Boost Service</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;opacity:0.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Followers • Stars • Forks • Watchers</div>
+                        </span>
+                    </span>
+                    <span class="xb-mp-gh-right">
+                        <span class="xb-mp-prim-pill">PRIMARY</span>
+                        <span class="xb-mp-cnt-pill">● LIVE</span>
+                    </span>
+                </button>
+                <div class="xb-mp-grid-6">
+                    ${smmKeys.map(pk => {
+                        const p = XB_SMM_PLATFORMS[pk];
+                        const isAct = window._bstPlatform === pk;
+                        const cnt = Array.isArray(window._smmState.cacheByPlat[pk]) ? window._smmState.cacheByPlat[pk].length : 0;
+                        return `
+                            <button type="button" class="xb-mp-plat-btn ${isAct ? 'active' : ''}"
+                                style="--mp-acc:${p.accent};--mp-glow:${p.glow};--mp-bg1:${p.bg1};--mp-bg2:${p.bg2};"
+                                onclick="switchBoostPlatform('${pk}')">
+                                <span class="xb-mp-plat-ico" style="font-size:0.74rem;">${p.ico}</span>
+                                <span class="xb-mp-plat-info">
+                                    <div class="xb-mp-plat-name">${p.name}</div>
+                                    <div class="xb-mp-plat-sub">${cnt > 0 ? `${cnt} Svc` : p.sub}</div>
+                                </span>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+            `;
+            return wrap;
+        }
+
+        async function loadSmmServicesForPlatform(platKey, forceRefresh = false) {
+            const st = window._smmState;
+            if (!forceRefresh && Array.isArray(st.cacheByPlat[platKey]) && st.cacheByPlat[platKey].length > 0) {
+                if (!st.selectedSvcByPlat[platKey]) {
+                    st.selectedSvcByPlat[platKey] = st.cacheByPlat[platKey][0];
+                    st.qty = st.cacheByPlat[platKey][0].min;
+                }
+                return;
+            }
+            if (st.loadingPlat === platKey) return;
+            st.loadingPlat = platKey;
+            st.loadErr = '';
+            if (activeTab === 'boost' && window._bstSeg === 'terminal' && window._bstPlatform === platKey) {
+                renderViewport();
+            }
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'smm_indosmm',
+                        sub_action: 'pull_services',
+                        platform: platKey,
+                        idr_rate: Math.round(liveUsdtIdrRate || 18195),
+                        force_refresh: Boolean(forceRefresh)
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result && Array.isArray(json.services)) {
+                    st.cacheByPlat[platKey] = json.services;
+                    if (json.services.length > 0) {
+                        st.selectedSvcByPlat[platKey] = json.services[0];
+                        st.qty = json.services[0].min;
+                    }
+                    if (forceRefresh) showToast(`✅ Loaded ${json.services.length} live ${XB_SMM_PLATFORMS[platKey].name} services!`);
+                } else {
+                    st.loadErr = (json && json.error) ? json.error : 'Failed to load live services.';
+                }
+            } catch (e) {
+                st.loadErr = 'Network slow while loading live services. Tap Refresh to retry.';
+            } finally {
+                st.loadingPlat = '';
+                if (activeTab === 'boost' && window._bstSeg === 'terminal' && window._bstPlatform === platKey) {
+                    renderViewport();
+                }
+            }
+        }
+
+        function computeSmmSelectedTotals(platKey) {
+            const st = window._smmState;
+            const svc = st.selectedSvcByPlat[platKey] || null;
+            const fx = Math.max(14000, Number(liveUsdtIdrRate || 18195));
+            if (!svc) return { svc: null, qty: 0, totalIdr: 0, totalUsdt: 0, rate1kUsdt: 0, belowMin: true, overMax: false };
+
+            const qty = Math.max(0, parseInt(st.qty, 10) || 0);
+            const totalIdr = Math.round((qty / 1000) * Number(svc.sell_1k_idr || 0));
+            const totalUsdt = Number((totalIdr / fx).toFixed(2));
+            const rate1kUsdt = Number((Number(svc.sell_1k_idr || 0) / fx).toFixed(2));
+            const belowMin = qty < svc.min || totalUsdt < 1.00;
+            const overMax = qty > svc.max;
+            return { svc, qty, totalIdr, totalUsdt, rate1kUsdt, belowMin, overMax };
+        }
+
+        function updateSmmLivePriceDom(platKey) {
+            const calc = computeSmmSelectedTotals(platKey);
+            const totEl = document.getElementById('smmLiveTotalVal');
+            const idrSub = document.getElementById('smmLiveTotalSub');
+            const btn = document.getElementById('smmSubmitOrderBtn');
+            if (!calc.svc) return;
+
+            if (totEl) totEl.innerText = fmtPrice(calc.totalUsdt);
+            if (idrSub) {
+                idrSub.innerText = currentCurrency === 'IDR'
+                    ? `≈ $${calc.totalUsdt.toFixed(2)} USDT`
+                    : `≈ Rp ${calc.totalIdr.toLocaleString('id-ID')}`;
+            }
+            if (btn) {
+                if (calc.belowMin) {
+                    btn.innerText = `Min Order: ${calc.svc.min.toLocaleString()} Units ($1.00+)`;
+                } else if (calc.overMax) {
+                    btn.innerText = `Max Limit: ${calc.svc.max.toLocaleString()} Units`;
+                } else if (calc.totalUsdt > userBalanceUsdt) {
+                    btn.innerText = `Insufficient Balance (${fmtPrice(userBalanceUsdt)})`;
+                } else {
+                    btn.innerText = `⚡ Order ${calc.qty.toLocaleString()} Units — ${fmtPrice(calc.totalUsdt)}`;
+                }
+            }
+        }
+
+        function setSmmQuickQty(platKey, multFactor) {
+            const svc = window._smmState.selectedSvcByPlat[platKey];
+            if (!svc) return;
+            const nextQty = Math.min(svc.max, Math.max(svc.min, Math.round(svc.min * multFactor)));
+            window._smmState.qty = nextQty;
+            const inp = document.getElementById('smmQtyInp');
+            if (inp) inp.value = String(nextQty);
+            updateSmmLivePriceDom(platKey);
+        }
+
+        function renderSmmBoostTerminal(vp, platKey) {
+            const p = XB_SMM_PLATFORMS[platKey] || XB_SMM_PLATFORMS.instagram;
+            const st = window._smmState;
+            const svcs = st.cacheByPlat[platKey] || [];
+            const isLoading = st.loadingPlat === platKey;
+
+            if (!isLoading && svcs.length === 0 && !st.loadErr) {
+                loadSmmServicesForPlatform(platKey, false);
+            }
+
+            if (svcs.length > 0 && (!st.selectedSvcByPlat[platKey] || !svcs.some(x => x.id === st.selectedSvcByPlat[platKey].id))) {
+                st.selectedSvcByPlat[platKey] = svcs[0];
+                st.qty = svcs[0].min;
+            }
+
+            const calc = computeSmmSelectedTotals(platKey);
+            const svc = calc.svc;
+
+            const term = document.createElement('div');
+            term.className = 'xb-bst-terminal';
+            term.style.borderColor = p.glow;
+
+            let bodyHtml = '';
+            if (isLoading) {
+                bodyHtml = `
+                    <div style="text-align:center;padding:26px 12px;font-family:'JetBrains Mono',monospace;">
+                        <div style="font-size:1.4rem;margin-bottom:6px;">${p.ico}</div>
+                        <div style="font-size:0.74rem;font-weight:800;color:${p.accent};">Syncing Live ${p.name} Services...</div>
+                        <div style="font-size:0.56rem;color:var(--text-muted);margin-top:4px;">Fetching real-time rates &amp; availability from server</div>
+                    </div>
+                `;
+            } else if (st.loadErr || svcs.length === 0) {
+                bodyHtml = `
+                    <div style="text-align:center;padding:22px 12px;">
+                        <div style="font-size:0.74rem;font-weight:800;color:#f87171;margin-bottom:8px;">${escSmmHtml(st.loadErr || 'No active services found for ' + p.name)}</div>
+                        <button type="button" class="btn-ui primary" style="padding:9px 16px;font-size:0.7rem;" onclick="loadSmmServicesForPlatform('${platKey}', true)">↻ Reload Services</button>
+                    </div>
+                `;
+            } else {
+                const subCats = [
+                    { k: 'ALL', lbl: 'All' },
+                    { k: 'FOLLOWERS', lbl: 'Follow' },
+                    { k: 'LIKES', lbl: 'Likes' },
+                    { k: 'VIEWS', lbl: 'Views' },
+                    { k: 'ENGAGE', lbl: 'Engage' }
+                ];
+
+                bodyHtml = `
+                    <!-- QUICK SUB-TYPE FILTER -->
+                    <div class="xb-smm-sub-chips">
+                        ${subCats.map(sc => `
+                            <button type="button" class="xb-ex-filter-chip ${st.subFilter === sc.k ? 'active' : ''}" style="padding:6px 2px;font-size:0.56rem;"
+                                onclick="window._smmState.subFilter='${sc.k}'; openSmmServicePickerModal('${platKey}');">
+                                ${sc.lbl}
+                            </button>
+                        `).join('')}
+                    </div>
+
+                    <!-- SELECTED SERVICE PICKER TRIGGER -->
+                    <div>
+                        <div class="xb-bst-lbl">
+                            <span>SELECTED SERVICE (${svcs.length} LIVE)</span>
+                            <span style="color:${p.accent};">TAP TO BROWSE</span>
+                        </div>
+                        <button type="button" class="xb-smm-svc-picker-btn" onclick="openSmmServicePickerModal('${platKey}')">
+                            <div style="min-width:0;flex:1;">
+                                <div style="display:flex;align-items:center;gap:5px;margin-bottom:2px;">
+                                    <span class="xb-ex-chip" style="color:${p.accent};border-color:${p.glow};font-size:0.48rem;">ID #${escSmmHtml(svc.id)}</span>
+                                    ${svc.refill ? `<span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.45);font-size:0.48rem;">🛡️ REFILL</span>` : ''}
+                                </div>
+                                <div style="font-size:0.72rem;font-weight:800;color:var(--text-primary);line-height:1.3;word-break:break-word;">${escSmmHtml(svc.name)}</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);margin-top:3px;">
+                                    Rate: <b style="color:#34d399;">${fmtPrice(calc.rate1kUsdt)}/1K</b> • Min: <b>${svc.min.toLocaleString()}</b> • Max: <b>${svc.max.toLocaleString()}</b>
+                                </div>
+                            </div>
+                            <span style="font-size:0.75rem;color:${p.accent};flex-shrink:0;">▼</span>
+                        </button>
+                    </div>
+
+                    <!-- TARGET LINK INPUT -->
+                    <div>
+                        <div class="xb-bst-lbl">
+                            <span>TARGET LINK / USERNAME</span>
+                            <span style="color:#34d399;">PUBLIC ACCOUNT</span>
+                        </div>
+                        <input type="text" id="smmTargetLinkInp" class="xb-bst-target-inp" style="width:100%;"
+                            value="${escSmmHtml(st.target)}" placeholder="${escSmmHtml(p.placeholder)}"
+                            oninput="window._smmState.target=this.value;">
+                    </div>
+
+                    <!-- QUANTITY + AUTO MIN FLOOR ($1.00) -->
+                    <div>
+                        <div class="xb-bst-lbl">
+                            <span>QUANTITY (MIN ${svc.min.toLocaleString()} • MAX ${svc.max.toLocaleString()})</span>
+                            <span style="color:#fbbf24;">MIN $1.00</span>
+                        </div>
+                        <div class="xb-bst-qty-row">
+                            <button type="button" class="xb-bst-qty-pill" onclick="setSmmQuickQty('${platKey}', 1)">Min</button>
+                            <button type="button" class="xb-bst-qty-pill" onclick="setSmmQuickQty('${platKey}', 2)">2x</button>
+                            <button type="button" class="xb-bst-qty-pill" onclick="setSmmQuickQty('${platKey}', 5)">5x</button>
+                            <button type="button" class="xb-bst-qty-pill" onclick="setSmmQuickQty('${platKey}', 10)">10x</button>
+                            <input type="number" id="smmQtyInp" class="xb-bst-qty-inp" min="${svc.min}" max="${svc.max}" value="${calc.qty}"
+                                oninput="window._smmState.qty=this.value; updateSmmLivePriceDom('${platKey}');">
+                        </div>
+                    </div>
+
+                    <!-- LIVE TOTAL & WALLET BALANCE -->
+                    <div class="xb-bst-summary">
+                        <div style="min-width:0;">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:800;">ESTIMATED TOTAL</div>
+                            <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;">
+                                <span id="smmLiveTotalVal" style="font-family:'JetBrains Mono',monospace;font-size:0.96rem;font-weight:800;color:#34d399;">${fmtPrice(calc.totalUsdt)}</span>
+                                <span id="smmLiveTotalSub" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);">
+                                    ${currentCurrency === 'IDR' ? `≈ $${calc.totalUsdt.toFixed(2)} USDT` : `≈ Rp ${calc.totalIdr.toLocaleString('id-ID')}`}
+                                </span>
+                            </div>
+                        </div>
+                        <div style="text-align:right;font-family:'JetBrains Mono',monospace;">
+                            <div style="font-size:0.5rem;color:var(--text-muted);font-weight:800;">WALLET BAL</div>
+                            <div style="font-size:0.7rem;font-weight:800;color:var(--text-primary);">${fmtPrice(userBalanceUsdt)}</div>
+                        </div>
+                    </div>
+
+                    <button type="button" id="smmSubmitOrderBtn" class="btn-ui primary" style="width:100%;height:42px;font-size:0.74rem;border-radius:11px;"
+                        onclick="openSmmPinCheckoutModal('${platKey}')">
+                        ⚡ Order ${calc.qty.toLocaleString()} Units — ${fmtPrice(calc.totalUsdt)}
+                    </button>
+                `;
+            }
+
+            term.innerHTML = `
+                <div class="xb-bst-head">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span class="xb-ex-gh-badge" style="width:28px;height:28px;color:${p.accent};border-color:${p.glow};font-size:0.85rem;">${p.ico}</span>
+                        <div style="min-width:0;">
+                            <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">${p.name} Boost Service</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:700;">LIVE API • AUTO-TRACKED IN VAULT</div>
+                        </div>
+                    </div>
+                    <button type="button" class="xb-adm-mini-btn" style="color:${p.accent};border-color:${p.glow};" onclick="loadSmmServicesForPlatform('${platKey}', true)">↻ Sync</button>
+                </div>
+                ${bodyHtml}
+            `;
+            vp.appendChild(term);
+            if (!isLoading && svcs.length > 0) updateSmmLivePriceDom(platKey);
+        }
+
+        function openSmmServicePickerModal(platKey) {
+            const p = XB_SMM_PLATFORMS[platKey] || XB_SMM_PLATFORMS.instagram;
+            const root = ensureXbExModalRoot();
+            window._smmState.pickerSearch = '';
+
+            root.innerHTML = `
+                <div class="xb-ex-modal-box">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);">${p.ico} Select ${p.name} Service</div>
+                        <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                    </div>
+                    <input type="text" class="xb-ex-input" id="smmSvcSearchInp" placeholder="Search Followers, Likes, Views, Non-Drop..."
+                        oninput="window._smmState.pickerSearch=this.value; renderSmmServicePickerList('${platKey}');">
+                    <div class="xb-smm-sub-chips">
+                        ${['ALL','FOLLOWERS','LIKES','VIEWS','ENGAGE'].map(sc => `
+                            <button type="button" class="xb-ex-filter-chip ${window._smmState.subFilter === sc ? 'active' : ''}" style="padding:5px 2px;font-size:0.52rem;"
+                                onclick="window._smmState.subFilter='${sc}'; openSmmServicePickerModal('${platKey}');">
+                                ${sc === 'ALL' ? 'All' : sc.charAt(0) + sc.slice(1).toLowerCase()}
+                            </button>
+                        `).join('')}
+                    </div>
+                    <div class="xb-ex-tok-list" id="smmSvcPickerList" style="max-height:52dvh;"></div>
+                </div>
+            `;
+            root.classList.add('open');
+            renderSmmServicePickerList(platKey);
+        }
+
+        function renderSmmServicePickerList(platKey) {
+            const listEl = document.getElementById('smmSvcPickerList');
+            if (!listEl) return;
+            const st = window._smmState;
+            const all = st.cacheByPlat[platKey] || [];
+            const q = String(st.pickerSearch || '').trim().toLowerCase();
+            const curSel = st.selectedSvcByPlat[platKey];
+            const fx = Math.max(14000, Number(liveUsdtIdrRate || 18195));
+
+            const filtered = all.filter(s => {
+                if (st.subFilter !== 'ALL' && s.sub !== st.subFilter) return false;
+                if (q && !s.name.toLowerCase().includes(q) && !s.category.toLowerCase().includes(q) && !String(s.id).includes(q)) return false;
+                return true;
+            }).slice(0, 80);
+
+            if (filtered.length === 0) {
+                listEl.innerHTML = `<div style="text-align:center;padding:20px;font-size:0.7rem;color:var(--text-muted);">No matching services found. Try another keyword or tap All.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = filtered.map(s => {
+                const rateUsdt = Number((s.sell_1k_idr / fx).toFixed(2));
+                const isAct = curSel && curSel.id === s.id;
+                return `
+                    <button type="button" class="xb-smm-svc-item ${isAct ? 'active' : ''}" onclick="pickSmmService('${platKey}', '${escSmmHtml(s.id)}')">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:#38bdf8;">#${escSmmHtml(s.id)} • ${escSmmHtml(s.sub)}${s.refill ? ' • 🛡️ Refill' : ''}</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;font-weight:800;color:#34d399;">${fmtPrice(rateUsdt)}/1K</span>
+                        </div>
+                        <div style="font-size:0.68rem;font-weight:700;color:var(--text-primary);line-height:1.3;">${escSmmHtml(s.name)}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);">Min: ${s.min.toLocaleString()} • Max: ${s.max.toLocaleString()}</div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function pickSmmService(platKey, svcId) {
+            const list = window._smmState.cacheByPlat[platKey] || [];
+            const found = list.find(x => String(x.id) === String(svcId));
+            if (found) {
+                window._smmState.selectedSvcByPlat[platKey] = found;
+                window._smmState.qty = found.min;
+            }
+            closeXbExModal();
+            renderViewport();
+        }
+
+        function openSmmPinCheckoutModal(platKey) {
+            const p = XB_SMM_PLATFORMS[platKey] || XB_SMM_PLATFORMS.instagram;
+            const st = window._smmState;
+            const calc = computeSmmSelectedTotals(platKey);
+            const target = String(st.target || '').trim();
+
+            if (!calc.svc) return showToast('⚠️ Select a service first.');
+            if (target.length < 4) return showToast('⚠️ Enter a valid target link or username!');
+            if (calc.belowMin) return showToast(`⚠️ Minimum order is ${calc.svc.min.toLocaleString()} units ($1.00+).`);
+            if (calc.overMax) return showToast(`⚠️ Maximum limit is ${calc.svc.max.toLocaleString()} units.`);
+            if (calc.totalUsdt > userBalanceUsdt) return showToast(`❌ Insufficient balance (Need ${fmtPrice(calc.totalUsdt)}).`);
+
+            st.pendingPinOrd = {
+                platKey,
+                platName: p.name,
+                svc: calc.svc,
+                target,
+                qty: calc.qty,
+                totalUsdt: calc.totalUsdt,
+                totalIdr: calc.totalIdr
+            };
+
+            const root = ensureXbExModalRoot();
+            root.innerHTML = `
+                <div class="xb-ex-modal-box">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);">🔐 Authorize ${p.name} Boost</div>
+                        <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                    </div>
+                    <div class="xb-ex-quote-box">
+                        <div class="xb-ex-qrow"><span>Service</span><b style="max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escSmmHtml(calc.svc.name)}</b></div>
+                        <div class="xb-ex-qrow"><span>Target</span><b style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#38bdf8;">${escSmmHtml(target)}</b></div>
+                        <div class="xb-ex-qrow"><span>Quantity</span><b>+${calc.qty.toLocaleString()} Units</b></div>
+                        <div class="xb-ex-qrow"><span>Wallet Deduction</span><b style="color:#f87171;">-${fmtPrice(calc.totalUsdt)}</b></div>
+                    </div>
+                    <div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:5px;">ENTER YOUR 6-DIGIT SECURITY PIN</div>
+                        <input type="password" inputmode="numeric" maxlength="6" class="xb-ex-input" id="smmPinInp"
+                            style="text-align:center;font-size:1.1rem;letter-spacing:8px;height:44px;" placeholder="••••••"
+                            onkeydown="if(event.key==='Enter') executeSmmConfirmedOrder();">
+                        <div id="smmPinErr" style="font-size:0.62rem;color:#f87171;font-weight:700;margin-top:5px;min-height:14px;"></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:7px;">
+                        <button type="button" class="btn-ui secondary" style="height:40px;font-size:0.72rem;border-radius:10px;" onclick="closeXbExModal()">Cancel</button>
+                        <button type="button" id="smmConfirmPayBtn" class="btn-ui primary" style="height:40px;font-size:0.74rem;border-radius:10px;" onclick="executeSmmConfirmedOrder()">✅ Confirm &amp; Dispatch</button>
+                    </div>
+                </div>
+            `;
+            root.classList.add('open');
+            setTimeout(() => { const el = document.getElementById('smmPinInp'); if (el) el.focus(); }, 60);
+        }
+
+        async function executeSmmConfirmedOrder() {
+            const st = window._smmState;
+            const ord = st.pendingPinOrd;
+            if (!ord || st.submitting) return;
+
+            const inp = document.getElementById('smmPinInp');
+            const errEl = document.getElementById('smmPinErr');
+            const btn = document.getElementById('smmConfirmPayBtn');
+            const pin = String(inp ? inp.value : '').trim();
+
+            if (!/^\d{6}$/.test(pin)) {
+                if (errEl) errEl.innerText = 'PIN must be exactly 6 numeric digits.';
+                return;
+            }
+            const pinOk = (typeof isPinValidWithBot === 'function')
+                ? isPinValidWithBot(pin)
+                : (xbExMd5(pin) === String(localStorage.getItem('xb_bot_pin_hash') || '').toLowerCase());
+            if (!pinOk) {
+                if (errEl) errEl.innerText = 'Incorrect 6-digit Security PIN.';
+                return;
+            }
+            if (ord.totalUsdt > userBalanceUsdt) {
+                if (errEl) errEl.innerText = 'Insufficient wallet balance.';
+                return;
+            }
+
+            st.submitting = true;
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Dispatching to Server...'; }
+            if (errEl) errEl.innerText = '';
+
+            const invId = 'INV-SMM-' + Math.floor(10000 + Math.random() * 89999);
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+
+            try {
+                // 1. Place order to IndoSMM FIRST (if rejected, balance is NOT deducted)
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'smm_indosmm',
+                        sub_action: 'place_order',
+                        invoice_id: invId,
+                        buyer_uid: String(currentUserId),
+                        buyer_username: dispUser,
+                        platform: ord.platKey,
+                        service_id: ord.svc.id,
+                        service_name: ord.svc.name,
+                        link: ord.target,
+                        quantity: ord.qty,
+                        price_usd: ord.totalUsdt,
+                        idr_rate: Math.round(liveUsdtIdrRate || 18195)
+                    })
+                });
+                const json = await res.json();
+                if (!json || !json.result || !json.smm_order_id) {
+                    if (errEl) errEl.innerText = (json && json.error) ? json.error : 'Server rejected order. Balance NOT deducted.';
+                    if (btn) { btn.disabled = false; btn.innerText = '✅ Confirm & Dispatch'; }
+                    st.submitting = false;
+                    return;
+                }
+
+                // 2. Deduct Authoritative Wallet Balance
+                const newBal = Math.max(0, Number((userBalanceUsdt - ord.totalUsdt).toFixed(2)));
+                setAuthoritativeBalance(newBal, true);
+
+                const txTitle = `${ord.platName} Boost: ${ord.svc.name.slice(0, 38)} (${ord.qty} Units)`;
+                recordWebTransaction(invId, txTitle, `${ord.target} [Order #${json.smm_order_id}]`, ord.totalUsdt, 'OUT', 'SMM Boost (PIN Verified)');
+
+                // 3. Cloud Sync + Loyalty CRM
+                syncCloudStateWithGSheet('push', {
+                    balance: newBal,
+                    bal_ts: Date.now(),
+                    tx_id: invId,
+                    tx_note: `${ord.platName} SMM #${json.smm_order_id} | ${ord.qty}u`
+                });
+                syncUserCrmToGSheetFromWeb('svc', ord.totalUsdt);
+
+                // 4. Push Buyer & Admin Notifications (Web + Telegram)
+                const buyerNotif = (
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🚀 <b>${ord.platName.toUpperCase()} BOOST ACTIVATED</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Order ID:</b> <code>#${json.smm_order_id}</code>\n` +
+                    `🔸 <b>Service:</b> <b>${ord.svc.name}</b>\n` +
+                    `🔸 <b>Quantity:</b> <b>+${ord.qty.toLocaleString()} Units</b>\n` +
+                    `🔸 <b>Target:</b> <code>${ord.target}</code>\n` +
+                    `🔸 <b>Paid:</b> <b>$${ord.totalUsdt.toFixed(2)} USDT</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `📡 <i>Track live progress inside Vault ➔ Active Boosts.</i>`
+                );
+                const adminNotif = (
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🕵️ <b>NEW SMM BOOST ORDER (WEB)</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code> (SMM <code>#${json.smm_order_id}</code>)\n` +
+                    `🔸 <b>Client:</b> <b>${dispUser}</b> (<code>${currentUserId}</code>)\n` +
+                    `🔸 <b>Platform:</b> <b>${ord.platName}</b>\n` +
+                    `🔸 <b>Service:</b> ${ord.svc.name}\n` +
+                    `🔸 <b>Qty:</b> <b>${ord.qty.toLocaleString()}</b> | <b>Paid:</b> $${ord.totalUsdt.toFixed(2)}\n` +
+                    `🔸 <b>Modal:</b> Rp ${Number(json.modal_idr || 0).toLocaleString('id-ID')} | <b>Profit:</b> <b>Rp ${Number(json.profit_idr || 0).toLocaleString('id-ID')}</b>\n` +
+                    `🔸 <b>Target:</b> <code>${ord.target}</code>`
+                );
+                pushInWebNotification('buyer', `🚀 ${ord.platName.toUpperCase()} BOOST (#${json.smm_order_id})`, buyerNotif);
+                pushInWebNotification('admin', `🚀 SMM ORDER #${json.smm_order_id} ($${ord.totalUsdt.toFixed(2)})`, adminNotif);
+                sendTelegramSilentPush(currentUserId, buyerNotif, true);
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminNotif, true));
+
+                // 5. Show Receipt Modal with 1-Tap Jump to Vault Active Boosts
+                const root = ensureXbExModalRoot();
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="text-align:center;">
+                            <div style="width:44px;height:44px;margin:0 auto 8px;border-radius:50%;background:rgba(16,185,129,0.16);border:1.5px solid #10b981;color:#34d399;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">✓</div>
+                            <div style="font-size:0.9rem;font-weight:800;color:var(--text-primary);">${ord.platName} Boost Dispatched!</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;color:#38bdf8;font-weight:800;margin-top:2px;">${invId} • Order #${json.smm_order_id}</div>
+                        </div>
+                        <div class="xb-ex-quote-box">
+                            <div class="xb-ex-qrow"><span>Service</span><b style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escSmmHtml(ord.svc.name)}</b></div>
+                            <div class="xb-ex-qrow"><span>Quantity</span><b style="color:#34d399;">+${ord.qty.toLocaleString()} Units</b></div>
+                            <div class="xb-ex-qrow"><span>Deducted</span><b style="color:#f87171;">-${fmtPrice(ord.totalUsdt)}</b></div>
+                            <div class="xb-ex-qrow"><span>New Balance</span><b style="color:#38bdf8;">${fmtPrice(newBal)}</b></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                            <button type="button" class="btn-ui secondary" style="height:39px;font-size:0.7rem;border-radius:10px;" onclick="closeXbExModal(); renderViewport();">Stay Here</button>
+                            <button type="button" class="btn-ui primary" style="height:39px;font-size:0.7rem;border-radius:10px;" onclick="closeXbExModal(); window._vltState.seg='boosts'; switchTab('vault'); syncVaultMyBoostQueue();">📡 Track in Vault</button>
+                        </div>
+                    </div>
+                `;
+                st.target = '';
+                renderViewport();
+            } catch (e) {
+                if (errEl) errEl.innerText = 'Connection error. Balance was NOT deducted.';
+                if (btn) { btn.disabled = false; btn.innerText = '✅ Confirm & Dispatch'; }
+            } finally {
+                st.submitting = false;
+            }
+        }
+
+        async function checkSmmOrderStatusLive(smmOrderId, btnEl) {
+            if (!smmOrderId) return;
+            if (btnEl) { btnEl.disabled = true; btnEl.innerText = '⏳ Checking...'; }
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'smm_indosmm',
+                        sub_action: 'check_status',
+                        smm_order_id: String(smmOrderId)
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    const list = Array.isArray(window._vltState.liveSmmOrders) ? window._vltState.liveSmmOrders : [];
+                    const found = list.find(o => String(o.smm_order_id) === String(smmOrderId));
+                    if (found) {
+                        found.status = json.status;
+                        found.remains = json.remains;
+                        found.done_count = /complet/i.test(json.status) ? found.qty : Math.max(0, found.qty - json.remains);
+                        found.updated_wib = json.updated_wib;
+                    }
+                    showToast(`📡 Order #${smmOrderId}: ${json.status} (Remains: ${json.remains})`);
+                    renderViewport();
+                } else {
+                    showToast('⚠️ ' + ((json && json.error) || 'Failed to check status.'));
+                    if (btnEl) { btnEl.disabled = false; btnEl.innerText = '↻ Cek Status'; }
+                }
+            } catch (e) {
+                showToast('⚠️ Network error checking live status.');
+                if (btnEl) { btnEl.disabled = false; btnEl.innerText = '↻ Cek Status'; }
+            }
+        }
+
+        function boostSmmAgainFromVault(platKey, targetLink) {
+            window._bstSeg = 'terminal';
+            window._bstPlatform = XB_SMM_PLATFORMS[platKey] ? platKey : 'instagram';
+            window._smmState.target = String(targetLink || '');
+            switchTab('boost');
+            loadSmmServicesForPlatform(window._bstPlatform, false);
+            showToast(`⚡ Loaded ${XB_SMM_PLATFORMS[window._bstPlatform].name} target to Boost Terminal!`);
         }
 
         // =========================================================
