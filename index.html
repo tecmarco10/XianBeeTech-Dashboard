@@ -4401,6 +4401,7 @@
                 padding: 9px 10px;
             }
             .xp-tg-reconnect.show { display: flex; }
+            #enterpriseAuthGate .auth-form-panel.hidden { display: none !important; }
 
             .xp-field-lbl {
                 display: flex;
@@ -4517,6 +4518,129 @@
                 background: rgba(255, 255, 255, 0.92);
                 border-top-color: rgba(15, 23, 42, 0.08);
             }
+
+            /* PROFILE SESSION & LOGOUT / TELEGRAM DISCONNECT CARD */
+            .xb-sess-card {
+                position: relative;
+                width: 100%;
+                margin-top: 10px;
+                background: var(--ex-card-bg);
+                border: 1px solid var(--ex-hairline);
+                border-radius: 16px;
+                padding: 12px 13px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                box-shadow: 0 8px 22px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+            }
+            [data-theme="platinum"] .xb-sess-card {
+                box-shadow: 0 4px 16px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff;
+            }
+            .xb-sess-head {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+            }
+            .xb-sess-pill {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.54rem;
+                font-weight: 800;
+                padding: 3px 8px;
+                border-radius: 99px;
+                border: 1px solid rgba(52, 211, 153, 0.45);
+                background: rgba(16, 185, 129, 0.12);
+                color: #34d399;
+                white-space: nowrap;
+            }
+            .xb-sess-pill.is-guest {
+                border-color: rgba(251, 191, 36, 0.45);
+                background: rgba(245, 158, 11, 0.12);
+                color: #fbbf24;
+            }
+            [data-theme="platinum"] .xb-sess-pill { color: #059669; }
+            [data-theme="platinum"] .xb-sess-pill.is-guest { color: #d97706; }
+            .xb-sess-meta {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                padding: 8px 10px;
+                border-radius: 10px;
+                background: var(--bg-input);
+                border: 1px solid var(--ex-hairline);
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.62rem;
+            }
+            .xb-sess-actions {
+                display: grid;
+                grid-template-columns: 1fr;
+                gap: 7px;
+            }
+            .xb-sess-actions.dual {
+                grid-template-columns: 1fr 1fr;
+            }
+            .xb-sess-logout-btn {
+                width: 100%;
+                height: 39px;
+                border-radius: 11px;
+                border: 1px solid rgba(248, 113, 113, 0.5);
+                background: linear-gradient(135deg, rgba(220, 38, 38, 0.18) 0%, rgba(185, 28, 28, 0.24) 100%);
+                color: #fca5a5;
+                font-family: inherit;
+                font-size: 0.74rem;
+                font-weight: 800;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                transition: transform 0.14s ease, filter 0.16s ease;
+            }
+            .xb-sess-logout-btn:active { transform: scale(0.98); }
+            .xb-sess-logout-btn:hover { filter: brightness(1.12); }
+            [data-theme="platinum"] .xb-sess-logout-btn {
+                background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(220, 38, 38, 0.18) 100%);
+                color: #dc2626;
+                border-color: rgba(220, 38, 38, 0.35);
+            }
+            .xb-sess-alt-btn {
+                width: 100%;
+                height: 39px;
+                border-radius: 11px;
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                color: var(--text-primary);
+                font-family: inherit;
+                font-size: 0.72rem;
+                font-weight: 800;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 5px;
+                text-decoration: none;
+            }
+            .xb-sidebar-logout-btn {
+                width: calc(100% - 20px);
+                margin: 8px 10px 4px;
+                height: 36px;
+                border-radius: 10px;
+                border: 1px solid rgba(248, 113, 113, 0.42);
+                background: rgba(220, 38, 38, 0.12);
+                color: #f87171;
+                font-family: inherit;
+                font-size: 0.72rem;
+                font-weight: 800;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                transition: 0.16s ease;
+            }
+            .xb-sidebar-logout-btn:hover { background: rgba(220, 38, 38, 0.22); }
+            [data-theme="platinum"] .xb-sidebar-logout-btn { color: #dc2626; }
         </style>
 
         <!-- 60FPS INSTITUTIONAL MARKET DEPTH & CANDLESTICK CANVAS -->
@@ -4875,6 +4999,593 @@
                 if (fullView) fullView.classList.remove('active');
                 if (mainView) mainView.style.display = '';
             }
+
+            // =========================================================
+            // 🏦 EXCHANGE PRO ENGINE: CANVAS 60FPS + METER + LOGOUT/TG RECONNECT
+            // =========================================================
+            window._xbExProRaf = null;
+            window._xbExProCandles = null;
+
+            function isTelegramMiniAppEnv() {
+                try {
+                    const tg = window.Telegram && window.Telegram.WebApp;
+                    return Boolean(tg && tg.initDataUnsafe && tg.initDataUnsafe.user && tg.initDataUnsafe.user.id);
+                } catch (e) {
+                    return false;
+                }
+            }
+
+            function getTelegramNativeHandle() {
+                try {
+                    const u = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user;
+                    if (u) {
+                        if (u.username) return '@' + String(u.username).replace(/^@+/, '');
+                        return String(u.first_name || 'Telegram User') + ' (#' + u.id + ')';
+                    }
+                } catch (e) {}
+                return localStorage.getItem('xb_tg_last_handle') || '@telegram';
+            }
+
+            // 1. REAL-TIME PASSWORD STRENGTH METER (CREATE ACCOUNT)
+            function updateAuthSecurityMeter(mode) {
+                if (mode !== 'signup') return;
+                const inp = document.getElementById('regPasswordInput');
+                const bar = document.getElementById('exProPwdMeterBar');
+                const lbl = document.getElementById('exProPwdMeterLabel');
+                if (!inp || !bar || !lbl) return;
+
+                const val = String(inp.value || '');
+                if (!val.length) {
+                    bar.style.width = '0%';
+                    bar.style.background = 'transparent';
+                    lbl.innerText = 'IDLE';
+                    lbl.style.color = 'var(--text-muted)';
+                    return;
+                }
+
+                let score = 0;
+                if (val.length >= 6) score += 25;
+                if (val.length >= 10) score += 20;
+                if (/[a-z]/.test(val) && /[A-Z]/.test(val)) score += 20;
+                if (/\d/.test(val)) score += 15;
+                if (/[^A-Za-z0-9]/.test(val)) score += 20;
+                score = Math.min(100, score);
+
+                let col = '#ef4444', txt = 'WEAK';
+                if (score >= 80) { col = '#10b981'; txt = 'STRONG'; }
+                else if (score >= 55) { col = '#38bdf8'; txt = 'GOOD'; }
+                else if (score >= 35) { col = '#f59e0b'; txt = 'FAIR'; }
+
+                bar.style.width = Math.max(15, score) + '%';
+                bar.style.background = col;
+                lbl.innerText = txt;
+                lbl.style.color = col;
+            }
+
+            // 2. 60FPS INSTITUTIONAL DEPTH-WAVE & CANDLESTICK CANVAS
+            function startExProCanvasLoop() {
+                const gate = document.getElementById('enterpriseAuthGate');
+                const canvas = document.getElementById('xbExProCanvas');
+                if (!gate || !canvas || !gate.classList.contains('active')) return;
+                if (window._xbExProRaf) return;
+
+                const ctx = canvas.getContext('2d');
+                if (!ctx) return;
+
+                if (!window._xbExProCandles) {
+                    const arr = [];
+                    let prev = 0.56;
+                    for (let i = 0; i < 42; i++) {
+                        const delta = (Math.random() - 0.48) * 0.14;
+                        const open = prev;
+                        const close = Math.max(0.22, Math.min(0.84, open + delta));
+                        const high = Math.min(0.92, Math.max(open, close) + Math.random() * 0.08);
+                        const low = Math.max(0.12, Math.min(open, close) - Math.random() * 0.08);
+                        arr.push({ open, close, high, low, phase: Math.random() * Math.PI * 2 });
+                        prev = close;
+                    }
+                    window._xbExProCandles = arr;
+                }
+
+                let t = 0;
+                const renderFrame = () => {
+                    if (!gate.classList.contains('active')) {
+                        window._xbExProRaf = null;
+                        return;
+                    }
+                    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+                    const w = gate.clientWidth || window.innerWidth;
+                    const h = gate.clientHeight || window.innerHeight;
+                    if (canvas.width !== Math.floor(w * dpr) || canvas.height !== Math.floor(h * dpr)) {
+                        canvas.width = Math.floor(w * dpr);
+                        canvas.height = Math.floor(h * dpr);
+                    }
+
+                    ctx.save();
+                    ctx.scale(dpr, dpr);
+                    ctx.clearRect(0, 0, w, h);
+
+                    const isPlat = document.documentElement.getAttribute('data-theme') === 'platinum';
+                    t += 0.014;
+
+                    // A. Subtle Institutional Trading Grid
+                    ctx.strokeStyle = isPlat ? 'rgba(37, 99, 235, 0.055)' : 'rgba(56, 189, 248, 0.055)';
+                    ctx.lineWidth = 1;
+                    const stepX = 48, stepY = 44;
+                    const offX = (t * 8) % stepX;
+                    for (let x = -offX; x < w; x += stepX) {
+                        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+                    }
+                    for (let y = 0; y < h; y += stepY) {
+                        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+                    }
+
+                    // B. Drifting Candlesticks in Background Band
+                    const candles = window._xbExProCandles;
+                    const bandTop = h * 0.34;
+                    const bandH = h * 0.56;
+                    const cSpace = Math.max(24, w / 28);
+                    const shift = (t * 14) % cSpace;
+
+                    candles.forEach((c, i) => {
+                        const x = i * cSpace - shift;
+                        if (x < -20 || x > w + 20) return;
+                        const drift = Math.sin(t * 0.9 + c.phase) * 0.018;
+                        const yOpen = bandTop + (1 - (c.open + drift)) * bandH;
+                        const yClose = bandTop + (1 - (c.close + drift)) * bandH;
+                        const yHigh = bandTop + (1 - (c.high + drift)) * bandH;
+                        const yLow = bandTop + (1 - (c.low + drift)) * bandH;
+                        const isUp = c.close >= c.open;
+
+                        const bullCol = isPlat ? 'rgba(16, 185, 129, 0.22)' : 'rgba(16, 185, 129, 0.2)';
+                        const bearCol = isPlat ? 'rgba(124, 58, 237, 0.16)' : 'rgba(139, 92, 246, 0.2)';
+
+                        ctx.strokeStyle = isUp ? bullCol : bearCol;
+                        ctx.fillStyle = isUp ? bullCol : bearCol;
+                        ctx.lineWidth = 1.2;
+                        ctx.beginPath();
+                        ctx.moveTo(x, yHigh);
+                        ctx.lineTo(x, yLow);
+                        ctx.stroke();
+
+                        const bodyTop = Math.min(yOpen, yClose);
+                        const bodyH = Math.max(4, Math.abs(yClose - yOpen));
+                        ctx.fillRect(x - 4, bodyTop, 8, bodyH);
+                    });
+
+                    // C. Dual Liquidity Depth Waves
+                    const drawWave = (amp, freq, speed, baseY, strokeCol, fillTop) => {
+                        ctx.beginPath();
+                        ctx.moveTo(0, h);
+                        for (let x = 0; x <= w; x += 14) {
+                            const y = baseY
+                                + Math.sin(x * freq + t * speed) * amp
+                                + Math.cos(x * freq * 0.45 - t * speed * 0.7) * (amp * 0.55);
+                            ctx.lineTo(x, y);
+                        }
+                        ctx.lineTo(w, h);
+                        ctx.closePath();
+
+                        const grad = ctx.createLinearGradient(0, baseY - amp * 2, 0, h);
+                        grad.addColorStop(0, fillTop);
+                        grad.addColorStop(1, 'rgba(0,0,0,0)');
+                        ctx.fillStyle = grad;
+                        ctx.fill();
+
+                        ctx.beginPath();
+                        for (let x = 0; x <= w; x += 14) {
+                            const y = baseY
+                                + Math.sin(x * freq + t * speed) * amp
+                                + Math.cos(x * freq * 0.45 - t * speed * 0.7) * (amp * 0.55);
+                            if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                        }
+                        ctx.strokeStyle = strokeCol;
+                        ctx.lineWidth = 1.6;
+                        ctx.stroke();
+                    };
+
+                    drawWave(
+                        24, 0.0055, 1.15, h * 0.76,
+                        isPlat ? 'rgba(37, 99, 235, 0.34)' : 'rgba(56, 189, 248, 0.42)',
+                        isPlat ? 'rgba(37, 99, 235, 0.10)' : 'rgba(56, 189, 248, 0.14)'
+                    );
+                    drawWave(
+                        18, 0.0072, -0.9, h * 0.83,
+                        isPlat ? 'rgba(124, 58, 237, 0.28)' : 'rgba(168, 85, 247, 0.36)',
+                        isPlat ? 'rgba(124, 58, 237, 0.08)' : 'rgba(168, 85, 247, 0.12)'
+                    );
+
+                    ctx.restore();
+                    window._xbExProRaf = requestAnimationFrame(renderFrame);
+                };
+
+                window._xbExProRaf = requestAnimationFrame(renderFrame);
+            }
+
+            // 3. SYNC LIVE STOCK & IDR RATE TO EXCHANGE PRO CARDS
+            function syncExProPortalMarketData() {
+                try {
+                    const idrEl = document.getElementById('authLiveIdrTicker');
+                    if (idrEl && typeof liveUsdtIdrRate !== 'undefined' && Number(liveUsdtIdrRate) > 0) {
+                        idrEl.innerText = 'Rp ' + Math.round(Number(liveUsdtIdrRate)).toLocaleString('id-ID');
+                    }
+
+                    const pools = (typeof githubAccounts !== 'undefined' && Array.isArray(githubAccounts))
+                        ? githubAccounts
+                        : ((typeof liveStockAccounts !== 'undefined' && Array.isArray(liveStockAccounts)) ? liveStockAccounts : []);
+
+                    if (!pools.length) return;
+
+                    const totalReady = pools.length;
+                    const stockTicker = document.getElementById('authLiveStockTicker');
+                    if (stockTicker) stockTicker.innerText = `${totalReady} Verified Accounts`;
+
+                    const agedPool = pools.filter(a => {
+                        const y = parseInt(a.year || a.category || 2026, 10);
+                        return !isNaN(y) && y >= 2011 && y <= 2018;
+                    });
+                    const rarePool = pools.filter(a => {
+                        const c = String(a.category || a.badge || '').toLowerCase();
+                        return c.includes('arctic') || c.includes('badge') || c.includes('contrib') || Number(a.followers || 0) >= 50;
+                    });
+
+                    const minAged = agedPool.length ? Math.min(...agedPool.map(a => parseFloat(a.priceUsdt || a.price || 20) || 20)) : 20;
+                    const minRare = rarePool.length ? Math.min(...rarePool.map(a => parseFloat(a.priceUsdt || a.price || 10) || 10)) : 10;
+
+                    const fmtP = (u) => (typeof fmtPrice === 'function') ? fmtPrice(u) : ('$' + Number(u).toFixed(2));
+
+                    const deskGrid = document.getElementById('exProDeskInvGrid');
+                    if (deskGrid) {
+                        deskGrid.innerHTML = `
+                            <div class="xp-inv-card">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span class="xb-ex-chip xb-tier-mythic">★ MYTHIC</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#34d399;font-weight:800;">● ${agedPool.length} READY</span>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;">Aged 2011–2018</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:#34d399;">From ${fmtP(minAged)}</div>
+                            </div>
+                            <div class="xp-inv-card">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span class="xb-ex-chip xb-tier-legendary">★ RARE VAULT</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#34d399;font-weight:800;">● ${rarePool.length} READY</span>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;">Arctic &amp; Badges</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:#34d399;">From ${fmtP(minRare)}</div>
+                            </div>
+                            <div class="xp-inv-card">
+                                <div style="display:flex;justify-content:space-between;align-items:center;">
+                                    <span class="xb-ex-chip xb-tier-rare">★ ALL STOCK</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#38bdf8;font-weight:800;">LIVE</span>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:800;">${totalReady} Verified Accs</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:#38bdf8;">Full 2FA Ready</div>
+                            </div>
+                        `;
+                    }
+
+                    const mobStrip = document.getElementById('exProMobStrip');
+                    if (mobStrip) {
+                        mobStrip.innerHTML = `
+                            <div class="xp-mob-chip">
+                                <div style="font-size:0.46rem;color:#f472b6;font-weight:800;">★ AGED VAULT</div>
+                                <div style="font-size:0.64rem;font-weight:800;color:var(--text-primary);">${agedPool.length} Ready</div>
+                                <div style="font-size:0.54rem;color:#34d399;font-weight:800;">${fmtP(minAged)}+</div>
+                            </div>
+                            <div class="xp-mob-chip">
+                                <div style="font-size:0.46rem;color:#fbbf24;font-weight:800;">★ RARE BADGE</div>
+                                <div style="font-size:0.64rem;font-weight:800;color:var(--text-primary);">${rarePool.length} Ready</div>
+                                <div style="font-size:0.54rem;color:#38bdf8;font-weight:800;">${fmtP(minRare)}+</div>
+                            </div>
+                            <div class="xp-mob-chip">
+                                <div style="font-size:0.46rem;color:#38bdf8;font-weight:800;">● TOTAL LIVE</div>
+                                <div style="font-size:0.64rem;font-weight:800;color:var(--text-primary);">${totalReady} Accs</div>
+                                <div style="font-size:0.54rem;color:#c084fc;font-weight:800;">2FA Instant</div>
+                            </div>
+                        `;
+                    }
+                } catch (e) {}
+            }
+
+            // 4. TELEGRAM RECONNECT BANNER & UNIVERSAL LOGOUT ENGINE
+            function syncExProReconnectBanner() {
+                const box = document.getElementById('exProTgReconnectBox');
+                const handleEl = document.getElementById('exProTgHandleLbl');
+                if (!box) return;
+                const isTgDisc = localStorage.getItem('xb_tg_disconnected') === 'true';
+                if (isTgDisc) {
+                    if (handleEl) handleEl.innerText = getTelegramNativeHandle();
+                    box.classList.add('show');
+                } else {
+                    box.classList.remove('show');
+                }
+            }
+
+            function executeUniversalLogout(skipConfirm = false) {
+                const inTg = isTelegramMiniAppEnv();
+                if (!skipConfirm) {
+                    const msg = inTg
+                        ? 'Disconnect Telegram session?\n\nYou will return to the Login Portal and must tap "Reconnect Telegram Account" (or Sign In with a Web account) to enter again.'
+                        : 'Sign out from XianBee-Tech on this browser?';
+                    if (!confirm(msg)) return;
+                }
+
+                // Clear active local web/guest flags
+                localStorage.removeItem('xb_web_logged_in');
+                localStorage.removeItem('xb_guest_mode');
+                localStorage.removeItem('xb_web_user_email');
+                localStorage.removeItem('xb_web_pwd_hash');
+
+                if (inTg) {
+                    // Telegram Mode: lock session & require explicit Reconnect Telegram
+                    localStorage.setItem('xb_tg_last_handle', getTelegramNativeHandle());
+                    localStorage.setItem('xb_tg_disconnected', 'true');
+
+                    const gate = document.getElementById('enterpriseAuthGate');
+                    if (gate) gate.classList.add('active');
+                    closeFullSpecialtyPage();
+                    syncExProReconnectBanner();
+                    syncExProPortalMarketData();
+                    startExProCanvasLoop();
+
+                    if (typeof showToast === 'function') {
+                        showToast('✈️ Telegram disconnected. Tap Reconnect Telegram to enter again.');
+                    }
+                } else {
+                    // Web Browser Mode: wipe cached account session completely & reload to Login Portal
+                    const wipeKeys = [
+                        'xb_tg_disconnected', 'xb_uid', 'xb_uname', 'xb_fullname',
+                        'xb_avatar', 'xb_saved_pin', 'xb_balance_usdt',
+                        'xb_tx_history', 'xb_purchased_vault', 'xb_cart_items'
+                    ];
+                    wipeKeys.forEach(k => localStorage.removeItem(k));
+
+                    const gate = document.getElementById('enterpriseAuthGate');
+                    if (gate) gate.classList.add('active');
+                    if (typeof showToast === 'function') showToast('🔒 Signed out safely. Redirecting...');
+                    setTimeout(() => { window.location.href = window.location.pathname; }, 220);
+                }
+            }
+
+            function reconnectTelegramSession() {
+                if (isTelegramMiniAppEnv()) {
+                    localStorage.removeItem('xb_tg_disconnected');
+                    const box = document.getElementById('exProTgReconnectBox');
+                    if (box) box.classList.remove('show');
+                    if (typeof showToast === 'function') {
+                        showToast('🔗 Reconnecting Telegram session...');
+                    }
+                    setTimeout(() => { window.location.reload(); }, 180);
+                } else {
+                    if (typeof showToast === 'function') {
+                        showToast('✈️ Opening @XianBeeTechStore_Bot on Telegram...');
+                    }
+                    window.open('https://t.me/XianBeeTechStore_Bot', '_blank');
+                }
+            }
+
+            // Guard: if user disconnected in Telegram, keep Login Portal locked until they Reconnect or Sign In
+            function enforceTelegramDisconnectGuard() {
+                const isTgDisc = localStorage.getItem('xb_tg_disconnected') === 'true';
+                const hasWebSession = localStorage.getItem('xb_web_logged_in') === 'true';
+                const hasGuest = localStorage.getItem('xb_guest_mode') === 'true';
+
+                if (isTgDisc && !hasWebSession && !hasGuest) {
+                    const gate = document.getElementById('enterpriseAuthGate');
+                    if (gate && !gate.classList.contains('active')) {
+                        gate.classList.add('active');
+                    }
+                    syncExProReconnectBanner();
+                    startExProCanvasLoop();
+                } else if (hasWebSession || hasGuest) {
+                    if (isTgDisc) localStorage.removeItem('xb_tg_disconnected');
+                }
+            }
+
+            // Observe #enterpriseAuthGate visibility so 60fps canvas runs ONLY when Login Portal is visible
+            (function initExProPortalLifecycle() {
+                const gate = document.getElementById('enterpriseAuthGate');
+                if (!gate) return;
+
+                const mo = new MutationObserver(() => {
+                    if (gate.classList.contains('active')) {
+                        syncExProReconnectBanner();
+                        syncExProPortalMarketData();
+                        startExProCanvasLoop();
+                    }
+                });
+                mo.observe(gate, { attributes: true, attributeFilter: ['class'] });
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    enforceTelegramDisconnectGuard();
+                    if (gate.classList.contains('active')) {
+                        syncExProReconnectBanner();
+                        syncExProPortalMarketData();
+                        startExProCanvasLoop();
+                    }
+                    // Late-boot checks to catch async Telegram auto-login scripts
+                    setTimeout(() => { enforceTelegramDisconnectGuard(); syncExProPortalMarketData(); }, 180);
+                    setTimeout(() => { enforceTelegramDisconnectGuard(); syncExProPortalMarketData(); }, 700);
+                    setTimeout(syncExProPortalMarketData, 1800);
+                });
+            })();
+
+            // 5. OPEN LOGIN PORTAL DIRECTLY (FOR GUEST PREVIEW -> SIGN IN)
+            function openExProAuthPortalForSignIn() {
+                localStorage.removeItem('xb_guest_mode');
+                const gate = document.getElementById('enterpriseAuthGate');
+                if (gate) gate.classList.add('active');
+                closeFullSpecialtyPage();
+                syncExProReconnectBanner();
+                syncExProPortalMarketData();
+                startExProCanvasLoop();
+            }
+
+            // 6. AUTO-INJECT SESSION & LOGOUT / DISCONNECT CARD AT BOTTOM OF PROFILE TAB
+            function syncProfileSessionLogoutCard() {
+                const profileGrid = document.querySelector('.xb-vgrid-card.is-profile-grid');
+                if (!profileGrid || !profileGrid.parentElement) return;
+                if (document.getElementById('xbProfileSessionCard')) return;
+
+                const inTg = isTelegramMiniAppEnv();
+                const isGuest = localStorage.getItem('xb_guest_mode') === 'true' && localStorage.getItem('xb_web_logged_in') !== 'true' && !inTg;
+                const rawUname = (typeof currentUsername !== 'undefined' && currentUsername)
+                    ? String(currentUsername).replace(/^@+/, '')
+                    : String(localStorage.getItem('xb_uname') || 'Guest').replace(/^@+/, '');
+                const rawUid = (typeof currentUserId !== 'undefined' && currentUserId)
+                    ? String(currentUserId)
+                    : String(localStorage.getItem('xb_uid') || '-');
+
+                const card = document.createElement('div');
+                card.id = 'xbProfileSessionCard';
+                card.className = 'xb-sess-card';
+
+                if (isGuest) {
+                    card.innerHTML = `
+                        <div class="xb-sess-head">
+                            <div>
+                                <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">🔐 Account Session</div>
+                                <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">Sign in to unlock Wallet, Vault &amp; Checkout</div>
+                            </div>
+                            <span class="xb-sess-pill is-guest">○ GUEST</span>
+                        </div>
+                        <button type="button" class="btn-ui primary" style="width:100%;height:39px;font-size:0.74rem;border-radius:11px;" onclick="openExProAuthPortalForSignIn()">
+                            🚀 Sign In / Create Account
+                        </button>
+                    `;
+                } else if (inTg) {
+                    const tgHandle = getTelegramNativeHandle();
+                    card.innerHTML = `
+                        <div class="xb-sess-head">
+                            <div>
+                                <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">✈️ Telegram Session Access</div>
+                                <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">Disconnect locks app until you Reconnect Telegram</div>
+                            </div>
+                            <span class="xb-sess-pill">● CONNECTED</span>
+                        </div>
+                        <div class="xb-sess-meta">
+                            <span style="color:var(--text-primary);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${tgHandle}</span>
+                            <span style="color:#38bdf8;font-weight:800;flex-shrink:0;">ID #${rawUid}</span>
+                        </div>
+                        <div class="xb-sess-actions">
+                            <button type="button" class="xb-sess-logout-btn" onclick="executeUniversalLogout()">
+                                <span>🔌</span>
+                                <span>Disconnect Telegram</span>
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="xb-sess-head">
+                            <div>
+                                <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">🛡️ Web Session Security</div>
+                                <div style="font-size:0.58rem;color:var(--text-muted);margin-top:1px;">Clear cached session &amp; return to Login Portal</div>
+                            </div>
+                            <span class="xb-sess-pill">● WEB ACTIVE</span>
+                        </div>
+                        <div class="xb-sess-meta">
+                            <span style="color:var(--text-primary);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">@${rawUname}</span>
+                            <span style="color:#34d399;font-weight:800;flex-shrink:0;">ID #${rawUid}</span>
+                        </div>
+                        <div class="xb-sess-actions dual">
+                            <a href="https://t.me/XianBeeTechStore_Bot" target="_blank" class="xb-sess-alt-btn">
+                                <span>✈️</span>
+                                <span>Telegram Bot</span>
+                            </a>
+                            <button type="button" class="xb-sess-logout-btn" onclick="executeUniversalLogout()">
+                                <span>🚪</span>
+                                <span>Sign Out</span>
+                            </button>
+                        </div>
+                    `;
+                }
+
+                profileGrid.parentElement.appendChild(card);
+            }
+
+            // 7. COMPACT LOGOUT BUTTON IN DESKTOP SIDEBAR (AUTO-SYNCED)
+            function syncDesktopSidebarLogoutBtn() {
+                const sidebar = document.querySelector('.sidebar, aside.nav-sidebar');
+                if (!sidebar || document.getElementById('xbSidebarLogoutBtn')) return;
+
+                const inTg = isTelegramMiniAppEnv();
+                const isGuest = localStorage.getItem('xb_guest_mode') === 'true' && localStorage.getItem('xb_web_logged_in') !== 'true' && !inTg;
+
+                const btn = document.createElement('button');
+                btn.id = 'xbSidebarLogoutBtn';
+                btn.type = 'button';
+                btn.className = 'xb-sidebar-logout-btn';
+                if (isGuest) {
+                    btn.style.borderColor = 'rgba(56, 189, 248, 0.45)';
+                    btn.style.background = 'rgba(56, 189, 248, 0.12)';
+                    btn.style.color = '#38bdf8';
+                    btn.innerHTML = '<span>🔐</span><span>Sign In</span>';
+                    btn.onclick = openExProAuthPortalForSignIn;
+                } else {
+                    btn.innerHTML = inTg ? '<span>🔌</span><span>Disconnect TG</span>' : '<span>🚪</span><span>Sign Out</span>';
+                    btn.onclick = () => executeUniversalLogout();
+                }
+
+                const navList = sidebar.querySelector('.nav-menu, .sidebar-nav, nav');
+                if (navList && navList.parentElement === sidebar) {
+                    navList.insertAdjacentElement('afterend', btn);
+                } else {
+                    sidebar.appendChild(btn);
+                }
+            }
+
+            // 8. WATCH PROFILE TAB MOUNTS + FORTIFY TELEGRAM DISCONNECT GUARD
+            (function bindSessionMountObserver() {
+                let rafLock = false;
+                const scheduleSync = () => {
+                    if (rafLock) return;
+                    rafLock = true;
+                    requestAnimationFrame(() => {
+                        rafLock = false;
+                        syncProfileSessionLogoutCard();
+                        syncDesktopSidebarLogoutBtn();
+                    });
+                };
+
+                // Clear Telegram disconnect flag automatically if user enters Guest Preview
+                document.addEventListener('click', (ev) => {
+                    const btn = ev.target && ev.target.closest ? ev.target.closest('button') : null;
+                    if (!btn) return;
+                    const oc = String(btn.getAttribute('onclick') || '');
+                    if (oc.includes('enterGuestPreviewMode')) {
+                        localStorage.setItem('xb_guest_mode', 'true');
+                        localStorage.removeItem('xb_tg_disconnected');
+                    }
+                }, true);
+
+                // Keep Telegram Disconnect lock airtight if async boot code tries to hide gate
+                const gate = document.getElementById('enterpriseAuthGate');
+                if (gate) {
+                    const lockMo = new MutationObserver(() => {
+                        if (!gate.classList.contains('active')) {
+                            setTimeout(() => {
+                                const isTgDisc = localStorage.getItem('xb_tg_disconnected') === 'true';
+                                const hasWeb = localStorage.getItem('xb_web_logged_in') === 'true';
+                                const hasGuest = localStorage.getItem('xb_guest_mode') === 'true';
+                                if (isTgDisc && !hasWeb && !hasGuest) {
+                                    gate.classList.add('active');
+                                    syncExProReconnectBanner();
+                                    startExProCanvasLoop();
+                                }
+                            }, 80);
+                        }
+                    });
+                    lockMo.observe(gate, { attributes: true, attributeFilter: ['class'] });
+                }
+
+                const domMo = new MutationObserver(scheduleSync);
+                document.addEventListener('DOMContentLoaded', () => {
+                    const targetNode = document.querySelector('.main-area') || document.body;
+                    domMo.observe(targetNode, { childList: true, subtree: true });
+                    scheduleSync();
+                    setTimeout(scheduleSync, 500);
+                });
+            })();
         </script>
     </div>
 
