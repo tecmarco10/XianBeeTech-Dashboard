@@ -4367,9 +4367,16 @@
             color: #34d399;
             flex-shrink: 0;
         }
-        .xb-mp-plat-btn.span-full {
+        .xb-mp-plat-btn.span-full,
+        .xb-mp-plat-btn.is-featured {
             grid-column: 1 / -1;
             justify-content: center;
+            padding: 8px 10px;
+            gap: 7px;
+        }
+        .xb-mp-plat-btn.is-featured .xb-mp-plat-info {
+            flex: 0 1 auto;
+            text-align: center;
         }
         .xb-mp-plat-btn {
             position: relative;
@@ -10575,38 +10582,38 @@
                 ]
             },
             email: {
-                key: 'email', shortName: 'Email', title: 'XianBee Email Vault (Old & Fresh)',
-                subtitle: 'Old Aged & Clean Fresh • Gmail, Outlook, ProtonMail & Mail.ru',
+                key: 'email', shortName: 'Email Accounts', title: 'XianBee Email Accounts',
+                subtitle: 'Aged & Fresh Mail • Gmail, Outlook, ProtonMail & Mail.ru',
                 accent: '#34d399', border: 'rgba(52, 211, 153, 0.48)', glow: 'rgba(16, 185, 129, 0.28)',
                 bg1: '#061611', bg2: '#0d3326', light: '#d1fae5',
                 m1Lbl: 'TYPE', m2Lbl: 'YEAR', credHint: 'Recovery + 2FA',
-                filters: [{ k: 'ALL', lbl: 'All Email' }, { k: 'OLD', lbl: 'Old Email' }, { k: 'FRESH', lbl: 'Fresh Email' }],
+                filters: [{ k: 'ALL', lbl: 'All Email' }, { k: 'OLD', lbl: 'Aged Email' }, { k: 'FRESH', lbl: 'Fresh Email' }],
                 vaults: [
-                    { key: 'mail_gmail_old',     brand: 'gmail',   prov: 'gmail',   accent: '#ea4335', tag: 'OLD',   title: 'Gmail Old (Aged)',   filter: 'OLD',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 8.00, desc: 'High-trust aged Gmail (2014–2021) + recovery mail & 2FA.' },
-                    { key: 'mail_gmail_fresh',   brand: 'gmail',   prov: 'gmail',   accent: '#ea4335', tag: 'FRESH', title: 'Gmail Fresh',        filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 3.50, desc: 'Clean verified Fresh Gmail ready for instant binding.' },
-                    { key: 'mail_outlook_old',   brand: 'outlook', prov: 'outlook', accent: '#0078d4', tag: 'OLD',   title: 'Outlook Old (Aged)', filter: 'OLD',   tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 6.00, desc: 'Aged Microsoft Outlook/Hotmail with full recovery access.' },
-                    { key: 'mail_outlook_fresh', brand: 'outlook', prov: 'outlook', accent: '#0078d4', tag: 'FRESH', title: 'Outlook Fresh',      filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 2.50, desc: 'Clean Fresh Outlook/Hotmail ready for dev & automation.' },
-                    { key: 'mail_proton_old',    brand: 'proton',  prov: 'proton',  accent: '#a78bfa', tag: 'OLD',   title: 'ProtonMail Old',     filter: 'OLD',   tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 7.50, desc: 'Aged encrypted ProtonMail account with recovery access.' },
-                    { key: 'mail_proton_fresh',  brand: 'proton',  prov: 'proton',  accent: '#a78bfa', tag: 'FRESH', title: 'ProtonMail Fresh',   filter: 'FRESH', tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 4.00, desc: 'Clean Fresh ProtonMail for privacy-first accounts.' },
-                    { key: 'mail_mailru_old',    brand: 'mailru',  prov: 'mailru',  accent: '#3b82f6', tag: 'OLD',   title: 'Mail.ru Old (Aged)', filter: 'OLD',   tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 5.50, desc: 'Aged Mail.ru vault with IMAP/POP3 & recovery ready.' },
-                    { key: 'mail_mailru_fresh',  brand: 'mailru',  prov: 'mailru',  accent: '#3b82f6', tag: 'FRESH', title: 'Mail.ru Fresh',      filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 2.50, desc: 'Clean Fresh Mail.ru account ready for instant delivery.' }
+                    { key: 'mail_gmail_old',     brand: 'gmail',   prov: 'gmail',   accent: '#ea4335', tag: 'AGED',  title: 'Gmail Aged',       filter: 'OLD',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 8.00, desc: 'High-trust Aged Gmail (2014–2021) + recovery mail & 2FA.' },
+                    { key: 'mail_gmail_fresh',   brand: 'gmail',   prov: 'gmail',   accent: '#ea4335', tag: 'FRESH', title: 'Gmail Fresh',      filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 3.50, desc: 'Clean verified Fresh Gmail ready for instant binding.' },
+                    { key: 'mail_outlook_old',   brand: 'outlook', prov: 'outlook', accent: '#0078d4', tag: 'AGED',  title: 'Outlook Aged',     filter: 'OLD',   tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 6.00, desc: 'Aged Microsoft Outlook/Hotmail with full recovery access.' },
+                    { key: 'mail_outlook_fresh', brand: 'outlook', prov: 'outlook', accent: '#0078d4', tag: 'FRESH', title: 'Outlook Fresh',    filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 2.50, desc: 'Clean Fresh Outlook/Hotmail ready for dev & automation.' },
+                    { key: 'mail_proton_old',    brand: 'proton',  prov: 'proton',  accent: '#a78bfa', tag: 'AGED',  title: 'ProtonMail Aged',  filter: 'OLD',   tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 7.50, desc: 'Aged encrypted ProtonMail account with recovery access.' },
+                    { key: 'mail_proton_fresh',  brand: 'proton',  prov: 'proton',  accent: '#a78bfa', tag: 'FRESH', title: 'ProtonMail Fresh', filter: 'FRESH', tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 4.00, desc: 'Clean Fresh ProtonMail for privacy-first accounts.' },
+                    { key: 'mail_mailru_old',    brand: 'mailru',  prov: 'mailru',  accent: '#3b82f6', tag: 'AGED',  title: 'Mail.ru Aged',     filter: 'OLD',   tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 5.50, desc: 'Aged Mail.ru account with IMAP/POP3 & recovery ready.' },
+                    { key: 'mail_mailru_fresh',  brand: 'mailru',  prov: 'mailru',  accent: '#3b82f6', tag: 'FRESH', title: 'Mail.ru Fresh',    filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 2.50, desc: 'Clean Fresh Mail.ru account ready for instant delivery.' }
                 ]
             },
             cex: {
-                key: 'cex', shortName: 'Old CEX', title: 'XianBee Old CEX Vault (No KYC)',
-                subtitle: 'Old Accounts No-KYC • MEXC & OKX Top Priority • Full Mail + 2FA',
+                key: 'cex', shortName: 'CEX Accounts', title: 'XianBee CEX Accounts',
+                subtitle: 'Aged No-KYC • MEXC & OKX Top Priority • Full Mail + 2FA',
                 accent: '#fbbf24', border: 'rgba(251, 191, 36, 0.52)', glow: 'rgba(245, 158, 11, 0.28)',
                 bg1: '#141005', bg2: '#2e2108', light: '#fef3c7',
-                m1Lbl: 'STATUS', m2Lbl: 'AGE', credHint: 'No-KYC • Mail + 2FA',
-                filters: [{ k: 'ALL', lbl: 'All Old CEX' }, { k: 'TOP', lbl: 'MEXC & OKX' }, { k: 'TIER1', lbl: 'Tier-1 Old' }, { k: 'SPOT', lbl: 'Spot Old' }],
+                m1Lbl: 'STATUS', m2Lbl: 'AGE', credHint: 'Aged No-KYC • 2FA',
+                filters: [{ k: 'ALL', lbl: 'All CEX' }, { k: 'TOP', lbl: 'MEXC & OKX' }, { k: 'TIER1', lbl: 'Tier-1 Aged' }, { k: 'SPOT', lbl: 'Spot Aged' }],
                 vaults: [
-                    { key: 'cex_mexc',    brand: 'mexc',    accent: '#2dd4bf', tag: 'TOP • NO KYC', title: 'MEXC Old (No KYC)',    filter: 'TOP',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 25.00, desc: 'Top-demand aged MEXC Old No-KYC account + OG Email & 2FA.' },
-                    { key: 'cex_okx',     brand: 'okx',     accent: '#38bdf8', tag: 'TOP • NO KYC', title: 'OKX Old (No KYC)',     filter: 'TOP',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 25.00, desc: 'Top-demand aged OKX Old No-KYC account + OG Email & 2FA.' },
-                    { key: 'cex_binance', brand: 'binance', accent: '#f3ba2f', tag: 'OLD NO KYC',   title: 'Binance Old (No KYC)', filter: 'TIER1', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 28.00, desc: 'Historic aged Binance Old No-KYC account + recovery email & 2FA.' },
-                    { key: 'cex_bybit',   brand: 'bybit',   accent: '#f7a600', tag: 'OLD NO KYC',   title: 'Bybit Old (No KYC)',   filter: 'TIER1', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 25.00, desc: 'Clean aged Bybit Old No-KYC account with full mail & 2FA.' },
-                    { key: 'cex_bitget',  brand: 'bitget',  accent: '#06b6d4', tag: 'OLD NO KYC',   title: 'Bitget Old (No KYC)',  filter: 'TIER1', tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 25.00, desc: 'Aged Bitget Old No-KYC account ready for spot & launchpad.' },
-                    { key: 'cex_gateio',  brand: 'gateio',  accent: '#3b82f6', tag: 'OLD NO KYC',   title: 'Gate.io Old (No KYC)', filter: 'SPOT',  tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 25.00, desc: 'Aged Gate.io Old No-KYC profile with 2FA & full mail access.' },
-                    { key: 'cex_lbank',   brand: 'lbank',   accent: '#eab308', tag: 'OLD NO KYC',   title: 'LBank Old (No KYC)',   filter: 'SPOT',  tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 22.00, desc: 'Clean aged LBank Old No-KYC account with recovery mail.' }
+                    { key: 'cex_mexc',    brand: 'mexc',    accent: '#2dd4bf', tag: 'TOP • NO KYC', title: 'MEXC Aged (No KYC)',    filter: 'TOP',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 25.00, desc: 'Best-seller Aged MEXC No-KYC account + OG Email & 2FA.' },
+                    { key: 'cex_okx',     brand: 'okx',     accent: '#38bdf8', tag: 'TOP • NO KYC', title: 'OKX Aged (No KYC)',     filter: 'TOP',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 25.00, desc: 'Top-demand Aged OKX No-KYC account + OG Email & 2FA.' },
+                    { key: 'cex_binance', brand: 'binance', accent: '#f3ba2f', tag: 'AGED NO KYC',  title: 'Binance Aged (No KYC)', filter: 'TIER1', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 28.00, desc: 'Historic Aged Binance No-KYC account + recovery email & 2FA.' },
+                    { key: 'cex_bybit',   brand: 'bybit',   accent: '#f7a600', tag: 'AGED NO KYC',  title: 'Bybit Aged (No KYC)',   filter: 'TIER1', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 25.00, desc: 'Clean Aged Bybit No-KYC account with full mail & 2FA.' },
+                    { key: 'cex_bitget',  brand: 'bitget',  accent: '#06b6d4', tag: 'AGED NO KYC',  title: 'Bitget Aged (No KYC)',  filter: 'TIER1', tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 25.00, desc: 'Aged Bitget No-KYC account ready for spot & launchpad.' },
+                    { key: 'cex_gateio',  brand: 'gateio',  accent: '#3b82f6', tag: 'AGED NO KYC',  title: 'Gate.io Aged (No KYC)', filter: 'SPOT',  tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 25.00, desc: 'Aged Gate.io No-KYC profile with 2FA & full mail access.' },
+                    { key: 'cex_lbank',   brand: 'lbank',   accent: '#eab308', tag: 'AGED NO KYC',  title: 'LBank Aged (No KYC)',   filter: 'SPOT',  tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 22.00, desc: 'Clean Aged LBank No-KYC account with recovery mail.' }
                 ]
             }
         };
@@ -10708,38 +10715,55 @@
             const emailTotal = getDigitalPlatformLiveCount('email');
             const cexEmailTotal = cexTotal + emailTotal;
 
+            const socialTopKey = 'x';
+            const socialRestKeys = ['discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
+
             const cexBrands = XB_MP_PLATFORMS.cex.vaults;
-            const topCex = cexBrands.slice(0, 2);   // MEXC Old & OKX Old paling atas!
-            const restCex = cexBrands.slice(2);     // Binance, Bybit, Bitget, Gate.io, LBank
-            const emailProvs = [
-                { k: 'gmail',   name: 'Gmail',      col: '#ea4335' },
+            const topCex = cexBrands[0];        // MEXC Aged (full-width rata tengah paling atas!)
+            const restCex = cexBrands.slice(1); // 6 lainnya: OKX Aged, Binance, Bybit, Bitget, Gate.io, LBank (pas 3x2)
+
+            const topEmail = { k: 'gmail', name: 'Gmail', col: '#ea4335' }; // Gmail full-width rata tengah paling atas!
+            const restEmails = [
                 { k: 'outlook', name: 'Outlook',    col: '#0078d4' },
                 { k: 'proton',  name: 'ProtonMail', col: '#a78bfa' },
                 { k: 'mailru',  name: 'Mail.ru',    col: '#3b82f6' }
-            ];
+            ]; // 3 lainnya pas 3x1!
 
             let drawerHtml = '';
             if (_mpDrawerTab === 'social') {
+                const pTop = XB_MP_PLATFORMS[socialTopKey];
+                const cntTop = getDigitalPlatformLiveCount(socialTopKey);
                 drawerHtml = `
                     <div class="xb-mp-drawer-box">
                         <div class="xb-mp-drawer-hdr">
-                            <span class="xb-mp-drawer-lbl">📱 Select Social Media Platform (7)</span>
+                            <span class="xb-mp-drawer-lbl">📱 Social Media Platforms</span>
                             <button type="button" class="xb-mp-drawer-all" onclick="toggleMarketplaceDrawer('social')">✕ Close</button>
                         </div>
                         <div class="xb-mp-grid-6">
-                            ${socialKeys.map((pk, idx) => {
+                            <!-- BEST-SELLER FULL-WIDTH RATA TENGAH: X (TWITTER) -->
+                            <button type="button" class="xb-mp-plat-btn is-featured ${_mpPlatform === socialTopKey ? 'active' : ''}"
+                                style="--mp-acc:${pTop.accent};--mp-glow:${pTop.glow};--mp-bg1:${pTop.bg1};--mp-bg2:${pTop.bg2};border-color:${pTop.accent}66;"
+                                onclick="switchMarketplacePlatform('${socialTopKey}')">
+                                <span class="xb-mp-plat-ico">${XB_MP_SVGS[socialTopKey]}</span>
+                                <span class="xb-mp-plat-info">
+                                    <div class="xb-mp-plat-name">${pTop.shortName}</div>
+                                    <div class="xb-mp-plat-sub">${cntTop > 0 ? `● ${cntTop} Ready` : 'Aged 2011–2023 • Crypto Ready'}</div>
+                                </span>
+                                <span class="xb-mp-top-tag">TOP</span>
+                            </button>
+                            <!-- 6 PLATFORM SISANYA PAS 3x2 (ZERO EMPTY SLOT) -->
+                            ${socialRestKeys.map(pk => {
                                 const p = XB_MP_PLATFORMS[pk];
                                 const cnt = getDigitalPlatformLiveCount(pk);
                                 const isAct = _mpPlatform === pk;
-                                const spanCls = idx === socialKeys.length - 1 ? 'span-full' : '';
                                 return `
-                                    <button type="button" class="xb-mp-plat-btn ${isAct ? 'active' : ''} ${spanCls}"
+                                    <button type="button" class="xb-mp-plat-btn ${isAct ? 'active' : ''}"
                                         style="--mp-acc:${p.accent};--mp-glow:${p.glow};--mp-bg1:${p.bg1};--mp-bg2:${p.bg2};"
                                         onclick="switchMarketplacePlatform('${pk}')">
                                         <span class="xb-mp-plat-ico">${XB_MP_SVGS[pk]}</span>
                                         <span class="xb-mp-plat-info">
                                             <div class="xb-mp-plat-name">${p.shortName}</div>
-                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : (idx === socialKeys.length - 1 ? 'Aged • Spam-Free & Bot Ready' : 'Hybrid')}</div>
+                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'Hybrid'}</div>
                                         </span>
                                     </button>
                                 `;
@@ -10748,36 +10772,34 @@
                     </div>
                 `;
             } else if (_mpDrawerTab === 'cex_email') {
+                const mexcCnt = (liveDigitalStock[topCex.key] || []).length;
+                const gmailCnt = (liveDigitalStock['mail_gmail_old'] || []).length + (liveDigitalStock['mail_gmail_fresh'] || []).length;
+
                 drawerHtml = `
                     <div class="xb-mp-drawer-box">
-                        <!-- BLOK 1: OLD CEX NO-KYC (MEXC OLD & OKX OLD PALING ATAS) -->
+                        <!-- BLOK 1: CEX ACCOUNTS (MEXC AGED FULL-WIDTH RATA TENGAH + 6 LAINNYA PAS 3x2) -->
                         <div class="xb-mp-drawer-hdr">
-                            <span class="xb-mp-drawer-lbl" style="color:#fbbf24;">🔶 Old CEX Vault (No KYC)</span>
-                            <button type="button" class="xb-mp-drawer-all" style="color:#fbbf24;border-color:rgba(251,191,36,0.45);background:rgba(251,191,36,0.1);" onclick="switchMarketplacePlatform('cex', 'ALL')">View All (${cexBrands.length}) ➔</button>
-                        </div>
-                        <div class="xb-mp-grid-2">
-                            ${topCex.map(v => {
-                                const cnt = (liveDigitalStock[v.key] || []).length;
-                                return `
-                                    <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${v.accent};border-color:${v.accent}55;" onclick="pickCexBrandFromDrawer('${v.key}')">
-                                        <span class="xb-mp-plat-ico" style="color:${v.accent};">${XB_MP_SVGS[v.brand]}</span>
-                                        <span class="xb-mp-plat-info">
-                                            <div class="xb-mp-plat-name">${v.title.replace(' (No KYC)', '')}</div>
-                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'Old No-KYC'}</div>
-                                        </span>
-                                        <span class="xb-mp-top-tag">TOP</span>
-                                    </button>
-                                `;
-                            }).join('')}
+                            <span class="xb-mp-drawer-lbl" style="color:#fbbf24;">🔶 CEX Accounts • Aged No-KYC</span>
+                            <button type="button" class="xb-mp-drawer-all" style="color:#fbbf24;border-color:rgba(251,191,36,0.45);background:rgba(251,191,36,0.1);" onclick="switchMarketplacePlatform('cex', 'ALL')">View All ➔</button>
                         </div>
                         <div class="xb-mp-grid-6">
+                            <button type="button" class="xb-mp-plat-btn is-featured" style="--mp-acc:${topCex.accent};border-color:${topCex.accent}66;" onclick="pickCexBrandFromDrawer('${topCex.key}')">
+                                <span class="xb-mp-plat-ico" style="color:${topCex.accent};">${XB_MP_SVGS[topCex.brand]}</span>
+                                <span class="xb-mp-plat-info">
+                                    <div class="xb-mp-plat-name">MEXC Aged (No KYC)</div>
+                                    <div class="xb-mp-plat-sub">${mexcCnt > 0 ? `● ${mexcCnt} Ready` : 'Best-Seller • Full Mail + 2FA'}</div>
+                                </span>
+                                <span class="xb-mp-top-tag">TOP</span>
+                            </button>
                             ${restCex.map(v => {
                                 const cnt = (liveDigitalStock[v.key] || []).length;
+                                const isOkx = v.key === 'cex_okx';
+                                const shortLbl = isOkx ? 'OKX Aged' : v.title.replace(' Aged (No KYC)', '');
                                 return `
-                                    <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${v.accent};" onclick="pickCexBrandFromDrawer('${v.key}')">
+                                    <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${v.accent};${isOkx ? `border-color:${v.accent}55;` : ''}" onclick="pickCexBrandFromDrawer('${v.key}')">
                                         <span class="xb-mp-plat-ico" style="color:${v.accent};">${XB_MP_SVGS[v.brand]}</span>
                                         <span class="xb-mp-plat-info">
-                                            <div class="xb-mp-plat-name">${v.title.replace(' Old (No KYC)', '')}</div>
+                                            <div class="xb-mp-plat-name">${shortLbl}</div>
                                             <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'No-KYC'}</div>
                                         </span>
                                     </button>
@@ -10787,20 +10809,28 @@
 
                         <hr class="xb-wal-hr" style="margin:3px 0;">
 
-                        <!-- BLOK 2: EMAIL VAULT (OLD & FRESH PER PROVIDER) -->
+                        <!-- BLOK 2: EMAIL ACCOUNTS (GMAIL FULL-WIDTH RATA TENGAH + 3 LAINNYA PAS 3x1) -->
                         <div class="xb-mp-drawer-hdr">
-                            <span class="xb-mp-drawer-lbl" style="color:#34d399;">📧 Email Vault (Old &amp; Fresh)</span>
+                            <span class="xb-mp-drawer-lbl" style="color:#34d399;">📧 Email Accounts • Aged &amp; Fresh</span>
                             <button type="button" class="xb-mp-drawer-all" style="color:#34d399;border-color:rgba(52,211,153,0.45);background:rgba(16,185,129,0.1);" onclick="switchMarketplacePlatform('email', 'ALL', 'ALL')">View All ➔</button>
                         </div>
-                        <div class="xb-mp-grid-2">
-                            ${emailProvs.map(ep => {
+                        <div class="xb-mp-grid-6">
+                            <button type="button" class="xb-mp-plat-btn is-featured" style="--mp-acc:${topEmail.col};border-color:${topEmail.col}66;" onclick="switchMarketplacePlatform('email', 'ALL', 'gmail')">
+                                <span class="xb-mp-plat-ico" style="background:rgba(255,255,255,0.08);">${XB_MP_SVGS.gmail}</span>
+                                <span class="xb-mp-plat-info">
+                                    <div class="xb-mp-plat-name">Gmail (Aged &amp; Fresh)</div>
+                                    <div class="xb-mp-plat-sub">${gmailCnt > 0 ? `● ${gmailCnt} Ready` : 'Most Popular • Recovery Ready'}</div>
+                                </span>
+                                <span class="xb-mp-top-tag">TOP</span>
+                            </button>
+                            ${restEmails.map(ep => {
                                 const cnt = (liveDigitalStock[`mail_${ep.k}_old`] || []).length + (liveDigitalStock[`mail_${ep.k}_fresh`] || []).length;
                                 return `
                                     <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${ep.col};" onclick="switchMarketplacePlatform('email', 'ALL', '${ep.k}')">
                                         <span class="xb-mp-plat-ico" style="background:rgba(255,255,255,0.08);">${XB_MP_SVGS[ep.k]}</span>
                                         <span class="xb-mp-plat-info">
                                             <div class="xb-mp-plat-name">${ep.name}</div>
-                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'Old & Fresh'}</div>
+                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'Aged/Fresh'}</div>
                                         </span>
                                     </button>
                                 `;
@@ -10826,12 +10856,12 @@
                     </span>
                 </button>
 
-                <!-- BARIS 2: OPSI 1 — 2 KOTAK SEJAJAR (SOCIAL VAULT | CEX & EMAIL) -->
+                <!-- BARIS 2: OPSI 1 — 2 KOTAK SEJAJAR (SOCIAL MEDIA | CEX & MAIL) -->
                 <div class="xb-mp-dual-row">
                     <button type="button" class="xb-mp-dual-btn ${_mpDrawerTab === 'social' ? 'open' : ''} ${isSocialActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('social')">
                         <div class="xb-mp-dual-head">
-                            <span class="xb-mp-dual-title">${isSocialActive ? XB_MP_PLATFORMS[_mpPlatform].shortName : 'Social Vault'}</span>
-                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'social' ? '▲' : (socialTotal > 0 ? `● ${socialTotal}` : '7 ▾')}</span>
+                            <span class="xb-mp-dual-title">${isSocialActive ? XB_MP_PLATFORMS[_mpPlatform].shortName : 'Social Media'}</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'social' ? '▲' : (socialTotal > 0 ? `● ${socialTotal}` : '▾')}</span>
                         </div>
                         <div class="xb-mp-logo-strip">
                             ${socialKeys.map(pk => {
@@ -10843,7 +10873,7 @@
 
                     <button type="button" class="xb-mp-dual-btn is-cex ${_mpDrawerTab === 'cex_email' ? 'open' : ''} ${isCexEmailActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('cex_email')">
                         <div class="xb-mp-dual-head">
-                            <span class="xb-mp-dual-title">${_mpPlatform === 'cex' ? 'Old CEX' : (_mpPlatform === 'email' ? 'Email Vault' : 'CEX & Email')}</span>
+                            <span class="xb-mp-dual-title">${_mpPlatform === 'cex' ? 'CEX Accounts' : (_mpPlatform === 'email' ? 'Email Accounts' : 'CEX & Mail')}</span>
                             <span class="xb-mp-dual-chev">${_mpDrawerTab === 'cex_email' ? '▲' : (cexEmailTotal > 0 ? `● ${cexEmailTotal}` : '▾')}</span>
                         </div>
                         <div class="xb-mp-logo-strip">
@@ -10889,7 +10919,7 @@
             });
         }
 
-        function createDigitalVaultCard(plat, vault) {
+        function createDigitalVaultCard(plat, vault, isFullWidth = false) {
             const list = liveDigitalStock[vault.key] || [];
             const hasStock = list.length > 0;
             const minPrice = hasStock ? Math.min(...list.map(a => a._computed_usdt || vault.usdt)) : vault.usdt;
@@ -10898,7 +10928,7 @@
             const cardAcc = vault.accent || plat.accent;
 
             const card = document.createElement('div');
-            card.className = 'item-card';
+            card.className = 'item-card' + (isFullWidth ? ' xb-ex-span-2' : '');
             card.setAttribute('data-dig-vault', vault.key);
             card.style.cssText = `padding:9px;gap:7px;--mp-acc:${cardAcc};--mp-border:${plat.border};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
 
@@ -11200,7 +11230,8 @@
 
             const grid = document.createElement('div');
             grid.className = 'grid-years-2col';
-            vList.forEach(v => grid.appendChild(createDigitalVaultCard(plat, v)));
+            const oddTopSpan = (vList.length % 2 === 1);
+            vList.forEach((v, idx) => grid.appendChild(createDigitalVaultCard(plat, v, oddTopSpan && idx === 0)));
             vp.appendChild(grid);
         }
 
