@@ -4907,7 +4907,7 @@
             .xb-ex-dot.syncing { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
             .xb-ex-modes {
                 display: grid;
-                grid-template-columns: repeat(4, minmax(0, 1fr));
+                grid-template-columns: 0.74fr 0.98fr 1.28fr;
                 gap: 5px;
                 padding: 4px;
                 border-radius: 12px;
@@ -4919,7 +4919,7 @@
                 background: transparent;
                 color: var(--text-muted);
                 font-family: inherit;
-                font-size: 0.62rem;
+                font-size: 0.61rem;
                 font-weight: 800;
                 padding: 8px 3px;
                 border-radius: 9px;
@@ -5131,8 +5131,13 @@
             }
             .xb-ex-pay-grid {
                 display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 6px;
+            }
+            .xb-ex-ewallet-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 5px;
             }
             .xb-ex-pay-btn {
                 border: 1px solid var(--ex-hairline);
@@ -5889,9 +5894,9 @@
                         idrEl.innerText = 'Rp ' + Math.round(Number(liveUsdtIdrRate)).toLocaleString('id-ID');
                     }
 
-                    const pools = (typeof githubAccounts !== 'undefined' && Array.isArray(githubAccounts))
-                        ? githubAccounts
-                        : ((typeof liveStockAccounts !== 'undefined' && Array.isArray(liveStockAccounts)) ? liveStockAccounts : []);
+                    const pools = (typeof allLiveAccountsFlat !== 'undefined' && Array.isArray(allLiveAccountsFlat))
+                        ? allLiveAccountsFlat
+                        : [];
 
                     if (!pools.length) return;
 
@@ -5900,16 +5905,16 @@
                     if (stockTicker) stockTicker.innerText = `${totalReady} Verified Accounts`;
 
                     const agedPool = pools.filter(a => {
-                        const y = parseInt(a.year || a.category || 2026, 10);
+                        const y = parseInt(a.year || a._cat_key || a.category || 2026, 10);
                         return !isNaN(y) && y >= 2011 && y <= 2018;
                     });
                     const rarePool = pools.filter(a => {
-                        const c = String(a.category || a.badge || '').toLowerCase();
+                        const c = String(a._cat_key || a.category || a.badge || '').toLowerCase();
                         return c.includes('arctic') || c.includes('badge') || c.includes('contrib') || Number(a.followers || 0) >= 50;
                     });
 
-                    const minAged = agedPool.length ? Math.min(...agedPool.map(a => parseFloat(a.priceUsdt || a.price || 20) || 20)) : 20;
-                    const minRare = rarePool.length ? Math.min(...rarePool.map(a => parseFloat(a.priceUsdt || a.price || 10) || 10)) : 10;
+                    const minAged = agedPool.length ? Math.min(...agedPool.map(a => parseFloat(a._computed_usdt || a.price_usd || 20) || 20)) : 20;
+                    const minRare = rarePool.length ? Math.min(...rarePool.map(a => parseFloat(a._computed_usdt || a.price_usd || 10) || 10)) : 10;
 
                     const fmtP = (u) => (typeof fmtPrice === 'function') ? fmtPrice(u) : ('$' + Number(u).toFixed(2));
 
@@ -5992,6 +5997,7 @@
                 // Clear active local web/guest flags
                 localStorage.removeItem('xb_web_logged_in');
                 localStorage.removeItem('xb_guest_mode');
+                sessionStorage.removeItem('xb_guest_preview');
                 localStorage.removeItem('xb_web_user_email');
                 localStorage.removeItem('xb_web_pwd_hash');
 
@@ -6014,8 +6020,10 @@
                     // Web Browser Mode: wipe cached account session completely & reload to Login Portal
                     const wipeKeys = [
                         'xb_tg_disconnected', 'xb_uid', 'xb_uname', 'xb_fullname',
-                        'xb_avatar', 'xb_saved_pin', 'xb_balance_usdt',
-                        'xb_tx_history', 'xb_purchased_vault', 'xb_cart_items'
+                        'xb_avatar', 'xb_bot_pin_hash', 'xb_user_pin', 'xb_saved_pin',
+                        'xb_bal_usdt', 'xb_bal_updated_ts', 'xb_balance_usdt',
+                        'xb_tx_history', 'xb_purchased_vault', 'xb_saved_cart',
+                        'xb_cart_updated_ts', 'xb_buyer_notifs', 'xb_admin_notifs'
                     ];
                     wipeKeys.forEach(k => localStorage.removeItem(k));
 
@@ -6413,28 +6421,18 @@
                 };
             }
 
-            const XB_EX_IDR_METHODS = [
-                { k: 'QRIS',    lbl: 'QRIS' },
-                { k: 'SeaBank', lbl: 'SeaBank' },
-                { k: 'DANA',    lbl: 'DANA' },
-                { k: 'OVO',     lbl: 'OVO' },
-                { k: 'GoPay',   lbl: 'GoPay' },
-                { k: 'BCA',     lbl: 'BCA' }
+            const XB_EX_IDR_BANKS = [
+                'BCA', 'BRI', 'BNI', 'Mandiri', 'SeaBank', 'Bank Jago',
+                'BSI', 'CIMB Niaga', 'Permata', 'OCBC', 'Danamon', 'Blu by BCA'
             ];
 
-            const XB_EX_PLATFORMS = [
-                { k: 'binance', name: 'Binance', tag: 'Tier-1 Global', badge: '#f59e0b' },
-                { k: 'okx',     name: 'OKX',     tag: 'Web3 & CEX',    badge: '#38bdf8' },
-                { k: 'mexc',    name: 'MEXC',    tag: 'Low-Cap Gems',  badge: '#10b981' },
-                { k: 'bybit',   name: 'Bybit',   tag: 'Derivatives',   badge: '#fbbf24' },
-                { k: 'bitget',  name: 'Bitget',  tag: 'Copy Trading',  badge: '#06b6d4' },
-                { k: 'gateio',  name: 'Gate.io', tag: 'Spot Listing',  badge: '#ef4444' },
-                { k: 'lbank',   name: 'LBank',   tag: 'Global Spot',   badge: '#eab308' }
+            const XB_EX_IDR_EWALLETS = [
+                'DANA', 'OVO', 'GoPay', 'ShopeePay', 'LinkAja'
             ];
 
             window._xbExState = window._xbExState || {
                 walletTab: 'wallet',     // 'wallet' | 'exchange'
-                mode: 'swap',            // 'swap' | 'gas' | 'idr' | 'accounts'
+                mode: 'swap',            // 'swap' | 'gas' | 'idr'
                 swapTo: 'eth_base',
                 swapPayUsd: '10',
                 swapAddr: '',
@@ -6443,12 +6441,11 @@
                 gasPkgIdx: 0,
                 gasAddr: '',
                 idrAmountUsd: '10',
-                idrMethod: 'DANA',
+                idrPayType: 'bank',      // 'bank' | 'ewallet'
+                idrBank: 'BCA',
+                idrEwallet: 'DANA',
                 idrDest: '',
                 idrHolder: '',
-                accPlatform: 'binance',
-                accKyc: 'kyc',           // 'kyc' ($35) | 'nokyc' ($25)
-                accEmail: '',
                 prices: { USDT: { usd: 1, chg: 0 }, USDC: { usd: 1, chg: 0 } },
                 liveIdr: (typeof liveUsdtIdrRate !== 'undefined' && Number(liveUsdtIdrRate) > 1000) ? Number(liveUsdtIdrRate) : 0,
                 feedSource: 'CONNECTING',
@@ -6456,6 +6453,20 @@
                 isFetching: false,
                 pendingOrder: null
             };
+
+            function getXbExActiveIdrProvider() {
+                const st = window._xbExState;
+                const isBank = (st.idrPayType || 'bank') === 'bank';
+                const provider = isBank ? (st.idrBank || 'BCA') : (st.idrEwallet || 'DANA');
+                return {
+                    isBank,
+                    typeLabel: isBank ? 'Transfer Bank' : 'E-Wallet',
+                    provider,
+                    numLabel: isBank ? `NOMOR REKENING (${provider})` : `NO. HP ${provider}`,
+                    numPlaceholder: isBank ? 'Contoh: 1234567890' : 'Contoh: 081234567890',
+                    holderLabel: isBank ? 'NAMA PEMILIK REKENING' : 'NAMA AKUN E-WALLET'
+                };
+            }
 
             function getXbExCoin(code) {
                 return XB_EX_COINS.find(c => c.code === code) || XB_EX_COINS[6];
@@ -6568,7 +6579,7 @@
                 if (typeof userBalanceUsdt !== 'undefined' && !isNaN(Number(userBalanceUsdt))) {
                     return Math.max(0, Number(userBalanceUsdt));
                 }
-                const ls = parseFloat(localStorage.getItem('xb_balance_usdt') || '0');
+                const ls = parseFloat(localStorage.getItem('xb_bal_usdt') || '0');
                 return isNaN(ls) ? 0 : Math.max(0, ls);
             }
 
@@ -6777,8 +6788,9 @@
                             btn.disabled = false;
                             btn.innerText = `Insufficient Balance ($${bal.toFixed(2)} USDT)`;
                         } else {
+                            const prov = getXbExActiveIdrProvider();
                             btn.disabled = false;
-                            btn.innerText = `🇮🇩 Convert $${amt.toFixed(2)} ➔ ${fmtXbExIdr(q.netIdr)} (${st.idrMethod})`;
+                            btn.innerText = `🇮🇩 Convert $${amt.toFixed(2)} ➔ ${fmtXbExIdr(q.netIdr)} (${prov.provider})`;
                         }
                     }
                 }
@@ -7019,10 +7031,12 @@
                     `;
                 }
 
-                // ---------------- MODE 3: CONVERT IDR (6.0% ANTI-ARBITRAGE + Rp 2.500 BANK FEE) ----------------
-                else if (st.mode === 'idr') {
+                // ---------------- MODE 3: CONVERT TO IDR (TRANSFER BANK & E-WALLET) ----------------
+                else {
+                    st.mode = 'idr';
                     const amt = parseFloat(st.idrAmountUsd || '0') || 0;
                     const q = calcXbExConvertIdrQuote(amt);
+                    const prov = getXbExActiveIdrProvider();
 
                     modeHtml = `
                         <div class="xb-ex-panel">
@@ -7046,25 +7060,51 @@
                                 <button type="button" class="xb-ex-pre-btn" onclick="setXbExIdrAmt(50)">$50</button>
                             </div>
 
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);">PAYOUT DESTINATION (INDONESIA)</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);">METODE PENCAIRAN (INDONESIA)</div>
                             <div class="xb-ex-pay-grid">
-                                ${XB_EX_IDR_METHODS.map(m => `
-                                    <button type="button" class="xb-ex-pay-btn ${st.idrMethod === m.k ? 'active' : ''}"
-                                        onclick="window._xbExState.idrMethod='${m.k}'; renderXbExBody(true);">
-                                        ${m.lbl}
-                                    </button>
-                                `).join('')}
+                                <button type="button" class="xb-ex-pay-btn ${prov.isBank ? 'active' : ''}"
+                                    onclick="window._xbExState.idrPayType='bank'; renderXbExBody(true);">
+                                    🏦 Transfer Bank
+                                </button>
+                                <button type="button" class="xb-ex-pay-btn ${!prov.isBank ? 'active' : ''}"
+                                    onclick="window._xbExState.idrPayType='ewallet'; renderXbExBody(true);">
+                                    📱 E-Wallet
+                                </button>
                             </div>
+
+                            ${prov.isBank ? `
+                                <div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">PILIH BANK TUJUAN</div>
+                                    <select class="xb-ex-input" style="cursor:pointer;"
+                                        onchange="window._xbExState.idrBank=this.value; renderXbExBody(true);">
+                                        ${XB_EX_IDR_BANKS.map(bk => `<option value="${escXbEx(bk)}" ${prov.provider === bk ? 'selected' : ''}>🏦 ${escXbEx(bk)}</option>`).join('')}
+                                    </select>
+                                </div>
+                            ` : `
+                                <div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">PILIH E-WALLET TUJUAN</div>
+                                    <div class="xb-ex-ewallet-grid">
+                                        ${XB_EX_IDR_EWALLETS.map(ew => `
+                                            <button type="button" class="xb-ex-pay-btn ${prov.provider === ew ? 'active' : ''}" style="padding:7px 4px;font-size:0.62rem;"
+                                                onclick="window._xbExState.idrEwallet='${escXbEx(ew)}'; renderXbExBody(true);">
+                                                ${escXbEx(ew)}
+                                            </button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                            `}
 
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
                                 <div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">${escXbEx(st.idrMethod)} NUMBER / ID</div>
-                                    <input type="text" class="xb-ex-input" value="${escXbEx(st.idrDest)}" placeholder="e.g. 0812xxx / Rek"
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">${escXbEx(prov.numLabel)}</div>
+                                    <input type="text" inputmode="${prov.isBank ? 'numeric' : 'tel'}" class="xb-ex-input"
+                                        value="${escXbEx(st.idrDest)}" placeholder="${escXbEx(prov.numPlaceholder)}"
                                         oninput="window._xbExState.idrDest=this.value;">
                                 </div>
                                 <div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">ACCOUNT NAME</div>
-                                    <input type="text" class="xb-ex-input" value="${escXbEx(st.idrHolder)}" placeholder="Full Name"
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">${escXbEx(prov.holderLabel)}</div>
+                                    <input type="text" class="xb-ex-input"
+                                        value="${escXbEx(st.idrHolder)}" placeholder="Nama Lengkap"
                                         oninput="window._xbExState.idrHolder=this.value;">
                                 </div>
                             </div>
@@ -7079,67 +7119,7 @@
                                 ${!q.ready ? 'disabled' : ''} onclick="submitXbExIdrOrder()">
                                 ${!q.ready
                                     ? '⏳ Fetching Live USD/IDR Rate...'
-                                    : (q.belowMin ? `Minimum Convert $${q.minUsd.toFixed(2)} USDT` : `🇮🇩 Convert $${amt.toFixed(2)} ➔ ${fmtXbExIdr(q.netIdr)} (${st.idrMethod})`)}
-                            </button>
-                        </div>
-                    `;
-                }
-
-                // ---------------- MODE 4: EXCHANGE ACCOUNTS VAULT ----------------
-                else {
-                    const plat = XB_EX_PLATFORMS.find(p => p.k === st.accPlatform) || XB_EX_PLATFORMS[0];
-                    const priceUsd = st.accKyc === 'kyc' ? 35.00 : 25.00;
-                    const idrEq = st.liveIdr > 1000 ? fmtXbExIdr(priceUsd * st.liveIdr) : 'Syncing...';
-
-                    modeHtml = `
-                        <div class="xb-ex-panel">
-                            <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <span style="font-size:0.72rem;font-weight:800;color:var(--text-primary);">🔶 Verified Exchange Accounts</span>
-                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#34d399;font-weight:800;">BAL: $${bal.toFixed(2)}</span>
-                            </div>
-
-                            <div class="xb-ex-coin-grid">
-                                ${XB_EX_PLATFORMS.map(p => `
-                                    <button type="button" class="xb-ex-coin-card ${st.accPlatform === p.k ? 'active' : ''}"
-                                        onclick="window._xbExState.accPlatform='${p.k}'; renderXbExBody(true);">
-                                        <div style="display:flex;align-items:center;justify-content:space-between;">
-                                            <span style="font-size:0.7rem;font-weight:800;color:var(--text-primary);">${p.name}</span>
-                                            <span style="width:7px;height:7px;border-radius:50%;background:${p.badge};"></span>
-                                        </div>
-                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);">${p.tag}</div>
-                                    </button>
-                                `).join('')}
-                            </div>
-
-                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
-                                <button type="button" class="xb-ex-pkg-card ${st.accKyc === 'kyc' ? 'active' : ''}"
-                                    onclick="window._xbExState.accKyc='kyc'; renderXbExBody(true);">
-                                    <div style="font-size:0.52rem;color:#34d399;font-weight:800;">✅ AGED WITH KYC</div>
-                                    <div style="font-size:0.88rem;font-weight:800;color:var(--text-primary);margin-top:2px;">$35.00</div>
-                                    <div style="font-size:0.48rem;color:var(--text-muted);">Full Verified Access</div>
-                                </button>
-                                <button type="button" class="xb-ex-pkg-card ${st.accKyc === 'nokyc' ? 'active' : ''}"
-                                    onclick="window._xbExState.accKyc='nokyc'; renderXbExBody(true);">
-                                    <div style="font-size:0.52rem;color:#38bdf8;font-weight:800;">⚡ AGED NO KYC</div>
-                                    <div style="font-size:0.88rem;font-weight:800;color:var(--text-primary);margin-top:2px;">$25.00</div>
-                                    <div style="font-size:0.48rem;color:var(--text-muted);">Clean Historic Account</div>
-                                </button>
-                            </div>
-
-                            <div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">DELIVERY CONTACT (TELEGRAM @USERNAME OR EMAIL)</div>
-                                <input type="text" class="xb-ex-input" value="${escXbEx(st.accEmail)}" placeholder="@username or email for credentials"
-                                    oninput="window._xbExState.accEmail=this.value;">
-                            </div>
-
-                            <div class="xb-ex-quote-box">
-                                <div class="xb-ex-qrow"><span>Selected Asset</span><b>${plat.name} (${st.accKyc === 'kyc' ? 'Aged With KYC' : 'Aged No KYC'})</b></div>
-                                <div class="xb-ex-qrow"><span>Total Charge</span><b style="color:#34d399;">$${priceUsd.toFixed(2)} USDT (${idrEq})</b></div>
-                            </div>
-
-                            <button type="button" class="btn-ui primary" style="width:100%;height:42px;font-size:0.75rem;border-radius:11px;"
-                                onclick="submitXbExAccountOrder()">
-                                🔐 Order ${plat.name} Account — $${priceUsd.toFixed(2)} USDT
+                                    : (q.belowMin ? `Minimum Convert $${q.minUsd.toFixed(2)} USDT` : `🇮🇩 Convert $${amt.toFixed(2)} ➔ ${fmtXbExIdr(q.netIdr)} (${prov.provider})`)}
                             </button>
                         </div>
                     `;
@@ -7161,9 +7141,8 @@
 
                     <div class="xb-ex-modes">
                         <button type="button" class="xb-ex-mbtn ${st.mode === 'swap' ? 'active' : ''}" onclick="setXbExMode('swap')">🔄 Swap</button>
-                        <button type="button" class="xb-ex-mbtn ${st.mode === 'gas' ? 'active' : ''}" onclick="setXbExMode('gas')">⛽ Gas</button>
-                        <button type="button" class="xb-ex-mbtn ${st.mode === 'idr' ? 'active' : ''}" onclick="setXbExMode('idr')">🇮🇩 IDR</button>
-                        <button type="button" class="xb-ex-mbtn ${st.mode === 'accounts' ? 'active' : ''}" onclick="setXbExMode('accounts')">🔶 CEX</button>
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'gas' ? 'active' : ''}" onclick="setXbExMode('gas')">⛽ Buy Crypto</button>
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'idr' ? 'active' : ''}" onclick="setXbExMode('idr')">🇮🇩 Convert to IDR</button>
                     </div>
 
                     ${modeHtml}
@@ -7324,53 +7303,40 @@
                 const st = window._xbExState;
                 const amt = parseFloat(st.idrAmountUsd || '0') || 0;
                 const q = calcXbExConvertIdrQuote(amt);
+                const prov = getXbExActiveIdrProvider();
                 const bal = getXbExWalletBal();
                 const dest = String(st.idrDest || '').trim();
                 const holder = String(st.idrHolder || '').trim();
 
                 if (!q.ready) return (typeof showToast === 'function') && showToast('⏳ Waiting for live USD/IDR rate...');
-                if (q.belowMin || q.netIdr <= 0) return (typeof showToast === 'function') && showToast(`⚠️ Minimum IDR convert is $${q.minUsd.toFixed(2)} USDT.`);
-                if (amt > bal) return (typeof showToast === 'function') && showToast('❌ Insufficient wallet balance.');
-                if (dest.length < 6 || holder.length < 2) return (typeof showToast === 'function') && showToast('⚠️ Enter destination number and account holder name.');
+                if (q.belowMin || q.netIdr <= 0) return (typeof showToast === 'function') && showToast(`⚠️ Minimum convert adalah $${q.minUsd.toFixed(2)} USDT.`);
+                if (amt > bal) return (typeof showToast === 'function') && showToast('❌ Saldo wallet tidak mencukupi.');
+                if (dest.length < 6 || holder.length < 2) {
+                    return (typeof showToast === 'function') && showToast(
+                        prov.isBank
+                            ? `⚠️ Masukkan nomor rekening ${prov.provider} dan nama pemilik rekening.`
+                            : `⚠️ Masukkan nomor HP ${prov.provider} dan nama akun e-wallet.`
+                    );
+                }
 
                 openXbExPinConfirmModal({
                     kind: 'EXCHANGE_IDR',
-                    title: `Convert IDR (${st.idrMethod})`,
+                    title: `Convert to IDR (${prov.typeLabel} • ${prov.provider})`,
                     payUsdt: Number(amt.toFixed(2)),
                     receiveText: fmtXbExIdr(q.netIdr),
                     rateText: `1 USDT = ${fmtXbExIdr(q.idrRate)} (Fee 6% + Rp 2.500)`,
-                    network: st.idrMethod,
-                    destination: `${dest} (${holder})`,
+                    network: `${prov.typeLabel} (${prov.provider})`,
+                    destination: `${prov.provider} ${dest} a.n ${holder}`,
                     coinCode: 'usdt_idr'
-                });
-            }
-
-            function submitXbExAccountOrder() {
-                const st = window._xbExState;
-                const plat = XB_EX_PLATFORMS.find(p => p.k === st.accPlatform) || XB_EX_PLATFORMS[0];
-                const priceUsd = st.accKyc === 'kyc' ? 35.00 : 25.00;
-                const bal = getXbExWalletBal();
-                const contact = String(st.accEmail || '').trim();
-
-                if (priceUsd > bal) return (typeof showToast === 'function') && showToast('❌ Insufficient wallet balance.');
-                if (contact.length < 3) return (typeof showToast === 'function') && showToast('⚠️ Enter your Telegram @username or email for delivery.');
-
-                openXbExPinConfirmModal({
-                    kind: 'EXCHANGE_ACCOUNT',
-                    title: `${plat.name} Account (${st.accKyc === 'kyc' ? 'Aged With KYC' : 'Aged No KYC'})`,
-                    payUsdt: priceUsd,
-                    receiveText: `${plat.name} Full Credentials`,
-                    rateText: 'Fixed Vault Rate',
-                    network: 'Encrypted Delivery',
-                    destination: contact,
-                    coinCode: `exc_${plat.k}_${st.accKyc}`
                 });
             }
 
             function openXbExPinConfirmModal(orderObj) {
                 window._xbExState.pendingOrder = orderObj;
-                const savedPin = String(localStorage.getItem('xb_saved_pin') || '').trim();
-                const needSet = !savedPin;
+                const hasRealPin = Boolean(
+                    (localStorage.getItem('xb_bot_pin_hash') && localStorage.getItem('xb_bot_pin_hash').length === 32) ||
+                    (localStorage.getItem('xb_user_pin') && /^\d{6}$/.test(localStorage.getItem('xb_user_pin')))
+                );
                 const root = ensureXbExModalRoot();
 
                 root.innerHTML = `
@@ -7390,7 +7356,7 @@
 
                         <div>
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:5px;">
-                                ${needSet ? 'CREATE & ENTER YOUR 6-DIGIT WALLET PIN' : 'ENTER YOUR 6-DIGIT WALLET PIN TO AUTHORIZE'}
+                                ${hasRealPin ? 'ENTER YOUR 6-DIGIT WALLET PIN TO AUTHORIZE' : 'CREATE & ENTER YOUR 6-DIGIT WALLET PIN'}
                             </div>
                             <input type="password" inputmode="numeric" maxlength="6" class="xb-ex-input" id="xbExPinInp"
                                 style="text-align:center;font-size:1.1rem;letter-spacing:8px;height:44px;" placeholder="••••••"
@@ -7422,16 +7388,13 @@
                     return;
                 }
 
-                const savedPin = String(localStorage.getItem('xb_saved_pin') || '').trim();
-                if (savedPin) {
-                    const isHexMd5 = /^[a-f0-9]{32}$/i.test(savedPin);
-                    const matched = isHexMd5 ? (xbExMd5(pin) === savedPin.toLowerCase()) : (pin === savedPin);
-                    if (!matched) {
-                        if (errEl) errEl.innerText = 'Incorrect 6-digit Security PIN.';
-                        return;
-                    }
-                } else {
-                    localStorage.setItem('xb_saved_pin', pin);
+                // 1. Validate against the real Wallet/Bot PIN engine
+                const pinOk = (typeof isPinValidWithBot === 'function')
+                    ? isPinValidWithBot(pin)
+                    : (xbExMd5(pin) === String(localStorage.getItem('xb_bot_pin_hash') || '').toLowerCase());
+                if (!pinOk) {
+                    if (errEl) errEl.innerText = 'Incorrect 6-digit Security PIN.';
+                    return;
                 }
 
                 const curBal = getXbExWalletBal();
@@ -7440,74 +7403,91 @@
                     return;
                 }
 
-                // 1. Deduct Unified Wallet Balance
-                const newBal = Math.max(0, Number((curBal - ord.payUsdt).toFixed(4)));
-                if (typeof userBalanceUsdt !== 'undefined') userBalanceUsdt = newBal;
-                localStorage.setItem('xb_balance_usdt', String(newBal));
+                // 2. Deduct Authoritative Wallet Balance (updates xb_bal_usdt, timestamp & top bar)
+                const newBal = Math.max(0, Number((curBal - ord.payUsdt).toFixed(2)));
+                if (typeof setAuthoritativeBalance === 'function') {
+                    setAuthoritativeBalance(newBal, true);
+                } else {
+                    if (typeof userBalanceUsdt !== 'undefined') userBalanceUsdt = newBal;
+                    localStorage.setItem('xb_bal_usdt', newBal.toFixed(2));
+                    localStorage.setItem('xb_bal_updated_ts', String(Date.now()));
+                }
 
-                // 2. Build Invoice & Append to Treasury Ledger (xb_tx_history)
+                // 3. Record in Official Treasury Ledger Format (invoice / target / method)
                 const invId = 'INV-XIAN-' + Math.floor(10000 + Math.random() * 89999);
-                const nowDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-                const idrVal = st.liveIdr > 1000 ? Math.round(ord.payUsdt * st.liveIdr) : 0;
+                const targetSummary = `${ord.destination} ➔ ${ord.receiveText}`;
+                const methodSummary = `XianBee Exchange (${ord.network})`;
 
-                const txEntry = {
-                    id: invId,
-                    type: 'OUT',
-                    title: ord.title,
-                    usdt: ord.payUsdt,
-                    idr: idrVal,
-                    date: nowDate,
-                    status: 'PROCESSING',
-                    meta: {
-                        kind: ord.kind,
-                        receive: ord.receiveText,
-                        rate: ord.rateText,
-                        network: ord.network,
-                        destination: ord.destination
-                    }
-                };
+                if (typeof recordWebTransaction === 'function') {
+                    recordWebTransaction(invId, ord.title, targetSummary, ord.payUsdt, 'OUT', methodSummary);
+                }
 
+                // 4. Push Authoritative Balance + Ledger to Cloud Sync (uses executive_admin_shared for Admin)
+                if (typeof syncCloudStateWithGSheet === 'function') {
+                    syncCloudStateWithGSheet('push', {
+                        balance: newBal,
+                        bal_ts: Date.now(),
+                        tx_id: invId,
+                        tx_note: `${ord.title} | Receive: ${ord.receiveText} | Dest: ${ord.destination}`
+                    });
+                }
+
+                // 5. Notify Buyer & Admin via In-Web Notification Center + Silent Telegram Push
                 try {
-                    const hist = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-                    hist.unshift(txEntry);
-                    localStorage.setItem('xb_tx_history', JSON.stringify(hist.slice(0, 120)));
+                    const dispUser = (typeof currentUsername !== 'undefined' && currentUsername)
+                        ? (String(currentUsername).startsWith('@') ? currentUsername : `@${currentUsername}`)
+                        : '@Client';
+                    const uidStr = (typeof currentUserId !== 'undefined') ? String(currentUserId) : '-';
+
+                    const buyerMsg = (
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `⚡ <b>XIANBEE-TECH EXCHANGE ORDER</b>\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                        `🔸 <b>Service:</b> <b>${ord.title}</b>\n` +
+                        `🔸 <b>Deducted:</b> <b>-$${ord.payUsdt.toFixed(2)} USDT</b>\n` +
+                        `🔸 <b>Est. Receive:</b> <b>${ord.receiveText}</b>\n` +
+                        `🔸 <b>Rate Locked:</b> <code>${ord.rateText}</code>\n` +
+                        `🔸 <b>Destination:</b> <code>${ord.destination}</code>\n` +
+                        `🔸 <b>New Balance:</b> <b>$${newBal.toFixed(2)} USDT</b>\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `⏳ <i>Status: Processing settlement via XianBee-Tech Desk.</i>`
+                    );
+
+                    const adminMsg = (
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `🕵️ <b>NEW EXCHANGE ORDER (WEB WALLET)</b>\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                        `🔸 <b>Client:</b> <b>${dispUser}</b> (<code>${uidStr}</code>)\n` +
+                        `🔸 <b>Service:</b> <b>${ord.title}</b>\n` +
+                        `🔸 <b>Paid:</b> <b>$${ord.payUsdt.toFixed(2)} USDT</b> (Wallet PIN)\n` +
+                        `🔸 <b>Send To Buyer:</b> <b>${ord.receiveText}</b>\n` +
+                        `🔸 <b>Network:</b> <b>${ord.network}</b>\n` +
+                        `🔸 <b>Destination:</b> <code>${ord.destination}</code>\n` +
+                        `🔸 <b>Rate:</b> <code>${ord.rateText}</code>\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `⚡ <i>Dispatch asset to buyer destination address/account.</i>`
+                    );
+
+                    if (typeof pushInWebNotification === 'function') {
+                        pushInWebNotification('buyer', `⚡ EXCHANGE ORDER (${invId})`, buyerMsg);
+                        pushInWebNotification('admin', `⚡ EXCHANGE ORDER (${invId} • $${ord.payUsdt.toFixed(2)})`, adminMsg);
+                    }
+                    if (typeof sendTelegramSilentPush === 'function') {
+                        sendTelegramSilentPush(uidStr, buyerMsg, true);
+                        if (typeof ADMIN_IDS !== 'undefined' && Array.isArray(ADMIN_IDS)) {
+                            ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminMsg, true));
+                        }
+                    }
                 } catch (e) {}
 
-                // Refresh existing Wallet UI functions if available
-                ['updateWalletUI', 'renderWalletUI', 'updateBalanceDisplays', 'renderTxHistory', 'syncBalanceDisplays'].forEach(fn => {
-                    try { if (typeof window[fn] === 'function') window[fn](); } catch (e) {}
-                });
-
-                // 3. Push Updated Balance & Ledger Entry to Google Sheets Cloud Sync (Background)
-                try {
-                    const uid = (typeof currentUserId !== 'undefined' && currentUserId) ? String(currentUserId) : String(localStorage.getItem('xb_uid') || '');
-                    const uname = (typeof currentUsername !== 'undefined' && currentUsername)
-                        ? String(currentUsername).replace(/^@+/, '').toLowerCase()
-                        : String(localStorage.getItem('xb_uname') || '').replace(/^@+/, '').toLowerCase();
-                    const syncKey = uname ? ('user_' + uname) : (uid ? ('uid_' + uid) : '');
-                    const histNow = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-
-                    if (syncKey && XB_EX_WEBHOOK) {
-                        fetch(XB_EX_WEBHOOK, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                            body: JSON.stringify({
-                                action: 'web_cloud_sync_state',
-                                mode: 'push',
-                                sync_key: syncKey,
-                                user_id: uid,
-                                username: uname,
-                                balance: newBal,
-                                bal_ts: Date.now(),
-                                tx_id: invId,
-                                tx_note: `${ord.title} | Receive: ${ord.receiveText} | Dest: ${ord.destination}`,
-                                tx_history: histNow.slice(0, 40)
-                            })
-                        }).catch(() => {});
-                    }
-                } catch (e) {}
-
-                renderXbExBody(true);
+                // Refresh Wallet Hero Card + Ledger immediately while staying on Exchange tab
+                if (typeof renderViewport === 'function' && typeof activeTab !== 'undefined' && activeTab === 'wallet') {
+                    renderViewport();
+                } else {
+                    renderXbExBody(true);
+                }
                 showXbExReceiptModal(invId, ord, newBal);
             }
 
@@ -7545,31 +7525,27 @@
                 root.classList.add('open');
             }
 
-            // =========================================================
+// =========================================================
             // 🔗 AUTO-MOUNT XIANBEE-TECH EXCHANGE INSIDE THE WALLET TAB
             // =========================================================
             function findXbWalletMountTarget() {
-                const scope = document.getElementById('mainViewport') || document.querySelector('.main-area') || document.body;
+                // Hanya pasang di tab Wallet halaman utama (bukan saat buka sub-slide Deposit/Transfer/VIP)
+                if (typeof activeTab !== 'undefined' && activeTab !== 'wallet') return null;
+                if (window._walSlide && window._walSlide !== 'main') return null;
 
-                // 1. Target utama: wrapper Wallet (.xb-wal-wrap) yang berisi kartu saldo utama (bukan sub-view Deposit/Transfer)
-                const walWrap = scope.querySelector('.xb-wal-wrap');
+                const vp = document.getElementById('mainViewport');
+                if (!vp) return null;
+
+                const walWrap = vp.querySelector('.xb-wal-wrap');
                 if (walWrap) {
-                    const heroCard = walWrap.querySelector(':scope > .xb-vgrid-card:not(.is-profile-grid), :scope > .xb-wal-card, :scope > .vip-card');
+                    const heroCard = walWrap.querySelector(':scope > .xb-vgrid-card:not(.is-profile-grid)');
                     if (heroCard) return { container: walWrap, anchor: heroCard };
                 }
 
-                // 2. Fallback: kartu saldo VIP Wallet langsung (hindari kartu Profile .is-profile-grid)
-                const directHero = scope.querySelector('.xb-vgrid-card:not(.is-profile-grid)');
+                const directHero = vp.querySelector('.xb-vgrid-card:not(.is-profile-grid)');
                 if (directHero && directHero.parentElement) {
                     return { container: directHero.parentElement, anchor: directHero };
                 }
-
-                // 3. Fallback kedua: tepat di atas grid 4 tombol aksi Wallet (.xb-wal-act-grid)
-                const actGrid = scope.querySelector('.xb-wal-act-grid');
-                if (actGrid && actGrid.parentElement && actGrid.previousElementSibling) {
-                    return { container: actGrid.parentElement, anchor: actGrid.previousElementSibling };
-                }
-
                 return null;
             }
 
@@ -7742,8 +7718,8 @@
             </div>
         </div>
 
-        <!-- 📱 MOBILE BOTTOM NAVIGATION (SINGLE-LAYER FLOATING DOCK) -->
-        <nav class="bottom-nav" style="height:auto;background:transparent;border:none;box-shadow:none;padding:0 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px;backdrop-filter:none;pointer-events:none;">
+        <!-- 📱 MOBILE BOTTOM NAVIGATION (SINGLE-LAYER FLOATING DOCK + ANTI-LEAK FADE) -->
+        <nav class="bottom-nav" style="height:auto;background:linear-gradient(to bottom, rgba(5,7,14,0) 0%, #05070e 18%, #05070e 100%);border:none;box-shadow:none;padding:12px 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px;backdrop-filter:none;pointer-events:none;">
             <div class="xb-ex-dock">
                 <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>
@@ -24972,7 +24948,10 @@ let _ghAgeCheckerResults = [];
                 dockEl.style.setProperty('border-radius', '0px', 'important');
                 dockEl.style.setProperty('border', 'none', 'important');
                 dockEl.style.setProperty('border-top', 'none', 'important');
-                dockEl.style.setProperty('background', 'transparent', 'important');
+                const fadeMaskBg = isPlat
+                    ? 'linear-gradient(to bottom, rgba(241,245,249,0) 0%, #f1f5f9 18%, #f1f5f9 100%)'
+                    : 'linear-gradient(to bottom, rgba(5,7,14,0) 0%, #05070e 18%, #05070e 100%)';
+                dockEl.style.setProperty('background', fadeMaskBg, 'important');
                 dockEl.style.setProperty('backdrop-filter', 'none', 'important');
                 dockEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
                 dockEl.style.setProperty('box-shadow', 'none', 'important');
@@ -25055,7 +25034,7 @@ let _ghAgeCheckerResults = [];
 
         function isTouchIgnoredForSwipe(target) {
             if (!target || !target.closest) return false;
-            if (document.querySelector('.modal-overlay.active') || document.querySelector('.auth-gate-overlay.active')) return true;
+            if (document.querySelector('.modal-overlay.active, .auth-gate-overlay.active, .xb-ex-modal-bg.open')) return true;
             if (target.closest('.topbar, .bottom-nav, .floating-cart-bar, input, textarea, select, canvas')) return true;
             return false;
         }
@@ -26249,7 +26228,9 @@ let _ghAgeCheckerResults = [];
         function checkInitialAuthGate() {
             const gate = document.getElementById('enterpriseAuthGate');
             updateAuthPortalTickers();
-            if (isFromTelegramSession || isWebCloudAuthenticated || isGuestPreviewSession) {
+            const isTgDisc = localStorage.getItem('xb_tg_disconnected') === 'true';
+            const canEnter = (!isTgDisc && isFromTelegramSession) || isWebCloudAuthenticated || isGuestPreviewSession;
+            if (canEnter) {
                 if (gate) gate.classList.remove('active');
             } else {
                 if (gate) gate.classList.add('active');
@@ -26360,6 +26341,8 @@ let _ghAgeCheckerResults = [];
                 isWebCloudAuthenticated = true;
                 setAuthoritativeBalance(finalBal, true);
 
+                localStorage.removeItem('xb_tg_disconnected');
+                sessionStorage.removeItem('xb_guest_preview');
                 localStorage.setItem('xb_web_logged_in', 'true');
                 localStorage.setItem('xb_uid', currentUserId);
                 localStorage.setItem('xb_uname', currentUsername);
