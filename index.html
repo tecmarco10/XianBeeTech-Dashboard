@@ -1964,16 +1964,16 @@
             left: 0;
             right: 0;
             bottom: 0;
-            height: 68px;
+            height: 64px;
             background: #060913;
-            border-top: 1px solid rgba(148, 163, 184, 0.22);
+            border-top: none;
             pointer-events: none;
             z-index: 880;
             transition: height 0.16s ease;
         }
         [data-theme="platinum"] #xbBottomOpaqueGuard {
             background: #f1f5f9;
-            border-top-color: rgba(15, 23, 42, 0.14);
+            border-top: none;
         }
         @media (min-width: 1100px) {
             .main-area { padding-top: 108px !important; padding-bottom: 44px !important; }
@@ -1982,7 +1982,7 @@
 
         /* TOPBAR ASSET EXCHANGE */
         .xb-ex-topbar-shell { position: relative; width: 100%; background: var(--ex-shell-bg); border: 1px solid var(--ex-hairline); border-radius: 16px; overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.22); }
-        .xb-ex-topbar-shell::before, .xb-ex-dock::before, .xb-ex-collection::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: var(--ex-sheen); pointer-events: none; z-index: 2; }
+        .xb-ex-topbar-shell::before, .xb-ex-collection::before { content: ''; position: absolute; top: 0; left: 8%; right: 8%; height: 1px; background: var(--ex-sheen); pointer-events: none; z-index: 2; }
         .xb-ex-row1 { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 7px 9px; border-bottom: 1px solid var(--ex-hairline); }
         .xb-ex-row2 { display: flex; align-items: center; gap: 5px; padding: 6px 8px; background: rgba(3, 5, 12, 0.36); }
         [data-theme="platinum"] .xb-ex-row2 { background: rgba(226, 232, 240, 0.5); }
@@ -1999,11 +1999,11 @@
         [data-theme="platinum"] .xb-ex-icon-btn { background: #ffffff; border-color: rgba(79,70,229,0.22); }
         [data-theme="platinum"] .xb-ex-icon-btn.cart, [data-theme="platinum"] .xb-ex-icon-btn.adm { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: #ffffff; }
 
-        /* BOTTOM FLOATING DOCK (MARKETPLACE • BOOST • WALLET • VAULT • PROFILE) */
-        .xb-ex-dock { position: relative; width: 100%; height: 100%; background: var(--ex-shell-bg); border: 1px solid var(--ex-hairline); border-radius: 18px; box-shadow: 0 10px 28px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.22); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; padding: 0 4px; overflow: hidden; }
-        .xb-ex-dock .bnav-btn { color: var(--text-muted); padding: 5px 2px; border-radius: 12px; transition: 0.18s ease; }
-        .xb-ex-dock .bnav-btn.active { color: #ffffff; background: linear-gradient(135deg, rgba(29,78,216,0.46) 0%, rgba(124,58,237,0.46) 100%); box-shadow: inset 0 1px 0 rgba(255,255,255,0.32); text-shadow: none; }
-        [data-theme="platinum"] .xb-ex-dock .bnav-btn.active { color: #ffffff; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); }
+        /* CLEAN NATIVE MOBILE FOOTER (NO DOUBLE BOX / NO STRAY LINES) */
+        .xb-ex-dock { position: relative; width: 100%; height: 100%; background: transparent; border: none; border-radius: 0; box-shadow: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; gap: 4px; padding: 0; overflow: visible; }
+        .xb-ex-dock .bnav-btn { color: var(--text-muted); padding: 7px 2px; border-radius: 12px; transition: 0.18s ease; }
+        .xb-ex-dock .bnav-btn.active { color: #ffffff; background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); box-shadow: 0 4px 12px rgba(79,70,229,0.32); text-shadow: none; }
+        [data-theme="platinum"] .xb-ex-dock .bnav-btn.active { color: #ffffff; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); box-shadow: 0 4px 12px rgba(37,99,235,0.24); }
 
         /* VERIFIED COLLECTION BANNER (XIANBEE AGED GITHUB VAULT + CHECKMARK) */
         .xb-ex-collection { position: relative; background: linear-gradient(145deg, #060914 0%, #0d1c45 54%, #23114a 100%); border: 1px solid var(--ex-hairline); border-radius: 16px; padding: 12px; margin-bottom: 10px; overflow: hidden; box-shadow: 0 12px 28px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.24); }
@@ -4468,8 +4468,8 @@
             </div>
         </div>
 
-        <!-- 📱 MOBILE BOTTOM NAVIGATION (MARKETPLACE • BOOST • WALLET • VAULT • PROFILE) -->
-        <nav class="bottom-nav" style="height:74px;background:transparent;border-top:none;padding:6px 10px 10px 10px;backdrop-filter:none;">
+        <!-- 📱 MOBILE BOTTOM NAVIGATION (CLEAN FULL-WIDTH FOOTER) -->
+        <nav class="bottom-nav" style="height:64px;padding:6px 10px calc(6px + env(safe-area-inset-bottom, 0px)) 10px;backdrop-filter:none;">
             <div class="xb-ex-dock">
                 <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>
@@ -21266,7 +21266,7 @@ let _ghAgeCheckerResults = [];
                 }
             }
 
-            let dockH = 66;
+            let dockH = 64;
             let dockZ = 100;
             if (dockEl) {
                 const rawZ = parseInt(getComputedStyle(dockEl).zIndex, 10);
@@ -21278,13 +21278,14 @@ let _ghAgeCheckerResults = [];
                 dockEl.style.setProperty('width', '100%', 'important');
                 dockEl.style.setProperty('max-width', '100%', 'important');
                 dockEl.style.setProperty('margin', '0', 'important');
-                dockEl.style.setProperty('border-radius', '14px 14px 0 0', 'important');
+                dockEl.style.setProperty('border-radius', '0px', 'important');
+                dockEl.style.setProperty('border-top', isPlat ? '1px solid rgba(15,23,42,0.08)' : '1px solid rgba(148,163,184,0.14)', 'important');
                 dockEl.style.setProperty('background', solidDockBg, 'important');
                 dockEl.style.setProperty('backdrop-filter', 'none', 'important');
                 dockEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
                 dockEl.style.setProperty('box-shadow', isPlat
-                    ? '0 -6px 20px rgba(15,23,42,0.10), inset 0 1px 0 #ffffff'
-                    : '0 -8px 24px rgba(0,0,0,0.75), inset 0 1px 0 rgba(255,255,255,0.2)', 'important');
+                    ? '0 -4px 16px rgba(15,23,42,0.06)'
+                    : '0 -6px 20px rgba(0,0,0,0.55)', 'important');
                 const dRect = dockEl.getBoundingClientRect();
                 if (dRect.height > 30) dockH = Math.ceil(dRect.height);
             }
@@ -21330,9 +21331,9 @@ let _ghAgeCheckerResults = [];
                 if (dockEl.parentNode && guard.parentNode !== dockEl.parentNode) {
                     dockEl.parentNode.insertBefore(guard, dockEl);
                 }
-                guard.style.display = 'block';
+                guard.style.display = cartVisible ? 'block' : 'none';
                 guard.style.zIndex = String(Math.max(10, dockZ - 1));
-                guard.style.height = (cartVisible ? (dockH + cartH + 10) : dockH) + 'px';
+                guard.style.height = (dockH + cartH + 10) + 'px';
             }
 
             // 4. Clean Safe Bottom Padding (No Floating Chat Overlap)
