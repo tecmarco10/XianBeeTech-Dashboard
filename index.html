@@ -1957,7 +1957,7 @@
         }
 
         :root { --xb-safe-pad-bottom: 102px; }
-        .main-area { padding-top: 90px !important; padding-bottom: var(--xb-safe-pad-bottom) !important; }
+        .main-area { padding-top: 108px !important; padding-bottom: var(--xb-safe-pad-bottom) !important; }
         .container { padding: 8px 12px 24px 12px !important; }
         #xbBottomOpaqueGuard {
             position: fixed;
@@ -1976,7 +1976,7 @@
             border-top-color: rgba(15, 23, 42, 0.14);
         }
         @media (min-width: 1100px) {
-            .main-area { padding-top: 90px !important; padding-bottom: 44px !important; }
+            .main-area { padding-top: 108px !important; padding-bottom: 44px !important; }
             #xbBottomOpaqueGuard { display: none !important; }
         }
 
@@ -6055,13 +6055,13 @@
                 const svcNorm = svcRaw.includes('star') ? 'stars' : (svcRaw.includes('fork') ? 'forks' : (svcRaw.includes('watch') ? 'watch' : 'followers'));
                 const svcNameMap = {
                     followers: 'GitHub Followers',
-                    stars: 'GitHub Repo Stars',
-                    forks: 'GitHub Repo Forks',
-                    watch: 'GitHub Repo Watchers'
+                    stars: 'GitHub Repository Stars',
+                    forks: 'GitHub Repository Forks',
+                    watch: 'GitHub Repository Watchers'
                 };
-                const svcCleanTitle = svcNameMap[svcNorm] || 'GitHub Boost';
+                const svcCleanTitle = svcNameMap[svcNorm] || 'GitHub Boost Service';
                 const spdRaw = String(itm.speed || 'reg').toLowerCase().trim();
-                const trackLabel = spdRaw === 'ultra' ? '⚡ Ultra Track' : (spdRaw === 'fast' ? '🚀 Fast Track' : '🌿 Organic Track');
+                const trackLabel = spdRaw === 'ultra' ? '⚡ Ultra Track' : (spdRaw === 'fast' ? '🚀 Fast Track' : '🛡️ Regular Track');
 
                 let cleanTarget = String(itm.target || '')
                     .replace(/^https?:\/\/(www\.)?github\.com\//i, '')
@@ -6092,7 +6092,6 @@
                     `📡 <b>Status:</b> 🟢 <b>ACTIVE (Live Tracker)</b>`
                 );
                 pushInWebNotification('buyer', '🚀 BOOST ORDER ACTIVATED (WEB)', buyerBoostMsg);
-                sendTelegramSilentPush(currentUserId, buyerBoostMsg, true);
 
                 const adminBoostMsg = (
                     `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
@@ -6110,26 +6109,8 @@
                     `✅ <i>Status: Order dispatched via Web Store.</i>`
                 );
                 pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (BOOST WEB)', adminBoostMsg);
-                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminBoostMsg, true));
 
-                const publicBoostLog = (
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `⚙️ <b>O R D E R  P R O C E S S I N G</b> ⚙️\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
-                    `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
-                    `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
-                    `🔸 <b>Service:</b> <b>${svcCleanTitle}</b>\n` +
-                    `🔸 <b>Track:</b> <b>${trackLabel}</b>\n` +
-                    `🔸 <b>Quantity:</b> <b>+${itm.qty} Units</b>\n` +
-                    `🔸 <b>Target:</b> <code>${maskData(cleanTarget, 'target')}</code>\n` +
-                    `🔸 <b>Source:</b> <b>🌐 Order by Web</b>\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `⏳ <i>Status: Dispatched to XianBee Auto-Tracker.</i>`
-                );
-                sendTelegramSilentPush(CHANNEL_ID, publicBoostLog, true);
-                sendTelegramSilentPush(GROUP_ID, publicBoostLog, true);
-
+                // 3 Telegram pushes (Buyer Activated, Secret Admin Log, Public Processing) are fired server-side by Apps Script
                 try {
                     const startVal = parseInt(itm.startCount || 0, 10) || 0;
                     fetch(GSHEET_WEBHOOK_URL, {
@@ -6139,7 +6120,9 @@
                             action: 'log_boost_order',
                             invoice_id: invId,
                             buyer_uid: String(currentUserId),
+                            buyer_name: String(currentFullName || currentUsername || 'Client'),
                             buyer_username: `${dispUser} (${currentUserId}) [WEB]`,
+                            payment_method: String(paymentMethodLabel || 'Balance'),
                             target_url: targetUrl,
                             target_clean: cleanTarget,
                             service_type: svcNorm,
@@ -10049,17 +10032,22 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
             };
 
             const svcMetaMap = {
-                followers: { lbl: '👥 FOLLOWERS', col: '#38bdf8' },
-                stars:     { lbl: '⭐ REPO STARS', col: '#fbbf24' },
-                forks:     { lbl: '⎇ REPO FORKS', col: '#c084fc' },
-                watch:     { lbl: '👁 WATCHERS',  col: '#34d399' }
+                followers: { lbl: '👥 GITHUB FOLLOWERS',   col: '#38bdf8' },
+                stars:     { lbl: '⭐ REPOSITORY STARS',   col: '#fbbf24' },
+                forks:     { lbl: '⎇ REPOSITORY FORKS',   col: '#c084fc' },
+                watch:     { lbl: '👁 REPOSITORY WATCHERS', col: '#34d399' }
             };
 
             const spdMetaMap = {
-                ultra: '⚡ Ultra',
-                fast:  '🚀 Fast',
-                reg:   '🌿 Organic'
+                ultra: '⚡ Ultra Track',
+                fast:  '🚀 Fast Track',
+                reg:   '🛡️ Regular Track'
             };
+
+            const localPriceByInv = {};
+            localBoostTxs.forEach(tx => {
+                if (tx && tx.invoice) localPriceByInv[String(tx.invoice)] = parseFloat(tx.usdt || 0) || 0;
+            });
 
             const seenInv = new Set();
             const merged = [];
@@ -10072,14 +10060,16 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 const done = Math.min(qty, Math.max(0, parseInt(o.done_count || 0, 10)));
                 const stUp = String(o.status || 'QUEUED').toUpperCase();
                 const spdKey = String(o.speed_track || 'reg').toLowerCase();
+                const pUsd = parseFloat(o.price_usd || 0) || localPriceByInv[inv] || 0;
                 merged.push({
                     inv: inv || '-',
                     svcKey: svcKey,
-                    spdLabel: spdMetaMap[spdKey] || '🌿 Organic',
+                    spdLabel: spdMetaMap[spdKey] || '🛡️ Regular Track',
                     targetClean: cleanTargetStr(o.target_clean || o.target_url, svcKey),
                     qty: qty,
                     done: stUp === 'COMPLETED' ? qty : done,
                     pct: stUp === 'COMPLETED' ? 100 : Math.round((done / qty) * 100),
+                    priceUsd: pUsd,
                     status: stUp,
                     nextWib: String(o.next_run_wib || ''),
                     etaWib: String(o.eta_wib || ''),
@@ -10099,11 +10089,12 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 merged.push({
                     inv: inv || '-',
                     svcKey: svcKey,
-                    spdLabel: spdMetaMap[spdKey] || '🌿 Organic',
+                    spdLabel: spdMetaMap[spdKey] || '🛡️ Regular Track',
                     targetClean: cleanTargetStr(tx.target, svcKey),
                     qty: qty,
                     done: 0,
                     pct: 0,
+                    priceUsd: parseFloat(tx.usdt || 0) || 0,
                     status: 'QUEUED',
                     nextWib: '',
                     etaWib: '',
@@ -10150,11 +10141,13 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                     return `
                         <div class="xb-vb-card">
                             <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                                <div style="display:flex;align-items:center;gap:5px;min-width:0;flex:1;">
-                                    <button type="button" class="xb-adm-mini-btn" style="padding:2px 6px;font-size:0.56rem;color:var(--text-primary);" onclick="navigator.clipboard.writeText('${ord.inv}'); showToast('📋 Invoice ${ord.inv} copied!');">${ord.inv} 📋</button>
-                                    <span class="xb-ex-chip" style="color:${sm.col};border-color:${sm.col}55;font-size:0.48rem;">${sm.lbl}</span>
-                                </div>
+                                <button type="button" class="xb-adm-mini-btn" style="padding:3px 7px;font-size:0.58rem;color:var(--text-primary);" onclick="navigator.clipboard.writeText('${ord.inv}'); showToast('📋 Invoice ${ord.inv} copied!');">${ord.inv} 📋</button>
                                 <span class="xb-ex-chip" style="color:${stCol};border-color:${stCol}66;flex-shrink:0;">${stBadge}</span>
+                            </div>
+
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                <span class="xb-ex-chip" style="color:${sm.col};border-color:${sm.col}55;font-size:0.52rem;padding:3px 8px;">${sm.lbl}</span>
+                                <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);font-size:0.56rem;padding:3px 8px;flex-shrink:0;">💰 ${fmtPrice(ord.priceUsd)}</span>
                             </div>
 
                             <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:9px;padding:7px 9px;font-family:'JetBrains Mono',monospace;">
@@ -11869,8 +11862,10 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 <div class="xb-vp-wrap">
                     <!-- 1. NATIVE CLASSIC VIP GRID MEMBER PASS (ZERO GLITCH, DISTINCT FROM WALLET) -->
                     <div class="xb-vgrid-card is-profile-grid tier-${prfTierKey}">
-                        <div class="xb-vg-top" style="justify-content:center;">
-                            <div class="xb-vg-tier-pill" style="padding:5px 14px;">${vip.emblem} ${vip.rank}</div>
+                        <div class="xb-vg-top">
+                            <button type="button" class="xb-vg-corner-btn" onclick="openProfileSlide('username')">✏️ Edit</button>
+                            <div class="xb-vg-tier-pill">${vip.emblem} ${vip.rank}</div>
+                            <button type="button" class="xb-vg-corner-btn" onclick="openUserPersonal3DAnalyticsModal()">📊 Stats</button>
                         </div>
 
                         <div class="xb-vg-center">
@@ -12887,41 +12882,63 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 return;
             }
 
-            const speedBadgeMap = {
-                reg: { lbl: 'ORGANIC • 3h/10u', col: '#38bdf8' },
-                fast: { lbl: 'FAST • 2h/10u', col: '#c084fc' },
-                ultra: { lbl: 'ULTRA • 1h/10u', col: '#f472b6' }
+            const admSvcMeta = {
+                followers: { lbl: '👥 GITHUB FOLLOWERS',    col: '#38bdf8' },
+                stars:     { lbl: '⭐ REPOSITORY STARS',    col: '#fbbf24' },
+                forks:     { lbl: '⎇ REPOSITORY FORKS',    col: '#c084fc' },
+                watch:     { lbl: '👁 REPOSITORY WATCHERS', col: '#34d399' }
+            };
+            const admSpdMeta = {
+                reg:   '🛡️ Regular Track',
+                fast:  '🚀 Fast Track',
+                ultra: '⚡ Ultra Track'
             };
 
             box.innerHTML = orders.slice(0, 25).map(ord => {
                 const inv = String(ord.invoice_id || '-');
                 const st = String(ord.status || 'QUEUED').toUpperCase();
-                const svc = String(ord.service_type || 'followers').toUpperCase();
+                const svcRaw = String(ord.service_type || 'followers').toLowerCase();
+                const svcKey = svcRaw.includes('star') ? 'stars' : (svcRaw.includes('fork') ? 'forks' : (svcRaw.includes('watch') ? 'watch' : 'followers'));
+                const sm = admSvcMeta[svcKey] || admSvcMeta.followers;
                 const spdKey = String(ord.speed_track || 'reg').toLowerCase();
-                const spd = speedBadgeMap[spdKey] || speedBadgeMap.reg;
+                const spdLabel = admSpdMeta[spdKey] || '🛡️ Regular Track';
                 const qty = Math.max(1, parseInt(ord.qty || 0, 10) || 1);
                 const done = Math.min(qty, Math.max(0, parseInt(ord.done_count || 0, 10) || 0));
                 const pct = st === 'COMPLETED' ? 100 : Math.round((done / qty) * 100);
-                const targetTxt = String(ord.target_clean || ord.target_url || '-').replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/\/+$/, '');
+                const priceUsd = parseFloat(ord.price_usd || 0) || 0;
+                const targetTxt = String(ord.target_clean || ord.target_url || '-').replace(/^https?:\/\/(www\.)?github\.com\//i, '').replace(/^@+/, '').replace(/\/+$/, '');
+                const tgtDisp = svcKey === 'followers' ? `@${targetTxt}` : targetTxt;
+                const ghUrl = `https://github.com/${targetTxt}`;
                 const buyerTxt = String(ord.buyer_username || 'Client');
                 const slots = Array.isArray(ord.token_slots) ? ord.token_slots : [];
                 const allocTxt = String(ord.alloc_summary || (slots.length > 0 ? `${slots.length} Slots Allocated` : 'Waiting PC Worker Allocation'));
                 const repCnt = Number(ord.replaced_count || 0);
 
-                let stCol = '#fbbf24';
-                if (st === 'RUNNING') stCol = '#38bdf8';
-                else if (st === 'COMPLETED') stCol = '#34d399';
-                else if (st === 'PAUSED') stCol = '#c084fc';
-                else if (st === 'CANCELLED' || st === 'FAILED') stCol = '#f87171';
+                const isDone = st === 'COMPLETED';
+                const isRun = st === 'RUNNING';
+                const isPaused = st === 'PAUSED';
+                const isCancel = st === 'CANCELLED' || st === 'FAILED';
+                const isFinished = isDone || isCancel;
 
-                const isFinished = (st === 'COMPLETED' || st === 'CANCELLED');
-                const nextToggleStatus = (st === 'PAUSED') ? 'QUEUED' : 'PAUSED';
-                const nextToggleLbl = (st === 'PAUSED') ? '▶ Resume' : '⏸ Pause';
+                const stCol = isDone ? '#34d399' : (isRun ? '#38bdf8' : (isCancel ? '#f87171' : (isPaused ? '#c084fc' : '#fbbf24')));
+                const stBadge = isDone ? '✅ COMPLETED' : (isRun ? '⚡ DELIVERING' : (isCancel ? '✕ STOPPED' : (isPaused ? '⏸ PAUSED' : '⏳ QUEUED')));
+                const nextToggleStatus = isPaused ? 'QUEUED' : 'PAUSED';
+                const nextToggleLbl = isPaused ? '▶ Resume' : '⏸ Pause';
 
-                // Default show slots open for RUNNING/QUEUED orders; collapsible for COMPLETED
+                // 4-Step Tracker identik dengan Vault Pembeli
+                const step2Cls = (isRun || isDone) ? 'done' : (!isCancel ? 'active' : '');
+                const step3Cls = isDone ? 'done' : (isRun ? 'active' : '');
+                const step4Cls = isDone ? 'done' : '';
+
+                const timingVal = isDone
+                    ? (ord.duration_str ? `Done • ${ord.duration_str}` : '100% Delivered')
+                    : (isRun
+                        ? (ord.next_run_wib ? `Next ${ord.next_run_wib}` : (ord.eta_wib ? `ETA ${ord.eta_wib}` : 'Live Drip'))
+                        : (isPaused ? 'Paused' : 'In Queue'));
+
                 const showSlots = window._admBoostSlotVisible[inv] !== undefined
                     ? window._admBoostSlotVisible[inv]
-                    : (st === 'RUNNING' || st === 'QUEUED');
+                    : (isRun || st === 'QUEUED');
                 const isExpanded = Boolean(window._admBoostSlotExpand[inv]);
 
                 let slotsHtml = '';
@@ -12966,27 +12983,49 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 }
 
                 return `
-                    <div class="xb-ops-qcard">
+                    <div class="xb-vb-card">
                         <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.65rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                ${inv} • <span style="color:#38bdf8;">${svc}</span>
-                            </span>
-                            <div style="display:flex;align-items:center;gap:4px;flex-shrink:0;">
-                                <span class="xb-ex-chip" style="color:${spd.col};border-color:${spd.col}55;">${spd.lbl}</span>
-                                <span class="xb-ex-chip" style="color:${stCol};border-color:${stCol}66;">${st}</span>
-                            </div>
+                            <button type="button" class="xb-adm-mini-btn" style="padding:3px 7px;font-size:0.58rem;color:var(--text-primary);" onclick="navigator.clipboard.writeText('${inv}'); showToast('📋 Invoice ${inv} copied!');">${inv} 📋</button>
+                            <span class="xb-ex-chip" style="color:${stCol};border-color:${stCol}66;flex-shrink:0;">${stBadge}</span>
                         </div>
 
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;">
-                            <a href="https://github.com/${targetTxt}" target="_blank" style="color:var(--text-primary);font-weight:800;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">
-                                🎯 ${targetTxt} ↗
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                            <span class="xb-ex-chip" style="color:${sm.col};border-color:${sm.col}55;font-size:0.52rem;padding:3px 8px;">${sm.lbl}</span>
+                            <span class="xb-ex-chip" style="color:#34d399;border-color:rgba(52,211,153,0.5);font-size:0.56rem;padding:3px 8px;flex-shrink:0;">💰 ${fmtPrice(priceUsd)}</span>
+                        </div>
+
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:9px;padding:7px 9px;font-family:'JetBrains Mono',monospace;">
+                            <a href="${ghUrl}" target="_blank" style="color:var(--text-primary);font-size:0.68rem;font-weight:800;text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">
+                                🎯 ${tgtDisp} ↗
                             </a>
-                            <span style="color:#34d399;font-weight:800;flex-shrink:0;">${done}/${qty} (${pct}%)</span>
+                            <span style="font-size:0.66rem;font-weight:800;color:${isDone ? '#34d399' : '#38bdf8'};flex-shrink:0;">${pct}%</span>
+                        </div>
+
+                        <div class="xb-vb-stepper">
+                            <div class="xb-vb-step done">✓ Paid</div>
+                            <div class="xb-vb-step ${step2Cls}">${step2Cls === 'done' ? '✓ ' : ''}Queued</div>
+                            <div class="xb-vb-step ${step3Cls}">${step3Cls === 'done' ? '✓ ' : (step3Cls === 'active' ? '⚡ ' : '')}Delivering</div>
+                            <div class="xb-vb-step ${step4Cls}">${step4Cls === 'done' ? '✓ ' : ''}Done</div>
                         </div>
 
                         <div class="xb-ops-qbar"><div class="xb-ops-qfill" style="width:${pct}%;"></div></div>
 
-                        <!-- LIVE TOKEN ALLOCATION BAR -->
+                        <div class="xb-vb-kpis">
+                            <div class="xb-vb-kpi">
+                                <div class="xb-vb-kpi-k">PROGRESS</div>
+                                <div class="xb-vb-kpi-v" style="color:#34d399;">${done} / ${qty}</div>
+                            </div>
+                            <div class="xb-vb-kpi">
+                                <div class="xb-vb-kpi-k">SPEED MODE</div>
+                                <div class="xb-vb-kpi-v" style="color:#c084fc;">${spdLabel}</div>
+                            </div>
+                            <div class="xb-vb-kpi">
+                                <div class="xb-vb-kpi-k">TIMING / ETA</div>
+                                <div class="xb-vb-kpi-v" style="color:#38bdf8;">${timingVal}</div>
+                            </div>
+                        </div>
+
+                        <!-- ADMIN-ONLY: BUYER & PAT TOKEN ALLOCATION -->
                         <div class="xb-tok-meta-bar">
                             <span style="color:#38bdf8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">🔑 ${allocTxt}${repCnt > 0 ? ` • 🔄 ${repCnt} Rep` : ''}</span>
                             ${slots.length > 0 ? `
@@ -12998,17 +13037,17 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
 
                         ${slotsHtml}
 
-                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
-                            <span style="font-size:0.54rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                👤 ${buyerTxt}${ord.next_run_wib && st === 'RUNNING' ? ` • Next: ${ord.next_run_wib}` : (ord.duration_str && st === 'COMPLETED' ? ` • Done in ${ord.duration_str}` : '')}
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;padding-top:2px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                👤 ${buyerTxt}
                             </span>
                             ${!isFinished ? `
                                 <div style="display:flex;gap:4px;flex-shrink:0;">
-                                    <button type="button" class="xb-adm-mini-btn" style="color:${st === 'PAUSED' ? '#34d399' : '#fbbf24'};" onclick="adminControlBoostOrder('${inv}', '${nextToggleStatus}')">${nextToggleLbl}</button>
+                                    <button type="button" class="xb-adm-mini-btn" style="color:${isPaused ? '#34d399' : '#fbbf24'};" onclick="adminControlBoostOrder('${inv}', '${nextToggleStatus}')">${nextToggleLbl}</button>
                                     <button type="button" class="xb-adm-mini-btn" style="color:#f87171;" onclick="adminControlBoostOrder('${inv}', 'CANCELLED')">✕ Cancel</button>
                                 </div>
                             ` : `
-                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:${stCol};font-weight:800;">${st === 'COMPLETED' ? '✓ DELIVERED' : '✕ STOPPED'}</span>
+                                <a href="${ghUrl}" target="_blank" class="xb-adm-mini-btn" style="color:#38bdf8;text-decoration:none;">🌐 Verify ↗</a>
                             `}
                         </div>
                     </div>
@@ -19534,11 +19573,11 @@ let _ghAgeCheckerResults = [];
         const XB_BOOST_MAX_QTY = 400;
         const XB_BOOST_SPEED_META = {
             reg: {
-                title: 'Regular Track • Organic Drip-Feed',
+                title: 'Regular Track • Steady Drip-Feed',
                 cls: '',
                 hrsPer10: 3,
                 paceText: '10 units / ±3 hours',
-                desc: 'Safest organic pacing designed to mimic natural developer discovery.'
+                desc: 'Safest steady pacing designed to mimic natural developer discovery.'
             },
             fast: {
                 title: 'Fast Track • Priority Pacing',
