@@ -4840,6 +4840,379 @@
             }
             .xb-sidebar-logout-btn:hover { background: rgba(220, 38, 38, 0.22); }
             [data-theme="platinum"] .xb-sidebar-logout-btn { color: #dc2626; }
+
+            /* =========================================================
+               ⚡ XIANBEE-TECH EXCHANGE (EMBEDDED IN WALLET • REAL-TIME)
+               ========================================================= */
+            .xb-wal-ex-hidden { display: none !important; }
+            .xb-wal-switcher {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 5px;
+                padding: 4px;
+                margin: 10px 0;
+                border-radius: 13px;
+                background: var(--bg-input);
+                border: 1px solid var(--ex-hairline);
+            }
+            .xb-wal-sw-btn {
+                border: none;
+                background: transparent;
+                color: var(--text-muted);
+                font-family: inherit;
+                font-size: 0.72rem;
+                font-weight: 800;
+                padding: 9px 6px;
+                border-radius: 10px;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                transition: 0.18s ease;
+            }
+            .xb-wal-sw-btn.active {
+                color: #ffffff;
+                background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+                box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+            }
+            .xb-ex-hub {
+                display: flex;
+                flex-direction: column;
+                gap: 9px;
+                width: 100%;
+                margin-bottom: 12px;
+            }
+            .xb-ex-livebar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                padding: 7px 10px;
+                border-radius: 11px;
+                background: var(--ex-card-bg);
+                border: 1px solid var(--ex-hairline);
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.56rem;
+                font-weight: 800;
+            }
+            .xb-ex-dot {
+                width: 7px;
+                height: 7px;
+                border-radius: 50%;
+                background: #10b981;
+                box-shadow: 0 0 8px #10b981;
+                display: inline-block;
+            }
+            .xb-ex-dot.syncing { background: #fbbf24; box-shadow: 0 0 8px #fbbf24; }
+            .xb-ex-modes {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 5px;
+                padding: 4px;
+                border-radius: 12px;
+                background: var(--bg-input);
+                border: 1px solid var(--ex-hairline);
+            }
+            .xb-ex-mbtn {
+                border: none;
+                background: transparent;
+                color: var(--text-muted);
+                font-family: inherit;
+                font-size: 0.62rem;
+                font-weight: 800;
+                padding: 8px 3px;
+                border-radius: 9px;
+                cursor: pointer;
+                white-space: nowrap;
+                transition: 0.16s ease;
+            }
+            .xb-ex-mbtn.active {
+                background: linear-gradient(135deg, rgba(56, 189, 248, 0.22) 0%, rgba(124, 58, 237, 0.28) 100%);
+                color: var(--text-primary);
+                border: 1px solid rgba(56, 189, 248, 0.45);
+            }
+            [data-theme="platinum"] .xb-ex-mbtn.active {
+                background: #ffffff;
+                color: #1d4ed8;
+                border-color: rgba(37, 99, 235, 0.3);
+                box-shadow: 0 2px 8px rgba(15, 23, 42, 0.06);
+            }
+            .xb-ex-panel {
+                background: var(--ex-card-bg);
+                border: 1px solid var(--ex-hairline);
+                border-radius: 16px;
+                padding: 12px;
+                display: flex;
+                flex-direction: column;
+                gap: 9px;
+                box-shadow: 0 10px 26px rgba(0, 0, 0, 0.26);
+            }
+            [data-theme="platinum"] .xb-ex-panel {
+                box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+            }
+            .xb-ex-well {
+                background: var(--bg-input);
+                border: 1px solid var(--ex-hairline);
+                border-radius: 13px;
+                padding: 10px 11px;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+            .xb-ex-well:focus-within { border-color: #38bdf8; }
+            .xb-ex-well-top {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.56rem;
+                font-weight: 800;
+                color: var(--text-muted);
+            }
+            .xb-ex-well-main {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+            }
+            .xb-ex-amt-inp {
+                flex: 1;
+                min-width: 0;
+                border: none;
+                background: transparent;
+                color: var(--text-primary);
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 1.25rem;
+                font-weight: 800;
+                outline: none;
+            }
+            .xb-ex-tok-btn {
+                flex-shrink: 0;
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 10px;
+                border-radius: 99px;
+                border: 1px solid var(--ex-hairline);
+                background: var(--ex-card-bg);
+                color: var(--text-primary);
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.68rem;
+                font-weight: 800;
+                cursor: pointer;
+                transition: 0.15s ease;
+            }
+            .xb-ex-tok-btn:hover { border-color: #38bdf8; }
+            .xb-ex-flip-wrap {
+                display: flex;
+                justify-content: center;
+                margin: -14px 0;
+                position: relative;
+                z-index: 3;
+            }
+            .xb-ex-flip-btn {
+                width: 34px;
+                height: 34px;
+                border-radius: 11px;
+                border: 2px solid var(--ex-hairline);
+                background: var(--ex-card-bg);
+                color: #38bdf8;
+                font-size: 0.92rem;
+                font-weight: 800;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+                transition: transform 0.2s ease;
+            }
+            .xb-ex-flip-btn:active { transform: rotate(180deg) scale(0.92); }
+            .xb-ex-presets {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 5px;
+            }
+            .xb-ex-pre-btn {
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                color: var(--text-secondary);
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.58rem;
+                font-weight: 800;
+                padding: 6px 2px;
+                border-radius: 8px;
+                cursor: pointer;
+            }
+            .xb-ex-pre-btn:hover { border-color: #38bdf8; color: var(--text-primary); }
+            .xb-ex-quote-box {
+                background: var(--bg-input);
+                border: 1px solid var(--ex-hairline);
+                border-radius: 11px;
+                padding: 9px 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.58rem;
+            }
+            .xb-ex-qrow {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 8px;
+                color: var(--text-secondary);
+            }
+            .xb-ex-qrow b { color: var(--text-primary); }
+            .xb-ex-cat-grid {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 5px;
+            }
+            .xb-ex-cat-btn {
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                color: var(--text-secondary);
+                border-radius: 9px;
+                padding: 7px 4px;
+                font-size: 0.58rem;
+                font-weight: 800;
+                cursor: pointer;
+                text-align: center;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .xb-ex-cat-btn.active {
+                border-color: #38bdf8;
+                background: rgba(56, 189, 248, 0.14);
+                color: #38bdf8;
+            }
+            .xb-ex-coin-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 6px;
+            }
+            .xb-ex-coin-card {
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                border-radius: 11px;
+                padding: 8px 9px;
+                cursor: pointer;
+                text-align: left;
+                display: flex;
+                flex-direction: column;
+                gap: 3px;
+                transition: 0.15s ease;
+            }
+            .xb-ex-coin-card.active {
+                border-color: #38bdf8;
+                box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.4);
+                background: rgba(56, 189, 248, 0.08);
+            }
+            .xb-ex-pkg-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 6px;
+            }
+            .xb-ex-pkg-card {
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                border-radius: 11px;
+                padding: 8px 6px;
+                cursor: pointer;
+                text-align: center;
+                font-family: 'JetBrains Mono', monospace;
+                transition: 0.15s ease;
+            }
+            .xb-ex-pkg-card.active {
+                border-color: #10b981;
+                background: rgba(16, 185, 129, 0.12);
+            }
+            .xb-ex-pay-grid {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 6px;
+            }
+            .xb-ex-pay-btn {
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                color: var(--text-primary);
+                border-radius: 10px;
+                padding: 8px 5px;
+                font-size: 0.64rem;
+                font-weight: 800;
+                cursor: pointer;
+                text-align: center;
+            }
+            .xb-ex-pay-btn.active {
+                border-color: #10b981;
+                background: rgba(16, 185, 129, 0.15);
+                color: #34d399;
+            }
+            [data-theme="platinum"] .xb-ex-pay-btn.active { color: #059669; }
+            .xb-ex-input {
+                width: 100%;
+                height: 39px;
+                border-radius: 10px;
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                color: var(--text-primary);
+                padding: 0 11px;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.7rem;
+                font-weight: 600;
+                outline: none;
+            }
+            .xb-ex-input:focus { border-color: #38bdf8; }
+            .xb-ex-modal-bg {
+                position: fixed;
+                inset: 0;
+                z-index: 3200;
+                background: rgba(3, 6, 16, 0.78);
+                backdrop-filter: blur(8px);
+                display: none;
+                align-items: center;
+                justify-content: center;
+                padding: 14px;
+            }
+            .xb-ex-modal-bg.open { display: flex; }
+            .xb-ex-modal-box {
+                width: 100%;
+                max-width: 400px;
+                max-height: 82dvh;
+                background: var(--ex-card-bg);
+                border: 1px solid var(--ex-hairline);
+                border-radius: 18px;
+                padding: 14px;
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+                overflow: hidden;
+                box-shadow: 0 22px 55px rgba(0, 0, 0, 0.6);
+            }
+            .xb-ex-tok-list {
+                overflow-y: auto;
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                max-height: 46dvh;
+            }
+            .xb-ex-tok-row {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                padding: 9px 10px;
+                border-radius: 11px;
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                cursor: pointer;
+                text-align: left;
+                width: 100%;
+                color: var(--text-primary);
+            }
+            .xb-ex-tok-row:hover { border-color: #38bdf8; }
         </style>
 
         <!-- 60FPS INSTITUTIONAL MARKET DEPTH & CANDLESTICK CANVAS -->
@@ -5890,6 +6263,1248 @@
                     domMo.observe(targetNode, { childList: true, subtree: true });
                     scheduleSync();
                     setTimeout(scheduleSync, 500);
+                });
+            })();
+
+            // =========================================================
+            // 🌐 XIANBEE-TECH EXCHANGE — REAL-TIME MARKET FEED & STATE
+            // =========================================================
+            const XB_EX_WEBHOOK = (typeof GSHEET_WEBHOOK_URL !== 'undefined' && GSHEET_WEBHOOK_URL)
+                ? GSHEET_WEBHOOK_URL
+                : 'https://script.google.com/macros/s/AKfycbwakQrIn6zsKZLyvLnIklk6cXNRVOHSgsD3UNM5ApQrRVXpLXxT6X4tW1pMQIvGdnlx/exec';
+
+            const XB_EX_COINS = [
+                { code: 'usdt_bsc',     sym: 'USDT',  net: 'BEP-20 (BSC)',    cat: 'stables', binance: null,        cg: 'tether',                 color: '#10b981', stable: true },
+                { code: 'usdt_trc20',   sym: 'USDT',  net: 'TRC-20 (TRON)',   cat: 'stables', binance: null,        cg: 'tether',                 color: '#10b981', stable: true },
+                { code: 'usdt_arb',     sym: 'USDT',  net: 'Arbitrum One',    cat: 'stables', binance: null,        cg: 'tether',                 color: '#10b981', stable: true },
+                { code: 'usdt_op',      sym: 'USDT',  net: 'Optimism',        cat: 'stables', binance: null,        cg: 'tether',                 color: '#10b981', stable: true },
+                { code: 'usdt_matic',   sym: 'USDT',  net: 'Polygon PoS',     cat: 'stables', binance: null,        cg: 'tether',                 color: '#10b981', stable: true },
+                { code: 'usdc_bsc',     sym: 'USDC',  net: 'BEP-20 (BSC)',    cat: 'stables', binance: null,        cg: 'usd-coin',               color: '#2563eb', stable: true },
+
+                { code: 'eth_base',     sym: 'ETH',   net: 'Base Network',    cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_arb',      sym: 'ETH',   net: 'Arbitrum One',    cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_op',       sym: 'ETH',   net: 'Optimism',        cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_zksync',   sym: 'ETH',   net: 'zkSync Era',      cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_linea',    sym: 'ETH',   net: 'Linea',           cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_scroll',   sym: 'ETH',   net: 'Scroll',          cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_blast',    sym: 'ETH',   net: 'Blast',           cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_zora',     sym: 'ETH',   net: 'Zora',            cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_starknet', sym: 'ETH',   net: 'Starknet',        cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_taiko',    sym: 'ETH',   net: 'Taiko',           cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+                { code: 'eth_erc20',    sym: 'ETH',   net: 'Ethereum ERC-20', cat: 'eth',     binance: 'ETHUSDT',   cg: 'ethereum',               color: '#38bdf8' },
+
+                { code: 'bnb_bsc',      sym: 'BNB',   net: 'BSC / BEP-20',    cat: 'bsc',     binance: 'BNBUSDT',   cg: 'binancecoin',            color: '#f59e0b' },
+                { code: 'bnb_opbnb',    sym: 'BNB',   net: 'opBNB',           cat: 'bsc',     binance: 'BNBUSDT',   cg: 'binancecoin',            color: '#f59e0b' },
+                { code: 'sol_main',     sym: 'SOL',   net: 'Solana Mainnet',  cat: 'sol',     binance: 'SOLUSDT',   cg: 'solana',                 color: '#a855f7' },
+                { code: 'ton_main',     sym: 'TON',   net: 'TON Network',     cat: 'ton',     binance: 'TONUSDT',   cg: 'the-open-network',       color: '#0ea5e9' },
+                { code: 'matic_pos',    sym: 'POL',   net: 'Polygon PoS',     cat: 'matic',   binance: 'POLUSDT',   cg: 'polygon-ecosystem-token',color: '#8b5cf6' },
+                { code: 'eth_zkevm',    sym: 'ETH',   net: 'Polygon zkEVM',   cat: 'matic',   binance: 'ETHUSDT',   cg: 'ethereum',               color: '#8b5cf6' },
+
+                { code: 'tia_celestia', sym: 'TIA',   net: 'Celestia',        cat: 'cosmos',  binance: 'TIAUSDT',   cg: 'celestia',               color: '#c084fc' },
+                { code: 'atom_cosmos',  sym: 'ATOM',  net: 'Cosmos Hub',      cat: 'cosmos',  binance: 'ATOMUSDT',  cg: 'cosmos',                 color: '#818cf8' },
+                { code: 'inj_injective',sym: 'INJ',   net: 'Injective',       cat: 'cosmos',  binance: 'INJUSDT',   cg: 'injective-protocol',     color: '#38bdf8' },
+                { code: 'osmo_osmosis', sym: 'OSMO',  net: 'Osmosis',         cat: 'cosmos',  binance: 'OSMOUSDT',  cg: 'osmosis',                color: '#e879f9' },
+
+                { code: 'sui_main',     sym: 'SUI',   net: 'Sui Network',     cat: 'alt',     binance: 'SUIUSDT',   cg: 'sui',                    color: '#38bdf8' },
+                { code: 'apt_main',     sym: 'APT',   net: 'Aptos',           cat: 'alt',     binance: 'APTUSDT',   cg: 'aptos',                  color: '#94a3b8' },
+                { code: 'sei_main',     sym: 'SEI',   net: 'Sei Network',     cat: 'alt',     binance: 'SEIUSDT',   cg: 'sei-network',            color: '#ef4444' },
+                { code: 'avax_c',       sym: 'AVAX',  net: 'Avalanche C-Chain',cat:'alt',     binance: 'AVAXUSDT',  cg: 'avalanche-2',            color: '#f43f5e' },
+                { code: 'trx_main',     sym: 'TRX',   net: 'TRON TRC-20',     cat: 'alt',     binance: 'TRXUSDT',   cg: 'tron',                   color: '#ef4444' },
+                { code: 'ftm_main',     sym: 'FTM',   net: 'Fantom / Sonic',  cat: 'alt',     binance: 'SUSDT',     cg: 'fantom',                 color: '#3b82f6' },
+                { code: 'mnt_main',     sym: 'MNT',   net: 'Mantle',          cat: 'alt',     binance: null,        cg: 'mantle',                 color: '#10b981' },
+                { code: 'core_main',    sym: 'CORE',  net: 'Core DAO',        cat: 'alt',     binance: null,        cg: 'coredaoorg',             color: '#f59e0b' }
+            ];
+
+            const XB_EX_GAS_CATS = [
+                { k: 'eth',     lbl: 'ETH & L2s' },
+                { k: 'bsc',     lbl: 'BSC / BNB' },
+                { k: 'sol',     lbl: 'Solana' },
+                { k: 'ton',     lbl: 'TON' },
+                { k: 'matic',   lbl: 'Polygon' },
+                { k: 'cosmos',  lbl: 'Cosmos' },
+                { k: 'alt',     lbl: 'Alt L1s' },
+                { k: 'stables', lbl: 'Stables' }
+            ];
+
+            const XB_EX_GAS_PKGS = [
+                { pay: 1.00, netUsd: 0.45, tag: 'Starter Gas' },
+                { pay: 2.00, netUsd: 0.95, tag: 'Standard' },
+                { pay: 5.00, netUsd: 2.45, tag: 'Pro Pack' }
+            ];
+
+            const XB_EX_IDR_METHODS = [
+                { k: 'QRIS',    lbl: 'QRIS' },
+                { k: 'SeaBank', lbl: 'SeaBank' },
+                { k: 'DANA',    lbl: 'DANA' },
+                { k: 'OVO',     lbl: 'OVO' },
+                { k: 'GoPay',   lbl: 'GoPay' },
+                { k: 'BCA',     lbl: 'BCA' }
+            ];
+
+            const XB_EX_PLATFORMS = [
+                { k: 'binance', name: 'Binance', tag: 'Tier-1 Global', badge: '#f59e0b' },
+                { k: 'okx',     name: 'OKX',     tag: 'Web3 & CEX',    badge: '#38bdf8' },
+                { k: 'mexc',    name: 'MEXC',    tag: 'Low-Cap Gems',  badge: '#10b981' },
+                { k: 'bybit',   name: 'Bybit',   tag: 'Derivatives',   badge: '#fbbf24' },
+                { k: 'bitget',  name: 'Bitget',  tag: 'Copy Trading',  badge: '#06b6d4' },
+                { k: 'gateio',  name: 'Gate.io', tag: 'Spot Listing',  badge: '#ef4444' },
+                { k: 'lbank',   name: 'LBank',   tag: 'Global Spot',   badge: '#eab308' }
+            ];
+
+            window._xbExState = window._xbExState || {
+                walletTab: 'wallet',     // 'wallet' | 'exchange'
+                mode: 'swap',            // 'swap' | 'gas' | 'idr' | 'accounts'
+                swapTo: 'eth_base',
+                swapPayUsd: '10',
+                swapAddr: '',
+                gasCat: 'eth',
+                gasCoin: 'eth_base',
+                gasPkgIdx: 0,
+                gasAddr: '',
+                idrAmountUsd: '10',
+                idrMethod: 'DANA',
+                idrDest: '',
+                idrHolder: '',
+                accPlatform: 'binance',
+                accKyc: 'kyc',           // 'kyc' ($35) | 'nokyc' ($25)
+                accEmail: '',
+                prices: { USDT: { usd: 1, chg: 0 }, USDC: { usd: 1, chg: 0 } },
+                liveIdr: (typeof liveUsdtIdrRate !== 'undefined' && Number(liveUsdtIdrRate) > 1000) ? Number(liveUsdtIdrRate) : 0,
+                feedSource: 'CONNECTING',
+                lastSyncStr: '',
+                isFetching: false,
+                pendingOrder: null
+            };
+
+            function getXbExCoin(code) {
+                return XB_EX_COINS.find(c => c.code === code) || XB_EX_COINS[6];
+            }
+
+            function getXbExSpot(coinOrSym) {
+                const sym = typeof coinOrSym === 'string'
+                    ? (getXbExCoin(coinOrSym)?.sym || coinOrSym.toUpperCase())
+                    : String(coinOrSym.sym || 'USDT').toUpperCase();
+                if (sym === 'USDT' || sym === 'USDC') return { usd: 1, chg: 0, ready: true };
+                const rec = window._xbExState.prices[sym];
+                if (rec && Number(rec.usd) > 0) return { usd: Number(rec.usd), chg: Number(rec.chg || 0), ready: true };
+                return { usd: 0, chg: 0, ready: false };
+            }
+
+            async function refreshXbExLivePrices(manual = false) {
+                const st = window._xbExState;
+                if (st.isFetching) return;
+                st.isFetching = true;
+                if (manual && typeof renderXbExBody === 'function') renderXbExBody();
+
+                let gotBinance = false;
+                let gotCg = false;
+
+                // 1. PRIMARY: BINANCE REAL-TIME SPOT + 24H CHANGE
+                try {
+                    const bSyms = ['ETHUSDT','BNBUSDT','SOLUSDT','TONUSDT','POLUSDT','TRXUSDT','SUIUSDT','APTUSDT','AVAXUSDT','TIAUSDT','ATOMUSDT','INJUSDT','OSMOUSDT','SEIUSDT','SUSDT'];
+                    const url24 = 'https://api.binance.com/api/v3/ticker/24hr?symbols=' + encodeURIComponent(JSON.stringify(bSyms));
+                    const rB = await fetch(url24, { cache: 'no-store' });
+                    if (rB.ok) {
+                        const arr = await rB.json();
+                        if (Array.isArray(arr) && arr.length > 0) {
+                            arr.forEach(item => {
+                                const s = String(item.symbol || '');
+                                const p = parseFloat(item.lastPrice || 0);
+                                const ch = parseFloat(item.priceChangePercent || 0);
+                                if (p <= 0) return;
+                                const base = s === 'SUSDT' ? 'FTM' : s.replace(/USDT$/, '');
+                                st.prices[base] = { usd: p, chg: ch };
+                            });
+                            gotBinance = true;
+                        }
+                    }
+                } catch (e) {}
+
+                // 2. COINGECKO REAL-TIME (NON-BINANCE COINS + AUTOMATIC FALLBACK)
+                try {
+                    const cgIds = gotBinance
+                        ? 'mantle,coredaoorg,fantom'
+                        : 'ethereum,binancecoin,solana,the-open-network,polygon-ecosystem-token,tron,sui,aptos,avalanche-2,celestia,cosmos,injective-protocol,osmosis,sei-network,fantom,mantle,coredaoorg';
+                    const rCg = await fetch(
+                        `https://api.coingecko.com/api/v3/simple/price?ids=${cgIds}&vs_currencies=usd&include_24hr_change=true`,
+                        { cache: 'no-store' }
+                    );
+                    if (rCg.ok) {
+                        const cgJson = await rCg.json();
+                        XB_EX_COINS.forEach(c => {
+                            if (c.stable) return;
+                            const entry = cgJson[c.cg];
+                            if (entry && Number(entry.usd) > 0) {
+                                if (!st.prices[c.sym] || !gotBinance) {
+                                    st.prices[c.sym] = { usd: Number(entry.usd), chg: Number(entry.usd_24h_change || 0) };
+                                }
+                            }
+                        });
+                        gotCg = true;
+                    }
+                } catch (e) {}
+
+                // 3. LIVE USD -> IDR RATE (IDENTICAL TO XianBee-TechStore.py)
+                try {
+                    const rFx = await fetch('https://open.er-api.com/v6/latest/USD', { cache: 'no-store' });
+                    if (rFx.ok) {
+                        const fx = await rFx.json();
+                        if (fx && fx.rates && Number(fx.rates.IDR) > 1000) {
+                            st.liveIdr = Math.round(Number(fx.rates.IDR));
+                            if (typeof liveUsdtIdrRate !== 'undefined') liveUsdtIdrRate = st.liveIdr;
+                        }
+                    }
+                } catch (e) {}
+
+                if (!st.liveIdr && typeof liveUsdtIdrRate !== 'undefined' && Number(liveUsdtIdrRate) > 1000) {
+                    st.liveIdr = Math.round(Number(liveUsdtIdrRate));
+                }
+
+                st.feedSource = gotBinance ? 'BINANCE LIVE' : (gotCg ? 'COINGECKO LIVE' : 'OFFLINE');
+                st.lastSyncStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB';
+                st.isFetching = false;
+
+                if (typeof renderXbExBody === 'function') renderXbExBody();
+            }
+
+            // Auto-refresh live spot prices every 10s ONLY when Exchange tab is active
+            setInterval(() => {
+                if (window._xbExState && window._xbExState.walletTab === 'exchange') {
+                    refreshXbExLivePrices(false);
+                }
+            }, 10000);
+
+            // =========================================================
+            // ⚡ XIANBEE-TECH EXCHANGE — UI RENDERER, PIN CHECKOUT & WALLET SYNC
+            // =========================================================
+            function escXbEx(str) {
+                return String(str == null ? '' : str)
+                    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+            }
+
+            function getXbExWalletBal() {
+                if (typeof userBalanceUsdt !== 'undefined' && !isNaN(Number(userBalanceUsdt))) {
+                    return Math.max(0, Number(userBalanceUsdt));
+                }
+                const ls = parseFloat(localStorage.getItem('xb_balance_usdt') || '0');
+                return isNaN(ls) ? 0 : Math.max(0, ls);
+            }
+
+            function fmtXbExTokenQty(qty, spotUsd) {
+                if (!qty || isNaN(qty) || qty <= 0) return '0.0000';
+                if (spotUsd >= 1000) return qty.toFixed(6);
+                if (spotUsd >= 10) return qty.toFixed(4);
+                if (spotUsd >= 1) return qty.toFixed(3);
+                return qty.toFixed(2);
+            }
+
+            function fmtXbExUsdPrice(usd) {
+                if (!usd || usd <= 0) return 'Fetching...';
+                if (usd >= 100) return '$' + usd.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                if (usd >= 1) return '$' + usd.toFixed(3);
+                return '$' + usd.toFixed(4);
+            }
+
+            function fmtXbExIdr(val) {
+                if (!val || isNaN(val) || val <= 0) return 'Fetching...';
+                return 'Rp ' + Math.round(val).toLocaleString('id-ID');
+            }
+
+            // Lightweight MD5 for verifying hashed PINs synced from Telegram Bot
+            function xbExMd5(string) {
+                function rot(l, s) { return (l << s) | (l >>> (32 - s)); }
+                function addU(x, y) {
+                    const l8 = (x & 0x80000000), y8 = (y & 0x80000000);
+                    const l4 = (x & 0x40000000), y4 = (y & 0x40000000);
+                    const r = (x & 0x3FFFFFFF) + (y & 0x3FFFFFFF);
+                    if (l4 & y4) return (r ^ 0x80000000 ^ l8 ^ y8);
+                    if (l4 | y4) return (r & 0x40000000) ? (r ^ 0xC0000000 ^ l8 ^ y8) : (r ^ 0x40000000 ^ l8 ^ y8);
+                    return (r ^ l8 ^ y8);
+                }
+                const F = (x, y, z) => (x & y) | ((~x) & z);
+                const G = (x, y, z) => (x & z) | (y & (~z));
+                const H = (x, y, z) => (x ^ y ^ z);
+                const I = (x, y, z) => (y ^ (x | (~z)));
+                const FF = (a, b, c, d, x, s, ac) => addU(rot(addU(a, addU(addU(F(b, c, d), x), ac)), s), b);
+                const GG = (a, b, c, d, x, s, ac) => addU(rot(addU(a, addU(addU(G(b, c, d), x), ac)), s), b);
+                const HH = (a, b, c, d, x, s, ac) => addU(rot(addU(a, addU(addU(H(b, c, d), x), ac)), s), b);
+                const II = (a, b, c, d, x, s, ac) => addU(rot(addU(a, addU(addU(I(b, c, d), x), ac)), s), b);
+                const toWord = (str) => {
+                    const l = str.length, n = (((l + 8) - ((l + 8) % 64)) / 64 + 1) * 16;
+                    const arr = new Array(n - 1).fill(0);
+                    let bp = 0, bc = 0;
+                    while (bc < l) {
+                        const wc = (bc - (bc % 4)) / 4;
+                        bp = (bc % 4) * 8;
+                        arr[wc] = (arr[wc] | (str.charCodeAt(bc) << bp));
+                        bc++;
+                    }
+                    const wc = (bc - (bc % 4)) / 4;
+                    bp = (bc % 4) * 8;
+                    arr[wc] = arr[wc] | (0x80 << bp);
+                    arr[n - 2] = l << 3;
+                    arr[n - 1] = l >>> 29;
+                    return arr;
+                };
+                const toHex = (val) => {
+                    let s = '';
+                    for (let i = 0; i <= 3; i++) {
+                        const b = (val >>> (i * 8)) & 255;
+                        s += ('0' + b.toString(16)).slice(-2);
+                    }
+                    return s;
+                };
+                const x = toWord(unescape(encodeURIComponent(string)));
+                let a = 0x67452301, b = 0xEFCDAB89, c = 0x98BADCFE, d = 0x10325476;
+                for (let k = 0; k < x.length; k += 16) {
+                    const AA = a, BB = b, CC = c, DD = d;
+                    a = FF(a,b,c,d,x[k+0],7,0xD76AA478); d = FF(d,a,b,c,x[k+1],12,0xE8C7B756); c = FF(c,d,a,b,x[k+2],17,0x242070DB); b = FF(b,c,d,a,x[k+3],22,0xC1BDCEEE);
+                    a = FF(a,b,c,d,x[k+4],7,0xF57C0FAF); d = FF(d,a,b,c,x[k+5],12,0x4787C62A); c = FF(c,d,a,b,x[k+6],17,0xA8304613); b = FF(b,c,d,a,x[k+7],22,0xFD469501);
+                    a = FF(a,b,c,d,x[k+8],7,0x698098D8); d = FF(d,a,b,c,x[k+9],12,0x8B44F7AF); c = FF(c,d,a,b,x[k+10],17,0xFFFF5BB1); b = FF(b,c,d,a,x[k+11],22,0x895CD7BE);
+                    a = FF(a,b,c,d,x[k+12],7,0x6B901122); d = FF(d,a,b,c,x[k+13],12,0xFD987193); c = FF(c,d,a,b,x[k+14],17,0xA679438E); b = FF(b,c,d,a,x[k+15],22,0x49B40821);
+                    a = GG(a,b,c,d,x[k+1],5,0xF61E2562); d = GG(d,a,b,c,x[k+6],9,0xC040B340); c = GG(c,d,a,b,x[k+11],14,0x265E5A51); b = GG(b,c,d,a,x[k+0],20,0xE9B6C7AA);
+                    a = GG(a,b,c,d,x[k+5],5,0xD62F105D); d = GG(d,a,b,c,x[k+10],9,0x02441453); c = GG(c,d,a,b,x[k+15],14,0xD8A1E681); b = GG(b,c,d,a,x[k+4],20,0xE7D3FBC8);
+                    a = GG(a,b,c,d,x[k+9],5,0x21E1CDE6); d = GG(d,a,b,c,x[k+14],9,0xC33707D6); c = GG(c,d,a,b,x[k+3],14,0xF4D50D87); b = GG(b,c,d,a,x[k+8],20,0x455A14ED);
+                    a = GG(a,b,c,d,x[k+13],5,0xA9E3E905); d = GG(d,a,b,c,x[k+2],9,0xFCEFA3F8); c = GG(c,d,a,b,x[k+7],14,0x676F02D9); b = GG(b,c,d,a,x[k+12],20,0x8D2A4C8A);
+                    a = HH(a,b,c,d,x[k+5],4,0xFFFA3942); d = HH(d,a,b,c,x[k+8],11,0x8771F681); c = HH(c,d,a,b,x[k+11],16,0x6D9D6122); b = HH(b,c,d,a,x[k+14],23,0xFDE5380C);
+                    a = HH(a,b,c,d,x[k+1],4,0xA4BEEA44); d = HH(d,a,b,c,x[k+4],11,0x4BDECFA9); c = HH(c,d,a,b,x[k+7],16,0xF6BB4B60); b = HH(b,c,d,a,x[k+10],23,0xBEBFBC70);
+                    a = HH(a,b,c,d,x[k+13],4,0x289B7EC6); d = HH(d,a,b,c,x[k+0],11,0xEAA127FA); c = HH(c,d,a,b,x[k+3],16,0xD4EF3085); b = HH(b,c,d,a,x[k+6],23,0x04881D05);
+                    a = HH(a,b,c,d,x[k+9],4,0xD9D4D039); d = HH(d,a,b,c,x[k+12],11,0xE6DB99E5); c = HH(c,d,a,b,x[k+15],16,0x1FA27CF8); b = HH(b,c,d,a,x[k+2],23,0xC4AC5665);
+                    a = II(a,b,c,d,x[k+0],6,0xF4292244); d = II(d,a,b,c,x[k+7],10,0x432AFF97); c = II(c,d,a,b,x[k+14],15,0xAB9423A7); b = II(b,c,d,a,x[k+5],21,0xFC93A039);
+                    a = II(a,b,c,d,x[k+12],6,0x655B59C3); d = II(d,a,b,c,x[k+3],10,0x8F0CCC92); c = II(c,d,a,b,x[k+10],15,0xFFEFF47D); b = II(b,c,d,a,x[k+1],21,0x85845DD1);
+                    a = II(a,b,c,d,x[k+8],6,0x6FA87E4F); d = II(d,a,b,c,x[k+15],10,0xFE2CE6E0); c = II(c,d,a,b,x[k+6],15,0xA3014314); b = II(b,c,d,a,x[k+13],21,0x4E0811A1);
+                    a = II(a,b,c,d,x[k+4],6,0xF7537E82); d = II(d,a,b,c,x[k+11],10,0xBD3AF235); c = II(c,d,a,b,x[k+2],15,0x2AD7D2BB); b = II(b,c,d,a,x[k+9],21,0xEB86D391);
+                    a = addU(a,AA); b = addU(b,BB); c = addU(c,CC); d = addU(d,DD);
+                }
+                return (toHex(a) + toHex(b) + toHex(c) + toHex(d)).toLowerCase();
+            }
+
+            function switchXbWalletTab(tabKey) {
+                const st = window._xbExState;
+                st.walletTab = tabKey === 'exchange' ? 'exchange' : 'wallet';
+                applyXbWalletTabVisibility();
+                if (st.walletTab === 'exchange') {
+                    renderXbExBody(true);
+                    refreshXbExLivePrices(false);
+                }
+            }
+
+            function setXbExMode(modeKey) {
+                window._xbExState.mode = modeKey;
+                renderXbExBody(true);
+                if (window._xbExState.feedSource === 'CONNECTING' || window._xbExState.feedSource === 'OFFLINE') {
+                    refreshXbExLivePrices(false);
+                }
+            }
+
+            function applyXbWalletTabVisibility() {
+                const sw = document.getElementById('xbWalExSwitcher');
+                const hub = document.getElementById('xbExHubContainer');
+                if (!sw || !hub || !hub.parentElement) return;
+
+                const isEx = window._xbExState.walletTab === 'exchange';
+                sw.querySelectorAll('.xb-wal-sw-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.getAttribute('data-wtab') === window._xbExState.walletTab);
+                });
+
+                hub.style.display = isEx ? 'flex' : 'none';
+
+                // Hide/show sibling elements BELOW #xbExHubContainer so the Balance Card & Switcher always remain pinned on top
+                let seenHub = false;
+                Array.from(hub.parentElement.children).forEach(el => {
+                    if (el === hub) { seenHub = true; return; }
+                    if (!seenHub) return;
+                    if (isEx) el.classList.add('xb-wal-ex-hidden');
+                    else el.classList.remove('xb-wal-ex-hidden');
+                });
+            }
+
+            function updateXbExDynamicCalc() {
+                const st = window._xbExState;
+                const bal = getXbExWalletBal();
+
+                if (st.mode === 'swap') {
+                    const coin = getXbExCoin(st.swapTo);
+                    const spot = getXbExSpot(coin);
+                    const pay = parseFloat(st.swapPayUsd || '0') || 0;
+                    const fee = pay > 0 ? Math.max(0.25, pay * 0.015) : 0;
+                    const netUsd = Math.max(0, pay - fee);
+                    const recvQty = (spot.ready && spot.usd > 0 && netUsd > 0) ? (netUsd / spot.usd) : 0;
+
+                    const outEl = document.getElementById('xbExSwapRecvOut');
+                    if (outEl) outEl.innerText = spot.ready ? fmtXbExTokenQty(recvQty, spot.usd) : 'Fetching...';
+
+                    const eqEl = document.getElementById('xbExSwapIdrEq');
+                    if (eqEl) eqEl.innerText = st.liveIdr > 0 ? ('≈ ' + fmtXbExIdr(pay * st.liveIdr)) : 'Syncing IDR rate...';
+
+                    const spotEl = document.getElementById('xbExSwapSpotLbl');
+                    if (spotEl) {
+                        const chgSign = spot.chg >= 0 ? '+' : '';
+                        const chgCol = spot.chg >= 0 ? '#34d399' : '#f87171';
+                        spotEl.innerHTML = spot.ready
+                            ? `1 ${coin.sym} = <b>${fmtXbExUsdPrice(spot.usd)}</b> <span style="color:${chgCol};">(${chgSign}${spot.chg.toFixed(2)}%)</span>`
+                            : `<span style="color:#fbbf24;">Fetching live price...</span>`;
+                    }
+
+                    const feeEl = document.getElementById('xbExSwapFeeLbl');
+                    if (feeEl) feeEl.innerText = '$' + fee.toFixed(2) + ' USDT (1.5%)';
+
+                    const netEl = document.getElementById('xbExSwapNetLbl');
+                    if (netEl) netEl.innerText = spot.ready ? `${fmtXbExTokenQty(recvQty, spot.usd)} ${coin.sym}` : 'Waiting live feed';
+
+                    const btn = document.getElementById('xbExSwapSubmitBtn');
+                    if (btn) {
+                        if (!spot.ready) {
+                            btn.disabled = true;
+                            btn.innerText = '⏳ Fetching Real-Time Price...';
+                        } else if (pay < 2) {
+                            btn.disabled = false;
+                            btn.innerText = 'Minimum Swap $2.00 USDT';
+                        } else if (pay > bal) {
+                            btn.disabled = false;
+                            btn.innerText = `Insufficient Balance ($${bal.toFixed(2)} USDT)`;
+                        } else {
+                            btn.disabled = false;
+                            btn.innerText = `⚡ Swap $${pay.toFixed(2)} USDT ➔ ${fmtXbExTokenQty(recvQty, spot.usd)} ${coin.sym}`;
+                        }
+                    }
+                } else if (st.mode === 'idr') {
+                    const amt = parseFloat(st.idrAmountUsd || '0') || 0;
+                    const rateReady = st.liveIdr > 1000;
+                    const feeUsd = amt > 0 ? Math.max(0.20, amt * 0.015) : 0;
+                    const netUsd = Math.max(0, amt - feeUsd);
+                    const netIdr = rateReady ? Math.round(netUsd * st.liveIdr) : 0;
+
+                    const outIdr = document.getElementById('xbExIdrNetOut');
+                    if (outIdr) outIdr.innerText = rateReady ? fmtXbExIdr(netIdr) : 'Fetching rate...';
+
+                    const rLbl = document.getElementById('xbExIdrRateLbl');
+                    if (rLbl) rLbl.innerText = rateReady ? `1 USDT = ${fmtXbExIdr(st.liveIdr)}` : 'Syncing live FX...';
+
+                    const fLbl = document.getElementById('xbExIdrFeeLbl');
+                    if (fLbl) fLbl.innerText = `$${feeUsd.toFixed(2)} USDT (1.5%)`;
+
+                    const btn = document.getElementById('xbExIdrSubmitBtn');
+                    if (btn) {
+                        if (!rateReady) {
+                            btn.disabled = true;
+                            btn.innerText = '⏳ Fetching Live USD/IDR Rate...';
+                        } else if (amt < 2) {
+                            btn.disabled = false;
+                            btn.innerText = 'Minimum Convert $2.00 USDT';
+                        } else if (amt > bal) {
+                            btn.disabled = false;
+                            btn.innerText = `Insufficient Balance ($${bal.toFixed(2)} USDT)`;
+                        } else {
+                            btn.disabled = false;
+                            btn.innerText = `🇮🇩 Convert $${amt.toFixed(2)} ➔ ${fmtXbExIdr(netIdr)} (${st.idrMethod})`;
+                        }
+                    }
+                }
+            }
+
+            function renderXbExBody(forceFull = false) {
+                const hub = document.getElementById('xbExHubContainer');
+                if (!hub) return;
+                const st = window._xbExState;
+
+                // Preserve user typing focus when 10s background price refresh fires
+                if (!forceFull && hub.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') {
+                    const liveMeta = document.getElementById('xbExLiveMetaTxt');
+                    if (liveMeta) liveMeta.innerText = `${st.feedSource} • ${st.lastSyncStr || 'Syncing...'}`;
+                    updateXbExDynamicCalc();
+                    return;
+                }
+
+                const bal = getXbExWalletBal();
+                const dotCls = st.isFetching || st.feedSource === 'CONNECTING' ? 'xb-ex-dot syncing' : 'xb-ex-dot';
+                const idrTxt = st.liveIdr > 1000 ? fmtXbExIdr(st.liveIdr) : 'Syncing...';
+
+                let modeHtml = '';
+
+                // ---------------- MODE 1: INSTANT SWAP ----------------
+                if (st.mode === 'swap') {
+                    const coin = getXbExCoin(st.swapTo);
+                    const spot = getXbExSpot(coin);
+                    const pay = parseFloat(st.swapPayUsd || '0') || 0;
+                    const fee = pay > 0 ? Math.max(0.25, pay * 0.015) : 0;
+                    const netUsd = Math.max(0, pay - fee);
+                    const recvQty = (spot.ready && spot.usd > 0 && netUsd > 0) ? (netUsd / spot.usd) : 0;
+                    const chgSign = spot.chg >= 0 ? '+' : '';
+                    const chgCol = spot.chg >= 0 ? '#34d399' : '#f87171';
+
+                    modeHtml = `
+                        <div class="xb-ex-panel">
+                            <div class="xb-ex-well">
+                                <div class="xb-ex-well-top">
+                                    <span>PAY FROM WALLET</span>
+                                    <span>BAL: <b style="color:#34d399;">$${bal.toFixed(2)} USDT</b></span>
+                                </div>
+                                <div class="xb-ex-well-main">
+                                    <input type="number" step="any" min="0" class="xb-ex-amt-inp" id="xbExSwapPayInp"
+                                        value="${escXbEx(st.swapPayUsd)}" placeholder="0.00"
+                                        oninput="window._xbExState.swapPayUsd=this.value; updateXbExDynamicCalc();">
+                                    <span class="xb-ex-tok-btn" style="cursor:default;border-color:rgba(16,185,129,0.45);">
+                                        <span style="width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
+                                        <span>USDT</span>
+                                    </span>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);" id="xbExSwapIdrEq">
+                                    ${st.liveIdr > 0 ? ('≈ ' + fmtXbExIdr(pay * st.liveIdr)) : 'Syncing IDR rate...'}
+                                </div>
+                            </div>
+
+                            <div class="xb-ex-presets">
+                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(5)">$5</button>
+                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(10)">$10</button>
+                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(25)">$25</button>
+                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(Math.floor(getXbExWalletBal()*100)/100)">MAX</button>
+                            </div>
+
+                            <div class="xb-ex-flip-wrap">
+                                <button type="button" class="xb-ex-flip-btn" title="Select Output Coin" onclick="openXbExTokenPicker('swap')">⇅</button>
+                            </div>
+
+                            <div class="xb-ex-well">
+                                <div class="xb-ex-well-top">
+                                    <span>RECEIVE (${escXbEx(coin.net)})</span>
+                                    <span style="color:#38bdf8;">LIVE SPOT</span>
+                                </div>
+                                <div class="xb-ex-well-main">
+                                    <div class="xb-ex-amt-inp" id="xbExSwapRecvOut" style="color:#38bdf8;overflow:hidden;text-overflow:ellipsis;">
+                                        ${spot.ready ? fmtXbExTokenQty(recvQty, spot.usd) : 'Fetching...'}
+                                    </div>
+                                    <button type="button" class="xb-ex-tok-btn" onclick="openXbExTokenPicker('swap')">
+                                        <span style="width:8px;height:8px;border-radius:50%;background:${coin.color};"></span>
+                                        <span>${escXbEx(coin.sym)}</span>
+                                        <span style="font-size:0.55rem;opacity:0.75;">▼</span>
+                                    </button>
+                                </div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);" id="xbExSwapSpotLbl">
+                                    ${spot.ready
+                                        ? `1 ${coin.sym} = <b>${fmtXbExUsdPrice(spot.usd)}</b> <span style="color:${chgCol};">(${chgSign}${spot.chg.toFixed(2)}%)</span>`
+                                        : `<span style="color:#fbbf24;">Fetching real-time price...</span>`}
+                                </div>
+                            </div>
+
+                            <div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">
+                                    DESTINATION WALLET ADDRESS (${escXbEx(coin.net.toUpperCase())})
+                                </div>
+                                <input type="text" class="xb-ex-input" id="xbExSwapAddrInp"
+                                    value="${escXbEx(st.swapAddr)}" placeholder="Paste your ${escXbEx(coin.sym)} (${escXbEx(coin.net)}) address..."
+                                    oninput="window._xbExState.swapAddr=this.value;">
+                            </div>
+
+                            <div class="xb-ex-quote-box">
+                                <div class="xb-ex-qrow"><span>Market Feed</span><b style="color:#34d399;">${escXbEx(st.feedSource)}</b></div>
+                                <div class="xb-ex-qrow"><span>Network Route</span><b>${escXbEx(coin.net)}</b></div>
+                                <div class="xb-ex-qrow"><span>Routing Fee</span><b id="xbExSwapFeeLbl">$${fee.toFixed(2)} USDT (1.5%)</b></div>
+                                <div class="xb-ex-qrow"><span>Est. Receive</span><b id="xbExSwapNetLbl" style="color:#38bdf8;">${spot.ready ? `${fmtXbExTokenQty(recvQty, spot.usd)} ${coin.sym}` : 'Waiting live feed'}</b></div>
+                            </div>
+
+                            <button type="button" id="xbExSwapSubmitBtn" class="btn-ui primary" style="width:100%;height:42px;font-size:0.75rem;border-radius:11px;"
+                                ${!spot.ready ? 'disabled' : ''} onclick="submitXbExSwapOrder()">
+                                ${!spot.ready ? '⏳ Fetching Real-Time Price...' : `⚡ Swap $${pay.toFixed(2)} USDT ➔ ${fmtXbExTokenQty(recvQty, spot.usd)} ${coin.sym}`}
+                            </button>
+                        </div>
+                    `;
+                }
+
+                // ---------------- MODE 2: BUY CRYPTO (RETAIL GAS PACKS) ----------------
+                else if (st.mode === 'gas') {
+                    const catCoins = XB_EX_COINS.filter(c => c.cat === st.gasCat);
+                    let activeCoin = catCoins.find(c => c.code === st.gasCoin);
+                    if (!activeCoin) {
+                        activeCoin = catCoins[0] || XB_EX_COINS[6];
+                        st.gasCoin = activeCoin.code;
+                    }
+                    const spot = getXbExSpot(activeCoin);
+                    const pkg = XB_EX_GAS_PKGS[st.gasPkgIdx] || XB_EX_GAS_PKGS[0];
+                    const estTokens = (spot.ready && spot.usd > 0) ? (pkg.netUsd / spot.usd) : 0;
+
+                    modeHtml = `
+                        <div class="xb-ex-panel">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-size:0.72rem;font-weight:800;color:var(--text-primary);">⛽ Retail Crypto &amp; L2 Gas Station</span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#34d399;font-weight:800;">BAL: $${bal.toFixed(2)}</span>
+                            </div>
+
+                            <div class="xb-ex-cat-grid">
+                                ${XB_EX_GAS_CATS.map(cat => `
+                                    <button type="button" class="xb-ex-cat-btn ${st.gasCat === cat.k ? 'active' : ''}"
+                                        onclick="window._xbExState.gasCat='${cat.k}'; renderXbExBody(true);">
+                                        ${cat.lbl}
+                                    </button>
+                                `).join('')}
+                            </div>
+
+                            <div class="xb-ex-coin-grid">
+                                ${catCoins.map(c => {
+                                    const sp = getXbExSpot(c);
+                                    const isAct = c.code === activeCoin.code;
+                                    return `
+                                        <button type="button" class="xb-ex-coin-card ${isAct ? 'active' : ''}"
+                                            onclick="window._xbExState.gasCoin='${c.code}'; renderXbExBody(true);">
+                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                                                <span style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${c.sym}</span>
+                                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:#34d399;">${sp.ready ? fmtXbExUsdPrice(sp.usd) : '...'}</span>
+                                            </div>
+                                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.net}</div>
+                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);">SELECT RETAIL GAS PACKAGE</div>
+                            <div class="xb-ex-pkg-grid">
+                                ${XB_EX_GAS_PKGS.map((pk, idx) => {
+                                    const tk = (spot.ready && spot.usd > 0) ? fmtXbExTokenQty(pk.netUsd / spot.usd, spot.usd) : '...';
+                                    return `
+                                        <button type="button" class="xb-ex-pkg-card ${st.gasPkgIdx === idx ? 'active' : ''}"
+                                            onclick="window._xbExState.gasPkgIdx=${idx}; renderXbExBody(true);">
+                                            <div style="font-size:0.48rem;color:var(--text-muted);font-weight:800;">${pk.tag}</div>
+                                            <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);margin:2px 0;">$${pk.pay.toFixed(2)}</div>
+                                            <div style="font-size:0.5rem;color:#34d399;font-weight:800;">Get ~$${pk.netUsd.toFixed(2)}</div>
+                                            <div style="font-size:0.48rem;color:#38bdf8;margin-top:2px;">≈ ${tk} ${activeCoin.sym}</div>
+                                        </button>
+                                    `;
+                                }).join('')}
+                            </div>
+
+                            <div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">
+                                    RECIPIENT WALLET (${escXbEx(activeCoin.sym)} • ${escXbEx(activeCoin.net)})
+                                </div>
+                                <input type="text" class="xb-ex-input" id="xbExGasAddrInp"
+                                    value="${escXbEx(st.gasAddr)}" placeholder="Paste wallet address on ${escXbEx(activeCoin.net)}..."
+                                    oninput="window._xbExState.gasAddr=this.value;">
+                            </div>
+
+                            <button type="button" class="btn-ui primary" style="width:100%;height:42px;font-size:0.75rem;border-radius:11px;"
+                                ${!spot.ready ? 'disabled' : ''} onclick="submitXbExGasOrder()">
+                                ${!spot.ready
+                                    ? '⏳ Fetching Real-Time Price...'
+                                    : `⛽ Buy ${activeCoin.sym} Gas (${fmtXbExTokenQty(estTokens, spot.usd)} ${activeCoin.sym}) — $${pkg.pay.toFixed(2)}`}
+                            </button>
+                        </div>
+                    `;
+                }
+
+                // ---------------- MODE 3: CONVERT IDR ----------------
+                else if (st.mode === 'idr') {
+                    const amt = parseFloat(st.idrAmountUsd || '0') || 0;
+                    const rateReady = st.liveIdr > 1000;
+                    const feeUsd = amt > 0 ? Math.max(0.20, amt * 0.015) : 0;
+                    const netUsd = Math.max(0, amt - feeUsd);
+                    const netIdr = rateReady ? Math.round(netUsd * st.liveIdr) : 0;
+
+                    modeHtml = `
+                        <div class="xb-ex-panel">
+                            <div class="xb-ex-well">
+                                <div class="xb-ex-well-top">
+                                    <span>CONVERT FROM WALLET (USDT)</span>
+                                    <span>BAL: <b style="color:#34d399;">$${bal.toFixed(2)}</b></span>
+                                </div>
+                                <div class="xb-ex-well-main">
+                                    <input type="number" step="any" min="0" class="xb-ex-amt-inp" id="xbExIdrAmtInp"
+                                        value="${escXbEx(st.idrAmountUsd)}" placeholder="0.00"
+                                        oninput="window._xbExState.idrAmountUsd=this.value; updateXbExDynamicCalc();">
+                                    <span class="xb-ex-tok-btn" style="cursor:default;">USDT</span>
+                                </div>
+                            </div>
+
+                            <div class="xb-ex-presets">
+                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExIdrAmt(5)">$5</button>
+                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExIdrAmt(10)">$10</button>
+                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExIdrAmt(25)">$25</button>
+                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExIdrAmt(50)">$50</button>
+                            </div>
+
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);">PAYOUT DESTINATION (INDONESIA)</div>
+                            <div class="xb-ex-pay-grid">
+                                ${XB_EX_IDR_METHODS.map(m => `
+                                    <button type="button" class="xb-ex-pay-btn ${st.idrMethod === m.k ? 'active' : ''}"
+                                        onclick="window._xbExState.idrMethod='${m.k}'; renderXbExBody(true);">
+                                        ${m.lbl}
+                                    </button>
+                                `).join('')}
+                            </div>
+
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                                <div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">${escXbEx(st.idrMethod)} NUMBER / ID</div>
+                                    <input type="text" class="xb-ex-input" value="${escXbEx(st.idrDest)}" placeholder="e.g. 0812xxx / Rek"
+                                        oninput="window._xbExState.idrDest=this.value;">
+                                </div>
+                                <div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">ACCOUNT NAME</div>
+                                    <input type="text" class="xb-ex-input" value="${escXbEx(st.idrHolder)}" placeholder="Full Name"
+                                        oninput="window._xbExState.idrHolder=this.value;">
+                                </div>
+                            </div>
+
+                            <div class="xb-ex-quote-box">
+                                <div class="xb-ex-qrow"><span>Live Market Rate</span><b id="xbExIdrRateLbl">${rateReady ? `1 USDT = ${fmtXbExIdr(st.liveIdr)}` : 'Syncing live FX...'}</b></div>
+                                <div class="xb-ex-qrow"><span>Convert Fee</span><b id="xbExIdrFeeLbl">$${feeUsd.toFixed(2)} USDT (1.5%)</b></div>
+                                <div class="xb-ex-qrow"><span>Net IDR Received</span><b id="xbExIdrNetOut" style="color:#34d399;font-size:0.74rem;">${rateReady ? fmtXbExIdr(netIdr) : 'Fetching rate...'}</b></div>
+                            </div>
+
+                            <button type="button" id="xbExIdrSubmitBtn" class="btn-ui primary" style="width:100%;height:42px;font-size:0.75rem;border-radius:11px;"
+                                ${!rateReady ? 'disabled' : ''} onclick="submitXbExIdrOrder()">
+                                ${!rateReady ? '⏳ Fetching Live USD/IDR Rate...' : `🇮🇩 Convert $${amt.toFixed(2)} ➔ ${fmtXbExIdr(netIdr)} (${st.idrMethod})`}
+                            </button>
+                        </div>
+                    `;
+                }
+
+                // ---------------- MODE 4: EXCHANGE ACCOUNTS VAULT ----------------
+                else {
+                    const plat = XB_EX_PLATFORMS.find(p => p.k === st.accPlatform) || XB_EX_PLATFORMS[0];
+                    const priceUsd = st.accKyc === 'kyc' ? 35.00 : 25.00;
+                    const idrEq = st.liveIdr > 1000 ? fmtXbExIdr(priceUsd * st.liveIdr) : 'Syncing...';
+
+                    modeHtml = `
+                        <div class="xb-ex-panel">
+                            <div style="display:flex;justify-content:space-between;align-items:center;">
+                                <span style="font-size:0.72rem;font-weight:800;color:var(--text-primary);">🔶 Verified Exchange Accounts</span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#34d399;font-weight:800;">BAL: $${bal.toFixed(2)}</span>
+                            </div>
+
+                            <div class="xb-ex-coin-grid">
+                                ${XB_EX_PLATFORMS.map(p => `
+                                    <button type="button" class="xb-ex-coin-card ${st.accPlatform === p.k ? 'active' : ''}"
+                                        onclick="window._xbExState.accPlatform='${p.k}'; renderXbExBody(true);">
+                                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                                            <span style="font-size:0.7rem;font-weight:800;color:var(--text-primary);">${p.name}</span>
+                                            <span style="width:7px;height:7px;border-radius:50%;background:${p.badge};"></span>
+                                        </div>
+                                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);">${p.tag}</div>
+                                    </button>
+                                `).join('')}
+                            </div>
+
+                            <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                                <button type="button" class="xb-ex-pkg-card ${st.accKyc === 'kyc' ? 'active' : ''}"
+                                    onclick="window._xbExState.accKyc='kyc'; renderXbExBody(true);">
+                                    <div style="font-size:0.52rem;color:#34d399;font-weight:800;">✅ AGED WITH KYC</div>
+                                    <div style="font-size:0.88rem;font-weight:800;color:var(--text-primary);margin-top:2px;">$35.00</div>
+                                    <div style="font-size:0.48rem;color:var(--text-muted);">Full Verified Access</div>
+                                </button>
+                                <button type="button" class="xb-ex-pkg-card ${st.accKyc === 'nokyc' ? 'active' : ''}"
+                                    onclick="window._xbExState.accKyc='nokyc'; renderXbExBody(true);">
+                                    <div style="font-size:0.52rem;color:#38bdf8;font-weight:800;">⚡ AGED NO KYC</div>
+                                    <div style="font-size:0.88rem;font-weight:800;color:var(--text-primary);margin-top:2px;">$25.00</div>
+                                    <div style="font-size:0.48rem;color:var(--text-muted);">Clean Historic Account</div>
+                                </button>
+                            </div>
+
+                            <div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">DELIVERY CONTACT (TELEGRAM @USERNAME OR EMAIL)</div>
+                                <input type="text" class="xb-ex-input" value="${escXbEx(st.accEmail)}" placeholder="@username or email for credentials"
+                                    oninput="window._xbExState.accEmail=this.value;">
+                            </div>
+
+                            <div class="xb-ex-quote-box">
+                                <div class="xb-ex-qrow"><span>Selected Asset</span><b>${plat.name} (${st.accKyc === 'kyc' ? 'Aged With KYC' : 'Aged No KYC'})</b></div>
+                                <div class="xb-ex-qrow"><span>Total Charge</span><b style="color:#34d399;">$${priceUsd.toFixed(2)} USDT (${idrEq})</b></div>
+                            </div>
+
+                            <button type="button" class="btn-ui primary" style="width:100%;height:42px;font-size:0.75rem;border-radius:11px;"
+                                onclick="submitXbExAccountOrder()">
+                                🔐 Order ${plat.name} Account — $${priceUsd.toFixed(2)} USDT
+                            </button>
+                        </div>
+                    `;
+                }
+
+                hub.innerHTML = `
+                    <div class="xb-ex-livebar">
+                        <span style="display:inline-flex;align-items:center;gap:6px;min-width:0;">
+                            <span class="${dotCls}"></span>
+                            <span id="xbExLiveMetaTxt" style="color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                ${escXbEx(st.feedSource)} • 1 USDT = ${idrTxt}
+                            </span>
+                        </span>
+                        <button type="button" onclick="refreshXbExLivePrices(true)"
+                            style="border:1px solid var(--ex-hairline);background:var(--bg-input);color:#38bdf8;border-radius:7px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;cursor:pointer;flex-shrink:0;">
+                            ↻ ${st.lastSyncStr ? st.lastSyncStr.replace(' WIB','') : 'SYNC'}
+                        </button>
+                    </div>
+
+                    <div class="xb-ex-modes">
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'swap' ? 'active' : ''}" onclick="setXbExMode('swap')">🔄 Swap</button>
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'gas' ? 'active' : ''}" onclick="setXbExMode('gas')">⛽ Gas</button>
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'idr' ? 'active' : ''}" onclick="setXbExMode('idr')">🇮🇩 IDR</button>
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'accounts' ? 'active' : ''}" onclick="setXbExMode('accounts')">🔶 CEX</button>
+                    </div>
+
+                    ${modeHtml}
+                `;
+            }
+
+            function setXbExSwapAmt(val) {
+                window._xbExState.swapPayUsd = String(Math.max(0, Number(val || 0)));
+                const inp = document.getElementById('xbExSwapPayInp');
+                if (inp) inp.value = window._xbExState.swapPayUsd;
+                updateXbExDynamicCalc();
+            }
+
+            function setXbExIdrAmt(val) {
+                window._xbExState.idrAmountUsd = String(Math.max(0, Number(val || 0)));
+                const inp = document.getElementById('xbExIdrAmtInp');
+                if (inp) inp.value = window._xbExState.idrAmountUsd;
+                updateXbExDynamicCalc();
+            }
+
+            // =========================================================
+            // 🔍 SEARCHABLE TOKEN & NETWORK PICKER + PIN + RECEIPT MODAL
+            // =========================================================
+            function ensureXbExModalRoot() {
+                let root = document.getElementById('xbExModalRoot');
+                if (!root) {
+                    root = document.createElement('div');
+                    root.id = 'xbExModalRoot';
+                    root.className = 'xb-ex-modal-bg';
+                    root.onclick = (e) => { if (e.target === root) closeXbExModal(); };
+                    document.body.appendChild(root);
+                }
+                return root;
+            }
+
+            function closeXbExModal() {
+                const root = document.getElementById('xbExModalRoot');
+                if (root) {
+                    root.classList.remove('open');
+                    root.innerHTML = '';
+                }
+            }
+
+            function openXbExTokenPicker(targetField = 'swap') {
+                const root = ensureXbExModalRoot();
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);">Select Token &amp; Network</div>
+                            <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                        </div>
+                        <input type="text" class="xb-ex-input" id="xbExTokSearchInp" placeholder="Search ETH, SOL, Base, Arbitrum, TON..."
+                            oninput="renderXbExTokenPickerList(this.value, '${targetField}')">
+                        <div class="xb-ex-tok-list" id="xbExTokPickerList"></div>
+                    </div>
+                `;
+                root.classList.add('open');
+                renderXbExTokenPickerList('', targetField);
+            }
+
+            function renderXbExTokenPickerList(query, targetField) {
+                const listEl = document.getElementById('xbExTokPickerList');
+                if (!listEl) return;
+                const q = String(query || '').trim().toLowerCase();
+                const items = XB_EX_COINS.filter(c =>
+                    !q || c.sym.toLowerCase().includes(q) || c.net.toLowerCase().includes(q) || c.code.toLowerCase().includes(q)
+                );
+
+                listEl.innerHTML = items.map(c => {
+                    const sp = getXbExSpot(c);
+                    const chgSign = sp.chg >= 0 ? '+' : '';
+                    const chgCol = sp.chg >= 0 ? '#34d399' : '#f87171';
+                    return `
+                        <button type="button" class="xb-ex-tok-row" onclick="pickXbExToken('${c.code}', '${targetField}')">
+                            <div style="display:flex;align-items:center;gap:9px;min-width:0;">
+                                <span style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0;"></span>
+                                <div style="min-width:0;">
+                                    <div style="font-size:0.74rem;font-weight:800;">${escXbEx(c.sym)}</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);">${escXbEx(c.net)}</div>
+                                </div>
+                            </div>
+                            <div style="text-align:right;font-family:'JetBrains Mono',monospace;flex-shrink:0;">
+                                <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${sp.ready ? fmtXbExUsdPrice(sp.usd) : 'Syncing...'}</div>
+                                <div style="font-size:0.52rem;font-weight:800;color:${chgCol};">${sp.ready ? `${chgSign}${sp.chg.toFixed(2)}%` : '--'}</div>
+                            </div>
+                        </button>
+                    `;
+                }).join('') || `<div style="text-align:center;padding:18px;font-size:0.72rem;color:var(--text-muted);">No matching coin found.</div>`;
+            }
+
+            function pickXbExToken(code, targetField) {
+                if (targetField === 'swap') window._xbExState.swapTo = code;
+                closeXbExModal();
+                renderXbExBody(true);
+            }
+
+            // ---------------- ORDER VALIDATORS -> OPEN 6-DIGIT PIN MODAL ----------------
+            function submitXbExSwapOrder() {
+                const st = window._xbExState;
+                const coin = getXbExCoin(st.swapTo);
+                const spot = getXbExSpot(coin);
+                const pay = parseFloat(st.swapPayUsd || '0') || 0;
+                const bal = getXbExWalletBal();
+                const addr = String(st.swapAddr || '').trim();
+
+                if (!spot.ready || spot.usd <= 0) return (typeof showToast === 'function') && showToast('⏳ Waiting for live spot price...');
+                if (pay < 2) return (typeof showToast === 'function') && showToast('⚠️ Minimum instant swap is $2.00 USDT.');
+                if (pay > bal) return (typeof showToast === 'function') && showToast('❌ Insufficient wallet balance.');
+                if (addr.length < 14) return (typeof showToast === 'function') && showToast('⚠️ Please enter a valid destination wallet address.');
+
+                const fee = Math.max(0.25, pay * 0.015);
+                const recvQty = Math.max(0, pay - fee) / spot.usd;
+
+                openXbExPinConfirmModal({
+                    kind: 'EXCHANGE_SWAP',
+                    title: `Instant Swap: ${coin.sym} (${coin.net})`,
+                    payUsdt: Number(pay.toFixed(2)),
+                    receiveText: `${fmtXbExTokenQty(recvQty, spot.usd)} ${coin.sym}`,
+                    rateText: `1 ${coin.sym} = ${fmtXbExUsdPrice(spot.usd)} (${st.feedSource})`,
+                    network: coin.net,
+                    destination: addr,
+                    coinCode: coin.code
+                });
+            }
+
+            function submitXbExGasOrder() {
+                const st = window._xbExState;
+                const coin = getXbExCoin(st.gasCoin);
+                const spot = getXbExSpot(coin);
+                const pkg = XB_EX_GAS_PKGS[st.gasPkgIdx] || XB_EX_GAS_PKGS[0];
+                const bal = getXbExWalletBal();
+                const addr = String(st.gasAddr || '').trim();
+
+                if (!spot.ready || spot.usd <= 0) return (typeof showToast === 'function') && showToast('⏳ Waiting for live spot price...');
+                if (pkg.pay > bal) return (typeof showToast === 'function') && showToast('❌ Insufficient wallet balance.');
+                if (addr.length < 14) return (typeof showToast === 'function') && showToast('⚠️ Please enter a valid recipient wallet address.');
+
+                const estTokens = pkg.netUsd / spot.usd;
+                openXbExPinConfirmModal({
+                    kind: 'EXCHANGE_GAS',
+                    title: `Retail Gas: ${coin.sym} (${coin.net})`,
+                    payUsdt: Number(pkg.pay.toFixed(2)),
+                    receiveText: `≈ ${fmtXbExTokenQty(estTokens, spot.usd)} ${coin.sym} (~$${pkg.netUsd.toFixed(2)})`,
+                    rateText: `1 ${coin.sym} = ${fmtXbExUsdPrice(spot.usd)} (${st.feedSource})`,
+                    network: coin.net,
+                    destination: addr,
+                    coinCode: coin.code
+                });
+            }
+
+            function submitXbExIdrOrder() {
+                const st = window._xbExState;
+                const amt = parseFloat(st.idrAmountUsd || '0') || 0;
+                const bal = getXbExWalletBal();
+                const dest = String(st.idrDest || '').trim();
+                const holder = String(st.idrHolder || '').trim();
+
+                if (st.liveIdr <= 1000) return (typeof showToast === 'function') && showToast('⏳ Waiting for live USD/IDR rate...');
+                if (amt < 2) return (typeof showToast === 'function') && showToast('⚠️ Minimum IDR convert is $2.00 USDT.');
+                if (amt > bal) return (typeof showToast === 'function') && showToast('❌ Insufficient wallet balance.');
+                if (dest.length < 6 || holder.length < 2) return (typeof showToast === 'function') && showToast('⚠️ Enter destination number and account holder name.');
+
+                const feeUsd = Math.max(0.20, amt * 0.015);
+                const netIdr = Math.round(Math.max(0, amt - feeUsd) * st.liveIdr);
+
+                openXbExPinConfirmModal({
+                    kind: 'EXCHANGE_IDR',
+                    title: `Convert IDR (${st.idrMethod})`,
+                    payUsdt: Number(amt.toFixed(2)),
+                    receiveText: fmtXbExIdr(netIdr),
+                    rateText: `1 USDT = ${fmtXbExIdr(st.liveIdr)} (Live FX)`,
+                    network: st.idrMethod,
+                    destination: `${dest} (${holder})`,
+                    coinCode: 'usdt_idr'
+                });
+            }
+
+            function submitXbExAccountOrder() {
+                const st = window._xbExState;
+                const plat = XB_EX_PLATFORMS.find(p => p.k === st.accPlatform) || XB_EX_PLATFORMS[0];
+                const priceUsd = st.accKyc === 'kyc' ? 35.00 : 25.00;
+                const bal = getXbExWalletBal();
+                const contact = String(st.accEmail || '').trim();
+
+                if (priceUsd > bal) return (typeof showToast === 'function') && showToast('❌ Insufficient wallet balance.');
+                if (contact.length < 3) return (typeof showToast === 'function') && showToast('⚠️ Enter your Telegram @username or email for delivery.');
+
+                openXbExPinConfirmModal({
+                    kind: 'EXCHANGE_ACCOUNT',
+                    title: `${plat.name} Account (${st.accKyc === 'kyc' ? 'Aged With KYC' : 'Aged No KYC'})`,
+                    payUsdt: priceUsd,
+                    receiveText: `${plat.name} Full Credentials`,
+                    rateText: 'Fixed Vault Rate',
+                    network: 'Encrypted Delivery',
+                    destination: contact,
+                    coinCode: `exc_${plat.k}_${st.accKyc}`
+                });
+            }
+
+            function openXbExPinConfirmModal(orderObj) {
+                window._xbExState.pendingOrder = orderObj;
+                const savedPin = String(localStorage.getItem('xb_saved_pin') || '').trim();
+                const needSet = !savedPin;
+                const root = ensureXbExModalRoot();
+
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);">🔐 6-Digit Security PIN</div>
+                            <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                        </div>
+
+                        <div class="xb-ex-quote-box">
+                            <div class="xb-ex-qrow"><span>Order</span><b>${escXbEx(orderObj.title)}</b></div>
+                            <div class="xb-ex-qrow"><span>Wallet Deduction</span><b style="color:#f87171;">-$${orderObj.payUsdt.toFixed(2)} USDT</b></div>
+                            <div class="xb-ex-qrow"><span>Receive</span><b style="color:#34d399;">${escXbEx(orderObj.receiveText)}</b></div>
+                            <div class="xb-ex-qrow"><span>Spot / Rate</span><b>${escXbEx(orderObj.rateText)}</b></div>
+                            <div class="xb-ex-qrow"><span>Destination</span><b style="max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escXbEx(orderObj.destination)}</b></div>
+                        </div>
+
+                        <div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:5px;">
+                                ${needSet ? 'CREATE & ENTER YOUR 6-DIGIT WALLET PIN' : 'ENTER YOUR 6-DIGIT WALLET PIN TO AUTHORIZE'}
+                            </div>
+                            <input type="password" inputmode="numeric" maxlength="6" class="xb-ex-input" id="xbExPinInp"
+                                style="text-align:center;font-size:1.1rem;letter-spacing:8px;height:44px;" placeholder="••••••"
+                                onkeydown="if(event.key==='Enter') executeXbExConfirmedOrder();">
+                            <div id="xbExPinErr" style="font-size:0.62rem;color:#f87171;font-weight:700;margin-top:5px;min-height:14px;"></div>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:7px;">
+                            <button type="button" class="btn-ui secondary" style="height:40px;font-size:0.72rem;border-radius:10px;" onclick="closeXbExModal()">Cancel</button>
+                            <button type="button" class="btn-ui primary" style="height:40px;font-size:0.74rem;border-radius:10px;" onclick="executeXbExConfirmedOrder()">✅ Authorize &amp; Pay</button>
+                        </div>
+                    </div>
+                `;
+                root.classList.add('open');
+                setTimeout(() => { const el = document.getElementById('xbExPinInp'); if (el) el.focus(); }, 60);
+            }
+
+            function executeXbExConfirmedOrder() {
+                const st = window._xbExState;
+                const ord = st.pendingOrder;
+                if (!ord) return;
+
+                const inp = document.getElementById('xbExPinInp');
+                const errEl = document.getElementById('xbExPinErr');
+                const pin = String(inp ? inp.value : '').trim();
+
+                if (!/^\d{6}$/.test(pin)) {
+                    if (errEl) errEl.innerText = 'PIN must be exactly 6 numeric digits.';
+                    return;
+                }
+
+                const savedPin = String(localStorage.getItem('xb_saved_pin') || '').trim();
+                if (savedPin) {
+                    const isHexMd5 = /^[a-f0-9]{32}$/i.test(savedPin);
+                    const matched = isHexMd5 ? (xbExMd5(pin) === savedPin.toLowerCase()) : (pin === savedPin);
+                    if (!matched) {
+                        if (errEl) errEl.innerText = 'Incorrect 6-digit Security PIN.';
+                        return;
+                    }
+                } else {
+                    localStorage.setItem('xb_saved_pin', pin);
+                }
+
+                const curBal = getXbExWalletBal();
+                if (ord.payUsdt > curBal) {
+                    if (errEl) errEl.innerText = 'Insufficient wallet balance.';
+                    return;
+                }
+
+                // 1. Deduct Unified Wallet Balance
+                const newBal = Math.max(0, Number((curBal - ord.payUsdt).toFixed(4)));
+                if (typeof userBalanceUsdt !== 'undefined') userBalanceUsdt = newBal;
+                localStorage.setItem('xb_balance_usdt', String(newBal));
+
+                // 2. Build Invoice & Append to Treasury Ledger (xb_tx_history)
+                const invId = 'INV-XIAN-' + Math.floor(10000 + Math.random() * 89999);
+                const nowDate = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+                const idrVal = st.liveIdr > 1000 ? Math.round(ord.payUsdt * st.liveIdr) : 0;
+
+                const txEntry = {
+                    id: invId,
+                    type: 'OUT',
+                    title: ord.title,
+                    usdt: ord.payUsdt,
+                    idr: idrVal,
+                    date: nowDate,
+                    status: 'PROCESSING',
+                    meta: {
+                        kind: ord.kind,
+                        receive: ord.receiveText,
+                        rate: ord.rateText,
+                        network: ord.network,
+                        destination: ord.destination
+                    }
+                };
+
+                try {
+                    const hist = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+                    hist.unshift(txEntry);
+                    localStorage.setItem('xb_tx_history', JSON.stringify(hist.slice(0, 120)));
+                } catch (e) {}
+
+                // Refresh existing Wallet UI functions if available
+                ['updateWalletUI', 'renderWalletUI', 'updateBalanceDisplays', 'renderTxHistory', 'syncBalanceDisplays'].forEach(fn => {
+                    try { if (typeof window[fn] === 'function') window[fn](); } catch (e) {}
+                });
+
+                // 3. Push Updated Balance & Ledger Entry to Google Sheets Cloud Sync (Background)
+                try {
+                    const uid = (typeof currentUserId !== 'undefined' && currentUserId) ? String(currentUserId) : String(localStorage.getItem('xb_uid') || '');
+                    const uname = (typeof currentUsername !== 'undefined' && currentUsername)
+                        ? String(currentUsername).replace(/^@+/, '').toLowerCase()
+                        : String(localStorage.getItem('xb_uname') || '').replace(/^@+/, '').toLowerCase();
+                    const syncKey = uname ? ('user_' + uname) : (uid ? ('uid_' + uid) : '');
+                    const histNow = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+
+                    if (syncKey && XB_EX_WEBHOOK) {
+                        fetch(XB_EX_WEBHOOK, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({
+                                action: 'web_cloud_sync_state',
+                                mode: 'push',
+                                sync_key: syncKey,
+                                user_id: uid,
+                                username: uname,
+                                balance: newBal,
+                                bal_ts: Date.now(),
+                                tx_id: invId,
+                                tx_note: `${ord.title} | Receive: ${ord.receiveText} | Dest: ${ord.destination}`,
+                                tx_history: histNow.slice(0, 40)
+                            })
+                        }).catch(() => {});
+                    }
+                } catch (e) {}
+
+                renderXbExBody(true);
+                showXbExReceiptModal(invId, ord, newBal);
+            }
+
+            function showXbExReceiptModal(invId, ord, newBal) {
+                const root = ensureXbExModalRoot();
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="text-align:center;">
+                            <div style="width:44px;height:44px;margin:0 auto 8px;border-radius:50%;background:rgba(16,185,129,0.16);border:1.5px solid #10b981;color:#34d399;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">✓</div>
+                            <div style="font-size:0.9rem;font-weight:800;color:var(--text-primary);">Exchange Order Submitted</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.64rem;color:#38bdf8;font-weight:800;margin-top:2px;">${escXbEx(invId)}</div>
+                        </div>
+
+                        <div class="xb-ex-quote-box">
+                            <div class="xb-ex-qrow"><span>Service</span><b>${escXbEx(ord.title)}</b></div>
+                            <div class="xb-ex-qrow"><span>Deducted</span><b style="color:#f87171;">-$${ord.payUsdt.toFixed(2)} USDT</b></div>
+                            <div class="xb-ex-qrow"><span>Est. Receive</span><b style="color:#34d399;">${escXbEx(ord.receiveText)}</b></div>
+                            <div class="xb-ex-qrow"><span>Rate Locked</span><b>${escXbEx(ord.rateText)}</b></div>
+                            <div class="xb-ex-qrow"><span>Destination</span><b style="max-width:185px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escXbEx(ord.destination)}</b></div>
+                            <div class="xb-ex-qrow"><span>New Balance</span><b style="color:#38bdf8;">$${newBal.toFixed(2)} USDT</b></div>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                            <button type="button" class="btn-ui secondary" style="height:39px;font-size:0.7rem;border-radius:10px;"
+                                onclick="navigator.clipboard && navigator.clipboard.writeText('${escXbEx(invId)}'); if(typeof showToast==='function') showToast('📋 Invoice copied!');">
+                                📋 Copy Invoice
+                            </button>
+                            <button type="button" class="btn-ui primary" style="height:39px;font-size:0.7rem;border-radius:10px;"
+                                onclick="closeXbExModal(); switchXbWalletTab('wallet');">
+                                🧾 View in Ledger
+                            </button>
+                        </div>
+                    </div>
+                `;
+                root.classList.add('open');
+            }
+
+            // =========================================================
+            // 🔗 AUTO-MOUNT XIANBEE-TECH EXCHANGE INSIDE THE WALLET TAB
+            // =========================================================
+            function findXbWalletMountTarget() {
+                const direct = document.getElementById('tab-wallet')
+                    || document.getElementById('view-wallet')
+                    || document.getElementById('walletView')
+                    || document.getElementById('walletSection')
+                    || document.querySelector('[data-tab="wallet"], [data-view="wallet"], [data-section="wallet"]');
+                if (direct) return direct;
+
+                // Smart fallback: detect active Wallet container by Deposit/Transfer/Ledger markers
+                const mainArea = document.querySelector('.main-area, main, .app-main') || document.body;
+                const candidates = mainArea.querySelectorAll('section, .tab-content, .view-section, .xb-view, div');
+                for (const el of candidates) {
+                    if (el.id === 'enterpriseAuthGate' || el.closest('#enterpriseAuthGate')) continue;
+                    const txt = (el.innerText || '').slice(0, 400);
+                    if (
+                        (txt.includes('Treasury') || txt.includes('Wallet Balance') || txt.includes('USDT Balance') || txt.includes('Available Balance'))
+                        && (el.querySelector('[onclick*="Deposit"], [onclick*="TopUp"], [onclick*="topup"], [onclick*="Transfer"], [onclick*="transfer"]'))
+                        && el.children.length >= 2
+                        && el.offsetParent !== null
+                    ) {
+                        return el;
+                    }
+                }
+                return null;
+            }
+
+            function mountXbExchangeInWallet() {
+                const existingSw = document.getElementById('xbWalExSwitcher');
+                if (existingSw && document.body.contains(existingSw)) {
+                    applyXbWalletTabVisibility();
+                    return;
+                }
+
+                let container = findXbWalletMountTarget();
+                if (!container) return;
+
+                // If the wallet view wraps all content in 1 inner wrapper div, mount inside that wrapper
+                if (container.children.length === 1 && container.firstElementChild.tagName === 'DIV') {
+                    container = container.firstElementChild;
+                }
+                if (container.children.length === 0) return;
+
+                const anchorCard = container.firstElementChild;
+
+                const sw = document.createElement('div');
+                sw.id = 'xbWalExSwitcher';
+                sw.className = 'xb-wal-switcher';
+                sw.innerHTML = `
+                    <button type="button" class="xb-wal-sw-btn active" data-wtab="wallet" onclick="switchXbWalletTab('wallet')">
+                        <span>💳</span><span>Wallet &amp; Ledger</span>
+                    </button>
+                    <button type="button" class="xb-wal-sw-btn" data-wtab="exchange" onclick="switchXbWalletTab('exchange')">
+                        <span>⚡</span><span>XianBee-Tech Exchange</span>
+                    </button>
+                `;
+
+                const hub = document.createElement('div');
+                hub.id = 'xbExHubContainer';
+                hub.className = 'xb-ex-hub';
+                hub.style.display = 'none';
+
+                anchorCard.insertAdjacentElement('afterend', sw);
+                sw.insertAdjacentElement('afterend', hub);
+
+                applyXbWalletTabVisibility();
+                renderXbExBody(true);
+            }
+
+            (function initXbExWalletAutoMount() {
+                let tickLock = false;
+                const runMount = () => {
+                    if (tickLock) return;
+                    tickLock = true;
+                    requestAnimationFrame(() => {
+                        tickLock = false;
+                        mountXbExchangeInWallet();
+                    });
+                };
+
+                document.addEventListener('DOMContentLoaded', () => {
+                    const target = document.querySelector('.main-area, .app-shell') || document.body;
+                    const mo = new MutationObserver(runMount);
+                    mo.observe(target, { childList: true, subtree: true, attributes: true, attributeFilter: ['class', 'style'] });
+                    runMount();
+                    setTimeout(runMount, 400);
+                    // Pre-warm live real-time Binance/CoinGecko & FX rates once on boot
+                    setTimeout(() => refreshXbExLivePrices(false), 1200);
                 });
             })();
         </script>
