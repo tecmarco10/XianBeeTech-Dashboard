@@ -4276,23 +4276,45 @@
                 .xp-mob-hero, .xp-mob-strip { display: none !important; }
             }
 
-            /* DESKTOP SHOWCASE & LIVE INVENTORY CARDS */
+            /* UNIFIED MARKETPLACE STATUS BOX (MATCHING CARD RADIUS & WIDTH) */
             .xp-status-pill {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 8px;
+                width: 100%;
+                padding: 7px 11px;
+                border-radius: 10px;
+                background: rgba(12, 18, 36, 0.88);
+                border: 1px solid rgba(148, 163, 184, 0.22);
+                border-left: 3px solid #38bdf8;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.6rem;
+                font-weight: 800;
+                color: var(--text-primary);
+                letter-spacing: 0.45px;
+            }
+            [data-theme="platinum"] .xp-status-pill {
+                background: rgba(255, 255, 255, 0.95);
+                border-color: rgba(15, 23, 42, 0.12);
+                border-left-color: #2563eb;
+                color: #0f172a;
+            }
+            .xp-status-left {
                 display: inline-flex;
                 align-items: center;
                 gap: 7px;
-                width: fit-content;
-                padding: 5px 12px;
-                border-radius: 99px;
-                background: rgba(16, 185, 129, 0.12);
-                border: 1px solid rgba(52, 211, 153, 0.4);
-                font-family: 'JetBrains Mono', monospace;
-                font-size: 0.64rem;
-                font-weight: 800;
-                color: #34d399;
-                letter-spacing: 0.6px;
+                min-width: 0;
             }
-            [data-theme="platinum"] .xp-status-pill { color: #059669; }
+            .xp-status-live {
+                display: inline-flex;
+                align-items: center;
+                gap: 5px;
+                color: #34d399;
+                font-size: 0.54rem;
+                flex-shrink: 0;
+            }
+            [data-theme="platinum"] .xp-status-live { color: #059669; }
             .xp-live-dot {
                 width: 7px;
                 height: 7px;
@@ -4484,45 +4506,193 @@
                 transition: width 0.2s ease, background 0.2s ease;
             }
 
-            /* 4. CORE SPECIALTIES COMPACT BAR */
+            /* 4. CORE ECOSYSTEM DOCK (GITHUB • XIANBEE-TECH EXCHANGE • ALL-IN-ONE) */
             .xp-spec-bar {
                 width: 100%;
-                background: rgba(11, 16, 32, 0.86);
+                background: rgba(11, 16, 32, 0.88);
                 backdrop-filter: blur(14px);
-                border: 1px solid rgba(148, 163, 184, 0.2);
+                border: 1px solid rgba(148, 163, 184, 0.22);
                 border-radius: 14px;
-                padding: 8px 10px;
+                padding: 9px 10px;
                 display: flex;
                 flex-direction: column;
                 gap: 7px;
             }
             [data-theme="platinum"] .xp-spec-bar {
-                background: rgba(255, 255, 255, 0.94);
-                border-color: rgba(15, 23, 42, 0.1);
+                background: rgba(255, 255, 255, 0.95);
+                border-color: rgba(15, 23, 42, 0.12);
             }
             .xp-spec-btns {
                 display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-columns: 0.92fr 1.24fr 0.88fr;
                 gap: 6px;
             }
             .xp-spec-pill {
                 background: var(--bg-input);
                 border: 1px solid var(--border-subtle);
                 border-radius: 10px;
-                padding: 7px 5px;
+                padding: 7px 6px;
                 color: var(--text-primary);
                 font-family: inherit;
-                font-size: 0.64rem;
-                font-weight: 800;
                 cursor: pointer;
                 display: flex;
+                flex-direction: column;
                 align-items: center;
                 justify-content: center;
-                gap: 5px;
-                white-space: nowrap;
-                transition: border-color 0.16s ease, transform 0.14s ease;
+                gap: 3px;
+                text-align: center;
+                transition: border-color 0.16s ease, transform 0.14s ease, box-shadow 0.16s ease;
             }
             .xp-spec-pill:hover { border-color: #38bdf8; transform: translateY(-1px); }
+            .xp-spec-pill-top {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                font-size: 0.62rem;
+                font-weight: 800;
+                line-height: 1.15;
+                white-space: nowrap;
+            }
+            .xp-spec-pill-sub {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.47rem;
+                font-weight: 700;
+                color: var(--text-muted);
+                line-height: 1.1;
+                white-space: nowrap;
+            }
+
+            /* 5. OVERHAULED 3-THEME ECOSYSTEM SHOWCASE PAGES (ZERO EMPTY GAP) */
+            #authSpecialtyFullPage {
+                width: 100%;
+                max-width: 520px;
+                gap: 10px !important;
+                justify-content: flex-start !important;
+            }
+            .xp-sp-stage {
+                position: relative;
+                width: 100%;
+                border-radius: 18px;
+                padding: 15px 14px;
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+                overflow: hidden;
+                backdrop-filter: blur(18px);
+                box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48);
+                transition: background 0.25s ease, border-color 0.25s ease;
+            }
+            /* Theme 0: GitHub Marketplace (Midnight Developer Terminal) */
+            .xp-sp-stage.xp-theme-github {
+                background: radial-gradient(circle at 92% 6%, rgba(56, 189, 248, 0.18), transparent 44%), linear-gradient(155deg, rgba(13, 17, 23, 0.96) 0%, rgba(17, 24, 39, 0.94) 100%);
+                border: 1px solid rgba(56, 189, 248, 0.38);
+                border-top: 2.5px solid #38bdf8;
+            }
+            [data-theme="platinum"] .xp-sp-stage.xp-theme-github {
+                background: radial-gradient(circle at 92% 6%, rgba(37, 99, 235, 0.1), transparent 45%), #ffffff;
+                border: 1px solid rgba(37, 99, 235, 0.28);
+                border-top: 2.5px solid #2563eb;
+                box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            }
+            /* Theme 1: XianBee-Tech Exchange (Emerald & Gold Liquidity Desk) */
+            .xp-sp-stage.xp-theme-exchange {
+                background: radial-gradient(circle at 92% 6%, rgba(16, 185, 129, 0.22), transparent 46%), radial-gradient(circle at 8% 95%, rgba(251, 191, 36, 0.12), transparent 42%), linear-gradient(155deg, rgba(6, 22, 20, 0.96) 0%, rgba(10, 20, 32, 0.95) 100%);
+                border: 1px solid rgba(16, 185, 129, 0.42);
+                border-top: 2.5px solid #10b981;
+            }
+            [data-theme="platinum"] .xp-sp-stage.xp-theme-exchange {
+                background: radial-gradient(circle at 92% 6%, rgba(16, 185, 129, 0.12), transparent 45%), #ffffff;
+                border: 1px solid rgba(16, 185, 129, 0.32);
+                border-top: 2.5px solid #059669;
+                box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            }
+            /* Theme 2: All-In-One Digital Suite (Royal Amethyst Hub) */
+            .xp-sp-stage.xp-theme-suite {
+                background: radial-gradient(circle at 92% 6%, rgba(168, 85, 247, 0.24), transparent 46%), radial-gradient(circle at 10% 92%, rgba(236, 72, 153, 0.14), transparent 42%), linear-gradient(155deg, rgba(18, 11, 34, 0.96) 0%, rgba(15, 18, 36, 0.95) 100%);
+                border: 1px solid rgba(168, 85, 247, 0.42);
+                border-top: 2.5px solid #a855f7;
+            }
+            [data-theme="platinum"] .xp-sp-stage.xp-theme-suite {
+                background: radial-gradient(circle at 92% 6%, rgba(124, 58, 237, 0.12), transparent 45%), #ffffff;
+                border: 1px solid rgba(124, 58, 237, 0.3);
+                border-top: 2.5px solid #7c3aed;
+                box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            }
+
+            .xp-sp-metrics {
+                display: grid;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 6px;
+            }
+            .xp-sp-metric {
+                background: rgba(255, 255, 255, 0.04);
+                border: 1px solid rgba(148, 163, 184, 0.18);
+                border-radius: 10px;
+                padding: 7px 6px;
+                text-align: center;
+                font-family: 'JetBrains Mono', monospace;
+            }
+            [data-theme="platinum"] .xp-sp-metric {
+                background: #f8fafc;
+                border-color: rgba(15, 23, 42, 0.1);
+            }
+            .xp-sp-pillars {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 8px;
+            }
+            .xp-sp-pcard {
+                background: rgba(6, 10, 22, 0.55);
+                border: 1px solid rgba(148, 163, 184, 0.18);
+                border-radius: 12px;
+                padding: 10px 10px;
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+            [data-theme="platinum"] .xp-sp-pcard {
+                background: #f8fafc;
+                border-color: rgba(15, 23, 42, 0.1);
+            }
+            .xp-sp-ptag {
+                display: inline-block;
+                width: fit-content;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.48rem;
+                font-weight: 800;
+                padding: 2px 6px;
+                border-radius: 5px;
+                letter-spacing: 0.4px;
+            }
+            .xp-sp-nav-grid {
+                display: grid;
+                grid-template-columns: 0.88fr 1.28fr 0.84fr;
+                gap: 6px;
+            }
+            .xp-sp-nav-btn {
+                height: 36px;
+                border-radius: 10px;
+                border: 1px solid var(--border-subtle);
+                background: var(--bg-input);
+                color: var(--text-secondary);
+                font-family: inherit;
+                font-size: 0.62rem;
+                font-weight: 800;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                gap: 4px;
+                padding: 0 5px;
+                white-space: nowrap;
+                transition: 0.16s ease;
+            }
+            .xp-sp-nav-btn.active {
+                color: #ffffff;
+                border-color: transparent;
+                box-shadow: 0 4px 14px rgba(56, 189, 248, 0.3);
+            }
 
             /* 5. CLEAN SINGLE-LINE FOOTER */
             .xp-footer {
@@ -4711,19 +4881,22 @@
         <main class="xp-stage">
             <!-- VIEW 1: EXCHANGE PRO PORTAL -->
             <div class="xp-grid" id="authMainPortalView">
-                <!-- DESKTOP LEFT: INSTITUTIONAL HERO + 3 LIVE INVENTORY CARDS -->
+                <!-- DESKTOP LEFT: GITHUB MARKETPLACE HERO + 3 LIVE INVENTORY CARDS -->
                 <div class="xp-left-desk">
                     <div class="xp-status-pill">
-                        <span class="xp-live-dot"></span>
-                        <span>INSTITUTIONAL ASSET EXCHANGE • 24/7 LIVE</span>
+                        <span class="xp-status-left">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                            <span>OFFICIAL GITHUB MARKETPLACE</span>
+                        </span>
+                        <span class="xp-status-live"><span class="xp-live-dot"></span>24/7 LIVE</span>
                     </div>
 
                     <h1 class="xp-hero-h1">
-                        Trade Verified <span class="xb-brand-grad">Aged GitHub Assets</span> &amp; Repository Liquidity.
+                        Verified <span class="xb-brand-grad">Aged GitHub Accounts</span> &amp; Repository Growth.
                     </h1>
 
                     <p style="margin:0;font-size:0.86rem;color:var(--text-secondary);line-height:1.6;max-width:540px;">
-                        Inspect real-time aged 2011–2026 profiles, rare badges, and live 2FA keys before checkout. Automated settlement across USDT and IDR with unified wallet sync.
+                        Browse hand-checked 2011–2026 GitHub profiles with live username preview, instant 2FA OTP access, and automated Stars, Forks &amp; Followers — fast USDT &amp; IDR checkout.
                     </p>
 
                     <div class="xp-inv-grid" id="exProDeskInvGrid">
@@ -4769,17 +4942,20 @@
                     </div>
                 </div>
 
-                <!-- MOBILE INSTITUTIONAL HERO -->
+                <!-- MOBILE GITHUB MARKETPLACE HERO -->
                 <div class="xp-mob-hero">
-                    <div class="xp-status-pill" style="padding:3px 9px;font-size:0.54rem;">
-                        <span class="xp-live-dot"></span>
-                        <span>OFFICIAL DIGITAL EXCHANGE • 24/7 LIVE</span>
+                    <div class="xp-status-pill">
+                        <span class="xp-status-left">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                            <span>OFFICIAL GITHUB MARKETPLACE</span>
+                        </span>
+                        <span class="xp-status-live"><span class="xp-live-dot"></span>24/7 LIVE</span>
                     </div>
                     <h1 class="xp-mob-hero-title">
-                        Verified <span class="xb-brand-grad">Aged GitHub</span> &amp; Digital Assets
+                        Verified <span class="xb-brand-grad">Aged GitHub</span> Accounts &amp; Boost
                     </h1>
                     <p class="xp-mob-hero-sub">
-                        Live 2011–2026 inventory with built-in 2FA, unified USDT wallet, and automated GitHub Boost.
+                        Inspect real 2011–2026 GitHub usernames before checkout, get instant 2FA OTP access, and grow repositories with automated Stars &amp; Followers.
                     </p>
                 </div>
 
@@ -4807,8 +4983,8 @@
                     <div class="xp-auth-card">
                         <div class="xp-card-hdr">
                             <div style="min-width:0;">
-                                <div style="font-size:0.9rem;font-weight:800;color:var(--text-primary);line-height:1.15;">Client Access Terminal</div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);font-weight:700;margin-top:2px;">UNIFIED WALLET • VAULT • BOOST SYNC</div>
+                                <div style="font-size:0.92rem;font-weight:800;color:var(--text-primary);line-height:1.15;">Member Account</div>
+                                <div style="font-size:0.62rem;color:var(--text-secondary);font-weight:600;margin-top:2px;">Access your wallet, order vault &amp; live 2FA codes</div>
                             </div>
                             <span class="xp-enc-badge">● SECURE</span>
                         </div>
@@ -4854,7 +5030,7 @@
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
                                 <div>
                                     <div class="xp-field-lbl"><span>USERNAME</span></div>
-                                    <input type="text" class="xp-inp" id="regUsernameInput" placeholder="e.g. xianbee_vip" autocomplete="username">
+                                    <input type="text" class="xp-inp" id="regUsernameInput" placeholder="Enter username" autocomplete="username">
                                 </div>
                                 <div>
                                     <div class="xp-field-lbl"><span>TELEGRAM / EMAIL</span></div>
@@ -4890,49 +5066,80 @@
                         </div>
                     </div>
 
-                    <!-- CORE SPECIALTIES BAR -->
+                    <!-- CORE ECOSYSTEM DOCK -->
                     <div class="xp-spec-bar">
                         <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;">
-                            <span style="color:var(--text-secondary);">CORE ECOSYSTEM</span>
-                            <span style="color:#38bdf8;">TAP TO EXPLORE ➔</span>
+                            <span style="color:var(--text-secondary);">EXPLORE XIANBEE-TECH</span>
+                            <span style="color:#38bdf8;">TAP TO VIEW ➔</span>
                         </div>
                         <div class="xp-spec-btns">
-                            <button type="button" class="xp-spec-pill" onclick="openFullSpecialtyPage(0)">🐙 GitHub</button>
-                            <button type="button" class="xp-spec-pill" onclick="openFullSpecialtyPage(1)">🌐 Crypto</button>
-                            <button type="button" class="xp-spec-pill" onclick="openFullSpecialtyPage(2)">⚡ All-In-One</button>
+                            <button type="button" class="xp-spec-pill" style="border-top:2px solid rgba(56,189,248,0.55);" onclick="openFullSpecialtyPage(0)">
+                                <span class="xp-spec-pill-top" style="color:var(--text-primary);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                                    <span>GitHub</span>
+                                </span>
+                                <span class="xp-spec-pill-sub" style="color:#38bdf8;">Aged &amp; Boost</span>
+                            </button>
+
+                            <button type="button" class="xp-spec-pill" style="border-top:2px solid rgba(16,185,129,0.55);" onclick="openFullSpecialtyPage(1)">
+                                <span class="xp-spec-pill-top" style="color:var(--text-primary);">
+                                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M7 16V4m0 0L3 8m4-4 4 4"/><path d="M17 8v12m0 0 4-4m-4 4-4-4"/></svg>
+                                    <span>XianBee-Tech</span>
+                                </span>
+                                <span class="xp-spec-pill-sub" style="color:#34d399;">Exchange Desk</span>
+                            </button>
+
+                            <button type="button" class="xp-spec-pill" style="border-top:2px solid rgba(168,85,247,0.55);" onclick="openFullSpecialtyPage(2)">
+                                <span class="xp-spec-pill-top" style="color:var(--text-primary);">
+                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#c084fc" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                                    <span>All-In-One</span>
+                                </span>
+                                <span class="xp-spec-pill-sub" style="color:#c084fc;">Digital Suite</span>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- VIEW 2: FULL-SCREEN CORE SPECIALTY DETAIL SLIDE -->
+            <!-- VIEW 2: OVERHAULED 3-THEME ECOSYSTEM SHOWCASE -->
             <div class="auth-specialty-fullpage" id="authSpecialtyFullPage">
                 <div style="display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:8px;background:var(--bg-surface);border:1px solid var(--ex-hairline);border-radius:13px;padding:7px 9px;">
-                    <button type="button" onclick="closeFullSpecialtyPage()" class="btn-ui primary" style="height:34px;padding:0 10px;font-size:0.68rem;border-radius:9px;">⬅️ Back to Login</button>
-                    <span id="fullSpecBadge" style="height:34px;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.64rem;font-weight:800;color:#38bdf8;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.35);border-radius:9px;">SPECIALTY 01 / 03</span>
+                    <button type="button" onclick="closeFullSpecialtyPage()" class="btn-ui primary" style="height:34px;padding:0 10px;font-size:0.68rem;border-radius:9px;">⬅ Back to Login</button>
+                    <span id="fullSpecBadge" style="height:34px;display:inline-flex;align-items:center;justify-content:center;font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:#38bdf8;background:rgba(56,189,248,0.12);border:1px solid rgba(56,189,248,0.35);border-radius:9px;">01 / 03 • GITHUB</span>
                 </div>
 
-                <div class="spec-full-card spec-anim-cyber" id="fullSpecStageCard" style="border:1px solid var(--ex-hairline);">
-                    <div>
-                        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
-                            <div id="fullSpecIconOrb" style="width:44px;height:44px;border-radius:12px;background:rgba(56,189,248,0.14);border:1px solid #38bdf8;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">🐙</div>
-                            <div>
-                                <span id="fullSpecSubtitle" style="font-size:0.56rem;font-weight:800;letter-spacing:0.8px;color:#38bdf8;text-transform:uppercase;display:block;">ENTERPRISE DEVELOPER INFRASTRUCTURE</span>
-                                <h2 id="fullSpecTitle" style="margin:0;font-size:1.02rem;font-weight:800;color:var(--text-primary);">GitHub Enterprise Solutions</h2>
-                            </div>
+                <div class="xp-sp-stage xp-theme-github" id="fullSpecStageCard">
+                    <div style="display:flex;align-items:center;gap:11px;">
+                        <div id="fullSpecIconOrb" style="width:46px;height:46px;border-radius:13px;background:rgba(56,189,248,0.14);border:1.5px solid #38bdf8;color:#38bdf8;display:flex;align-items:center;justify-content:center;flex-shrink:0;"></div>
+                        <div style="min-width:0;flex:1;">
+                            <span id="fullSpecSubtitle" style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;letter-spacing:0.7px;color:#38bdf8;text-transform:uppercase;display:block;">VERIFIED DEVELOPER MARKETPLACE</span>
+                            <h2 id="fullSpecTitle" style="margin:2px 0 0;font-size:1.06rem;font-weight:800;color:var(--text-primary);line-height:1.18;">XianBee-Tech GitHub Vault</h2>
                         </div>
-                        <div style="width:100%;height:1px;background:var(--border-subtle);margin-bottom:9px;"></div>
-                        <p id="fullSpecLeadDesc" style="margin:0 0 9px 0;font-size:0.73rem;color:var(--text-secondary);line-height:1.5;font-weight:600;"></p>
                     </div>
-                    <div class="spec-pillar-grid" id="fullSpecPillarsGrid"></div>
-                    <div id="fullSpecFooterNote" style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:10px;padding:8px 10px;font-size:0.66rem;color:var(--text-primary);font-weight:700;text-align:center;"></div>
+
+                    <p id="fullSpecLeadDesc" style="margin:0;font-size:0.73rem;color:var(--text-secondary);line-height:1.52;font-weight:600;"></p>
+
+                    <div class="xp-sp-metrics" id="fullSpecMetricsRow"></div>
+
+                    <div class="xp-sp-pillars" id="fullSpecPillarsGrid"></div>
+
+                    <div id="fullSpecFooterNote" style="background:rgba(255,255,255,0.04);border:1px solid var(--ex-hairline);border-radius:10px;padding:8px 10px;font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-primary);font-weight:700;text-align:center;line-height:1.45;"></div>
                 </div>
 
-                <div style="background:var(--bg-surface);border:1px solid var(--ex-hairline);border-radius:13px;padding:7px 9px;">
-                    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:6px;">
-                        <button type="button" class="subtab-pill" id="fullNavBtn0" style="padding:7px 4px;font-size:0.64rem;" onclick="openFullSpecialtyPage(0)">🐙 GitHub</button>
-                        <button type="button" class="subtab-pill" id="fullNavBtn1" style="padding:7px 4px;font-size:0.64rem;" onclick="openFullSpecialtyPage(1)">🌐 Crypto</button>
-                        <button type="button" class="subtab-pill" id="fullNavBtn2" style="padding:7px 4px;font-size:0.64rem;" onclick="openFullSpecialtyPage(2)">⚡ All-In-One</button>
+                <div style="background:var(--bg-surface);border:1px solid var(--ex-hairline);border-radius:13px;padding:7px 8px;">
+                    <div class="xp-sp-nav-grid">
+                        <button type="button" class="xp-sp-nav-btn" id="fullNavBtn0" onclick="openFullSpecialtyPage(0)">
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" style="flex-shrink:0;"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>
+                            <span>GitHub</span>
+                        </button>
+                        <button type="button" class="xp-sp-nav-btn" id="fullNavBtn1" onclick="openFullSpecialtyPage(1)" style="font-size:0.55rem;">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M7 16V4m0 0L3 8m4-4 4 4"/><path d="M17 8v12m0 0 4-4m-4 4-4-4"/></svg>
+                            <span>XianBee-Tech Exchange</span>
+                        </button>
+                        <button type="button" class="xp-sp-nav-btn" id="fullNavBtn2" onclick="openFullSpecialtyPage(2)">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                            <span>All-In-One</span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -4948,52 +5155,73 @@
         <script>
             const FULL_SPECIALTIES_PAGES = [
                 {
-                    badge: 'SPECIALTY 01 / 03',
-                    icon: '🐙',
+                    badge: '01 / 03 • GITHUB',
+                    themeClass: 'xp-theme-github',
                     color: '#38bdf8',
-                    animClass: 'spec-anim-cyber',
-                    subtitle: 'ENTERPRISE DEVELOPER INFRASTRUCTURE',
-                    title: 'GitHub Enterprise Solutions',
-                    lead: 'Verified Aged, Rare-Badge, and High-Authority GitHub accounts (2011–2026), paired with automated repository metric delivery (Stars, Forks, Watchers, and Followers).',
-                    pillars: [
-                        { title: '📅 Aged Profiles (2011–2026)', desc: 'Hand-vetted historic accounts with clean commit history and verified public status.' },
-                        { title: '🏅 Rare Developer Badges', desc: 'Authentic 2020 Arctic Code Vault, 6 Premium Badges & Student Developer Packs.' },
-                        { title: '🚀 Repo Metric Boost', desc: 'Steady, Fast, and Ultra delivery tracks with real-time order progress monitoring.' },
-                        { title: '🔐 Built-In Live 2FA', desc: 'Full Username, Password & 2FA Secret Key with live 30-second OTP generator.' }
+                    tagBg: 'rgba(56, 189, 248, 0.14)',
+                    navGrad: 'linear-gradient(135deg, #0284c7 0%, #2563eb 100%)',
+                    iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/></svg>',
+                    subtitle: 'VERIFIED DEVELOPER MARKETPLACE',
+                    title: 'XianBee-Tech GitHub Vault',
+                    lead: 'Hand-checked aged GitHub profiles (2011–2026) and automated repository growth. Inspect exact @usernames before checkout and unlock credentials instantly with built-in 2FA.',
+                    metrics: [
+                        { val: '2011–2026', lbl: 'AGED YEARS' },
+                        { val: 'LIVE 2FA',  lbl: 'BUILT-IN OTP' },
+                        { val: 'INSTANT',   lbl: 'AUTO VAULT' }
                     ],
-                    footer: 'Inspect Exact @Usernames Live Before Checkout • Instant Automated Delivery'
+                    pillars: [
+                        { tag: 'AGED VAULT', title: 'Historic GitHub Profiles', desc: 'Clean 2011–2026 accounts with verified public status, aged commit history, and live username preview.' },
+                        { tag: 'COLLECTOR',  title: 'Rare Badges & Authority',  desc: 'Authentic 2020 Arctic Code Vault, 6-Badge profiles, High-Followers vaults, and Student Dev Packs.' },
+                        { tag: 'AUTO BOOST', title: 'Repository Growth Engine', desc: 'Steady, Fast, and Ultra delivery for Stars, Forks, Watchers, and Followers with real-time progress.' },
+                        { tag: 'FULL ACCESS',title: 'Encrypted Vault & 2FA',    desc: 'Complete username, password, recovery email, and 2FA secret key saved safely inside your account.' }
+                    ],
+                    footer: 'Preview exact @usernames before buying • Instant credential delivery & 2FA OTP access'
                 },
                 {
-                    badge: 'SPECIALTY 02 / 03',
-                    icon: '🌐',
+                    badge: '02 / 03 • EXCHANGE',
+                    themeClass: 'xp-theme-exchange',
                     color: '#10b981',
-                    animClass: 'spec-anim-vortex',
-                    subtitle: 'INSTANT DIGITAL ASSET & LIQUIDITY BRIDGE',
-                    title: 'XianBee Crypto Exchange',
-                    lead: 'Instant retail crypto & L2 gas top-ups, verified global exchange accounts, and multi-currency USDT / IDR settlements available 24/7.',
-                    pillars: [
-                        { title: '⛽ Retail L2 Gas & Crypto', desc: 'Fast delivery of ETH, BNB, SOL, TON, SUI & Layer-2 gas direct to your wallet.' },
-                        { title: '🔄 Multi-Chain Settlement', desc: 'Automated confirmation across TRC-20, BEP-20, Arbitrum, Base, Polygon & TON.' },
-                        { title: '🔶 Verified Exchanges', desc: 'Ready-to-use tier-1 exchange accounts (Binance, OKX, Bybit, Bitget, MEXC).' },
-                        { title: '🇮🇩 Local IDR Bridge', desc: 'Instant top-up support via QRIS, SeaBank, DANA, and GoPay at live market rates.' }
+                    tagBg: 'rgba(16, 185, 129, 0.15)',
+                    navGrad: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
+                    iconSvg: '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0L3 8m4-4 4 4"/><path d="M17 8v12m0 0 4-4m-4 4-4-4"/></svg>',
+                    subtitle: 'CRYPTO & LOCAL IDR LIQUIDITY DESK',
+                    title: 'XianBee-Tech Exchange',
+                    lead: 'Fast digital currency bridge connecting multi-chain crypto networks with Indonesian local payments. Top up L2 gas, swap USDT to IDR, or settle balances 24/7.',
+                    metrics: [
+                        { val: 'USDT / IDR', lbl: 'LIVE RATES' },
+                        { val: '7+ CHAINS',  lbl: 'NETWORKS' },
+                        { val: '24/7 DESK',  lbl: 'FAST SETTLE' }
                     ],
-                    footer: 'Automated Blockchain Settlement • Live Market Conversion 24/7'
+                    pillars: [
+                        { tag: 'RETAIL GAS',  title: 'Instant Crypto & L2 Gas',   desc: 'Quick retail delivery of ETH, BNB, SOL, TON, SUI, Base, and Arbitrum gas straight to your wallet.' },
+                        { tag: 'IDR BRIDGE',  title: 'Seamless USDT ↔ IDR',      desc: 'Fund your balance or convert smoothly via QRIS, SeaBank, DANA, OVO, and GoPay at live rates.' },
+                        { tag: 'MULTI-CHAIN', title: 'Automated Chain Routing',   desc: 'Fast confirmations supporting TRC-20, BEP-20, Arbitrum, Base, Optimism, Polygon, and TON.' },
+                        { tag: 'EXCHANGES',   title: 'Verified Exchange Profiles',desc: 'Ready-to-use tier-1 trading accounts curated for global Web3 builders and digital desks.' }
+                    ],
+                    footer: 'Live USDT/IDR market rates • Transparent settlement across 7+ networks 24/7'
                 },
                 {
-                    badge: 'SPECIALTY 03 / 03',
-                    icon: '⚡',
-                    color: '#a855f7',
-                    animClass: 'spec-anim-prism',
-                    subtitle: 'ALL-IN-ONE DIGITAL OPERATIONS HUB',
-                    title: 'Complete Digital Ecosystem',
-                    lead: 'Everything your digital workflow needs under one balance—aged social accounts, Pro AI subscriptions, SMM growth boosts, and instant game / bill top-ups.',
-                    pillars: [
-                        { title: '📱 Aged Social Assets', desc: 'High-trust aged X, Instagram, TikTok, Discord, Telegram & verified email accounts.' },
-                        { title: '👑 Pro AI & Creative Apps', desc: 'ChatGPT Plus, Gemini Advanced, Canva Pro, CapCut Pro & 4K VIP Streaming.' },
-                        { title: '📈 Growth & SMM Boost', desc: 'Cross-platform followers, views, community members & Web3 watchlist boosts.' },
-                        { title: '🎮 Instant Games & Bills', desc: 'Real-time top-ups for games, e-wallets, and daily utility tokens.' }
+                    badge: '03 / 03 • ALL-IN-ONE',
+                    themeClass: 'xp-theme-suite',
+                    color: '#c084fc',
+                    tagBg: 'rgba(168, 85, 247, 0.16)',
+                    navGrad: 'linear-gradient(135deg, #7c3aed 0%, #c026d3 100%)',
+                    iconSvg: '<svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+                    subtitle: 'UNIFIED DIGITAL PRODUCTS & SERVICES',
+                    title: 'All-In-One Digital Suite',
+                    lead: 'Everything beyond GitHub under one wallet balance—aged social accounts, Pro AI & creative subscriptions, cross-platform growth boosts, and instant daily top-ups.',
+                    metrics: [
+                        { val: '1 WALLET', lbl: 'UNIFIED PAY' },
+                        { val: 'PRO APPS', lbl: 'AI & CREATIVE' },
+                        { val: 'VIP TIER', lbl: 'CASHBACK' }
                     ],
-                    footer: 'One Unified Wallet Balance for All Assets, Subscriptions & Services'
+                    pillars: [
+                        { tag: 'SOCIAL VAULT', title: 'Aged Social & Email',    desc: 'High-trust aged X, Instagram, TikTok, Discord, Telegram, Reddit, and verified email profiles.' },
+                        { tag: 'PRO APPS',     title: 'AI & Creative Upgrades', desc: 'Official plans for ChatGPT Plus, Gemini Advanced, Canva Pro, CapCut Pro, and 4K streaming.' },
+                        { tag: 'GROWTH OPS',   title: 'Cross-Platform Boost',   desc: 'Targeted followers, views, channel members, and Web3 watchlist growth campaigns.' },
+                        { tag: 'INSTANT BILL', title: 'Games, E-Wallet & PPOB', desc: 'Fast top-ups for popular games, digital vouchers, e-wallets, and daily utility tokens.' }
+                    ],
+                    footer: 'One unified wallet & VIP cashback progress across every product in XianBee-Tech'
                 }
             ];
 
@@ -5007,32 +5235,67 @@
                 if (fullView) fullView.classList.add('active');
 
                 if (stageCard) {
-                    stageCard.classList.remove('spec-anim-cyber', 'spec-anim-vortex', 'spec-anim-prism');
+                    stageCard.classList.remove('xp-theme-github', 'xp-theme-exchange', 'xp-theme-suite');
                     void stageCard.offsetWidth;
-                    stageCard.classList.add(item.animClass);
+                    stageCard.classList.add(item.themeClass);
                 }
+
                 const badgeEl = document.getElementById('fullSpecBadge');
-                if (badgeEl) { badgeEl.innerText = item.badge; badgeEl.style.color = item.color; badgeEl.style.borderColor = item.color; }
+                if (badgeEl) {
+                    badgeEl.innerText = item.badge;
+                    badgeEl.style.color = item.color;
+                    badgeEl.style.borderColor = item.color;
+                    badgeEl.style.background = item.tagBg;
+                }
+
                 const orb = document.getElementById('fullSpecIconOrb');
-                if (orb) { orb.innerText = item.icon; orb.style.borderColor = item.color; }
+                if (orb) {
+                    orb.innerHTML = item.iconSvg;
+                    orb.style.color = item.color;
+                    orb.style.borderColor = item.color;
+                    orb.style.background = item.tagBg;
+                }
+
                 const sub = document.getElementById('fullSpecSubtitle');
                 if (sub) { sub.innerText = item.subtitle; sub.style.color = item.color; }
 
                 document.getElementById('fullSpecTitle').innerText = item.title;
                 document.getElementById('fullSpecLeadDesc').innerText = item.lead;
-                document.getElementById('fullSpecFooterNote').innerText = item.footer;
+
+                const metRow = document.getElementById('fullSpecMetricsRow');
+                if (metRow) {
+                    metRow.innerHTML = item.metrics.map(m => `
+                        <div class="xp-sp-metric">
+                            <div style="font-size:0.68rem;font-weight:800;color:${item.color};">${m.val}</div>
+                            <div style="font-size:0.46rem;font-weight:700;color:var(--text-muted);margin-top:2px;">${m.lbl}</div>
+                        </div>
+                    `).join('');
+                }
 
                 const grid = document.getElementById('fullSpecPillarsGrid');
-                grid.innerHTML = item.pillars.map(p => `
-                    <div class="spec-pillar-box" style="border-left-color:${item.color};">
-                        <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${p.title}</div>
-                        <div style="font-size:0.6rem;color:var(--text-secondary);line-height:1.38;">${p.desc}</div>
-                    </div>
-                `).join('');
+                if (grid) {
+                    grid.innerHTML = item.pillars.map(p => `
+                        <div class="xp-sp-pcard" style="border-top:2px solid ${item.color}66;">
+                            <span class="xp-sp-ptag" style="color:${item.color};background:${item.tagBg};">${p.tag}</span>
+                            <div style="font-size:0.69rem;font-weight:800;color:var(--text-primary);margin-top:2px;">${p.title}</div>
+                            <div style="font-size:0.6rem;color:var(--text-secondary);line-height:1.4;">${p.desc}</div>
+                        </div>
+                    `).join('');
+                }
+
+                const foot = document.getElementById('fullSpecFooterNote');
+                if (foot) {
+                    foot.innerText = item.footer;
+                    foot.style.borderColor = item.color + '55';
+                }
 
                 [0, 1, 2].forEach(i => {
                     const btn = document.getElementById('fullNavBtn' + i);
-                    if (btn) btn.classList.toggle('active', i === idx);
+                    if (!btn) return;
+                    const isAct = (i === idx);
+                    btn.classList.toggle('active', isAct);
+                    btn.style.background = isAct ? FULL_SPECIALTIES_PAGES[i].navGrad : '';
+                    btn.style.color = isAct ? '#ffffff' : '';
                 });
             }
 
