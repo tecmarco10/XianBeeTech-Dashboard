@@ -10,7 +10,7 @@
 
         /* =========================================================
            🎨 DUAL THEME ENGINE (OBSIDIAN DARK & PLATINUM LIGHT)
-           ========================================================= */ 
+           ========================================================= */
         :root,
         [data-theme="obsidian"] {
             --bg-base: #060913;
@@ -4196,11 +4196,17 @@
             background: rgba(16, 185, 129, 0.1);
             color: #059669;
         }
-        .xb-mp-social-toggle {
+        .xb-mp-dual-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+        }
+        .xb-mp-dual-btn {
             position: relative;
             width: 100%;
-            padding: 9px 10px;
-            border-radius: 13px;
+            min-width: 0;
+            padding: 8px 6px;
+            border-radius: 12px;
             border: 1px solid var(--ex-hairline);
             background: var(--ex-card-bg);
             color: var(--text-primary);
@@ -4210,85 +4216,160 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 7px;
+            gap: 6px;
             overflow: hidden;
             text-align: center;
             transition: transform 0.14s ease, border-color 0.16s ease, box-shadow 0.16s ease;
         }
-        .xb-mp-social-toggle:active { transform: scale(0.99); }
-        .xb-mp-social-toggle.open,
-        .xb-mp-social-toggle.active-plat {
+        .xb-mp-dual-btn:active { transform: scale(0.98); }
+        .xb-mp-dual-btn.open,
+        .xb-mp-dual-btn.active-plat {
             border-color: rgba(168, 85, 247, 0.65);
             background: linear-gradient(145deg, #0b1126 0%, #17123a 55%, #1d103b 100%);
-            box-shadow: 0 6px 18px rgba(124, 58, 237, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            box-shadow: 0 5px 16px rgba(124, 58, 237, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.18);
         }
-        [data-theme="platinum"] .xb-mp-social-toggle.open,
-        [data-theme="platinum"] .xb-mp-social-toggle.active-plat {
+        .xb-mp-dual-btn.is-cex.open,
+        .xb-mp-dual-btn.is-cex.active-plat {
+            border-color: rgba(251, 191, 36, 0.6);
+            background: linear-gradient(145deg, #120f06 0%, #241b08 55%, #101f1a 100%);
+            box-shadow: 0 5px 16px rgba(245, 158, 11, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+        [data-theme="platinum"] .xb-mp-dual-btn.open,
+        [data-theme="platinum"] .xb-mp-dual-btn.active-plat {
             background: linear-gradient(145deg, #ffffff 0%, #f3e8ff 100%);
             border-color: rgba(124, 58, 237, 0.45);
-            box-shadow: 0 4px 14px rgba(124, 58, 237, 0.12);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.12);
         }
-        .xb-mp-social-head {
+        [data-theme="platinum"] .xb-mp-dual-btn.is-cex.open,
+        [data-theme="platinum"] .xb-mp-dual-btn.is-cex.active-plat {
+            background: linear-gradient(145deg, #ffffff 0%, #fef3c7 100%);
+            border-color: rgba(217, 119, 6, 0.45);
+        }
+        .xb-mp-dual-head {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
-            width: 100%;
+            gap: 4px;
+            max-width: 100%;
         }
-        .xb-mp-social-title {
-            font-size: 0.74rem;
+        .xb-mp-dual-title {
+            font-size: 0.69rem;
             font-weight: 800;
             letter-spacing: -0.15px;
             color: var(--text-primary);
             white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
-        .xb-mp-social-chev {
+        .xb-mp-dual-chev {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.56rem;
+            font-size: 0.48rem;
             font-weight: 800;
-            padding: 1px 6px;
+            padding: 1px 5px;
             border-radius: 99px;
             background: rgba(56, 189, 248, 0.14);
-            border: 1px solid rgba(56, 189, 248, 0.42);
+            border: 1px solid rgba(56, 189, 248, 0.4);
             color: #38bdf8;
+            flex-shrink: 0;
         }
-        [data-theme="platinum"] .xb-mp-social-chev { color: #2563eb; }
+        .xb-mp-dual-btn.is-cex .xb-mp-dual-chev {
+            background: rgba(251, 191, 36, 0.14);
+            border-color: rgba(251, 191, 36, 0.45);
+            color: #fbbf24;
+        }
+        [data-theme="platinum"] .xb-mp-dual-chev { color: #2563eb; }
+        [data-theme="platinum"] .xb-mp-dual-btn.is-cex .xb-mp-dual-chev { color: #b45309; }
         .xb-mp-logo-strip {
             display: flex;
             align-items: center;
             justify-content: center;
             flex-wrap: nowrap;
-            gap: 5px;
+            gap: 3px;
             width: 100%;
         }
         .xb-mp-mini-ico {
-            width: 24px;
-            height: 24px;
-            border-radius: 7px;
-            background: rgba(5, 8, 18, 0.76);
+            width: 19px;
+            height: 19px;
+            border-radius: 6px;
+            background: rgba(5, 8, 18, 0.78);
             border: 1px solid rgba(255, 255, 255, 0.15);
             display: inline-flex;
             align-items: center;
             justify-content: center;
             color: var(--mi-col, #38bdf8);
             flex-shrink: 0;
-            transition: transform 0.15s ease, border-color 0.15s ease;
         }
+        .xb-mp-mini-ico svg { width: 11px; height: 11px; }
         [data-theme="platinum"] .xb-mp-mini-ico {
             background: #ffffff;
             border-color: rgba(15, 23, 42, 0.12);
-            box-shadow: 0 2px 5px rgba(15, 23, 42, 0.06);
         }
         .xb-mp-mini-ico.is-cur {
             border-color: var(--mi-col, #38bdf8);
-            box-shadow: 0 0 8px var(--mi-col, rgba(56, 189, 248, 0.45));
             transform: scale(1.1);
         }
+        .xb-mp-drawer-box {
+            background: var(--ex-card-bg);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 13px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            animation: fadeIn 0.18s ease;
+        }
+        .xb-mp-drawer-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            padding: 0 2px;
+        }
+        .xb-mp-drawer-lbl {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.52rem;
+            font-weight: 800;
+            letter-spacing: 0.45px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+        }
+        .xb-mp-drawer-all {
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            background: rgba(56, 189, 248, 0.1);
+            color: #38bdf8;
+            border-radius: 7px;
+            padding: 2px 7px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.5rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        [data-theme="platinum"] .xb-mp-drawer-all { color: #2563eb; }
         .xb-mp-grid-6 {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
             gap: 6px;
             animation: fadeIn 0.18s ease;
+        }
+        .xb-mp-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+        }
+        .xb-mp-top-tag {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.44rem;
+            font-weight: 800;
+            padding: 1px 5px;
+            border-radius: 99px;
+            background: rgba(16, 185, 129, 0.18);
+            border: 1px solid rgba(52, 211, 153, 0.55);
+            color: #34d399;
+            flex-shrink: 0;
+        }
+        .xb-mp-plat-btn.span-full {
+            grid-column: 1 / -1;
+            justify-content: center;
         }
         .xb-mp-plat-btn {
             position: relative;
@@ -10345,7 +10426,8 @@
         let activeSub = 'ALL';
         let _mpPlatform = 'github'; // 'github' (default primary) | 'x' | 'discord' | 'reddit' | 'instagram' | 'facebook' | 'tiktok' | 'telegram' | 'email' | 'cex'
         let _mpSubFilter = 'ALL';
-        let _mpDrawerOpen = false;
+        let _mpEmailProv = 'ALL';   // 'ALL' | 'gmail' | 'outlook' | 'proton' | 'mailru'
+        let _mpDrawerTab = '';      // '' | 'social' | 'cex_email'
         let _exFilter = 'ALL';
         let _exSort = 'default';
         let _exSearchQuery = '';
@@ -10363,7 +10445,20 @@
             tiktok: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5 20.1a6.34 6.34 0 0 0 10.86-4.43v-7a8.16 8.16 0 0 0 4.77 1.52v-3.4a4.85 4.85 0 0 1-1-.1z"/></svg>`,
             telegram: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>`,
             email: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>`,
-            cex: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg>`
+            cex: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 12 15 2 8.5 12 2"/><polyline points="2 15.5 12 22 22 15.5"/></svg>`,
+            // INDIVIDUAL CEX BRAND LOGOS
+            mexc: `<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M2.2 18.2 7.8 7.1c.7-1.4 2.7-1.4 3.4 0l2.1 4.2 2.1-4.2c.7-1.4 2.7-1.4 3.4 0l2.9 5.8c.4.8-.2 1.8-1.1 1.8h-2.4l-1.5-3-2.1 4.2c-.5 1-1.9 1-2.4 0l-2.1-4.2-2.9 5.7c-.4.7-1.1 1.1-1.9 1.1H3.3c-.9 0-1.5-.9-1.1-1.7z"/></svg>`,
+            okx: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><rect x="3" y="3" width="6" height="6" rx="1.2"/><rect x="15" y="3" width="6" height="6" rx="1.2"/><rect x="9" y="9" width="6" height="6" rx="1.2"/><rect x="3" y="15" width="6" height="6" rx="1.2"/><rect x="15" y="15" width="6" height="6" rx="1.2"/></svg>`,
+            binance: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.5 15.8 6.3 13.7 8.4 12 6.7 10.3 8.4 8.2 6.3 12 2.5zm0 19-3.8-3.8 2.1-2.1 1.7 1.7 1.7-1.7 2.1 2.1L12 21.5zM2.5 12l2.6-2.6 2.1 2.1L4.6 14.1 2.5 12zm19 0-2.1 2.1-2.6-2.6 2.1-2.1L21.5 12zM12 9.4 14.6 12 12 14.6 9.4 12 12 9.4z"/></svg>`,
+            bybit: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3.5 5h8.2c2.5 0 4.3 1.3 4.3 3.4 0 1.4-.8 2.5-2 3 1.6.5 2.6 1.7 2.6 3.4 0 2.4-1.9 3.9-4.7 3.9H3.5V5zm3.3 5.4h4.1c1 0 1.7-.5 1.7-1.4s-.7-1.4-1.7-1.4H6.8v2.8zm0 5.6h4.5c1.1 0 1.9-.5 1.9-1.5s-.8-1.5-1.9-1.5H6.8V16zM18.3 5h2.5v9.5h-2.5V5z"/></svg>`,
+            bitget: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M11.2 4 5.4 9.8a1.5 1.5 0 0 0 0 2.1l3.6 3.6 2.1-2.1-2.6-2.6 4.8-4.8h-2.1zm1.6 16 5.8-5.8a1.5 1.5 0 0 0 0-2.1L15 8.5l-2.1 2.1 2.6 2.6-4.8 4.8h2.1z"/></svg>`,
+            gateio: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 1 0 9 9h-4.5a4.5 4.5 0 1 1-4.5-4.5V3z"/><rect x="12.5" y="3" width="5" height="5" rx="0.8" fill="#10b981"/></svg>`,
+            lbank: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 3.5 7v10L12 22l8.5-5V7L12 2zm-3 6.2h2.7v6.6h5.1v2.4H9V8.2z"/></svg>`,
+            // INDIVIDUAL EMAIL PROVIDER LOGOS
+            gmail: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h1.2L12 10.2 18.3 5h1.2A1.5 1.5 0 0 1 21 6.5V18a1 1 0 0 1-1 1h-2.5v-8.4L12 15l-5.5-4.4V19H4a1 1 0 0 1-1-1V6.5z" fill="#ea4335"/><path d="M3 6.5V18a1 1 0 0 0 1 1h2.5v-8.4L3 7.8V6.5z" fill="#4285f4"/><path d="M21 6.5V18a1 1 0 0 1-1 1h-2.5v-8.4L21 7.8V6.5z" fill="#34a853"/><path d="M17.5 10.6 21 7.8V6.5A1.5 1.5 0 0 0 19.5 5h-1.2L17.5 5.7v4.9z" fill="#fbbc05"/></svg>`,
+            outlook: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="8" y="5" width="13" height="14" rx="2" fill="#0078d4"/><path d="m8.5 7 6 4.5 6-4.5" stroke="#bae6fd" stroke-width="1.6"/><rect x="2.5" y="7" width="10" height="10" rx="2" fill="#0369a1"/><circle cx="7.5" cy="12" r="2.5" stroke="#ffffff" stroke-width="1.8"/></svg>`,
+            proton: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="4.5" width="18" height="15" rx="3" fill="#6d28d9"/><path d="M3.5 6.5 12 13l8.5-6.5" stroke="#e9d5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8.5 11.2 14.5a1.4 1.4 0 0 0 1.6 0L21 8.5V17a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17V8.5z" fill="#a78bfa" fill-opacity="0.72"/></svg>`,
+            mailru: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#005ff9"/><path d="M15.4 12a3.4 3.4 0 1 1-1.1-2.5V12c0 1.1.7 1.8 1.6 1.8 1.2 0 2.1-1.1 2.1-2.8a6 6 0 1 0-2.6 5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="2.5" stroke="#ff9e00" stroke-width="1.6"/></svg>`
         };
 
         const XB_MP_PLATFORMS = {
@@ -10480,36 +10575,38 @@
                 ]
             },
             email: {
-                key: 'email', shortName: 'Email', title: 'XianBee Aged Email Vault',
-                subtitle: 'Aged Gmail, Outlook, ProtonMail & Mail.ru + Recovery',
+                key: 'email', shortName: 'Email', title: 'XianBee Email Vault (Old & Fresh)',
+                subtitle: 'Old Aged & Clean Fresh • Gmail, Outlook, ProtonMail & Mail.ru',
                 accent: '#34d399', border: 'rgba(52, 211, 153, 0.48)', glow: 'rgba(16, 185, 129, 0.28)',
                 bg1: '#061611', bg2: '#0d3326', light: '#d1fae5',
-                m1Lbl: 'PROVIDER', m2Lbl: 'YEAR', credHint: 'Recovery + 2FA',
-                filters: [{ k: 'ALL', lbl: 'All Email' }, { k: 'GMAIL', lbl: 'Gmail' }, { k: 'OUTLOOK', lbl: 'Outlook' }, { k: 'PROTON', lbl: 'Proton/Other' }],
+                m1Lbl: 'TYPE', m2Lbl: 'YEAR', credHint: 'Recovery + 2FA',
+                filters: [{ k: 'ALL', lbl: 'All Email' }, { k: 'OLD', lbl: 'Old Email' }, { k: 'FRESH', lbl: 'Fresh Email' }],
                 vaults: [
-                    { key: 'mail_gmail_aged',   tag: '2014–20', title: 'Aged Gmail Vault', filter: 'GMAIL', tier: 'MYTHIC', cls: 'xb-tier-mythic', usdt: 8.00, desc: 'High-trust aged Gmail with recovery mail & 2FA ready.' },
-                    { key: 'mail_gmail_fresh',  tag: 'CLEAN',   title: 'Verified Gmail', filter: 'GMAIL', tier: 'RARE', cls: 'xb-tier-rare', usdt: 5.00, desc: 'Clean phone-verified Gmail ready for dev & social binding.' },
-                    { key: 'mail_outlook_aged', tag: 'AGED',    title: 'Outlook / Hotmail', filter: 'OUTLOOK', tier: 'EPIC', cls: 'xb-tier-epic', usdt: 5.00, desc: 'Aged Microsoft Outlook/Hotmail account with full access.' },
-                    { key: 'mail_proton',       tag: 'PRIVACY', title: 'ProtonMail Verified', filter: 'PROTON', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 6.00, desc: 'Encrypted privacy-first ProtonMail account + recovery.' },
-                    { key: 'mail_mailru',       tag: 'MAILRU',  title: 'Mail.ru Aged Vault', filter: 'PROTON', tier: 'RARE', cls: 'xb-tier-rare', usdt: 5.00, desc: 'Classic Mail.ru account ready for IMAP/POP3 automation.' },
-                    { key: 'mail_bulk_pack',    tag: '5x PACK', title: 'Multi-Mail Bundle', filter: 'GMAIL', tier: 'EPIC', cls: 'xb-tier-epic', usdt: 20.00, desc: 'Bundle of 5 mixed aged emails (Gmail/Outlook/Proton).' }
+                    { key: 'mail_gmail_old',     brand: 'gmail',   prov: 'gmail',   accent: '#ea4335', tag: 'OLD',   title: 'Gmail Old (Aged)',   filter: 'OLD',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 8.00, desc: 'High-trust aged Gmail (2014–2021) + recovery mail & 2FA.' },
+                    { key: 'mail_gmail_fresh',   brand: 'gmail',   prov: 'gmail',   accent: '#ea4335', tag: 'FRESH', title: 'Gmail Fresh',        filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 3.50, desc: 'Clean verified Fresh Gmail ready for instant binding.' },
+                    { key: 'mail_outlook_old',   brand: 'outlook', prov: 'outlook', accent: '#0078d4', tag: 'OLD',   title: 'Outlook Old (Aged)', filter: 'OLD',   tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 6.00, desc: 'Aged Microsoft Outlook/Hotmail with full recovery access.' },
+                    { key: 'mail_outlook_fresh', brand: 'outlook', prov: 'outlook', accent: '#0078d4', tag: 'FRESH', title: 'Outlook Fresh',      filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 2.50, desc: 'Clean Fresh Outlook/Hotmail ready for dev & automation.' },
+                    { key: 'mail_proton_old',    brand: 'proton',  prov: 'proton',  accent: '#a78bfa', tag: 'OLD',   title: 'ProtonMail Old',     filter: 'OLD',   tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 7.50, desc: 'Aged encrypted ProtonMail account with recovery access.' },
+                    { key: 'mail_proton_fresh',  brand: 'proton',  prov: 'proton',  accent: '#a78bfa', tag: 'FRESH', title: 'ProtonMail Fresh',   filter: 'FRESH', tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 4.00, desc: 'Clean Fresh ProtonMail for privacy-first accounts.' },
+                    { key: 'mail_mailru_old',    brand: 'mailru',  prov: 'mailru',  accent: '#3b82f6', tag: 'OLD',   title: 'Mail.ru Old (Aged)', filter: 'OLD',   tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 5.50, desc: 'Aged Mail.ru vault with IMAP/POP3 & recovery ready.' },
+                    { key: 'mail_mailru_fresh',  brand: 'mailru',  prov: 'mailru',  accent: '#3b82f6', tag: 'FRESH', title: 'Mail.ru Fresh',      filter: 'FRESH', tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 2.50, desc: 'Clean Fresh Mail.ru account ready for instant delivery.' }
                 ]
             },
             cex: {
-                key: 'cex', shortName: 'CEX', title: 'XianBee Verified CEX Vault',
-                subtitle: 'Tier-1 Exchanges • Aged With KYC ($35) & No-KYC ($25)',
+                key: 'cex', shortName: 'Old CEX', title: 'XianBee Old CEX Vault (No KYC)',
+                subtitle: 'Old Accounts No-KYC • MEXC & OKX Top Priority • Full Mail + 2FA',
                 accent: '#fbbf24', border: 'rgba(251, 191, 36, 0.52)', glow: 'rgba(245, 158, 11, 0.28)',
                 bg1: '#141005', bg2: '#2e2108', light: '#fef3c7',
-                m1Lbl: 'KYC TIER', m2Lbl: 'REGION', credHint: 'Full KYC / 2FA',
-                filters: [{ k: 'ALL', lbl: 'All CEX' }, { k: 'TIER1', lbl: 'Tier-1 Top' }, { k: 'KYC', lbl: 'With KYC ($35)' }, { k: 'NOKYC', lbl: 'No KYC ($25)' }],
+                m1Lbl: 'STATUS', m2Lbl: 'AGE', credHint: 'No-KYC • Mail + 2FA',
+                filters: [{ k: 'ALL', lbl: 'All Old CEX' }, { k: 'TOP', lbl: 'MEXC & OKX' }, { k: 'TIER1', lbl: 'Tier-1 Old' }, { k: 'SPOT', lbl: 'Spot Old' }],
                 vaults: [
-                    { key: 'cex_binance', tag: 'TIER-1', title: 'Binance Verified', filter: 'TIER1', tier: 'MYTHIC', cls: 'xb-tier-mythic', usdt: 35.00, desc: 'Aged Binance account (With KYC $35 / No KYC $25).' },
-                    { key: 'cex_okx',     tag: 'TIER-1', title: 'OKX Global', filter: 'TIER1', tier: 'MYTHIC', cls: 'xb-tier-mythic', usdt: 35.00, desc: 'Verified OKX Spot, Web3 & Derivatives account.' },
-                    { key: 'cex_bybit',   tag: 'TIER-1', title: 'Bybit Verified', filter: 'TIER1', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 35.00, desc: 'Aged Bybit trading account with full email + 2FA.' },
-                    { key: 'cex_bitget',  tag: 'PRO',    title: 'Bitget Exchange', filter: 'KYC', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 35.00, desc: 'Verified Bitget account ready for copy & launchpad.' },
-                    { key: 'cex_mexc',    tag: 'GEMS',   title: 'MEXC Global', filter: 'NOKYC', tier: 'EPIC', cls: 'xb-tier-epic', usdt: 25.00, desc: 'Aged MEXC account (No KYC $25 / With KYC $35).' },
-                    { key: 'cex_gateio',  tag: 'SPOT',   title: 'Gate.io Exchange', filter: 'NOKYC', tier: 'EPIC', cls: 'xb-tier-epic', usdt: 25.00, desc: 'Aged Gate.io profile with 2FA & full mail access.' },
-                    { key: 'cex_lbank',   tag: 'GLOBAL', title: 'LBank Exchange', filter: 'NOKYC', tier: 'RARE', cls: 'xb-tier-rare', usdt: 25.00, desc: 'Clean aged LBank account with recovery access.' }
+                    { key: 'cex_mexc',    brand: 'mexc',    accent: '#2dd4bf', tag: 'TOP • NO KYC', title: 'MEXC Old (No KYC)',    filter: 'TOP',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 25.00, desc: 'Top-demand aged MEXC Old No-KYC account + OG Email & 2FA.' },
+                    { key: 'cex_okx',     brand: 'okx',     accent: '#38bdf8', tag: 'TOP • NO KYC', title: 'OKX Old (No KYC)',     filter: 'TOP',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 25.00, desc: 'Top-demand aged OKX Old No-KYC account + OG Email & 2FA.' },
+                    { key: 'cex_binance', brand: 'binance', accent: '#f3ba2f', tag: 'OLD NO KYC',   title: 'Binance Old (No KYC)', filter: 'TIER1', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 28.00, desc: 'Historic aged Binance Old No-KYC account + recovery email & 2FA.' },
+                    { key: 'cex_bybit',   brand: 'bybit',   accent: '#f7a600', tag: 'OLD NO KYC',   title: 'Bybit Old (No KYC)',   filter: 'TIER1', tier: 'LEGENDARY', cls: 'xb-tier-legendary', usdt: 25.00, desc: 'Clean aged Bybit Old No-KYC account with full mail & 2FA.' },
+                    { key: 'cex_bitget',  brand: 'bitget',  accent: '#06b6d4', tag: 'OLD NO KYC',   title: 'Bitget Old (No KYC)',  filter: 'TIER1', tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 25.00, desc: 'Aged Bitget Old No-KYC account ready for spot & launchpad.' },
+                    { key: 'cex_gateio',  brand: 'gateio',  accent: '#3b82f6', tag: 'OLD NO KYC',   title: 'Gate.io Old (No KYC)', filter: 'SPOT',  tier: 'EPIC',      cls: 'xb-tier-epic',      usdt: 25.00, desc: 'Aged Gate.io Old No-KYC profile with 2FA & full mail access.' },
+                    { key: 'cex_lbank',   brand: 'lbank',   accent: '#eab308', tag: 'OLD NO KYC',   title: 'LBank Old (No KYC)',   filter: 'SPOT',  tier: 'RARE',      cls: 'xb-tier-rare',      usdt: 22.00, desc: 'Clean aged LBank Old No-KYC account with recovery mail.' }
                 ]
             }
         };
@@ -10549,24 +10646,39 @@
             return allLiveDigitalFlat.filter(a => a.platform === platKey).length;
         }
 
-        function toggleMarketplaceSocialDrawer() {
-            _mpDrawerOpen = !_mpDrawerOpen;
+        function toggleMarketplaceDrawer(tabKey) {
+            _mpDrawerTab = (_mpDrawerTab === tabKey) ? '' : tabKey;
             renderViewport();
         }
 
-        function switchMarketplacePlatform(platKey) {
+        function switchMarketplacePlatform(platKey, optFilter = 'ALL', optEmailProv = 'ALL') {
             _mpPlatform = platKey || 'github';
-            _mpSubFilter = 'ALL';
-            // Balik ke GitHub otomatis lipat lagi drawer sosmed agar tampilan utama tetap lega
-            if (_mpPlatform === 'github') {
-                _mpDrawerOpen = false;
-            } else {
-                _mpDrawerOpen = true;
-            }
+            _mpSubFilter = optFilter || 'ALL';
+            _mpEmailProv = optEmailProv || 'ALL';
+            // Otomatis lipat drawer saat memilih GitHub atau saat masuk ke platform biar layar lega
+            _mpDrawerTab = '';
             const dr = document.getElementById('inPageVaultDrawer');
             if (dr) dr.style.display = 'none';
             renderViewport();
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function pickCexBrandFromDrawer(catKey) {
+            _mpPlatform = 'cex';
+            _mpSubFilter = 'ALL';
+            _mpDrawerTab = '';
+            renderViewport();
+            const liveList = liveDigitalStock[catKey] || [];
+            if (liveList.length > 0) {
+                openInPageDigitalVault(catKey);
+            } else {
+                const targetCard = document.querySelector(`[data-dig-vault="${catKey}"]`);
+                if (targetCard) {
+                    targetCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    targetCard.style.borderColor = '#fbbf24';
+                    setTimeout(() => { targetCard.style.borderColor = ''; }, 1400);
+                }
+            }
         }
 
         function setDigitalPlatformFilter(fKey) {
@@ -10576,16 +10688,130 @@
             renderViewport();
         }
 
+        function setEmailProviderFilter(provKey) {
+            _mpEmailProv = provKey || 'ALL';
+            const dr = document.getElementById('inPageVaultDrawer');
+            if (dr) dr.style.display = 'none';
+            renderViewport();
+        }
+
         function buildOptionAPlatformSwitcherEl() {
             const wrap = document.createElement('div');
             wrap.className = 'xb-mp-switcher';
             const isGh = _mpPlatform === 'github';
-            const secKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram', 'email', 'cex'];
-            const activePlatObj = !isGh ? XB_MP_PLATFORMS[_mpPlatform] : null;
-            const totalDigitalCnt = allLiveDigitalFlat.length;
+            const socialKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
+            const isSocialActive = socialKeys.includes(_mpPlatform);
+            const isCexEmailActive = (_mpPlatform === 'cex' || _mpPlatform === 'email');
+
+            const socialTotal = socialKeys.reduce((s, k) => s + getDigitalPlatformLiveCount(k), 0);
+            const cexTotal = getDigitalPlatformLiveCount('cex');
+            const emailTotal = getDigitalPlatformLiveCount('email');
+            const cexEmailTotal = cexTotal + emailTotal;
+
+            const cexBrands = XB_MP_PLATFORMS.cex.vaults;
+            const topCex = cexBrands.slice(0, 2);   // MEXC Old & OKX Old paling atas!
+            const restCex = cexBrands.slice(2);     // Binance, Bybit, Bitget, Gate.io, LBank
+            const emailProvs = [
+                { k: 'gmail',   name: 'Gmail',      col: '#ea4335' },
+                { k: 'outlook', name: 'Outlook',    col: '#0078d4' },
+                { k: 'proton',  name: 'ProtonMail', col: '#a78bfa' },
+                { k: 'mailru',  name: 'Mail.ru',    col: '#3b82f6' }
+            ];
+
+            let drawerHtml = '';
+            if (_mpDrawerTab === 'social') {
+                drawerHtml = `
+                    <div class="xb-mp-drawer-box">
+                        <div class="xb-mp-drawer-hdr">
+                            <span class="xb-mp-drawer-lbl">📱 Select Social Media Platform (7)</span>
+                            <button type="button" class="xb-mp-drawer-all" onclick="toggleMarketplaceDrawer('social')">✕ Close</button>
+                        </div>
+                        <div class="xb-mp-grid-6">
+                            ${socialKeys.map((pk, idx) => {
+                                const p = XB_MP_PLATFORMS[pk];
+                                const cnt = getDigitalPlatformLiveCount(pk);
+                                const isAct = _mpPlatform === pk;
+                                const spanCls = idx === socialKeys.length - 1 ? 'span-full' : '';
+                                return `
+                                    <button type="button" class="xb-mp-plat-btn ${isAct ? 'active' : ''} ${spanCls}"
+                                        style="--mp-acc:${p.accent};--mp-glow:${p.glow};--mp-bg1:${p.bg1};--mp-bg2:${p.bg2};"
+                                        onclick="switchMarketplacePlatform('${pk}')">
+                                        <span class="xb-mp-plat-ico">${XB_MP_SVGS[pk]}</span>
+                                        <span class="xb-mp-plat-info">
+                                            <div class="xb-mp-plat-name">${p.shortName}</div>
+                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : (idx === socialKeys.length - 1 ? 'Aged • Spam-Free & Bot Ready' : 'Hybrid')}</div>
+                                        </span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (_mpDrawerTab === 'cex_email') {
+                drawerHtml = `
+                    <div class="xb-mp-drawer-box">
+                        <!-- BLOK 1: OLD CEX NO-KYC (MEXC OLD & OKX OLD PALING ATAS) -->
+                        <div class="xb-mp-drawer-hdr">
+                            <span class="xb-mp-drawer-lbl" style="color:#fbbf24;">🔶 Old CEX Vault (No KYC)</span>
+                            <button type="button" class="xb-mp-drawer-all" style="color:#fbbf24;border-color:rgba(251,191,36,0.45);background:rgba(251,191,36,0.1);" onclick="switchMarketplacePlatform('cex', 'ALL')">View All (${cexBrands.length}) ➔</button>
+                        </div>
+                        <div class="xb-mp-grid-2">
+                            ${topCex.map(v => {
+                                const cnt = (liveDigitalStock[v.key] || []).length;
+                                return `
+                                    <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${v.accent};border-color:${v.accent}55;" onclick="pickCexBrandFromDrawer('${v.key}')">
+                                        <span class="xb-mp-plat-ico" style="color:${v.accent};">${XB_MP_SVGS[v.brand]}</span>
+                                        <span class="xb-mp-plat-info">
+                                            <div class="xb-mp-plat-name">${v.title.replace(' (No KYC)', '')}</div>
+                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'Old No-KYC'}</div>
+                                        </span>
+                                        <span class="xb-mp-top-tag">TOP</span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div class="xb-mp-grid-6">
+                            ${restCex.map(v => {
+                                const cnt = (liveDigitalStock[v.key] || []).length;
+                                return `
+                                    <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${v.accent};" onclick="pickCexBrandFromDrawer('${v.key}')">
+                                        <span class="xb-mp-plat-ico" style="color:${v.accent};">${XB_MP_SVGS[v.brand]}</span>
+                                        <span class="xb-mp-plat-info">
+                                            <div class="xb-mp-plat-name">${v.title.replace(' Old (No KYC)', '')}</div>
+                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'No-KYC'}</div>
+                                        </span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+
+                        <hr class="xb-wal-hr" style="margin:3px 0;">
+
+                        <!-- BLOK 2: EMAIL VAULT (OLD & FRESH PER PROVIDER) -->
+                        <div class="xb-mp-drawer-hdr">
+                            <span class="xb-mp-drawer-lbl" style="color:#34d399;">📧 Email Vault (Old &amp; Fresh)</span>
+                            <button type="button" class="xb-mp-drawer-all" style="color:#34d399;border-color:rgba(52,211,153,0.45);background:rgba(16,185,129,0.1);" onclick="switchMarketplacePlatform('email', 'ALL', 'ALL')">View All ➔</button>
+                        </div>
+                        <div class="xb-mp-grid-2">
+                            ${emailProvs.map(ep => {
+                                const cnt = (liveDigitalStock[`mail_${ep.k}_old`] || []).length + (liveDigitalStock[`mail_${ep.k}_fresh`] || []).length;
+                                return `
+                                    <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${ep.col};" onclick="switchMarketplacePlatform('email', 'ALL', '${ep.k}')">
+                                        <span class="xb-mp-plat-ico" style="background:rgba(255,255,255,0.08);">${XB_MP_SVGS[ep.k]}</span>
+                                        <span class="xb-mp-plat-info">
+                                            <div class="xb-mp-plat-name">${ep.name}</div>
+                                            <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'Old & Fresh'}</div>
+                                        </span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
 
             wrap.innerHTML = `
-                <!-- 1. PRIMARY: GITHUB MARKETPLACE (UNTOUCHED) -->
+                <!-- BARIS 1: GITHUB MARKETPLACE (100% PRIMARY & UNTOUCHED) -->
                 <button type="button" class="xb-mp-gh-btn ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
                     <span class="xb-mp-gh-left">
                         <span class="xb-mp-gh-ico">${XB_MP_SVGS.github}</span>
@@ -10600,42 +10826,38 @@
                     </span>
                 </button>
 
-                <!-- 2. COLLAPSIBLE FULL-WIDTH BAR: SOCIAL MEDIA & DIGITAL ACCOUNTS (CENTERED + 9 LOGOS) -->
-                <button type="button" class="xb-mp-social-toggle ${_mpDrawerOpen ? 'open' : ''} ${!isGh ? 'active-plat' : ''}" onclick="toggleMarketplaceSocialDrawer()">
-                    <div class="xb-mp-social-head">
-                        <span class="xb-mp-social-title">Social Media &amp; Digital Accounts${activePlatObj ? ` • ${activePlatObj.shortName}` : ''}</span>
-                        <span class="xb-mp-social-chev">${_mpDrawerOpen ? '▲ Hide' : (totalDigitalCnt > 0 ? `● ${totalDigitalCnt} ▾` : '9 Platforms ▾')}</span>
-                    </div>
-                    <div class="xb-mp-logo-strip">
-                        ${secKeys.map(pk => {
-                            const p = XB_MP_PLATFORMS[pk];
-                            const isCur = _mpPlatform === pk;
-                            return `<span class="xb-mp-mini-ico ${isCur ? 'is-cur' : ''}" style="--mi-col:${p.accent};" title="${p.shortName}">${XB_MP_SVGS[pk]}</span>`;
-                        }).join('')}
-                    </div>
-                </button>
+                <!-- BARIS 2: OPSI 1 — 2 KOTAK SEJAJAR (SOCIAL VAULT | CEX & EMAIL) -->
+                <div class="xb-mp-dual-row">
+                    <button type="button" class="xb-mp-dual-btn ${_mpDrawerTab === 'social' ? 'open' : ''} ${isSocialActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('social')">
+                        <div class="xb-mp-dual-head">
+                            <span class="xb-mp-dual-title">${isSocialActive ? XB_MP_PLATFORMS[_mpPlatform].shortName : 'Social Vault'}</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'social' ? '▲' : (socialTotal > 0 ? `● ${socialTotal}` : '7 ▾')}</span>
+                        </div>
+                        <div class="xb-mp-logo-strip">
+                            ${socialKeys.map(pk => {
+                                const p = XB_MP_PLATFORMS[pk];
+                                return `<span class="xb-mp-mini-ico ${_mpPlatform === pk ? 'is-cur' : ''}" style="--mi-col:${p.accent};">${XB_MP_SVGS[pk]}</span>`;
+                            }).join('')}
+                        </div>
+                    </button>
 
-                <!-- 3. EXPANDABLE 3x3 PLATFORM GRID (ONLY VISIBLE WHEN CLICKED) -->
-                ${_mpDrawerOpen ? `
-                    <div class="xb-mp-grid-6">
-                        ${secKeys.map(pk => {
-                            const p = XB_MP_PLATFORMS[pk];
-                            const cnt = getDigitalPlatformLiveCount(pk);
-                            const isAct = _mpPlatform === pk;
-                            return `
-                                <button type="button" class="xb-mp-plat-btn ${isAct ? 'active' : ''}"
-                                    style="--mp-acc:${p.accent};--mp-glow:${p.glow};--mp-bg1:${p.bg1};--mp-bg2:${p.bg2};"
-                                    onclick="switchMarketplacePlatform('${pk}')">
-                                    <span class="xb-mp-plat-ico">${XB_MP_SVGS[pk]}</span>
-                                    <span class="xb-mp-plat-info">
-                                        <div class="xb-mp-plat-name">${p.shortName}</div>
-                                        <div class="xb-mp-plat-sub">${cnt > 0 ? `● ${cnt} Ready` : 'Hybrid'}</div>
-                                    </span>
-                                </button>
-                            `;
-                        }).join('')}
-                    </div>
-                ` : ''}
+                    <button type="button" class="xb-mp-dual-btn is-cex ${_mpDrawerTab === 'cex_email' ? 'open' : ''} ${isCexEmailActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('cex_email')">
+                        <div class="xb-mp-dual-head">
+                            <span class="xb-mp-dual-title">${_mpPlatform === 'cex' ? 'Old CEX' : (_mpPlatform === 'email' ? 'Email Vault' : 'CEX & Email')}</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'cex_email' ? '▲' : (cexEmailTotal > 0 ? `● ${cexEmailTotal}` : '▾')}</span>
+                        </div>
+                        <div class="xb-mp-logo-strip">
+                            <span class="xb-mp-mini-ico" style="--mi-col:#2dd4bf;" title="MEXC">${XB_MP_SVGS.mexc}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#38bdf8;" title="OKX">${XB_MP_SVGS.okx}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#f3ba2f;" title="Binance">${XB_MP_SVGS.binance}</span>
+                            <span class="xb-mp-mini-ico" title="Gmail">${XB_MP_SVGS.gmail}</span>
+                            <span class="xb-mp-mini-ico" title="Outlook">${XB_MP_SVGS.outlook}</span>
+                            <span class="xb-mp-mini-ico" title="ProtonMail">${XB_MP_SVGS.proton}</span>
+                        </div>
+                    </button>
+                </div>
+
+                ${drawerHtml}
             `;
             return wrap;
         }
@@ -10652,7 +10874,6 @@
             const info = findDigitalVaultDef(catKey);
             if (!info) return;
             const { plat, vault } = info;
-            const isCex = plat.key === 'cex';
 
             openDirectOrderModal({
                 id: `${catKey}_preorder`,
@@ -10660,12 +10881,10 @@
                 yearKey: vault.tag,
                 isAccount: false,
                 tag: `PRE-ORDER • ${plat.shortName.toUpperCase()}`,
-                title: `${vault.title} (${plat.shortName})`,
+                title: `${vault.title}`,
                 desc: `${vault.desc} Currently 0 instant stock — place a Direct Pre-Order and our desk will deliver verified credentials directly to your Vault & Telegram.`,
                 usdt: vault.usdt,
-                tiers: isCex
-                    ? [{ name: `${vault.title} With KYC ($35)`, p: 35.00 }, { name: `${vault.title} No KYC ($25)`, p: 25.00 }]
-                    : null,
+                tiers: null,
                 prompt: `Delivery Contact (Telegram @username / Email) & Preferred Specs:`
             });
         }
@@ -10675,10 +10894,13 @@
             const hasStock = list.length > 0;
             const minPrice = hasStock ? Math.min(...list.map(a => a._computed_usdt || vault.usdt)) : vault.usdt;
             const stockCol = hasStock ? '#34d399' : '#fbbf24';
+            const cardSvg = (vault.brand && XB_MP_SVGS[vault.brand]) ? XB_MP_SVGS[vault.brand] : XB_MP_SVGS[plat.key];
+            const cardAcc = vault.accent || plat.accent;
 
             const card = document.createElement('div');
             card.className = 'item-card';
-            card.style.cssText = `padding:9px;gap:7px;--mp-acc:${plat.accent};--mp-border:${plat.border};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
+            card.setAttribute('data-dig-vault', vault.key);
+            card.style.cssText = `padding:9px;gap:7px;--mp-acc:${cardAcc};--mp-border:${plat.border};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
 
             const actionFn = hasStock
                 ? `openInPageDigitalVault('${vault.key}')`
@@ -10688,7 +10910,7 @@
                 <div class="xb-ex-art mp-art-themed" onclick="${actionFn}" style="cursor:pointer;">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;position:relative;z-index:1;">
                         <div style="display:flex;align-items:center;gap:4px;min-width:0;">
-                            <span class="xb-ex-gh-badge" style="color:${plat.accent};">${XB_MP_SVGS[plat.key]}</span>
+                            <span class="xb-ex-gh-badge" style="color:${cardAcc};">${cardSvg}</span>
                             <span class="xb-ex-stock-pill" style="color:${stockCol};border-color:${hasStock ? 'rgba(52,211,153,0.45)' : 'rgba(251,191,36,0.45)'};">${hasStock ? `● ${list.length}` : '○ 0'}</span>
                         </div>
                         <span class="xb-ex-chip ${vault.cls}">★ ${vault.tier}</span>
@@ -10705,10 +10927,10 @@
                     </div>
                     <div style="text-align:right;min-width:0;">
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">ACCESS</div>
-                        <div style="font-size:0.54rem;font-weight:700;color:${plat.accent};white-space:nowrap;">${plat.credHint}</div>
+                        <div style="font-size:0.54rem;font-weight:700;color:${cardAcc};white-space:nowrap;">${plat.credHint}</div>
                     </div>
                 </div>
-                <button type="button" class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;padding:7px 6px;font-size:0.64rem;border-radius:9px;white-space:nowrap;${!hasStock ? `border-color:${plat.border};color:${plat.accent};` : ''}" onclick="${actionFn}">
+                <button type="button" class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;padding:7px 6px;font-size:0.64rem;border-radius:9px;white-space:nowrap;${!hasStock ? `border-color:${plat.border};color:${cardAcc};` : ''}" onclick="${actionFn}">
                     ${hasStock ? `Inspect Vault (${list.length})` : '⚡ Pre-Order / Direct'}
                 </button>
             `;
@@ -10917,14 +11139,32 @@
             `;
             vp.appendChild(colBanner);
 
-            // 2. FILTER CHIPS
+            // 2. FILTER CHIPS (KHUSUS EMAIL: BARIS 1 OLD/FRESH + BARIS 2 PROVIDER)
             const chipsWrap = document.createElement('div');
             chipsWrap.className = 'xb-ex-chips-wrap';
-            chipsWrap.innerHTML = `
-                <div class="xb-ex-chips-r2">
-                    ${plat.filters.map(f => `<button type="button" class="xb-ex-filter-chip ${_mpSubFilter === f.k ? 'active' : ''}" onclick="setDigitalPlatformFilter('${f.k}')">${f.lbl}</button>`).join('')}
-                </div>
-            `;
+            if (platKey === 'email') {
+                const provChips = [
+                    { k: 'ALL', lbl: 'All Mail' },
+                    { k: 'gmail', lbl: 'Gmail' },
+                    { k: 'outlook', lbl: 'Outlook' },
+                    { k: 'proton', lbl: 'Proton' },
+                    { k: 'mailru', lbl: 'Mail.ru' }
+                ];
+                chipsWrap.innerHTML = `
+                    <div class="xb-ex-chips-r1">
+                        ${plat.filters.map(f => `<button type="button" class="xb-ex-filter-chip ${_mpSubFilter === f.k ? 'active' : ''}" onclick="setDigitalPlatformFilter('${f.k}')">${f.lbl}</button>`).join('')}
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;">
+                        ${provChips.map(pc => `<button type="button" class="xb-ex-filter-chip ${_mpEmailProv === pc.k ? 'active' : ''}" style="padding:6px 2px;font-size:0.55rem;" onclick="setEmailProviderFilter('${pc.k}')">${pc.lbl}</button>`).join('')}
+                    </div>
+                `;
+            } else {
+                chipsWrap.innerHTML = `
+                    <div class="xb-ex-chips-r2">
+                        ${plat.filters.map(f => `<button type="button" class="xb-ex-filter-chip ${_mpSubFilter === f.k ? 'active' : ''}" onclick="setDigitalPlatformFilter('${f.k}')">${f.lbl}</button>`).join('')}
+                    </div>
+                `;
+            }
             vp.appendChild(chipsWrap);
 
             // 3. LIVE COUNT + SORT BAR
@@ -10949,8 +11189,9 @@
             const q = String(_exSearchQuery || '').toLowerCase();
             let vList = plat.vaults.filter(v => {
                 const matchF = _mpSubFilter === 'ALL' || v.filter === _mpSubFilter;
+                const matchP = platKey !== 'email' || _mpEmailProv === 'ALL' || v.prov === _mpEmailProv;
                 const matchQ = !q || v.title.toLowerCase().includes(q) || v.tag.toLowerCase().includes(q) || v.desc.toLowerCase().includes(q);
-                return matchF && matchQ;
+                return matchF && matchP && matchQ;
             });
 
             if (_exSort === 'price_asc') vList.sort((a, b) => a.usdt - b.usdt);
