@@ -4414,6 +4414,117 @@
             flex: 0 1 auto;
             text-align: center;
         }
+        .xb-hero-plat-card {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 6px;
+            padding: 13px 12px 12px;
+            border-radius: 15px;
+            border: 1px solid rgba(56, 189, 248, 0.55);
+            background: linear-gradient(145deg, rgba(16, 26, 46, 0.96), rgba(32, 20, 62, 0.92));
+            color: var(--text-primary);
+            cursor: pointer;
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+            transition: transform 0.14s ease, border-color 0.14s ease, box-shadow 0.14s ease;
+        }
+        .xb-hero-plat-card.active {
+            border-color: #38bdf8;
+            box-shadow: 0 8px 24px rgba(56, 189, 248, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        }
+        .xb-hero-plat-top {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .xb-hero-plat-title {
+            flex: 1;
+            min-width: 0;
+            font-size: 0.98rem;
+            font-weight: 900;
+            letter-spacing: 0.2px;
+            line-height: 1.2;
+            color: #ffffff;
+        }
+        .xb-hero-plat-logo {
+            width: 30px;
+            height: 30px;
+            border-radius: 9px;
+            flex-shrink: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.22);
+            color: #ffffff;
+        }
+        .xb-hero-plat-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.52rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            line-height: 1.3;
+        }
+        .xb-hero-plat-meta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        [data-theme="platinum"] .xb-hero-plat-card {
+            background: linear-gradient(145deg, #ffffff 0%, #eff6ff 100%);
+            border-color: rgba(37, 99, 235, 0.35);
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.1);
+        }
+        [data-theme="platinum"] .xb-hero-plat-title { color: #0f172a; }
+        [data-theme="platinum"] .xb-hero-plat-logo {
+            background: rgba(15, 23, 42, 0.06);
+            border-color: rgba(15, 23, 42, 0.14);
+            color: #0f172a;
+        }
+        .xb-bst-cat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px;
+            margin-top: 8px;
+        }
+        .xb-bst-cat-box {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 9px 10px;
+            border-radius: 12px;
+            border: 1px solid var(--ex-hairline);
+            background: var(--bg-card);
+            color: var(--text-primary);
+            cursor: pointer;
+            text-align: left;
+            transition: border-color 0.14s ease, transform 0.14s ease;
+        }
+        .xb-bst-cat-box.open,
+        .xb-bst-cat-box.has-active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.1);
+        }
+        .xb-bst-cat-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 4px;
+            font-size: 0.72rem;
+            font-weight: 800;
+        }
+        .xb-bst-cat-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.48rem;
+            font-weight: 700;
+            color: var(--text-muted);
+        }
         .xb-vip-sku-grid {
             display: grid;
             grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -11645,7 +11756,7 @@
                         <!-- BLOK 1: CEX ACCOUNTS (MEXC AGED FULL-WIDTH RATA TENGAH + 6 LAINNYA PAS 3x2) -->
                         <div class="xb-mp-drawer-hdr">
                             <span class="xb-mp-drawer-lbl" style="color:#fbbf24;">🔶 CEX Accounts • Aged No-KYC</span>
-                            <button type="button" class="xb-mp-drawer-all" style="color:#fbbf24;border-color:rgba(251,191,36,0.45);background:rgba(251,191,36,0.1);" onclick="switchMarketplacePlatform('cex', 'ALL')">View All ➔</button>
+                            <button type="button" class="xb-mp-drawer-all" onclick="toggleMarketplaceDrawer('cex_email')">✕ Close</button>
                         </div>
                         <div class="xb-mp-grid-6">
                             <button type="button" class="xb-mp-plat-btn is-featured" style="--mp-acc:${topCex.accent};border-color:${topCex.accent}66;" onclick="pickCexBrandFromDrawer('${topCex.key}')">
@@ -11808,19 +11919,18 @@
             }
 
             wrap.innerHTML = `
-                <!-- BARIS 1: GITHUB MARKETPLACE (100% PRIMARY & UNTOUCHED) -->
-                <button type="button" class="xb-mp-gh-btn ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
-                    <span class="xb-mp-gh-left">
-                        <span class="xb-mp-gh-ico">${XB_MP_SVGS.github}</span>
-                        <span style="min-width:0;text-align:left;">
-                            <div style="font-size:0.76rem;font-weight:800;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">GitHub Marketplace</div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;opacity:0.82;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Aged 2011–2026 • Rare Badges • 2FA</div>
-                        </span>
-                    </span>
-                    <span class="xb-mp-gh-right">
+                <!-- BARIS 1: GITHUB MARKETPLACE (CENTERED HERO + DUAL GITHUB LOGOS + BADGES BELOW) -->
+                <button type="button" class="xb-hero-plat-card ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
+                    <div class="xb-hero-plat-top">
+                        <span class="xb-hero-plat-logo">${XB_MP_SVGS.github}</span>
+                        <span class="xb-hero-plat-title">GitHub Marketplace</span>
+                        <span class="xb-hero-plat-logo">${XB_MP_SVGS.github}</span>
+                    </div>
+                    <div class="xb-hero-plat-sub">Aged 2011–2026 • Rare Badges • 2FA Vault</div>
+                    <div class="xb-hero-plat-meta">
                         <span class="xb-mp-prim-pill">PRIMARY</span>
-                        <span class="xb-mp-cnt-pill">● ${totalLiveAccounts || 0}</span>
-                    </span>
+                        <span class="xb-mp-cnt-pill">● ${totalLiveAccounts || 210}</span>
+                    </div>
                 </button>
 
                 <!-- BARIS 2 & 3: GRID 2x2 SIMETRIS (SOCIAL MEDIA | CEX & MAIL / PRO APPS & AI | GAMES & PPOB) -->
@@ -12547,9 +12657,129 @@
                 return;
             }
 
+            function toggleBoostCatBox(catKey) {
+            window._bstOpenCat = (window._bstOpenCat === catKey) ? '' : catKey;
+            renderViewport();
+        }
+
+        function switchBoostPlatform(platKey) {
+            window._bstPlatform = platKey || 'github';
+            if (platKey === 'github') window._bstOpenCat = '';
+            renderViewport();
+        }
+
+        function buildBoostOptionASwitcherEl() {
+            const curPlat = window._bstPlatform || 'github';
+            const openCat = window._bstOpenCat || '';
+
+            const boostGroups = [
+                {
+                    key: 'socmed', title: 'Social Media', sub: 'IG • TikTok • YT • X • TG',
+                    ico: 'instagram', col: '#ec4899',
+                    miniIcons: ['instagram', 'tiktok', 'youtube', 'twitter', 'telegram', 'facebook'],
+                    items: ['instagram', 'tiktok', 'youtube', 'twitter', 'telegram', 'facebook']
+                },
+                {
+                    key: 'ecom', title: 'E-Commerce', sub: 'Shopee • Tokopedia • Store',
+                    ico: 'ecommerce', col: '#f97316',
+                    miniIcons: ['ecommerce'],
+                    items: ['ecommerce']
+                },
+                {
+                    key: 'stream', title: 'Streaming', sub: 'Spotify • Twitch • Discord',
+                    ico: 'stream', col: '#22c55e',
+                    miniIcons: ['stream'],
+                    items: ['stream']
+                },
+                {
+                    key: 'webpro', title: 'Web & Others', sub: 'Traffic • LinkedIn • More',
+                    ico: 'webpro', col: '#38bdf8',
+                    miniIcons: ['webpro'],
+                    items: ['webpro']
+                }
+            ];
+
+            const activeGrp = boostGroups.find(g => g.key === openCat);
+            let subDrawerHtml = '';
+            if (activeGrp) {
+                subDrawerHtml = `
+                    <div class="xb-mp-drawer-box" style="margin-top:6px;">
+                        <div class="xb-mp-drawer-hdr">
+                            <span class="xb-mp-drawer-lbl" style="color:${activeGrp.col};">⚡ ${activeGrp.title} Boost</span>
+                            <button type="button" class="xb-mp-drawer-all" onclick="toggleBoostCatBox('${activeGrp.key}')">✕ Close</button>
+                        </div>
+                        <div class="xb-mp-grid-6">
+                            ${activeGrp.items.map(k => {
+                                const m = (typeof XB_SMM_PLAT_META !== 'undefined' && XB_SMM_PLAT_META[k]) ? XB_SMM_PLAT_META[k] : { name: k, short: k, col: activeGrp.col, ico: activeGrp.ico };
+                                const isAct = curPlat === k;
+                                return `
+                                    <button type="button" class="xb-mp-plat-btn ${isAct ? 'active' : ''}"
+                                        style="--mp-acc:${m.col};" onclick="switchBoostPlatform('${k}')">
+                                        <span class="xb-mp-plat-ico" style="color:${m.col};">${XB_MP_SVGS[m.ico] || XB_MP_SVGS.instagram}</span>
+                                        <span class="xb-mp-plat-info">
+                                            <div class="xb-mp-plat-name">${m.short}</div>
+                                            <div class="xb-mp-plat-sub">${isAct ? '● Active' : 'Live SMM'}</div>
+                                        </span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            const box = document.createElement('div');
+            box.className = 'xb-bst-opt-a';
+            box.innerHTML = `
+                <button type="button" class="xb-hero-plat-card ${curPlat === 'github' ? 'active' : ''}" onclick="switchBoostPlatform('github')">
+                    <div class="xb-hero-plat-top">
+                        <span class="xb-hero-plat-logo">${XB_MP_SVGS.github}</span>
+                        <span class="xb-hero-plat-title">GitHub Boost Service</span>
+                        <span class="xb-hero-plat-logo">${XB_MP_SVGS.github}</span>
+                    </div>
+                    <div class="xb-hero-plat-sub">Followers • Stars • Forks • Watch • Live 4-Step Tracker</div>
+                    <div class="xb-hero-plat-meta">
+                        <span class="xb-mp-prim-pill">PRIMARY</span>
+                        <span class="xb-mp-cnt-pill">${curPlat === 'github' ? '● ACTIVE' : 'SELECT'}</span>
+                    </div>
+                </button>
+
+                <div class="xb-bst-cat-grid">
+                    ${boostGroups.map(g => {
+                        const isOpen = openCat === g.key;
+                        const hasAct = g.items.includes(curPlat);
+                        const activeMeta = (hasAct && typeof XB_SMM_PLAT_META !== 'undefined' && XB_SMM_PLAT_META[curPlat]) ? XB_SMM_PLAT_META[curPlat] : null;
+                        return `
+                            <button type="button" class="xb-bst-cat-box ${isOpen ? 'open' : ''} ${hasAct ? 'has-active' : ''}"
+                                onclick="toggleBoostCatBox('${g.key}')">
+                                <div class="xb-bst-cat-head">
+                                    <span style="display:inline-flex;align-items:center;gap:6px;min-width:0;">
+                                        <span style="color:${g.col};display:inline-flex;align-items:center;">${XB_MP_SVGS[g.ico] || XB_MP_SVGS.instagram}</span>
+                                        <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.title}</span>
+                                    </span>
+                                    <span style="font-size:0.55rem;color:var(--text-muted);">${isOpen ? '▲' : '▾'}</span>
+                                </div>
+                                <div class="xb-mp-logo-strip">
+                                    ${g.miniIcons.map(ic => {
+                                        const mm = (typeof XB_SMM_PLAT_META !== 'undefined' && XB_SMM_PLAT_META[ic]) ? XB_SMM_PLAT_META[ic] : g;
+                                        return `<span class="xb-mp-mini-ico" style="--mi-col:${mm.col};">${XB_MP_SVGS[mm.ico] || XB_MP_SVGS.instagram}</span>`;
+                                    }).join('')}
+                                </div>
+                                <div class="xb-bst-cat-sub">${activeMeta ? `● ${activeMeta.short} Selected` : g.sub}</div>
+                            </button>
+                        `;
+                    }).join('')}
+                </div>
+
+                ${subDrawerHtml}
+            `;
+            return box;
+        }
+
             // 2. BOOST TAB (100% PURE BOOST — GITHUB BOOST PRIMARY + 9 SMM PLATFORMS)
             if (activeTab === 'boost') {
                 subContainer.style.display = 'none';
+                vp.appendChild(buildBoostOptionASwitcherEl());
                 if (typeof buildBoostOptionASwitcherEl === 'function') {
                     vp.appendChild(buildBoostOptionASwitcherEl());
                 }
