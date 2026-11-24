@@ -4003,6 +4003,8 @@
            ========================================================= */
         .xb-vp-wrap { display: flex; flex-direction: column; gap: 10px; }
         .xb-vp-seg { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 5px; background: var(--bg-input); border: 1px solid var(--ex-hairline); padding: 4px; border-radius: 12px; }
+        .xb-vp-seg.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+        .xb-vp-seg.cols-3 .xb-vp-seg-btn { font-size: 0.6rem; padding: 8px 3px; gap: 3px; }
         .xb-vp-seg-btn { border: 1px solid transparent; background: transparent; color: var(--text-secondary); padding: 8px 6px; border-radius: 9px; font-family: inherit; font-size: 0.67rem; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 5px; white-space: nowrap; transition: 0.16s ease; }
         .xb-vp-seg-btn.active { background: linear-gradient(135deg, #0d1838 0%, #1d4ed8 52%, #7c3aed 100%); border-color: rgba(255,255,255,0.38); color: #ffffff; box-shadow: 0 4px 12px rgba(79,70,229,0.4); }
 
@@ -4245,6 +4247,40 @@
             background: linear-gradient(145deg, #ffffff 0%, #fef3c7 100%);
             border-color: rgba(217, 119, 6, 0.45);
         }
+        .xb-mp-dual-btn.is-apps.open,
+        .xb-mp-dual-btn.is-apps.active-plat {
+            border-color: rgba(244, 114, 182, 0.62);
+            background: linear-gradient(145deg, #17081a 0%, #2d1038 55%, #16103a 100%);
+            box-shadow: 0 5px 16px rgba(236, 72, 153, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+        .xb-mp-dual-btn.is-ppob.open,
+        .xb-mp-dual-btn.is-ppob.active-plat {
+            border-color: rgba(52, 211, 153, 0.62);
+            background: linear-gradient(145deg, #061816 0%, #0d322c 55%, #0c1f3a 100%);
+            box-shadow: 0 5px 16px rgba(16, 185, 129, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+        [data-theme="platinum"] .xb-mp-dual-btn.is-apps.open,
+        [data-theme="platinum"] .xb-mp-dual-btn.is-apps.active-plat {
+            background: linear-gradient(145deg, #ffffff 0%, #fce7f3 100%);
+            border-color: rgba(219, 39, 119, 0.45);
+        }
+        [data-theme="platinum"] .xb-mp-dual-btn.is-ppob.open,
+        [data-theme="platinum"] .xb-mp-dual-btn.is-ppob.active-plat {
+            background: linear-gradient(145deg, #ffffff 0%, #d1fae5 100%);
+            border-color: rgba(5, 150, 105, 0.45);
+        }
+        .xb-mp-dual-btn.is-apps .xb-mp-dual-chev {
+            background: rgba(244, 114, 182, 0.14);
+            border-color: rgba(244, 114, 182, 0.45);
+            color: #f472b6;
+        }
+        .xb-mp-dual-btn.is-ppob .xb-mp-dual-chev {
+            background: rgba(52, 211, 153, 0.14);
+            border-color: rgba(52, 211, 153, 0.45);
+            color: #34d399;
+        }
+        [data-theme="platinum"] .xb-mp-dual-btn.is-apps .xb-mp-dual-chev { color: #db2777; }
+        [data-theme="platinum"] .xb-mp-dual-btn.is-ppob .xb-mp-dual-chev { color: #059669; }
         .xb-mp-dual-head {
             display: inline-flex;
             align-items: center;
@@ -4377,6 +4413,59 @@
         .xb-mp-plat-btn.is-featured .xb-mp-plat-info {
             flex: 0 1 auto;
             text-align: center;
+        }
+        .xb-vip-sku-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 6px;
+            max-height: 290px;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+        .xb-vip-sku-card {
+            width: 100%;
+            min-width: 0;
+            text-align: left;
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 10px;
+            padding: 8px 9px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 5px;
+            color: var(--text-primary);
+            transition: border-color 0.15s ease, background 0.15s ease;
+        }
+        .xb-vip-sku-card:hover { border-color: rgba(56, 189, 248, 0.55); }
+        .xb-vip-sku-card.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.11);
+            box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.35);
+        }
+        .xb-vip-sku-card.sold { opacity: 0.45; cursor: not-allowed; }
+        .xb-vip-pill-scroll {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .xb-vip-pill {
+            border: 1px solid var(--ex-hairline);
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            border-radius: 8px;
+            padding: 5px 8px;
+            font-family: inherit;
+            font-size: 0.6rem;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .xb-vip-pill.active {
+            background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+            border-color: rgba(125, 211, 252, 0.7);
+            color: #ffffff;
         }
         .xb-mp-plat-btn {
             position: relative;
@@ -8012,7 +8101,7 @@
 
             <nav class="sidebar-nav">
                 <button class="side-btn active" data-tab="home" onclick="switchTab('home')">🏪 Marketplace</button>
-                <button class="side-btn" data-tab="boost" onclick="switchTab('boost')">🚀 Boost &amp; Store</button>
+                <button class="side-btn" data-tab="boost" onclick="switchTab('boost')">🚀 Boost Service</button>
                 <button class="side-btn" data-tab="wallet" onclick="switchTab('wallet')">💳 Wallet</button>
                 <button class="side-btn" data-tab="vault" onclick="switchTab('vault')">🔐 Vault</button>
                 <button class="side-btn" data-tab="profile" onclick="switchTab('profile')">👤 Profile</button>
@@ -10358,6 +10447,8 @@
 
             for (const tx of history) {
                 if (!tx || isP2pTransferTx(tx)) continue; // Blokir mutlak P2P Send & Receive!
+                const mLow = String(tx.method || '').toLowerCase();
+                if (mLow.includes('ppob') || mLow.includes('vip games') || mLow.includes('no-cashback')) continue; // Kecualikan PPOB & Games dari Cashback 10%
                 const amt = parseFloat(tx.usdt || 0);
                 if (isNaN(amt) || amt <= 0) continue;
                 const titleLow = String(tx.title || '').toLowerCase();
@@ -10465,8 +10556,780 @@
             gmail: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M3 6.5A1.5 1.5 0 0 1 4.5 5h1.2L12 10.2 18.3 5h1.2A1.5 1.5 0 0 1 21 6.5V18a1 1 0 0 1-1 1h-2.5v-8.4L12 15l-5.5-4.4V19H4a1 1 0 0 1-1-1V6.5z" fill="#ea4335"/><path d="M3 6.5V18a1 1 0 0 0 1 1h2.5v-8.4L3 7.8V6.5z" fill="#4285f4"/><path d="M21 6.5V18a1 1 0 0 1-1 1h-2.5v-8.4L21 7.8V6.5z" fill="#34a853"/><path d="M17.5 10.6 21 7.8V6.5A1.5 1.5 0 0 0 19.5 5h-1.2L17.5 5.7v4.9z" fill="#fbbc05"/></svg>`,
             outlook: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="8" y="5" width="13" height="14" rx="2" fill="#0078d4"/><path d="m8.5 7 6 4.5 6-4.5" stroke="#bae6fd" stroke-width="1.6"/><rect x="2.5" y="7" width="10" height="10" rx="2" fill="#0369a1"/><circle cx="7.5" cy="12" r="2.5" stroke="#ffffff" stroke-width="1.8"/></svg>`,
             proton: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="4.5" width="18" height="15" rx="3" fill="#6d28d9"/><path d="M3.5 6.5 12 13l8.5-6.5" stroke="#e9d5ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8.5 11.2 14.5a1.4 1.4 0 0 0 1.6 0L21 8.5V17a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17V8.5z" fill="#a78bfa" fill-opacity="0.72"/></svg>`,
-            mailru: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#005ff9"/><path d="M15.4 12a3.4 3.4 0 1 1-1.1-2.5V12c0 1.1.7 1.8 1.6 1.8 1.2 0 2.1-1.1 2.1-2.8a6 6 0 1 0-2.6 5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="2.5" stroke="#ff9e00" stroke-width="1.6"/></svg>`
+            mailru: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#005ff9"/><path d="M15.4 12a3.4 3.4 0 1 1-1.1-2.5V12c0 1.1.7 1.8 1.6 1.8 1.2 0 2.1-1.1 2.1-2.8a6 6 0 1 0-2.6 5" stroke="#ffffff" stroke-width="1.8" stroke-linecap="round"/><circle cx="12" cy="12" r="2.5" stroke="#ff9e00" stroke-width="1.6"/></svg>`,
+            // PRO APPS & AI BRAND LOGOS
+            chatgpt: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M12 2.5c2.6 0 4.5 1.8 4.5 4.2 2.2.8 3.6 3 3 5.4 1.4 2 .9 4.7-1.1 6-1.2 2.1-3.8 2.9-6 2-2.6 1-5.4-.2-6.4-2.6-2-.9-3.2-3.2-2.4-5.4-1.3-2-.7-4.8 1.4-6C6.1 3.7 9 2.5 12 2.5z"/></svg>`,
+            gemini: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10 5.2-.6 9.4-4.8 10-10z"/></svg>`,
+            canva: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#00c4cc"/><path d="M15.4 9.2a4.4 4.4 0 1 0 0 5.6" stroke="#ffffff" stroke-width="2.4" stroke-linecap="round"/></svg>`,
+            capcut: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7.5 18.5 16.5"/><path d="M18.5 7.5 4 16.5"/><rect x="3" y="5" width="12" height="14" rx="2.5"/></svg>`,
+            alight: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/></svg>`,
+            getcontact: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.4 9.4 8 11 4.6-1.6 8-6 8-11V5l-8-3z"/><path d="M9.5 9.5a5 5 0 0 0 5 5"/></svg>`,
+            prime: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><polygon points="9,6.5 17.5,11 9,15.5" fill="currentColor"/><path d="M5.5 17.5c3.8 2.4 9.2 2.4 13 0" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>`,
+            bstation: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="7" width="18" height="13" rx="3"/><path d="m8 3 2.5 4M16 3l-2.5 4"/><path d="M9 12v3M15 12v3"/></svg>`,
+            iqiyi: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="4" fill="#00be06"/><polygon points="10,8.5 16.5,12 10,15.5" fill="#ffffff"/></svg>`,
+            vidio: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#ef4444"/><polygon points="9.5,8 16.5,12 9.5,16" fill="#ffffff"/></svg>`,
+            viu: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="16" rx="4" fill="#facc15"/><path d="M7.5 9.5 10 15l2.5-5.5M15 9.5v5.5" stroke="#0f172a" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+            wetv: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none"><path d="M4.5 6.5c0-1.6 1.7-2.6 3.1-1.8l11.2 6.1c1.4.8 1.4 2.8 0 3.6l-11.2 6.1c-1.4.8-3.1-.2-3.1-1.8V6.5z" fill="#fb923c"/><polygon points="9.5,9.2 14.8,12.6 9.5,15.8" fill="#ffffff"/></svg>`,
+            vision: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v8M8 12h8"/></svg>`,
+            // GAMES & PPOB BRAND LOGOS
+            mlbb: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m14.5 17.5 3 3 3-3-3-3"/><path d="m4 4 12 12"/><path d="m20 4-12 12"/><path d="m3.5 17.5 3 3 3-3-3-3"/></svg>`,
+            freefire: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12.8 2.2c.6 3.2-1.2 5.2-2.6 6.8-1.4 1.6-2.2 3-2.2 4.8 0 2.5 1.8 4.4 4.2 4.4 2.8 0 4.8-2.3 4.8-5.3 0-2-.8-3.8-2-5.2 2.9 1.4 5 4.3 5 7.7 0 4.2-3.5 7.4-8 7.4s-8-3.2-8-7.4c0-4.9 4.2-8.7 8.8-13.2z"/></svg>`,
+            pubg: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1"><circle cx="12" cy="12" r="8"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/><circle cx="12" cy="12" r="2" fill="currentColor"/></svg>`,
+            valorant: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 5.5v6.2l6.2 7.8h4.5L3 5.5zm18 0-6.8 8.6h4.5L21 11.2V5.5z"/></svg>`,
+            genshin: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 15 9l7 3-7 3-3 7-3-7-7-3 7-3 3-7z"/></svg>`,
+            hok: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M3 7l4.5 4L12 4l4.5 7L21 7l-2 11H5L3 7zm2 13h14v2H5v-2z"/></svg>`,
+            codm: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M2.5 7 7 18h3l2-5.5L14 18h3l4.5-11h-3.4l-2.6 6.4L13.6 8h-3.2l-1.9 5.4L5.9 7H2.5z"/></svg>`,
+            fcmobile: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polygon points="12,7.5 16,10.5 14.5,15 9.5,15 8,10.5" fill="currentColor"/></svg>`,
+            roblox: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M6.4 3 21 6.7 17.6 21 3 17.3 6.4 3zm4.8 7.5-.7 2.8 2.8.7.7-2.8-2.8-.7z"/></svg>`,
+            pb: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12,2 21,7 21,17 12,22 3,17 3,7"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>`,
+            pulsa: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2" fill="currentColor"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.2 19.1 19.1"/></svg>`,
+            ewallet: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`,
+            pln: `<svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+            gamevouch: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2M13 17v2M13 11v2"/></svg>`,
+            retail: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+            tv: `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>`
         };
+
+        // =========================================================
+        // 💎 VIP-RESELLER CATALOGS: PRO APPS & AI + GAMES & PPOB
+        // =========================================================
+        const XB_VIP_APPS_CATALOG = {
+            pro: [
+                { brand: 'chatgpt',       name: 'ChatGPT Plus',  sub: 'OpenAI Pro',   ico: 'chatgpt',    col: '#10a37f', prompt: 'Email akun ChatGPT / kontak pengiriman' },
+                { brand: 'gemini',        name: 'Gemini Pro',    sub: 'Google AI',    ico: 'gemini',     col: '#60a5fa', prompt: 'Email Google aktif Anda' },
+                { brand: 'canva pro',     name: 'Canva Pro',     sub: 'Design Suite', ico: 'canva',      col: '#00c4cc', prompt: 'Email akun Canva Free Anda' },
+                { brand: 'capcut pro',    name: 'CapCut Pro',    sub: '4K Private',   ico: 'capcut',     col: '#f8fafc', prompt: 'Email aktif / No. WA pengiriman' },
+                { brand: 'alight motion', name: 'Alight Motion', sub: 'Pro Editing',  ico: 'alight',     col: '#38bdf8', prompt: 'Email akun Alight Motion' },
+                { brand: 'getcontact',    name: 'Getcontact',    sub: 'Premium Tag',  ico: 'getcontact', col: '#0ea5e9', prompt: 'Nomor HP Getcontact (08xxx)' }
+            ],
+            streaming: [
+                { brand: 'amazon prime video', name: 'Amazon Prime Video', sub: 'Best-Seller • 4K HDR', ico: 'prime',    col: '#00a8e1', prompt: 'Email / No. WA pengiriman akun' },
+                { brand: 'vidio premier',      name: 'Vidio Premier',      sub: 'Sports & Film',        ico: 'vidio',    col: '#ef4444', prompt: 'Email / No. HP akun Vidio' },
+                { brand: 'bstation premium',   name: 'Bstation',           sub: 'Anime HD',             ico: 'bstation', col: '#38bdf8', prompt: 'Email / No. WA pengiriman akun' },
+                { brand: 'iqiyi premium',      name: 'iQIYI',              sub: 'VIP Drama',            ico: 'iqiyi',    col: '#00be06', prompt: 'Email / No. WA pengiriman akun' },
+                { brand: 'viu premium',        name: 'Viu Premium',        sub: 'K-Drama VIP',          ico: 'viu',      col: '#facc15', prompt: 'Email / No. WA pengiriman akun' },
+                { brand: 'wetv premium',       name: 'WeTV VIP',           sub: 'Series VIP',           ico: 'wetv',     col: '#fb923c', prompt: 'Email / No. WA pengiriman akun' },
+                { brand: 'vision plus',        name: 'Vision+',            sub: 'Live TV & Film',       ico: 'vision',   col: '#f43f5e', prompt: 'Email / No. HP akun Vision+' }
+            ]
+        };
+
+        const XB_VIP_GAMES_CATALOG = [
+            { brand: 'mobile legends',                  name: 'Mobile Legends',   sub: 'Best-Seller • Diamonds', ico: 'mlbb',     col: '#fbbf24', needZone: true,  prompt: 'User ID (Contoh: 12345678)' },
+            { brand: 'free fire',                       name: 'Free Fire',        sub: 'Diamonds',               ico: 'freefire', col: '#f97316', needZone: false, prompt: 'Player ID Free Fire' },
+            { brand: 'pubg mobile',                     name: 'PUBG Mobile',      sub: 'UC Instant',             ico: 'pubg',     col: '#eab308', needZone: false, prompt: 'Character ID PUBG' },
+            { brand: 'valorant',                        name: 'Valorant',         sub: 'VP Riot ID',             ico: 'valorant', col: '#f43f5e', needZone: false, prompt: 'Riot ID (Contoh: Name#TAG)' },
+            { brand: 'genshin impact',                  name: 'Genshin',          sub: 'Genesis',                ico: 'genshin',  col: '#38bdf8', needZone: true,  prompt: 'UID Genshin Impact' },
+            { brand: 'honor of kings',                  name: 'Honor Kings',      sub: 'Tokens',                 ico: 'hok',      col: '#f59e0b', needZone: false, prompt: 'Player ID Honor of Kings' },
+            { brand: 'call of duty mobile (indonesia)', name: 'COD Mobile',       sub: 'CP OpenID',              ico: 'codm',     col: '#cbd5e1', needZone: false, prompt: 'OpenID COD Mobile' },
+            { brand: 'ea sports fc mobile',             name: 'FC Mobile',        sub: 'FC Points',              ico: 'fcmobile', col: '#34d399', needZone: false, prompt: 'UID EA Sports FC Mobile' },
+            { brand: 'roblox via login',                name: 'Roblox',           sub: 'Robux',                  ico: 'roblox',   col: '#e2e8f0', needZone: false, prompt: 'Username Roblox' },
+            { brand: 'point blank (id)',                name: 'Point Blank',      sub: 'PB Cash',                ico: 'pb',       col: '#ef4444', needZone: false, prompt: 'User ID Point Blank' }
+        ];
+
+        const XB_VIP_PPOB_GROUPS = [
+            {
+                key: 'pulsa_data', name: 'Pulsa & Data', sub: '7 Operator', ico: 'pulsa', col: '#38bdf8', prompt: 'Nomor HP Tujuan (Contoh: 081234567890)',
+                subCats: [{ k: 'pulsa', lbl: 'Pulsa' }, { k: 'data', lbl: 'Paket Data' }, { k: 'nelpon', lbl: 'Nelpon/SMS' }, { k: 'voucher', lbl: 'Voucher Data' }],
+                brands: [
+                    { brand: 'telkomsel', name: 'Telkomsel' }, { brand: 'indosat', name: 'Indosat' }, { brand: 'xl', name: 'XL' },
+                    { brand: 'axis', name: 'Axis' }, { brand: 'tri', name: 'Tri (3)' }, { brand: 'smartfren', name: 'Smartfren' }, { brand: 'byu', name: 'By.U' }
+                ]
+            },
+            {
+                key: 'ewallet', name: 'E-Wallet', sub: 'DANA • OVO • GP', ico: 'ewallet', col: '#10b981', prompt: 'Nomor HP E-Wallet Tujuan (08xxx)',
+                subCats: [{ k: 'e-money', lbl: 'E-Wallet Top-Up' }],
+                brands: [
+                    { brand: 'dana', name: 'DANA' }, { brand: 'ovo', name: 'OVO' }, { brand: 'go pay', name: 'GoPay' },
+                    { brand: 'go pay driver', name: 'GoPay Driver' }, { brand: 'shopee pay', name: 'ShopeePay' }, { brand: 'doku', name: 'Doku' }
+                ]
+            },
+            {
+                key: 'pln', name: 'PLN Listrik', sub: 'Token PLN', ico: 'pln', col: '#facc15', prompt: 'ID Pelanggan / Nomor Meter PLN',
+                subCats: [{ k: 'pln', lbl: 'Token Listrik' }],
+                brands: [{ brand: 'pln', name: 'PLN Token' }, { brand: 'pln promo', name: 'PLN Promo' }]
+            },
+            {
+                key: 'game_vouchers', name: 'Game Voucher', sub: 'Steam • PSN', ico: 'gamevouch', col: '#c084fc', prompt: 'Nomor HP / Email Penerima Kode Voucher',
+                subCats: [{ k: 'games', lbl: 'Redeem Codes' }],
+                brands: [
+                    { brand: 'steam wallet code', name: 'Steam Wallet' }, { brand: 'voucher garena shell', name: 'Garena Shell' },
+                    { brand: 'voucher razer gold', name: 'Razer Gold' }, { brand: 'voucher psn', name: 'PlayStation PSN' },
+                    { brand: 'voucher valorant', name: 'Valorant Code' }, { brand: 'voucher pb zepetto', name: 'PB Zepetto' }
+                ]
+            },
+            {
+                key: 'retail', name: 'Retail & Grab', sub: 'Alfa • Maxim', ico: 'retail', col: '#fb923c', prompt: 'Nomor HP / ID Tujuan',
+                subCats: [{ k: 'bills', lbl: 'Retail & Transport' }],
+                brands: [
+                    { brand: 'alfamart voucher', name: 'Alfamart' }, { brand: 'indomaret', name: 'Indomaret' },
+                    { brand: 'grab', name: 'Grab' }, { brand: 'grab driver', name: 'Grab Driver' },
+                    { brand: 'maxim', name: 'Maxim' }, { brand: 'wifi id', name: 'Wifi ID' }
+                ]
+            },
+            {
+                key: 'tv_inter', name: 'TV & Global', sub: 'K-Vis • SG', ico: 'tv', col: '#60a5fa', prompt: 'ID Pelanggan TV / Nomor HP Tujuan',
+                subCats: [{ k: 'bills', lbl: 'TV & Global' }],
+                brands: [
+                    { brand: 'k-vision dan gol', name: 'K-Vision' }, { brand: 'nex parabola', name: 'Nex Parabola' },
+                    { brand: 'starhub', name: 'SG Starhub' }, { brand: 'xox', name: 'PH XOX' },
+                    { brand: 'sun telecom', name: 'PH Sun' }, { brand: 'vietnam topup', name: 'Vietnam' }
+                ]
+            }
+        ];
+
+        function openVipCatalogSelection(modeKey, kategori, brand, groupKey = '') {
+            _mpPlatform = modeKey;
+            _mpDrawerTab = '';
+            window._vipTermState = window._vipTermState || { cache: {}, loadingKey: '', err: '', selectedSku: null, target: '', zone: '', search: '' };
+            window._vipTermState.mode = modeKey;
+            window._vipTermState.kategori = kategori;
+            window._vipTermState.brand = brand;
+            window._vipTermState.groupKey = groupKey;
+            window._vipTermState.selectedSku = null;
+            window._vipTermState.search = '';
+            window._vipTermState.err = '';
+            const dr = document.getElementById('inPageVaultDrawer');
+            if (dr) dr.style.display = 'none';
+            renderViewport();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            if (typeof loadVipResellerServices === 'function') {
+                loadVipResellerServices(kategori, brand, false);
+            }
+        }
+
+        function escVipHtml(str) {
+            return String(str == null ? '' : str)
+                .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function getVipBrandMeta(modeKey, kategori, brand, groupKey) {
+            if (modeKey === 'pro_apps' || kategori === 'apps') {
+                const allApps = [...XB_VIP_APPS_CATALOG.pro, ...XB_VIP_APPS_CATALOG.streaming];
+                return allApps.find(a => a.brand === brand) || {
+                    brand, name: String(brand || 'Pro App').toUpperCase(), sub: 'Pro Subscription',
+                    ico: 'chatgpt', col: '#f472b6', needZone: false, prompt: 'Email / No. WA pengiriman'
+                };
+            }
+            if (groupKey) {
+                const grp = XB_VIP_PPOB_GROUPS.find(g => g.key === groupKey) || XB_VIP_PPOB_GROUPS[0];
+                const bObj = grp.brands.find(b => b.brand === brand) || grp.brands[0];
+                return {
+                    brand: bObj.brand, name: bObj.name, sub: grp.name,
+                    ico: grp.ico, col: grp.col, needZone: false, prompt: grp.prompt, group: grp
+                };
+            }
+            return XB_VIP_GAMES_CATALOG.find(g => g.brand === brand) || {
+                brand, name: String(brand || 'Game').toUpperCase(), sub: 'Direct Top-Up',
+                ico: 'mlbb', col: '#fbbf24', needZone: false, prompt: 'User ID Game'
+            };
+        }
+
+        async function loadVipResellerServices(kategori, brand, forceRefresh = false) {
+            window._vipTermState = window._vipTermState || { cache: {}, loadingKey: '', err: '', selectedSku: null, target: '', zone: '', search: '' };
+            const st = window._vipTermState;
+            const cacheKey = `${kategori}::${brand}`;
+
+            if (!forceRefresh && Array.isArray(st.cache[cacheKey]) && st.cache[cacheKey].length > 0) {
+                if (!st.selectedSku || !st.cache[cacheKey].some(x => x.sku === st.selectedSku.sku)) {
+                    st.selectedSku = st.cache[cacheKey].find(x => x.is_ready) || st.cache[cacheKey][0];
+                }
+                if (activeTab === 'home' && (_mpPlatform === 'pro_apps' || _mpPlatform === 'games_ppob')) renderViewport();
+                return;
+            }
+            if (st.loadingKey === cacheKey) return;
+            st.loadingKey = cacheKey;
+            st.err = '';
+            if (activeTab === 'home' && (_mpPlatform === 'pro_apps' || _mpPlatform === 'games_ppob')) renderViewport();
+
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'vip_reseller',
+                        sub_action: 'pull_services',
+                        kategori: kategori,
+                        brand: brand,
+                        idr_rate: Math.round(liveUsdtIdrRate || 18195),
+                        force_refresh: Boolean(forceRefresh)
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result && Array.isArray(json.services)) {
+                    st.cache[cacheKey] = json.services;
+                    if (json.services.length > 0) {
+                        st.selectedSku = json.services.find(x => x.is_ready) || json.services[0];
+                    } else {
+                        st.selectedSku = null;
+                    }
+                    if (forceRefresh) showToast(`✅ Synced ${json.services.length} live packages!`);
+                } else {
+                    st.err = (json && json.error) ? json.error : 'Failed to load live catalog from VIP-Reseller.';
+                }
+            } catch (e) {
+                st.err = 'Connection slow while fetching live catalog. Tap ↻ Sync to retry.';
+            } finally {
+                st.loadingKey = '';
+                if (activeTab === 'home' && (_mpPlatform === 'pro_apps' || _mpPlatform === 'games_ppob')) renderViewport();
+            }
+        }
+
+        function selectVipResellerSku(cacheKey, skuCode) {
+            const st = window._vipTermState;
+            const list = (st && st.cache && st.cache[cacheKey]) ? st.cache[cacheKey] : [];
+            const found = list.find(x => x.sku === skuCode);
+            if (!found || !found.is_ready) return showToast('⚠️ Paket ini sedang kosong/gangguan di server.');
+            st.selectedSku = found;
+            renderViewport();
+        }
+
+        function renderVipResellerMarketplace(vp, modeKey) {
+            window._vipTermState = window._vipTermState || { cache: {}, loadingKey: '', err: '', selectedSku: null, target: '', zone: '', search: '' };
+            const st = window._vipTermState;
+
+            if (!st.brand || st.mode !== modeKey) {
+                st.mode = modeKey;
+                st.kategori = modeKey === 'pro_apps' ? 'apps' : 'games';
+                st.brand = modeKey === 'pro_apps' ? 'chatgpt' : 'mobile legends';
+                st.groupKey = '';
+                st.selectedSku = null;
+            }
+
+            const meta = getVipBrandMeta(modeKey, st.kategori, st.brand, st.groupKey);
+            const cacheKey = `${st.kategori}::${st.brand}`;
+            const rawList = st.cache[cacheKey] || [];
+            const isLoading = st.loadingKey === cacheKey;
+
+            if (!isLoading && rawList.length === 0 && !st.err) {
+                loadVipResellerServices(st.kategori, st.brand, false);
+            }
+
+            if (rawList.length > 0 && (!st.selectedSku || !rawList.some(x => x.sku === st.selectedSku.sku))) {
+                st.selectedSku = rawList.find(x => x.is_ready) || rawList[0];
+            }
+
+            const q = String(st.search || '').trim().toLowerCase();
+            const filteredList = rawList.filter(item =>
+                !q || item.name.toLowerCase().includes(q) || item.sku.toLowerCase().includes(q)
+            );
+            const readyCnt = rawList.filter(x => x.is_ready).length;
+            const sel = st.selectedSku;
+            const isApps = (st.kategori === 'apps');
+
+            // Sub-category & Operator/Brand Pills for PPOB groups
+            let groupSwitchHtml = '';
+            if (meta.group) {
+                const grp = meta.group;
+                const subBar = grp.subCats.length > 1 ? `
+                    <div class="xb-vip-pill-scroll" style="margin-bottom:6px;">
+                        ${grp.subCats.map(sc => `
+                            <button type="button" class="xb-vip-pill ${st.kategori === sc.k ? 'active' : ''}"
+                                onclick="openVipCatalogSelection('games_ppob', '${sc.k}', '${st.brand}', '${grp.key}')">${sc.lbl}</button>
+                        `).join('')}
+                    </div>
+                ` : '';
+                const brandBar = grp.brands.length > 1 ? `
+                    <div class="xb-vip-pill-scroll">
+                        ${grp.brands.map(b => `
+                            <button type="button" class="xb-vip-pill ${st.brand === b.brand ? 'active' : ''}"
+                                onclick="openVipCatalogSelection('games_ppob', '${st.kategori}', '${b.brand}', '${grp.key}')">${b.name}</button>
+                        `).join('')}
+                    </div>
+                ` : '';
+                groupSwitchHtml = `<div>${subBar}${brandBar}</div>`;
+            }
+
+            let listBodyHtml = '';
+            if (isLoading) {
+                listBodyHtml = `
+                    <div style="text-align:center;padding:26px 12px;font-family:'JetBrains Mono',monospace;">
+                        <div style="color:${meta.col};font-size:0.76rem;font-weight:800;">⏳ Loading Live ${escVipHtml(meta.name)} Catalog...</div>
+                        <div style="font-size:0.54rem;color:var(--text-muted);margin-top:4px;">Fetching real-time availability &amp; pricing</div>
+                    </div>
+                `;
+            } else if (st.err || rawList.length === 0) {
+                listBodyHtml = `
+                    <div style="text-align:center;padding:22px 12px;">
+                        <div style="font-size:0.72rem;font-weight:800;color:#f87171;margin-bottom:8px;">${escVipHtml(st.err || 'Belum ada paket aktif untuk ' + meta.name + '.')}</div>
+                        <button type="button" class="btn-ui primary" style="padding:8px 14px;font-size:0.68rem;" onclick="loadVipResellerServices('${st.kategori}', '${st.brand}', true)">↻ Reload Catalog</button>
+                    </div>
+                `;
+            } else {
+                const cardsHtml = filteredList.length === 0
+                    ? `<div style="grid-column:1/-1;text-align:center;padding:18px;font-size:0.68rem;color:var(--text-muted);">Tidak ada paket yang cocok dengan "${escVipHtml(st.search)}".</div>`
+                    : filteredList.map(item => {
+                        const isAct = sel && sel.sku === item.sku;
+                        const subPrice = currentCurrency === 'IDR'
+                            ? `$${Number(item.sell_usd || 0).toFixed(2)} USDT`
+                            : `Rp ${Number(item.sell_idr || 0).toLocaleString('id-ID')}`;
+                        return `
+                            <button type="button" class="xb-vip-sku-card ${isAct ? 'active' : ''} ${!item.is_ready ? 'sold' : ''}"
+                                onclick="selectVipResellerSku('${escVipHtml(cacheKey)}', '${escVipHtml(item.sku)}')">
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;font-weight:800;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escVipHtml(item.sku)}</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;font-weight:800;color:${item.is_ready ? '#34d399' : '#f87171'};flex-shrink:0;">${item.is_ready ? '● READY' : '○ EMPTY'}</span>
+                                </div>
+                                <div style="font-size:0.65rem;font-weight:800;line-height:1.28;color:var(--text-primary);word-break:break-word;">${escVipHtml(item.name)}</div>
+                                <div style="display:flex;justify-content:space-between;align-items:baseline;gap:4px;margin-top:2px;">
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;color:#34d399;">${fmtPrice(item.sell_usd)}</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;color:var(--text-muted);">${subPrice}</span>
+                                </div>
+                            </button>
+                        `;
+                    }).join('');
+
+                listBodyHtml = `
+                    <!-- SEARCH PACKAGES -->
+                    <input type="text" class="xb-bst-target-inp" style="width:100%;height:34px;font-size:0.7rem;"
+                        value="${escVipHtml(st.search)}" placeholder="🔍 Filter paket ${escVipHtml(meta.name)} (${readyCnt} ready)..."
+                        oninput="window._vipTermState.search=this.value; renderVipSkuListOnly('${escVipHtml(cacheKey)}');">
+
+                    <div class="xb-vip-sku-grid" id="xbVipSkuGridBox">${cardsHtml}</div>
+
+                    <!-- TARGET INPUT -->
+                    <div style="display:grid;grid-template-columns:${meta.needZone ? '1.35fr 0.85fr' : '1fr'};gap:6px;">
+                        <div>
+                            <div class="xb-bst-lbl"><span>${meta.needZone ? 'USER ID / UID' : 'TUJUAN / TARGET'}</span><span style="color:#38bdf8;">REQUIRED</span></div>
+                            <input type="text" id="vipTargetInp" class="xb-bst-target-inp" style="width:100%;height:37px;"
+                                value="${escVipHtml(st.target)}" placeholder="${escVipHtml(meta.prompt)}"
+                                oninput="window._vipTermState.target=this.value;">
+                        </div>
+                        ${meta.needZone ? `
+                            <div>
+                                <div class="xb-bst-lbl"><span>ZONE / SERVER</span><span style="color:#fbbf24;">ID</span></div>
+                                <input type="text" id="vipZoneInp" class="xb-bst-target-inp" style="width:100%;height:37px;"
+                                    value="${escVipHtml(st.zone)}" placeholder="e.g. 1234"
+                                    oninput="window._vipTermState.zone=this.value;">
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- SUMMARY & CHECKOUT -->
+                    <div class="xb-bst-summary">
+                        <div style="min-width:0;flex:1;">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;color:var(--text-muted);font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                ${sel ? escVipHtml(sel.name) : 'SELECT A PACKAGE'}
+                            </div>
+                            <div style="display:flex;align-items:baseline;gap:6px;flex-wrap:wrap;margin-top:1px;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.94rem;font-weight:800;color:#34d399;">${sel ? fmtPrice(sel.sell_usd) : fmtPrice(0)}</span>
+                                ${sel ? `<span style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-muted);">${currentCurrency === 'IDR' ? `≈ $${sel.sell_usd.toFixed(2)} USDT` : `≈ Rp ${sel.sell_idr.toLocaleString('id-ID')}`}</span>` : ''}
+                            </div>
+                        </div>
+                        <div style="text-align:right;font-family:'JetBrains Mono',monospace;flex-shrink:0;">
+                            <div style="font-size:0.48rem;color:var(--text-muted);font-weight:800;">WALLET BAL</div>
+                            <div style="font-size:0.69rem;font-weight:800;color:var(--text-primary);">${fmtPrice(userBalanceUsdt)}</div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-ui primary" style="width:100%;height:42px;font-size:0.74rem;border-radius:11px;"
+                        ${(!sel || !sel.is_ready) ? 'disabled' : ''} onclick="openVipPinCheckoutModal()">
+                        ${!sel ? 'Select a Package Above' : (!sel.is_ready ? 'Package Currently Out of Stock' : `⚡ Order Instant — ${fmtPrice(sel.sell_usd)}`)}
+                    </button>
+                `;
+            }
+
+            const term = document.createElement('div');
+            term.className = 'xb-bst-terminal';
+            term.style.borderColor = `${meta.col}55`;
+            term.innerHTML = `
+                <div class="xb-bst-head">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;color:${meta.col};border-color:${meta.col}66;">${XB_MP_SVGS[meta.ico] || XB_MP_SVGS.chatgpt}</span>
+                        <div style="min-width:0;flex:1;">
+                            <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escVipHtml(meta.name)}</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:700;">${isApps ? 'PRO APPS & AI • INSTANT DELIVERY' : 'DIRECT SERVER • AUTO SN & RECEIPT'}</div>
+                        </div>
+                    </div>
+                    <div style="display:flex;gap:5px;flex-shrink:0;">
+                        <button type="button" class="xb-adm-mini-btn" style="color:${meta.col};border-color:${meta.col}55;" onclick="toggleMarketplaceDrawer('${modeKey}')">📂 Ganti</button>
+                        <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="loadVipResellerServices('${st.kategori}', '${st.brand}', true)">↻</button>
+                    </div>
+                </div>
+                ${groupSwitchHtml}
+                ${listBodyHtml}
+            `;
+            vp.appendChild(term);
+        }
+
+        function renderVipSkuListOnly(cacheKey) {
+            const box = document.getElementById('xbVipSkuGridBox');
+            if (!box) return renderViewport();
+            const st = window._vipTermState;
+            const rawList = st.cache[cacheKey] || [];
+            const q = String(st.search || '').trim().toLowerCase();
+            const filtered = rawList.filter(item => !q || item.name.toLowerCase().includes(q) || item.sku.toLowerCase().includes(q));
+            const sel = st.selectedSku;
+
+            if (filtered.length === 0) {
+                box.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:18px;font-size:0.68rem;color:var(--text-muted);">Tidak ada paket yang cocok dengan "${escVipHtml(st.search)}".</div>`;
+                return;
+            }
+            box.innerHTML = filtered.map(item => {
+                const isAct = sel && sel.sku === item.sku;
+                const subPrice = currentCurrency === 'IDR'
+                    ? `$${Number(item.sell_usd || 0).toFixed(2)} USDT`
+                    : `Rp ${Number(item.sell_idr || 0).toLocaleString('id-ID')}`;
+                return `
+                    <button type="button" class="xb-vip-sku-card ${isAct ? 'active' : ''} ${!item.is_ready ? 'sold' : ''}"
+                        onclick="selectVipResellerSku('${escVipHtml(cacheKey)}', '${escVipHtml(item.sku)}')">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;font-weight:800;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escVipHtml(item.sku)}</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;font-weight:800;color:${item.is_ready ? '#34d399' : '#f87171'};flex-shrink:0;">${item.is_ready ? '● READY' : '○ EMPTY'}</span>
+                        </div>
+                        <div style="font-size:0.65rem;font-weight:800;line-height:1.28;color:var(--text-primary);word-break:break-word;">${escVipHtml(item.name)}</div>
+                        <div style="display:flex;justify-content:space-between;align-items:baseline;gap:4px;margin-top:2px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.7rem;font-weight:800;color:#34d399;">${fmtPrice(item.sell_usd)}</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;color:var(--text-muted);">${subPrice}</span>
+                        </div>
+                    </button>
+                `;
+            }).join('');
+        }
+
+        function openVipPinCheckoutModal() {
+            const st = window._vipTermState;
+            const sel = st && st.selectedSku;
+            if (!sel || !sel.is_ready) return showToast('⚠️ Pilih paket yang tersedia dulu.');
+
+            const meta = getVipBrandMeta(st.mode, st.kategori, st.brand, st.groupKey);
+            const target = String(st.target || '').trim();
+            const zone = meta.needZone ? String(st.zone || '').trim() : '';
+
+            if (target.length < 4) return showToast(`⚠️ Masukkan ${meta.needZone ? 'User ID' : 'tujuan / target'} yang valid!`);
+            if (meta.needZone && !zone) return showToast('⚠️ Masukkan Zone / Server ID terlebih dahulu!');
+            if (sel.sell_usd > userBalanceUsdt) return showToast(`❌ Saldo tidak cukup (Butuh ${fmtPrice(sel.sell_usd)}).`);
+
+            st.pendingPinOrd = {
+                mode: st.mode,
+                kategori: st.kategori,
+                brand: st.brand,
+                brandName: meta.name,
+                sku: sel.sku,
+                product_name: sel.name,
+                sell_usd: sel.sell_usd,
+                sell_idr: sel.sell_idr,
+                target: target,
+                zone: zone
+            };
+
+            const root = ensureXbExModalRoot();
+            root.innerHTML = `
+                <div class="xb-ex-modal-box">
+                    <div style="display:flex;align-items:center;justify-content:space-between;">
+                        <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);">🔐 Authorize ${escVipHtml(meta.name)}</div>
+                        <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                    </div>
+                    <div class="xb-ex-quote-box">
+                        <div class="xb-ex-qrow"><span>Package</span><b style="max-width:210px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escVipHtml(sel.name)}</b></div>
+                        <div class="xb-ex-qrow"><span>Target</span><b style="color:#38bdf8;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escVipHtml(zone ? `${target} (${zone})` : target)}</b></div>
+                        <div class="xb-ex-qrow"><span>Wallet Deduction</span><b style="color:#f87171;">-${fmtPrice(sel.sell_usd)}</b></div>
+                    </div>
+                    <div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:5px;">ENTER YOUR 6-DIGIT SECURITY PIN</div>
+                        <input type="password" inputmode="numeric" maxlength="6" class="xb-ex-input" id="vipPinInp"
+                            style="text-align:center;font-size:1.1rem;letter-spacing:8px;height:44px;" placeholder="••••••"
+                            onkeydown="if(event.key==='Enter') executeVipConfirmedOrder();">
+                        <div id="vipPinErr" style="font-size:0.62rem;color:#f87171;font-weight:700;margin-top:5px;min-height:14px;"></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:7px;">
+                        <button type="button" class="btn-ui secondary" style="height:40px;font-size:0.72rem;border-radius:10px;" onclick="closeXbExModal()">Cancel</button>
+                        <button type="button" id="vipConfirmPayBtn" class="btn-ui primary" style="height:40px;font-size:0.74rem;border-radius:10px;" onclick="executeVipConfirmedOrder()">✅ Confirm &amp; Process</button>
+                    </div>
+                </div>
+            `;
+            root.classList.add('open');
+            setTimeout(() => { const el = document.getElementById('vipPinInp'); if (el) el.focus(); }, 60);
+        }
+
+        async function executeVipConfirmedOrder() {
+            const st = window._vipTermState;
+            const ord = st && st.pendingPinOrd;
+            if (!ord || st.submitting) return;
+
+            const inp = document.getElementById('vipPinInp');
+            const errEl = document.getElementById('vipPinErr');
+            const btn = document.getElementById('vipConfirmPayBtn');
+            const pin = String(inp ? inp.value : '').trim();
+
+            if (!/^\d{6}$/.test(pin)) {
+                if (errEl) errEl.innerText = 'PIN must be exactly 6 numeric digits.';
+                return;
+            }
+            const pinOk = (typeof isPinValidWithBot === 'function')
+                ? isPinValidWithBot(pin)
+                : (xbExMd5(pin) === String(localStorage.getItem('xb_bot_pin_hash') || '').toLowerCase());
+            if (!pinOk) {
+                if (errEl) errEl.innerText = 'Incorrect 6-digit Security PIN.';
+                return;
+            }
+            if (ord.sell_usd > userBalanceUsdt) {
+                if (errEl) errEl.innerText = 'Insufficient wallet balance.';
+                return;
+            }
+
+            st.submitting = true;
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Executing on Server...'; }
+            if (errEl) errEl.innerText = '';
+
+            const invId = 'INV-VIP-' + Math.floor(10000 + Math.random() * 89999);
+            const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
+            const fullTarget = ord.zone ? `${ord.target} (${ord.zone})` : ord.target;
+
+            try {
+                // 1. Place order to VIP-Reseller FIRST (Anti-Nyangkut: if rejected, balance is NOT deducted)
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'vip_reseller',
+                        sub_action: 'place_order',
+                        invoice_id: invId,
+                        buyer_uid: String(currentUserId),
+                        buyer_username: dispUser,
+                        kategori: ord.kategori,
+                        brand: ord.brand,
+                        sku: ord.sku,
+                        product_name: ord.product_name,
+                        target: ord.target,
+                        data_zone: ord.zone,
+                        price_usd: ord.sell_usd,
+                        idr_rate: Math.round(liveUsdtIdrRate || 18195)
+                    })
+                });
+                const json = await res.json();
+                if (!json || !json.result || !json.trx_id) {
+                    if (errEl) errEl.innerText = (json && json.error) ? json.error : 'Server rejected order. Balance was NOT deducted.';
+                    if (btn) { btn.disabled = false; btn.innerText = '✅ Confirm & Process'; }
+                    st.submitting = false;
+                    return;
+                }
+
+                // 2. Deduct Authoritative Wallet Balance
+                const newBal = Math.max(0, Number((userBalanceUsdt - ord.sell_usd).toFixed(2)));
+                setAuthoritativeBalance(newBal, true);
+
+                const isApps = (ord.kategori === 'apps');
+                const txMethod = isApps ? 'VIP Pro Apps (PIN Verified)' : (ord.kategori === 'games' ? 'VIP Games (No-Cashback)' : 'VIP PPOB (No-Cashback)');
+                recordWebTransaction(invId, `${ord.brandName}: ${ord.product_name}`, `${fullTarget} [Trx #${json.trx_id}]`, ord.sell_usd, 'OUT', txMethod);
+
+                // 3. Push Cloud Sync (Only sync Loyalty CRM for Pro Apps; PPOB & Games excluded from 10% cashback)
+                syncCloudStateWithGSheet('push', {
+                    balance: newBal,
+                    bal_ts: Date.now(),
+                    tx_id: invId,
+                    tx_note: `${ord.brandName} | ${ord.sku} | Trx #${json.trx_id}`
+                });
+                if (isApps) syncUserCrmToGSheetFromWeb('acc', ord.sell_usd);
+
+                // 4. Cache locally for instant display in Vault
+                window._vltState.liveVipOrders = Array.isArray(window._vltState.liveVipOrders) ? window._vltState.liveVipOrders : [];
+                window._vltState.liveVipOrders.unshift({
+                    invoice_id: invId,
+                    trx_id: json.trx_id,
+                    endpoint: json.endpoint || (isApps || ord.kategori === 'games' ? 'game-feature' : 'prepaid'),
+                    kategori: ord.kategori,
+                    brand: ord.brand,
+                    sku: ord.sku,
+                    product_name: ord.product_name,
+                    target: fullTarget,
+                    price_usd: ord.sell_usd,
+                    sn: json.sn || 'Processing',
+                    status: json.status || 'waiting',
+                    created_wib: json.created_wib || ''
+                });
+
+                // 5. Buyer & Admin Notifications (Web + Telegram Secret Log)
+                const buyerMsg = (
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `⚡ <b>${isApps ? 'PRO APP / STREAMING' : 'GAMES & PPOB'} ORDER</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                    `🔸 <b>Trx ID:</b> <code>${json.trx_id}</code>\n` +
+                    `🔸 <b>Product:</b> <b>${ord.product_name}</b>\n` +
+                    `🔸 <b>Target:</b> <code>${fullTarget}</code>\n` +
+                    `🔸 <b>SN / Note:</b> <code>${json.sn || 'Processing'}</code>\n` +
+                    `🔸 <b>Status:</b> <b>${String(json.status || 'waiting').toUpperCase()}</b>\n` +
+                    `🔸 <b>Paid:</b> <b>$${ord.sell_usd.toFixed(2)} USDT</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🔐 <i>Check live SN &amp; status anytime in Vault ➔ Apps/PPOB.</i>`
+                );
+                const adminMsg = (
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🕵️ <b>SECRET VIP-RESELLER LOG (WEB)</b>\n` +
+                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                    `🔸 <b>Invoice:</b> <code>${invId}</code> (Trx <code>${json.trx_id}</code>)\n` +
+                    `🔸 <b>Client:</b> <b>${dispUser}</b> (<code>${currentUserId}</code>)\n` +
+                    `🔸 <b>Product:</b> <b>${ord.product_name}</b> (<code>${ord.sku}</code>)\n` +
+                    `🔸 <b>Target:</b> <code>${fullTarget}</code>\n` +
+                    `🔸 <b>Paid:</b> $${ord.sell_usd.toFixed(2)} (Rp ${ord.sell_idr.toLocaleString('id-ID')})\n` +
+                    `🔸 <b>Modal VIP:</b> Rp ${Number(json.modal_idr || 0).toLocaleString('id-ID')} | <b>Profit:</b> <b>Rp ${Number(json.profit_idr || 0).toLocaleString('id-ID')}</b>\n` +
+                    `🔸 <b>SN:</b> <code>${json.sn || 'Processing'}</code>`
+                );
+                pushInWebNotification('buyer', `⚡ ${ord.brandName.toUpperCase()} (#${json.trx_id})`, buyerMsg);
+                pushInWebNotification('admin', `⚡ VIP ORDER #${json.trx_id} ($${ord.sell_usd.toFixed(2)})`, adminMsg);
+                sendTelegramSilentPush(currentUserId, buyerMsg, true);
+                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, adminMsg, true));
+
+                // 6. Receipt Modal with SN Copy & Jump to Vault
+                const root = ensureXbExModalRoot();
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="text-align:center;">
+                            <div style="width:44px;height:44px;margin:0 auto 8px;border-radius:50%;background:rgba(16,185,129,0.16);border:1.5px solid #10b981;color:#34d399;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">✓</div>
+                            <div style="font-size:0.9rem;font-weight:800;color:var(--text-primary);">${escVipHtml(ord.brandName)} Processed!</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;color:#38bdf8;font-weight:800;margin-top:2px;">${invId} • Trx #${escVipHtml(json.trx_id)}</div>
+                        </div>
+                        <div class="xb-ex-quote-box">
+                            <div class="xb-ex-qrow"><span>Product</span><b style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escVipHtml(ord.product_name)}</b></div>
+                            <div class="xb-ex-qrow"><span>Target</span><b style="color:#38bdf8;">${escVipHtml(fullTarget)}</b></div>
+                            <div class="xb-ex-qrow"><span>Status</span><b style="color:#fbbf24;">${escVipHtml(String(json.status || 'waiting').toUpperCase())}</b></div>
+                            <div class="xb-ex-qrow"><span>SN / Note</span><b style="color:#34d399;max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escVipHtml(json.sn || 'Processing')}</b></div>
+                            <div class="xb-ex-qrow"><span>New Balance</span><b style="color:#38bdf8;">${fmtPrice(newBal)}</b></div>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
+                            <button type="button" class="btn-ui secondary" style="height:39px;font-size:0.7rem;border-radius:10px;" onclick="closeXbExModal(); renderViewport();">Stay Here</button>
+                            <button type="button" class="btn-ui primary" style="height:39px;font-size:0.7rem;border-radius:10px;" onclick="closeXbExModal(); window._vltState.seg='accounts'; window._vltState.platFilter='VIP'; switchTab('vault'); syncVaultVipOrders();">📋 SN &amp; Status</button>
+                        </div>
+                    </div>
+                `;
+                st.target = '';
+                st.zone = '';
+                renderViewport();
+            } catch (e) {
+                if (errEl) errEl.innerText = 'Connection error. Balance was NOT deducted.';
+                if (btn) { btn.disabled = false; btn.innerText = '✅ Confirm & Process'; }
+            } finally {
+                st.submitting = false;
+            }
+        }
+
+        async function syncVaultVipOrders(showNotice = false) {
+            try {
+                const uidStr = String(currentUserId || '').trim();
+                const unmStr = String(currentUsername || '').replace(/^@/, '').trim();
+                const isAdm = ADMIN_IDS.includes(uidStr);
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'vip_reseller',
+                        sub_action: 'pull_buyer_orders',
+                        buyer_uid: uidStr,
+                        buyer_username: unmStr,
+                        is_admin: isAdm
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result && Array.isArray(json.orders)) {
+                    window._vltState.liveVipOrders = json.orders;
+                    if (showNotice) showToast(`✅ Synced ${json.orders.length} Apps/PPOB order(s)!`);
+                    if (activeTab === 'vault' && window._vltState.seg === 'accounts') renderViewport();
+                }
+            } catch (e) {}
+        }
+
+        async function checkVipOrderStatusLive(trxId, endpoint, kategori, sku, btnEl) {
+            if (!trxId) return;
+            if (btnEl) { btnEl.disabled = true; btnEl.innerText = '⏳ Checking...'; }
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'vip_reseller',
+                        sub_action: 'check_status',
+                        trx_id: String(trxId),
+                        endpoint: String(endpoint || ''),
+                        kategori: String(kategori || ''),
+                        sku: String(sku || '')
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    const list = Array.isArray(window._vltState.liveVipOrders) ? window._vltState.liveVipOrders : [];
+                    const found = list.find(o => String(o.trx_id) === String(trxId));
+                    if (found) {
+                        found.status = json.status;
+                        found.sn = json.sn;
+                        found.updated_wib = json.updated_wib;
+                    }
+                    showToast(`📡 Trx #${trxId}: ${String(json.status || '').toUpperCase()}`);
+                    renderViewport();
+                } else {
+                    showToast('⚠️ ' + ((json && json.error) || 'Failed to check status.'));
+                    if (btnEl) { btnEl.disabled = false; btnEl.innerText = '↻ Cek Status & SN'; }
+                }
+            } catch (e) {
+                showToast('⚠️ Network error checking status.');
+                if (btnEl) { btnEl.disabled = false; btnEl.innerText = '↻ Cek Status & SN'; }
+            }
+        }
+
+        function buildVaultVipOrdersHtml() {
+            const list = Array.isArray(window._vltState.liveVipOrders) ? window._vltState.liveVipOrders : [];
+            const isOnlyVip = (window._vltState.platFilter === 'VIP');
+
+            if (list.length === 0) {
+                if (!isOnlyVip) return '';
+                return `
+                    <div class="xb-wal-card" style="text-align:center;padding:22px 14px;">
+                        <div style="font-size:1.5rem;margin-bottom:5px;">⚡</div>
+                        <div style="font-size:0.8rem;font-weight:800;color:var(--text-primary);margin-bottom:4px;">No Pro Apps / PPOB Orders Yet</div>
+                        <div style="font-size:0.64rem;color:var(--text-secondary);margin-bottom:11px;">
+                            Pesanan Pro Apps, VIP Streaming, Games &amp; PPOB beserta kode SN akan muncul otomatis di sini.
+                        </div>
+                        <button type="button" class="btn-ui primary" style="padding:9px 14px;font-size:0.7rem;" onclick="switchTab('home'); toggleMarketplaceDrawer('pro_apps');">👑 Browse Pro Apps &amp; PPOB</button>
+                    </div>
+                `;
+            }
+
+            const cards = list.map(ord => {
+                const stUp = String(ord.status || 'waiting').toUpperCase();
+                const isOk = stUp === 'SUCCESS' || stUp === 'COMPLETED';
+                const isErr = stUp === 'ERROR' || stUp === 'FAILED' || stUp === 'CANCELLED';
+                const stCol = isOk ? '#34d399' : (isErr ? '#f87171' : '#fbbf24');
+                const modeTarget = ord.kategori === 'apps' ? 'pro_apps' : 'games_ppob';
+                const snEsc = escVipHtml(ord.sn || 'Processing');
+                const safeSnCopy = String(ord.sn || '').replace(/'/g, "\\'");
+
+                return `
+                    <div class="xb-vlt-acc-card">
+                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:#38bdf8;">${escVipHtml(ord.invoice_id)} • #${escVipHtml(ord.trx_id)}</span>
+                            <span class="xb-ex-chip" style="color:${stCol};border-color:${stCol}66;">${isOk ? '✅ ' : (isErr ? '✕ ' : '⏳ ')}${escVipHtml(stUp)}</span>
+                        </div>
+                        <div>
+                            <div style="font-size:0.74rem;font-weight:800;color:var(--text-primary);">${escVipHtml(ord.product_name)}</div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:var(--text-muted);margin-top:2px;">
+                                🎯 ${escVipHtml(ord.target)} • 💰 <b style="color:#34d399;">${fmtPrice(ord.price_usd)}</b>
+                            </div>
+                        </div>
+                        <div style="background:var(--bg-input);border:1px solid var(--ex-hairline);border-radius:9px;padding:7px 9px;display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                            <div style="min-width:0;flex:1;font-family:'JetBrains Mono',monospace;">
+                                <div style="font-size:0.46rem;color:var(--text-muted);font-weight:800;">SN / VOUCHER / NOTE</div>
+                                <div style="font-size:0.64rem;font-weight:800;color:#34d399;word-break:break-all;">${snEsc}</div>
+                            </div>
+                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="navigator.clipboard.writeText('${safeSnCopy}'); showToast('📋 SN / Note copied!');">📋</button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:5px;">
+                            <button type="button" class="btn-ui secondary" style="min-width:0;padding:7px 4px;font-size:0.63rem;border-radius:8px;"
+                                onclick="checkVipOrderStatusLive('${escVipHtml(ord.trx_id)}', '${escVipHtml(ord.endpoint)}', '${escVipHtml(ord.kategori)}', '${escVipHtml(ord.sku)}', this)">↻ Cek Status &amp; SN</button>
+                            <button type="button" class="btn-ui primary" style="min-width:0;padding:7px 4px;font-size:0.63rem;border-radius:8px;"
+                                onclick="switchTab('home'); openVipCatalogSelection('${modeTarget}', '${escVipHtml(ord.kategori)}', '${escVipHtml(ord.brand)}')">⚡ Beli Lagi</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            return `
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-top:${isOnlyVip ? '0' : '6px'};">
+                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#f472b6;">⚡ PRO APPS, GAMES &amp; PPOB ORDERS (${list.length})</span>
+                    <button type="button" class="xb-adm-mini-btn" style="color:#34d399;" onclick="syncVaultVipOrders(true)">↻ Sync</button>
+                </div>
+                ${cards}
+            `;
+        }
 
         const XB_MP_PLATFORMS = {
             x: {
@@ -10709,6 +11572,8 @@
             const socialKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
             const isSocialActive = socialKeys.includes(_mpPlatform);
             const isCexEmailActive = (_mpPlatform === 'cex' || _mpPlatform === 'email');
+            const isAppsActive = (_mpPlatform === 'pro_apps');
+            const isPpobActive = (_mpPlatform === 'games_ppob');
 
             const socialTotal = socialKeys.reduce((s, k) => s + getDigitalPlatformLiveCount(k), 0);
             const cexTotal = getDigitalPlatformLiveCount('cex');
@@ -10840,6 +11705,108 @@
                 `;
             }
 
+            if (_mpDrawerTab === 'pro_apps') {
+                const topStream = XB_VIP_APPS_CATALOG.streaming[0];
+                const restStream = XB_VIP_APPS_CATALOG.streaming.slice(1);
+                drawerHtml = `
+                    <div class="xb-mp-drawer-box">
+                        <!-- BLOK 1: PRO APPS & AI (6 ITEM PAS 3x2 — ZERO SLOT KOSONG) -->
+                        <div class="xb-mp-drawer-hdr">
+                            <span class="xb-mp-drawer-lbl" style="color:#f472b6;">👑 Pro Apps &amp; AI Subscriptions</span>
+                            <button type="button" class="xb-mp-drawer-all" style="color:#f472b6;border-color:rgba(244,114,182,0.45);background:rgba(244,114,182,0.1);" onclick="toggleMarketplaceDrawer('pro_apps')">✕ Close</button>
+                        </div>
+                        <div class="xb-mp-grid-6">
+                            ${XB_VIP_APPS_CATALOG.pro.map(a => `
+                                <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${a.col};" onclick="openVipCatalogSelection('pro_apps', 'apps', '${a.brand}')">
+                                    <span class="xb-mp-plat-ico" style="color:${a.col};">${XB_MP_SVGS[a.ico]}</span>
+                                    <span class="xb-mp-plat-info">
+                                        <div class="xb-mp-plat-name">${a.name}</div>
+                                        <div class="xb-mp-plat-sub">${a.sub}</div>
+                                    </span>
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <hr class="xb-wal-hr" style="margin:3px 0;">
+
+                        <!-- BLOK 2: VIP STREAMING (PRIME FULL-WIDTH TOP + 6 LAINNYA PAS 3x2) -->
+                        <div class="xb-mp-drawer-hdr">
+                            <span class="xb-mp-drawer-lbl" style="color:#38bdf8;">🎬 VIP Streaming Accounts</span>
+                            <span class="xb-mp-drawer-lbl" style="color:#34d399;">LIVE API</span>
+                        </div>
+                        <div class="xb-mp-grid-6">
+                            <button type="button" class="xb-mp-plat-btn is-featured" style="--mp-acc:${topStream.col};border-color:${topStream.col}66;" onclick="openVipCatalogSelection('pro_apps', 'apps', '${topStream.brand}')">
+                                <span class="xb-mp-plat-ico" style="color:${topStream.col};">${XB_MP_SVGS[topStream.ico]}</span>
+                                <span class="xb-mp-plat-info">
+                                    <div class="xb-mp-plat-name">${topStream.name}</div>
+                                    <div class="xb-mp-plat-sub">${topStream.sub}</div>
+                                </span>
+                                <span class="xb-mp-top-tag">TOP</span>
+                            </button>
+                            ${restStream.map(s => `
+                                <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${s.col};" onclick="openVipCatalogSelection('pro_apps', 'apps', '${s.brand}')">
+                                    <span class="xb-mp-plat-ico" style="color:${s.col};">${XB_MP_SVGS[s.ico]}</span>
+                                    <span class="xb-mp-plat-info">
+                                        <div class="xb-mp-plat-name">${s.name}</div>
+                                        <div class="xb-mp-plat-sub">${s.sub}</div>
+                                    </span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            } else if (_mpDrawerTab === 'games_ppob') {
+                const topGame = XB_VIP_GAMES_CATALOG[0];
+                const restGames = XB_VIP_GAMES_CATALOG.slice(1);
+                drawerHtml = `
+                    <div class="xb-mp-drawer-box">
+                        <!-- BLOK 1: TOP-UP GAMES (MLBB FULL-WIDTH TOP + 9 LAINNYA PAS 3x3) -->
+                        <div class="xb-mp-drawer-hdr">
+                            <span class="xb-mp-drawer-lbl" style="color:#fbbf24;">🎮 Direct Top-Up Games</span>
+                            <button type="button" class="xb-mp-drawer-all" style="color:#34d399;border-color:rgba(52,211,153,0.45);background:rgba(16,185,129,0.1);" onclick="toggleMarketplaceDrawer('games_ppob')">✕ Close</button>
+                        </div>
+                        <div class="xb-mp-grid-6">
+                            <button type="button" class="xb-mp-plat-btn is-featured" style="--mp-acc:${topGame.col};border-color:${topGame.col}66;" onclick="openVipCatalogSelection('games_ppob', 'games', '${topGame.brand}')">
+                                <span class="xb-mp-plat-ico" style="color:${topGame.col};">${XB_MP_SVGS[topGame.ico]}</span>
+                                <span class="xb-mp-plat-info">
+                                    <div class="xb-mp-plat-name">${topGame.name}</div>
+                                    <div class="xb-mp-plat-sub">${topGame.sub}</div>
+                                </span>
+                                <span class="xb-mp-top-tag">TOP</span>
+                            </button>
+                            ${restGames.map(g => `
+                                <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${g.col};" onclick="openVipCatalogSelection('games_ppob', 'games', '${g.brand}')">
+                                    <span class="xb-mp-plat-ico" style="color:${g.col};">${XB_MP_SVGS[g.ico]}</span>
+                                    <span class="xb-mp-plat-info">
+                                        <div class="xb-mp-plat-name">${g.name}</div>
+                                        <div class="xb-mp-plat-sub">${g.sub}</div>
+                                    </span>
+                                </button>
+                            `).join('')}
+                        </div>
+
+                        <hr class="xb-wal-hr" style="margin:3px 0;">
+
+                        <!-- BLOK 2: PPOB, E-WALLET & VOUCHERS (6 KATEGORI PAS 3x2) -->
+                        <div class="xb-mp-drawer-hdr">
+                            <span class="xb-mp-drawer-lbl" style="color:#34d399;">⚡ PPOB, E-Wallet &amp; Vouchers</span>
+                            <span class="xb-mp-drawer-lbl" style="color:#38bdf8;">INSTANT SN</span>
+                        </div>
+                        <div class="xb-mp-grid-6">
+                            ${XB_VIP_PPOB_GROUPS.map(pg => `
+                                <button type="button" class="xb-mp-plat-btn" style="--mp-acc:${pg.col};" onclick="openVipCatalogSelection('games_ppob', '${pg.subCats[0].k}', '${pg.brands[0].brand}', '${pg.key}')">
+                                    <span class="xb-mp-plat-ico" style="color:${pg.col};">${XB_MP_SVGS[pg.ico]}</span>
+                                    <span class="xb-mp-plat-info">
+                                        <div class="xb-mp-plat-name">${pg.name}</div>
+                                        <div class="xb-mp-plat-sub">${pg.sub}</div>
+                                    </span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
             wrap.innerHTML = `
                 <!-- BARIS 1: GITHUB MARKETPLACE (100% PRIMARY & UNTOUCHED) -->
                 <button type="button" class="xb-mp-gh-btn ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
@@ -10856,7 +11823,7 @@
                     </span>
                 </button>
 
-                <!-- BARIS 2: OPSI 1 — 2 KOTAK SEJAJAR (SOCIAL MEDIA | CEX & MAIL) -->
+                <!-- BARIS 2 & 3: GRID 2x2 SIMETRIS (SOCIAL MEDIA | CEX & MAIL / PRO APPS & AI | GAMES & PPOB) -->
                 <div class="xb-mp-dual-row">
                     <button type="button" class="xb-mp-dual-btn ${_mpDrawerTab === 'social' ? 'open' : ''} ${isSocialActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('social')">
                         <div class="xb-mp-dual-head">
@@ -10883,6 +11850,36 @@
                             <span class="xb-mp-mini-ico" title="Gmail">${XB_MP_SVGS.gmail}</span>
                             <span class="xb-mp-mini-ico" title="Outlook">${XB_MP_SVGS.outlook}</span>
                             <span class="xb-mp-mini-ico" title="ProtonMail">${XB_MP_SVGS.proton}</span>
+                        </div>
+                    </button>
+
+                    <button type="button" class="xb-mp-dual-btn is-apps ${_mpDrawerTab === 'pro_apps' ? 'open' : ''} ${isAppsActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('pro_apps')">
+                        <div class="xb-mp-dual-head">
+                            <span class="xb-mp-dual-title">Pro Apps &amp; AI</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'pro_apps' ? '▲' : '▾'}</span>
+                        </div>
+                        <div class="xb-mp-logo-strip">
+                            <span class="xb-mp-mini-ico" style="--mi-col:#10a37f;" title="ChatGPT">${XB_MP_SVGS.chatgpt}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#60a5fa;" title="Gemini">${XB_MP_SVGS.gemini}</span>
+                            <span class="xb-mp-mini-ico" title="Canva Pro">${XB_MP_SVGS.canva}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#f8fafc;" title="CapCut Pro">${XB_MP_SVGS.capcut}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#00a8e1;" title="Prime Video">${XB_MP_SVGS.prime}</span>
+                            <span class="xb-mp-mini-ico" title="Vidio">${XB_MP_SVGS.vidio}</span>
+                        </div>
+                    </button>
+
+                    <button type="button" class="xb-mp-dual-btn is-ppob ${_mpDrawerTab === 'games_ppob' ? 'open' : ''} ${isPpobActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('games_ppob')">
+                        <div class="xb-mp-dual-head">
+                            <span class="xb-mp-dual-title">Games &amp; PPOB</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'games_ppob' ? '▲' : '▾'}</span>
+                        </div>
+                        <div class="xb-mp-logo-strip">
+                            <span class="xb-mp-mini-ico" style="--mi-col:#fbbf24;" title="Mobile Legends">${XB_MP_SVGS.mlbb}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#f97316;" title="Free Fire">${XB_MP_SVGS.freefire}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#f43f5e;" title="Valorant">${XB_MP_SVGS.valorant}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#38bdf8;" title="Pulsa & Data">${XB_MP_SVGS.pulsa}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#10b981;" title="E-Wallet">${XB_MP_SVGS.ewallet}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#facc15;" title="PLN">${XB_MP_SVGS.pln}</span>
                         </div>
                     </button>
                 </div>
@@ -11296,6 +12293,14 @@
                 subContainer.style.display = 'none';
                 vp.appendChild(buildOptionAPlatformSwitcherEl());
 
+                if (_mpPlatform === 'pro_apps' || _mpPlatform === 'games_ppob') {
+                    if (typeof renderVipResellerMarketplace === 'function') {
+                        renderVipResellerMarketplace(vp, _mpPlatform);
+                    } else {
+                        vp.innerHTML += `<div class="xb-wal-card" style="text-align:center;padding:22px;font-size:0.74rem;color:var(--text-secondary);">⚡ Terminal live siap aktif setelah pasang Batch 3!</div>`;
+                    }
+                    return;
+                }
                 if (_mpPlatform !== 'github') {
                     renderDigitalPlatformMarketplace(vp, _mpPlatform);
                     return;
@@ -11542,86 +12547,19 @@
                 return;
             }
 
-            // 2. BOOST & STORE TAB (3 CLEAN SEGMENTS: GITHUB BOOST TERMINAL • FREE TOOLS • OTHER STORE)
+            // 2. BOOST TAB (100% PURE BOOST — GITHUB BOOST PRIMARY + 9 SMM PLATFORMS)
             if (activeTab === 'boost') {
                 subContainer.style.display = 'none';
-                window._bstSeg = window._bstSeg || 'terminal';
-                window._bstToolTab = window._bstToolTab || 'scan';
-                window._bstStoreCat = window._bstStoreCat || 'ALL';
-
-                const segBar = document.createElement('div');
-                segBar.className = 'xb-bst-seg';
-                segBar.innerHTML = `
-                    <button type="button" class="xb-bst-seg-btn ${window._bstSeg === 'terminal' ? 'active' : ''}" onclick="window._bstSeg='terminal'; renderViewport();">⚡ GitHub Boost</button>
-                    <button type="button" class="xb-bst-seg-btn ${window._bstSeg === 'tools' ? 'active' : ''}" onclick="window._bstSeg='tools'; renderViewport();">🛠️ Free Tools</button>
-                    <button type="button" class="xb-bst-seg-btn ${window._bstSeg === 'store' ? 'active' : ''}" onclick="window._bstSeg='store'; renderViewport();">🌐 Other Store</button>
-                `;
-                vp.appendChild(segBar);
-
-                // SEGMENT 1: BOOST SERVICE (OPTION A SWITCHER — GITHUB BOOST 100% PRIMARY & UNTOUCHED)
-                if (window._bstSeg === 'terminal') {
-                    if (typeof buildBoostOptionASwitcherEl === 'function') {
-                        vp.appendChild(buildBoostOptionASwitcherEl());
-                    }
-                    if (!window._bstPlatform || window._bstPlatform === 'github') {
-                        if (typeof renderBoostTerminal === 'function') {
-                            renderBoostTerminal(vp);
-                        }
-                    } else if (typeof renderSmmBoostTerminal === 'function') {
-                        renderSmmBoostTerminal(vp, window._bstPlatform);
-                    }
-                    return;
+                if (typeof buildBoostOptionASwitcherEl === 'function') {
+                    vp.appendChild(buildBoostOptionASwitcherEl());
                 }
-
-                // SEGMENT 2: FREE TOOLS (SHADOWBAN SCANNER & LIVE 2FA CODE)
-                if (window._bstSeg === 'tools') {
-                    const tTabs = document.createElement('div');
-                    tTabs.className = 'xb-bst-tool-tabs';
-                    tTabs.innerHTML = `
-                        <button type="button" class="xb-ex-filter-chip ${window._bstToolTab === 'scan' ? 'active' : ''}" onclick="window._bstToolTab='scan'; renderViewport();">🔍 Scan Shadowban</button>
-                        <button type="button" class="xb-ex-filter-chip ${window._bstToolTab === '2fa' ? 'active' : ''}" onclick="window._bstToolTab='2fa'; renderViewport();">🔑 Live 2FA Code</button>
-                    `;
-                    vp.appendChild(tTabs);
-
-                    const toolBody = document.createElement('div');
-                    vp.appendChild(toolBody);
-                    if (window._bstToolTab === '2fa') {
-                        render2faTool(toolBody);
-                    } else {
-                        renderDiagnosticTools(toolBody);
+                if (!window._bstPlatform || window._bstPlatform === 'github') {
+                    if (typeof renderBoostTerminal === 'function') {
+                        renderBoostTerminal(vp);
                     }
-                    return;
+                } else if (typeof renderSmmBoostTerminal === 'function') {
+                    renderSmmBoostTerminal(vp, window._bstPlatform);
                 }
-
-                // SEGMENT 3: OTHER STORE CATALOGS (2-ROW SYMMETRICAL 3x2 CHIPS)
-                const storeR1 = [
-                    { k: 'ALL', lbl: '📦 All Store' },
-                    { k: 'Pro Apps & AI', lbl: '👑 Pro Apps' }
-                ];
-                const storeR2 = [
-                    { k: 'Crypto & Exchange', lbl: '🪙 Crypto' },
-                    { k: 'PPOB & Games', lbl: '🎮 PPOB' }
-                ];
-                const chipsWrap = document.createElement('div');
-                chipsWrap.className = 'xb-ex-chips-wrap';
-                chipsWrap.innerHTML = `
-                    <div class="xb-ex-chips-r1">
-                        ${storeR1.map(c => `<button type="button" class="xb-ex-filter-chip ${window._bstStoreCat === c.k ? 'active' : ''}" onclick="window._bstStoreCat='${c.k}'; renderViewport();">${c.lbl}</button>`).join('')}
-                    </div>
-                    <div class="xb-ex-pay-grid">
-                        ${storeR2.map(c => `<button type="button" class="xb-ex-filter-chip ${window._bstStoreCat === c.k ? 'active' : ''}" onclick="window._bstStoreCat='${c.k}'; renderViewport();">${c.lbl}</button>`).join('')}
-                    </div>
-                `;
-                vp.appendChild(chipsWrap);
-
-                const grid = document.createElement('div');
-                grid.className = 'grid-cards';
-                CATALOG_ITEMS.filter(i => {
-                    if (i.hub === 'github_boost') return false;
-                    if (window._bstStoreCat === 'ALL') return true;
-                    return i.sub === window._bstStoreCat;
-                }).forEach(i => grid.appendChild(createCatalogCard(i)));
-                vp.appendChild(grid);
                 return;
             }
 
@@ -11636,13 +12574,17 @@
                 return;
             }
 
-            // 4. VAULT TAB (OWNED GITHUB ACCOUNTS + ACTIVE BOOST TRACKER)
+            // 4. VAULT TAB (OWNED ACCOUNTS • ACTIVE BOOSTS • FREE TOOLS)
             if (activeTab === 'vault') {
                 subContainer.style.display = 'none';
                 if (typeof renderVaultTabV2 === 'function') {
                     renderVaultTabV2(vp);
                 } else {
                     renderProfileTab(vp, '🔐 Purchased Vault');
+                }
+                if (!window._vltVipSyncedOnce && typeof syncVaultVipOrders === 'function') {
+                    window._vltVipSyncedOnce = true;
+                    syncVaultVipOrders(false);
                 }
                 return;
             }
@@ -14115,8 +15057,9 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
 
         function setVaultPlatFilter(pKey) {
             window._vltState.platFilter = pKey || 'ALL';
-            if (pKey === 'SOCIAL' || pKey === 'CEX') window._vltState.filter = 'ALL';
+            if (pKey === 'SOCIAL' || pKey === 'CEX' || pKey === 'VIP') window._vltState.filter = 'ALL';
             renderViewport();
+            if (pKey === 'VIP' && typeof syncVaultVipOrders === 'function') syncVaultVipOrders(false);
         }
         let _vltOtpInterval = null;
 
@@ -14181,6 +15124,13 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
             window._vltState.slide = 'list';
             renderViewport();
             if (segKey === 'boosts') syncVaultMyBoostQueue();
+        }
+
+        function openFreeToolsInVault(toolMode = 'scan') {
+            window._vltState.seg = 'tools';
+            window._vltState.slide = 'list';
+            window._vltToolTab = toolMode;
+            switchTab('vault');
         }
 
         function setVaultFilter(fKey) {
@@ -14881,10 +15831,11 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                         </div>
                     </div>
 
-                    <!-- 2. 2-SEGMENT VAULT SWITCHER -->
-                    <div class="xb-vp-seg">
-                        <button type="button" class="xb-vp-seg-btn ${st.seg === 'accounts' ? 'active' : ''}" onclick="setVaultSegment('accounts')">🔑 Owned Accounts (${vault.length})</button>
-                        <button type="button" class="xb-vp-seg-btn ${st.seg === 'boosts' ? 'active' : ''}" onclick="setVaultSegment('boosts')">📡 Active Boosts</button>
+                    <!-- 2. 3-SEGMENT VAULT SWITCHER (ACCOUNTS • BOOSTS • FREE TOOLS) -->
+                    <div class="xb-vp-seg cols-3">
+                        <button type="button" class="xb-vp-seg-btn ${st.seg === 'accounts' ? 'active' : ''}" onclick="setVaultSegment('accounts')">🔑 Accounts (${vault.length})</button>
+                        <button type="button" class="xb-vp-seg-btn ${st.seg === 'boosts' ? 'active' : ''}" onclick="setVaultSegment('boosts')">📡 Boosts</button>
+                        <button type="button" class="xb-vp-seg-btn ${st.seg === 'tools' ? 'active' : ''}" onclick="setVaultSegment('tools')">🛠️ Free Tools</button>
                     </div>
 
                     <!-- 3. ACTIVE SEGMENT CONTENT -->
@@ -14892,14 +15843,15 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                         <div class="xb-vlt-search-row">
                             <input type="text" class="xb-bst-target-inp" value="${safeSearch}" placeholder="🔍 Search platform, @username, or invoice..." oninput="onVaultSearchInput(this.value)">
                         </div>
-                        <div class="xb-vlt-filter-row">
+                        <div style="display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:4px;">
                             ${[
-                                { k: 'ALL',    lbl: 'All Assets' },
+                                { k: 'ALL',    lbl: 'All' },
                                 { k: 'GITHUB', lbl: 'GitHub' },
                                 { k: 'SOCIAL', lbl: 'Social' },
-                                { k: 'CEX',    lbl: 'CEX' }
+                                { k: 'CEX',    lbl: 'CEX' },
+                                { k: 'VIP',    lbl: 'Apps/PPOB' }
                             ].map(pf => `
-                                <button type="button" class="xb-ex-filter-chip ${(st.platFilter || 'ALL') === pf.k ? 'active' : ''}" style="padding:6px 2px;font-size:0.59rem;" onclick="setVaultPlatFilter('${pf.k}')">${pf.lbl}</button>
+                                <button type="button" class="xb-ex-filter-chip ${(st.platFilter || 'ALL') === pf.k ? 'active' : ''}" style="padding:6px 2px;font-size:0.54rem;" onclick="setVaultPlatFilter('${pf.k}')">${pf.lbl}</button>
                             `).join('')}
                         </div>
                         ${((st.platFilter || 'ALL') === 'ALL' || st.platFilter === 'GITHUB') ? `
@@ -14910,9 +15862,16 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                             </div>
                         ` : ''}
                         <div id="xbVaultAccListBody" style="display:flex;flex-direction:column;gap:8px;">
-                            ${buildVaultAccountsListHtml()}
+                            ${(st.platFilter === 'VIP') ? '' : buildVaultAccountsListHtml()}
+                            ${((st.platFilter || 'ALL') === 'ALL' || st.platFilter === 'VIP') && typeof buildVaultVipOrdersHtml === 'function' ? buildVaultVipOrdersHtml() : ''}
                         </div>
-                    ` : renderVaultBoostsSegmentHtml()}
+                    ` : (st.seg === 'tools' ? `
+                        <div class="xb-bst-tool-tabs" style="margin-bottom:4px;">
+                            <button type="button" class="xb-ex-filter-chip ${(window._vltToolTab || 'scan') === 'scan' ? 'active' : ''}" onclick="window._vltToolTab='scan'; renderViewport();">🔍 Scan Shadowban</button>
+                            <button type="button" class="xb-ex-filter-chip ${window._vltToolTab === '2fa' ? 'active' : ''}" onclick="window._vltToolTab='2fa'; renderViewport();">🔑 Live 2FA Code</button>
+                        </div>
+                        <div id="xbVaultToolsStage"></div>
+                    ` : renderVaultBoostsSegmentHtml())}
                 </div>
             `;
 
@@ -14920,6 +15879,13 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 startVaultOtpTicker();
             } else {
                 stopVaultOtpTicker();
+                if (st.seg === 'tools') {
+                    const tStage = document.getElementById('xbVaultToolsStage');
+                    if (tStage) {
+                        if (window._vltToolTab === '2fa') render2faTool(tStage);
+                        else renderDiagnosticTools(tStage);
+                    }
+                }
             }
         }
 
@@ -16145,6 +17111,10 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 openLiveHelpdeskModal();
                 return;
             }
+            if (slideKey === 'free_tools') {
+                openFreeToolsInVault('scan');
+                return;
+            }
             window._prfState.slide = slideKey || 'main';
             renderViewport();
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -16478,8 +17448,9 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
             const othShare = an.totalSpend > 0 ? Math.max(0, 100 - accShare - bstShare) : 0;
 
             const menuItems = [
-                { key: 'username', ico: '✏️', title: 'Edit Identity & Photo', sub: `@${cleanU} • ${savedAvatar ? 'Custom Avatar Active' : 'Tap to upload photo'}`, right: 'Edit' },
-                { key: 'prefs',    ico: '⚙️', title: 'App Preferences',       sub: `${currentTheme === 'obsidian' ? 'Obsidian Dark' : 'Platinum Light'} • ${currentCurrency}`, right: 'Setup' },
+                { key: 'username',   ico: '✏️', title: 'Edit Identity & Photo', sub: `@${cleanU} • ${savedAvatar ? 'Custom Avatar Active' : 'Tap to upload photo'}`, right: 'Edit' },
+                { key: 'free_tools', ico: '🛠️', title: 'Free GitHub Tools',     sub: 'Shadowban Scanner & Live 30s 2FA OTP', right: 'Open' },
+                { key: 'prefs',      ico: '⚙️', title: 'App Preferences',       sub: `${currentTheme === 'obsidian' ? 'Obsidian Dark' : 'Platinum Light'} • ${currentCurrency}`, right: 'Setup' },
                 { key: 'sync',     ico: '☁️', title: 'Cloud Sync & Session',  sub: `UID ${currentUserId} • Auto-Synced`, right: 'Sync' },
                 { key: 'policy',   ico: '🛡️', title: 'Warranty & 24h Policy', sub: 'First-login guarantee & anti-flag guide', right: 'Read' },
                 { key: 'helpdesk', ico: '💬', title: 'Live Support Messenger', sub: 'Permanent 2-way encrypted support desk', right: 'Open' }
