@@ -7549,28 +7549,27 @@
             // 🔗 AUTO-MOUNT XIANBEE-TECH EXCHANGE INSIDE THE WALLET TAB
             // =========================================================
             function findXbWalletMountTarget() {
-                const direct = document.getElementById('tab-wallet')
-                    || document.getElementById('view-wallet')
-                    || document.getElementById('walletView')
-                    || document.getElementById('walletSection')
-                    || document.querySelector('[data-tab="wallet"], [data-view="wallet"], [data-section="wallet"]');
-                if (direct) return direct;
+                const scope = document.getElementById('mainViewport') || document.querySelector('.main-area') || document.body;
 
-                // Smart fallback: detect active Wallet container by Deposit/Transfer/Ledger markers
-                const mainArea = document.querySelector('.main-area, main, .app-main') || document.body;
-                const candidates = mainArea.querySelectorAll('section, .tab-content, .view-section, .xb-view, div');
-                for (const el of candidates) {
-                    if (el.id === 'enterpriseAuthGate' || el.closest('#enterpriseAuthGate')) continue;
-                    const txt = (el.innerText || '').slice(0, 400);
-                    if (
-                        (txt.includes('Treasury') || txt.includes('Wallet Balance') || txt.includes('USDT Balance') || txt.includes('Available Balance'))
-                        && (el.querySelector('[onclick*="Deposit"], [onclick*="TopUp"], [onclick*="topup"], [onclick*="Transfer"], [onclick*="transfer"]'))
-                        && el.children.length >= 2
-                        && el.offsetParent !== null
-                    ) {
-                        return el;
-                    }
+                // 1. Target utama: wrapper Wallet (.xb-wal-wrap) yang berisi kartu saldo utama (bukan sub-view Deposit/Transfer)
+                const walWrap = scope.querySelector('.xb-wal-wrap');
+                if (walWrap) {
+                    const heroCard = walWrap.querySelector(':scope > .xb-vgrid-card:not(.is-profile-grid), :scope > .xb-wal-card, :scope > .vip-card');
+                    if (heroCard) return { container: walWrap, anchor: heroCard };
                 }
+
+                // 2. Fallback: kartu saldo VIP Wallet langsung (hindari kartu Profile .is-profile-grid)
+                const directHero = scope.querySelector('.xb-vgrid-card:not(.is-profile-grid)');
+                if (directHero && directHero.parentElement) {
+                    return { container: directHero.parentElement, anchor: directHero };
+                }
+
+                // 3. Fallback kedua: tepat di atas grid 4 tombol aksi Wallet (.xb-wal-act-grid)
+                const actGrid = scope.querySelector('.xb-wal-act-grid');
+                if (actGrid && actGrid.parentElement && actGrid.previousElementSibling) {
+                    return { container: actGrid.parentElement, anchor: actGrid.previousElementSibling };
+                }
+
                 return null;
             }
 
@@ -7581,16 +7580,8 @@
                     return;
                 }
 
-                let container = findXbWalletMountTarget();
-                if (!container) return;
-
-                // If the wallet view wraps all content in 1 inner wrapper div, mount inside that wrapper
-                if (container.children.length === 1 && container.firstElementChild.tagName === 'DIV') {
-                    container = container.firstElementChild;
-                }
-                if (container.children.length === 0) return;
-
-                const anchorCard = container.firstElementChild;
+                const target = findXbWalletMountTarget();
+                if (!target || !target.container || !target.anchor) return;
 
                 const sw = document.createElement('div');
                 sw.id = 'xbWalExSwitcher';
@@ -7609,7 +7600,7 @@
                 hub.className = 'xb-ex-hub';
                 hub.style.display = 'none';
 
-                anchorCard.insertAdjacentElement('afterend', sw);
+                target.anchor.insertAdjacentElement('afterend', sw);
                 sw.insertAdjacentElement('afterend', hub);
 
                 applyXbWalletTabVisibility();
