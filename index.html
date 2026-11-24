@@ -1999,9 +1999,10 @@
         [data-theme="platinum"] .xb-ex-icon-btn { background: #ffffff; border-color: rgba(79,70,229,0.22); }
         [data-theme="platinum"] .xb-ex-icon-btn.cart, [data-theme="platinum"] .xb-ex-icon-btn.adm { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: #ffffff; }
 
-        /* CLEAN NATIVE MOBILE FOOTER (NO DOUBLE BOX / NO STRAY LINES) */
-        .xb-ex-dock { position: relative; width: 100%; height: 100%; background: transparent; border: none; border-radius: 0; box-shadow: none; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; gap: 4px; padding: 0; overflow: visible; }
-        .xb-ex-dock .bnav-btn { color: var(--text-muted); padding: 7px 2px; border-radius: 12px; transition: 0.18s ease; }
+        /* SINGLE-LAYER FLOATING ROUNDED DOCK (NO DOUBLE BOX / NO STRAY LINES) */
+        .xb-ex-dock { position: relative; width: 100%; height: 60px; background: #0b1124; border: 1px solid rgba(148, 163, 184, 0.22); border-radius: 18px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.58); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; gap: 4px; padding: 4px; overflow: hidden; pointer-events: auto; }
+        [data-theme="platinum"] .xb-ex-dock { background: #ffffff; border: 1px solid rgba(79, 70, 229, 0.14); box-shadow: 0 8px 24px rgba(15, 23, 42, 0.12); }
+        .xb-ex-dock .bnav-btn { color: var(--text-muted); padding: 6px 2px; border-radius: 13px; transition: 0.18s ease; }
         .xb-ex-dock .bnav-btn.active { color: #ffffff; background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%); box-shadow: 0 4px 12px rgba(79,70,229,0.32); text-shadow: none; }
         [data-theme="platinum"] .xb-ex-dock .bnav-btn.active { color: #ffffff; background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); box-shadow: 0 4px 12px rgba(37,99,235,0.24); }
 
@@ -3142,6 +3143,232 @@
             box-shadow: 0 6px 18px rgba(79, 70, 229, 0.42);
         }
         .xb-cyb-close-btn:active { transform: scale(0.99); }
+
+        /* =========================================================
+           💎 BENTO WEALTH — PERSONAL 3D ANALYTICS (DARK & LIGHT)
+           ========================================================= */
+        #paymentGatewayModal.xb-bw-modal {
+            padding: 0 !important;
+            align-items: stretch !important;
+            justify-content: center !important;
+            background: rgba(3, 6, 16, 0.92) !important;
+        }
+        #paymentGatewayModal.xb-bw-modal > #paymentGatewayBody {
+            width: 100% !important;
+            max-width: 540px !important;
+            height: 100dvh !important;
+            max-height: 100dvh !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            border-radius: 0 !important;
+            border: none !important;
+            background: transparent !important;
+            display: flex !important;
+            flex-direction: column !important;
+            overflow: hidden !important;
+        }
+        .xb-bw-root {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding: 10px 11px calc(10px + env(safe-area-inset-bottom, 0px));
+            background:
+                radial-gradient(circle at 10% 0%, rgba(56, 189, 248, 0.16), transparent 42%),
+                radial-gradient(circle at 92% 6%, rgba(168, 85, 247, 0.18), transparent 44%),
+                var(--bg-base);
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+        .xb-bw-hdr {
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 9px 11px;
+            border-radius: 15px;
+            background: var(--ex-card-bg);
+            border: 1px solid var(--ex-hairline);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        }
+        [data-theme="platinum"] .xb-bw-hdr {
+            box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff;
+        }
+        .xb-bw-scroll {
+            flex: 1 1 auto;
+            min-height: 0;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            padding-right: 1px;
+        }
+        .xb-bw-card {
+            position: relative;
+            background: var(--ex-card-bg);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 16px;
+            padding: 11px 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+        }
+        .xb-bw-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%; height: 1px;
+            background: var(--ex-sheen);
+            pointer-events: none;
+        }
+        [data-theme="platinum"] .xb-bw-card {
+            box-shadow: 0 5px 16px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff;
+        }
+        .xb-bw-tf-row {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 4px;
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            padding: 3px;
+            border-radius: 10px;
+            margin-top: 9px;
+        }
+        .xb-bw-tf-btn {
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            font-weight: 800;
+            padding: 6px 2px;
+            border-radius: 7px;
+            cursor: pointer;
+            transition: 0.15s ease;
+        }
+        .xb-bw-tf-btn.active {
+            background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+            color: #ffffff;
+            box-shadow: 0 3px 10px rgba(79, 70, 229, 0.36);
+        }
+        .xb-bw-kpi-3 {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+            margin-top: 9px;
+        }
+        .xb-bw-kpi-tile {
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 11px;
+            padding: 7px 7px;
+            min-width: 0;
+        }
+        .xb-bw-kpi-k {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.46rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
+        .xb-bw-kpi-v {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .xb-bw-donut-grid {
+            display: grid;
+            grid-template-columns: 1.08fr 0.92fr;
+            gap: 8px;
+            align-items: center;
+            margin-top: 6px;
+        }
+        .xb-bw-canvas-box {
+            position: relative;
+            width: 100%;
+            height: 142px;
+            border-radius: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            overflow: hidden;
+        }
+        .xb-bw-canvas-box canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: pointer;
+        }
+        .xb-bw-slice-list {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            min-width: 0;
+        }
+        .xb-bw-slice-btn {
+            width: 100%;
+            text-align: left;
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            border-radius: 10px;
+            padding: 6px 8px;
+            cursor: pointer;
+            font-family: 'JetBrains Mono', monospace;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            transition: transform 0.14s ease, border-color 0.14s ease;
+        }
+        .xb-bw-slice-btn:active { transform: scale(0.97); }
+        .xb-bw-slice-btn.active {
+            border-color: #38bdf8;
+            box-shadow: 0 0 12px rgba(56, 189, 248, 0.22);
+        }
+        .xb-bw-trend-stage {
+            position: relative;
+            width: 100%;
+            height: 132px;
+            border-radius: 12px;
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            margin-top: 6px;
+            overflow: hidden;
+        }
+        .xb-bw-trend-stage canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            cursor: crosshair;
+        }
+        .xb-bw-inspect-bar {
+            margin-top: 6px;
+            padding: 6px 9px;
+            border-radius: 9px;
+            background: var(--bg-input);
+            border: 1px solid var(--ex-hairline);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.56rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+        }
+        .xb-bw-mini-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 7px;
+        }
 
         /* =========================================================
            💎 CLASSIC VIP GRID CARD — WALLET & PROFILE EDITION
@@ -4468,8 +4695,8 @@
             </div>
         </div>
 
-        <!-- 📱 MOBILE BOTTOM NAVIGATION (CLEAN FULL-WIDTH FOOTER) -->
-        <nav class="bottom-nav" style="height:64px;padding:6px 10px calc(6px + env(safe-area-inset-bottom, 0px)) 10px;backdrop-filter:none;">
+        <!-- 📱 MOBILE BOTTOM NAVIGATION (SINGLE-LAYER FLOATING DOCK) -->
+        <nav class="bottom-nav" style="height:auto;background:transparent;border:none;box-shadow:none;padding:0 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px;backdrop-filter:none;pointer-events:none;">
             <div class="xb-ex-dock">
                 <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>
@@ -21007,226 +21234,643 @@ let _ghAgeCheckerResults = [];
         }
 
         // =========================================================
-        // 👤 BUYER PERSONAL 3D ANALYTICS MODAL (2 3D CHARTS IN 1 SCREEN FOR BUYER IN PROFILE)
+        // 💎 BENTO WEALTH — PERSONAL 3D ANALYTICS (3D DONUT + 3D AREA TREND)
         // =========================================================
-        let _userPersonalAccChart3D = null;
-        let _userPersonalSvcChart3D = null;
+        window._xbBentoWealth = window._xbBentoWealth || {
+            isOpen: false,
+            tf: 'ALL',          // 'DAY' | 'WEEK' | 'YEAR' | 'ALL'
+            cur: 'USDT',        // 'USDT' | 'IDR'
+            activeSlice: -1,    // -1 = all, 0 = Accounts, 1 = Boosts, 2 = Other
+            hoverTrendIdx: -1,
+            snapshot: null
+        };
+
+        function closePersonalBentoWealthModal() {
+            window._xbBentoWealth.isOpen = false;
+            const modal = document.getElementById('paymentGatewayModal');
+            if (modal) modal.classList.remove('xb-bw-modal', 'xb-fullpage-modal', 'xb-cyber-telem-modal');
+            closeModal('paymentGatewayModal');
+        }
+
+        function setBentoWealthTf(tfKey) {
+            window._xbBentoWealth.tf = tfKey;
+            window._xbBentoWealth.hoverTrendIdx = -1;
+            renderPersonalBentoWealthView();
+        }
+
+        function toggleBentoWealthCur() {
+            window._xbBentoWealth.cur = window._xbBentoWealth.cur === 'USDT' ? 'IDR' : 'USDT';
+            renderPersonalBentoWealthView();
+        }
+
+        function selectBentoWealthSlice(idx) {
+            window._xbBentoWealth.activeSlice = (window._xbBentoWealth.activeSlice === idx) ? -1 : idx;
+            renderPersonalBentoWealthView();
+        }
+
+        function fmtBentoMoney(usdtVal, compactIdr = false) {
+            const v = Number(usdtVal || 0);
+            if (window._xbBentoWealth.cur === 'IDR') {
+                const idr = Math.round(v * (typeof getCyberTelemIdrRate === 'function' ? getCyberTelemIdrRate() : liveUsdtIdrRate));
+                if (compactIdr) {
+                    if (idr >= 1e9) return 'Rp ' + (idr / 1e9).toFixed(2) + 'M';
+                    if (idr >= 1e6) return 'Rp ' + (idr / 1e6).toFixed(2) + 'Jt';
+                    if (idr >= 1e3) return 'Rp ' + Math.round(idr / 1e3) + 'Rb';
+                }
+                return 'Rp ' + idr.toLocaleString('id-ID');
+            }
+            return '$' + v.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function buildPersonalBentoSnapshot(tfKey) {
+            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
+            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+            const now = new Date();
+            const nowMs = now.getTime();
+            const curYear = now.getFullYear();
+
+            const parseTxTs = (dateStr) => {
+                if (!dateStr) return nowMs;
+                const s = String(dateStr).trim();
+                let ts = Date.parse(s);
+                if (isNaN(ts)) ts = Date.parse(`${s}, ${curYear}`);
+                if (!isNaN(ts) && ts > nowMs + 86400000) {
+                    const prevYr = Date.parse(`${s}, ${curYear - 1}`);
+                    if (!isNaN(prevYr)) ts = prevYr;
+                }
+                return isNaN(ts) ? nowMs : ts;
+            };
+
+            const cutoffMs = tfKey === 'DAY'
+                ? (nowMs - 86400000)
+                : (tfKey === 'WEEK' ? (nowMs - 7 * 86400000)
+                : (tfKey === 'YEAR' ? new Date(curYear, 0, 1).getTime() : 0));
+
+            let accSpend = 0, boostSpend = 0, otherSpend = 0;
+            let accOrders = 0, boostOrders = 0, otherOrders = 0;
+            const filteredTxs = [];
+            const svcCounts = { Followers: 0, Stars: 0, Forks: 0, Watchers: 0 };
+
+            history.forEach(tx => {
+                if (!tx || tx.type !== 'OUT') return;
+                if (typeof isP2pTransferTx === 'function' && isP2pTransferTx(tx)) return;
+                const amt = parseFloat(tx.usdt || 0);
+                if (isNaN(amt) || amt <= 0) return;
+                const ts = parseTxTs(tx.date);
+                if (cutoffMs > 0 && ts < cutoffMs) return;
+
+                const isBoost = typeof isBoostServiceOrderTx === 'function' && isBoostServiceOrderTx(tx);
+                const tLow = String(tx.title || '').toLowerCase();
+                let kind = 'other';
+                if (isBoost) {
+                    kind = 'boost';
+                    boostSpend += amt;
+                    boostOrders++;
+                    if (tLow.includes('star')) svcCounts.Stars++;
+                    else if (tLow.includes('fork')) svcCounts.Forks++;
+                    else if (tLow.includes('watch')) svcCounts.Watchers++;
+                    else svcCounts.Followers++;
+                } else if (tLow.includes('github') || tLow.includes('vault') || tLow.includes('arctic') || tLow.includes('badge') || tLow.includes('account')) {
+                    kind = 'acc';
+                    accSpend += amt;
+                    accOrders++;
+                } else {
+                    otherSpend += amt;
+                    otherOrders++;
+                }
+                filteredTxs.push({ ts, amt, kind, title: tx.title || 'Order' });
+            });
+
+            // Count top purchased Vault tier
+            const vaultCatCnt = {};
+            let vaultTotalVal = 0;
+            vault.forEach(v => {
+                if (!v) return;
+                vaultTotalVal += parseFloat(v.priceUsdt || 0) || 0;
+                const c = String(v.category || '2026');
+                vaultCatCnt[c] = (vaultCatCnt[c] || 0) + 1;
+            });
+            const topVaultEntry = Object.entries(vaultCatCnt).sort((a, b) => b[1] - a[1])[0];
+            const topSvcEntry = Object.entries(svcCounts).sort((a, b) => b[1] - a[1])[0];
+
+            // Build 6-point Trend Series matching active timeframe
+            const trendPoints = [];
+            const mos = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            if (tfKey === 'DAY') {
+                for (let i = 5; i >= 0; i--) {
+                    const bEnd = nowMs - i * 4 * 3600000;
+                    const bStart = bEnd - 4 * 3600000;
+                    const d = new Date(bEnd);
+                    const lbl = String(d.getHours()).padStart(2, '0') + ':00';
+                    const match = filteredTxs.filter(t => t.ts > bStart && t.ts <= bEnd);
+                    trendPoints.push({ label: lbl, val: match.reduce((s, x) => s + x.amt, 0), tx: match.length });
+                }
+            } else if (tfKey === 'WEEK') {
+                const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                for (let i = 6; i >= 0; i--) {
+                    const d = new Date(nowMs - i * 86400000);
+                    const bStart = new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime();
+                    const bEnd = bStart + 86400000;
+                    const match = filteredTxs.filter(t => t.ts >= bStart && t.ts < bEnd);
+                    trendPoints.push({ label: days[d.getDay()], val: match.reduce((s, x) => s + x.amt, 0), tx: match.length });
+                }
+            } else {
+                for (let i = 5; i >= 0; i--) {
+                    const d = new Date(curYear, now.getMonth() - i, 1);
+                    const bStart = d.getTime();
+                    const bEnd = new Date(d.getFullYear(), d.getMonth() + 1, 1).getTime();
+                    const match = filteredTxs.filter(t => t.ts >= bStart && t.ts < bEnd);
+                    trendPoints.push({ label: mos[d.getMonth()], val: match.reduce((s, x) => s + x.amt, 0), tx: match.length });
+                }
+            }
+
+            const totalSpend = accSpend + boostSpend + otherSpend;
+            const totalOrders = accOrders + boostOrders + otherOrders;
+            const avgOrder = totalOrders > 0 ? totalSpend / totalOrders : 0;
+
+            const slices = [
+                { key: 'acc',   label: 'Aged Accounts', val: accSpend,   cnt: accOrders,   topCol: '#38bdf8', sideCol: '#0369a1', glow: 'rgba(56,189,248,0.45)' },
+                { key: 'boost', label: 'GitHub Boost',  val: boostSpend, cnt: boostOrders, topCol: '#a855f7', sideCol: '#6b21a8', glow: 'rgba(168,85,247,0.45)' },
+                { key: 'other', label: 'Other Store',   val: otherSpend, cnt: otherOrders, topCol: '#10b981', sideCol: '#047857', glow: 'rgba(16,185,129,0.45)' }
+            ];
+
+            return {
+                totalSpend, totalOrders, avgOrder,
+                accSpend, boostSpend, otherSpend,
+                accOrders, boostOrders, otherOrders,
+                vaultCount: vault.length,
+                vaultTotalVal,
+                topVault: topVaultEntry ? `GitHub ${topVaultEntry[0]} (${topVaultEntry[1]}x)` : 'None yet',
+                topSvc: (topSvcEntry && topSvcEntry[1] > 0) ? `${topSvcEntry[0]} (${topSvcEntry[1]}x)` : 'None yet',
+                slices,
+                trendPoints
+            };
+        }
+
+        function drawBento3DDonutCanvas(snap) {
+            const c = document.getElementById('xbBwDonutCanvas');
+            if (!c) return;
+            const rect = c.getBoundingClientRect();
+            const w = Math.max(150, Math.floor(rect.width || 180));
+            const h = Math.max(120, Math.floor(rect.height || 140));
+            const dpr = window.devicePixelRatio || 1;
+            c.width = w * dpr;
+            c.height = h * dpr;
+
+            const ctx = c.getContext('2d');
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+
+            const isPlat = document.documentElement.getAttribute('data-theme') === 'platinum';
+            const cx = w / 2;
+            const cy = h / 2 - 4;
+            const rx = Math.min(w * 0.41, 62);
+            const ry = rx * 0.64;
+            const innerRatio = 0.56;
+            const depth = 13;
+
+            const total = snap.slices.reduce((s, x) => s + x.val, 0);
+            const activeIdx = window._xbBentoWealth.activeSlice;
+
+            // Soft 3D base shadow
+            ctx.save();
+            ctx.beginPath();
+            ctx.ellipse(cx, cy + depth + 6, rx * 0.96, ry * 0.96, 0, 0, Math.PI * 2);
+            ctx.fillStyle = isPlat ? 'rgba(15, 23, 42, 0.12)' : 'rgba(0, 0, 0, 0.52)';
+            ctx.fill();
+            ctx.restore();
+
+            if (total <= 0.001) {
+                // Sleek empty 3D ring
+                for (let z = depth; z >= 0; z--) {
+                    ctx.save();
+                    ctx.translate(cx, cy + z);
+                    ctx.scale(1, ry / rx);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, rx, 0, Math.PI * 2);
+                    ctx.arc(0, 0, rx * innerRatio, 0, Math.PI * 2, true);
+                    ctx.fillStyle = z === 0
+                        ? (isPlat ? '#cbd5e1' : '#1e293b')
+                        : (isPlat ? '#94a3b8' : '#0f172a');
+                    ctx.fill();
+                    ctx.restore();
+                }
+                ctx.fillStyle = isPlat ? '#475569' : '#94a3b8';
+                ctx.font = '800 10px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('0% SPENT', cx, cy);
+                c._sliceMeta = [];
+                return;
+            }
+
+            // Prepare slice angles
+            let startAng = -Math.PI / 2;
+            const segs = [];
+            snap.slices.forEach((sl, idx) => {
+                if (sl.val <= 0) return;
+                const sweep = (sl.val / total) * Math.PI * 2;
+                const endAng = startAng + sweep;
+                const midAng = (startAng + endAng) / 2;
+                segs.push({ idx, sl, startAng, endAng, midAng, pct: Math.round((sl.val / total) * 100) });
+                startAng = endAng;
+            });
+            c._sliceMeta = { cx, cy, rx, ry, innerRatio, segs };
+
+            // Draw 3D extrusion layers from bottom to top
+            for (let z = depth; z >= 0; z--) {
+                segs.forEach(seg => {
+                    const isPop = activeIdx === seg.idx;
+                    const lift = isPop ? 7 : 0;
+                    const ox = Math.cos(seg.midAng) * lift;
+                    const oy = Math.sin(seg.midAng) * lift * (ry / rx) - (isPop ? 3 : 0);
+
+                    ctx.save();
+                    ctx.translate(cx + ox, cy + oy + z);
+                    ctx.scale(1, ry / rx);
+                    ctx.beginPath();
+                    ctx.arc(0, 0, rx, seg.startAng, seg.endAng, false);
+                    ctx.arc(0, 0, rx * innerRatio, seg.endAng, seg.startAng, true);
+                    ctx.closePath();
+
+                    if (z === 0) {
+                        ctx.fillStyle = seg.sl.topCol;
+                        if (isPop) {
+                            ctx.shadowColor = seg.sl.glow;
+                            ctx.shadowBlur = 12;
+                        }
+                        ctx.fill();
+                        ctx.lineWidth = isPop ? 1.8 : 0.9;
+                        ctx.strokeStyle = isPop ? '#ffffff' : 'rgba(255,255,255,0.28)';
+                        ctx.stroke();
+                    } else {
+                        ctx.fillStyle = seg.sl.sideCol;
+                        ctx.fill();
+                    }
+                    ctx.restore();
+                });
+            }
+
+            // Center label inside 3D hole
+            const focused = segs.find(s => s.idx === activeIdx);
+            const ctrTop = focused ? `${focused.pct}%` : '100%';
+            const ctrSub = focused ? focused.sl.label.split(' ')[0].toUpperCase() : 'TOTAL';
+
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillStyle = isPlat ? '#0f172a' : '#f8fafc';
+            ctx.font = '800 13px "JetBrains Mono", monospace';
+            ctx.fillText(ctrTop, cx, cy - 4);
+            ctx.fillStyle = focused ? focused.sl.topCol : (isPlat ? '#475569' : '#94a3b8');
+            ctx.font = '700 8px "JetBrains Mono", monospace';
+            ctx.fillText(ctrSub, cx, cy + 9);
+        }
+
+        function drawBento3DTrendCanvas(snap) {
+            const c = document.getElementById('xbBwTrendCanvas');
+            if (!c) return;
+            const rect = c.getBoundingClientRect();
+            const w = Math.max(220, Math.floor(rect.width || 320));
+            const h = Math.max(110, Math.floor(rect.height || 130));
+            const dpr = window.devicePixelRatio || 1;
+            c.width = w * dpr;
+            c.height = h * dpr;
+
+            const ctx = c.getContext('2d');
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+
+            const isPlat = document.documentElement.getAttribute('data-theme') === 'platinum';
+            const ptsData = snap.trendPoints || [];
+            const padL = 34, padR = 14, padT = 16, padB = 22;
+            const pw = Math.max(60, w - padL - padR);
+            const ph = Math.max(40, h - padT - padB);
+            const maxVal = Math.max(10, ...ptsData.map(p => p.val * 1.22));
+            const hoverIdx = window._xbBentoWealth.hoverTrendIdx;
+
+            // Grid & Y labels
+            ctx.font = '700 8px "JetBrains Mono", monospace';
+            ctx.textBaseline = 'middle';
+            [0, 0.5, 1].forEach(fr => {
+                const y = padT + ph * (1 - fr);
+                ctx.strokeStyle = isPlat ? 'rgba(15, 23, 42, 0.08)' : 'rgba(148, 163, 184, 0.14)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(padL, y);
+                ctx.lineTo(w - padR, y);
+                ctx.stroke();
+
+                const tickVal = maxVal * fr;
+                ctx.fillStyle = isPlat ? '#64748b' : '#94a3b8';
+                ctx.textAlign = 'right';
+                ctx.fillText(tickVal >= 1000 ? '$' + (tickVal / 1000).toFixed(1) + 'k' : '$' + Math.round(tickVal), padL - 5, y);
+            });
+
+            const n = Math.max(1, ptsData.length);
+            const step = n > 1 ? pw / (n - 1) : pw;
+            const coords = ptsData.map((p, i) => ({
+                x: padL + (n > 1 ? i * step : pw / 2),
+                y: padT + ph - (Math.min(maxVal, p.val) / maxVal) * ph,
+                data: p
+            }));
+            c._trendCoords = coords;
+
+            // 3D Depth Shadow Ribbon (+4px offset)
+            if (coords.length > 1) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(coords[0].x + 4, coords[0].y + 5);
+                for (let i = 0; i < coords.length - 1; i++) {
+                    const mx = (coords[i].x + coords[i + 1].x) / 2 + 4;
+                    ctx.bezierCurveTo(mx, coords[i].y + 5, mx, coords[i + 1].y + 5, coords[i + 1].x + 4, coords[i + 1].y + 5);
+                }
+                ctx.lineTo(coords[coords.length - 1].x + 4, padT + ph);
+                ctx.lineTo(coords[0].x + 4, padT + ph);
+                ctx.closePath();
+                ctx.fillStyle = isPlat ? 'rgba(124, 58, 237, 0.12)' : 'rgba(124, 58, 237, 0.22)';
+                ctx.fill();
+                ctx.restore();
+
+                // Main Glowing Area Fill
+                const grad = ctx.createLinearGradient(0, padT, 0, padT + ph);
+                grad.addColorStop(0, isPlat ? 'rgba(37, 99, 235, 0.32)' : 'rgba(56, 189, 248, 0.42)');
+                grad.addColorStop(0.65, isPlat ? 'rgba(124, 58, 237, 0.12)' : 'rgba(168, 85, 247, 0.18)');
+                grad.addColorStop(1, 'rgba(15, 23, 42, 0)');
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.moveTo(coords[0].x, coords[0].y);
+                for (let i = 0; i < coords.length - 1; i++) {
+                    const mx = (coords[i].x + coords[i + 1].x) / 2;
+                    ctx.bezierCurveTo(mx, coords[i].y, mx, coords[i + 1].y, coords[i + 1].x, coords[i + 1].y);
+                }
+                ctx.lineTo(coords[coords.length - 1].x, padT + ph);
+                ctx.lineTo(coords[0].x, padT + ph);
+                ctx.closePath();
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // Top Neon 3D Spline
+                ctx.beginPath();
+                ctx.moveTo(coords[0].x, coords[0].y);
+                for (let i = 0; i < coords.length - 1; i++) {
+                    const mx = (coords[i].x + coords[i + 1].x) / 2;
+                    ctx.bezierCurveTo(mx, coords[i].y, mx, coords[i + 1].y, coords[i + 1].x, coords[i + 1].y);
+                }
+                ctx.strokeStyle = isPlat ? '#2563eb' : '#38bdf8';
+                ctx.lineWidth = 2.4;
+                ctx.shadowColor = '#38bdf8';
+                ctx.shadowBlur = 9;
+                ctx.stroke();
+                ctx.restore();
+            }
+
+            // Crosshair + Data Nodes + X Labels
+            coords.forEach((pt, i) => {
+                const isH = hoverIdx === i;
+                if (isH) {
+                    ctx.save();
+                    ctx.setLineDash([3, 3]);
+                    ctx.strokeStyle = '#c084fc';
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.moveTo(pt.x, padT);
+                    ctx.lineTo(pt.x, padT + ph);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, isH ? 5 : 3.1, 0, Math.PI * 2);
+                ctx.fillStyle = isH ? '#ffffff' : '#38bdf8';
+                ctx.fill();
+                ctx.lineWidth = 1.6;
+                ctx.strokeStyle = isH ? '#7c3aed' : (isPlat ? '#ffffff' : '#060b18');
+                ctx.stroke();
+
+                ctx.fillStyle = isH ? (isPlat ? '#2563eb' : '#38bdf8') : (isPlat ? '#475569' : '#94a3b8');
+                ctx.font = (isH ? '800' : '700') + ' 8px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.fillText(pt.data.label, pt.x, h - 8);
+            });
+        }
+
+        function bindBentoWealthCanvasEvents(snap) {
+            const donutC = document.getElementById('xbBwDonutCanvas');
+            if (donutC) {
+                donutC.onclick = (ev) => {
+                    const meta = donutC._sliceMeta;
+                    if (!meta || !meta.segs || !meta.segs.length) return;
+                    const rc = donutC.getBoundingClientRect();
+                    const x = ev.clientX - rc.left - meta.cx;
+                    const y = (ev.clientY - rc.top - meta.cy) / (meta.ry / meta.rx);
+                    const dist = Math.hypot(x, y);
+                    if (dist < meta.rx * meta.innerRatio * 0.85 || dist > meta.rx * 1.25) {
+                        selectBentoWealthSlice(-1);
+                        return;
+                    }
+                    let ang = Math.atan2(y, x);
+                    if (ang < -Math.PI / 2) ang += Math.PI * 2;
+                    const hit = meta.segs.find(s => ang >= s.startAng && ang <= s.endAng);
+                    if (hit) selectBentoWealthSlice(hit.idx);
+                };
+            }
+
+            const trendC = document.getElementById('xbBwTrendCanvas');
+            const tipEl = document.getElementById('xbBwTrendInspect');
+            if (trendC && tipEl) {
+                const inspect = (clientX) => {
+                    const coords = trendC._trendCoords || [];
+                    if (!coords.length) return;
+                    const x = clientX - trendC.getBoundingClientRect().left;
+                    let bestIdx = 0, bestDist = Infinity;
+                    coords.forEach((pt, idx) => {
+                        const d = Math.abs(pt.x - x);
+                        if (d < bestDist) { bestDist = d; bestIdx = idx; }
+                    });
+                    window._xbBentoWealth.hoverTrendIdx = bestIdx;
+                    drawBento3DTrendCanvas(snap);
+                    const p = coords[bestIdx].data;
+                    tipEl.innerHTML = `<span>📍 <b style="color:#38bdf8;">${p.label}</b> • ${p.tx} Order(s)</span><span style="color:#34d399;font-weight:800;">${fmtBentoMoney(p.val, false)}</span>`;
+                };
+                trendC.onmousemove = e => inspect(e.clientX);
+                trendC.ontouchstart = e => { if (e.touches && e.touches[0]) inspect(e.touches[0].clientX); };
+                trendC.ontouchmove = e => { if (e.touches && e.touches[0]) inspect(e.touches[0].clientX); };
+                trendC.onmouseleave = () => {
+                    window._xbBentoWealth.hoverTrendIdx = -1;
+                    drawBento3DTrendCanvas(snap);
+                };
+            }
+        }
+
+        function renderPersonalBentoWealthView() {
+            const body = document.getElementById('paymentGatewayBody');
+            if (!body) return;
+            const st = window._xbBentoWealth;
+            const snap = buildPersonalBentoSnapshot(st.tf);
+            st.snapshot = snap;
+
+            const cleanU = String(currentUsername || 'Client').replace(/^@+/, '');
+            const vip = getUserVipRankMeta();
+            const altEquiv = st.cur === 'IDR'
+                ? `≈ $${snap.totalSpend.toFixed(2)} USDT`
+                : `≈ Rp ${Math.round(snap.totalSpend * liveUsdtIdrRate).toLocaleString('id-ID')} IDR`;
+
+            const tfTabs = [
+                { k: 'DAY',  lbl: '24H' },
+                { k: 'WEEK', lbl: '7D' },
+                { k: 'YEAR', lbl: '1Y' },
+                { k: 'ALL',  lbl: 'ALL-TIME' }
+            ];
+
+            const totalSlice = snap.slices.reduce((s, x) => s + x.val, 0);
+
+            body.innerHTML = `
+                <div class="xb-bw-root">
+                    <!-- HEADER -->
+                    <div class="xb-bw-hdr">
+                        <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                            <span class="xb-ex-gh-badge" style="width:30px;height:30px;background:linear-gradient(135deg,#1d4ed8,#7c3aed);border-color:rgba(255,255,255,0.35);">📊</span>
+                            <div style="min-width:0;">
+                                <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;white-space:nowrap;">Bento Wealth 3D</h3>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${cleanU} • ${vip.emblem} ${vip.rank}</div>
+                            </div>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:5px;flex-shrink:0;">
+                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;border-color:rgba(56,189,248,0.45);padding:5px 8px;" onclick="toggleBentoWealthCur()">${st.cur}</button>
+                            <button type="button" class="xb-ex-mclose" onclick="closePersonalBentoWealthModal()">✕</button>
+                        </div>
+                    </div>
+
+                    <div class="xb-bw-scroll">
+                        <!-- BENTO 1: HERO TOTAL SPEND & 3 METRICS -->
+                        <div class="xb-bw-card">
+                            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;">
+                                <div style="min-width:0;">
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--text-muted);letter-spacing:0.5px;">PERSONAL PORTFOLIO SPEND (${st.tf === 'ALL' ? 'ALL-TIME' : st.tf})</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:1.38rem;font-weight:800;color:var(--text-primary);line-height:1.15;margin-top:3px;">${fmtBentoMoney(snap.totalSpend, false)}</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:700;color:#34d399;margin-top:2px;">${altEquiv} • ${snap.totalOrders} Verified Orders</div>
+                                </div>
+                                <span class="xb-ex-chip" style="color:#38bdf8;border-color:rgba(56,189,248,0.5);flex-shrink:0;">● LIVE</span>
+                            </div>
+
+                            <div class="xb-bw-tf-row">
+                                ${tfTabs.map(t => `
+                                    <button type="button" class="xb-bw-tf-btn ${st.tf === t.k ? 'active' : ''}" onclick="setBentoWealthTf('${t.k}')">${t.lbl}</button>
+                                `).join('')}
+                            </div>
+
+                            <div class="xb-bw-kpi-3">
+                                <div class="xb-bw-kpi-tile">
+                                    <div class="xb-bw-kpi-k">VAULT ASSETS</div>
+                                    <div class="xb-bw-kpi-v" style="color:#38bdf8;">${snap.vaultCount} Accs</div>
+                                </div>
+                                <div class="xb-bw-kpi-tile">
+                                    <div class="xb-bw-kpi-k">BOOST ORDERS</div>
+                                    <div class="xb-bw-kpi-v" style="color:#c084fc;">${snap.boostOrders} TX</div>
+                                </div>
+                                <div class="xb-bw-kpi-tile">
+                                    <div class="xb-bw-kpi-k">AVG ORDER</div>
+                                    <div class="xb-bw-kpi-v" style="color:#34d399;">${fmtBentoMoney(snap.avgOrder, true)}</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BENTO 2: 3D EXTRUDED DONUT ALLOCATION -->
+                        <div class="xb-bw-card">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:var(--text-primary);">🍩 3D PORTFOLIO ALLOCATION</span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:var(--text-muted);font-weight:700;">Tap slice to inspect</span>
+                            </div>
+
+                            <div class="xb-bw-donut-grid">
+                                <div class="xb-bw-canvas-box">
+                                    <canvas id="xbBwDonutCanvas"></canvas>
+                                </div>
+                                <div class="xb-bw-slice-list">
+                                    ${snap.slices.map((sl, idx) => {
+                                        const pct = totalSlice > 0 ? Math.round((sl.val / totalSlice) * 100) : 0;
+                                        const isAct = st.activeSlice === idx;
+                                        return `
+                                            <button type="button" class="xb-bw-slice-btn ${isAct ? 'active' : ''}" onclick="selectBentoWealthSlice(${idx})">
+                                                <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                                                    <span style="display:inline-flex;align-items:center;gap:5px;font-size:0.54rem;font-weight:800;color:var(--text-primary);">
+                                                        <i style="width:7px;height:7px;border-radius:2px;background:${sl.topCol};display:inline-block;"></i>
+                                                        ${sl.label}
+                                                    </span>
+                                                    <span style="font-size:0.54rem;font-weight:800;color:${sl.topCol};">${pct}%</span>
+                                                </div>
+                                                <div style="display:flex;align-items:center;justify-content:space-between;font-size:0.5rem;color:var(--text-muted);">
+                                                    <span>${sl.cnt} TX</span>
+                                                    <b style="color:var(--text-primary);">${fmtBentoMoney(sl.val, true)}</b>
+                                                </div>
+                                            </button>
+                                        `;
+                                    }).join('')}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- BENTO 3: 3D AREA SPEND TREND WITH CROSSHAIR -->
+                        <div class="xb-bw-card">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;">
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:#38bdf8;">📈 3D SPEND VELOCITY TREND</span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#c084fc;font-weight:800;">CROSSHAIR LIVE</span>
+                            </div>
+                            <div class="xb-bw-trend-stage">
+                                <canvas id="xbBwTrendCanvas"></canvas>
+                            </div>
+                            <div class="xb-bw-inspect-bar" id="xbBwTrendInspect">
+                                <span>👆 Slide or tap chart to inspect period</span>
+                                <span style="color:#34d399;font-weight:800;">${fmtBentoMoney(snap.totalSpend, true)}</span>
+                            </div>
+                        </div>
+
+                        <!-- BENTO 4: TOP INSIGHTS MINI CARDS -->
+                        <div class="xb-bw-mini-2">
+                            <div class="xb-bw-card" style="padding:9px 10px;">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;font-weight:800;color:var(--text-muted);">TOP VAULT TIER</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#38bdf8;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${snap.topVault}</div>
+                                <div style="font-size:0.52rem;color:var(--text-secondary);margin-top:2px;">Vault Val: ${fmtBentoMoney(snap.vaultTotalVal, true)}</div>
+                            </div>
+                            <div class="xb-bw-card" style="padding:9px 10px;">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;font-weight:800;color:var(--text-muted);">TOP BOOST SERVICE</div>
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#c084fc;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${snap.topSvc}</div>
+                                <div style="font-size:0.52rem;color:var(--text-secondary);margin-top:2px;">Wallet: ${fmtBentoMoney(userBalanceUsdt, true)}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="button" class="xb-cyb-close-btn" onclick="closePersonalBentoWealthModal()">✓ Close Personal Analytics</button>
+                </div>
+            `;
+
+            requestAnimationFrame(() => {
+                drawBento3DDonutCanvas(snap);
+                drawBento3DTrendCanvas(snap);
+                bindBentoWealthCanvasEvents(snap);
+            });
+        }
 
         function openUserPersonal3DAnalyticsModal() {
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
-            modal.classList.add('active');
-
-            const history = JSON.parse(localStorage.getItem('xb_tx_history') || '[]');
-            const vault = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
-            const now = new Date();
-            const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
-            const startOfWeek = now.getTime() - (7 * 86400000);
-            const startOfYear = new Date(now.getFullYear(), 0, 1).getTime();
-
-            let myDaily = 0, myWeekly = 0, myYearly = 0, myAllTime = 0;
-            const accLabels = ['11-13', '14-16', '17-19', '20-22', '23-25', '2026', 'Arctic', '6Badge+'];
-            const myAccCnt = [0, 0, 0, 0, 0, 0, 0, 0];
-            const myAccUsd = [0, 0, 0, 0, 0, 0, 0, 0];
-
-            const svcLabels = ['Followers', 'Stars', 'Forks', 'Watchers'];
-            const mySvcCnt = [0, 0, 0, 0];
-            const mySvcUsd = [0, 0, 0, 0];
-
-            vault.forEach(v => {
-                const p = parseFloat(v.priceUsdt || 0);
-                const cat = String(v.category || '2026');
-                const yr = parseInt(cat);
-                let idx = 5;
-                if (cat === 'Arctic') idx = 6;
-                else if (cat === '6Badge' || cat === 'Contrib' || cat === 'StudentPack') idx = 7;
-                else if (!isNaN(yr)) {
-                    if (yr <= 2013) idx = 0;
-                    else if (yr <= 2016) idx = 1;
-                    else if (yr <= 2019) idx = 2;
-                    else if (yr <= 2022) idx = 3;
-                    else if (yr <= 2025) idx = 4;
-                    else idx = 5;
-                }
-                myAccCnt[idx]++;
-                myAccUsd[idx] += Math.round(p * 10) / 10;
-            });
-
-            history.forEach(t => {
-                if (t.type !== 'OUT' || isP2pTransferTx(t)) return;
-                const amt = parseFloat(t.usdt || 0);
-                if (amt <= 0) return;
-                const ts = Date.parse(t.date + ', ' + now.getFullYear()) || now.getTime();
-                if (ts >= startOfDay) myDaily += amt;
-                if (ts >= startOfWeek) myWeekly += amt;
-                if (ts >= startOfYear) myYearly += amt;
-                myAllTime += amt;
-
-                const tl = String(t.title || '').toLowerCase();
-                if (tl.includes('follower') && !tl.includes('vault')) { mySvcCnt[0]++; mySvcUsd[0] += amt; }
-                else if (tl.includes('star')) { mySvcCnt[1]++; mySvcUsd[1] += amt; }
-                else if (tl.includes('fork')) { mySvcCnt[2]++; mySvcUsd[2] += amt; }
-                else if (tl.includes('watch')) { mySvcCnt[3]++; mySvcUsd[3] += amt; }
-            });
-
-            const totalMySvcOrders = mySvcCnt.reduce((a, b) => a + b, 0);
-
-            body.style.padding = '11px 12px';
-            body.style.maxWidth = '540px';
-            body.innerHTML = `
-                <div style="background:linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);border:1.5px solid #38bdf8;border-left:4.5px solid #38bdf8;border-radius:12px;padding:7px 10px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;">
-                    <div>
-                        <div style="font-size:0.74rem;font-weight:800;color:#38bdf8;">📊 @${currentUsername.replace(/^@/,'')} — PERSONAL 3D ANALYTICS</div>
-                        <div style="font-size:0.52rem;font-weight:700;color:#94a3b8;">MY PURCHASED ACCOUNTS &amp; GITHUB SERVICE ORDERS</div>
-                    </div>
-                    <button type="button" class="top-pill" style="padding:4px 8px;font-size:0.66rem;" onclick="closeModal('paymentGatewayModal')">✕</button>
-                </div>
-
-                <!-- 4 PERSONAL SPENDING BOXES (100% ENGLISH) -->
-                <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:5px;margin-bottom:8px;">
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:3px solid #10b981;border-radius:9px;padding:5px 3px;text-align:center;">
-                        <div style="font-size:0.48rem;font-weight:800;color:#a7f3d0;">DAILY (24H)</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#10b981;margin:1px 0;">$${myDaily.toFixed(2)}</div>
-                        <div style="font-size:0.46rem;color:#94a3b8;font-weight:700;">USDT SPENT</div>
-                    </div>
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:3px solid #38bdf8;border-radius:9px;padding:5px 3px;text-align:center;">
-                        <div style="font-size:0.48rem;font-weight:800;color:#bae6fd;">WEEKLY (7D)</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#38bdf8;margin:1px 0;">$${myWeekly.toFixed(2)}</div>
-                        <div style="font-size:0.46rem;color:#94a3b8;font-weight:700;">USDT SPENT</div>
-                    </div>
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:3px solid #c084fc;border-radius:9px;padding:5px 3px;text-align:center;">
-                        <div style="font-size:0.48rem;font-weight:800;color:#e9d5ff;">YEARLY (1Y)</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#c084fc;margin:1px 0;">$${myYearly.toFixed(2)}</div>
-                        <div style="font-size:0.46rem;color:#94a3b8;font-weight:700;">USDT SPENT</div>
-                    </div>
-                    <div style="background:var(--bg-input);border:1px solid var(--border-subtle);border-top:3px solid #fde047;border-radius:9px;padding:5px 3px;text-align:center;">
-                        <div style="font-size:0.48rem;font-weight:800;color:#fef08a;">ALL-TIME</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:#fde047;margin:1px 0;">$${myAllTime.toFixed(2)}</div>
-                        <div style="font-size:0.46rem;color:#94a3b8;font-weight:700;">USDT SPENT</div>
-                    </div>
-                </div>
-
-                <!-- BUYER CHART 1: MY PURCHASED ACCOUNTS -->
-                <div style="background:linear-gradient(145deg, #090d16 0%, #111a2e 100%);border:1.5px solid rgba(16,185,129,0.5);border-left:4px solid #10b981;border-radius:12px;padding:7px 9px;margin-bottom:7px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                        <span style="font-size:0.6rem;font-weight:800;color:#34d399;">📦 1. MY PURCHASED GITHUB ACCOUNTS (3D)</span>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#fde047;">${vault.length} Saved in Vault</span>
-                    </div>
-                    <div style="height:106px;position:relative;width:100%;">
-                        <canvas id="xbBuyerPersonalAccCanvas3D"></canvas>
-                    </div>
-                </div>
-
-                <!-- BUYER CHART 2: MY GITHUB BOOST SERVICES -->
-                <div style="background:linear-gradient(145deg, #0b0917 0%, #1c1132 100%);border:1.5px solid rgba(168,85,247,0.55);border-left:4px solid #c084fc;border-radius:12px;padding:7px 9px;margin-bottom:8px;">
-                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;">
-                        <span style="font-size:0.6rem;font-weight:800;color:#e879f9;">🚀 2. MY GITHUB SERVICES &amp; BOOST ORDERS (3D)</span>
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#38bdf8;">${totalMySvcOrders} Boost Orders</span>
-                    </div>
-                    <div style="height:106px;position:relative;width:100%;">
-                        <canvas id="xbBuyerPersonalSvcCanvas3D"></canvas>
-                    </div>
-                </div>
-
-                <button type="button" class="btn-ui primary" style="width:100%;padding:8px;font-size:0.72rem;border-radius:9px;" onclick="closeModal('paymentGatewayModal')">✅ Close My Personal Analytics</button>
-            `;
-
-            setTimeout(() => {
-                if (!window.Chart) return;
-                if (_userPersonalAccChart3D) { try { _userPersonalAccChart3D.destroy(); } catch (e) {} }
-                if (_userPersonalSvcChart3D) { try { _userPersonalSvcChart3D.destroy(); } catch (e) {} }
-
-                const c1 = document.getElementById('xbBuyerPersonalAccCanvas3D');
-                if (c1) {
-                    _userPersonalAccChart3D = new Chart(c1.getContext('2d'), {
-                        type: 'bar',
-                        plugins: [xbPrism3DPlugin],
-                        data: {
-                            labels: accLabels,
-                            datasets: [
-                                {
-                                    type: 'line',
-                                    label: 'Spent ($ USDT)',
-                                    data: myAccUsd,
-                                    borderColor: '#fde047',
-                                    borderWidth: 1.8,
-                                    pointRadius: 2.5,
-                                    tension: 0.35,
-                                    yAxisID: 'y1'
-                                },
-                                {
-                                    type: 'bar',
-                                    label: 'My Accounts',
-                                    data: myAccCnt,
-                                    backgroundColor: 'rgba(16, 185, 129, 0.85)',
-                                    top3dColor: '#a7f3d0',
-                                    side3dColor: '#047857',
-                                    borderRadius: 3,
-                                    barPercentage: 0.55,
-                                    yAxisID: 'y'
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            layout: { padding: { top: 12, right: 6 } },
-                            plugins: { legend: { display: true, labels: { color: '#cbd5e1', font: { size: 7.5, weight: 'bold' }, boxWidth: 8, padding: 4 } } },
-                            scales: {
-                                x: { ticks: { color: '#cbd5e1', font: { size: 7.5, weight: 'bold' } }, grid: { display: false } },
-                                y: { beginAtZero: true, position: 'left', ticks: { color: '#34d399', font: { size: 7.5 }, maxTicksLimit: 4, precision: 0 }, grid: { color: 'rgba(148,163,184,0.1)' } },
-                                y1: { beginAtZero: true, position: 'right', ticks: { color: '#fde047', font: { size: 7.5 }, maxTicksLimit: 4, callback: v => '$' + v }, grid: { display: false } }
-                            }
-                        }
-                    });
-                }
-
-                const c2 = document.getElementById('xbBuyerPersonalSvcCanvas3D');
-                if (c2) {
-                    _userPersonalSvcChart3D = new Chart(c2.getContext('2d'), {
-                        type: 'bar',
-                        plugins: [xbPrism3DPlugin],
-                        data: {
-                            labels: svcLabels,
-                            datasets: [
-                                {
-                                    type: 'line',
-                                    label: 'Spent ($ USDT)',
-                                    data: mySvcUsd,
-                                    borderColor: '#38bdf8',
-                                    borderWidth: 1.8,
-                                    pointRadius: 2.5,
-                                    tension: 0.35,
-                                    yAxisID: 'y1'
-                                },
-                                {
-                                    type: 'bar',
-                                    label: 'My Orders',
-                                    data: mySvcCnt,
-                                    backgroundColor: 'rgba(168, 85, 247, 0.85)',
-                                    top3dColor: '#f5d0fe',
-                                    side3dColor: '#7e22ce',
-                                    borderRadius: 3,
-                                    barPercentage: 0.48,
-                                    yAxisID: 'y'
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            layout: { padding: { top: 12, right: 6 } },
-                            plugins: { legend: { display: true, labels: { color: '#cbd5e1', font: { size: 7.5, weight: 'bold' }, boxWidth: 8, padding: 4 } } },
-                            scales: {
-                                x: { ticks: { color: '#cbd5e1', font: { size: 8, weight: 'bold' } }, grid: { display: false } },
-                                y: { beginAtZero: true, position: 'left', ticks: { color: '#e879f9', font: { size: 7.5 }, maxTicksLimit: 4, precision: 0 }, grid: { color: 'rgba(148,163,184,0.1)' } },
-                                y1: { beginAtZero: true, position: 'right', ticks: { color: '#38bdf8', font: { size: 7.5 }, maxTicksLimit: 4, callback: v => '$' + v }, grid: { display: false } }
-                            }
-                        }
-                    });
-                }
-            }, 60);
+            if (!modal || !body) return;
+            window._xbBentoWealth.isOpen = true;
+            window._xbBentoWealth.cur = (typeof currentCurrency !== 'undefined' && currentCurrency === 'IDR') ? 'IDR' : 'USDT';
+            window._xbBentoWealth.activeSlice = -1;
+            window._xbBentoWealth.hoverTrendIdx = -1;
+            modal.classList.remove('xb-cyber-telem-modal', 'xb-fullpage-modal');
+            modal.classList.add('xb-bw-modal', 'active');
+            renderPersonalBentoWealthView();
         }
+
+        window.addEventListener('resize', () => {
+            if (window._xbBentoWealth && window._xbBentoWealth.isOpen && window._xbBentoWealth.snapshot) {
+                drawBento3DDonutCanvas(window._xbBentoWealth.snapshot);
+                drawBento3DTrendCanvas(window._xbBentoWealth.snapshot);
+            }
+        });
 
         window.openLiveAnalytics3DModal = openStoreGlobal3DTelemetry;
 
@@ -21266,7 +21910,7 @@ let _ghAgeCheckerResults = [];
                 }
             }
 
-            let dockH = 64;
+            let dockH = 70;
             let dockZ = 100;
             if (dockEl) {
                 const rawZ = parseInt(getComputedStyle(dockEl).zIndex, 10);
@@ -21279,13 +21923,13 @@ let _ghAgeCheckerResults = [];
                 dockEl.style.setProperty('max-width', '100%', 'important');
                 dockEl.style.setProperty('margin', '0', 'important');
                 dockEl.style.setProperty('border-radius', '0px', 'important');
-                dockEl.style.setProperty('border-top', isPlat ? '1px solid rgba(15,23,42,0.08)' : '1px solid rgba(148,163,184,0.14)', 'important');
-                dockEl.style.setProperty('background', solidDockBg, 'important');
+                dockEl.style.setProperty('border', 'none', 'important');
+                dockEl.style.setProperty('border-top', 'none', 'important');
+                dockEl.style.setProperty('background', 'transparent', 'important');
                 dockEl.style.setProperty('backdrop-filter', 'none', 'important');
                 dockEl.style.setProperty('-webkit-backdrop-filter', 'none', 'important');
-                dockEl.style.setProperty('box-shadow', isPlat
-                    ? '0 -4px 16px rgba(15,23,42,0.06)'
-                    : '0 -6px 20px rgba(0,0,0,0.55)', 'important');
+                dockEl.style.setProperty('box-shadow', 'none', 'important');
+                dockEl.style.setProperty('pointer-events', 'none', 'important');
                 const dRect = dockEl.getBoundingClientRect();
                 if (dRect.height > 30) dockH = Math.ceil(dRect.height);
             }
@@ -21331,9 +21975,7 @@ let _ghAgeCheckerResults = [];
                 if (dockEl.parentNode && guard.parentNode !== dockEl.parentNode) {
                     dockEl.parentNode.insertBefore(guard, dockEl);
                 }
-                guard.style.display = cartVisible ? 'block' : 'none';
-                guard.style.zIndex = String(Math.max(10, dockZ - 1));
-                guard.style.height = (dockH + cartH + 10) + 'px';
+                    guard.style.display = 'none';
             }
 
             // 4. Clean Safe Bottom Padding (No Floating Chat Overlap)
