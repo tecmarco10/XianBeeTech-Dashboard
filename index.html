@@ -5139,40 +5139,83 @@
             font-weight: 900 !important;
             letter-spacing: 0.2px !important;
         }
+        /* UNIFIED HERO CARD: GITHUB MARKETPLACE === GITHUB BOOST SERVICE (100% IDENTIK) */
+        .xb-hero-plat-card,
         .xb-hero-plat-card.is-mp-hero {
-            padding: 6px 7px !important;
-            gap: 3px !important;
+            padding: 8px 10px !important;
+            gap: 4px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            align-items: center !important;
+            justify-content: center !important;
+            box-sizing: border-box !important;
+        }
+        .xb-hero-plat-card .xb-hero-plat-top {
+            width: 100% !important;
+            display: grid !important;
+            grid-template-columns: 30px minmax(0, 1fr) 30px !important;
+            align-items: center !important;
+            gap: 8px !important;
+        }
+        .xb-hero-plat-card .xb-hero-plat-logo {
+            width: 30px !important;
+            height: 30px !important;
+            border-radius: 9px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            flex-shrink: 0 !important;
+            margin: 0 !important;
+        }
+        .xb-hero-plat-card .xb-hero-plat-logo svg {
+            width: 18px !important;
+            height: 18px !important;
+        }
+        .xb-hero-plat-card .xb-hero-plat-title {
+            text-align: center !important;
+            font-size: 0.86rem !important;
+            font-weight: 900 !important;
+            line-height: 1.15 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+        }
+        .xb-hero-plat-card .xb-hero-plat-sub {
+            width: 100% !important;
+            text-align: center !important;
+            font-size: clamp(0.51rem, 2.2vw, 0.58rem) !important;
+            letter-spacing: 0.1px !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            margin: 0 !important;
+        }
+        .xb-hero-plat-card .xb-hero-plat-meta {
+            min-height: 22px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 5px !important;
         }
         .xb-hero-mp-bottom {
             width: 100%;
             display: grid;
-            grid-template-columns: max-content minmax(0, 1fr) max-content;
+            grid-template-columns: 58px minmax(0, 1fr) 58px;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
         .xb-hero-mp-center {
             display: flex;
-            flex-direction: column;
             align-items: center;
             justify-content: center;
-            gap: 2px;
             min-width: 0;
         }
-        .xb-hero-mp-center .xb-hero-plat-sub {
-            font-size: clamp(0.42rem, 1.8vw, 0.48rem) !important;
-            letter-spacing: -0.1px;
-            line-height: 1.15 !important;
-            white-space: nowrap;
-            overflow: visible;
-            text-align: center;
-            max-width: 100%;
-        }
         .xb-hero-plat-card .xb-hero-corner-btn {
-            width: auto;
-            min-width: 50px;
+            width: 100% !important;
             height: 22px !important;
-            min-height: 22px;
-            padding: 0 6px !important;
+            min-height: 22px !important;
+            padding: 0 4px !important;
             border-radius: 7px !important;
             display: inline-flex !important;
             flex-direction: row;
@@ -5182,8 +5225,22 @@
             white-space: nowrap !important;
             line-height: 1;
             text-align: center;
-            font-size: 0.48rem !important;
+            font-size: 0.49rem !important;
             font-weight: 800 !important;
+        }
+
+        /* BESARIN TEKS FILTER MENU UTAMA MARKET (ALL ASSETS, HIGH FOLLOWERS, DLL.) */
+        [data-xb-mkt-filters="1"] button,
+        [data-xb-mkt-filters="1"] [role="button"],
+        [data-xb-mkt-filters="1"] [onclick] {
+            font-size: clamp(0.66rem, 2.85vw, 0.75rem) !important;
+            font-weight: 800 !important;
+            line-height: 1.2 !important;
+            padding-top: 7px !important;
+            padding-bottom: 7px !important;
+        }
+        [data-xb-mkt-filters="1"] button span:not(.badge):not([class*="cnt"]):not([class*="count"]) {
+            font-size: inherit !important;
         }
         .xb-hero-plat-card .xb-ex-col-act-btn.vip,
         .xb-hero-plat-card .xb-ex-col-act-btn.sales {
@@ -9161,9 +9218,29 @@ const XB_EX_BANK_THEMES = {
                 targetBox.appendChild(btn);
             }
 
+            function xbTagMarketFilterBar() {
+                const els = document.querySelectorAll('button, [role="button"], [onclick]');
+                for (let i = 0; i < els.length; i++) {
+                    const el = els[i];
+                    const txt = (el.textContent || '').trim();
+                    if (txt.length > 0 && txt.length <= 36 && /high\s*followers|followers\s*tinggi/i.test(txt)) {
+                        let box = el.parentElement;
+                        for (let lvl = 0; lvl < 2 && box; lvl++) {
+                            if (/all\s*assets|semua\s*aset/i.test(box.textContent || '') && box.children.length >= 2 && box.children.length <= 24) {
+                                if (box.getAttribute('data-xb-mkt-filters') !== '1') {
+                                    box.setAttribute('data-xb-mkt-filters', '1');
+                                }
+                                return;
+                            }
+                            box = box.parentElement;
+                        }
+                    }
+                }
+            }
+
             document.addEventListener('click', () => {
-                setTimeout(xbExMountButtonInStoreCategory, 120);
-                setTimeout(xbExMountButtonInStoreCategory, 420);
+                setTimeout(() => { xbExMountButtonInStoreCategory(); xbTagMarketFilterBar(); }, 120);
+                setTimeout(() => { xbExMountButtonInStoreCategory(); xbTagMarketFilterBar(); }, 420);
             }, true);
 
             // Override Swap picker to use the exact same 2-column grid + global visibility filter & default Buy Crypto to USDT
@@ -9181,6 +9258,7 @@ const XB_EX_BANK_THEMES = {
                 }
                 syncXbExGlobalCoinsConfig();
                 xbExMountButtonInStoreCategory();
+                xbTagMarketFilterBar();
             }, 80);
 
             function openXbExBankPicker() {
@@ -9227,6 +9305,52 @@ const XB_EX_BANK_THEMES = {
                         </button>
                     `;
                 }).join('') || `<div style="text-align:center;padding:16px;font-size:0.7rem;color:var(--text-muted);">Bank tidak ditemukan.</div>`;
+            }
+
+            function openXbExEwalletPicker() {
+                const root = ensureXbExModalRoot();
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);">📱 Select E-Wallet Tujuan</div>
+                            <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                        </div>
+                        <input type="text" class="xb-ex-input" placeholder="Cari DANA, OVO, GoPay, ShopeePay, LinkAja..."
+                            oninput="renderXbExEwalletPickerList(this.value)">
+                        <div class="xb-ex-tok-list" id="xbExEwalletListBox"></div>
+                    </div>
+                `;
+                root.classList.add('open');
+                renderXbExEwalletPickerList('');
+            }
+
+            function renderXbExEwalletPickerList(query) {
+                const box = document.getElementById('xbExEwalletListBox');
+                if (!box) return;
+                const q = String(query || '').trim().toLowerCase();
+                const cur = window._xbExState.idrEwallet || 'DANA';
+                const list = XB_EX_IDR_EWALLETS.filter(ew => {
+                    const th = XB_EX_BANK_THEMES[ew];
+                    const full = th ? th.full.toLowerCase() : '';
+                    return !q || ew.toLowerCase().includes(q) || full.includes(q);
+                });
+                box.innerHTML = list.map(ew => {
+                    const th = XB_EX_BANK_THEMES[ew] || { bg: 'linear-gradient(135deg,#0369a1,#0ea5e9)', mono: ew.slice(0, 3).toUpperCase(), full: ew };
+                    const isAct = cur === ew;
+                    return `
+                        <button type="button" class="xb-ex-tok-row" style="${isAct ? 'border-color:#f43f5e;' : ''}"
+                            onclick="window._xbExState.idrEwallet='${escXbEx(ew)}'; closeXbExModal(); renderXbExBody(true);">
+                            <div style="display:flex;align-items:center;gap:9px;min-width:0;">
+                                <span class="xb-ex-monogram" style="background:${th.bg};width:32px;height:32px;font-size:0.62rem;">${th.mono}</span>
+                                <div style="min-width:0;text-align:left;">
+                                    <div style="font-size:0.74rem;font-weight:800;">${escXbEx(ew)}</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escXbEx(th.full)}</div>
+                                </div>
+                            </div>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:${isAct ? '#f43f5e' : '#38bdf8'};font-weight:800;flex-shrink:0;">${isAct ? '● ACTIVE' : 'PILIH'}</span>
+                        </button>
+                    `;
+                }).join('') || `<div style="text-align:center;padding:16px;font-size:0.7rem;color:var(--text-muted);">E-Wallet tidak ditemukan.</div>`;
             }
 
             function updateXbExIdrVisualCard() {
@@ -9699,14 +9823,13 @@ const XB_EX_BANK_THEMES = {
                                     <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#38bdf8;flex-shrink:0;">Ganti ▼</span>
                                 </button>
                             ` : `
-                                <div class="xb-ex-ewallet-grid">
-                                    ${XB_EX_IDR_EWALLETS.map(ew => `
-                                        <button type="button" class="xb-ex-pay-btn ${prov.provider === ew ? 'active' : ''}" style="padding:7px 4px;font-size:0.62rem;"
-                                            onclick="window._xbExState.idrEwallet='${escXbEx(ew)}'; renderXbExBody(true);">
-                                            ${escXbEx(ew)}
-                                        </button>
-                                    `).join('')}
-                                </div>
+                                <button type="button" class="xb-ex-bank-pick-btn" onclick="openXbExEwalletPicker()">
+                                    <span style="display:inline-flex;align-items:center;gap:8px;min-width:0;">
+                                        <span class="xb-ex-monogram" style="background:${pTheme.bg};width:24px;height:24px;font-size:0.52rem;">${pTheme.mono}</span>
+                                        <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escXbEx(prov.provider)} — <span style="font-weight:600;color:var(--text-secondary);font-size:0.65rem;">${escXbEx(pTheme.full)}</span></span>
+                                    </span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#38bdf8;flex-shrink:0;">Select Wallet ▼</span>
+                                </button>
                             `}
 
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
@@ -14307,20 +14430,20 @@ const XB_EX_BANK_THEMES = {
                 || (_mpDrawerTab === 'games_ppob' && _vis.mp_games_ppob);
 
             wrap.innerHTML = `
-                <!-- BARIS 1: GITHUB MARKETPLACE (LOGO POJOK 30PX SAMA BOOST • VIP/GLOBAL SALES SEJAJAR BARIS BAWAH) -->
+<!-- BARIS 1: GITHUB MARKETPLACE (100% IDENTIK TATA LETAK LOGO & TEKS DENGAN GITHUB BOOST SERVICE) -->
                 <div role="button" tabindex="0" class="xb-hero-plat-card is-mp-hero ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
                     <div class="xb-hero-plat-top">
                         <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
                         <span class="xb-hero-plat-title">GitHub Marketplace</span>
                         <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
                     </div>
+                    <div class="xb-hero-plat-sub">Aged GitHub Account • Special Developer Tier</div>
                     <div class="xb-hero-mp-bottom">
                         <button type="button" class="xb-ex-col-act-btn vip xb-hero-corner-btn" onclick="event.stopPropagation(); openLeaderboardModal()">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M6 3h12l4 6-10 12L2 9z" fill="rgba(56,189,248,0.28)" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="M2 9h20M12 3l-3.5 6L12 21l3.5-12L12 3z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/></svg>
                             <span>VIP</span>
                         </button>
                         <div class="xb-hero-mp-center">
-                            <div class="xb-hero-plat-sub">Aged GitHub Account • Special Developer Tier</div>
                             <div class="xb-hero-plat-meta">
                                 <span class="xb-mp-prim-pill">PRIMARY</span>
                                 <span class="xb-mp-cnt-pill">${isGh ? '● ACTIVE' : 'SELECT'}</span>
