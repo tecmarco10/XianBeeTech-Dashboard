@@ -5140,13 +5140,14 @@
             letter-spacing: 0.2px !important;
         }
         .xb-hero-plat-card.is-mp-hero {
-            padding: 6px 7px !important;
+            padding: 6px 9px !important;
+            gap: 3px !important;
         }
-        .xb-hero-mp-row {
+        .xb-hero-mp-bottom {
             width: 100%;
             display: grid;
-            grid-template-columns: clamp(58px, 16.5vw, 74px) minmax(0, 1fr) clamp(58px, 16.5vw, 74px);
-            align-items: stretch;
+            grid-template-columns: clamp(66px, 19vw, 82px) minmax(0, 1fr) clamp(66px, 19vw, 82px);
+            align-items: center;
             gap: 5px;
         }
         .xb-hero-mp-center {
@@ -5157,35 +5158,8 @@
             gap: 2px;
             min-width: 0;
         }
-        .xb-hero-mp-title-row {
-            width: 100%;
-            min-height: 30px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 4px;
-            max-width: 100%;
-            min-width: 0;
-        }
-        .xb-hero-mp-title-row .xb-hero-plat-logo {
-            width: 20px !important;
-            height: 20px !important;
-            border-radius: 6px !important;
-        }
-        .xb-hero-mp-title-row .xb-hero-plat-logo svg {
-            width: 13px !important;
-            height: 13px !important;
-        }
-        .xb-hero-mp-title-row .xb-hero-plat-title {
-            flex: 0 1 auto !important;
-            font-size: 0.78rem !important;
-            line-height: 1.15 !important;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
         .xb-hero-mp-center .xb-hero-plat-sub {
-            font-size: 0.45rem !important;
+            font-size: clamp(0.41rem, 1.8vw, 0.46rem) !important;
             line-height: 1.15 !important;
             white-space: nowrap;
             overflow: hidden;
@@ -5194,19 +5168,19 @@
         }
         .xb-hero-plat-card .xb-hero-corner-btn {
             width: 100%;
-            height: 100% !important;
-            min-height: 56px;
-            padding: 5px 4px !important;
-            border-radius: 9px !important;
-            display: flex !important;
-            flex-direction: column;
+            height: 26px !important;
+            min-height: 26px;
+            padding: 0 4px !important;
+            border-radius: 7px !important;
+            display: inline-flex !important;
+            flex-direction: row;
             align-items: center;
             justify-content: center;
-            gap: 4px !important;
+            gap: 3px !important;
             white-space: nowrap !important;
-            line-height: 1.1;
+            line-height: 1;
             text-align: center;
-            font-size: clamp(0.45rem, 2vw, 0.52rem) !important;
+            font-size: clamp(0.44rem, 1.9vw, 0.51rem) !important;
         }
         .xb-hero-plat-card .xb-ex-col-act-btn.vip,
         .xb-hero-plat-card .xb-ex-col-act-btn.sales {
@@ -5402,6 +5376,383 @@
         [data-theme="platinum"] .xb-bst-speed-btn.spd-fast:not(.active) .sn { color: #7c3aed !important; }
         [data-theme="platinum"] .xb-bst-speed-btn.spd-ultra:not(.active) .sn { color: #db2777 !important; }
         [data-theme="platinum"] #xbBoostTerminalCard .xb-bst-qty-pill:not(.active) { color: #334155 !important; }
+
+        /* 10. PERMANENT STICKY WALLET / EXCHANGE SWITCHER + OPSI 2 EXCHANGE OVERHAUL */
+        html, body {
+            overflow-x: clip !important;
+        }
+        #xbWalExSwitcher.xb-wal-switcher {
+            position: sticky !important;
+            top: 96px !important;
+            z-index: 42 !important;
+            background: rgba(7, 11, 23, 0.94) !important;
+            backdrop-filter: blur(14px) !important;
+            -webkit-backdrop-filter: blur(14px) !important;
+            border: 1px solid rgba(255, 255, 255, 0.16) !important;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45) !important;
+            padding: 4px !important;
+            margin: 0 0 6px 0 !important;
+        }
+        [data-theme="platinum"] #xbWalExSwitcher.xb-wal-switcher {
+            background: rgba(255, 255, 255, 0.95) !important;
+            border-color: rgba(79, 70, 229, 0.2) !important;
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.08) !important;
+        }
+        #xbWalExSwitcher .xb-wal-sw-btn {
+            border: 1.5px solid transparent !important;
+            transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease !important;
+        }
+        #xbWalExSwitcher .xb-wal-sw-btn.active {
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+                linear-gradient(135deg, #0a1432 0%, #172554 52%, #241046 100%) !important;
+            background-size: 12px 12px, 12px 12px, 100% 100% !important;
+            border: 1.8px solid #f43f5e !important;
+            box-shadow: 0 0 6px rgba(244, 63, 94, 0.52), inset 0 0 5px rgba(244, 63, 94, 0.24) !important;
+            color: #ffffff !important;
+        }
+        [data-theme="platinum"] #xbWalExSwitcher .xb-wal-sw-btn.active {
+            background: linear-gradient(135deg, #eff6ff 0%, #f5f3ff 100%) !important;
+            border: 1.8px solid #e11d48 !important;
+            box-shadow: 0 0 5px rgba(225, 29, 72, 0.32) !important;
+            color: #0f172a !important;
+        }
+        [data-theme="platinum"] #xbWalExSwitcher .xb-wal-sw-btn.active .sw-sub {
+            color: #475569 !important;
+        }
+
+        /* OPSI 2 EXCHANGE HUB (DEMO 3 LAYOUT + OBSIDIAN NAVY / MYTHIC RED / CYAN) */
+        .xb-ex-hub { gap: 8px !important; }
+        .xb-ex-livebar {
+            background: var(--ex-card-bg) !important;
+            border: 1px solid rgba(56, 189, 248, 0.32) !important;
+            padding: 6px 9px !important;
+            border-radius: 11px !important;
+        }
+        .xb-ex-modes {
+            background: var(--bg-input) !important;
+            border: 1px solid var(--ex-hairline) !important;
+            padding: 3px !important;
+            border-radius: 11px !important;
+            gap: 4px !important;
+        }
+        .xb-ex-mbtn {
+            padding: 7px 3px !important;
+            border-radius: 8px !important;
+            border: 1.5px solid transparent !important;
+            font-size: 0.6rem !important;
+        }
+        .xb-ex-mbtn.active {
+            background: linear-gradient(135deg, rgba(14, 30, 68, 0.92), rgba(37, 19, 74, 0.92)) !important;
+            border-color: #f43f5e !important;
+            color: #ffffff !important;
+            box-shadow: 0 0 5px rgba(244, 63, 94, 0.42) !important;
+        }
+        [data-theme="platinum"] .xb-ex-mbtn.active {
+            background: #ffffff !important;
+            border-color: #e11d48 !important;
+            color: #0f172a !important;
+            box-shadow: 0 2px 8px rgba(225, 29, 72, 0.16) !important;
+        }
+        .xb-ex-panel {
+            position: relative;
+            background: var(--ex-card-bg) !important;
+            border: 1px solid rgba(56, 189, 248, 0.28) !important;
+            border-radius: 15px !important;
+            padding: 11px !important;
+            gap: 8px !important;
+            overflow: hidden;
+        }
+        .xb-ex-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 10%; right: 10%; height: 1px;
+            background: var(--ex-sheen);
+            pointer-events: none;
+        }
+        .xb-ex-well {
+            background: rgba(5, 9, 20, 0.78) !important;
+            border: 1.5px solid rgba(56, 189, 248, 0.28) !important;
+            border-radius: 12px !important;
+            padding: 9px 10px !important;
+            gap: 5px !important;
+        }
+        .xb-ex-well:focus-within {
+            border-color: #38bdf8 !important;
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.16);
+        }
+        [data-theme="platinum"] .xb-ex-well {
+            background: #f8fafc !important;
+            border-color: rgba(37, 99, 235, 0.22) !important;
+        }
+
+        /* ALLOCATION SLIDER */
+        .xb-ex-slider-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 2px 2px 0;
+        }
+        .xb-ex-slider {
+            flex: 1;
+            -webkit-appearance: none;
+            appearance: none;
+            height: 5px;
+            border-radius: 99px;
+            background: linear-gradient(90deg, #f43f5e 0%, #38bdf8 100%);
+            outline: none;
+            cursor: pointer;
+        }
+        .xb-ex-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ffffff;
+            border: 2px solid #f43f5e;
+            box-shadow: 0 0 6px rgba(244, 63, 94, 0.75);
+            cursor: pointer;
+        }
+        .xb-ex-slider-pct {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.56rem;
+            font-weight: 800;
+            color: #38bdf8;
+            min-width: 30px;
+            text-align: right;
+        }
+        .xb-ex-bridge-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 6px;
+            margin: -4px 0;
+            position: relative;
+            z-index: 2;
+        }
+        .xb-ex-bridge-pill {
+            flex: 1;
+            min-width: 0;
+            background: rgba(7, 12, 26, 0.9);
+            border: 1px solid rgba(56, 189, 248, 0.34);
+            border-radius: 99px;
+            padding: 4px 9px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.53rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-align: center;
+        }
+        [data-theme="platinum"] .xb-ex-bridge-pill {
+            background: #ffffff;
+            border-color: rgba(37, 99, 235, 0.25);
+        }
+        .xb-ex-flip-btn {
+            width: 30px !important;
+            height: 30px !important;
+            border-radius: 9px !important;
+            border: 1.5px solid #f43f5e !important;
+            background: linear-gradient(135deg, #0b1636, #1f1142) !important;
+            color: #7dd3fc !important;
+            font-size: 0.82rem !important;
+            flex-shrink: 0;
+        }
+        .xb-ex-addr-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .xb-ex-paste-btn {
+            height: 37px;
+            padding: 0 10px;
+            border-radius: 9px;
+            border: 1px solid rgba(56, 189, 248, 0.45);
+            background: rgba(56, 189, 248, 0.12);
+            color: #38bdf8;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.58rem;
+            font-weight: 800;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        /* HORIZONTAL ECOSYSTEM & NETWORK STRIPS (BUY CRYPTO) */
+        .xb-ex-hscroll {
+            display: flex;
+            gap: 5px;
+            overflow-x: auto;
+            padding-bottom: 2px;
+            scrollbar-width: none;
+        }
+        .xb-ex-hscroll::-webkit-scrollbar { display: none; }
+        .xb-ex-eco-chip {
+            flex-shrink: 0;
+            padding: 6px 10px;
+            border-radius: 9px;
+            border: 1px solid var(--ex-hairline);
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.56rem;
+            font-weight: 800;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+        .xb-ex-eco-chip.active {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.16);
+            color: #38bdf8;
+        }
+        .xb-ex-net-chip {
+            flex-shrink: 0;
+            min-width: 106px;
+            padding: 7px 9px;
+            border-radius: 10px;
+            border: 1.5px solid var(--ex-hairline);
+            background: var(--bg-input);
+            text-align: left;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .xb-ex-net-chip.active {
+            border-color: #f43f5e;
+            background: linear-gradient(145deg, rgba(15, 23, 52, 0.95), rgba(35, 16, 62, 0.9));
+            box-shadow: 0 0 6px rgba(244, 63, 94, 0.35);
+        }
+        [data-theme="platinum"] .xb-ex-net-chip.active {
+            background: #fff1f2;
+            border-color: #e11d48;
+        }
+        .xb-ex-pkg-card {
+            border: 1.5px solid rgba(56, 189, 248, 0.24) !important;
+            border-radius: 11px !important;
+            padding: 8px 5px !important;
+            position: relative;
+        }
+        .xb-ex-pkg-card.active {
+            border-color: #f43f5e !important;
+            background: linear-gradient(145deg, rgba(16, 28, 66, 0.92), rgba(34, 15, 62, 0.9)) !important;
+            box-shadow: 0 0 6px rgba(244, 63, 94, 0.42) !important;
+        }
+        [data-theme="platinum"] .xb-ex-pkg-card.active {
+            background: #eff6ff !important;
+            border-color: #e11d48 !important;
+        }
+
+        /* LIVE INTERACTIVE VISUAL PAYOUT CARD (CONVERT TO IDR) */
+        .xb-ex-payout-card {
+            position: relative;
+            border-radius: 14px;
+            padding: 12px 13px;
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 255, 255, 0.24);
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .xb-ex-payout-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+            background-size: 16px 16px;
+            pointer-events: none;
+        }
+        .xb-ex-payout-top, .xb-ex-payout-mid, .xb-ex-payout-bot {
+            position: relative;
+            z-index: 1;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+        .xb-ex-monogram {
+            width: 30px;
+            height: 30px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.18);
+            border: 1px solid rgba(255, 255, 255, 0.34);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            font-weight: 900;
+            color: #ffffff;
+            flex-shrink: 0;
+        }
+        .xb-ex-bank-pick-btn {
+            width: 100%;
+            height: 38px;
+            padding: 0 11px;
+            border-radius: 10px;
+            border: 1.5px solid rgba(56, 189, 248, 0.42);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.72rem;
+            font-weight: 800;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        /* TACTILE PIN KEYPAD INSIDE EXCHANGE MODAL */
+        .xb-ex-pin-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 8px 0 10px;
+        }
+        .xb-ex-pin-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 1.5px solid rgba(148, 163, 184, 0.5);
+            background: transparent;
+            transition: 0.14s ease;
+        }
+        .xb-ex-pin-dot.filled {
+            background: #38bdf8;
+            border-color: #bae6fd;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.7);
+            transform: scale(1.12);
+        }
+        .xb-ex-pin-pad {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 6px;
+        }
+        .xb-ex-pin-key {
+            height: 39px;
+            border-radius: 9px;
+            border: 1px solid var(--ex-hairline);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.92rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .xb-ex-pin-key:active {
+            border-color: #f43f5e;
+            background: rgba(244, 63, 94, 0.18);
+            transform: scale(0.96);
+        }
     </style>
     <!-- Chart.js for Slick 3D/Gradient Interactive Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -8065,6 +8416,125 @@
                 });
             }
 
+const XB_EX_BANK_THEMES = {
+                'BCA':        { bg: 'linear-gradient(135deg, #0b2d6b 0%, #1d4ed8 100%)', mono: 'BCA' },
+                'BRI':        { bg: 'linear-gradient(135deg, #072654 0%, #0369a1 100%)', mono: 'BRI' },
+                'BNI':        { bg: 'linear-gradient(135deg, #0f3d3e 0%, #ea580c 100%)', mono: 'BNI' },
+                'Mandiri':    { bg: 'linear-gradient(135deg, #0c2340 0%, #ca8a04 100%)', mono: 'MDR' },
+                'SeaBank':    { bg: 'linear-gradient(135deg, #9a3412 0%, #f97316 100%)', mono: 'SEA' },
+                'Bank Jago':  { bg: 'linear-gradient(135deg, #4c1d95 0%, #d97706 100%)', mono: 'JGO' },
+                'BSI':        { bg: 'linear-gradient(135deg, #065f46 0%, #0ea5e9 100%)', mono: 'BSI' },
+                'CIMB Niaga': { bg: 'linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)', mono: 'CMB' },
+                'Permata':    { bg: 'linear-gradient(135deg, #14532d 0%, #059669 100%)', mono: 'PRM' },
+                'OCBC':       { bg: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)', mono: 'OCB' },
+                'Danamon':    { bg: 'linear-gradient(135deg, #713f12 0%, #eab308 100%)', mono: 'DNM' },
+                'Blu by BCA': { bg: 'linear-gradient(135deg, #0369a1 0%, #06b6d4 100%)', mono: 'BLU' },
+                'DANA':       { bg: 'linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)', mono: 'DNA' },
+                'OVO':        { bg: 'linear-gradient(135deg, #3b0764 0%, #7c3aed 100%)', mono: 'OVO' },
+                'GoPay':      { bg: 'linear-gradient(135deg, #065f46 0%, #0284c7 100%)', mono: 'GPY' },
+                'ShopeePay':  { bg: 'linear-gradient(135deg, #9a3412 0%, #ef4444 100%)', mono: 'SPY' },
+                'LinkAja':    { bg: 'linear-gradient(135deg, #881337 0%, #e11d48 100%)', mono: 'LNK' }
+            };
+
+            function getXbExAddrStatus(addr) {
+                const s = String(addr || '').trim();
+                if (!s) return { txt: 'REQUIRED', col: 'var(--text-muted)' };
+                if (/^0x[a-fA-F0-9]{40}$/.test(s)) return { txt: '✓ EVM 0x VALID', col: '#34d399' };
+                if (s.length >= 26) return { txt: '✓ FORMAT OK', col: '#34d399' };
+                if (s.length >= 14) return { txt: '✓ READY', col: '#38bdf8' };
+                return { txt: '⚠ TOO SHORT', col: '#fbbf24' };
+            }
+
+            async function pasteXbExAddr(field) {
+                try {
+                    const txt = (await navigator.clipboard.readText() || '').trim();
+                    if (!txt) return (typeof showToast === 'function') && showToast('Clipboard kosong.');
+                    if (field === 'swap') {
+                        window._xbExState.swapAddr = txt;
+                        const el = document.getElementById('xbExSwapAddrInp');
+                        if (el) el.value = txt;
+                        const stEl = document.getElementById('xbExSwapAddrBadge');
+                        const info = getXbExAddrStatus(txt);
+                        if (stEl) { stEl.innerText = info.txt; stEl.style.color = info.col; }
+                    } else {
+                        window._xbExState.gasAddr = txt;
+                        const el = document.getElementById('xbExGasAddrInp');
+                        if (el) el.value = txt;
+                        const stEl = document.getElementById('xbExGasAddrBadge');
+                        const info = getXbExAddrStatus(txt);
+                        if (stEl) { stEl.innerText = info.txt; stEl.style.color = info.col; }
+                    }
+                    if (typeof showToast === 'function') showToast('📋 Address pasted!');
+                } catch (e) {
+                    if (typeof showToast === 'function') showToast('Paste langsung ke kolom alamat.');
+                }
+            }
+
+            function onXbExSwapSlider(pctVal) {
+                const bal = getXbExWalletBal();
+                const pct = Math.max(0, Math.min(100, Number(pctVal || 0)));
+                const amt = bal > 0 ? Math.floor((bal * (pct / 100)) * 100) / 100 : 0;
+                window._xbExState.swapPayUsd = String(amt);
+                const inp = document.getElementById('xbExSwapPayInp');
+                if (inp) inp.value = window._xbExState.swapPayUsd;
+                const pLbl = document.getElementById('xbExSwapSliderPct');
+                if (pLbl) pLbl.innerText = Math.round(pct) + '%';
+                updateXbExDynamicCalc();
+            }
+
+            function openXbExBankPicker() {
+                const root = ensureXbExModalRoot();
+                const curBank = window._xbExState.idrBank || 'BCA';
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="display:flex;align-items:center;justify-content:space-between;">
+                            <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);">🏦 Pilih Bank Tujuan</div>
+                            <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                        </div>
+                        <input type="text" class="xb-ex-input" placeholder="Cari BCA, SeaBank, Mandiri, BRI..."
+                            oninput="renderXbExBankPickerList(this.value)">
+                        <div class="xb-ex-tok-list" id="xbExBankListBox"></div>
+                    </div>
+                `;
+                root.classList.add('open');
+                renderXbExBankPickerList('');
+            }
+
+            function renderXbExBankPickerList(query) {
+                const box = document.getElementById('xbExBankListBox');
+                if (!box) return;
+                const q = String(query || '').trim().toLowerCase();
+                const cur = window._xbExState.idrBank || 'BCA';
+                const list = XB_EX_IDR_BANKS.filter(b => !q || b.toLowerCase().includes(q));
+                box.innerHTML = list.map(bk => {
+                    const th = XB_EX_BANK_THEMES[bk] || { bg: 'linear-gradient(135deg,#1d4ed8,#7c3aed)', mono: bk.slice(0, 3).toUpperCase() };
+                    const isAct = cur === bk;
+                    return `
+                        <button type="button" class="xb-ex-tok-row" style="${isAct ? 'border-color:#f43f5e;' : ''}"
+                            onclick="window._xbExState.idrBank='${escXbEx(bk)}'; closeXbExModal(); renderXbExBody(true);">
+                            <div style="display:flex;align-items:center;gap:9px;">
+                                <span class="xb-ex-monogram" style="background:${th.bg};width:32px;height:32px;font-size:0.62rem;">${th.mono}</span>
+                                <span style="font-size:0.75rem;font-weight:800;">${escXbEx(bk)}</span>
+                            </div>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:${isAct ? '#f43f5e' : '#38bdf8'};font-weight:800;">${isAct ? '● ACTIVE' : 'PILIH'}</span>
+                        </button>
+                    `;
+                }).join('') || `<div style="text-align:center;padding:16px;font-size:0.7rem;color:var(--text-muted);">Bank tidak ditemukan.</div>`;
+            }
+
+            function updateXbExIdrVisualCard() {
+                const st = window._xbExState;
+                const amt = parseFloat(st.idrAmountUsd || '0') || 0;
+                const q = calcXbExConvertIdrQuote(amt);
+                const numEl = document.getElementById('xbExVisCardNum');
+                const hldEl = document.getElementById('xbExVisCardHolder');
+                const netEl = document.getElementById('xbExVisCardNet');
+                const rawNum = String(st.idrDest || '').trim();
+                if (numEl) numEl.innerText = rawNum ? rawNum.replace(/(\d{4})(?=\d)/g, '$1 ') : '•••• •••• ••••';
+                if (hldEl) hldEl.innerText = String(st.idrHolder || '').trim().toUpperCase() || 'NAMA PENERIMA';
+                if (netEl) netEl.innerText = q.ready ? fmtXbExIdr(q.netIdr) : 'Syncing...';
+            }
+
             function updateXbExDynamicCalc() {
                 const st = window._xbExState;
                 const bal = getXbExWalletBal();
@@ -8081,6 +8551,12 @@
 
                     const eqEl = document.getElementById('xbExSwapIdrEq');
                     if (eqEl) eqEl.innerText = q.ready ? ('≈ ' + fmtXbExIdr(q.payIdr)) : 'Syncing IDR rate...';
+
+                    const sEl = document.getElementById('xbExSwapSlider');
+                    const pLbl = document.getElementById('xbExSwapSliderPct');
+                    const pct = bal > 0 ? Math.min(100, Math.round((pay / bal) * 100)) : 0;
+                    if (sEl && document.activeElement !== sEl) sEl.value = String(pct);
+                    if (pLbl) pLbl.innerText = pct + '%';
 
                     const spotEl = document.getElementById('xbExSwapSpotLbl');
                     if (spotEl) {
@@ -8129,6 +8605,8 @@
                     const fLbl = document.getElementById('xbExIdrFeeLbl');
                     if (fLbl && q.ready) fLbl.innerText = `$${q.feeUsd.toFixed(2)} (${q.effPct.toFixed(1)}%) + Rp 2.500`;
 
+                    updateXbExIdrVisualCard();
+
                     const btn = document.getElementById('xbExIdrSubmitBtn');
                     if (btn) {
                         if (!q.ready) {
@@ -8154,7 +8632,6 @@
                 if (!hub) return;
                 const st = window._xbExState;
 
-                // Preserve user typing focus when 10s background price refresh fires
                 if (!forceFull && hub.contains(document.activeElement) && document.activeElement.tagName === 'INPUT') {
                     const liveMeta = document.getElementById('xbExLiveMetaTxt');
                     if (liveMeta) liveMeta.innerText = `${st.feedSource} • ${st.lastSyncStr || 'Syncing...'}`;
@@ -8168,7 +8645,7 @@
 
                 let modeHtml = '';
 
-                // ---------------- MODE 1: INSTANT SWAP (UNIFIED PROGRESSIVE CURVE) ----------------
+                // ---------------- MODE 1: PRECISION SPLIT SWAP DESK ----------------
                 if (st.mode === 'swap') {
                     const coin = getXbExCoin(st.swapTo);
                     const spot = getXbExSpot(coin);
@@ -8178,6 +8655,8 @@
                     const chgSign = spot.chg >= 0 ? '+' : '';
                     const chgCol = spot.chg >= 0 ? '#34d399' : '#f87171';
                     const altCoin = coin.altCode ? getXbExCoin(coin.altCode) : null;
+                    const sliderPct = bal > 0 ? Math.min(100, Math.round((pay / bal) * 100)) : 0;
+                    const addrBadge = getXbExAddrStatus(st.swapAddr);
 
                     modeHtml = `
                         <div class="xb-ex-panel">
@@ -8190,25 +8669,42 @@
                                     <input type="number" step="any" min="0" class="xb-ex-amt-inp" id="xbExSwapPayInp"
                                         value="${escXbEx(st.swapPayUsd)}" placeholder="0.00"
                                         oninput="window._xbExState.swapPayUsd=this.value; updateXbExDynamicCalc();">
-                                    <span class="xb-ex-tok-btn" style="cursor:default;border-color:rgba(16,185,129,0.45);">
+                                    <span class="xb-ex-tok-btn" style="cursor:default;border-color:rgba(16,185,129,0.5);">
                                         <span style="width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
                                         <span>USDT</span>
                                     </span>
                                 </div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);" id="xbExSwapIdrEq">
+                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);" id="xbExSwapIdrEq">
                                     ${q.ready ? ('≈ ' + fmtXbExIdr(q.payIdr)) : 'Syncing IDR rate...'}
+                                </div>
+                                <div class="xb-ex-slider-row">
+                                    <input type="range" min="0" max="100" value="${sliderPct}" id="xbExSwapSlider" class="xb-ex-slider"
+                                        oninput="onXbExSwapSlider(this.value)">
+                                    <span id="xbExSwapSliderPct" class="xb-ex-slider-pct">${sliderPct}%</span>
                                 </div>
                             </div>
 
                             <div class="xb-ex-presets">
-                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(1)">$1</button>
-                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(3)">$3</button>
-                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(10)">$10</button>
-                                <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(Math.floor(getXbExWalletBal()*100)/100)">MAX</button>
+                                ${bal >= 4 ? `
+                                    <button type="button" class="xb-ex-pre-btn" onclick="onXbExSwapSlider(10)">10%</button>
+                                    <button type="button" class="xb-ex-pre-btn" onclick="onXbExSwapSlider(25)">25%</button>
+                                    <button type="button" class="xb-ex-pre-btn" onclick="onXbExSwapSlider(50)">50%</button>
+                                    <button type="button" class="xb-ex-pre-btn" style="color:#f43f5e;border-color:rgba(244,63,94,0.45);" onclick="onXbExSwapSlider(100)">MAX</button>
+                                ` : `
+                                    <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(1)">$1</button>
+                                    <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(3)">$3</button>
+                                    <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(10)">$10</button>
+                                    <button type="button" class="xb-ex-pre-btn" style="color:#f43f5e;border-color:rgba(244,63,94,0.45);" onclick="setXbExSwapAmt(Math.floor(getXbExWalletBal()*100)/100)">MAX</button>
+                                `}
                             </div>
 
-                            <div class="xb-ex-flip-wrap">
+                            <div class="xb-ex-bridge-row">
                                 <button type="button" class="xb-ex-flip-btn" title="Select Output Coin" onclick="openXbExTokenPicker('swap')">⇅</button>
+                                <div class="xb-ex-bridge-pill" id="xbExSwapSpotLbl">
+                                    ${spot.ready
+                                        ? `1 ${coin.sym} = <b>${fmtXbExUsdPrice(spot.usd)}</b> <span style="color:${chgCol};">(${chgSign}${spot.chg.toFixed(2)}%)</span>`
+                                        : `<span style="color:#fbbf24;">Fetching live price...</span>`}
+                                </div>
                             </div>
 
                             <div class="xb-ex-well">
@@ -8220,16 +8716,11 @@
                                     <div class="xb-ex-amt-inp" id="xbExSwapRecvOut" style="color:#38bdf8;overflow:hidden;text-overflow:ellipsis;">
                                         ${(q.ready && spot.ready) ? fmtXbExTokenQty(recvQty, spot.usd) : 'Fetching...'}
                                     </div>
-                                    <button type="button" class="xb-ex-tok-btn" onclick="openXbExTokenPicker('swap')">
+                                    <button type="button" class="xb-ex-tok-btn" style="border-color:rgba(56,189,248,0.5);" onclick="openXbExTokenPicker('swap')">
                                         <span style="width:8px;height:8px;border-radius:50%;background:${coin.color};"></span>
                                         <span>${escXbEx(coin.sym)}</span>
-                                        <span style="font-size:0.55rem;opacity:0.75;">▼</span>
+                                        <span style="font-size:0.55rem;opacity:0.8;">▼</span>
                                     </button>
-                                </div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);" id="xbExSwapSpotLbl">
-                                    ${spot.ready
-                                        ? `1 ${coin.sym} = <b>${fmtXbExUsdPrice(spot.usd)}</b> <span style="color:${chgCol};">(${chgSign}${spot.chg.toFixed(2)}%)</span>`
-                                        : `<span style="color:#fbbf24;">Fetching real-time price...</span>`}
                                 </div>
                             </div>
 
@@ -8241,22 +8732,25 @@
                             ` : ''}
 
                             <div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">
-                                    DESTINATION WALLET ADDRESS (${escXbEx(coin.net.toUpperCase())})
+                                <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">
+                                    <span>DESTINATION (${escXbEx(coin.net.toUpperCase())})</span>
+                                    <span id="xbExSwapAddrBadge" style="color:${addrBadge.col};">${addrBadge.txt}</span>
                                 </div>
-                                <input type="text" class="xb-ex-input" id="xbExSwapAddrInp"
-                                    value="${escXbEx(st.swapAddr)}" placeholder="Paste your ${escXbEx(coin.sym)} (${escXbEx(coin.net)}) address..."
-                                    oninput="window._xbExState.swapAddr=this.value;">
+                                <div class="xb-ex-addr-wrap">
+                                    <input type="text" class="xb-ex-input" id="xbExSwapAddrInp" style="height:37px;"
+                                        value="${escXbEx(st.swapAddr)}" placeholder="Paste ${escXbEx(coin.sym)} (${escXbEx(coin.net)}) address..."
+                                        oninput="window._xbExState.swapAddr=this.value; const b=document.getElementById('xbExSwapAddrBadge'), i=getXbExAddrStatus(this.value); if(b){b.innerText=i.txt;b.style.color=i.col;}">
+                                    <button type="button" class="xb-ex-paste-btn" onclick="pasteXbExAddr('swap')">📋 Paste</button>
+                                </div>
                             </div>
 
                             <div class="xb-ex-quote-box">
-                                <div class="xb-ex-qrow"><span>Market Feed</span><b style="color:#34d399;">${escXbEx(st.feedSource)}</b></div>
                                 <div class="xb-ex-qrow"><span>Service Fee (Tiered)</span><b id="xbExSwapFeeLbl">${q.ready ? `$${q.marginUsd.toFixed(2)} (${q.effMarginPct.toFixed(1)}%)` : '...'}</b></div>
                                 <div class="xb-ex-qrow"><span>Network Delivery Fee</span><b id="xbExSwapNetFeeLbl">${q.ready ? `$${q.netFeeUsd.toFixed(2)} (Class ${coin.tier})` : '...'}</b></div>
                                 <div class="xb-ex-qrow"><span>Est. Receive</span><b id="xbExSwapNetLbl" style="color:#38bdf8;">${(q.ready && spot.ready) ? `${fmtXbExTokenQty(recvQty, spot.usd)} ${coin.sym} (~$${q.buyerNetUsd.toFixed(2)})` : 'Waiting live feed'}</b></div>
                             </div>
 
-                            <button type="button" id="xbExSwapSubmitBtn" class="btn-ui primary" style="width:100%;height:42px;font-size:0.74rem;border-radius:11px;"
+                            <button type="button" id="xbExSwapSubmitBtn" class="btn-ui primary" style="width:100%;height:41px;font-size:0.74rem;border-radius:11px;border:1px solid rgba(244,63,94,0.45);"
                                 ${(!q.ready || !spot.ready) ? 'disabled' : ''} onclick="submitXbExSwapOrder()">
                                 ${(!q.ready || !spot.ready)
                                     ? '⏳ Fetching Real-Time Price...'
@@ -8268,7 +8762,7 @@
                     `;
                 }
 
-                // ---------------- MODE 2: BUY CRYPTO (RETAIL GAS PACKS — UNIFIED PROGRESSIVE) ----------------
+                // ---------------- MODE 2: BUY CRYPTO (HORIZONTAL STRIPS + 2x3 TICKETS) ----------------
                 else if (st.mode === 'gas') {
                     const catCoins = XB_EX_COINS.filter(c => c.cat === st.gasCat);
                     let activeCoin = catCoins.find(c => c.code === st.gasCoin);
@@ -8279,7 +8773,6 @@
                     const spot = getXbExSpot(activeCoin);
                     const idrRate = st.liveIdr > 1000 ? st.liveIdr : 0;
 
-                    // Auto-jump selected pack to first pack >= activeCoin.minIdr
                     let curPkg = XB_EX_GAS_PKGS[st.gasPkgIdx] || XB_EX_GAS_PKGS[0];
                     if (curPkg.idr < activeCoin.minIdr) {
                         const validIdx = XB_EX_GAS_PKGS.findIndex(p => p.idr >= activeCoin.minIdr);
@@ -8291,38 +8784,37 @@
                     const qSel = calcXbExProgressiveQuote(payUsdSel, activeCoin);
                     const estTokens = (qSel.ready && spot.ready && spot.usd > 0) ? (qSel.buyerNetUsd / spot.usd) : 0;
                     const altCoin = activeCoin.altCode ? getXbExCoin(activeCoin.altCode) : null;
+                    const gasAddrBadge = getXbExAddrStatus(st.gasAddr);
 
                     modeHtml = `
                         <div class="xb-ex-panel">
                             <div style="display:flex;justify-content:space-between;align-items:center;">
-                                <span style="font-size:0.72rem;font-weight:800;color:var(--text-primary);">⛽ Retail Crypto &amp; L2 Gas Station</span>
+                                <span style="font-size:0.72rem;font-weight:800;color:var(--text-primary);">⛽ Retail Crypto &amp; L2 Gas</span>
                                 <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#34d399;font-weight:800;">BAL: $${bal.toFixed(2)}</span>
                             </div>
 
-                            <div class="xb-ex-cat-grid">
+                            <div class="xb-ex-hscroll">
                                 ${XB_EX_GAS_CATS.map(cat => `
-                                    <button type="button" class="xb-ex-cat-btn ${st.gasCat === cat.k ? 'active' : ''}"
+                                    <button type="button" class="xb-ex-eco-chip ${st.gasCat === cat.k ? 'active' : ''}"
                                         onclick="window._xbExState.gasCat='${cat.k}'; renderXbExBody(true);">
                                         ${cat.lbl}
                                     </button>
                                 `).join('')}
                             </div>
 
-                            <div class="xb-ex-coin-grid">
+                            <div class="xb-ex-hscroll">
                                 ${catCoins.map(c => {
                                     const sp = getXbExSpot(c);
                                     const isAct = c.code === activeCoin.code;
                                     return `
-                                        <button type="button" class="xb-ex-coin-card ${isAct ? 'active' : ''}"
+                                        <button type="button" class="xb-ex-net-chip ${isAct ? 'active' : ''}"
                                             onclick="window._xbExState.gasCoin='${c.code}'; renderXbExBody(true);">
-                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
                                                 <span style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${c.sym}</span>
-                                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:#34d399;">${sp.ready ? fmtXbExUsdPrice(sp.usd) : '...'}</span>
+                                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:#34d399;">${sp.ready ? fmtXbExUsdPrice(sp.usd) : '...'}</span>
                                             </div>
-                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;font-family:'JetBrains Mono',monospace;font-size:0.49rem;color:var(--text-muted);">
-                                                <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${c.net}</span>
-                                                <span style="color:#38bdf8;flex-shrink:0;">Fee $${c.netFeeUsd.toFixed(2)}</span>
-                                            </div>
+                                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;color:var(--text-muted);white-space:nowrap;">${c.net}</div>
+                                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.47rem;color:#38bdf8;font-weight:800;">Fee $${c.netFeeUsd.toFixed(2)}</div>
                                         </button>
                                     `;
                                 }).join('')}
@@ -8331,12 +8823,12 @@
                             ${altCoin ? `
                                 <button type="button" onclick="window._xbExState.gasCat='${altCoin.cat}'; window._xbExState.gasCoin='${altCoin.code}'; renderXbExBody(true);"
                                     style="width:100%;text-align:left;padding:7px 9px;border-radius:9px;border:1px solid rgba(251,191,36,0.45);background:rgba(245,158,11,0.1);color:#fbbf24;font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;cursor:pointer;">
-                                    💡 High-Fee Chain (Min ${fmtXbExIdr(activeCoin.minIdr)}): Tap for cheaper ${escXbEx(altCoin.sym)} on ${escXbEx(altCoin.net)} (Fee $${altCoin.netFeeUsd.toFixed(2)}) ➔
+                                    💡 High-Fee Chain (Min ${fmtXbExIdr(activeCoin.minIdr)}): Switch to ${escXbEx(altCoin.sym)} on ${escXbEx(altCoin.net)} (Fee $${altCoin.netFeeUsd.toFixed(2)}) ➔
                                 </button>
                             ` : ''}
 
-                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);">
-                                <span>SELECT RETAIL PACK (CLASS ${escXbEx(activeCoin.tier)})</span>
+                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.51rem;font-weight:800;color:var(--text-muted);">
+                                <span>SELECT RETAIL TICKET (CLASS ${escXbEx(activeCoin.tier)})</span>
                                 <span style="color:#38bdf8;">NET FEE $${activeCoin.netFeeUsd.toFixed(2)}</span>
                             </div>
 
@@ -8348,9 +8840,9 @@
                                     const tk = (!locked && qPk.ready && spot.ready && spot.usd > 0) ? fmtXbExTokenQty(qPk.buyerNetUsd / spot.usd, spot.usd) : '...';
                                     return `
                                         <button type="button" class="xb-ex-pkg-card ${st.gasPkgIdx === idx ? 'active' : ''}"
-                                            ${locked ? 'disabled style="opacity:0.38;cursor:not-allowed;"' : ''}
+                                            ${locked ? 'disabled style="opacity:0.36;cursor:not-allowed;"' : ''}
                                             onclick="window._xbExState.gasPkgIdx=${idx}; renderXbExBody(true);">
-                                            <div style="font-size:0.46rem;color:var(--text-muted);font-weight:800;">${locked ? '🔒 LOCKED' : pk.tag}</div>
+                                            <div style="font-size:0.45rem;color:${st.gasPkgIdx === idx ? '#fb7185' : 'var(--text-muted)'};font-weight:800;">${locked ? '🔒 LOCKED' : pk.tag}</div>
                                             <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);margin:2px 0;">${pk.lbl}</div>
                                             <div style="font-size:0.5rem;color:#34d399;font-weight:800;">${idrRate > 0 ? ('$' + pUsd.toFixed(2)) : '...'}</div>
                                             <div style="font-size:0.46rem;color:#38bdf8;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${locked ? ('Min ' + fmtXbExIdr(activeCoin.minIdr)) : ('≈ ' + tk + ' ' + activeCoin.sym)}</div>
@@ -8361,20 +8853,23 @@
 
                             <div class="xb-ex-quote-box">
                                 <div class="xb-ex-qrow"><span>Selected Pack</span><b>${curPkg.lbl} ($${payUsdSel.toFixed(2)} USDT)</b></div>
-                                <div class="xb-ex-qrow"><span>Network Delivery Fee</span><b>$${activeCoin.netFeeUsd.toFixed(2)} (Class ${activeCoin.tier})</b></div>
                                 <div class="xb-ex-qrow"><span>Buyer Net Receive</span><b style="color:#34d399;">${(qSel.ready && spot.ready) ? `≈ ${fmtXbExTokenQty(estTokens, spot.usd)} ${activeCoin.sym} (~$${qSel.buyerNetUsd.toFixed(2)})` : 'Fetching...'}</b></div>
                             </div>
 
                             <div>
-                                <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">
-                                    RECIPIENT WALLET (${escXbEx(activeCoin.sym)} • ${escXbEx(activeCoin.net)})
+                                <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">
+                                    <span>RECIPIENT (${escXbEx(activeCoin.sym)} • ${escXbEx(activeCoin.net)})</span>
+                                    <span id="xbExGasAddrBadge" style="color:${gasAddrBadge.col};">${gasAddrBadge.txt}</span>
                                 </div>
-                                <input type="text" class="xb-ex-input" id="xbExGasAddrInp"
-                                    value="${escXbEx(st.gasAddr)}" placeholder="Paste wallet address on ${escXbEx(activeCoin.net)}..."
-                                    oninput="window._xbExState.gasAddr=this.value;">
+                                <div class="xb-ex-addr-wrap">
+                                    <input type="text" class="xb-ex-input" id="xbExGasAddrInp" style="height:37px;"
+                                        value="${escXbEx(st.gasAddr)}" placeholder="Paste wallet on ${escXbEx(activeCoin.net)}..."
+                                        oninput="window._xbExState.gasAddr=this.value; const b=document.getElementById('xbExGasAddrBadge'), i=getXbExAddrStatus(this.value); if(b){b.innerText=i.txt;b.style.color=i.col;}">
+                                    <button type="button" class="xb-ex-paste-btn" onclick="pasteXbExAddr('gas')">📋 Paste</button>
+                                </div>
                             </div>
 
-                            <button type="button" class="btn-ui primary" style="width:100%;height:42px;font-size:0.74rem;border-radius:11px;"
+                            <button type="button" class="btn-ui primary" style="width:100%;height:41px;font-size:0.74rem;border-radius:11px;border:1px solid rgba(244,63,94,0.45);"
                                 ${(!qSel.ready || !spot.ready) ? 'disabled' : ''} onclick="submitXbExGasOrder()">
                                 ${(!qSel.ready || !spot.ready)
                                     ? '⏳ Fetching Real-Time Price...'
@@ -8384,15 +8879,39 @@
                     `;
                 }
 
-                // ---------------- MODE 3: CONVERT TO IDR (TRANSFER BANK & E-WALLET) ----------------
+                // ---------------- MODE 3: CONVERT TO IDR (LIVE VISUAL PAYOUT CARD) ----------------
                 else {
                     st.mode = 'idr';
                     const amt = parseFloat(st.idrAmountUsd || '0') || 0;
                     const q = calcXbExConvertIdrQuote(amt);
                     const prov = getXbExActiveIdrProvider();
+                    const pTheme = XB_EX_BANK_THEMES[prov.provider] || { bg: 'linear-gradient(135deg,#0f172a,#1d4ed8)', mono: prov.provider.slice(0, 3).toUpperCase() };
+                    const dispNum = String(st.idrDest || '').trim() ? String(st.idrDest).trim().replace(/(\d{4})(?=\d)/g, '$1 ') : '•••• •••• ••••';
+                    const dispHolder = String(st.idrHolder || '').trim().toUpperCase() || 'NAMA PENERIMA';
 
                     modeHtml = `
                         <div class="xb-ex-panel">
+                            <!-- LIVE DYNAMIC PAYOUT CARD -->
+                            <div class="xb-ex-payout-card" style="background:${pTheme.bg};">
+                                <div class="xb-ex-payout-top">
+                                    <div style="display:flex;align-items:center;gap:8px;">
+                                        <span class="xb-ex-monogram">${pTheme.mono}</span>
+                                        <div>
+                                            <div style="font-size:0.76rem;font-weight:800;line-height:1.1;">${escXbEx(prov.provider)}</div>
+                                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;opacity:0.85;">${escXbEx(prov.typeLabel.toUpperCase())} • INSTANT PAYOUT</div>
+                                        </div>
+                                    </div>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;padding:2px 7px;border-radius:99px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.28);">IDR DESK</span>
+                                </div>
+                                <div class="xb-ex-payout-mid" style="padding:2px 0;">
+                                    <span id="xbExVisCardNum" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:800;letter-spacing:1.2px;">${escXbEx(dispNum)}</span>
+                                </div>
+                                <div class="xb-ex-payout-bot">
+                                    <span id="xbExVisCardHolder" style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:700;opacity:0.92;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:52%;">${escXbEx(dispHolder)}</span>
+                                    <span id="xbExVisCardNet" style="font-family:'JetBrains Mono',monospace;font-size:0.78rem;font-weight:900;color:#a7f3d0;">${q.ready ? fmtXbExIdr(q.netIdr) : 'Syncing...'}</span>
+                                </div>
+                            </div>
+
                             <div class="xb-ex-well">
                                 <div class="xb-ex-well-top">
                                     <span>CONVERT FROM WALLET (MIN $3.00)</span>
@@ -8402,7 +8921,7 @@
                                     <input type="number" step="any" min="0" class="xb-ex-amt-inp" id="xbExIdrAmtInp"
                                         value="${escXbEx(st.idrAmountUsd)}" placeholder="0.00"
                                         oninput="window._xbExState.idrAmountUsd=this.value; updateXbExDynamicCalc();">
-                                    <span class="xb-ex-tok-btn" style="cursor:default;">USDT</span>
+                                    <span class="xb-ex-tok-btn" style="cursor:default;border-color:rgba(16,185,129,0.5);">USDT</span>
                                 </div>
                             </div>
 
@@ -8413,7 +8932,6 @@
                                 <button type="button" class="xb-ex-pre-btn" onclick="setXbExIdrAmt(50)">$50</button>
                             </div>
 
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);">METODE PENCAIRAN (INDONESIA)</div>
                             <div class="xb-ex-pay-grid">
                                 <button type="button" class="xb-ex-pay-btn ${prov.isBank ? 'active' : ''}"
                                     onclick="window._xbExState.idrPayType='bank'; renderXbExBody(true);">
@@ -8426,39 +8944,36 @@
                             </div>
 
                             ${prov.isBank ? `
-                                <div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">PILIH BANK TUJUAN</div>
-                                    <select class="xb-ex-input" style="cursor:pointer;"
-                                        onchange="window._xbExState.idrBank=this.value; renderXbExBody(true);">
-                                        ${XB_EX_IDR_BANKS.map(bk => `<option value="${escXbEx(bk)}" ${prov.provider === bk ? 'selected' : ''}>🏦 ${escXbEx(bk)}</option>`).join('')}
-                                    </select>
-                                </div>
+                                <button type="button" class="xb-ex-bank-pick-btn" onclick="openXbExBankPicker()">
+                                    <span style="display:inline-flex;align-items:center;gap:8px;">
+                                        <span class="xb-ex-monogram" style="background:${pTheme.bg};width:24px;height:24px;font-size:0.52rem;">${pTheme.mono}</span>
+                                        <span>${escXbEx(prov.provider)}</span>
+                                    </span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#38bdf8;">Ganti Bank ▼</span>
+                                </button>
                             ` : `
-                                <div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">PILIH E-WALLET TUJUAN</div>
-                                    <div class="xb-ex-ewallet-grid">
-                                        ${XB_EX_IDR_EWALLETS.map(ew => `
-                                            <button type="button" class="xb-ex-pay-btn ${prov.provider === ew ? 'active' : ''}" style="padding:7px 4px;font-size:0.62rem;"
-                                                onclick="window._xbExState.idrEwallet='${escXbEx(ew)}'; renderXbExBody(true);">
-                                                ${escXbEx(ew)}
-                                            </button>
-                                        `).join('')}
-                                    </div>
+                                <div class="xb-ex-ewallet-grid">
+                                    ${XB_EX_IDR_EWALLETS.map(ew => `
+                                        <button type="button" class="xb-ex-pay-btn ${prov.provider === ew ? 'active' : ''}" style="padding:7px 4px;font-size:0.62rem;"
+                                            onclick="window._xbExState.idrEwallet='${escXbEx(ew)}'; renderXbExBody(true);">
+                                            ${escXbEx(ew)}
+                                        </button>
+                                    `).join('')}
                                 </div>
                             `}
 
                             <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;">
                                 <div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">${escXbEx(prov.numLabel)}</div>
-                                    <input type="text" inputmode="${prov.isBank ? 'numeric' : 'tel'}" class="xb-ex-input"
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">${escXbEx(prov.numLabel)}</div>
+                                    <input type="text" inputmode="${prov.isBank ? 'numeric' : 'tel'}" class="xb-ex-input" style="height:36px;"
                                         value="${escXbEx(st.idrDest)}" placeholder="${escXbEx(prov.numPlaceholder)}"
-                                        oninput="window._xbExState.idrDest=this.value;">
+                                        oninput="window._xbExState.idrDest=this.value; updateXbExIdrVisualCard();">
                                 </div>
                                 <div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">${escXbEx(prov.holderLabel)}</div>
-                                    <input type="text" class="xb-ex-input"
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">${escXbEx(prov.holderLabel)}</div>
+                                    <input type="text" class="xb-ex-input" style="height:36px;"
                                         value="${escXbEx(st.idrHolder)}" placeholder="Nama Lengkap"
-                                        oninput="window._xbExState.idrHolder=this.value;">
+                                        oninput="window._xbExState.idrHolder=this.value; updateXbExIdrVisualCard();">
                                 </div>
                             </div>
 
@@ -8468,7 +8983,7 @@
                                 <div class="xb-ex-qrow"><span>Net IDR Received</span><b id="xbExIdrNetOut" style="color:#34d399;font-size:0.74rem;">${q.ready ? fmtXbExIdr(q.netIdr) : 'Fetching rate...'}</b></div>
                             </div>
 
-                            <button type="button" id="xbExIdrSubmitBtn" class="btn-ui primary" style="width:100%;height:42px;font-size:0.74rem;border-radius:11px;"
+                            <button type="button" id="xbExIdrSubmitBtn" class="btn-ui primary" style="width:100%;height:41px;font-size:0.74rem;border-radius:11px;border:1px solid rgba(244,63,94,0.45);"
                                 ${!q.ready ? 'disabled' : ''} onclick="submitXbExIdrOrder()">
                                 ${!q.ready
                                     ? '⏳ Fetching Live USD/IDR Rate...'
@@ -8487,7 +9002,7 @@
                             </span>
                         </span>
                         <button type="button" onclick="refreshXbExLivePrices(true)"
-                            style="border:1px solid var(--ex-hairline);background:var(--bg-input);color:#38bdf8;border-radius:7px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;cursor:pointer;flex-shrink:0;">
+                            style="border:1px solid rgba(56,189,248,0.45);background:rgba(56,189,248,0.1);color:#38bdf8;border-radius:7px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;cursor:pointer;flex-shrink:0;">
                             ↻ ${st.lastSyncStr ? st.lastSyncStr.replace(' WIB','') : 'SYNC'}
                         </button>
                     </div>
@@ -8684,6 +9199,24 @@
                 });
             }
 
+            function onXbExPinPadKey(k) {
+                const inp = document.getElementById('xbExPinInp');
+                if (!inp) return;
+                let cur = String(inp.value || '');
+                if (k === 'CLR') cur = '';
+                else if (k === 'DEL') cur = cur.slice(0, -1);
+                else if (cur.length < 6) cur += String(k);
+                inp.value = cur;
+                document.querySelectorAll('#xbExPinDots .xb-ex-pin-dot').forEach((d, idx) => {
+                    d.classList.toggle('filled', idx < cur.length);
+                });
+                const errEl = document.getElementById('xbExPinErr');
+                if (errEl) errEl.innerText = '';
+                if (cur.length === 6) {
+                    setTimeout(() => executeXbExConfirmedOrder(), 120);
+                }
+            }
+
             function openXbExPinConfirmModal(orderObj) {
                 window._xbExState.pendingOrder = orderObj;
                 const hasRealPin = Boolean(
@@ -8691,6 +9224,7 @@
                     (localStorage.getItem('xb_user_pin') && /^\d{6}$/.test(localStorage.getItem('xb_user_pin')))
                 );
                 const root = ensureXbExModalRoot();
+                const keys = ['1','2','3','4','5','6','7','8','9','CLR','0','DEL'];
 
                 root.innerHTML = `
                     <div class="xb-ex-modal-box">
@@ -8703,28 +9237,26 @@
                             <div class="xb-ex-qrow"><span>Order</span><b>${escXbEx(orderObj.title)}</b></div>
                             <div class="xb-ex-qrow"><span>Wallet Deduction</span><b style="color:#f87171;">-$${orderObj.payUsdt.toFixed(2)} USDT</b></div>
                             <div class="xb-ex-qrow"><span>Receive</span><b style="color:#34d399;">${escXbEx(orderObj.receiveText)}</b></div>
-                            <div class="xb-ex-qrow"><span>Spot / Rate</span><b>${escXbEx(orderObj.rateText)}</b></div>
                             <div class="xb-ex-qrow"><span>Destination</span><b style="max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escXbEx(orderObj.destination)}</b></div>
                         </div>
 
-                        <div>
-                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:var(--text-muted);margin-bottom:5px;">
-                                ${hasRealPin ? 'ENTER YOUR 6-DIGIT WALLET PIN TO AUTHORIZE' : 'CREATE & ENTER YOUR 6-DIGIT WALLET PIN'}
+                        <div style="text-align:center;">
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:#38bdf8;">
+                                ${hasRealPin ? 'ENTER YOUR 6-DIGIT WALLET PIN' : 'CREATE & ENTER YOUR 6-DIGIT PIN'}
                             </div>
-                            <input type="password" inputmode="numeric" maxlength="6" class="xb-ex-input" id="xbExPinInp"
-                                style="text-align:center;font-size:1.1rem;letter-spacing:8px;height:44px;" placeholder="••••••"
-                                onkeydown="if(event.key==='Enter') executeXbExConfirmedOrder();">
-                            <div id="xbExPinErr" style="font-size:0.62rem;color:#f87171;font-weight:700;margin-top:5px;min-height:14px;"></div>
-                        </div>
-
-                        <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:7px;">
-                            <button type="button" class="btn-ui secondary" style="height:40px;font-size:0.72rem;border-radius:10px;" onclick="closeXbExModal()">Cancel</button>
-                            <button type="button" class="btn-ui primary" style="height:40px;font-size:0.74rem;border-radius:10px;" onclick="executeXbExConfirmedOrder()">✅ Authorize &amp; Pay</button>
+                            <input type="hidden" id="xbExPinInp" value="">
+                            <div class="xb-ex-pin-dots" id="xbExPinDots">
+                                <span class="xb-ex-pin-dot"></span><span class="xb-ex-pin-dot"></span><span class="xb-ex-pin-dot"></span>
+                                <span class="xb-ex-pin-dot"></span><span class="xb-ex-pin-dot"></span><span class="xb-ex-pin-dot"></span>
+                            </div>
+                            <div id="xbExPinErr" style="font-size:0.6rem;color:#f87171;font-weight:700;min-height:14px;margin-bottom:4px;"></div>
+                            <div class="xb-ex-pin-pad">
+                                ${keys.map(k => `<button type="button" class="xb-ex-pin-key" style="${k==='CLR'||k==='DEL'?'font-size:0.68rem;color:var(--text-muted);':''}" onclick="onXbExPinPadKey('${k}')">${k==='DEL'?'⌫':k}</button>`).join('')}
+                            </div>
                         </div>
                     </div>
                 `;
                 root.classList.add('open');
-                setTimeout(() => { const el = document.getElementById('xbExPinInp'); if (el) el.focus(); }, 60);
             }
 
             function executeXbExConfirmedOrder() {
@@ -12785,27 +13317,27 @@
                 || (_mpDrawerTab === 'games_ppob' && _vis.mp_games_ppob);
 
             wrap.innerHTML = `
-                <!-- BARIS 1: GITHUB MARKETPLACE (VIP KIRI • [LOGO] JUDUL [LOGO] + SUB + PRIMARY ACTIVE • GLOBAL SALES KANAN) -->
+                <!-- BARIS 1: GITHUB MARKETPLACE (LOGO POJOK 30PX SAMA BOOST • VIP/GLOBAL SALES SEJAJAR BARIS BAWAH) -->
                 <div role="button" tabindex="0" class="xb-hero-plat-card is-mp-hero ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
-                    <div class="xb-hero-mp-row">
+                    <div class="xb-hero-plat-top">
+                        <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
+                        <span class="xb-hero-plat-title">GitHub Marketplace</span>
+                        <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
+                    </div>
+                    <div class="xb-hero-mp-bottom">
                         <button type="button" class="xb-ex-col-act-btn vip xb-hero-corner-btn" onclick="event.stopPropagation(); openLeaderboardModal()">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M6 3h12l4 6-10 12L2 9z" fill="rgba(56,189,248,0.28)" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="M2 9h20M12 3l-3.5 6L12 21l3.5-12L12 3z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/></svg>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M6 3h12l4 6-10 12L2 9z" fill="rgba(56,189,248,0.28)" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="M2 9h20M12 3l-3.5 6L12 21l3.5-12L12 3z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/></svg>
                             <span>VIP Ranking</span>
                         </button>
                         <div class="xb-hero-mp-center">
-                            <div class="xb-hero-mp-title-row">
-                                <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
-                                <span class="xb-hero-plat-title">GitHub Marketplace</span>
-                                <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
-                            </div>
-                            <div class="xb-hero-plat-sub">Aged GitHub Account - Special Tiers</div>
+                            <div class="xb-hero-plat-sub">Aged GitHub Account • Special Developer Tier</div>
                             <div class="xb-hero-plat-meta">
                                 <span class="xb-mp-prim-pill">PRIMARY</span>
                                 <span class="xb-mp-cnt-pill">${isGh ? '● ACTIVE' : 'SELECT'}</span>
                             </div>
                         </div>
                         <button type="button" class="xb-ex-col-act-btn sales xb-hero-corner-btn" onclick="event.stopPropagation(); openStoreGlobal3DTelemetry()">
-                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="18" y1="20" x2="18" y2="10"/></svg>
+                            <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="18" y1="20" x2="18" y2="10"/></svg>
                             <span>Global Sales</span>
                         </button>
                     </div>
@@ -30836,7 +31368,7 @@ let _ghAgeCheckerResults = [];
 
             // Marketplace
             ['GitHub Marketplace', 'Pasar GitHub'],
-            ['Aged GitHub Account - Special Tiers', 'Akun GitHub Tua - Tingkatan Spesial'],
+            ['Aged GitHub Account • Special Developer Tier', 'Akun GitHub Tua • Tier Developer Spesial'],
             ['Aged 2011–2026 • Rare Badges • Full 2FA', 'Akun 2011–2026 • Lencana Langka • 2FA Lengkap'],
             ['PRIMARY', 'UTAMA'],
             ['Social Media', 'Media Sosial'],
