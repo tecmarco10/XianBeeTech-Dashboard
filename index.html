@@ -1998,6 +1998,43 @@
         .xb-ex-icon-btn.adm { background: linear-gradient(135deg, rgba(29,78,216,0.38) 0%, rgba(124,58,237,0.42) 100%); border-color: rgba(255,255,255,0.32); color: #ffffff; }
         [data-theme="platinum"] .xb-ex-icon-btn { background: #ffffff; border-color: rgba(79,70,229,0.22); }
         [data-theme="platinum"] .xb-ex-icon-btn.cart, [data-theme="platinum"] .xb-ex-icon-btn.adm { background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%); color: #ffffff; }
+        .xb-lang-switch {
+            height: 31px;
+            padding: 2px;
+            border-radius: 9px;
+            border: 1px solid var(--ex-hairline);
+            background: var(--bg-input);
+            display: inline-flex;
+            align-items: center;
+            gap: 2px;
+            flex-shrink: 0;
+        }
+        .xb-lang-btn {
+            height: 25px;
+            min-width: 24px;
+            padding: 0 5px;
+            border-radius: 7px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.56rem;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.16s ease;
+            line-height: 1;
+        }
+        .xb-lang-btn.active {
+            background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
+            color: #ffffff;
+            box-shadow: 0 2px 8px rgba(79, 70, 229, 0.38);
+        }
+        [data-theme="platinum"] .xb-lang-switch {
+            background: #e2e8f0;
+            border-color: rgba(79, 70, 229, 0.22);
+        }
+        [data-theme="platinum"] .xb-lang-btn { color: #475569; }
+        [data-theme="platinum"] .xb-lang-btn.active { color: #ffffff; }
 
         /* SINGLE-LAYER FLOATING ROUNDED DOCK (NO DOUBLE BOX / NO STRAY LINES) */
         .xb-ex-dock { position: relative; width: 100%; height: 60px; background: #0b1124; border: 1px solid rgba(148, 163, 184, 0.22); border-radius: 18px; box-shadow: 0 10px 28px rgba(0, 0, 0, 0.58); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; gap: 4px; padding: 4px; overflow: hidden; pointer-events: auto; }
@@ -5853,6 +5890,10 @@
             </div>
 
             <div class="xp-top-ctrls">
+                <div class="xb-lang-switch" id="authLangSwitch" data-no-i18n="1" style="height:27px;" title="Switch Language (ID / EN)">
+                    <button type="button" class="xb-lang-btn" style="height:21px;" data-lang="ID" onclick="setAppLanguage('ID')">ID</button>
+                    <button type="button" class="xb-lang-btn active" style="height:21px;" data-lang="EN" onclick="setAppLanguage('EN')">EN</button>
+                </div>
                 <button type="button" class="xp-rate-pill" onclick="toggleCurrency()" title="Toggle USDT / IDR">
                     1 USDT = <span id="authLiveIdrTicker">Rp 16.250</span>
                 </button>
@@ -8292,6 +8333,11 @@
                             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                             <input type="text" id="globalExchangeSearch" class="xb-ex-search-input" placeholder="Search @user, 2011–2026, Arctic..." oninput="handleGlobalExchangeSearch(this.value)">
                             <button type="button" id="globalSearchClearBtn" class="xb-ex-search-clear" onclick="clearGlobalExchangeSearch()">✕</button>
+                        </div>
+
+                        <div class="xb-lang-switch" id="topLangSwitch" data-no-i18n="1" title="Switch Language (ID / EN)">
+                            <button type="button" class="xb-lang-btn" data-lang="ID" onclick="setAppLanguage('ID')">ID</button>
+                            <button type="button" class="xb-lang-btn active" data-lang="EN" onclick="setAppLanguage('EN')">EN</button>
                         </div>
 
                         <button class="xb-ex-icon-btn" type="button" onclick="openStoreGlobal3DTelemetry()" title="Global Store 3D Telemetry" style="padding:0 7px;color:#38bdf8;">
@@ -28444,7 +28490,8 @@ let _ghAgeCheckerResults = [];
                 const st = getComputedStyle(el);
                 if (st.position !== 'fixed') continue;
                 const txt = el.innerText || '';
-                if (txt.includes('Market') && txt.includes('Boost') && (txt.includes('Wallet') || txt.includes('Profile'))) {
+                const isNavDock = el.classList.contains('bottom-nav') || ((txt.includes('Market') || txt.includes('Pasar')) && txt.includes('Boost'));
+                if (isNavDock) {
                     const rc = el.getBoundingClientRect();
                     if (rc.height > 25 && rc.height < 130) {
                         dockEl = el;
@@ -28490,7 +28537,7 @@ let _ghAgeCheckerResults = [];
                 const st = getComputedStyle(el);
                 if (st.position !== 'fixed') continue;
                 const txt = el.innerText || '';
-                if (!txt.includes('in Cart') && !txt.includes('Make Offer')) continue;
+                if (el.id !== 'floatingCartBar' && !txt.includes('in Cart') && !txt.includes('Make Offer') && !txt.includes('di Keranjang') && !txt.includes('Tawar')) continue;
                 const rc = el.getBoundingClientRect();
                 if (rc.height > 140) continue;
                 cartEl = el;
@@ -29985,10 +30032,1089 @@ let _ghAgeCheckerResults = [];
             return unlocked;
         };
 
+        // =========================================================
+        // 🌐 ZERO-LEAK BIDIRECTIONAL LANGUAGE ENGINE (EN ⇄ ID)
+        // =========================================================
+        window.currentLang = localStorage.getItem('xb_lang_mode') || 'EN';
+
+        const XB_I18N_EXACT_PAIRS = [
+            // Navigation & Topbar
+            ['Market', 'Pasar'],
+            ['Marketplace', 'Pasar'],
+            ['Boost Service', 'Layanan Boost'],
+            ['Wallet', 'Dompet'],
+            ['Vault', 'Brankas'],
+            ['Profile', 'Profil'],
+            ['Admin Center', 'Pusat Admin'],
+            ['GITHUB VAULT & BOOST HUB', 'BRANKAS GITHUB & PUSAT BOOST'],
+            ['GITHUB ENTERPRISE MARKET', 'PASAR ENTERPRISE GITHUB'],
+            ['1 USDT LIVE:', '1 USDT LANGSUNG:'],
+            ['Search @user, 2011–2026, Arctic...', 'Cari @user, 2011–2026, Arctic...'],
+            ['Global Store 3D Telemetry', 'Telemetri 3D Toko Global'],
+            ['Live Notifications', 'Notifikasi Langsung'],
+            ['Shopping Cart', 'Keranjang Belanja'],
+            ['Wallet Balance', 'Saldo Dompet'],
+            ['Switch USDT / IDR', 'Ganti USDT / IDR'],
+            ['Switch Theme', 'Ganti Tema'],
+            ['Admin Command Center', 'Pusat Komando Admin'],
+
+            // Auth Portal
+            ['LIVE MARKET:', 'PASAR LANGSUNG:'],
+            ['Verified Ready', 'Terverifikasi Siap'],
+            ['2FA VERIFIED', '2FA TERVERIFIKASI'],
+            ['INSTANT DISPATCH', 'KIRIM INSTAN'],
+            ['SETTLEMENT', 'PENYELESAIAN'],
+            ['OFFICIAL GITHUB MARKETPLACE', 'PASAR RESMI GITHUB'],
+            ['24/7 LIVE', 'AKTIF 24/7'],
+            ['Verified', 'Terverifikasi'],
+            ['Aged GitHub Accounts', 'Akun GitHub Tua'],
+            ['Aged GitHub', 'GitHub Tua'],
+            ['Accounts & Boost', 'Akun & Boost'],
+            ['& Repository Growth.', '& Pertumbuhan Repositori.'],
+            ['Browse hand-checked 2011–2026 GitHub profiles with live username preview, instant 2FA OTP access, and automated Stars, Forks & Followers — fast USDT & IDR checkout.', 'Jelajahi profil GitHub 2011–2026 terverifikasi dengan pratinjau username langsung, akses OTP 2FA instan, serta Stars, Forks & Followers otomatis — pembayaran cepat USDT & IDR.'],
+            ['Inspect real 2011–2026 GitHub usernames before checkout, get instant 2FA OTP access, and grow repositories with automated Stars & Followers.', 'Cek username GitHub 2011–2026 asli sebelum bayar, akses OTP 2FA instan, dan kembangkan repositori dengan Stars & Followers otomatis.'],
+            ['Aged Accounts', 'Akun Tua'],
+            ['Rare Badges', 'Lencana Langka'],
+            ['Arctic & 6 Badges', 'Arctic & 6 Lencana'],
+            ['Arctic & Badges', 'Arctic & Lencana'],
+            ['Live Tracking', 'Pelacakan Langsung'],
+            ['Instant Delivery', 'Pengiriman Instan'],
+            ['Full 2FA Ready', '2FA Lengkap Siap'],
+            ['Stars & Followers', 'Stars & Followers'],
+            ['SECURITY', 'KEAMANAN'],
+            ['UPTIME', 'AKTIF'],
+            ['6-Digit PIN', 'PIN 6-Digit'],
+            ['Member Account', 'Akun Anggota'],
+            ['Access your wallet, order vault & live 2FA codes', 'Akses dompet, brankas pesanan & kode 2FA langsung'],
+            ['SECURE', 'AMAN'],
+            ['Telegram Session Disconnected', 'Sesi Telegram Terputus'],
+            ['Reconnect Telegram Account', 'Hubungkan Ulang Akun Telegram'],
+            ['Sign In', 'Masuk'],
+            ['Create Account', 'Buat Akun'],
+            ['USERNAME', 'NAMA PENGGUNA'],
+            ['PASSWORD', 'KATA SANDI'],
+            ['REQUIRED', 'WAJIB'],
+            ['ENCRYPTED', 'TERENKRIPSI'],
+            ['Enter your username', 'Masukkan username Anda'],
+            ['Enter your password', 'Masukkan kata sandi Anda'],
+            ['Sign In to XianBee-Tech ➔', 'Masuk ke XianBee-Tech ➔'],
+            ['Enter username', 'Masukkan username'],
+            ['@user or email', '@user atau email'],
+            ['Min. 6 chars', 'Min. 6 karakter'],
+            ['6-DIGIT PIN', 'PIN 6-DIGIT'],
+            ['STRENGTH', 'KEKUATAN'],
+            ['IDLE', 'SIAGA'],
+            ['WEAK', 'LEMAH'],
+            ['FAIR', 'CUKUP'],
+            ['GOOD', 'BAGUS'],
+            ['STRONG', 'KUAT'],
+            ['Create Account & Enter ➔', 'Buat Akun & Masuk ➔'],
+            ['Guest Preview', 'Mode Tamu'],
+            ['EXPLORE XIANBEE-TECH', 'JELAJAHI XIANBEE-TECH'],
+            ['TAP TO VIEW ➔', 'KETUK UNTUK LIHAT ➔'],
+            ['Aged & Boost', 'Akun Tua & Boost'],
+            ['Exchange Desk', 'Meja Tukar'],
+            ['Digital Suite', 'Paket Digital'],
+            ['All-In-One', 'Serba Ada'],
+            ['Back to Login', 'Kembali ke Login'],
+            ['Engineered by', 'Dirancang oleh'],
+            ['Powered by', 'Didukung oleh'],
+            ['VERIFIED DEVELOPER MARKETPLACE', 'PASAR DEVELOPER TERVERIFIKASI'],
+            ['CRYPTO & LOCAL IDR LIQUIDITY DESK', 'MEJA LIKUIDITAS KRIPTO & IDR LOKAL'],
+            ['UNIFIED DIGITAL PRODUCTS & SERVICES', 'PRODUK & LAYANAN DIGITAL TERPADU'],
+
+            // Marketplace
+            ['GitHub Marketplace', 'Pasar GitHub'],
+            ['Aged 2011–2026 • Rare Badges • 2FA Vault', 'Akun Tua 2011–2026 • Lencana Langka • Brankas 2FA'],
+            ['PRIMARY', 'UTAMA'],
+            ['Social Media', 'Media Sosial'],
+            ['CEX & Mail', 'CEX & Email'],
+            ['Pro Apps & AI', 'Aplikasi Pro & AI'],
+            ['Games & PPOB', 'Game & PPOB'],
+            ['Email Accounts', 'Akun Email'],
+            ['CEX Accounts', 'Akun CEX'],
+            ['XianBee Aged GitHub Vault', 'Brankas GitHub Tua XianBee'],
+            ['Verified Aged Vault • Full 2FA Ready', 'Brankas Tua Terverifikasi • 2FA Lengkap'],
+            ['RANKING', 'PERINGKAT'],
+            ['FLOOR', 'TERENDAH'],
+            ['LISTED', 'TERSEDIA'],
+            ['TIERS', 'TINGKATAN'],
+            ['DELIVERY', 'PENGIRIMAN'],
+            ['Instant', 'Instan'],
+            ['MODE', 'MODE'],
+            ['Hybrid', 'Hibrida'],
+            ['All Assets', 'Semua Aset'],
+            ['High Followers', 'Followers Tinggi'],
+            ['6 Badges', '6 Lencana'],
+            ['Sort: Default', 'Urutkan: Default'],
+            ['Price: Low → High', 'Harga: Termurah → Termahal'],
+            ['Price: High → Low', 'Harga: Termahal → Termurah'],
+            ['Stock / Followers: High', 'Stok / Followers: Terbanyak'],
+            ['Stock: High First', 'Stok: Terbanyak Dulu'],
+            ['Year: Newest First', 'Tahun: Terbaru Dulu'],
+            ['Aged Vault', 'Brankas Tua'],
+            ['FLOOR PRICE', 'HARGA MULAI'],
+            ['ACCESS', 'AKSES'],
+            ['Full 2FA', '2FA Lengkap'],
+            ['SPECIAL TIERS', 'TINGKATAN SPESIAL'],
+            ['High Followers • Arctic Badge • High Contribution • 6 Badges', 'Followers Tinggi • Lencana Arctic • Kontribusi Tinggi • 6 Lencana'],
+            ['REPOS', 'REPO'],
+            ['PRICE', 'HARGA'],
+            ['Buy', 'Beli'],
+            ['Offer', 'Tawar'],
+            ['+Cart', '+Keranjang'],
+            ['View', 'Lihat'],
+            ['Close', 'Tutup'],
+            ['Filter @user...', 'Filter @user...'],
+            ['No matching @username found in this vault.', 'Tidak ada @username yang cocok di brankas ini.'],
+            ['Request Restock Alert', 'Minta Notif Restok'],
+            ['Limited Time', 'Waktu Terbatas'],
+            ['Claim Deal', 'Klaim Promo'],
+            ['Pre-Order / Direct', 'Pre-Order / Langsung'],
+            ['PRE-ORDER', 'PRE-ORDER'],
+            ['View All ➔', 'Lihat Semua ➔'],
+            ['Social Media Platforms', 'Platform Media Sosial'],
+            ['Pro Apps & AI Subscriptions', 'Langganan Aplikasi Pro & AI'],
+            ['VIP Streaming Accounts', 'Akun Streaming VIP'],
+            ['Direct Top-Up Games', 'Top-Up Game Langsung'],
+            ['PPOB, E-Wallet & Vouchers', 'PPOB, E-Wallet & Voucher'],
+            ['All Mail', 'Semua Email'],
+            ['All Email', 'Semua Email'],
+            ['Aged Email', 'Email Tua'],
+            ['Fresh Email', 'Email Baru'],
+            ['All CEX', 'Semua CEX'],
+            ['All X Vaults', 'Semua Brankas X'],
+            ['Aged Years', 'Tahun Tua'],
+            ['Crypto Ready', 'Siap Kripto'],
+            ['Business', 'Bisnis'],
+            ['Buy Now / Configure', 'Beli Sekarang / Atur'],
+
+            // VIP-Reseller (ID -> EN & EN -> ID)
+            ['Ganti', 'Change'],
+            ['TUJUAN / TARGET', 'TARGET / DESTINATION'],
+            ['Beli Lagi', 'Buy Again'],
+            ['Cek Status & SN', 'Check Status & SN'],
+            ['Cek Status', 'Check Status'],
+            ['Pulsa & Data', 'Airtime & Data'],
+            ['Paket Data', 'Data Plan'],
+            ['Nelpon/SMS', 'Calls/SMS'],
+            ['Voucher Data', 'Data Voucher'],
+            ['PLN Listrik', 'PLN Electricity'],
+            ['Token Listrik', 'Electricity Token'],
+            ['Voucher Game', 'Game Voucher'],
+            ['Retail & Transport', 'Ritel & Transportasi'],
+            ['Select a Package Above', 'Pilih Paket di Atas'],
+            ['Package Currently Out of Stock', 'Paket Sedang Kosong'],
+            ['Reload Catalog', 'Muat Ulang Katalog'],
+            ['Stay Here', 'Tetap di Sini'],
+            ['SN & Status', 'SN & Status'],
+            ['DIRECT SERVER • AUTO SN & RECEIPT', 'SERVER LANGSUNG • SN & STRUK OTOMATIS'],
+            ['PRO APPS & AI • INSTANT DELIVERY', 'APLIKASI PRO & AI • KIRIM INSTAN'],
+            ['Paket ini sedang kosong/gangguan di server.', 'This package is currently out of stock or unavailable.'],
+            ['Pilih paket yang tersedia dulu.', 'Please select an available package first.'],
+            ['Masukkan Zone / Server ID terlebih dahulu!', 'Please enter Zone / Server ID first!'],
+            ['Pesanan Pro Apps, VIP Streaming, Games & PPOB beserta kode SN akan muncul otomatis di sini.', 'Your Pro Apps, VIP Streaming, Games & PPOB orders and SN codes will appear automatically here.'],
+            ['No Pro Apps / PPOB Orders Yet', 'Belum Ada Pesanan Aplikasi Pro / PPOB'],
+            ['Browse Pro Apps & PPOB', 'Jelajahi Aplikasi Pro & PPOB'],
+            ['Email akun ChatGPT / kontak pengiriman', 'ChatGPT account email / delivery contact'],
+            ['Email Google aktif Anda', 'Your active Google email'],
+            ['Email akun Canva Free Anda', 'Your Canva Free account email'],
+            ['Email aktif / No. WA pengiriman', 'Active email / WhatsApp for delivery'],
+            ['Email akun Alight Motion', 'Alight Motion account email'],
+            ['Nomor HP Getcontact (08xxx)', 'Getcontact phone number (08xxx)'],
+            ['Email / No. WA pengiriman akun', 'Email / WhatsApp for account delivery'],
+            ['Email / No. HP akun Vidio', 'Vidio account email / phone'],
+            ['Email / No. HP akun Vision+', 'Vision+ account email / phone'],
+            ['Nomor HP Tujuan (Contoh: 081234567890)', 'Destination Phone Number (e.g. 081234567890)'],
+            ['Nomor HP E-Wallet Tujuan (08xxx)', 'Destination E-Wallet Phone (08xxx)'],
+            ['ID Pelanggan / Nomor Meter PLN', 'PLN Customer ID / Meter Number'],
+            ['Nomor HP / Email Penerima Kode Voucher', 'Recipient Phone / Email for Voucher Code'],
+            ['Nomor HP / ID Tujuan', 'Destination Phone / ID'],
+            ['ID Pelanggan TV / Nomor HP Tujuan', 'TV Customer ID / Destination Phone'],
+            ['User ID (Contoh: 12345678)', 'User ID (e.g. 12345678)'],
+
+            // Boost Tab
+            ['GitHub Boost Service', 'Layanan Boost GitHub'],
+            ['Followers • Stars • Forks • Watch • Live 4-Step Tracker', 'Followers • Stars • Forks • Watch • Pelacak 4-Tahap Langsung'],
+            ['ACTIVE', 'AKTIF'],
+            ['SELECT', 'PILIH'],
+            ['E-Commerce', 'E-Commerce'],
+            ['Streaming', 'Streaming'],
+            ['Web & Others', 'Web & Lainnya'],
+            ['All Store', 'Semua Toko'],
+            ['All Stream', 'Semua Stream'],
+            ['All Others', 'Semua Lainnya'],
+            ['Web Traffic', 'Trafik Web'],
+            ['LIVE API TRACKER • AUTO 5% BULK OFF', 'PELACAK API LANGSUNG • DISKON GROSIR 5%'],
+            ['SELECT GITHUB METRIC', 'PILIH METRIK GITHUB'],
+            ['REPOSITORY', 'REPOSITORI'],
+            ['PROFILE', 'PROFIL'],
+            ['TARGET GITHUB USERNAME', 'TARGET USERNAME GITHUB'],
+            ['TARGET REPOSITORY (OWNER/REPO)', 'TARGET REPOSITORI (OWNER/REPO)'],
+            ['AUTO-VERIFY', 'VERIFIKASI OTOMATIS'],
+            ['Enter @username or github.com/user', 'Masukkan @username atau github.com/user'],
+            ['Enter owner/repo or repo URL', 'Masukkan owner/repo atau link repo'],
+            ['Scan', 'Pindai'],
+            ['DELIVERY SPEED TRACK', 'KECEPATAN PENGIRIMAN'],
+            ['TAP FOR INFO', 'KETUK INFO'],
+            ['Regular', 'Reguler'],
+            ['Fast', 'Cepat'],
+            ['Ultra', 'Ultra'],
+            ['Regular Track • Steady Drip-Feed', 'Jalur Reguler • Aliran Stabil'],
+            ['Fast Track • Priority Pacing', 'Jalur Cepat • Kecepatan Prioritas'],
+            ['Ultra Track • Express Execution', 'Jalur Ultra • Eksekusi Ekspres'],
+            ['Safest steady pacing designed to mimic natural developer discovery.', 'Kecepatan paling aman yang dirancang menyerupai pertumbuhan organik alami.'],
+            ['Balanced priority execution with smart multi-order rotation.', 'Eksekusi prioritas seimbang dengan rotasi pesanan pintar.'],
+            ['Fastest safe drip-feed queue dispatched immediately by Local PC Engine.', 'Antrean aliran aman tercepat yang langsung dijalankan oleh Mesin PC Lokal.'],
+            ['PACING RATE', 'KECEPATAN'],
+            ['QUANTITY', 'JUMLAH'],
+            ['200+ UNITS = 5% OFF', '200+ UNIT = DISKON 5%'],
+            ['✓ 5% BULK OFF APPLIED', '✓ DISKON GROSIR 5% AKTIF'],
+            ['ESTIMATED TOTAL', 'ESTIMASI TOTAL'],
+            ['WALLET BAL', 'SALDO DOMPET'],
+            ['Checkout Now', 'Bayar Sekarang'],
+            ['QUICK BOOST PACKS', 'PAKET BOOST CEPAT'],
+            ['One-Tap Presets • Auto-Load to Order Terminal', 'Preset 1-Klik • Otomatis Muat ke Terminal Pesanan'],
+            ['Load ➔', 'Muat ➔'],
+            ['Available Capacity', 'Kapasitas Tersedia'],
+            ['Max Capacity Reached', 'Kapasitas Maks Tercapai'],
+            ['BOOST TERMINAL CHECKOUT', 'CHECKOUT TERMINAL BOOST'],
+            ['Pay with Balance (PIN Verified)', 'Bayar Pakai Saldo (Verifikasi PIN)'],
+            ['Your Balance', 'Saldo Anda'],
+            ['Total Price', 'Total Harga'],
+            ['Quantity', 'Jumlah'],
+            ['Target', 'Target'],
+            ['TAP TO BROWSE', 'KETUK JELAJAHI'],
+            ['TARGET LINK / USERNAME', 'LINK TARGET / USERNAME'],
+            ['PUBLIC ACCOUNT', 'AKUN PUBLIK'],
+            ['Live SMM', 'SMM Langsung'],
+            ['Sync', 'Sinkron'],
+            ['Reload Services', 'Muat Ulang Layanan'],
+            ['Fetching real-time rates & availability from server', 'Mengambil tarif & ketersediaan langsung dari server'],
+            ['No matching services found. Try another keyword or tap All.', 'Tidak ada layanan yang cocok. Coba kata kunci lain atau ketuk Semua.'],
+            ['Search Followers, Likes, Views, Non-Drop...', 'Cari Followers, Likes, Views, Non-Drop...'],
+            ['All', 'Semua'],
+            ['Follow', 'Pengikut'],
+            ['Likes', 'Suka'],
+            ['Views', 'Tayangan'],
+            ['Engage', 'Interaksi'],
+            ['https://instagram.com/username atau link post/reel', 'https://instagram.com/username or post/reel link'],
+            ['https://tiktok.com/@username atau link video', 'https://tiktok.com/@username or video link'],
+            ['https://youtube.com/@channel atau link video', 'https://youtube.com/@channel or video link'],
+            ['https://x.com/username atau link tweet', 'https://x.com/username or tweet link'],
+            ['https://t.me/channel atau link post', 'https://t.me/channel or post link'],
+            ['https://facebook.com/page atau link postingan', 'https://facebook.com/page or post link'],
+            ['Link toko atau produk Shopee / Tokopedia', 'Shopee / Tokopedia store or product link'],
+            ['Link Spotify, Twitch, Discord, Threads, atau WA', 'Spotify, Twitch, Discord, Threads, or WA link'],
+            ['https://yourwebsite.com atau link LinkedIn', 'https://yourwebsite.com or LinkedIn link'],
+
+            // Wallet & Exchange
+            ['Wallet & Ledger', 'Dompet & Riwayat'],
+            ['XianBee-Tech Exchange', 'Tukar Aset XianBee-Tech'],
+            ['Available Balance', 'Saldo Tersedia'],
+            ['AVAILABLE BALANCE', 'SALDO TERSEDIA'],
+            ['Hidden Balance', 'Saldo Disembunyikan'],
+            ['Deposit', 'Isi Saldo'],
+            ['Transfer', 'Transfer'],
+            ['Voucher', 'Voucher'],
+            ['TOTAL IN', 'TOTAL MASUK'],
+            ['TOTAL OUT', 'TOTAL KELUAR'],
+            ['VERIFIED TX', 'TX TERVERIFIKASI'],
+            ['Tap to resume', 'Ketuk untuk lanjut'],
+            ['Back', 'Kembali'],
+            ['Swap', 'Tukar'],
+            ['Buy Crypto', 'Beli Kripto'],
+            ['Convert to IDR', 'Cairkan ke IDR'],
+            ['PAY FROM WALLET', 'BAYAR DARI DOMPET'],
+            ['Market Feed', 'Harga Pasar'],
+            ['Service Fee (Tiered)', 'Biaya Layanan (Bertingkat)'],
+            ['Network Delivery Fee', 'Biaya Jaringan'],
+            ['Est. Receive', 'Estimasi Diterima'],
+            ['Fetching...', 'Memuat...'],
+            ['Syncing...', 'Menyinkron...'],
+            ['Syncing IDR rate...', 'Menyinkron kurs IDR...'],
+            ['Fetching real-time price...', 'Mengambil harga langsung...'],
+            ['Fetching Real-Time Price...', 'Mengambil Harga Langsung...'],
+            ['Fetching live price...', 'Mengambil harga langsung...'],
+            ['Waiting live feed', 'Menunggu harga langsung'],
+            ['Retail Crypto & L2 Gas Station', 'Kripto Eceran & Gas L2'],
+            ['Selected Pack', 'Paket Dipilih'],
+            ['Buyer Net Receive', 'Bersih Diterima Pembeli'],
+            ['CONVERT FROM WALLET (MIN $3.00)', 'KONVERSI DARI DOMPET (MIN $3.00)'],
+            ['METODE PENCAIRAN (INDONESIA)', 'WITHDRAWAL METHOD (INDONESIA)'],
+            ['Transfer Bank', 'Bank Transfer'],
+            ['PILIH BANK TUJUAN', 'SELECT DESTINATION BANK'],
+            ['PILIH E-WALLET TUJUAN', 'SELECT DESTINATION E-WALLET'],
+            ['NAMA PEMILIK REKENING', 'ACCOUNT HOLDER NAME'],
+            ['NAMA AKUN E-WALLET', 'E-WALLET ACCOUNT NAME'],
+            ['Nama Lengkap', 'Full Name'],
+            ['Live Market Rate', 'Kurs Pasar Langsung'],
+            ['Service & Bank Fee', 'Biaya Layanan & Bank'],
+            ['Net IDR Received', 'Bersih IDR Diterima'],
+            ['Fetching rate...', 'Mengambil kurs...'],
+            ['Fetching Live USD/IDR Rate...', 'Mengambil Kurs USD/IDR...'],
+            ['Syncing live FX...', 'Menyinkron kurs langsung...'],
+            ['Select Token & Network', 'Pilih Token & Jaringan'],
+            ['Search ETH, SOL, Base, Arbitrum, TON...', 'Cari ETH, SOL, Base, Arbitrum, TON...'],
+            ['No matching coin found.', 'Koin yang dicari tidak ditemukan.'],
+            ['6-Digit Security PIN', 'PIN Keamanan 6-Digit'],
+            ['ENTER YOUR 6-DIGIT WALLET PIN TO AUTHORIZE', 'MASUKKAN PIN DOMPET 6-DIGIT UNTUK OTORISASI'],
+            ['CREATE & ENTER YOUR 6-DIGIT WALLET PIN', 'BUAT & MASUKKAN PIN DOMPET 6-DIGIT ANDA'],
+            ['ENTER YOUR 6-DIGIT SECURITY PIN', 'MASUKKAN PIN KEAMANAN 6-DIGIT ANDA'],
+            ['Order', 'Pesanan'],
+            ['Wallet Deduction', 'Potongan Dompet'],
+            ['Receive', 'Diterima'],
+            ['Spot / Rate', 'Kurs / Harga'],
+            ['Destination', 'Tujuan'],
+            ['Cancel', 'Batal'],
+            ['Authorize & Pay', 'Otorisasi & Bayar'],
+            ['Confirm & Process', 'Konfirmasi & Proses'],
+            ['Confirm & Dispatch', 'Konfirmasi & Kirim'],
+            ['Exchange Order Submitted', 'Pesanan Tukar Terkirim'],
+            ['Service', 'Layanan'],
+            ['Deducted', 'Terpotong'],
+            ['Rate Locked', 'Kurs Terkunci'],
+            ['New Balance', 'Saldo Baru'],
+            ['Copy Invoice', 'Salin Invoice'],
+            ['View in Ledger', 'Lihat di Riwayat'],
+            ['Saldo wallet tidak mencukupi.', 'Insufficient wallet balance.'],
+            ['Insufficient wallet balance.', 'Saldo dompet tidak mencukupi.'],
+            ['PIN must be exactly 6 numeric digits.', 'PIN harus tepat 6 angka.'],
+            ['Incorrect 6-digit Security PIN.', 'PIN Keamanan 6-digit salah.'],
+            ['No transactions recorded yet.', 'Belum ada transaksi tercatat.'],
+            ['Transaction History', 'Riwayat Transaksi'],
+            ['Recent Activity', 'Aktivitas Terbaru'],
+            ['Top-Up', 'Isi Saldo'],
+            ['Orders', 'Pesanan'],
+            ['Deposit Funds', 'Isi Saldo Dompet'],
+            ['P2P Transfer', 'Transfer P2P'],
+            ['Send Balance', 'Kirim Saldo'],
+            ['Security PIN', 'PIN Keamanan'],
+            ['Redeem Voucher', 'Tukar Voucher'],
+
+            // Vault Tab
+            ['Encrypted Asset Vault', 'Brankas Aset Terenkripsi'],
+            ['OWNED CREDENTIALS • LIVE 30s 2FA • BOOST TRACKER', 'KREDENSIAL MILIK ANDA • 2FA 30d LANGSUNG • PELACAK BOOST'],
+            ['OWNED ASSETS', 'ASET DIMILIKI'],
+            ['LIVE 2FA READY', '2FA LANGSUNG SIAP'],
+            ['VAULT VALUE', 'NILAI BRANKAS'],
+            ['Boosts', 'Boost'],
+            ['Free Tools', 'Alat Gratis'],
+            ['Search platform, @username, or invoice...', 'Cari platform, @username, atau invoice...'],
+            ['Social', 'Sosial'],
+            ['Special', 'Spesial'],
+            ['Scan Shadowban', 'Cek Shadowban'],
+            ['Live 2FA Code', 'Kode 2FA Langsung'],
+            ['Refresh', 'Muat Ulang'],
+            ['No Boost Orders Yet', 'Belum Ada Pesanan Boost'],
+            ['Orders placed in GitHub Boost Service appear here with real-time 4-step delivery tracking.', 'Pesanan dari Layanan Boost GitHub muncul di sini dengan pelacakan 4-tahap langsung.'],
+            ['Open Boost Service', 'Buka Layanan Boost'],
+            ['QUICK LIVE METRIC & BADGE CHECK', 'CEK METRIK & LENCANA LANGSUNG'],
+            ['REAL-TIME API', 'API LANGSUNG'],
+            ['e.g. username or owner/repo', 'cth. username atau owner/repo'],
+            ['LIVE PROFILE HEALTH CHECK', 'CEK KESEHATAN PROFIL LANGSUNG'],
+            ['Re-Check Now', 'Cek Ulang Sekarang'],
+            ['Tap "Re-Check Now" to verify public HTTP 200 status directly on GitHub.', 'Ketuk "Cek Ulang Sekarang" untuk verifikasi status publik HTTP 200 langsung di GitHub.'],
+            ['24-HOUR ANTI-FLAG LOGIN CHECKLIST', 'DAFTAR PERIKSA LOGIN ANTI-FLAG 24 JAM'],
+            ['PROGRESS', 'PROGRES'],
+            ['SPEED MODE', 'MODE KECEPATAN'],
+            ['TIMING / ETA', 'WAKTU / ETA'],
+            ['Verify on GitHub', 'Verifikasi di GitHub'],
+            ['Boost Again', 'Boost Lagi'],
+            ['Paid', 'Dibayar'],
+            ['Queued', 'Antre'],
+            ['Delivering', 'Dikirim'],
+            ['Done', 'Selesai'],
+            ['COMPLETED', 'SELESAI'],
+            ['DELIVERING', 'DIKIRIM'],
+            ['STOPPED', 'DIHENTIKAN'],
+            ['PAUSED', 'DIJEDA'],
+            ['QUEUED', 'ANTRE'],
+            ['PENDING', 'MENUNGGU'],
+            ['ORDER ID', 'ID PESANAN'],
+            ['REMAINS', 'TERSISA'],
+            ['SN / VOUCHER / NOTE', 'SN / VOUCHER / CATATAN'],
+            ['LIVE API TRACKER', 'PELACAK API LANGSUNG'],
+            ['LIVE 30-SECOND TOTP AUTHENTICATOR', 'AUTENTIKATOR TOTP 30-DETIK LANGSUNG'],
+            ['Live 2FA OTP Code Generator', 'Generator Kode OTP 2FA Langsung'],
+            ['Paste your Base32 2FA Secret Key to get a 6-digit login code', 'Tempel Kunci Rahasia 2FA Base32 untuk mendapatkan kode login 6-digit'],
+            ['Paste Base32 2FA Secret Key...', 'Tempel Kunci Rahasia 2FA Base32...'],
+            ['Get OTP', 'Ambil OTP'],
+            ['6-DIGIT OTP CODE (TAP TO COPY)', 'KODE OTP 6-DIGIT (KETUK SALIN)'],
+            ['SHADOWBAN & VALUATION SCANNER', 'PEMINDAI SHADOWBAN & VALUASI'],
+            ['Enter a GitHub username or repository (owner/repo) to inspect shadowban status & live valuation.', 'Masukkan username GitHub atau repositori (owner/repo) untuk cek status shadowban & estimasi harga.'],
+            ['Enter GitHub username or owner/repo...', 'Masukkan username GitHub atau owner/repo...'],
+            ['Scan Target', 'Pindai Target'],
+            ['Copy All', 'Salin Semua'],
+            ['Save .TXT', 'Simpan .TXT'],
+            ['Get Live 6-Digit 2FA OTP (30s)', 'Ambil OTP 2FA 6-Digit Langsung (30d)'],
+            ['Track in Vault', 'Lacak di Brankas'],
+
+            // Profile Tab
+            ['Edit', 'Ubah'],
+            ['Stats', 'Statistik'],
+            ['TOTAL SPENT', 'TOTAL BELANJA'],
+            ['VAULT ASSETS', 'ASET BRANKAS'],
+            ['VIP REWARD', 'HADIAH VIP'],
+            ['VIP Cashback Hub', 'Pusat Cashback VIP'],
+            ['PERSONAL SPEND ANALYTICS', 'ANALITIK BELANJA PRIBADI'],
+            ['3D Charts', 'Grafik 3D'],
+            ['ALL-TIME', 'SEMUA WAKTU'],
+            ['LAST 7D', '7 HARI'],
+            ['LAST 30D', '30 HARI'],
+            ['ORDERS', 'PESANAN'],
+            ['AVG ORDER', 'RATA-RATA'],
+            ['Other Store Services', 'Layanan Toko Lainnya'],
+            ['Edit Identity & Photo', 'Ubah Identitas & Foto'],
+            ['Free GitHub Tools', 'Alat GitHub Gratis'],
+            ['App Preferences', 'Preferensi Aplikasi'],
+            ['Cloud Sync & Session', 'Sinkron Cloud & Sesi'],
+            ['Warranty & 24h Policy', 'Garansi & Kebijakan 24 Jam'],
+            ['Live Support Messenger', 'Pesan Bantuan Langsung'],
+            ['Live Logo Studio (Admin)', 'Studio Logo Langsung (Admin)'],
+            ['Executive Admin Command Center', 'Pusat Komando Admin Eksekutif'],
+            ['Setup', 'Atur'],
+            ['Read', 'Baca'],
+            ['Open', 'Buka'],
+            ['Shadowban Scanner & Live 30s 2FA OTP', 'Pemindai Shadowban & OTP 2FA 30d Langsung'],
+            ['First-login guarantee & anti-flag guide', 'Garansi login pertama & panduan anti-flag'],
+            ['Permanent 2-way encrypted support desk', 'Layanan bantuan terenkripsi 2-arah permanen'],
+            ['Change GitHub & Brand Logo + Adjust Size', 'Ubah Logo GitHub & Toko + Atur Ukuran'],
+            ['Boost Ops • Studios • Store & Telemetry', 'Operasi Boost • Studio • Toko & Telemetri'],
+            ['Change Photo', 'Ganti Foto'],
+            ['Upload Photo', 'Unggah Foto'],
+            ['Remove', 'Hapus'],
+            ['Border upgrades automatically with your VIP tier • Tap photo to change', 'Bingkai naik otomatis sesuai level VIP Anda • Ketuk foto untuk ganti'],
+            ['DISPLAY USERNAME (WITHOUT @)', 'NAMA TAMPILAN (TANPA @)'],
+            ['CLOUD SYNCED', 'TERSIMPAN CLOUD'],
+            ['Save Username', 'Simpan Username'],
+            ['Obsidian Dark Theme', 'Tema Gelap Obsidian'],
+            ['Display Currency in IDR', 'Tampilkan Mata Uang IDR'],
+            ['Privacy Balance Mask', 'Sembunyikan Saldo'],
+            ['Hide balance numbers inside Wallet Vault', 'Sembunyikan nominal saldo di dalam Dompet'],
+            ['Session Mode', 'Mode Sesi'],
+            ['Account UID', 'UID Akun'],
+            ['Sync Key', 'Kunci Sinkron'],
+            ['Live Store Stock', 'Stok Toko Langsung'],
+            ['Force Full Cloud Sync Now', 'Sinkron Penuh Cloud Sekarang'],
+            ['Sign Out from Cloud Session', 'Keluar dari Sesi Cloud'],
+            ['Sign In / Create Account', 'Masuk / Buat Akun'],
+            ['Warranty & Policy', 'Garansi & Kebijakan'],
+            ['First-Login Replacement Warranty', 'Garansi Penggantian Login Pertama'],
+            ['24-Hour Anti-Flag Warm-Up Rule', 'Aturan Pemanasan Anti-Flag 24 Jam'],
+            ['Organic Boost Drip-Feed Guarantee', 'Garansi Aliran Boost Organik'],
+            ['Zero-Knowledge Local & Cloud Vault', 'Brankas Lokal & Cloud Terenkripsi'],
+            ['Executive Helpdesk', 'Bantuan Eksekutif'],
+            ['Open Direct Telegram Support', 'Buka Bantuan Telegram Langsung'],
+            ['Account Session', 'Sesi Akun'],
+            ['Sign in to unlock Wallet, Vault & Checkout', 'Masuk untuk membuka Dompet, Brankas & Pembayaran'],
+            ['Telegram Session Access', 'Akses Sesi Telegram'],
+            ['Disconnect locks app until you Reconnect Telegram', 'Putuskan koneksi mengunci aplikasi sampai Hubungkan Ulang Telegram'],
+            ['CONNECTED', 'TERHUBUNG'],
+            ['Disconnect Telegram', 'Putuskan Telegram'],
+            ['Web Session Security', 'Keamanan Sesi Web'],
+            ['Clear cached session & return to Login Portal', 'Hapus sesi tersimpan & kembali ke halaman Login'],
+            ['WEB ACTIVE', 'WEB AKTIF'],
+            ['Sign Out', 'Keluar'],
+            ['GUEST', 'TAMU'],
+            ['POWERED BY ABIE HARYATMO', 'DIDUKUNG OLEH ABIE HARYATMO'],
+
+            // Cart, Notifications, Offer, VIP, Analytics, Support, Checkout
+            ['Executive Shopping Cart', 'Keranjang Belanja Eksekutif'],
+            ['INSTANT MULTI-ASSET CHECKOUT', 'PEMBAYARAN MULTI-ASET INSTAN'],
+            ['GRAND TOTAL', 'TOTAL AKHIR'],
+            ['PROMO VOUCHER CODE', 'KODE VOUCHER PROMO'],
+            ['INSTANT OFF', 'DISKON INSTAN'],
+            ['Enter code (e.g. XIANBEE5)', 'Masukkan kode (cth. XIANBEE5)'],
+            ['Apply', 'Pakai'],
+            ['Pay with Wallet Balance', 'Bayar Pakai Saldo Dompet'],
+            ['Pay with Balance', 'Bayar Pakai Saldo'],
+            ['Pay USDT', 'Bayar USDT'],
+            ['Pay IDR', 'Bayar IDR'],
+            ['Make a Bundle Offer', 'Buat Tawaran Bundel'],
+            ['Make Offer', 'Tawar'],
+            ['Checkout', 'Bayar'],
+            ['Clear All', 'Hapus Semua'],
+            ['Your Shopping Cart is Empty', 'Keranjang Belanja Anda Kosong'],
+            ['Live Notification Center', 'Pusat Notifikasi Langsung'],
+            ['LIVE RESTOCKS • FLASH DEALS • ACTIVITY', 'RESTOK LANGSUNG • PROMO KILAT • AKTIVITAS'],
+            ['Select All', 'Pilih Semua'],
+            ['Unselect All', 'Batal Pilih Semua'],
+            ['Store Alerts', 'Info Toko'],
+            ['Admin Logs', 'Log Admin'],
+            ['No notifications in this feed yet.', 'Belum ada notifikasi di sini.'],
+            ['PINNED LIVE STOCK', 'SEMATAN STOK LANGSUNG'],
+            ['PINNED FLASH DEAL', 'SEMATAN PROMO KILAT'],
+            ['AVAILABLE', 'TERSEDIA'],
+            ['SOLD OUT', 'HABIS TERJUAL'],
+            ['New Stock Restocked', 'Stok Baru Tersedia'],
+            ['Limited Flash Sale', 'Promo Kilat Terbatas'],
+            ['Select', 'Pilih'],
+            ['Selected', 'Dipilih'],
+            ['Make a Price Offer', 'Ajukan Tawaran Harga'],
+            ['DIRECT NEGOTIATION DESK', 'MEJA NEGOSIASI LANGSUNG'],
+            ['YOUR OFFER AMOUNT (USDT)', 'NOMINAL TAWARAN ANDA (USDT)'],
+            ['YOUR BUNDLE OFFER (USDT)', 'TAWARAN BUNDEL ANDA (USDT)'],
+            ['NOTE FOR EXECUTIVE DESK (OPTIONAL)', 'CATATAN UNTUK ADMIN (OPSIONAL)'],
+            ['Submit Offer', 'Kirim Tawaran'],
+            ['Back to Cart', 'Kembali ke Keranjang'],
+            ['STANDARD TOTAL', 'TOTAL NORMAL'],
+            ['CUSTOM BUNDLE PRICING', 'HARGA BUNDEL KUSTOM'],
+            ['VIP Hall of Fame', 'Peringkat VIP'],
+            ['VERIFIED MEMBER RANKINGS & REWARDS', 'PERINGKAT & HADIAH ANGGOTA TERVERIFIKASI'],
+            ['VERIFIED MEMBER RANKINGS', 'PERINGKAT ANGGOTA TERVERIFIKASI'],
+            ['Loading Verified VIP Rankings...', 'Memuat Peringkat VIP Terverifikasi...'],
+            ['YOUR CURRENT TIER', 'LEVEL ANDA SAAT INI'],
+            ['Leaderboard Updating', 'Peringkat Sedang Diperbarui'],
+            ['XIANBEE-TECH GLOBAL SALE', 'PENJUALAN GLOBAL XIANBEE-TECH'],
+            ['DAILY (24H)', 'HARIAN (24J)'],
+            ['WEEKLY (7D)', 'MINGGUAN (7H)'],
+            ['YEARLY (1Y)', 'TAHUNAN (1T)'],
+            ['3D CHARTS', 'GRAFIK 3D'],
+            ['SUMMARY', 'RINGKASAN'],
+            ['30D SALES', '30 HARI'],
+            ['GITHUB ACCOUNTS SOLD', 'AKUN GITHUB TERJUAL'],
+            ['GITHUB BOOST SERVICES', 'LAYANAN BOOST GITHUB'],
+            ['ALL-TIME SALES SUMMARY', 'RINGKASAN PENJUALAN SEMUA WAKTU'],
+            ['TOTAL STORE REVENUE SPLIT', 'PEMBAGIAN PENDAPATAN TOKO'],
+            ['RECENT SALES (LAST 30 DAYS)', 'PENJUALAN TERBARU (30 HARI TERAKHIR)'],
+            ['Close Global Store Telemetry', 'Tutup Telemetri Toko Global'],
+            ['Revenue', 'Pendapatan'],
+            ['Accounts Sold', 'Akun Terjual'],
+            ['Service Orders', 'Pesanan Layanan'],
+            ['Tap bar for exact Year & Revenue', 'Ketuk grafik untuk detail Tahun & Pendapatan'],
+            ['Tap bar for exact Service & Revenue', 'Ketuk grafik untuk detail Layanan & Pendapatan'],
+            ['Personal Analytics', 'Analitik Pribadi'],
+            ['SPEND BREAKDOWN', 'RINCIAN BELANJA'],
+            ['Tap to filter', 'Ketuk untuk filter'],
+            ['SPENDING ACTIVITY', 'AKTIVITAS BELANJA'],
+            ['Tap chart to inspect period', 'Ketuk grafik untuk cek periode'],
+            ['TOP VAULT TIER', 'BRANKAS TERBANYAK'],
+            ['TOP BOOST SERVICE', 'LAYANAN BOOST FAVORIT'],
+            ['BOOST ORDERS', 'PESANAN BOOST'],
+            ['Aged Accounts', 'Akun Tua'],
+            ['Other Store', 'Toko Lainnya'],
+            ['None yet', 'Belum ada'],
+            ['Close Personal Analytics', 'Tutup Analitik Pribadi'],
+            ['XianBee-Tech Live Support', 'Bantuan Langsung XianBee-Tech'],
+            ['XianBee-Tech Support Team', 'Tim Bantuan XianBee-Tech'],
+            ['OFFICIAL CONCIERGE • PRIORITY DESK', 'BANTUAN RESMI • LAYANAN PRIORITAS'],
+            ['OFFICIAL SUPPORT CONSOLE • LIVE', 'KONSOL BANTUAN RESMI • LANGSUNG'],
+            ['ONLINE • AVG. REPLY < 5 MIN', 'ONLINE • BALASAN < 5 MENIT'],
+            ['Type your message...', 'Ketik pesan Anda...'],
+            ['Reply to client...', 'Balas ke klien...'],
+            ['Send ➤', 'Kirim ➤'],
+            ['Check aged GitHub stock', 'Cek stok GitHub tua'],
+            ['Bulk order discount', 'Diskon pembelian grosir'],
+            ['Deposit / payment help', 'Bantuan deposit / pembayaran'],
+            ['Ready & verified! Silakan checkout.', 'Ready & verified! Please proceed to checkout.'],
+            ['Saldo sudah masuk ya bro ✅', 'Your balance has been credited ✅'],
+            ['Tunggu 24 jam sebelum ganti password.', 'Wait 24 hours before changing the password.'],
+            ['Siap, stok sedang dicek.', 'Got it, checking stock right now.'],
+            ['Security PIN Verification', 'Verifikasi PIN Keamanan'],
+            ['Total Payment:', 'Total Pembayaran:'],
+            ['ENTER YOUR 6-DIGIT SECURITY PIN:', 'MASUKKAN PIN KEAMANAN 6-DIGIT ANDA:'],
+            ['Change PIN', 'Ubah PIN'],
+            ['Create PIN', 'Buat PIN'],
+            ['Confirm & Pay', 'Konfirmasi & Bayar'],
+            ['Create 6-Digit PIN Now', 'Buat PIN 6-Digit Sekarang'],
+            ['Security PIN Not Created Yet', 'PIN Keamanan Belum Dibuat'],
+            ['Change 6-Digit Security PIN', 'Ubah PIN Keamanan 6-Digit'],
+            ['Create 6-Digit Security PIN', 'Buat PIN Keamanan 6-Digit'],
+            ['Current 6-Digit Security PIN:', 'PIN Keamanan 6-Digit Saat Ini:'],
+            ['New 6-Digit Security PIN (Numbers Only):', 'PIN Keamanan 6-Digit Baru (Hanya Angka):'],
+            ['Create 6-Digit Security PIN (Numbers Only):', 'Buat PIN Keamanan 6-Digit (Hanya Angka):'],
+            ['Confirm 6-Digit Security PIN:', 'Konfirmasi PIN Keamanan 6-Digit:'],
+            ['Update PIN', 'Perbarui PIN'],
+            ['DIRECT WEB ORDER', 'PESANAN WEB LANGSUNG'],
+            ['Select Service Tier / Speed:', 'Pilih Paket / Kecepatan Layanan:'],
+            ['Total Price:', 'Total Harga:'],
+            ['Your Available Balance:', 'Saldo Tersedia Anda:'],
+            ['Pay USDT (OxaPay)', 'Bayar USDT (OxaPay)'],
+            ['Pay IDR (QRIS / Bank / DANA)', 'Bayar IDR (QRIS / Bank / DANA)'],
+            ['Add to Cart', 'Tambah ke Keranjang'],
+            ['Choose Image File', 'Pilih File Gambar'],
+            ['No screenshot selected yet', 'Belum ada bukti transfer dipilih'],
+            ['Submit Payment Screenshot to Admin', 'Kirim Bukti Pembayaran ke Admin'],
+            ['Open Vault', 'Buka Brankas'],
+
+            // Admin Center & Studios
+            ['COMMAND CENTER', 'PUSAT KOMANDO'],
+            ['Store Stock', 'Stok Toko'],
+            ['PAT Pool', 'Pool PAT'],
+            ['Boost Queue', 'Antrean Boost'],
+            ['Alerts', 'Notifikasi'],
+            ['Boost Ops', 'Operasi Boost'],
+            ['Studios', 'Studio'],
+            ['Store', 'Toko'],
+            ['System', 'Sistem'],
+            ['Local PC Auto-Boost Engine', 'Mesin Auto-Boost PC Lokal'],
+            ['AUTO ON', 'AUTO NYALA'],
+            ['GitHub Flash Sale', 'Promo Kilat GitHub'],
+            ['Hidden from Storefront', 'Disembunyikan dari Toko'],
+            ['HIDDEN', 'TERSEMBUNYI'],
+            ['Stealth Command', 'Komando Stealth'],
+            ['PAT Token Gen', 'Generator Token PAT'],
+            ['PAT & Age Audit', 'Audit PAT & Umur'],
+            ['Account Creator', 'Pembuat Akun'],
+            ['Flash Sale Deals', 'Promo Kilat'],
+            ['Promo Vouchers', 'Voucher Promo'],
+            ['Store Categories', 'Kategori Toko'],
+            ['Show / Hide Market & Boost', 'Tampil / Sembunyikan Toko & Boost'],
+            ['3D Sales Telemetry', 'Telemetri Penjualan 3D'],
+            ['Admin Alert Logs', 'Log Notifikasi Admin'],
+            ['Sync Stock & Pool', 'Sinkron Stok & Pool'],
+            ['Store Categories Control', 'Kontrol Kategori Toko'],
+            ['GitHub Only', 'Hanya GitHub'],
+            ['MARKETPLACE BOXES', 'KOTAK MARKETPLACE'],
+            ['BOOST SERVICE BOXES', 'KOTAK LAYANAN BOOST'],
+            ['Live Logo Studio', 'Studio Logo Langsung'],
+            ['Logo GitHub Kartu', 'Card GitHub Logo'],
+            ['Logo Header & Banner', 'Header & Banner Logo'],
+            ['Pilih Foto Logo dari Galeri', 'Pick Logo Image from Gallery'],
+            ['Ganti Foto Logo (PNG / WebP / JPG)', 'Change Logo Image (PNG / WebP / JPG)'],
+            ['ATUR UKURAN (ZOOM)', 'ADJUST SIZE (ZOOM)'],
+            ['Confirm & Update', 'Konfirmasi & Perbarui'],
+            ['1. Cek PAT Token', '1. Check PAT Token'],
+            ['2. Umur & Link Akun', '2. Account Age & Links'],
+            ['Kategori ditampilkan!', 'Category shown!'],
+            ['Kategori disembunyikan!', 'Category hidden!'],
+            ['Semua kategori ditampilkan!', 'All categories shown!'],
+            ['Mode GitHub Only aktif!', 'GitHub Only mode enabled!'],
+            ['Tersimpan global ke semua pembeli!', 'Saved globally for all buyers!'],
+            ['Action completed', 'Aksi selesai'],
+            ['Test TG Push', 'Tes Notif TG'],
+            ['Test Balance', 'Tes Saldo'],
+            ['RESTRICTED EXECUTIVE AREA', 'AREA KHUSUS ADMIN'],
+            ['Unlock', 'Buka Kunci']
+        ];
+
+        const XB_I18N_MAP_EN_TO_ID = new Map();
+        const XB_I18N_MAP_ID_TO_EN = new Map();
+        XB_I18N_EXACT_PAIRS.forEach(([en, id]) => {
+            const kEn = en.trim().toLowerCase();
+            const kId = id.trim().toLowerCase();
+            if (!XB_I18N_MAP_EN_TO_ID.has(kEn)) XB_I18N_MAP_EN_TO_ID.set(kEn, id);
+            if (!XB_I18N_MAP_ID_TO_EN.has(kId)) XB_I18N_MAP_ID_TO_EN.set(kId, en);
+        });
+
+        const XB_I18N_REGEX_TO_ID = [
+            [/\bInspect Vault\s*\((\d+)\)/gi, 'Lihat Brankas ($1)'],
+            [/\b(\d+)\s+LIVE ACCOUNTS\b/gi, '$1 AKUN TERSEDIA'],
+            [/\b(\d+)\s+LIVE\s*•\s*HYBRID READY\b/gi, '$1 TERSEDIA • HIBRIDA SIAP'],
+            [/\b(\d+)\s+LIVE\b/gi, '$1 TERSEDIA'],
+            [/\b(\d+)\s+Ready Accounts\b/gi, '$1 Akun Siap'],
+            [/\b(\d+)\s+Verified Accounts\b/gi, '$1 Akun Terverifikasi'],
+            [/\b(\d+)\s+Verified Orders\b/gi, '$1 Pesanan Terverifikasi'],
+            [/\b(\d+)\s+Accounts\b/gi, '$1 Akun'],
+            [/\b(\d+)\s+Accs\b/gi, '$1 Akun'],
+            [/\b(\d+)\s+Vaults\b/gi, '$1 Brankas'],
+            [/\b(\d+)\s+Available\b/gi, '$1 Tersedia'],
+            [/\b(\d+)\s+Active\b/gi, '$1 Aktif'],
+            [/\b(\d+)\s+Ready\b/gi, '$1 Siap'],
+            [/\b(\d+)\s+Sold\b/gi, '$1 Terjual'],
+            [/\b(\d+)\s+Orders\b/gi, '$1 Pesanan'],
+            [/\b(\d+)\s+Items in Cart\b/gi, '$1 Item di Keranjang'],
+            [/\b(\d+)\s+Item\(s\) in Cart\b/gi, '$1 Item di Keranjang'],
+            [/\b(\d+)\s+Items\b/gi, '$1 Item'],
+            [/\b(\d+)\s+Selected\b/gi, '$1 Dipilih'],
+            [/\b(\d+)\s+Saved\b/gi, '$1 Tersimpan'],
+            [/\b(\d+)\s+Codes\b/gi, '$1 Kode'],
+            [/\b(\d+)\s+Logs\b/gi, '$1 Log'],
+            [/\b(\d+)\s+Svc\b/gi, '$1 Layanan'],
+            [/\b(\d+)\s+Completed\b/gi, '$1 Selesai'],
+            [/\b(\d+)\s+Verified TX\b/gi, '$1 TX Terverifikasi'],
+            [/\b(\d+)\s+left\b/gi, 'sisa $1'],
+            [/\b(\d+)h\s*(\d+)m\s*left\b/gi, 'sisa $1j $2m'],
+            [/\bExpires in (\d+)s \(Auto-Refreshing\)/gi, 'Berakhir dalam $1d (Otomatis)'],
+            [/\bRefreshing in (\d+)s/gi, 'Memperbarui dalam $1d'],
+            [/\bSelect All\s*\((\d+)\)/gi, 'Pilih Semua ($1)'],
+            [/\bDelete Selected\s*\((\d+)\)/gi, 'Hapus Terpilih ($1)'],
+            [/\bMy Vault\s*\((\d+)\)/gi, 'Brankas Saya ($1)'],
+            [/\bAccounts\s*\((\d+)\)/gi, 'Akun ($1)'],
+            [/\bPENDING INVOICES\s*\((\d+)\)/gi, 'INVOICE TERTUNDA ($1)'],
+            [/\bSELECTED ASSETS\s*\((\d+)\)/gi, 'ASET TERPILIH ($1)'],
+            [/\bSELECTED SERVICE\s*\((\d+)\s*LIVE\)/gi, 'LAYANAN DIPILIH ($1 TERSEDIA)'],
+            [/\bMY GITHUB BOOST ORDERS\s*\((\d+)\)/gi, 'PESANAN BOOST GITHUB SAYA ($1)'],
+            [/\bSOCIAL MEDIA BOOST ORDERS\s*\((\d+)\)/gi, 'PESANAN BOOST MEDIA SOSIAL ($1)'],
+            [/\bPRO APPS, GAMES & PPOB ORDERS\s*\((\d+)\)/gi, 'PESANAN APLIKASI PRO, GAME & PPOB ($1)'],
+            [/\bBundle Offer\s*\((\d+)\s*Assets\)/gi, 'Tawaran Bundel ($1 Aset)'],
+            [/\bFLASH SALE DEALS\s*\((\d+)\s*LIVE\)/gi, 'PROMO KILAT ($1 AKTIF)'],
+            [/\bFrom\s+((?:\$|Rp\s*)[\d.,]+)/gi, 'Mulai $1'],
+            [/\bMAX\s+(\d+)\b/g, 'MAKS $1'],
+            [/\bMIN\s+(\d+)\b/g, 'MIN $1'],
+            [/\b(\d+)\/(\d+)\s+ACTIVE\s*•\s*GITHUB ALWAYS ON/gi, '$1/$2 AKTIF • GITHUB SELALU NYALA'],
+            [/\b(\d+)\/(\d+)\s+ON\b/gi, '$1/$2 NYALA'],
+            [/\bShow All\s*\((\d+\/\d+)\)/gi, 'Tampilkan Semua ($1)'],
+            [/\bEST\.\s*TIME\s*\((\d+)\s*UNITS\)/gi, 'EST. WAKTU ($1 UNIT)'],
+            [/\b10 units \/ ±(\d+) hours?/gi, '10 unit / ±$1 jam'],
+            [/±([\d.]+)\s*hours?\b/gi, '±$1 jam'],
+            [/\bAFTER\s*\(\+(\d+)\)/gi, 'SESUDAH (+$1)'],
+            [/\bCURRENT\s+([A-Z]+)\b/g, '$1 SAAT INI'],
+            [/\bUp to (\d+) Units\b/gi, 'Hingga $1 Unit'],
+            [/\b(\d+) Units Left\b/gi, 'Sisa $1 Unit'],
+            [/\bOrder Instant\s*—\s*/gi, 'Pesan Instan — '],
+            [/\bOrder\s+([\d.,]+)\s+Units\s*—\s*/gi, 'Pesan $1 Unit — '],
+            [/\bMin Order:\s*/gi, 'Min Pesanan: '],
+            [/\bMax Limit:\s*/gi, 'Batas Maks: '],
+            [/\bInsufficient Balance\b/gi, 'Saldo Tidak Cukup'],
+            [/\bMinimum Convert\b/gi, 'Minimal Konversi'],
+            [/\bAuthorize\s+/gi, 'Otorisasi '],
+            [/\bLoading Live\s+(.+?)\s+Catalog\.\.\./gi, 'Memuat Katalog $1...'],
+            [/\bSyncing Live\s+(.+?)\s+Services\.\.\./gi, 'Menyinkronkan Layanan $1...'],
+            [/\bSelect\s+(.+?)\s+Service\b/gi, 'Pilih Layanan $1'],
+            [/\b(.+?)\s+Boost Service\b/gi, 'Layanan Boost $1'],
+            [/\b(\d+)%\s*BACK\b/gi, 'CASHBACK $1%'],
+            [/\bPERSONAL PORTFOLIO SPEND\s*\(([^)]+)\)/gi, 'BELANJA PORTOFOLIO PRIBADI ($1)'],
+            [/\bGitHub Vault\s+(\d{4})/gi, 'Brankas GitHub $1'],
+            [/\bAged\s+(20\d{2}[–-]20\d{2})/gi, 'Akun Tua $1'],
+            [/\bIn Queue\b/gi, 'Dalam Antrean'],
+            [/\b100% Delivered\b/gi, '100% Terkirim'],
+            [/\bDone\s*•\s*/gi, 'Selesai • '],
+            [/\bNext\s+/gi, 'Berikutnya '],
+            [/\bList:\s*/gi, 'Harga: '],
+            [/\bSEARCH:\s*/gi, 'CARI: '],
+            [/\bSWAP\s+/gi, 'TUKAR '],
+            [/\bSwap\s+/g, 'Tukar '],
+            [/\bConvert\s+/g, 'Cairkan '],
+            [/\bBuy\s+([A-Z0-9]+)\s+\(/g, 'Beli $1 ('],
+            [/\bDESTINATION WALLET ADDRESS\s*\(([^)]+)\)/gi, 'ALAMAT DOMPET TUJUAN ($1)'],
+            [/\bRECIPIENT WALLET\s*\(([^)]+)\)/gi, 'DOMPET PENERIMA ($1)'],
+            [/\bRECEIVE\s*\(([^)]+)\)/gi, 'DITERIMA ($1)'],
+            [/\bSELECT RETAIL PACK\s*\(([^)]+)\)/gi, 'PILIH PAKET ECERAN ($1)'],
+            [/\bPaste your (.+?) address\.\.\./gi, 'Tempel alamat $1 Anda...'],
+            [/\bPaste wallet address on (.+?)\.\.\./gi, 'Tempel alamat dompet jaringan $1...'],
+            [/\bCurrency:\s*/gi, 'Mata Uang: '],
+            [/\bCopied\s+/gi, 'Disalin ']
+        ];
+
+        const XB_I18N_REGEX_TO_EN = [
+            [/\bNOMOR REKENING\s*\(([^)]+)\)/gi, 'ACCOUNT NUMBER ($1)'],
+            [/\bNO\.\s*HP\s+([A-Za-z0-9]+)/gi, '$1 PHONE NUMBER'],
+            [/\bContoh:\s*/gi, 'e.g. '],
+            [/\bFilter paket\s+(.+?)\s*\((\d+)\s*ready\)\.\.\./gi, 'Filter $1 packages ($2 ready)...'],
+            [/\bFilter paket\s+/gi, 'Filter packages '],
+            [/\bBelum ada paket aktif untuk\s+/gi, 'No active packages available for '],
+            [/\bTidak ada paket yang cocok dengan\s+/gi, 'No packages match '],
+            [/\bSaldo tidak cukup\s*\(Butuh\s+([^)]+)\)/gi, 'Insufficient balance (Need $1)'],
+            [/\bMinimum convert adalah\s+/gi, 'Minimum convert is '],
+            [/\bMasukkan nomor rekening\s+(.+?)\s+dan nama pemilik rekening\./gi, 'Enter your $1 account number and holder name.'],
+            [/\bMasukkan nomor HP\s+(.+?)\s+dan nama akun e-wallet\./gi, 'Enter your $1 phone number and e-wallet account name.'],
+            [/\bMasukkan\s+(.+?)\s+yang valid!/gi, 'Enter a valid $1!'],
+            [/\btujuan \/ target\b/gi, 'target / destination'],
+            [/\bLanjut Cek Umur & Link\s*\((\d+)\s*Akun Aktif\)/gi, 'Continue Age & Link Check ($1 Active Accounts)'],
+            [/\bCek Ultra-Safe\b/gi, 'Ultra-Safe Check'],
+            [/\bPaste daftar PAT token ke bawah/gi, 'Paste PAT tokens below'],
+            [/\bAtur ukuran lalu klik Confirm/gi, 'Adjust size then click Confirm'],
+            [/\bKembalikan\b/gi, 'Reset'],
+            [/\batau link post\/reel\b/gi, 'or post/reel link'],
+            [/\batau link video\b/gi, 'or video link'],
+            [/\batau link tweet\b/gi, 'or tweet link'],
+            [/\batau link post\b/gi, 'or post link'],
+            [/\batau link postingan\b/gi, 'or post link'],
+            [/\bLink toko atau produk\b/gi, 'Store or product link'],
+            [/\batau WA\b/gi, 'or WA'],
+            [/\batau link LinkedIn\b/gi, 'or LinkedIn link']
+        ];
+
+        const XB_I18N_FALLBACK_TO_ID = [
+            ['Insufficient wallet balance', 'Saldo dompet tidak mencukupi'],
+            ['Insufficient Balance', 'Saldo Tidak Cukup'],
+            ['Please enter a valid', 'Masukkan yang valid untuk'],
+            ['Please enter', 'Silakan masukkan'],
+            ['Please select', 'Silakan pilih'],
+            ['Please wait', 'Mohon tunggu'],
+            ['Waiting for live market price', 'Menunggu harga pasar langsung'],
+            ['Waiting for live', 'Menunggu data langsung'],
+            ['Click below to checkout', 'Ketuk di bawah untuk membayar'],
+            ['Connection error', 'Koneksi bermasalah'],
+            ['Network error', 'Gangguan jaringan'],
+            ['copied to clipboard', 'disalin ke papan klip'],
+            ['copied!', 'disalin!'],
+            ['Added to Shopping Cart', 'Ditambahkan ke Keranjang'],
+            ['added to Cart', 'ditambahkan ke Keranjang'],
+            ['already in your Cart', 'sudah ada di Keranjang'],
+            ['Your cart is empty', 'Keranjang Anda kosong'],
+            ['Shopping cart cleared', 'Keranjang belanja dikosongkan'],
+            ['Active in', 'Aktif di'],
+            ['Switch to', 'Pindah ke'],
+            ['Save Network Fee', 'Hemat Biaya Jaringan'],
+            ['High-Fee Chain', 'Jaringan Biaya Tinggi'],
+            ['Regular Track', 'Jalur Reguler'],
+            ['Fast Track', 'Jalur Cepat'],
+            ['Ultra Track', 'Jalur Ultra'],
+            ['Live Tracker', 'Pelacak Langsung'],
+            ['Full Access', 'Akses Penuh'],
+            ['Instant Delivery', 'Pengiriman Instan'],
+            ['Original Email', 'Email Asli'],
+            ['Verified', 'Terverifikasi'],
+            ['Available', 'Tersedia'],
+            ['Processing', 'Diproses'],
+            ['Completed', 'Selesai'],
+            ['Pending', 'Menunggu'],
+            ['Active', 'Aktif'],
+            ['Inactive', 'Nonaktif'],
+            ['Selected', 'Dipilih'],
+            ['History', 'Riwayat'],
+            ['Balance', 'Saldo'],
+            ['Account', 'Akun'],
+            ['Accounts', 'Akun'],
+            ['Order', 'Pesanan'],
+            ['Orders', 'Pesanan'],
+            ['Package', 'Paket'],
+            ['Packages', 'Paket'],
+            ['Product', 'Produk'],
+            ['Service', 'Layanan'],
+            ['Services', 'Layanan'],
+            ['Discount', 'Diskon'],
+            ['Voucher', 'Voucher'],
+            ['Invoice', 'Invoice'],
+            ['Cancel', 'Batal'],
+            ['Confirm', 'Konfirmasi'],
+            ['Submit', 'Kirim'],
+            ['Search', 'Cari'],
+            ['Filter', 'Filter'],
+            ['Delete', 'Hapus'],
+            ['Close', 'Tutup'],
+            ['Save', 'Simpan'],
+            ['Copy', 'Salin'],
+            ['Copied', 'Disalin'],
+            ['Refresh', 'Muat Ulang'],
+            ['Loading', 'Memuat'],
+            ['Syncing', 'Menyinkronkan'],
+            ['Settings', 'Pengaturan'],
+            ['Security', 'Keamanan'],
+            ['Support', 'Bantuan'],
+            ['Welcome', 'Selamat datang']
+        ];
+
+        const XB_I18N_FALLBACK_TO_EN = [
+            ['Saldo dompet tidak mencukupi', 'Insufficient wallet balance'],
+            ['Saldo tidak cukup', 'Insufficient balance'],
+            ['Tersimpan global ke semua pembeli', 'Saved globally for all buyers'],
+            ['Kategori ditampilkan', 'Category shown'],
+            ['Kategori disembunyikan', 'Category hidden'],
+            ['Semua kategori ditampilkan', 'All categories shown'],
+            ['Mode GitHub Only aktif', 'GitHub Only mode enabled'],
+            ['Pilih paket yang tersedia dulu', 'Please select an available package first'],
+            ['Paket ini sedang kosong/gangguan di server', 'This package is currently out of stock/unavailable'],
+            ['Pesanan', 'Order'],
+            ['Silakan', 'Please'],
+            ['Masukkan', 'Enter'],
+            ['Pilih', 'Select'],
+            ['Nomor HP', 'Phone Number'],
+            ['Nomor Rekening', 'Account Number'],
+            ['Nama Lengkap', 'Full Name'],
+            ['Sedang diproses', 'Processing'],
+            ['Berhasil', 'Success'],
+            ['Gagal', 'Failed'],
+            ['Kosong', 'Empty'],
+            ['Batal', 'Cancel'],
+            ['Tutup', 'Close'],
+            ['Simpan', 'Save'],
+            ['Hapus', 'Delete'],
+            ['Salin', 'Copy'],
+            ['Ubah', 'Edit'],
+            ['Kembali', 'Back'],
+            ['Kirim', 'Send'],
+            ['Beli', 'Buy'],
+            ['Cari', 'Search']
+        ];
+
+        function xbShouldSkipString(str) {
+            const t = String(str || '').trim();
+            if (!t || t.length < 2) return true;
+            if (/^https?:\/\//i.test(t)) return true;
+            if (/^@[a-zA-Z0-9._-]+$/.test(t)) return true;
+            if (/^(ghp_|github_pat_)/i.test(t)) return true;
+            if (/^(INV|TRF|NEG|MSG|BATCH|NTF)-[A-Z0-9-]+$/i.test(t)) return true;
+            if (/^[A-Z2-7]{16,}$/.test(t)) return true;
+            if (/^[\s\d.,$+\-:%()\/•●○✓✕×▼▲▾➔↗⚡⭐👑🔥🛡️🔒🔓🔑💳🪙🚀👤🔐⚙️📩🔔🛒📋💾🌐☀️🌌⏳📡🎉❌⚠️ℹ️±~RpUSDTIDR]+$/.test(t)) return true;
+            return false;
+        }
+
+        function xbTranslateText(raw, targetLang = window.currentLang) {
+            if (typeof raw !== 'string') return raw;
+            const leadMatch = raw.match(/^([\s\u00A0]*)/);
+            const trailMatch = raw.match(/([\s\u00A0]*)$/);
+            const lead = leadMatch ? leadMatch[1] : '';
+            const trail = trailMatch ? trailMatch[1] : '';
+            const core = raw.trim();
+            if (xbShouldSkipString(core)) return raw;
+
+            // Split leading decorative emoji/symbols so "💳 Wallet & Ledger" matches "Wallet & Ledger"
+            const prefMatch = core.match(/^((?:[\p{Emoji_Presentation}\p{Extended_Pictographic}\u2600-\u27BF\uFE0F●○✓✕×★☆▸•━═←→⬅➔▼▲▾↻+]+\s*)+)(.*)$/u);
+            const prefix = prefMatch ? prefMatch[1] : '';
+            const body = prefMatch ? prefMatch[2].trim() : core;
+            if (!body || xbShouldSkipString(body)) return raw;
+
+            const isId = (targetLang === 'ID');
+            const exactMap = isId ? XB_I18N_MAP_EN_TO_ID : XB_I18N_MAP_ID_TO_EN;
+            const bodyLower = body.toLowerCase();
+
+            // 1. Exact Match (preserving ALL-CAPS if original body was all uppercase letters)
+            if (exactMap.has(bodyLower)) {
+                let res = exactMap.get(bodyLower);
+                const lettersOnly = body.replace(/[^A-Za-z]/g, '');
+                if (lettersOnly.length >= 3 && lettersOnly === lettersOnly.toUpperCase()) {
+                    res = res.toUpperCase();
+                }
+                return lead + prefix + res + trail;
+            }
+
+            // 2. Protect URLs, @handles, Invoices, and Currency amounts before Regex / Phrase pass
+            const stash = [];
+            let work = body.replace(/(https?:\/\/\S+|@[A-Za-z0-9._-]+|\b(?:INV|TRF|NEG|MSG|BATCH)-[A-Z0-9-]+\b|\bghp_[A-Za-z0-9]+\b)/gi, (m) => {
+                const idx = stash.length;
+                stash.push(m);
+                return `__XBK${idx}__`;
+            });
+
+            const rxList = isId ? XB_I18N_REGEX_TO_ID : XB_I18N_REGEX_TO_EN;
+            for (let i = 0; i < rxList.length; i++) {
+                work = work.replace(rxList[i][0], rxList[i][1]);
+            }
+
+            // 3. Multi-word & Safe Word-Boundary Fallback
+            const fbList = isId ? XB_I18N_FALLBACK_TO_ID : XB_I18N_FALLBACK_TO_EN;
+            for (let i = 0; i < fbList.length; i++) {
+                const [src, dst] = fbList[i];
+                const escSrc = src.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                const rgx = new RegExp(`(?<![A-Za-z0-9_])${escSrc}(?![A-Za-z0-9_])`, 'gi');
+                work = work.replace(rgx, (m) => {
+                    const letters = m.replace(/[^A-Za-z]/g, '');
+                    if (letters.length >= 3 && letters === letters.toUpperCase()) return dst.toUpperCase();
+                    if (m[0] && m[0] === m[0].toLowerCase() && dst[0]) return dst[0].toLowerCase() + dst.slice(1);
+                    return dst;
+                });
+            }
+
+            // Restore protected tokens
+            work = work.replace(/__XBK(\d+)__/g, (_, i) => stash[Number(i)] || '');
+            return lead + prefix + work + trail;
+        }
+
+        const _xbI18nTextMeta = new WeakMap();
+        const _xbI18nAttrMeta = new WeakMap();
+        const _xbSkipTags = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'SVG', 'CANVAS', 'TEXTAREA']);
+        let _xbI18nMutating = false;
+
+        function xbIsProtectedElement(el) {
+            if (!el || el.nodeType !== 1) return false;
+            if (_xbSkipTags.has(el.tagName)) return true;
+            if (el.closest('[data-no-i18n="1"], .xb-msg-bub, #web2faCode, #admSlotPatVal, .cred-field-row .val')) return true;
+            if (el.id && /^pat_tok_disp_/.test(el.id)) return true;
+            return false;
+        }
+
+        function xbTranslateNodeTree(rootNode) {
+            if (!rootNode) return;
+            _xbI18nMutating = true;
+            try {
+                const lang = window.currentLang || 'EN';
+                const walker = document.createTreeWalker(rootNode, NodeFilter.SHOW_TEXT | NodeFilter.SHOW_ELEMENT, null);
+                let node = rootNode;
+                while (node) {
+                    if (node.nodeType === 1) {
+                        if (!xbIsProtectedElement(node)) {
+                            const attrs = ['placeholder', 'title'];
+                            let map = _xbI18nAttrMeta.get(node);
+                            attrs.forEach(at => {
+                                if (!node.hasAttribute(at)) return;
+                                const curVal = node.getAttribute(at) || '';
+                                if (!curVal) return;
+                                if (!map) { map = {}; _xbI18nAttrMeta.set(node, map); }
+                                if (!map[at] || curVal !== map[at].applied) {
+                                    map[at] = { orig: curVal, applied: curVal };
+                                }
+                                const nextVal = xbTranslateText(map[at].orig, lang);
+                                if (nextVal !== curVal) {
+                                    map[at].applied = nextVal;
+                                    node.setAttribute(at, nextVal);
+                                }
+                            });
+                        }
+                    } else if (node.nodeType === 3) {
+                        const parent = node.parentElement;
+                        if (parent && !xbIsProtectedElement(parent)) {
+                            const cur = node.nodeValue || '';
+                            if (cur.trim().length >= 2) {
+                                let meta = _xbI18nTextMeta.get(node);
+                                if (!meta || cur !== meta.applied) {
+                                    meta = { orig: cur, applied: cur };
+                                    _xbI18nTextMeta.set(node, meta);
+                                }
+                                const next = xbTranslateText(meta.orig, lang);
+                                if (next !== cur) {
+                                    meta.applied = next;
+                                    node.nodeValue = next;
+                                }
+                            }
+                        }
+                    }
+                    node = walker.nextNode();
+                }
+            } finally {
+                _xbI18nMutating = false;
+            }
+        }
+
+        function updateLangSwitchUI() {
+            const lang = window.currentLang || 'EN';
+            document.documentElement.setAttribute('lang', lang === 'ID' ? 'id' : 'en');
+            document.querySelectorAll('.xb-lang-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+            });
+        }
+
+        function setAppLanguage(langCode) {
+            const nextLang = String(langCode || 'EN').toUpperCase() === 'ID' ? 'ID' : 'EN';
+            window.currentLang = nextLang;
+            localStorage.setItem('xb_lang_mode', nextLang);
+            updateLangSwitchUI();
+            xbTranslateNodeTree(document.body);
+            if (typeof showToast === 'function') {
+                showToast(nextLang === 'ID' ? 'Bahasa Indonesia diaktifkan!' : 'English language enabled!');
+            }
+        }
+
+        // Hook showToast, confirm, and prompt so popups never leak the wrong language
+        if (typeof window.showToast === 'function' && !window._xbToastI18nHooked) {
+            window._xbToastI18nHooked = true;
+            const _origShowToast = window.showToast;
+            window.showToast = function (msg) {
+                return _origShowToast(xbTranslateText(String(msg || ''), window.currentLang));
+            };
+        }
+        if (!window._xbDialogI18nHooked) {
+            window._xbDialogI18nHooked = true;
+            const _origConfirm = window.confirm.bind(window);
+            const _origPrompt = window.prompt.bind(window);
+            window.confirm = function (msg) {
+                return _origConfirm(xbTranslateText(String(msg || ''), window.currentLang));
+            };
+            window.prompt = function (msg, defVal) {
+                return _origPrompt(xbTranslateText(String(msg || ''), window.currentLang), defVal);
+            };
+        }
+
+        // Real-time MutationObserver for all dynamic renders, modals & live refreshes
+        let _xbI18nRaf = null;
+        const _xbI18nObserver = new MutationObserver(() => {
+            if (_xbI18nMutating || _xbI18nRaf) return;
+            _xbI18nRaf = requestAnimationFrame(() => {
+                _xbI18nRaf = null;
+                xbTranslateNodeTree(document.body);
+            });
+        });
+
         // Initial Render & Auth Gate Check
         checkInitialAuthGate();
         switchTab('home');
         setInterval(updateAuthPortalTickers, 5000);
+        updateLangSwitchUI();
+        xbTranslateNodeTree(document.body);
+        _xbI18nObserver.observe(document.body, { childList: true, subtree: true, characterData: true });
     </script>
 </body>
 </html>
