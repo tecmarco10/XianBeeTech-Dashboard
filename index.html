@@ -5802,6 +5802,55 @@
             background: rgba(244, 63, 94, 0.18);
             transform: scale(0.96);
         }
+
+        /* 11. STEALTH COMMAND STUDIO V2 (HUB + 8 DEDICATED MODULE PAGES) */
+        .sc2-root { display:flex; flex-direction:column; gap:8px; height:100%; flex:1; min-height:0; overflow:hidden; }
+        .sc2-nav { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:5px; flex-shrink:0; background:var(--bg-input); border:1px solid var(--ex-hairline); border-radius:11px; padding:3px; }
+        .sc2-nav-btn { position:relative; border:1.5px solid transparent; background:transparent; color:var(--text-secondary); border-radius:8px; padding:7px 3px; font-family:'JetBrains Mono',monospace; font-size:0.57rem; font-weight:800; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:3px; white-space:nowrap; transition:0.16s ease; }
+        .sc2-nav-btn.active { background:linear-gradient(135deg,rgba(14,30,68,0.95),rgba(37,19,74,0.95)); border-color:#f43f5e; color:#ffffff; box-shadow:0 0 5px rgba(244,63,94,0.45); }
+        [data-theme="platinum"] .sc2-nav-btn.active { background:#ffffff; border-color:#e11d48; color:#0f172a; box-shadow:0 2px 6px rgba(225,29,72,0.18); }
+        .sc2-dot { width:6px; height:6px; border-radius:50%; background:#34d399; box-shadow:0 0 6px #34d399; display:inline-block; flex-shrink:0; }
+        .sc2-dot.off { background:#f87171; box-shadow:0 0 6px #f87171; }
+        .sc2-dot.warn { background:#fbbf24; box-shadow:0 0 6px #fbbf24; }
+        .sc2-scroll { flex:1; min-height:0; overflow-y:auto; padding-right:2px; display:flex; flex-direction:column; gap:8px; }
+        .sc2-stat-row { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; flex-shrink:0; font-family:'JetBrains Mono',monospace; text-align:center; }
+        .sc2-stat { background:var(--bg-input); border:1px solid rgba(56,189,248,0.28); border-radius:10px; padding:6px 4px; }
+        .sc2-stat .k { font-size:0.48rem; font-weight:800; color:var(--text-muted); letter-spacing:0.4px; }
+        .sc2-stat .v { font-size:0.78rem; font-weight:800; color:var(--text-primary); margin-top:2px; }
+        .sc2-card { background:var(--ex-card-bg); border:1px solid rgba(56,189,248,0.28); border-radius:13px; padding:10px; display:flex; flex-direction:column; gap:8px; }
+        .sc2-sec-hdr { border-top:1.5px solid #38bdf8; border-bottom:1.5px solid #a855f7; background:rgba(56,189,248,0.08); padding:4px 8px; border-radius:7px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.6rem; font-weight:800; color:#38bdf8; letter-spacing:0.4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+        .sc2-hub-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:7px; }
+        .sc2-mod-card { position:relative; text-align:left; background:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px),var(--ex-card-bg); background-size:14px 14px,14px 14px,100% 100%; border:1.5px solid rgba(56,189,248,0.32); border-radius:12px; padding:9px; display:flex; flex-direction:column; gap:5px; cursor:pointer; transition:border-color 0.16s,transform 0.12s; }
+        .sc2-mod-card:active { transform:scale(0.98); border-color:#f43f5e; }
+        .sc2-mod-card.is-omni { grid-column:1 / -1; border-color:rgba(244,63,94,0.68); box-shadow:0 0 6px rgba(244,63,94,0.24); }
+        .sc2-mod-top { display:flex; align-items:center; justify-content:space-between; gap:5px; }
+        .sc2-mod-ico { width:26px; height:26px; border-radius:8px; display:inline-flex; align-items:center; justify-content:center; font-size:0.86rem; background:rgba(56,189,248,0.14); border:1px solid rgba(56,189,248,0.35); flex-shrink:0; }
+        .sc2-mod-tag { font-family:'JetBrains Mono',monospace; font-size:0.46rem; font-weight:800; padding:2px 6px; border-radius:99px; border:1px solid rgba(56,189,248,0.4); color:#38bdf8; background:rgba(56,189,248,0.1); white-space:nowrap; }
+        .sc2-mod-title { font-size:0.74rem; font-weight:800; color:var(--text-primary); line-height:1.15; }
+        .sc2-mod-desc { font-family:'JetBrains Mono',monospace; font-size:0.51rem; color:var(--text-muted); line-height:1.3; }
+        .sc2-subhdr { position:sticky; top:0; z-index:8; display:flex; align-items:center; justify-content:space-between; gap:6px; background:rgba(7,11,23,0.94); backdrop-filter:blur(10px); border:1.5px solid #f43f5e; border-radius:11px; padding:6px 8px; box-shadow:0 0 6px rgba(244,63,94,0.3); }
+        [data-theme="platinum"] .sc2-subhdr { background:rgba(255,255,255,0.96); border-color:#e11d48; }
+        .sc2-back-btn { border:1px solid rgba(56,189,248,0.45); background:rgba(56,189,248,0.12); color:#38bdf8; border-radius:7px; padding:4px 8px; font-family:'JetBrains Mono',monospace; font-size:0.56rem; font-weight:800; cursor:pointer; flex-shrink:0; }
+        .sc2-switch-sel { background:var(--bg-input); color:var(--text-primary); border:1px solid var(--ex-hairline); border-radius:7px; padding:4px 6px; font-family:'JetBrains Mono',monospace; font-size:0.54rem; font-weight:800; max-width:118px; }
+        .sc2-pill-grid { display:grid; gap:5px; }
+        .sc2-pill-btn { border:1.5px solid rgba(148,163,184,0.28); background:var(--bg-input); color:var(--text-secondary); border-radius:9px; padding:7px 5px; font-family:'JetBrains Mono',monospace; font-size:0.57rem; font-weight:800; cursor:pointer; text-align:center; transition:0.15s; }
+        .sc2-pill-btn.active { border-color:#f43f5e; background:linear-gradient(135deg,rgba(14,30,68,0.95),rgba(37,19,74,0.95)); color:#ffffff; box-shadow:0 0 5px rgba(244,63,94,0.38); }
+        [data-theme="platinum"] .sc2-pill-btn.active { background:#fff1f2; border-color:#e11d48; color:#0f172a; }
+        .sc2-inp { width:100%; background:var(--bg-input); border:1.5px solid rgba(56,189,248,0.32); border-radius:9px; padding:8px 9px; color:var(--text-primary); font-family:'JetBrains Mono',monospace; font-size:0.68rem; outline:none; box-sizing:border-box; }
+        .sc2-inp:focus { border-color:#38bdf8; }
+        .sc2-lbl { font-family:'JetBrains Mono',monospace; font-size:0.52rem; font-weight:800; color:var(--text-muted); margin-bottom:3px; display:flex; justify-content:space-between; align-items:center; }
+        .sc2-acc-row { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:6px 8px; border-radius:8px; background:var(--bg-input); border:1px solid rgba(148,163,184,0.24); cursor:pointer; font-family:'JetBrains Mono',monospace; }
+        .sc2-acc-row.picked { border-color:#34d399; border-left:3.5px solid #34d399; background:rgba(16,185,129,0.1); }
+        .sc2-yr-hdr { display:flex; justify-content:space-between; align-items:center; padding:4px 8px; border-radius:7px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.4); color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.55rem; font-weight:800; cursor:pointer; }
+        .sc2-stages { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; }
+        .sc2-stage { border:1px solid rgba(148,163,184,0.28); background:var(--bg-input); border-radius:8px; padding:5px 3px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.5rem; font-weight:800; color:var(--text-muted); }
+        .sc2-stage.done { border-color:#34d399; color:#34d399; background:rgba(16,185,129,0.12); }
+        .sc2-stage.cur { border-color:#fbbf24; color:#fbbf24; background:rgba(251,191,36,0.14); }
+        .sc2-log-box { background:#060913; border:1px solid rgba(56,189,248,0.3); border-radius:10px; padding:8px; font-family:'JetBrains Mono',monospace; font-size:0.58rem; max-height:175px; overflow-y:auto; display:flex; flex-direction:column; gap:5px; }
+        [data-theme="platinum"] .sc2-log-box { background:#f8fafc; }
+        .sc2-heat-grid { display:grid; grid-template-columns:repeat(18,minmax(0,1fr)); gap:2px; background:var(--bg-input); border:1px solid rgba(52,211,153,0.35); border-radius:8px; padding:6px; }
+        .sc2-heat-cell { aspect-ratio:1; border-radius:2px; background:rgba(148,163,184,0.15); }
+        .sc2-heat-cell.l1 { background:#064e3b; } .sc2-heat-cell.l2 { background:#059669; } .sc2-heat-cell.l3 { background:#10b981; } .sc2-heat-cell.l4 { background:#34d399; }
     </style>
     <!-- Chart.js for Slick 3D/Gradient Interactive Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -9148,6 +9197,240 @@ const XB_EX_BANK_THEMES = {
                 if (inp) inp.value = window._xbExState.idrAmountUsd;
                 updateXbExDynamicCalc();
             }
+
+            // === FAST MULTI-MIRROR LIVE FEED (ANTI-BLOCK ISP INDONESIA • 3.5s TIMEOUT • INSTANT CACHE) ===
+            const _XB_EX_FEED_CACHE_KEY = 'xb_ex_fast_feed_cache_v2';
+            const _XB_EX_BASE_SPOTS = {
+                USDT: { usd: 1.0, chg: 0.0 }, USDC: { usd: 1.0, chg: 0.0 },
+                BTC:  { usd: 92000, chg: 1.1 }, ETH:  { usd: 3150, chg: 0.8 },
+                BNB:  { usd: 640, chg: 0.5 },   SOL:  { usd: 195, chg: 1.4 },
+                TON:  { usd: 5.2, chg: 0.6 },   POL:  { usd: 0.45, chg: 0.4 },
+                MATIC:{ usd: 0.45, chg: 0.4 },  SUI:  { usd: 3.1, chg: 1.9 },
+                TRX:  { usd: 0.24, chg: 0.3 },  AVAX: { usd: 34, chg: 0.9 },
+                TIA:  { usd: 5.5, chg: 0.7 },   ATOM: { usd: 6.2, chg: 0.4 },
+                INJ:  { usd: 21, chg: 1.2 },    OSMO: { usd: 0.52, chg: 0.3 },
+                APT:  { usd: 9.2, chg: 0.8 },   SEI:  { usd: 0.44, chg: 0.6 },
+                FTM:  { usd: 0.72, chg: 0.5 },  S:    { usd: 0.65, chg: 0.5 },
+                MNT:  { usd: 0.88, chg: 0.4 },  CORE: { usd: 1.15, chg: 0.5 },
+                ARB:  { usd: 0.75, chg: 0.6 },  OP:   { usd: 1.75, chg: 0.5 },
+                NEAR: { usd: 4.8, chg: 0.7 },   DOGE: { usd: 0.34, chg: 1.3 },
+                XRP:  { usd: 2.3, chg: 0.9 },   LTC:  { usd: 98, chg: 0.4 },
+                ADA:  { usd: 0.88, chg: 0.5 },  DOT:  { usd: 6.4, chg: 0.4 },
+                LINK: { usd: 18.5, chg: 0.8 },  UNI:  { usd: 11.2, chg: 0.5 },
+                BCH:  { usd: 450, chg: 0.3 },   XLM:  { usd: 0.38, chg: 0.4 },
+                ALGO: { usd: 0.29, chg: 0.3 },  HBAR: { usd: 0.22, chg: 0.5 },
+                BASE: { usd: 3150, chg: 0.8 },  STRK: { usd: 0.48, chg: 0.4 },
+                ZKS:  { usd: 0.18, chg: 0.3 },  ZK:   { usd: 0.18, chg: 0.3 },
+                KAIA: { usd: 0.21, chg: 0.3 },  BERA: { usd: 4.2, chg: 0.5 },
+                HYPE: { usd: 24, chg: 1.2 }
+            };
+            const _XB_EX_CG_IDS = {
+                BTC:'bitcoin', ETH:'ethereum', BNB:'binancecoin', SOL:'solana',
+                TON:'the-open-network', POL:'polygon-ecosystem-token', SUI:'sui',
+                TRX:'tron', AVAX:'avalanche-2', TIA:'celestia', ATOM:'cosmos',
+                INJ:'injective-protocol', OSMO:'osmosis', APT:'aptos', SEI:'sei-network',
+                FTM:'fantom', S:'sonic-3', MNT:'mantle', CORE:'coredaoorg',
+                ARB:'arbitrum', OP:'optimism', NEAR:'near', DOGE:'dogecoin',
+                XRP:'ripple', LTC:'litecoin', ADA:'cardano', DOT:'polkadot',
+                LINK:'chainlink', UNI:'uniswap', BCH:'bitcoin-cash', XLM:'stellar',
+                ALGO:'algorand', HBAR:'hedera-hashgraph', ZK:'zksync', STRK:'starknet'
+            };
+
+            function _xbExSeedFastCache() {
+                const st = window._xbExState;
+                if (!st) return;
+                if (!st._fastSpots) st._fastSpots = {};
+                let cached = null;
+                try { cached = JSON.parse(localStorage.getItem(_XB_EX_FEED_CACHE_KEY) || 'null'); } catch (e) {}
+                if (cached && cached.idr > 10000) {
+                    if (!st.liveIdr || st.liveIdr < 1000) st.liveIdr = Number(cached.idr);
+                    if (cached.spots && typeof cached.spots === 'object') {
+                        Object.assign(st._fastSpots, cached.spots);
+                    }
+                    if (!st.feedSource || st.feedSource === 'CONNECTING') st.feedSource = cached.source || 'MARKET LIVE';
+                    if (!st.lastSyncStr) st.lastSyncStr = cached.syncStr || 'LIVE';
+                } else {
+                    if (!st.liveIdr || st.liveIdr < 1000) st.liveIdr = 16450;
+                    if (!st.feedSource || st.feedSource === 'CONNECTING') st.feedSource = 'LIVE SYNC';
+                }
+                Object.keys(_XB_EX_BASE_SPOTS).forEach(sym => {
+                    if (!st._fastSpots[sym]) st._fastSpots[sym] = Object.assign({ ready: true }, _XB_EX_BASE_SPOTS[sym]);
+                });
+                st.prices = st.prices || {};
+                st.spots = st.spots || {};
+                Object.keys(st._fastSpots).forEach(sym => {
+                    st.prices[sym] = st._fastSpots[sym].usd;
+                    st.spots[sym] = st._fastSpots[sym];
+                });
+            }
+
+            async function _xbExFetchJsonFast(url, timeoutMs = 3500) {
+                const ctrl = new AbortController();
+                const tid = setTimeout(() => ctrl.abort(), timeoutMs);
+                try {
+                    const r = await fetch(url, { signal: ctrl.signal, cache: 'no-store' });
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return await r.json();
+                } finally {
+                    clearTimeout(tid);
+                }
+            }
+
+            function getXbExSpot(coin) {
+                _xbExSeedFastCache();
+                const st = window._xbExState || {};
+                const sym = String((coin && coin.sym) || coin || 'ETH').toUpperCase().trim();
+                if (sym === 'USDT' || sym === 'USDC') return { usd: 1.0, chg: 0.0, ready: true };
+                const hit = (st._fastSpots && st._fastSpots[sym]) || _XB_EX_BASE_SPOTS[sym];
+                if (hit && Number(hit.usd) > 0) {
+                    return { usd: Number(hit.usd), chg: Number(hit.chg || 0), ready: true };
+                }
+                return { usd: 1.0, chg: 0.0, ready: true };
+            }
+
+            async function refreshXbExLivePrices(manual = false) {
+                const st = window._xbExState;
+                if (!st) return;
+                _xbExSeedFastCache();
+                if (st._fastFetchBusy && !manual) return;
+                st._fastFetchBusy = true;
+                st.isFetching = true;
+
+                const neededSyms = Array.from(new Set(
+                    (Array.isArray(XB_EX_COINS) ? XB_EX_COINS : [])
+                        .map(c => String(c.sym || '').toUpperCase().trim())
+                        .filter(s => s && s !== 'USDT' && s !== 'USDC')
+                ));
+
+                // 1. Fetch USD/IDR live rate via fast unblockable mirrors
+                const idrPromise = (async () => {
+                    const sources = [
+                        async () => {
+                            const d = await _xbExFetchJsonFast('https://indodax.com/api/ticker/usdtidr', 3200);
+                            const v = Number(d && d.ticker && d.ticker.last);
+                            if (v > 10000 && v < 30000) return { rate: v, src: 'INDODAX' };
+                            throw new Error('bad');
+                        },
+                        async () => {
+                            const d = await _xbExFetchJsonFast('https://open.er-api.com/v6/latest/USD', 3500);
+                            const v = Number(d && d.rates && d.rates.IDR);
+                            if (v > 10000 && v < 30000) return { rate: v, src: 'FX LIVE' };
+                            throw new Error('bad');
+                        },
+                        async () => {
+                            const d = await _xbExFetchJsonFast('https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/usd.json', 3500);
+                            const v = Number(d && d.usd && d.usd.idr);
+                            if (v > 10000 && v < 30000) return { rate: v, src: 'FX CDN' };
+                            throw new Error('bad');
+                        }
+                    ];
+                    for (const fn of sources) {
+                        try { return await fn(); } catch (e) {}
+                    }
+                    return null;
+                })();
+
+                // 2. Fetch Crypto Spot Prices via Binance Vision mirror -> CoinGecko -> Indodax
+                const spotPromise = (async () => {
+                    const pairList = neededSyms.map(s => `"${s}USDT"`).join(',');
+                    const bnMirrors = [
+                        `https://data-api.binance.vision/api/v3/ticker/24hr?symbols=${encodeURIComponent('[' + pairList + ']')}`,
+                        `https://data-api.binance.vision/api/v3/ticker/24hr`,
+                        `https://api.binance.com/api/v3/ticker/24hr?symbols=${encodeURIComponent('[' + pairList + ']')}`
+                    ];
+                    for (const u of bnMirrors) {
+                        try {
+                            const arr = await _xbExFetchJsonFast(u, 3600);
+                            if (Array.isArray(arr) && arr.length > 0) {
+                                const out = {};
+                                arr.forEach(t => {
+                                    const s = String(t.symbol || '');
+                                    if (s.endsWith('USDT')) {
+                                        const base = s.slice(0, -4);
+                                        const px = Number(t.lastPrice);
+                                        if (px > 0) out[base] = { usd: px, chg: Number(t.priceChangePercent || 0), ready: true };
+                                    }
+                                });
+                                if (Object.keys(out).length >= 5) return { spots: out, src: 'BINANCE LIVE' };
+                            }
+                        } catch (e) {}
+                    }
+
+                    // Fallback 1: CoinGecko
+                    try {
+                        const ids = Array.from(new Set(neededSyms.map(s => _XB_EX_CG_IDS[s]).filter(Boolean))).join(',');
+                        const cg = await _xbExFetchJsonFast(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd&include_24hr_change=true`, 4000);
+                        if (cg && typeof cg === 'object') {
+                            const out = {};
+                            Object.entries(_XB_EX_CG_IDS).forEach(([sym, id]) => {
+                                if (cg[id] && Number(cg[id].usd) > 0) {
+                                    out[sym] = { usd: Number(cg[id].usd), chg: Number(cg[id].usd_24h_change || 0), ready: true };
+                                }
+                            });
+                            if (Object.keys(out).length >= 4) return { spots: out, src: 'COINGECKO LIVE' };
+                        }
+                    } catch (e) {}
+
+                    // Fallback 2: Indodax local Indonesia exchange
+                    try {
+                        const ind = await _xbExFetchJsonFast('https://indodax.com/api/summaries', 3500);
+                        const tks = ind && ind.tickers;
+                        const usdtIdr = Number(tks && tks.usdt_idr && tks.usdt_idr.last) || st.liveIdr || 16450;
+                        if (tks && usdtIdr > 10000) {
+                            const out = {};
+                            neededSyms.forEach(sym => {
+                                const row = tks[sym.toLowerCase() + '_idr'];
+                                const pxIdr = Number(row && row.last);
+                                if (pxIdr > 0) out[sym] = { usd: pxIdr / usdtIdr, chg: 0, ready: true };
+                            });
+                            if (Object.keys(out).length >= 3) return { spots: out, src: 'INDODAX LIVE' };
+                        }
+                    } catch (e) {}
+
+                    return null;
+                })();
+
+                try {
+                    const [idrRes, spotRes] = await Promise.all([idrPromise, spotPromise]);
+                    if (idrRes && idrRes.rate > 10000) st.liveIdr = Math.round(idrRes.rate);
+                    if (spotRes && spotRes.spots) {
+                        Object.assign(st._fastSpots, spotRes.spots);
+                        st.feedSource = spotRes.src;
+                    } else if (idrRes) {
+                        st.feedSource = idrRes.src;
+                    } else {
+                        st.feedSource = 'CACHED LIVE';
+                    }
+
+                    st._fastSpots.USDT = { usd: 1.0, chg: 0.0, ready: true };
+                    st._fastSpots.USDC = { usd: 1.0, chg: 0.0, ready: true };
+                    Object.keys(st._fastSpots).forEach(sym => {
+                        st.prices[sym] = st._fastSpots[sym].usd;
+                        st.spots[sym] = st._fastSpots[sym];
+                    });
+
+                    const nowStr = new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' }) + ' WIB';
+                    st.lastSyncStr = nowStr;
+                    try {
+                        localStorage.setItem(_XB_EX_FEED_CACHE_KEY, JSON.stringify({
+                            idr: st.liveIdr, spots: st._fastSpots, source: st.feedSource, syncStr: nowStr, ts: Date.now()
+                        }));
+                    } catch (e) {}
+                } finally {
+                    st.isFetching = false;
+                    st._fastFetchBusy = false;
+                    if (document.getElementById('xbExHubContainer')) {
+                        renderXbExBody(false);
+                        updateXbExDynamicCalc();
+                    }
+                    if (manual && typeof showToast === 'function') {
+                        showToast(`✅ Market synced (${st.feedSource} • 1 USDT = Rp ${Number(st.liveIdr).toLocaleString('id-ID')})`);
+                    }
+                }
+            }
+
+            // Seed cache immediately & pre-fetch live prices in background
+            setTimeout(() => { _xbExSeedFastCache(); refreshXbExLivePrices(false); }, 400);
 
             // =========================================================
             // 🔍 SEARCHABLE TOKEN & NETWORK PICKER + PIN + RECEIPT MODAL
@@ -23082,6 +23365,990 @@ let _ghAgeCheckerResults = [];
                 showToast(`📋 ${fname} copied to clipboard!`);
             } catch (e) { showToast('⚠️ Failed to read export file.'); }
         }
+
+// =========================================================================
+// 🛰️ STEALTH COMMAND STUDIO V2 (HUB + 8 DEDICATED MODULE PAGES • PC_BRIDGE)
+// =========================================================================
+        const _sc2OrigGetCfg = (typeof getPcBridgeCfg === 'function') ? getPcBridgeCfg : null;
+        const _SC2_MODULES = [
+            { id: 'omni',     ico: '👑', title: 'Omni Automation',  tag: 'ALL-IN-ONE', desc: 'Repo Sync + Pro Profile README + Auto Workflow Cron', color: '#f43f5e' },
+            { id: 'repo',     ico: '🏗️', title: 'Repository Sync',  tag: 'CLONER',     desc: 'Clone/Renovate real repos preserving original dates', color: '#38bdf8' },
+            { id: 'profile',  ico: '🎨', title: 'Profile Builder',  tag: 'ZERO-PROMPT',desc: 'Auto-detect repo niche & deploy Pro Profile README',  color: '#c084fc' },
+            { id: 'workflow', ico: '⏰', title: 'Workflow Engine',  tag: 'STEALTH CI', desc: 'Plant organic daily/weekly randomized cron commits',  color: '#34d399' },
+            { id: 'boost',    ico: '🚀', title: 'Growth Booster',   tag: '4 METRICS',  desc: 'Stealth Stars, Followers, Forks & Watchers engine',   color: '#fbbf24' },
+            { id: 'badges',   ico: '🏅', title: 'Achievement Lab',  tag: '5 BADGES',   desc: 'Quickdraw, YOLO, Pull Shark, Pair & Galaxy Brain',    color: '#f472b6' },
+            { id: 'commit',   ico: '🟩', title: 'Commit History',   tag: 'HEATMAP',    desc: 'Organic real-dev backdated commits & live heatmap',   color: '#10b981' },
+            { id: 'audit',    ico: '🔍', title: 'Token Inspector',  tag: '404 AUDIT',  desc: 'Sequential PAT health check, 404 shadowban & export', color: '#60a5fa' }
+        ];
+        const _SC2_NICHES = [
+            { k: '7', lbl: '🎲 Random / Account' },
+            { k: '1', lbl: '🪙 Crypto & Web3' },
+            { k: '2', lbl: '🧠 AI & ML' },
+            { k: '3', lbl: '⚙️ DevOps' },
+            { k: '4', lbl: '🛡️ Security' },
+            { k: '5', lbl: '☁️ Cloud API' },
+            { k: '6', lbl: '🔀 Mix All' }
+        ];
+        const _SC2_CRONS = [
+            { k: '5', lbl: '🌿 Organic Daily (Smart Skip)' },
+            { k: '1', lbl: '⚡ Every 6 Hours' },
+            { k: '2', lbl: '🕐 Every 12 Hours' },
+            { k: '3', lbl: '📅 Once Daily' },
+            { k: '4', lbl: '🗓️ Every 3 Days' },
+            { k: '0', lbl: '⏭️ Skip Workflow' }
+        ];
+
+        const _sc2State = {
+            tab: 'hub',          // 'hub' | 'monitor' | 'vault' | 'settings'
+            activeMod: null,     // null (hub grid) | 'omni'|'repo'|'profile'|'workflow'|'boost'|'badges'|'commit'|'audit'
+            pickerOpen: false,
+            pickerTab: 'audit',  // 'audit' | 'paste'
+            pickerSearch: '',
+            auditPool: [],
+            auditLoading: false,
+            selectedPats: new Set(),
+            pastedRaw: '',
+            bridgeOnline: false,
+            bridgeInfo: { status: 'IDLE', pending_jobs: 0, auto_fulfill: true, boost_running: false },
+            telemetry: null,
+            vaultData: null,
+            pollTimer: null,
+            cdTimer: null,
+            cdUntil: 0,
+            cdTotal: 0,
+            cdLabel: '',
+            heatSeed: 1,
+            params: {
+                omni:     { niche: '7', num_repos: 2, commits: 25, repo_mode: '1', cron: '5' },
+                repo:     { niche: '7', num_repos: 3, commits: 25, repo_mode: '1' },
+                profile:  {},
+                workflow: { cron: '5' },
+                boost:    { boost_action: 'star', targets: '', speed_mode: '2', target_limit: 0, daily_cap: 5 },
+                badges:   { badge_mode: 'ALL', prefer_existing: true, helper_token: '' },
+                commit:   { date_range: 'year', last_days: 60, persona: 'casual', total_commits: 80, commit_repo_mode: 'existing' },
+                audit:    { check_web_404: true }
+            }
+        };
+
+        function sc2Esc(s) {
+            return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        function getPcBridgeCfg() {
+            const uNew = (localStorage.getItem('xb_pc_bridge_url') || '').trim().replace(/\/+$/, '');
+            const kNew = (localStorage.getItem('xb_pc_bridge_key') || '').trim();
+            if (uNew) return { url: uNew, key: kNew || 'Tiana01' };
+            if (_sc2OrigGetCfg) {
+                try {
+                    const old = _sc2OrigGetCfg();
+                    if (old && old.url) return { url: String(old.url).trim().replace(/\/+$/, ''), key: String(old.key || 'Tiana01').trim() };
+                } catch (e) {}
+            }
+            return { url: '', key: 'Tiana01' };
+        }
+
+        function sc2SaveBridgeCfg(urlVal, keyVal) {
+            const cleanUrl = String(urlVal || '').trim().replace(/\/+$/, '');
+            const cleanKey = String(keyVal || 'Tiana01').trim();
+            localStorage.setItem('xb_pc_bridge_url', cleanUrl);
+            localStorage.setItem('xb_pc_bridge_key', cleanKey);
+            localStorage.setItem('pc_bridge_url', cleanUrl);
+            localStorage.setItem('pc_bridge_key', cleanKey);
+        }
+
+        function sc2ExtractTokens(raw) {
+            const str = String(raw || '');
+            const matches = str.match(/(ghp_[A-Za-z0-9]{20,60}|github_pat_[A-Za-z0-9_]{20,100})/g) || [];
+            if (matches.length) return Array.from(new Set(matches));
+            return Array.from(new Set(str.split(/[\r\n,\s]+/).map(s => s.trim()).filter(s => s.length >= 20)));
+        }
+
+        function sc2GetActiveTokens() {
+            const pasted = sc2ExtractTokens(_sc2State.pastedRaw);
+            return Array.from(new Set([...Array.from(_sc2State.selectedPats), ...pasted]));
+        }
+
+        async function sc2LoadAuditPool(force = false) {
+            if (_sc2State.auditLoading || (!force && _sc2State.auditPool.length > 0)) return;
+            _sc2State.auditLoading = true;
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'pull_pat_age_audit' })
+                });
+                const d = await res.json();
+                const map = new Map();
+                if (d && d.result && Array.isArray(d.items)) {
+                    d.items.forEach((it, idx) => {
+                        const tok = String(it.patToken || '').trim();
+                        if (tok.length >= 20 && !map.has(tok)) {
+                            map.set(tok, {
+                                pool_no: it.pool_no || (idx + 1),
+                                username: String(it.username || 'unknown').replace(/^@/, ''),
+                                year: String(it.year || 'Other'),
+                                patToken: tok
+                            });
+                        }
+                    });
+                }
+                if (typeof allLiveAccountsFlat !== 'undefined' && Array.isArray(allLiveAccountsFlat)) {
+                    allLiveAccountsFlat.forEach(acc => {
+                        const tok = String(acc.pat || '').trim();
+                        if (tok.length >= 20 && tok !== '-' && !map.has(tok)) {
+                            map.set(tok, {
+                                pool_no: map.size + 1,
+                                username: String(acc.username || 'unknown').replace(/^@/, ''),
+                                year: String(acc.year || acc.category || 'Sheet1'),
+                                patToken: tok
+                            });
+                        }
+                    });
+                }
+                _sc2State.auditPool = Array.from(map.values());
+            } catch (e) {} finally {
+                _sc2State.auditLoading = false;
+                if (_sc2State.tab === 'hub' && _sc2State.activeMod) sc2RenderBody();
+                sc2UpdateTopStats();
+            }
+        }
+
+        async function sc2PingBridge(silent = false) {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) {
+                _sc2State.bridgeOnline = false;
+                sc2UpdateTopStats();
+                return false;
+            }
+            try {
+                const ctrl = new AbortController();
+                const tid = setTimeout(() => ctrl.abort(), 5000);
+                const r = await fetch(`${url}/api/status`, { headers: { 'X-Bridge-Key': key }, signal: ctrl.signal });
+                clearTimeout(tid);
+                const d = await r.json();
+                if (r.ok && d && d.ok) {
+                    _sc2State.bridgeOnline = true;
+                    _sc2State.bridgeInfo = d;
+                    if (!silent) showToast(`🟢 PC Bridge ONLINE (${d.status || 'IDLE'})`);
+                    sc2UpdateTopStats();
+                    if (_sc2State.tab === 'settings') sc2RenderBody();
+                    return true;
+                }
+            } catch (e) {}
+            _sc2State.bridgeOnline = false;
+            if (!silent) showToast('🔴 Unable to reach PC Bridge. Check Tunnel URL / Secret.');
+            sc2UpdateTopStats();
+            if (_sc2State.tab === 'settings') sc2RenderBody();
+            return false;
+        }
+
+        function sc2UpdateTopStats() {
+            const bEl = document.getElementById('sc2StatBridge');
+            const pEl = document.getElementById('sc2StatPool');
+            const jEl = document.getElementById('sc2StatJobs');
+            const dot = document.getElementById('sc2HdrDot');
+            if (bEl) {
+                bEl.innerHTML = _sc2State.bridgeOnline
+                    ? `<span style="color:#34d399;">● ${_sc2State.bridgeInfo.status || 'ONLINE'}</span>`
+                    : `<span style="color:#f87171;">● OFFLINE</span>`;
+            }
+            if (dot) dot.className = 'sc2-dot ' + (_sc2State.bridgeOnline ? '' : 'off');
+            if (pEl) pEl.innerText = `${sc2GetActiveTokens().length} / ${_sc2State.auditPool.length}`;
+            if (jEl) jEl.innerText = String(_sc2State.bridgeInfo.pending_jobs || 0);
+        }
+
+        function sc2StopCdTicker() {
+            if (_sc2State.cdTimer) { clearInterval(_sc2State.cdTimer); _sc2State.cdTimer = null; }
+            _sc2State.cdUntil = 0; _sc2State.cdTotal = 0; _sc2State.cdLabel = '';
+            const box = document.getElementById('sc2CdBanner');
+            if (box) box.style.display = 'none';
+        }
+
+        function sc2TickCdBanner() {
+            const box = document.getElementById('sc2CdBanner');
+            const txt = document.getElementById('sc2CdText');
+            const bar = document.getElementById('sc2CdBar');
+            if (!box || !txt || !bar) return;
+            const rem = _sc2State.cdUntil - Date.now();
+            const tot = _sc2State.cdTotal * 1000;
+            if (rem <= 0 || tot <= 0) { sc2StopCdTicker(); return; }
+            const sec = Math.ceil(rem / 1000);
+            const m = String(Math.floor(sec / 60)).padStart(2, '0');
+            const s = String(sec % 60).padStart(2, '0');
+            const pct = Math.min(99, Math.max(4, Math.round(((tot - rem) / tot) * 100)));
+            box.style.display = 'flex';
+            txt.innerText = `⏳ ${_sc2State.cdLabel || 'SAFE COOLDOWN'} • ${m}:${s}`;
+            bar.style.width = `${pct}%`;
+        }
+
+        function startPcTelemetryPolling() {
+            if (_sc2State.pollTimer) clearInterval(_sc2State.pollTimer);
+            sc2PollTelemetryOnce();
+            _sc2State.pollTimer = setInterval(sc2PollTelemetryOnce, 2500);
+        }
+
+        async function sc2PollTelemetryOnce() {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) return;
+            try {
+                const r = await fetch(`${url}/api/job/telemetry`, { headers: { 'X-Bridge-Key': key } });
+                if (!r.ok) return;
+                const d = await r.json();
+                if (!d || !d.ok) return;
+                _sc2State.bridgeOnline = true;
+                _sc2State.bridgeInfo.status = d.status || 'IDLE';
+                _sc2State.telemetry = d;
+                sc2UpdateTopStats();
+
+                if (d.status === 'RUNNING' && Number(d.cooldown_until || 0) > Date.now() && Number(d.cooldown_total || 0) > 0) {
+                    _sc2State.cdUntil = Number(d.cooldown_until);
+                    _sc2State.cdTotal = Number(d.cooldown_total);
+                    _sc2State.cdLabel = String(d.cooldown_label || 'SAFE COOLDOWN');
+                    if (!_sc2State.cdTimer) _sc2State.cdTimer = setInterval(sc2TickCdBanner, 250);
+                } else {
+                    sc2StopCdTicker();
+                }
+
+                if (_sc2State.tab === 'monitor') sc2RenderMonitorInner();
+                if (d.status !== 'RUNNING' && _sc2State.pollTimer) {
+                    clearInterval(_sc2State.pollTimer);
+                    _sc2State.pollTimer = null;
+                }
+            } catch (e) {}
+        }
+
+        async function loadPcVaultAndJobs(showToastFlag = false) {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) {
+                if (showToastFlag) showToast('⚠️ Configure PC Bridge URL in Settings first.');
+                return;
+            }
+            try {
+                const r = await fetch(`${url}/api/vault-jobs`, { headers: { 'X-Bridge-Key': key } });
+                const d = await r.json();
+                if (r.ok && d && d.ok) {
+                    _sc2State.vaultData = d;
+                    _sc2State.bridgeInfo.pending_jobs = Array.isArray(d.pending_jobs) ? d.pending_jobs.length : 0;
+                    sc2UpdateTopStats();
+                    if (_sc2State.tab === 'vault') sc2RenderBody();
+                    if (showToastFlag) showToast('🔄 Vault & Checkpoints synced!');
+                }
+            } catch (e) {
+                if (showToastFlag) showToast('⚠️ Failed to reach PC Bridge.');
+            }
+        }
+
+        function switchPcCockpitTab(tabName) {
+            const norm = (tabName === 'config' || tabName === 'modules') ? 'hub' : tabName;
+            _sc2State.tab = norm;
+            ['hub', 'monitor', 'vault', 'settings'].forEach(t => {
+                const b = document.getElementById(`sc2Tab_${t}`);
+                if (b) b.classList.toggle('active', t === norm);
+            });
+            sc2RenderBody();
+            if (norm === 'monitor') startPcTelemetryPolling();
+            if (norm === 'vault') loadPcVaultAndJobs(false);
+            if (norm === 'settings') sc2PingBridge(true);
+        }
+
+        function sc2OpenModule(modId) {
+            _sc2State.activeMod = modId || null;
+            _sc2State.tab = 'hub';
+            if (modId && _sc2State.auditPool.length === 0) sc2LoadAuditPool(false);
+            sc2RenderBody();
+        }
+
+        function sc2TogglePickPat(tok) {
+            if (_sc2State.selectedPats.has(tok)) _sc2State.selectedPats.delete(tok);
+            else _sc2State.selectedPats.add(tok);
+            sc2UpdateTopStats();
+            sc2RenderBody();
+        }
+
+        function sc2QuickSelectPats(mode) {
+            if (mode === 'clear') {
+                _sc2State.selectedPats.clear();
+                _sc2State.pastedRaw = '';
+            } else if (mode === 'all') {
+                _sc2State.auditPool.forEach(a => _sc2State.selectedPats.add(a.patToken));
+            } else {
+                const n = Number(mode) || 5;
+                let added = 0;
+                for (const a of _sc2State.auditPool) {
+                    if (!_sc2State.selectedPats.has(a.patToken)) {
+                        _sc2State.selectedPats.add(a.patToken);
+                        if (++added >= n) break;
+                    }
+                }
+            }
+            sc2UpdateTopStats();
+            sc2RenderBody();
+        }
+
+        function sc2ToggleYearGroup(yr) {
+            const group = _sc2State.auditPool.filter(a => a.year === yr);
+            const allPicked = group.every(a => _sc2State.selectedPats.has(a.patToken));
+            group.forEach(a => {
+                if (allPicked) _sc2State.selectedPats.delete(a.patToken);
+                else _sc2State.selectedPats.add(a.patToken);
+            });
+            sc2UpdateTopStats();
+            sc2RenderBody();
+        }
+
+        function sc2RenderSharedPickerHtml() {
+            const activeCnt = sc2GetActiveTokens().length;
+            const open = _sc2State.pickerOpen;
+            if (!open) {
+                return `
+                    <button type="button" class="sc2-card" style="width:100%;flex-direction:row;align-items:center;justify-content:space-between;cursor:pointer;border-color:${activeCnt > 0 ? 'rgba(52,211,153,0.6)' : 'rgba(56,189,248,0.4)'};"
+                        onclick="_sc2State.pickerOpen=true; sc2LoadAuditPool(false); sc2RenderBody();">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:var(--text-primary);">
+                            🔑 Account PAT Pool <span style="color:${activeCnt > 0 ? '#34d399' : '#fbbf24'};">(${activeCnt} Selected)</span>
+                        </span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#38bdf8;">Select / Paste ▼</span>
+                    </button>
+                `;
+            }
+
+            const q = (_sc2State.pickerSearch || '').trim().toLowerCase();
+            const filtered = _sc2State.auditPool.filter(a => !q || a.username.toLowerCase().includes(q) || a.year.toLowerCase().includes(q));
+            const byYear = new Map();
+            filtered.forEach(a => {
+                if (!byYear.has(a.year)) byYear.set(a.year, []);
+                byYear.get(a.year).push(a);
+            });
+            const yrKeys = Array.from(byYear.keys()).sort();
+
+            const auditHtml = _sc2State.auditLoading
+                ? `<div style="text-align:center;padding:12px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#38bdf8;">⏳ Syncing PAT_Age_Audit pool...</div>`
+                : (yrKeys.length === 0
+                    ? `<div style="text-align:center;padding:10px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);">No PATs in Audit Stock. Switch to Paste PAT or Sync.</div>`
+                    : `<div style="max-height:155px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;">
+                        ${yrKeys.map(yr => {
+                            const list = byYear.get(yr);
+                            return `
+                                <div class="sc2-yr-hdr" onclick="sc2ToggleYearGroup('${sc2Esc(yr)}')">
+                                    <span>📂 ${sc2Esc(yr)} (${list.length})</span>
+                                    <span>Tap to Toggle Group</span>
+                                </div>
+                                ${list.map(a => {
+                                    const picked = _sc2State.selectedPats.has(a.patToken);
+                                    return `
+                                        <div class="sc2-acc-row ${picked ? 'picked' : ''}" onclick="sc2TogglePickPat('${sc2Esc(a.patToken)}')">
+                                            <span style="font-size:0.62rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                                ${picked ? '✅' : '⚪'} #${a.pool_no} @${sc2Esc(a.username)}
+                                            </span>
+                                            <span style="font-size:0.52rem;color:${picked ? '#34d399' : '#38bdf8'};flex-shrink:0;">${picked ? 'PICKED' : '+ PICK'}</span>
+                                        </div>
+                                    `;
+                                }).join('')}
+                            `;
+                        }).join('')}
+                    </div>`);
+
+            return `
+                <div class="sc2-card" style="border-color:rgba(56,189,248,0.48);">
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;color:#38bdf8;">🔑 PAT POOL (${activeCnt} SELECTED)</span>
+                        <button type="button" class="sc2-back-btn" onclick="_sc2State.pickerOpen=false; sc2RenderBody();">Hide ▲</button>
+                    </div>
+                    <div class="sc2-pill-grid" style="grid-template-columns:1fr 1fr;">
+                        <button type="button" class="sc2-pill-btn ${_sc2State.pickerTab === 'audit' ? 'active' : ''}" onclick="_sc2State.pickerTab='audit'; sc2RenderBody();">📂 Audit Stock (${_sc2State.auditPool.length})</button>
+                        <button type="button" class="sc2-pill-btn ${_sc2State.pickerTab === 'paste' ? 'active' : ''}" onclick="_sc2State.pickerTab='paste'; sc2RenderBody();">📋 Paste PAT (${sc2ExtractTokens(_sc2State.pastedRaw).length})</button>
+                    </div>
+                    ${_sc2State.pickerTab === 'audit' ? `
+                        <div style="display:flex;gap:5px;">
+                            <input type="text" class="sc2-inp" style="padding:6px 8px;font-size:0.62rem;" placeholder="Search @username or year..."
+                                value="${sc2Esc(_sc2State.pickerSearch)}" oninput="_sc2State.pickerSearch=this.value; sc2RenderBody();">
+                            <button type="button" class="sc2-back-btn" onclick="sc2LoadAuditPool(true)">↻</button>
+                        </div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(4,1fr);">
+                            <button type="button" class="sc2-pill-btn" style="padding:5px;" onclick="sc2QuickSelectPats(5)">+5</button>
+                            <button type="button" class="sc2-pill-btn" style="padding:5px;" onclick="sc2QuickSelectPats(10)">+10</button>
+                            <button type="button" class="sc2-pill-btn" style="padding:5px;color:#34d399;" onclick="sc2QuickSelectPats('all')">All</button>
+                            <button type="button" class="sc2-pill-btn" style="padding:5px;color:#f87171;" onclick="sc2QuickSelectPats('clear')">Clear</button>
+                        </div>
+                        ${auditHtml}
+                    ` : `
+                        <textarea class="sc2-inp" rows="4" placeholder="Paste ghp_... or github_pat_... tokens (1 per line or comma separated)"
+                            oninput="_sc2State.pastedRaw=this.value; sc2UpdateTopStats();">${sc2Esc(_sc2State.pastedRaw)}</textarea>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:#34d399;">
+                            Auto-detects valid ghp_ / github_pat_ tokens &amp; deduplicates automatically.
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function sc2BuildHeatmapPreviewHtml(persona, totalCommits) {
+            const cells = 18 * 7;
+            const emptyRate = persona === 'full' ? 0 : (persona === 'busy' ? 0.32 : (persona === 'sprint' ? 0.62 : 0.56));
+            let s = (_sc2State.heatSeed * 9301 + totalCommits * 49) % 233280;
+            const rnd = () => { s = (s * 9301 + 49297) % 233280; return s / 233280; };
+            let html = '';
+            for (let i = 0; i < cells; i++) {
+                const r = rnd();
+                let cls = '';
+                if (r >= emptyRate) {
+                    const lvl = Math.min(4, Math.max(1, Math.ceil(rnd() * 4)));
+                    cls = 'l' + lvl;
+                }
+                html += `<span class="sc2-heat-cell ${cls}"></span>`;
+            }
+            return html;
+        }
+
+        function sc2RenderModulePageHtml(modId) {
+            const mod = _SC2_MODULES.find(m => m.id === modId) || _SC2_MODULES[0];
+            const p = _sc2State.params[modId] || {};
+            const tokCnt = sc2GetActiveTokens().length;
+            let formHtml = '';
+
+            if (modId === 'omni' || modId === 'repo') {
+                formHtml = `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">🎯 TARGET NICHE &amp; REPOSITORY STRATEGY</div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+                            ${_SC2_NICHES.map(n => `
+                                <button type="button" class="sc2-pill-btn ${p.niche === n.k ? 'active' : ''}"
+                                    onclick="_sc2State.params['${modId}'].niche='${n.k}'; sc2RenderBody();">${n.lbl}</button>
+                            `).join('')}
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <div>
+                                <div class="sc2-lbl"><span>REPOS / ACCOUNT</span><span>0 = Auto</span></div>
+                                <input type="number" min="0" max="15" class="sc2-inp" value="${p.num_repos}"
+                                    oninput="_sc2State.params['${modId}'].num_repos=parseInt(this.value||'0',10);">
+                            </div>
+                            <div>
+                                <div class="sc2-lbl"><span>COMMITS / REPO</span><span>0 = Auto</span></div>
+                                <input type="number" min="0" max="200" class="sc2-inp" value="${p.commits}"
+                                    oninput="_sc2State.params['${modId}'].commits=parseInt(this.value||'0',10);">
+                            </div>
+                        </div>
+                        <div class="sc2-lbl"><span>REPOSITORY MODE</span></div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+                            <button type="button" class="sc2-pill-btn ${p.repo_mode==='1'?'active':''}" onclick="_sc2State.params['${modId}'].repo_mode='1'; sc2RenderBody();">♻️ Renovate + New</button>
+                            <button type="button" class="sc2-pill-btn ${p.repo_mode==='2'?'active':''}" onclick="_sc2State.params['${modId}'].repo_mode='2'; sc2RenderBody();">🛡️ Renovate Only</button>
+                            <button type="button" class="sc2-pill-btn ${p.repo_mode==='3'?'active':''}" onclick="_sc2State.params['${modId}'].repo_mode='3'; sc2RenderBody();">➕ Create New</button>
+                        </div>
+                        ${modId === 'omni' ? `
+                            <div class="sc2-lbl"><span>WORKFLOW CRON SCHEDULE</span></div>
+                            <div class="sc2-pill-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+                                ${_SC2_CRONS.map(c => `
+                                    <button type="button" class="sc2-pill-btn ${p.cron===c.k?'active':''}" onclick="_sc2State.params.omni.cron='${c.k}'; sc2RenderBody();">${c.lbl}</button>
+                                `).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            } else if (modId === 'profile') {
+                formHtml = `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">🎨 1-CLICK AUTO REAL PROFILE CLONER (ZERO PROMPT)</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:var(--text-secondary);line-height:1.45;">
+                            • Auto-scans each account's public repositories to detect the matching developer niche.<br>
+                            • Hunts high-star authentic GitHub Profile READMEs, strips 100% of external social links &amp; old author handles, and injects the target account identity cleanly.<br>
+                            • Updates GitHub Bio, Company, Location &amp; Profile Repo automatically.
+                        </div>
+                    </div>
+                `;
+            } else if (modId === 'workflow') {
+                formHtml = `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">⏰ STEALTH WORKFLOW CRON ENGINE</div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+                            ${_SC2_CRONS.filter(c => c.k !== '0').map(c => `
+                                <button type="button" class="sc2-pill-btn ${p.cron===c.k?'active':''}" onclick="_sc2State.params.workflow.cron='${c.k}'; sc2RenderBody();">${c.lbl}</button>
+                            `).join('')}
+                        </div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;color:#34d399;">
+                            ✅ Requires PAT with 'workflow' scope. Uses randomized minutes &amp; smart skip logic to keep graphs organic.
+                        </div>
+                    </div>
+                `;
+            } else if (modId === 'boost') {
+                const acts = [
+                    { k: 'star',   ico: '⭐', lbl: 'Stars',     col: '#fbbf24' },
+                    { k: 'follow', ico: '👥', lbl: 'Followers', col: '#38bdf8' },
+                    { k: 'fork',   ico: '⎇',  lbl: 'Forks',     col: '#c084fc' },
+                    { k: 'watch',  ico: '👁️', lbl: 'Watchers',  col: '#34d399' }
+                ];
+                formHtml = `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">🚀 GROWTH BOOSTER (STICKY TLS + AUTO-RESUME)</div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+                            ${acts.map(a => `
+                                <button type="button" class="sc2-pill-btn ${p.boost_action===a.k?'active':''}" style="border-color:${p.boost_action===a.k?'#f43f5e':a.col};color:${p.boost_action===a.k?'#fff':a.col};"
+                                    onclick="_sc2State.params.boost.boost_action='${a.k}'; sc2RenderBody();">${a.ico}<br>${a.lbl}</button>
+                            `).join('')}
+                        </div>
+                        <div>
+                            <div class="sc2-lbl"><span>${p.boost_action==='follow'?'TARGET USERNAME(S)':'TARGET REPO(S) (owner/repo)'}</span><span>Comma-separated</span></div>
+                            <input type="text" class="sc2-inp" value="${sc2Esc(p.targets)}"
+                                placeholder="${p.boost_action==='follow'?'username1, username2':'owner/repo1, owner/repo2'}"
+                                oninput="_sc2State.params.boost.targets=this.value;">
+                        </div>
+                        <div class="sc2-lbl"><span>SAFETY SPEED TRACK</span></div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+                            <button type="button" class="sc2-pill-btn ${p.speed_mode==='1'?'active':''}" onclick="_sc2State.params.boost.speed_mode='1'; sc2RenderBody();">⚡ Fast Safe<br><span style="font-size:0.46rem;opacity:0.8;">4–9s/act</span></button>
+                            <button type="button" class="sc2-pill-btn ${p.speed_mode==='2'?'active':''}" onclick="_sc2State.params.boost.speed_mode='2'; sc2RenderBody();">🌿 Organic<br><span style="font-size:0.46rem;opacity:0.8;">9–15s/act</span></button>
+                            <button type="button" class="sc2-pill-btn ${p.speed_mode==='3'?'active':''}" onclick="_sc2State.params.boost.speed_mode='3'; sc2RenderBody();">🛡️ Stealth<br><span style="font-size:0.46rem;opacity:0.8;">18–40s/act</span></button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <div>
+                                <div class="sc2-lbl"><span>TARGET LIMIT</span><span>0 = All PATs</span></div>
+                                <input type="number" min="0" class="sc2-inp" value="${p.target_limit}"
+                                    oninput="_sc2State.params.boost.target_limit=parseInt(this.value||'0',10);">
+                            </div>
+                            <div>
+                                <div class="sc2-lbl"><span>DAILY CAP / PAT</span><span>0 = Unlimited</span></div>
+                                <input type="number" min="0" class="sc2-inp" value="${p.daily_cap}"
+                                    oninput="_sc2State.params.boost.daily_cap=parseInt(this.value||'0',10);">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else if (modId === 'badges') {
+                const bModes = [
+                    { k: 'ALL', lbl: '🔥 All 5 Badges' }, { k: 'PULL_SHARK', lbl: '🦈 Pull Shark' },
+                    { k: 'YOLO', lbl: '🚀 YOLO' }, { k: 'PAIR_EXTRAORDINAIRE', lbl: '👯 Pair Extra' },
+                    { k: 'QUICKDRAW', lbl: '⚡ Quickdraw' }, { k: 'GALAXY_BRAIN', lbl: '🧠 Galaxy Brain' }
+                ];
+                formHtml = `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">🏅 ACHIEVEMENT LAB V3 (2-REPO ZERO FOOTPRINT)</div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(2,minmax(0,1fr));">
+                            ${bModes.map(b => `
+                                <button type="button" class="sc2-pill-btn ${p.badge_mode===b.k?'active':''}"
+                                    onclick="_sc2State.params.badges.badge_mode='${b.k}'; sc2RenderBody();">${b.lbl}</button>
+                            `).join('')}
+                        </div>
+                        <div class="sc2-lbl"><span>REPOSITORY STRATEGY</span></div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:1fr 1fr;">
+                            <button type="button" class="sc2-pill-btn ${p.prefer_existing?'active':''}" onclick="_sc2State.params.badges.prefer_existing=true; sc2RenderBody();">♻️ Existing Public Repo</button>
+                            <button type="button" class="sc2-pill-btn ${!p.prefer_existing?'active':''}" onclick="_sc2State.params.badges.prefer_existing=false; sc2RenderBody();">➕ Create Natural Repo</button>
+                        </div>
+                        <div>
+                            <div class="sc2-lbl"><span>HELPER PAT (OPTIONAL)</span><span>Empty = Auto-Rotate Pool</span></div>
+                            <input type="text" class="sc2-inp" value="${sc2Esc(p.helper_token)}" placeholder="Leave blank to auto-rotate (T1→T2→T3→T1)..."
+                                oninput="_sc2State.params.badges.helper_token=this.value;">
+                        </div>
+                    </div>
+                `;
+            } else if (modId === 'commit') {
+                formHtml = `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">🟩 ORGANIC REAL-DEV COMMIT HISTORY</div>
+                        <div class="sc2-lbl"><span>DATE RANGE</span></div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));">
+                            <button type="button" class="sc2-pill-btn ${p.date_range==='month'?'active':''}" onclick="_sc2State.params.commit.date_range='month'; sc2RenderBody();">This Month</button>
+                            <button type="button" class="sc2-pill-btn ${p.date_range==='year'?'active':''}" onclick="_sc2State.params.commit.date_range='year'; sc2RenderBody();">This Year</button>
+                            <button type="button" class="sc2-pill-btn ${p.date_range==='last_n'?'active':''}" onclick="_sc2State.params.commit.date_range='last_n'; sc2RenderBody();">Last N Days</button>
+                        </div>
+                        ${p.date_range === 'last_n' ? `
+                            <div>
+                                <div class="sc2-lbl"><span>LAST N DAYS</span></div>
+                                <input type="number" min="7" max="365" class="sc2-inp" value="${p.last_days}" oninput="_sc2State.params.commit.last_days=parseInt(this.value||'60',10);">
+                            </div>
+                        ` : ''}
+                        <div class="sc2-lbl"><span>DEVELOPER HEATMAP PERSONA</span></div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:repeat(4,minmax(0,1fr));">
+                            <button type="button" class="sc2-pill-btn ${p.persona==='casual'?'active':''}" onclick="_sc2State.params.commit.persona='casual'; sc2RenderBody();">🌿 Casual</button>
+                            <button type="button" class="sc2-pill-btn ${p.persona==='sprint'?'active':''}" onclick="_sc2State.params.commit.persona='sprint'; sc2RenderBody();">🔥 Sprint</button>
+                            <button type="button" class="sc2-pill-btn ${p.persona==='busy'?'active':''}" onclick="_sc2State.params.commit.persona='busy'; sc2RenderBody();">💼 Busy</button>
+                            <button type="button" class="sc2-pill-btn ${p.persona==='full'?'active':''}" onclick="_sc2State.params.commit.persona='full'; sc2RenderBody();">🟩 Full</button>
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <div>
+                                <div class="sc2-lbl"><span>TOTAL COMMITS</span></div>
+                                <input type="number" min="5" max="2000" class="sc2-inp" value="${p.total_commits}"
+                                    oninput="_sc2State.params.commit.total_commits=parseInt(this.value||'80',10);">
+                            </div>
+                            <div>
+                                <div class="sc2-lbl"><span>TARGET REPO</span></div>
+                                <select class="sc2-inp" onchange="_sc2State.params.commit.commit_repo_mode=this.value;">
+                                    <option value="existing" ${p.commit_repo_mode==='existing'?'selected':''}>Existing Public</option>
+                                    <option value="new" ${p.commit_repo_mode==='new'?'selected':''}>Create 2 Natural</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="sc2-lbl">
+                            <span>LIVE PATTERN PREVIEW (${p.persona.toUpperCase()})</span>
+                            <button type="button" class="sc2-back-btn" style="padding:2px 6px;font-size:0.5rem;" onclick="_sc2State.heatSeed++; sc2RenderBody();">🎲 Re-Roll</button>
+                        </div>
+                        <div class="sc2-heat-grid">${sc2BuildHeatmapPreviewHtml(p.persona, p.total_commits)}</div>
+                    </div>
+                `;
+            } else if (modId === 'audit') {
+                formHtml = `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">🔍 SEQUENTIAL PAT INSPECTOR &amp; 404 AUDIT</div>
+                        <div class="sc2-pill-grid" style="grid-template-columns:1fr 1fr;">
+                            <button type="button" class="sc2-pill-btn ${p.check_web_404?'active':''}" onclick="_sc2State.params.audit.check_web_404=true; sc2RenderBody();">🌐 Check Web 404 (ON)</button>
+                            <button type="button" class="sc2-pill-btn ${!p.check_web_404?'active':''}" onclick="_sc2State.params.audit.check_web_404=false; sc2RenderBody();">⚡ API Only (Fast)</button>
+                        </div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:var(--text-secondary);line-height:1.4;">
+                            Exports clean results directly to <b>pat_active.txt</b>, <b>pat_flagged_404.txt</b> &amp; <b>pat_dead.txt</b> on your Local PC (accessible in Vault tab).
+                        </div>
+                    </div>
+                `;
+            }
+
+            return `
+                <div class="sc2-subhdr">
+                    <button type="button" class="sc2-back-btn" onclick="sc2OpenModule(null)">← All Modules</button>
+                    <span style="font-size:0.72rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${mod.ico} ${mod.title}</span>
+                    <select class="sc2-switch-sel" onchange="sc2OpenModule(this.value)">
+                        ${_SC2_MODULES.map(m => `<option value="${m.id}" ${m.id===modId?'selected':''}>${m.ico} ${m.title}</option>`).join('')}
+                    </select>
+                </div>
+                ${sc2RenderSharedPickerHtml()}
+                ${formHtml}
+                <button type="button" class="btn-ui primary" id="sc2LaunchBtn" style="width:100%;height:42px;border-radius:11px;font-size:0.74rem;border:1.5px solid rgba(244,63,94,0.6);"
+                    onclick="sc2DispatchMission('${modId}')">
+                    🚀 Dispatch ${mod.title} (${tokCnt} PAT${tokCnt===1?'':'s'})
+                </button>
+            `;
+        }
+
+        async function sc2DispatchMission(modId) {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) {
+                showToast('⚠️ Set PC Bridge Tunnel URL in Settings first!');
+                return switchPcCockpitTab('settings');
+            }
+            const tokens = sc2GetActiveTokens();
+            if (tokens.length === 0) {
+                _sc2State.pickerOpen = true;
+                sc2RenderBody();
+                return showToast('⚠️ Select or paste at least 1 PAT token first!');
+            }
+            const params = Object.assign({}, _sc2State.params[modId] || {});
+            if (modId === 'boost' && !String(params.targets || '').trim()) {
+                return showToast('⚠️ Enter at least 1 boost target first!');
+            }
+            const btn = document.getElementById('sc2LaunchBtn');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳ Dispatching to Local PC...'; }
+            try {
+                const res = await fetch(`${url}/api/job/start`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Bridge-Key': key },
+                    body: JSON.stringify({ feature: modId, tokens: tokens, params: params })
+                });
+                const d = await res.json();
+                if (!res.ok) {
+                    showToast(`❌ ${d.detail || 'Bridge rejected job'}`);
+                    if (btn) { btn.disabled = false; btn.innerText = '🚀 Dispatch Mission'; }
+                    return;
+                }
+                showToast(`🚀 Mission ${d.mission_id} started on Local PC!`);
+                switchPcCockpitTab('monitor');
+            } catch (e) {
+                showToast('⚠️ Unable to reach PC Bridge. Check Settings.');
+                if (btn) { btn.disabled = false; btn.innerText = '🚀 Dispatch Mission'; }
+            }
+        }
+
+        async function sc2StopMission() {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) return;
+            try {
+                await fetch(`${url}/api/job/stop`, { method: 'POST', headers: { 'X-Bridge-Key': key } });
+                showToast('🛑 Safe Stop sent to Local PC.');
+                sc2PollTelemetryOnce();
+            } catch (e) { showToast('⚠️ Failed to reach PC Bridge.'); }
+        }
+
+        async function sc2ResetMission() {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) return;
+            try {
+                const r = await fetch(`${url}/api/job/reset`, { method: 'POST', headers: { 'X-Bridge-Key': key } });
+                const d = await r.json();
+                if (!r.ok) return showToast(`⚠️ ${d.detail || 'Cannot reset while running'}`);
+                _sc2State.telemetry = null;
+                showToast('🧹 Monitor reset.');
+                sc2PollTelemetryOnce();
+            } catch (e) {}
+        }
+
+        async function sc2PasteAndPing() {
+            const inp = document.getElementById('sc2ComboInp');
+            let raw = (inp ? inp.value : '').trim();
+            if (!raw) {
+                try { raw = (await navigator.clipboard.readText() || '').trim(); } catch (e) {}
+            }
+            if (!raw) return showToast('⚠️ Paste URL|Password from Telegram Bot first!');
+            const parts = raw.split('|');
+            const u = (parts[0] || '').trim().replace(/\/+$/, '');
+            const k = (parts[1] || getPcBridgeCfg().key || 'Tiana01').trim();
+            if (!u.startsWith('http')) return showToast('⚠️ Invalid Tunnel URL format!');
+            sc2SaveBridgeCfg(u, k);
+            if (inp) inp.value = '';
+            sc2RenderBody();
+            await sc2PingBridge(false);
+        }
+
+        async function sc2ToggleAutoBoost() {
+            const { url, key } = getPcBridgeCfg();
+            if (!url) return showToast('⚠️ Bridge offline.');
+            const nextVal = !_sc2State.bridgeInfo.auto_fulfill;
+            try {
+                const r = await fetch(`${url}/api/boost-ops/toggle`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'X-Bridge-Key': key },
+                    body: JSON.stringify({ auto_fulfill: nextVal })
+                });
+                const d = await r.json();
+                if (r.ok && d.ok) {
+                    _sc2State.bridgeInfo.auto_fulfill = d.auto_fulfill;
+                    showToast(`⚡ Auto-Boost Fulfill: ${d.auto_fulfill ? 'ON' : 'PAUSED'}`);
+                    sc2RenderBody();
+                }
+            } catch (e) { showToast('⚠️ Bridge error.'); }
+        }
+
+        function sc2RenderMonitorInner() {
+            const wrap = document.getElementById('sc2MonitorWrap');
+            if (!wrap) return;
+            const t = _sc2State.telemetry || { status: 'IDLE', stage: 0, stage_label: 'WAITING FOR MISSION QUEUE...', pct: 0, items: [], logs: [] };
+            const pct = Math.max(0, Math.min(100, Number(t.pct || 0)));
+            const st = String(t.status || 'IDLE').toUpperCase();
+            const stages = ['1. Auth', '2. Execute', '3. Verify', '4. Complete'];
+
+            wrap.innerHTML = `
+                <div class="sc2-card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-family:'JetBrains Mono',monospace;">
+                        <span style="font-size:0.62rem;font-weight:800;color:${st==='COMPLETED'?'#34d399':(st==='FAILED'||st==='STOPPED'?'#f87171':'#38bdf8')};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                            ${sc2Esc(t.stage_label || 'IDLE')}
+                        </span>
+                        <span style="font-size:0.68rem;font-weight:900;color:#34d399;flex-shrink:0;">${pct}%</span>
+                    </div>
+                    <div class="progress-track" style="margin:0;">
+                        <div class="progress-fill" style="width:${Math.max(pct, st==='IDLE'?0:5)}%;"></div>
+                    </div>
+                    <div class="sc2-stages">
+                        ${stages.map((sLbl, idx) => {
+                            const num = idx + 1;
+                            const cls = (st === 'COMPLETED' || num < Number(t.stage || 0)) ? 'done' : (st === 'RUNNING' && num === Number(t.stage || 0) ? 'cur' : '');
+                            return `<div class="sc2-stage ${cls}">${cls==='done'?'✓ ':''}${sLbl}</div>`;
+                        }).join('')}
+                    </div>
+                    <div id="sc2CdBanner" style="display:none;flex-direction:column;gap:4px;background:rgba(245,158,11,0.12);border:1px solid rgba(251,191,36,0.5);border-radius:8px;padding:6px 8px;">
+                        <span id="sc2CdText" style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;font-weight:800;color:#fbbf24;"></span>
+                        <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden;"><div id="sc2CdBar" style="height:100%;width:10%;background:#fbbf24;"></div></div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                        <button type="button" class="sc2-pill-btn" style="border-color:rgba(244,63,94,0.55);color:#fb7185;" onclick="sc2StopMission()">🛑 Safe Stop</button>
+                        <button type="button" class="sc2-pill-btn" style="border-color:rgba(56,189,248,0.45);color:#38bdf8;" onclick="sc2ResetMission()">🧹 Reset</button>
+                    </div>
+                </div>
+
+                ${Array.isArray(t.items) && t.items.length > 0 ? `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">📋 TARGET PROGRESS (${t.items.length})</div>
+                        <div style="max-height:135px;overflow-y:auto;display:flex;flex-direction:column;gap:5px;">
+                            ${t.items.map(it => {
+                                const c = it.status === 'COMPLETED' ? '#34d399' : (it.status === 'FAILED' ? '#f87171' : (it.status === 'RUNNING' ? '#38bdf8' : '#94a3b8'));
+                                return `
+                                    <div style="background:var(--bg-input);border:1px solid rgba(148,163,184,0.22);border-left:3.5px solid ${c};border-radius:8px;padding:6px 8px;font-family:'JetBrains Mono',monospace;">
+                                        <div style="display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:0.62rem;font-weight:800;">
+                                            <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${sc2Esc(it.label)}</span>
+                                            <span style="color:${c};font-size:0.52rem;flex-shrink:0;">${sc2Esc(it.status)}</span>
+                                        </div>
+                                        ${it.detail ? `<div style="font-size:0.52rem;color:var(--text-muted);margin-top:2px;">${sc2Esc(it.detail)}</div>` : ''}
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+
+                <div class="sc2-card">
+                    <div style="display:flex;justify-content:space-between;align-items:center;">
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;">📡 LIVE BRIDGE STREAM</span>
+                        <button type="button" class="sc2-back-btn" style="padding:2px 7px;font-size:0.52rem;" onclick="sc2PollTelemetryOnce()">↻ Poll</button>
+                    </div>
+                    <div class="sc2-log-box" id="sc2LogBox">
+                        ${(Array.isArray(t.logs) && t.logs.length > 0) ? t.logs.slice(-30).map(lg => {
+                            const col = lg.isErr ? '#f87171' : (lg.isDone ? '#34d399' : '#38bdf8');
+                            return `<div><span style="color:var(--text-muted);">[${sc2Esc(lg.time || '--:--')}]</span> <b style="color:${col};">${sc2Esc(lg.tag || '[PC]')}</b> <span style="color:var(--text-primary);">${sc2Esc(lg.msg || '')}</span></div>`;
+                        }).join('') : `<div style="color:var(--text-muted);text-align:center;padding:12px;">No active telemetry logs yet. Dispatch a module from Hub.</div>`}
+                    </div>
+                </div>
+            `;
+            const lb = document.getElementById('sc2LogBox');
+            if (lb) lb.scrollTop = lb.scrollHeight;
+            if (_sc2State.cdUntil > Date.now()) sc2TickCdBanner();
+        }
+
+        function sc2RenderBody() {
+            const box = document.getElementById('sc2ScrollBody');
+            if (!box) return;
+
+            if (_sc2State.tab === 'hub') {
+                if (_sc2State.activeMod) {
+                    box.innerHTML = sc2RenderModulePageHtml(_sc2State.activeMod);
+                } else {
+                    box.innerHTML = `
+                        <div class="sc2-sec-hdr">🛰️ SELECT MISSION MODULE (8 DEDICATED WORKFLOWS)</div>
+                        <div class="sc2-hub-grid">
+                            ${_SC2_MODULES.map(m => `
+                                <button type="button" class="sc2-mod-card ${m.id==='omni'?'is-omni':''}" onclick="sc2OpenModule('${m.id}')">
+                                    <div class="sc2-mod-top">
+                                        <span class="sc2-mod-ico" style="border-color:${m.color};">${m.ico}</span>
+                                        <span class="sc2-mod-tag" style="color:${m.color};border-color:${m.color};">${m.tag}</span>
+                                    </div>
+                                    <div class="sc2-mod-title">${m.title}</div>
+                                    <div class="sc2-mod-desc">${m.desc}</div>
+                                </button>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            } else if (_sc2State.tab === 'monitor') {
+                box.innerHTML = `<div id="sc2MonitorWrap" style="display:flex;flex-direction:column;gap:8px;"></div>`;
+                sc2RenderMonitorInner();
+            } else if (_sc2State.tab === 'vault') {
+                const vd = _sc2State.vaultData || { pending_jobs: [], vault: { dead_count: 0, today_actions: 0 }, exports: {} };
+                const jobs = Array.isArray(vd.pending_jobs) ? vd.pending_jobs : [];
+                const ex = vd.exports || {};
+                box.innerHTML = `
+                    <div class="sc2-card">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;font-weight:800;color:#38bdf8;">♻️ SAVED CHECKPOINTS (${jobs.length})</span>
+                            <button type="button" class="sc2-back-btn" onclick="loadPcVaultAndJobs(true)">↻ Sync</button>
+                        </div>
+                        ${jobs.length === 0 ? `<div style="text-align:center;padding:12px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);">No paused checkpoint jobs in PC jobs/ folder.</div>` : jobs.map(j => `
+                            <div style="background:var(--bg-input);border:1px solid rgba(56,189,248,0.35);border-radius:9px;padding:8px;font-family:'JetBrains Mono',monospace;display:flex;flex-direction:column;gap:5px;">
+                                <div style="display:flex;justify-content:space-between;font-size:0.62rem;font-weight:800;">
+                                    <span style="color:#38bdf8;">[${sc2Esc(j.action_type)}] ${sc2Esc(j.target)}</span>
+                                    <span style="color:#34d399;">${j.succ}/${j.goal}</span>
+                                </div>
+                                <div style="font-size:0.5rem;color:var(--text-muted);">Saved: ${sc2Esc(j.updated_at)}</div>
+                                <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:5px;">
+                                    <button type="button" class="sc2-pill-btn active" style="padding:5px;" onclick="resumePcCheckpointJob('${sc2Esc(j.job_id)}')">♻️ Resume</button>
+                                    <button type="button" class="sc2-pill-btn" style="padding:5px;color:#f87171;border-color:rgba(248,113,113,0.4);" onclick="deletePcCheckpointJob('${sc2Esc(j.job_id)}')">🗑️ Delete</button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">🛡️ LOCAL VAULT &amp; DEAD 401 QUARANTINE</div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-family:'JetBrains Mono',monospace;text-align:center;">
+                            <div class="sc2-stat"><div class="k">TODAY ACTIONS</div><div class="v" style="color:#34d399;">${vd.vault.today_actions || 0}</div></div>
+                            <div class="sc2-stat"><div class="k">DEAD 401 QUARANTINE</div><div class="v" style="color:#f87171;">${vd.vault.dead_count || 0}</div></div>
+                        </div>
+                        <button type="button" class="sc2-pill-btn" style="border-color:rgba(248,113,113,0.45);color:#f87171;" onclick="clearPcDeadQuarantine()">🧹 Clear Dead 401 Quarantine</button>
+                    </div>
+
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">📁 PC EXPORT FILES (1-TAP COPY)</div>
+                        <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;">
+                            <button type="button" class="sc2-pill-btn" style="border-color:rgba(52,211,153,0.45);color:#34d399;" onclick="copyPcExportFile('pat_active.txt')">🟢 Active<br>(${ex['pat_active.txt'] || 0})</button>
+                            <button type="button" class="sc2-pill-btn" style="border-color:rgba(192,132,252,0.45);color:#c084fc;" onclick="copyPcExportFile('pat_flagged_404.txt')">🟣 404 Flag<br>(${ex['pat_flagged_404.txt'] || 0})</button>
+                            <button type="button" class="sc2-pill-btn" style="border-color:rgba(248,113,113,0.45);color:#f87171;" onclick="copyPcExportFile('pat_dead.txt')">🔴 Dead<br>(${ex['pat_dead.txt'] || 0})</button>
+                        </div>
+                    </div>
+                `;
+            } else {
+                const cfg = getPcBridgeCfg();
+                box.innerHTML = `
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">⚡ 1-TAP BRIDGE PAIRING (FROM TELEGRAM BOT)</div>
+                        <input type="text" id="sc2ComboInp" class="sc2-inp" placeholder="Paste https://xxxx.trycloudflare.com|Tiana01">
+                        <button type="button" class="btn-ui primary" style="width:100%;height:38px;border-radius:10px;font-size:0.7rem;" onclick="sc2PasteAndPing()">📋 Paste &amp; Ping PC Bridge</button>
+                    </div>
+
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">⚙️ MANUAL PC BRIDGE CONFIGURATION</div>
+                        <div>
+                            <div class="sc2-lbl"><span>CLOUDFLARE TUNNEL URL</span></div>
+                            <input type="text" id="sc2UrlInp" class="sc2-inp" value="${sc2Esc(cfg.url)}" placeholder="https://xxxx.trycloudflare.com">
+                        </div>
+                        <div>
+                            <div class="sc2-lbl"><span>BRIDGE SECRET KEY (X-BRIDGE-KEY)</span></div>
+                            <input type="password" id="sc2KeyInp" class="sc2-inp" value="${sc2Esc(cfg.key)}" placeholder="Tiana01">
+                        </div>
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <button type="button" class="sc2-pill-btn active" onclick="sc2SaveBridgeCfg(document.getElementById('sc2UrlInp').value, document.getElementById('sc2KeyInp').value); sc2PingBridge(false);">💾 Save &amp; Ping</button>
+                            <button type="button" class="sc2-pill-btn" onclick="sc2PingBridge(false)">📡 Test Ping</button>
+                        </div>
+                    </div>
+
+                    <div class="sc2-card">
+                        <div class="sc2-sec-hdr">⚡ AUTO-BOOST ENGINE V2 CONTROL</div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;font-family:'JetBrains Mono',monospace;font-size:0.62rem;">
+                            <span>Auto-Fulfill Queue</span>
+                            <button type="button" class="sc2-pill-btn ${_sc2State.bridgeInfo.auto_fulfill?'active':''}" style="padding:5px 12px;" onclick="sc2ToggleAutoBoost()">
+                                ${_sc2State.bridgeInfo.auto_fulfill ? '🟢 ACTIVE (ON)' : '⏸️ PAUSED (OFF)'}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function closeXbStealthCommandV2() {
+            if (_sc2State.pollTimer) { clearInterval(_sc2State.pollTimer); _sc2State.pollTimer = null; }
+            sc2StopCdTicker();
+            const modal = document.getElementById('paymentGatewayModal');
+            if (modal) modal.classList.remove('xb-fullpage-modal');
+            closeModal('paymentGatewayModal');
+        }
+
+        function openXbStealthCommandV2() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            if (!modal || !body) return;
+            modal.classList.add('xb-fullpage-modal', 'active');
+
+            body.innerHTML = `
+                <div class="sc2-root">
+                    <div class="xb-studio-title-bar">
+                        <h3><span id="sc2HdrDot" class="sc2-dot off" style="margin-right:6px;"></span>🛰️ Stealth Command V2</h3>
+                        <button type="button" class="top-pill" style="position:absolute;right:6px;top:50%;transform:translateY(-50%);padding:4px 8px;font-size:0.68rem;" onclick="closeXbStealthCommandV2()">✕</button>
+                    </div>
+                    <div class="xb-studio-sub-bar">LOCAL PC BRIDGE • 8 DEDICATED MODULES • LIVE TELEMETRY</div>
+
+                    <div class="sc2-nav">
+                        <button type="button" id="sc2Tab_hub" class="sc2-nav-btn active" onclick="switchPcCockpitTab('hub')">🛰️ Hub</button>
+                        <button type="button" id="sc2Tab_monitor" class="sc2-nav-btn" onclick="switchPcCockpitTab('monitor')">📡 Monitor</button>
+                        <button type="button" id="sc2Tab_vault" class="sc2-nav-btn" onclick="switchPcCockpitTab('vault')">📦 Vault</button>
+                        <button type="button" id="sc2Tab_settings" class="sc2-nav-btn" onclick="switchPcCockpitTab('settings')">⚙️ Bridge</button>
+                    </div>
+
+                    <div class="sc2-stat-row">
+                        <div class="sc2-stat"><div class="k">PC BRIDGE</div><div id="sc2StatBridge" class="v" style="color:#fbbf24;">CHECKING...</div></div>
+                        <div class="sc2-stat"><div class="k">PAT POOL</div><div id="sc2StatPool" class="v">0 / 0</div></div>
+                        <div class="sc2-stat"><div class="k">CHECKPOINTS</div><div id="sc2StatJobs" class="v" style="color:#38bdf8;">0</div></div>
+                    </div>
+
+                    <div class="sc2-scroll" id="sc2ScrollBody"></div>
+                </div>
+            `;
+
+            sc2RenderBody();
+            sc2LoadAuditPool(false);
+            sc2PingBridge(true);
+        }
+
+        // Auto-bind semua entry point Stealth Command lama di NewXianBee_2.html ke Stealth Command V2
+        (function bindStealthCommandV2Entrypoints() {
+            const aliases = [
+                'openAdminPcStealthCockpit', 'openPcStealthCockpit', 'openAdminPcStealthCommand',
+                'openPcStealthCommand', 'openAdminStealthCommand', 'openAdminStealthCockpit'
+            ];
+            aliases.forEach(fn => { window[fn] = openXbStealthCommandV2; });
+            Object.keys(window).forEach(k => {
+                if (/^open.*(Stealth|PcCockpit|PcCommand)/i.test(k) && k !== 'openXbStealthCommandV2' && typeof window[k] === 'function') {
+                    window[k] = openXbStealthCommandV2;
+                }
+            });
+        })();
 
 // =========================================================================
 // 🌱 ADMIN EXECUTIVE GITHUB ACCOUNT CREATOR & PROFILE STUDIO (100% ENGLISH)
