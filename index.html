@@ -4720,7 +4720,8 @@
            📐 COMPACT HERO & CATEGORY OVERRIDES (SHOW ASSETS ABOVE FOLD)
            ========================================================= */
         .main-area { padding-top: 98px !important; }
-        .container { padding: 4px 10px 24px 10px !important; }
+        .container { padding: 4px 10px 2px 10px !important; }
+        .xb-ex-hub { margin-bottom: 0 !important; }
 
         /* 1. GITHUB MARKETPLACE & GITHUB BOOST HERO CARD (COMPACT) */
         .xb-mp-switcher,
@@ -9074,7 +9075,7 @@
         </div>
 
         <!-- 📱 MOBILE BOTTOM NAVIGATION (SINGLE-LAYER FLOATING DOCK + ANTI-LEAK FADE) -->
-        <nav class="bottom-nav" style="height:auto;background:linear-gradient(to bottom, rgba(5,7,14,0) 0%, #05070e 18%, #05070e 100%);border:none;box-shadow:none;padding:12px 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px;backdrop-filter:none;pointer-events:none;">
+        <nav class="bottom-nav" style="height:auto;background:linear-gradient(to bottom, rgba(5,7,14,0) 0%, #05070e 18%, #05070e 100%);border:none;box-shadow:none;padding:6px 10px calc(10px + env(safe-area-inset-bottom, 0px)) 10px;backdrop-filter:none;pointer-events:none;">
             <div class="xb-ex-dock">
                 <button class="bnav-btn active" data-tab="home" onclick="switchTab('home')">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2 2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12a2 2 0 0 1-2-2V7"/></svg>
@@ -29280,8 +29281,8 @@ let _ghAgeCheckerResults = [];
                     guard.style.display = 'none';
             }
 
-            // 4. Clean Safe Bottom Padding (No Floating Chat Overlap)
-            const safePad = cartVisible ? (dockH + cartH + 22) : (dockH + 16);
+            // 4. Clean Safe Bottom Padding (Slim Gap Above Bottom Dock)
+            const safePad = cartVisible ? (dockH + cartH + 10) : (dockH + 2);
             document.documentElement.style.setProperty('--xb-safe-pad-bottom', safePad + 'px');
         }
 
