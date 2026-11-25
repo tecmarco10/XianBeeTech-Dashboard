@@ -8972,9 +8972,9 @@ const XB_EX_BANK_THEMES = {
 
                         <div class="xb-ex-tok-grid-2" id="xbExAdmNetGrid" style="max-height:36vh;"></div>
 
-                        <button type="button" class="btn-ui primary" style="width:100%;height:38px;border-radius:10px;font-size:0.72rem;"
-                            onclick="closeXbExModal(); renderXbExBody(true); showToast('✅ Coin & Network visibility saved!');">
-                            ✓ Save &amp; Apply
+                        <button type="button" id="xbExAdmSaveGlobalBtn" class="btn-ui primary" style="width:100%;height:38px;border-radius:10px;font-size:0.72rem;"
+                            onclick="saveXbExGlobalCoinsConfig()">
+                            ✓ Save &amp; Apply Globally (All Users)
                         </button>
                     </div>
                 `;
@@ -9074,7 +9074,99 @@ const XB_EX_BANK_THEMES = {
                 if (keepScroll) grid.scrollTop = prevScroll;
             }
 
-            // Override Swap picker to use the exact same 2-column grid + Admin visibility filter & default Buy Crypto to USDT
+            async function syncXbExGlobalCoinsConfig() {
+                if (typeof GSHEET_WEBHOOK_URL === 'undefined' || !GSHEET_WEBHOOK_URL) return;
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'get_ex_coins_config' })
+                    });
+                    const d = await res.json();
+                    if (d && d.result && Array.isArray(d.hidden)) {
+                        saveXbExHiddenSet(new Set(d.hidden.map(String)));
+                        xbExMountButtonInStoreCategory();
+                        if (document.getElementById('xbExHubContainer')) renderXbExBody(true);
+                    }
+                } catch (e) {}
+            }
+
+            async function saveXbExGlobalCoinsConfig() {
+                const btn = document.getElementById('xbExAdmSaveGlobalBtn');
+                const hiddenArr = Array.from(getXbExHiddenSet());
+                if (btn) { btn.disabled = true; btn.innerText = '⏳ Saving Globally...'; }
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'set_ex_coins_config',
+                            secret: 'XB-PAT-GUARD-2026',
+                            hidden: hiddenArr
+                        })
+                    });
+                    const d = await res.json();
+                    if (d && d.result) {
+                        closeXbExModal();
+                        xbExMountButtonInStoreCategory();
+                        if (document.getElementById('xbExHubContainer')) renderXbExBody(true);
+                        if (typeof showToast === 'function') showToast('✅ Saved globally! All users synced.');
+                    } else {
+                        if (btn) { btn.disabled = false; btn.innerText = '✓ Save & Apply Globally (All Users)'; }
+                        if (typeof showToast === 'function') showToast('⚠️ Sync gagal. Pastikan Kode.gs sudah di-deploy.');
+                    }
+                } catch (e) {
+                    if (btn) { btn.disabled = false; btn.innerText = '✓ Save & Apply Globally (All Users)'; }
+                    if (typeof showToast === 'function') showToast('⚠️ Gagal konek ke Google Sheets.');
+                }
+            }
+
+            function xbExOpenCoinsFromStoreCat() {
+                openXbExAdminCoinManager();
+                const root = ensureXbExModalRoot();
+                if (root) root.style.zIndex = '99999';
+            }
+
+            function xbExMountButtonInStoreCategory() {
+                const onCnt = getXbExEnabledCoins().length;
+                const totCnt = Array.isArray(XB_EX_COINS) ? XB_EX_COINS.length : 0;
+                const badgeText = `${onCnt}/${totCnt} ON ➔`;
+
+                const existingBtn = document.getElementById('xbExStoreCatCoinsBtn');
+                if (existingBtn && document.body.contains(existingBtn)) {
+                    const bSpan = existingBtn.querySelector('.xb-ex-sc-badge');
+                    if (bSpan) bSpan.innerText = badgeText;
+                    return;
+                }
+
+                const nodes = document.querySelectorAll('h1,h2,h3,h4,div,span,p,label');
+                let targetBox = null;
+                for (let i = 0; i < nodes.length; i++) {
+                    const el = nodes[i];
+                    if (el.closest('button') || el.offsetParent === null) continue;
+                    const txt = (el.textContent || '').trim();
+                    if (txt.length > 0 && txt.length <= 44 && /store\s*categor(y|ies)|kategori\s*toko/i.test(txt)) {
+                        targetBox = el.closest('.modal-body, .modal-content, .card, .panel, [id*="Body"], [id*="Modal"], section') || el.parentElement;
+                        if (targetBox) break;
+                    }
+                }
+                if (!targetBox) return;
+
+                const btn = document.createElement('button');
+                btn.type = 'button';
+                btn.id = 'xbExStoreCatCoinsBtn';
+                btn.onclick = xbExOpenCoinsFromStoreCat;
+                btn.style.cssText = 'width:100%;margin-top:8px;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(56,189,248,0.5);background:linear-gradient(135deg,rgba(14,30,68,0.92),rgba(37,19,74,0.92));color:#f8fafc;font-family:"JetBrains Mono",monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;';
+                btn.innerHTML = `<span>🪙 Exchange Coins &amp; Networks</span><span class="xb-ex-sc-badge" style="color:#34d399;flex-shrink:0;">${badgeText}</span>`;
+                targetBox.appendChild(btn);
+            }
+
+            document.addEventListener('click', () => {
+                setTimeout(xbExMountButtonInStoreCategory, 120);
+                setTimeout(xbExMountButtonInStoreCategory, 420);
+            }, true);
+
+            // Override Swap picker to use the exact same 2-column grid + global visibility filter & default Buy Crypto to USDT
             setTimeout(() => {
                 window.openXbExTokenPicker = function(targetField) {
                     openXbExUnifiedTokenPicker(targetField === 'gas' ? 'gas' : 'swap');
@@ -9087,6 +9179,8 @@ const XB_EX_BANK_THEMES = {
                         window._xbExState._gasInitUsdt = true;
                     }
                 }
+                syncXbExGlobalCoinsConfig();
+                xbExMountButtonInStoreCategory();
             }, 80);
 
             function openXbExBankPicker() {
@@ -9654,13 +9748,10 @@ const XB_EX_BANK_THEMES = {
                                 ${escXbEx(st.feedSource)} • 1 USDT = ${idrTxt}
                             </span>
                         </span>
-                        <span style="display:inline-flex;align-items:center;gap:4px;flex-shrink:0;">
-                            ${isXbExAdminUser() ? `<button type="button" class="xb-ex-adm-btn" onclick="openXbExAdminCoinManager()">⚙️ Coins</button>` : ''}
-                            <button type="button" onclick="refreshXbExLivePrices(true)"
-                                style="border:1px solid rgba(56,189,248,0.45);background:rgba(56,189,248,0.1);color:#38bdf8;border-radius:7px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;cursor:pointer;flex-shrink:0;">
-                                ↻ ${st.lastSyncStr ? st.lastSyncStr.replace(' WIB','') : 'SYNC'}
-                            </button>
-                        </span>
+                        <button type="button" onclick="refreshXbExLivePrices(true)"
+                            style="border:1px solid rgba(56,189,248,0.45);background:rgba(56,189,248,0.1);color:#38bdf8;border-radius:7px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;cursor:pointer;flex-shrink:0;">
+                            ↻ ${st.lastSyncStr ? st.lastSyncStr.replace(' WIB','') : 'SYNC'}
+                        </button>
                     </div>
 
                     <div class="xb-ex-modes">
