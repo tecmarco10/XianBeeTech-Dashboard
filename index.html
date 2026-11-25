@@ -5487,33 +5487,59 @@
             border-color: rgba(37, 99, 235, 0.22) !important;
         }
 
-        /* ALLOCATION SLIDER */
+        /* ALLOCATION SLIDER + CRYPTO SYMBOLS */
         .xb-ex-slider-row {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 2px 2px 0;
+            padding: 4px 2px 2px;
+            touch-action: none;
         }
         .xb-ex-slider {
             flex: 1;
             -webkit-appearance: none;
             appearance: none;
-            height: 5px;
+            height: 6px;
             border-radius: 99px;
             background: linear-gradient(90deg, #f43f5e 0%, #38bdf8 100%);
             outline: none;
             cursor: pointer;
+            touch-action: none;
         }
         .xb-ex-slider::-webkit-slider-thumb {
             -webkit-appearance: none;
             appearance: none;
-            width: 15px;
-            height: 15px;
+            width: 19px;
+            height: 19px;
             border-radius: 50%;
             background: #ffffff;
-            border: 2px solid #f43f5e;
-            box-shadow: 0 0 6px rgba(244, 63, 94, 0.75);
+            border: 2.5px solid #f43f5e;
+            box-shadow: 0 0 8px rgba(244, 63, 94, 0.8);
             cursor: pointer;
+        }
+        .xb-ex-coin-ico {
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            color: #ffffff;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28);
+        }
+        .xb-ex-ticker-strip {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            padding: 7px 9px;
+            border-radius: 10px;
+            background: rgba(5, 9, 20, 0.72);
+            border: 1px solid rgba(56, 189, 248, 0.3);
+            font-family: 'JetBrains Mono', monospace;
+        }
+        [data-theme="platinum"] .xb-ex-ticker-strip {
+            background: #f8fafc;
+            border-color: rgba(37, 99, 235, 0.22);
         }
         .xb-ex-slider-pct {
             font-family: 'JetBrains Mono', monospace;
@@ -8417,24 +8443,52 @@
             }
 
 const XB_EX_BANK_THEMES = {
-                'BCA':        { bg: 'linear-gradient(135deg, #0b2d6b 0%, #1d4ed8 100%)', mono: 'BCA' },
-                'BRI':        { bg: 'linear-gradient(135deg, #072654 0%, #0369a1 100%)', mono: 'BRI' },
-                'BNI':        { bg: 'linear-gradient(135deg, #0f3d3e 0%, #ea580c 100%)', mono: 'BNI' },
-                'Mandiri':    { bg: 'linear-gradient(135deg, #0c2340 0%, #ca8a04 100%)', mono: 'MDR' },
-                'SeaBank':    { bg: 'linear-gradient(135deg, #9a3412 0%, #f97316 100%)', mono: 'SEA' },
-                'Bank Jago':  { bg: 'linear-gradient(135deg, #4c1d95 0%, #d97706 100%)', mono: 'JGO' },
-                'BSI':        { bg: 'linear-gradient(135deg, #065f46 0%, #0ea5e9 100%)', mono: 'BSI' },
-                'CIMB Niaga': { bg: 'linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)', mono: 'CMB' },
-                'Permata':    { bg: 'linear-gradient(135deg, #14532d 0%, #059669 100%)', mono: 'PRM' },
-                'OCBC':       { bg: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)', mono: 'OCB' },
-                'Danamon':    { bg: 'linear-gradient(135deg, #713f12 0%, #eab308 100%)', mono: 'DNM' },
-                'Blu by BCA': { bg: 'linear-gradient(135deg, #0369a1 0%, #06b6d4 100%)', mono: 'BLU' },
-                'DANA':       { bg: 'linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)', mono: 'DNA' },
-                'OVO':        { bg: 'linear-gradient(135deg, #3b0764 0%, #7c3aed 100%)', mono: 'OVO' },
-                'GoPay':      { bg: 'linear-gradient(135deg, #065f46 0%, #0284c7 100%)', mono: 'GPY' },
-                'ShopeePay':  { bg: 'linear-gradient(135deg, #9a3412 0%, #ef4444 100%)', mono: 'SPY' },
-                'LinkAja':    { bg: 'linear-gradient(135deg, #881337 0%, #e11d48 100%)', mono: 'LNK' }
+                'BCA':        { bg: 'linear-gradient(135deg, #0b2d6b 0%, #1d4ed8 100%)', mono: 'BCA', full: 'Bank Central Asia' },
+                'BRI':        { bg: 'linear-gradient(135deg, #072654 0%, #0369a1 100%)', mono: 'BRI', full: 'Bank Rakyat Indonesia' },
+                'BNI':        { bg: 'linear-gradient(135deg, #0f3d3e 0%, #ea580c 100%)', mono: 'BNI', full: 'Bank Negara Indonesia' },
+                'Mandiri':    { bg: 'linear-gradient(135deg, #0c2340 0%, #ca8a04 100%)', mono: 'MDR', full: 'Bank Mandiri (Persero)' },
+                'SeaBank':    { bg: 'linear-gradient(135deg, #9a3412 0%, #f97316 100%)', mono: 'SEA', full: 'SeaBank Indonesia' },
+                'Bank Jago':  { bg: 'linear-gradient(135deg, #4c1d95 0%, #d97706 100%)', mono: 'JGO', full: 'Bank Jago Tbk' },
+                'BSI':        { bg: 'linear-gradient(135deg, #065f46 0%, #0ea5e9 100%)', mono: 'BSI', full: 'Bank Syariah Indonesia' },
+                'CIMB Niaga': { bg: 'linear-gradient(135deg, #7f1d1d 0%, #dc2626 100%)', mono: 'CMB', full: 'Bank CIMB Niaga' },
+                'Permata':    { bg: 'linear-gradient(135deg, #14532d 0%, #059669 100%)', mono: 'PRM', full: 'Bank Permata' },
+                'OCBC':       { bg: 'linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%)', mono: 'OCB', full: 'Bank OCBC NISP' },
+                'Danamon':    { bg: 'linear-gradient(135deg, #713f12 0%, #eab308 100%)', mono: 'DNM', full: 'Bank Danamon Indonesia' },
+                'Blu by BCA': { bg: 'linear-gradient(135deg, #0369a1 0%, #06b6d4 100%)', mono: 'BLU', full: 'BCA Digital (blu)' },
+                'DANA':       { bg: 'linear-gradient(135deg, #0369a1 0%, #0ea5e9 100%)', mono: 'DNA', full: 'DANA Indonesia' },
+                'OVO':        { bg: 'linear-gradient(135deg, #3b0764 0%, #7c3aed 100%)', mono: 'OVO', full: 'OVO (Visionet)' },
+                'GoPay':      { bg: 'linear-gradient(135deg, #065f46 0%, #0284c7 100%)', mono: 'GPY', full: 'GoPay Indonesia' },
+                'ShopeePay':  { bg: 'linear-gradient(135deg, #9a3412 0%, #ef4444 100%)', mono: 'SPY', full: 'ShopeePay Indonesia' },
+                'LinkAja':    { bg: 'linear-gradient(135deg, #881337 0%, #e11d48 100%)', mono: 'LNK', full: 'LinkAja Indonesia' }
             };
+
+            function getXbExCoinSvg(coinOrSym, size = 20) {
+                const sym = (typeof coinOrSym === 'string' ? coinOrSym : (coinOrSym && coinOrSym.sym) || 'ETH').toUpperCase();
+                const col = (typeof coinOrSym === 'object' && coinOrSym && coinOrSym.color) ? coinOrSym.color : '#38bdf8';
+                const icoSz = Math.round(size * 0.62);
+                const glyphMap = {
+                    USDT: `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="currentColor"><path d="M5 5h14v3.2h-5.2v2.4c3.6.2 6.2.9 6.2 1.8s-2.6 1.6-6.2 1.8V20h-3.6v-5.8C6.6 14 4 13.3 4 12.4s2.6-1.6 6.2-1.8V8.2H5V5z"/></svg>`,
+                    USDC: `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 4v16M15.5 8.5c0-1.5-1.5-2.5-3.5-2.5S8.5 7 8.5 8.5 10 11 12 11.5s3.5 1 3.5 2.7-1.5 2.8-3.5 2.8-3.5-1-3.5-2.5"/></svg>`,
+                    ETH:  `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 5.5 12.2 12 16l6.5-3.8L12 2zm0 15.6L5.5 13.8 12 22l6.5-8.2L12 17.6z"/></svg>`,
+                    BNB:  `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3 15.5 6.5 13.4 8.6 12 7.2 10.6 8.6 8.5 6.5 12 3zm0 18-3.5-3.5 2.1-2.1 1.4 1.4 1.4-1.4 2.1 2.1L12 21zm-9-9 2.5-2.5 2.1 2.1-2.5 2.5L3 12zm18 0-2.1 2.1-2.5-2.5 2.1-2.1L21 12zm-9-2.4L14.4 12 12 14.4 9.6 12 12 9.6z"/></svg>`,
+                    SOL:  `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="currentColor"><path d="M5 7.5 7.5 5H20l-2.5 2.5H5zm14 4.5-2.5 2.5H4L6.5 12H19zm-14 4.5L7.5 14H20l-2.5 2.5H5z"/></svg>`,
+                    TON:  `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M4.5 6.5h15L12 20 4.5 6.5z"/><path d="M12 6.5V20"/></svg>`,
+                    POL:  `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><polygon points="8,6 13,9 13,15 8,18 3,15 3,9"/><polygon points="16,6 21,9 21,15 16,18 11,15 11,9"/></svg>`,
+                    SUI:  `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3c-3.8 5-6.5 8.1-6.5 11.5a6.5 6.5 0 0 0 13 0C18.5 11.1 15.8 8 12 3zm0 15.2a3.7 3.7 0 0 1-3.7-3.7c0-1.6 1.2-3.5 3.7-6.6 2.5 3.1 3.7 5 3.7 6.6a3.7 3.7 0 0 1-3.7 3.7z"/></svg>`,
+                    TRX:  `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"><polygon points="4,5 20,8 11,20"/><path d="M4 5l8 5 8-2M12 10l-1 10"/></svg>`,
+                    AVAX: `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="currentColor"><path d="M11.2 4.5 3.8 18h4.1l3.3-6 2 3.6h4.2L11.2 4.5zm6.1 8.8-2.6 4.7h5.2l-2.6-4.7z"/></svg>`,
+                    ATOM: `<svg width="${icoSz}" height="${icoSz}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="2.2" fill="currentColor"/><ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(30 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.8" transform="rotate(-30 12 12)"/></svg>`
+                };
+                const bgMap = {
+                    USDT: '#10b981', USDC: '#2563eb', ETH: '#3b82f6', BNB: '#d97706',
+                    SOL: 'linear-gradient(135deg,#9333ea,#14b8a6)', TON: '#0284c7', POL: '#7c3aed',
+                    SUI: '#0ea5e9', TRX: '#dc2626', AVAX: '#e11d48', TIA: '#9333ea',
+                    ATOM: '#4f46e5', INJ: '#0284c7', OSMO: '#c026d3', APT: '#475569',
+                    SEI: '#dc2626', FTM: '#2563eb', MNT: '#059669', CORE: '#d97706'
+                };
+                const inner = glyphMap[sym] || `<span style="font-family:'JetBrains Mono',monospace;font-size:${Math.max(8, Math.round(size * 0.38))}px;font-weight:900;line-height:1;">${escXbEx(sym.slice(0, 3))}</span>`;
+                return `<span class="xb-ex-coin-ico" style="width:${size}px;height:${size}px;background:${bgMap[sym] || col};">${inner}</span>`;
+            }
 
             function getXbExAddrStatus(addr) {
                 const s = String(addr || '').trim();
@@ -8472,11 +8526,14 @@ const XB_EX_BANK_THEMES = {
 
             function onXbExSwapSlider(pctVal) {
                 const bal = getXbExWalletBal();
+                const sliderCap = bal > 0 ? bal : 100;
                 const pct = Math.max(0, Math.min(100, Number(pctVal || 0)));
-                const amt = bal > 0 ? Math.floor((bal * (pct / 100)) * 100) / 100 : 0;
+                const amt = Math.round((sliderCap * (pct / 100)) * 100) / 100;
                 window._xbExState.swapPayUsd = String(amt);
                 const inp = document.getElementById('xbExSwapPayInp');
                 if (inp) inp.value = window._xbExState.swapPayUsd;
+                const sEl = document.getElementById('xbExSwapSlider');
+                if (sEl && document.activeElement !== sEl) sEl.value = String(Math.round(pct));
                 const pLbl = document.getElementById('xbExSwapSliderPct');
                 if (pLbl) pLbl.innerText = Math.round(pct) + '%';
                 updateXbExDynamicCalc();
@@ -8484,14 +8541,13 @@ const XB_EX_BANK_THEMES = {
 
             function openXbExBankPicker() {
                 const root = ensureXbExModalRoot();
-                const curBank = window._xbExState.idrBank || 'BCA';
                 root.innerHTML = `
                     <div class="xb-ex-modal-box">
                         <div style="display:flex;align-items:center;justify-content:space-between;">
                             <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);">🏦 Pilih Bank Tujuan</div>
                             <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
                         </div>
-                        <input type="text" class="xb-ex-input" placeholder="Cari BCA, SeaBank, Mandiri, BRI..."
+                        <input type="text" class="xb-ex-input" placeholder="Cari BCA, BRI, Bank Rakyat Indonesia, Mandiri..."
                             oninput="renderXbExBankPickerList(this.value)">
                         <div class="xb-ex-tok-list" id="xbExBankListBox"></div>
                     </div>
@@ -8505,18 +8561,25 @@ const XB_EX_BANK_THEMES = {
                 if (!box) return;
                 const q = String(query || '').trim().toLowerCase();
                 const cur = window._xbExState.idrBank || 'BCA';
-                const list = XB_EX_IDR_BANKS.filter(b => !q || b.toLowerCase().includes(q));
+                const list = XB_EX_IDR_BANKS.filter(b => {
+                    const th = XB_EX_BANK_THEMES[b];
+                    const full = th ? th.full.toLowerCase() : '';
+                    return !q || b.toLowerCase().includes(q) || full.includes(q);
+                });
                 box.innerHTML = list.map(bk => {
-                    const th = XB_EX_BANK_THEMES[bk] || { bg: 'linear-gradient(135deg,#1d4ed8,#7c3aed)', mono: bk.slice(0, 3).toUpperCase() };
+                    const th = XB_EX_BANK_THEMES[bk] || { bg: 'linear-gradient(135deg,#1d4ed8,#7c3aed)', mono: bk.slice(0, 3).toUpperCase(), full: bk };
                     const isAct = cur === bk;
                     return `
                         <button type="button" class="xb-ex-tok-row" style="${isAct ? 'border-color:#f43f5e;' : ''}"
                             onclick="window._xbExState.idrBank='${escXbEx(bk)}'; closeXbExModal(); renderXbExBody(true);">
-                            <div style="display:flex;align-items:center;gap:9px;">
+                            <div style="display:flex;align-items:center;gap:9px;min-width:0;">
                                 <span class="xb-ex-monogram" style="background:${th.bg};width:32px;height:32px;font-size:0.62rem;">${th.mono}</span>
-                                <span style="font-size:0.75rem;font-weight:800;">${escXbEx(bk)}</span>
+                                <div style="min-width:0;">
+                                    <div style="font-size:0.74rem;font-weight:800;">${escXbEx(bk)}</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escXbEx(th.full)}</div>
+                                </div>
                             </div>
-                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:${isAct ? '#f43f5e' : '#38bdf8'};font-weight:800;">${isAct ? '● ACTIVE' : 'PILIH'}</span>
+                            <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:${isAct ? '#f43f5e' : '#38bdf8'};font-weight:800;flex-shrink:0;">${isAct ? '● ACTIVE' : 'PILIH'}</span>
                         </button>
                     `;
                 }).join('') || `<div style="text-align:center;padding:16px;font-size:0.7rem;color:var(--text-muted);">Bank tidak ditemukan.</div>`;
@@ -8554,7 +8617,8 @@ const XB_EX_BANK_THEMES = {
 
                     const sEl = document.getElementById('xbExSwapSlider');
                     const pLbl = document.getElementById('xbExSwapSliderPct');
-                    const pct = bal > 0 ? Math.min(100, Math.round((pay / bal) * 100)) : 0;
+                    const sliderCap = bal > 0 ? bal : 100;
+                    const pct = Math.min(100, Math.max(0, Math.round((pay / sliderCap) * 100)));
                     if (sEl && document.activeElement !== sEl) sEl.value = String(pct);
                     if (pLbl) pLbl.innerText = pct + '%';
 
@@ -8655,7 +8719,8 @@ const XB_EX_BANK_THEMES = {
                     const chgSign = spot.chg >= 0 ? '+' : '';
                     const chgCol = spot.chg >= 0 ? '#34d399' : '#f87171';
                     const altCoin = coin.altCode ? getXbExCoin(coin.altCode) : null;
-                    const sliderPct = bal > 0 ? Math.min(100, Math.round((pay / bal) * 100)) : 0;
+                    const sliderCap = bal > 0 ? bal : 100;
+                    const sliderPct = Math.min(100, Math.max(0, Math.round((pay / sliderCap) * 100)));
                     const addrBadge = getXbExAddrStatus(st.swapAddr);
 
                     modeHtml = `
@@ -8670,16 +8735,16 @@ const XB_EX_BANK_THEMES = {
                                         value="${escXbEx(st.swapPayUsd)}" placeholder="0.00"
                                         oninput="window._xbExState.swapPayUsd=this.value; updateXbExDynamicCalc();">
                                     <span class="xb-ex-tok-btn" style="cursor:default;border-color:rgba(16,185,129,0.5);">
-                                        <span style="width:8px;height:8px;border-radius:50%;background:#10b981;"></span>
+                                        ${getXbExCoinSvg('USDT', 18)}
                                         <span>USDT</span>
                                     </span>
                                 </div>
                                 <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);" id="xbExSwapIdrEq">
                                     ${q.ready ? ('≈ ' + fmtXbExIdr(q.payIdr)) : 'Syncing IDR rate...'}
                                 </div>
-                                <div class="xb-ex-slider-row">
+                                <div class="xb-ex-slider-row" ontouchstart="event.stopPropagation();" ontouchmove="event.stopPropagation();" ontouchend="event.stopPropagation();">
                                     <input type="range" min="0" max="100" value="${sliderPct}" id="xbExSwapSlider" class="xb-ex-slider"
-                                        oninput="onXbExSwapSlider(this.value)">
+                                        oninput="onXbExSwapSlider(this.value)" onchange="onXbExSwapSlider(this.value)">
                                     <span id="xbExSwapSliderPct" class="xb-ex-slider-pct">${sliderPct}%</span>
                                 </div>
                             </div>
@@ -8692,9 +8757,9 @@ const XB_EX_BANK_THEMES = {
                                     <button type="button" class="xb-ex-pre-btn" style="color:#f43f5e;border-color:rgba(244,63,94,0.45);" onclick="onXbExSwapSlider(100)">MAX</button>
                                 ` : `
                                     <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(1)">$1</button>
-                                    <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(3)">$3</button>
-                                    <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(10)">$10</button>
-                                    <button type="button" class="xb-ex-pre-btn" style="color:#f43f5e;border-color:rgba(244,63,94,0.45);" onclick="setXbExSwapAmt(Math.floor(getXbExWalletBal()*100)/100)">MAX</button>
+                                    <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(5)">$5</button>
+                                    <button type="button" class="xb-ex-pre-btn" onclick="setXbExSwapAmt(25)">$25</button>
+                                    <button type="button" class="xb-ex-pre-btn" style="color:#f43f5e;border-color:rgba(244,63,94,0.45);" onclick="setXbExSwapAmt(100)">$100</button>
                                 `}
                             </div>
 
@@ -8717,7 +8782,7 @@ const XB_EX_BANK_THEMES = {
                                         ${(q.ready && spot.ready) ? fmtXbExTokenQty(recvQty, spot.usd) : 'Fetching...'}
                                     </div>
                                     <button type="button" class="xb-ex-tok-btn" style="border-color:rgba(56,189,248,0.5);" onclick="openXbExTokenPicker('swap')">
-                                        <span style="width:8px;height:8px;border-radius:50%;background:${coin.color};"></span>
+                                        ${getXbExCoinSvg(coin, 18)}
                                         <span>${escXbEx(coin.sym)}</span>
                                         <span style="font-size:0.55rem;opacity:0.8;">▼</span>
                                     </button>
@@ -8762,7 +8827,7 @@ const XB_EX_BANK_THEMES = {
                     `;
                 }
 
-                // ---------------- MODE 2: BUY CRYPTO (HORIZONTAL STRIPS + 2x3 TICKETS) ----------------
+                // ---------------- MODE 2: BUY CRYPTO (CRYPTO EMBLEMS + LIVE TICKER + 2x3 TICKETS) ----------------
                 else if (st.mode === 'gas') {
                     const catCoins = XB_EX_COINS.filter(c => c.cat === st.gasCat);
                     let activeCoin = catCoins.find(c => c.code === st.gasCoin);
@@ -8772,6 +8837,8 @@ const XB_EX_BANK_THEMES = {
                     }
                     const spot = getXbExSpot(activeCoin);
                     const idrRate = st.liveIdr > 1000 ? st.liveIdr : 0;
+                    const chgSign = spot.chg >= 0 ? '+' : '';
+                    const chgCol = spot.chg >= 0 ? '#34d399' : '#f87171';
 
                     let curPkg = XB_EX_GAS_PKGS[st.gasPkgIdx] || XB_EX_GAS_PKGS[0];
                     if (curPkg.idr < activeCoin.minIdr) {
@@ -8793,7 +8860,7 @@ const XB_EX_BANK_THEMES = {
                                 <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#34d399;font-weight:800;">BAL: $${bal.toFixed(2)}</span>
                             </div>
 
-                            <div class="xb-ex-hscroll">
+                            <div class="xb-ex-hscroll" ontouchstart="event.stopPropagation();" ontouchend="event.stopPropagation();">
                                 ${XB_EX_GAS_CATS.map(cat => `
                                     <button type="button" class="xb-ex-eco-chip ${st.gasCat === cat.k ? 'active' : ''}"
                                         onclick="window._xbExState.gasCat='${cat.k}'; renderXbExBody(true);">
@@ -8802,22 +8869,42 @@ const XB_EX_BANK_THEMES = {
                                 `).join('')}
                             </div>
 
-                            <div class="xb-ex-hscroll">
+                            <div class="xb-ex-hscroll" ontouchstart="event.stopPropagation();" ontouchend="event.stopPropagation();">
                                 ${catCoins.map(c => {
                                     const sp = getXbExSpot(c);
                                     const isAct = c.code === activeCoin.code;
                                     return `
                                         <button type="button" class="xb-ex-net-chip ${isAct ? 'active' : ''}"
                                             onclick="window._xbExState.gasCoin='${c.code}'; renderXbExBody(true);">
-                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
-                                                <span style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${c.sym}</span>
-                                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;color:#34d399;">${sp.ready ? fmtXbExUsdPrice(sp.usd) : '...'}</span>
+                                            <div style="display:flex;align-items:center;gap:6px;">
+                                                ${getXbExCoinSvg(c, 22)}
+                                                <div style="min-width:0;flex:1;">
+                                                    <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);line-height:1.1;">${c.sym}</div>
+                                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.47rem;color:var(--text-muted);white-space:nowrap;">${c.net}</div>
+                                                </div>
                                             </div>
-                                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;color:var(--text-muted);white-space:nowrap;">${c.net}</div>
-                                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.47rem;color:#38bdf8;font-weight:800;">Fee $${c.netFeeUsd.toFixed(2)}</div>
+                                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;margin-top:3px;font-family:'JetBrains Mono',monospace;">
+                                                <span style="font-size:0.49rem;font-weight:800;color:#34d399;">${sp.ready ? fmtXbExUsdPrice(sp.usd) : '...'}</span>
+                                                <span style="font-size:0.46rem;color:#38bdf8;font-weight:800;">Fee $${c.netFeeUsd.toFixed(2)}</span>
+                                            </div>
                                         </button>
                                     `;
                                 }).join('')}
+                            </div>
+
+                            <!-- SELECTED COIN LIVE TICKER STRIP -->
+                            <div class="xb-ex-ticker-strip">
+                                <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                                    ${getXbExCoinSvg(activeCoin, 26)}
+                                    <div style="min-width:0;">
+                                        <div style="font-size:0.72rem;font-weight:800;color:var(--text-primary);line-height:1.15;">${escXbEx(activeCoin.sym)} <span style="font-size:0.54rem;color:#38bdf8;">• ${escXbEx(activeCoin.net)}</span></div>
+                                        <div style="font-size:0.49rem;color:var(--text-muted);">Class ${escXbEx(activeCoin.tier)} • Min ${fmtXbExIdr(activeCoin.minIdr)}</div>
+                                    </div>
+                                </div>
+                                <div style="text-align:right;flex-shrink:0;">
+                                    <div style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${spot.ready ? fmtXbExUsdPrice(spot.usd) : '...'}</div>
+                                    <div style="font-size:0.5rem;font-weight:800;color:${chgCol};">${spot.ready ? `${chgSign}${spot.chg.toFixed(2)}%` : '--'}</div>
+                                </div>
                             </div>
 
                             ${altCoin ? `
@@ -8826,11 +8913,6 @@ const XB_EX_BANK_THEMES = {
                                     💡 High-Fee Chain (Min ${fmtXbExIdr(activeCoin.minIdr)}): Switch to ${escXbEx(altCoin.sym)} on ${escXbEx(altCoin.net)} (Fee $${altCoin.netFeeUsd.toFixed(2)}) ➔
                                 </button>
                             ` : ''}
-
-                            <div style="display:flex;justify-content:space-between;align-items:center;font-family:'JetBrains Mono',monospace;font-size:0.51rem;font-weight:800;color:var(--text-muted);">
-                                <span>SELECT RETAIL TICKET (CLASS ${escXbEx(activeCoin.tier)})</span>
-                                <span style="color:#38bdf8;">NET FEE $${activeCoin.netFeeUsd.toFixed(2)}</span>
-                            </div>
 
                             <div class="xb-ex-pkg-grid">
                                 ${XB_EX_GAS_PKGS.map((pk, idx) => {
@@ -8879,13 +8961,13 @@ const XB_EX_BANK_THEMES = {
                     `;
                 }
 
-                // ---------------- MODE 3: CONVERT TO IDR (LIVE VISUAL PAYOUT CARD) ----------------
+                // ---------------- MODE 3: CONVERT TO IDR (LIVE VISUAL PAYOUT CARD WITH FULL BANK NAMES) ----------------
                 else {
                     st.mode = 'idr';
                     const amt = parseFloat(st.idrAmountUsd || '0') || 0;
                     const q = calcXbExConvertIdrQuote(amt);
                     const prov = getXbExActiveIdrProvider();
-                    const pTheme = XB_EX_BANK_THEMES[prov.provider] || { bg: 'linear-gradient(135deg,#0f172a,#1d4ed8)', mono: prov.provider.slice(0, 3).toUpperCase() };
+                    const pTheme = XB_EX_BANK_THEMES[prov.provider] || { bg: 'linear-gradient(135deg,#0f172a,#1d4ed8)', mono: prov.provider.slice(0, 3).toUpperCase(), full: prov.provider };
                     const dispNum = String(st.idrDest || '').trim() ? String(st.idrDest).trim().replace(/(\d{4})(?=\d)/g, '$1 ') : '•••• •••• ••••';
                     const dispHolder = String(st.idrHolder || '').trim().toUpperCase() || 'NAMA PENERIMA';
 
@@ -8894,14 +8976,14 @@ const XB_EX_BANK_THEMES = {
                             <!-- LIVE DYNAMIC PAYOUT CARD -->
                             <div class="xb-ex-payout-card" style="background:${pTheme.bg};">
                                 <div class="xb-ex-payout-top">
-                                    <div style="display:flex;align-items:center;gap:8px;">
+                                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
                                         <span class="xb-ex-monogram">${pTheme.mono}</span>
-                                        <div>
-                                            <div style="font-size:0.76rem;font-weight:800;line-height:1.1;">${escXbEx(prov.provider)}</div>
-                                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;opacity:0.85;">${escXbEx(prov.typeLabel.toUpperCase())} • INSTANT PAYOUT</div>
+                                        <div style="min-width:0;">
+                                            <div style="font-size:0.76rem;font-weight:800;line-height:1.15;">${escXbEx(prov.provider)}</div>
+                                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;opacity:0.9;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escXbEx(pTheme.full)}</div>
                                         </div>
                                     </div>
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:800;padding:2px 7px;border-radius:99px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.28);">IDR DESK</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:800;padding:2px 7px;border-radius:99px;background:rgba(0,0,0,0.3);border:1px solid rgba(255,255,255,0.28);flex-shrink:0;">${prov.isBank ? 'BANK' : 'E-WALLET'}</span>
                                 </div>
                                 <div class="xb-ex-payout-mid" style="padding:2px 0;">
                                     <span id="xbExVisCardNum" style="font-family:'JetBrains Mono',monospace;font-size:0.9rem;font-weight:800;letter-spacing:1.2px;">${escXbEx(dispNum)}</span>
@@ -8921,7 +9003,10 @@ const XB_EX_BANK_THEMES = {
                                     <input type="number" step="any" min="0" class="xb-ex-amt-inp" id="xbExIdrAmtInp"
                                         value="${escXbEx(st.idrAmountUsd)}" placeholder="0.00"
                                         oninput="window._xbExState.idrAmountUsd=this.value; updateXbExDynamicCalc();">
-                                    <span class="xb-ex-tok-btn" style="cursor:default;border-color:rgba(16,185,129,0.5);">USDT</span>
+                                    <span class="xb-ex-tok-btn" style="cursor:default;border-color:rgba(16,185,129,0.5);">
+                                        ${getXbExCoinSvg('USDT', 18)}
+                                        <span>USDT</span>
+                                    </span>
                                 </div>
                             </div>
 
@@ -8945,11 +9030,11 @@ const XB_EX_BANK_THEMES = {
 
                             ${prov.isBank ? `
                                 <button type="button" class="xb-ex-bank-pick-btn" onclick="openXbExBankPicker()">
-                                    <span style="display:inline-flex;align-items:center;gap:8px;">
+                                    <span style="display:inline-flex;align-items:center;gap:8px;min-width:0;">
                                         <span class="xb-ex-monogram" style="background:${pTheme.bg};width:24px;height:24px;font-size:0.52rem;">${pTheme.mono}</span>
-                                        <span>${escXbEx(prov.provider)}</span>
+                                        <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escXbEx(prov.provider)} — <span style="font-weight:600;color:var(--text-secondary);font-size:0.65rem;">${escXbEx(pTheme.full)}</span></span>
                                     </span>
-                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:#38bdf8;">Ganti Bank ▼</span>
+                                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:#38bdf8;flex-shrink:0;">Ganti ▼</span>
                                 </button>
                             ` : `
                                 <div class="xb-ex-ewallet-grid">
@@ -9086,7 +9171,7 @@ const XB_EX_BANK_THEMES = {
                     return `
                         <button type="button" class="xb-ex-tok-row" onclick="pickXbExToken('${c.code}', '${targetField}')">
                             <div style="display:flex;align-items:center;gap:9px;min-width:0;">
-                                <span style="width:10px;height:10px;border-radius:50%;background:${c.color};flex-shrink:0;"></span>
+                                ${getXbExCoinSvg(c, 26)}
                                 <div style="min-width:0;">
                                     <div style="font-size:0.74rem;font-weight:800;">${escXbEx(c.sym)}</div>
                                     <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);">${escXbEx(c.net)}</div>
