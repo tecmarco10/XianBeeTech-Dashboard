@@ -5103,34 +5103,69 @@
             flex-shrink: 0;
         }
 
-        /* 7. HERO GITHUB MARKETPLACE & BOOST (GARIS TEBAL 4 SISI + MAKIN TERANG SAAT DIKLIK) */
+        /* 7. HERO GITHUB MARKETPLACE & BOOST (BACKGROUND TERANG SAAT AKTIF • REDUP SAAT PINDAH KATEGORI) */
         .xb-hero-plat-card {
-            border: 2px solid rgba(56, 189, 248, 0.78) !important;
-            box-shadow: 0 0 12px rgba(56, 189, 248, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-            transition: border-color 0.16s ease, box-shadow 0.16s ease, filter 0.14s ease, transform 0.12s ease !important;
+            background: linear-gradient(135deg, #0b1329 0%, #151b38 100%) !important;
+            border: 2px solid rgba(148, 163, 184, 0.28) !important;
+            opacity: 0.56 !important;
+            filter: saturate(0.68) brightness(0.84);
+            box-shadow: none !important;
+            transition: opacity 0.2s ease, filter 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, transform 0.12s ease !important;
         }
         .xb-hero-plat-card.active {
+            opacity: 1 !important;
+            filter: saturate(1.16) brightness(1.08);
+            background:
+                radial-gradient(circle at 16% 14%, rgba(56, 189, 248, 0.42), transparent 52%),
+                radial-gradient(circle at 86% 86%, rgba(192, 132, 252, 0.42), transparent 52%),
+                linear-gradient(135deg, #0e2a66 0%, #1d4ed8 48%, #6d28d9 100%) !important;
             border: 2.5px solid #7dd3fc !important;
-            box-shadow: 0 0 20px rgba(56, 189, 248, 0.62), 0 0 8px rgba(168, 85, 247, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+            box-shadow: 0 0 24px rgba(56, 189, 248, 0.72), 0 0 12px rgba(168, 85, 247, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.48) !important;
         }
-        .xb-hero-plat-card:active {
-            border-color: #e0f2fe !important;
-            filter: brightness(1.22);
-            box-shadow: 0 0 28px rgba(56, 189, 248, 0.9), 0 0 14px rgba(192, 132, 252, 0.65), inset 0 0 12px rgba(125, 211, 252, 0.35) !important;
-            transform: scale(0.985);
+        .xb-hero-plat-card .xb-ex-col-actions {
+            width: 100%;
+            margin-top: 5px;
+            gap: 6px;
+        }
+        .xb-hero-plat-card .xb-ex-col-act-btn {
+            height: 25px;
+        }
+        .xb-hero-plat-card .xb-ex-col-act-btn.vip {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.65) 0%, rgba(146, 64, 14, 0.68) 100%);
+            border: 1px solid rgba(253, 224, 71, 0.82);
+            color: #fef08a;
+        }
+        .xb-hero-plat-card .xb-ex-col-act-btn.sales {
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.65) 0%, rgba(6, 95, 70, 0.68) 100%);
+            border: 1px solid rgba(125, 211, 252, 0.82);
+            color: #e0f2fe;
         }
         [data-theme="platinum"] .xb-hero-plat-card {
-            border: 2px solid rgba(37, 99, 235, 0.68) !important;
-            box-shadow: 0 4px 16px rgba(37, 99, 235, 0.18) !important;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%) !important;
+            border: 2px solid rgba(100, 116, 139, 0.26) !important;
+            opacity: 0.62 !important;
+            filter: saturate(0.72);
+            box-shadow: none !important;
         }
         [data-theme="platinum"] .xb-hero-plat-card.active {
+            opacity: 1 !important;
+            filter: none;
+            background:
+                radial-gradient(circle at 16% 14%, rgba(56, 189, 248, 0.28), transparent 55%),
+                radial-gradient(circle at 86% 86%, rgba(168, 85, 247, 0.24), transparent 55%),
+                linear-gradient(135deg, #dbeafe 0%, #eff6ff 50%, #ede9fe 100%) !important;
             border: 2.5px solid #2563eb !important;
-            box-shadow: 0 0 18px rgba(37, 99, 235, 0.42), 0 0 6px rgba(124, 58, 237, 0.25) !important;
+            box-shadow: 0 0 20px rgba(37, 99, 235, 0.45), 0 0 8px rgba(124, 58, 237, 0.28) !important;
         }
-        [data-theme="platinum"] .xb-hero-plat-card:active {
-            border-color: #38bdf8 !important;
-            filter: brightness(1.06);
-            box-shadow: 0 0 24px rgba(37, 99, 235, 0.62) !important;
+        [data-theme="platinum"] .xb-hero-plat-card .xb-ex-col-act-btn.vip {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-color: rgba(217, 119, 6, 0.65);
+            color: #92400e;
+        }
+        [data-theme="platinum"] .xb-hero-plat-card .xb-ex-col-act-btn.sales {
+            background: linear-gradient(135deg, #e0f2fe 0%, #a7f3d0 100%);
+            border-color: rgba(2, 132, 199, 0.55);
+            color: #0369a1;
         }
         .xb-hero-plat-logo.xb-ex-gh-badge {
             background: rgba(5, 8, 18, 0.88) !important;
@@ -12357,7 +12392,7 @@
         function buildOptionAPlatformSwitcherEl() {
             const wrap = document.createElement('div');
             wrap.className = 'xb-mp-switcher';
-            const isGh = _mpPlatform === 'github';
+            const isGh = (_mpPlatform === 'github') && !_mpDrawerTab;
             const socialKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
             const isSocialActive = socialKeys.includes(_mpPlatform);
             const isCexEmailActive = (_mpPlatform === 'cex' || _mpPlatform === 'email');
@@ -12680,19 +12715,22 @@
                 || (_mpDrawerTab === 'games_ppob' && _vis.mp_games_ppob);
 
             wrap.innerHTML = `
-                <!-- BARIS 1: GITHUB MARKETPLACE (CENTERED HERO + DUAL GITHUB LOGOS + BADGES BELOW) -->
-                <button type="button" class="xb-hero-plat-card ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
+                <!-- BARIS 1: GITHUB MARKETPLACE (CENTERED HERO + DUAL GITHUB LOGOS + VIP RANKING & GLOBAL SALES) -->
+                <div role="button" tabindex="0" class="xb-hero-plat-card ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
                     <div class="xb-hero-plat-top">
                         <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
                         <span class="xb-hero-plat-title">GitHub Marketplace</span>
                         <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
                     </div>
-                    <div class="xb-hero-plat-sub">Aged 2011–2026 • Rare Badges • Full 2FA</div>
-                    <div class="xb-hero-plat-meta">
-                        <span class="xb-mp-prim-pill">PRIMARY</span>
-                        <span class="xb-mp-cnt-pill">● ${totalLiveAccounts || 210}</span>
+                    <div class="xb-ex-col-actions">
+                        <button type="button" class="xb-ex-col-act-btn vip" onclick="event.stopPropagation(); openLeaderboardModal()">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M6 3h12l4 6-10 12L2 9z" fill="rgba(56,189,248,0.28)" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="M2 9h20M12 3l-3.5 6L12 21l3.5-12L12 3z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/></svg><span>VIP Ranking</span>
+                        </button>
+                        <button type="button" class="xb-ex-col-act-btn sales" onclick="event.stopPropagation(); openStoreGlobal3DTelemetry()">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="18" y1="20" x2="18" y2="10"/></svg><span>Global Sales</span>
+                        </button>
                     </div>
-                </button>
+                </div>
 
                 ${_mpBtns.length > 0 ? `<div class="xb-mp-dual-row">${_mpBtns.join('')}</div>` : ''}
 
@@ -12971,14 +13009,7 @@
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#fbbf24;margin-top:1px;">Instant</div>
                     </div>
                 </div>
-                <div class="xb-ex-col-actions">
-                    <button type="button" class="xb-ex-col-act-btn vip" onclick="openLeaderboardModal()">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M6 3h12l4 6-10 12L2 9z" fill="rgba(56,189,248,0.22)" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="M2 9h20M12 3l-3.5 6L12 21l3.5-12L12 3z" stroke="var(--accent-cyan)" stroke-width="1.5" stroke-linejoin="round"/></svg><span>VIP Ranking</span>
-                    </button>
-                    <button type="button" class="xb-ex-col-act-btn sales" onclick="openStoreGlobal3DTelemetry()">
-                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="18" y1="20" x2="18" y2="10"/></svg><span>Global Sales</span>
-                    </button>
-                </div>
+                
             `;
             vp.appendChild(colBanner);
 
@@ -13164,14 +13195,7 @@
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#fbbf24;margin-top:1px;">Instant</div>
                         </div>
                     </div>
-                    <div class="xb-ex-col-actions">
-                        <button type="button" class="xb-ex-col-act-btn vip" onclick="openLeaderboardModal()">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M6 3h12l4 6-10 12L2 9z" fill="rgba(56,189,248,0.22)" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="M2 9h20M12 3l-3.5 6L12 21l3.5-12L12 3z" stroke="var(--accent-cyan)" stroke-width="1.5" stroke-linejoin="round"/></svg><span>VIP Ranking</span>
-                        </button>
-                        <button type="button" class="xb-ex-col-act-btn sales" onclick="openStoreGlobal3DTelemetry()">
-                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="18" y1="20" x2="18" y2="10"/></svg><span>Global Sales</span>
-                        </button>
-                    </div>
+                    
                 `;
                 vp.appendChild(colBanner);
 
@@ -27018,7 +27042,7 @@ let _ghAgeCheckerResults = [];
             const box = document.createElement('div');
             box.className = 'xb-bst-opt-a';
             box.innerHTML = `
-                <button type="button" class="xb-hero-plat-card ${curPlat === 'github' ? 'active' : ''}" onclick="switchBoostPlatform('github')">
+                <button type="button" class="xb-hero-plat-card ${(curPlat === 'github' && !openCat) ? 'active' : ''}" onclick="switchBoostPlatform('github')">
                     <div class="xb-hero-plat-top">
                         <span class="xb-hero-plat-logo xb-ex-gh-badge">${GH_SVG_EMBLEM}</span>
                         <span class="xb-hero-plat-title">GitHub Boost Service</span>
@@ -27027,7 +27051,7 @@ let _ghAgeCheckerResults = [];
                     <div class="xb-hero-plat-sub">Followers • Stars • Forks • Watch • Live 4-Step Tracker</div>
                     <div class="xb-hero-plat-meta">
                         <span class="xb-mp-prim-pill">PRIMARY</span>
-                        <span class="xb-mp-cnt-pill">${curPlat === 'github' ? '● ACTIVE' : 'SELECT'}</span>
+                        <span class="xb-mp-cnt-pill">${(curPlat === 'github' && !openCat) ? '● ACTIVE' : 'SELECT'}</span>
                     </div>
                 </button>
 
