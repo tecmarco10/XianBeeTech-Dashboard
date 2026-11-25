@@ -8889,16 +8889,41 @@ const XB_EX_BANK_THEMES = {
 
             function isXbExAdminUser() {
                 try {
-                    if (window.isAdmin === true || localStorage.getItem('xb_is_admin') === 'true') return true;
-                    const uid = String(
-                        (window.currentUser && (window.currentUser.id || window.currentUser.tg_id)) ||
-                        (window.tgUser && window.tgUser.id) ||
-                        localStorage.getItem('xb_tg_id') ||
-                        localStorage.getItem('xb_user_id') || ''
-                    ).trim();
-                    if (uid && typeof ADMIN_IDS !== 'undefined' && Array.isArray(ADMIN_IDS) && ADMIN_IDS.map(String).includes(uid)) {
-                        return true;
+                    if (window.isAdmin === true || window.isExecutiveAdmin === true || localStorage.getItem('xb_is_admin') === 'true') return true;
+                    const admUids = new Set(['6740043923', '7095661271']);
+                    const admUnames = new Set(['abieharyatmo', 'xianbeetechstore']);
+                    if (typeof ADMIN_IDS !== 'undefined' && Array.isArray(ADMIN_IDS)) {
+                        ADMIN_IDS.forEach(id => admUids.add(String(id).trim()));
                     }
+
+                    const qs = new URLSearchParams(window.location.search || '');
+                    const tgWebU = (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user) || {};
+                    let webU = {};
+                    try { webU = JSON.parse(localStorage.getItem('xb_web_user') || '{}') || {}; } catch (e) {}
+
+                    const uidCandidates = [
+                        window.currentUser && (window.currentUser.id || window.currentUser.user_id || window.currentUser.tg_id),
+                        window.tgUser && window.tgUser.id,
+                        tgWebU.id,
+                        webU.user_id, webU.id,
+                        qs.get('uid'),
+                        localStorage.getItem('xb_tg_id'),
+                        localStorage.getItem('xb_user_id')
+                    ].map(v => String(v || '').trim()).filter(Boolean);
+
+                    if (uidCandidates.some(u => admUids.has(u))) return true;
+
+                    const unameCandidates = [
+                        window.currentUser && window.currentUser.username,
+                        window.tgUser && window.tgUser.username,
+                        tgWebU.username,
+                        webU.username,
+                        qs.get('uname'),
+                        localStorage.getItem('xb_username')
+                    ].map(v => String(v || '').replace(/^@+/, '').trim().toLowerCase()).filter(Boolean);
+
+                    if (unameCandidates.some(u => admUnames.has(u))) return true;
+
                     const admBtn = document.querySelector('[onclick*="openAdmin"], [onclick*="StealthCommand"], #adminPanelBtn');
                     if (admBtn && admBtn.offsetParent !== null) return true;
                 } catch (e) {}
@@ -9184,47 +9209,62 @@ const XB_EX_BANK_THEMES = {
                 if (root) root.style.zIndex = '99999';
             }
 
+            function xbCreateNotifLabBtnEl(idAttr) {
+                const labBtn = document.createElement('button');
+                labBtn.type = 'button';
+                labBtn.id = idAttr;
+                labBtn.onclick = (e) => { e.stopPropagation(); if (typeof openXbNotifTestLab === 'function') openXbNotifTestLab(); };
+                labBtn.style.cssText = 'width:100%;margin-top:6px;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(244,63,94,0.58);background:linear-gradient(135deg,rgba(24,14,48,0.95),rgba(44,14,42,0.94));color:#f8fafc;font-family:"JetBrains Mono",monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;';
+                labBtn.innerHTML = `<span>🔔 Notif Test Lab (All 25)</span><span style="color:#fb7185;flex-shrink:0;">OPEN ➔</span>`;
+                return labBtn;
+            }
+
             function xbExMountButtonInStoreCategory() {
                 const onCnt = getXbExEnabledCoins().length;
                 const totCnt = Array.isArray(XB_EX_COINS) ? XB_EX_COINS.length : 0;
                 const badgeText = `${onCnt}/${totCnt} ON ➔`;
+                const isAdm = isXbExAdminUser();
 
-                const existingBtn = document.getElementById('xbExStoreCatCoinsBtn');
+                // 1. Mount di Store Category (tanpa early-return yang memblokir tombol Notif Test Lab)
+                let existingBtn = document.getElementById('xbExStoreCatCoinsBtn');
                 if (existingBtn && document.body.contains(existingBtn)) {
                     const bSpan = existingBtn.querySelector('.xb-ex-sc-badge');
                     if (bSpan) bSpan.innerText = badgeText;
-                    return;
-                }
-
-                const nodes = document.querySelectorAll('h1,h2,h3,h4,div,span,p,label');
-                let targetBox = null;
-                for (let i = 0; i < nodes.length; i++) {
-                    const el = nodes[i];
-                    if (el.closest('button') || el.offsetParent === null) continue;
-                    const txt = (el.textContent || '').trim();
-                    if (txt.length > 0 && txt.length <= 44 && /store\s*categor(y|ies)|kategori\s*toko/i.test(txt)) {
-                        targetBox = el.closest('.modal-body, .modal-content, .card, .panel, [id*="Body"], [id*="Modal"], section') || el.parentElement;
-                        if (targetBox) break;
+                    if (isAdm && !document.getElementById('xbNotifLabOpenBtn') && existingBtn.parentElement) {
+                        existingBtn.insertAdjacentElement('afterend', xbCreateNotifLabBtnEl('xbNotifLabOpenBtn'));
+                    }
+                } else {
+                    const nodes = document.querySelectorAll('h1,h2,h3,h4,div,span,p,label');
+                    let targetBox = null;
+                    for (let i = 0; i < nodes.length; i++) {
+                        const el = nodes[i];
+                        if (el.closest('button') || el.offsetParent === null) continue;
+                        const txt = (el.textContent || '').trim();
+                        if (txt.length > 0 && txt.length <= 44 && /store\s*categor(y|ies)|kategori\s*toko/i.test(txt)) {
+                            targetBox = el.closest('.modal-body, .modal-content, .card, .panel, [id*="Body"], [id*="Modal"], section') || el.parentElement;
+                            if (targetBox) break;
+                        }
+                    }
+                    if (targetBox) {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.id = 'xbExStoreCatCoinsBtn';
+                        btn.onclick = xbExOpenCoinsFromStoreCat;
+                        btn.style.cssText = 'width:100%;margin-top:8px;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(56,189,248,0.5);background:linear-gradient(135deg,rgba(14,30,68,0.92),rgba(37,19,74,0.92));color:#f8fafc;font-family:"JetBrains Mono",monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;';
+                        btn.innerHTML = `<span>🪙 Exchange Coins &amp; Networks</span><span class="xb-ex-sc-badge" style="color:#34d399;flex-shrink:0;">${badgeText}</span>`;
+                        targetBox.appendChild(btn);
+                        if (isAdm && !document.getElementById('xbNotifLabOpenBtn')) {
+                            targetBox.appendChild(xbCreateNotifLabBtnEl('xbNotifLabOpenBtn'));
+                        }
                     }
                 }
-                if (!targetBox) return;
 
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.id = 'xbExStoreCatCoinsBtn';
-                btn.onclick = xbExOpenCoinsFromStoreCat;
-                btn.style.cssText = 'width:100%;margin-top:8px;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(56,189,248,0.5);background:linear-gradient(135deg,rgba(14,30,68,0.92),rgba(37,19,74,0.92));color:#f8fafc;font-family:"JetBrains Mono",monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;';
-                btn.innerHTML = `<span>🪙 Exchange Coins &amp; Networks</span><span class="xb-ex-sc-badge" style="color:#34d399;flex-shrink:0;">${badgeText}</span>`;
-                targetBox.appendChild(btn);
-
-                if (isXbExAdminUser() && !document.getElementById('xbNotifLabOpenBtn')) {
-                    const labBtn = document.createElement('button');
-                    labBtn.type = 'button';
-                    labBtn.id = 'xbNotifLabOpenBtn';
-                    labBtn.onclick = () => { if (typeof openXbNotifTestLab === 'function') openXbNotifTestLab(); };
-                    labBtn.style.cssText = 'width:100%;margin-top:6px;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(244,63,94,0.55);background:linear-gradient(135deg,rgba(24,14,48,0.94),rgba(44,14,42,0.92));color:#f8fafc;font-family:"JetBrains Mono",monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;';
-                    labBtn.innerHTML = `<span>🔔 Notif Test Lab (All 25)</span><span style="color:#fb7185;flex-shrink:0;">OPEN ➔</span>`;
-                    targetBox.appendChild(labBtn);
+                // 2. Mount juga di Tab Admin Studio (tepat di bawah tombol Stealth Command biar langsung kelihatan)
+                if (isAdm && !document.getElementById('xbNotifLabStudioBtn')) {
+                    const stealthEl = document.querySelector('[onclick*="StealthCommand"], [onclick*="PcStealth"], [onclick*="PcCockpit"]');
+                    if (stealthEl && stealthEl.offsetParent !== null && stealthEl.parentElement) {
+                        stealthEl.insertAdjacentElement('afterend', xbCreateNotifLabBtnEl('xbNotifLabStudioBtn'));
+                    }
                 }
             }
 
