@@ -5655,33 +5655,55 @@
             .xb-wal-switcher {
                 display: grid;
                 grid-template-columns: 1fr 1fr;
-                gap: 5px;
+                gap: 6px;
                 padding: 4px;
-                margin: 10px 0;
+                margin: 0 0 4px 0;
                 border-radius: 13px;
                 background: var(--bg-input);
                 border: 1px solid var(--ex-hairline);
             }
             .xb-wal-sw-btn {
-                border: none;
+                border: 1px solid transparent;
                 background: transparent;
-                color: var(--text-muted);
+                color: var(--text-secondary);
                 font-family: inherit;
-                font-size: 0.72rem;
-                font-weight: 800;
-                padding: 9px 6px;
+                padding: 7px 6px;
                 border-radius: 10px;
                 cursor: pointer;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
+                gap: 2px;
+                text-align: center;
+                transition: 0.18s ease;
+            }
+            .xb-wal-sw-btn .sw-top {
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                gap: 6px;
-                transition: 0.18s ease;
+                gap: 4px;
+                font-size: clamp(0.56rem, 2.55vw, 0.72rem);
+                font-weight: 800;
+                line-height: 1.15;
+                white-space: nowrap;
+            }
+            .xb-wal-sw-btn .sw-sub {
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.45rem;
+                font-weight: 700;
+                color: var(--text-muted);
+                line-height: 1.1;
+                white-space: nowrap;
             }
             .xb-wal-sw-btn.active {
                 color: #ffffff;
-                background: linear-gradient(135deg, #1d4ed8 0%, #7c3aed 100%);
-                box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+                border-color: rgba(125, 211, 252, 0.55);
+                background: linear-gradient(135deg, #0d1838 0%, #1d4ed8 52%, #7c3aed 100%);
+                box-shadow: 0 4px 14px rgba(79, 70, 229, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+            }
+            .xb-wal-sw-btn.active .sw-sub {
+                color: rgba(224, 242, 254, 0.88);
             }
             .xb-ex-hub {
                 display: flex;
@@ -7513,11 +7535,9 @@
 
                 hub.style.display = isEx ? 'flex' : 'none';
 
-                // Hide/show sibling elements BELOW #xbExHubContainer so the Balance Card & Switcher always remain pinned on top
-                let seenHub = false;
+                // Full-View Mode: hide ALL Wallet elements when Exchange is active, show ALL Wallet elements when Wallet is active
                 Array.from(hub.parentElement.children).forEach(el => {
-                    if (el === hub) { seenHub = true; return; }
-                    if (!seenHub) return;
+                    if (el === sw || el === hub) return;
                     if (isEx) el.classList.add('xb-wal-ex-hidden');
                     else el.classList.remove('xb-wal-ex-hidden');
                 });
@@ -8340,24 +8360,15 @@
             // 🔗 AUTO-MOUNT XIANBEE-TECH EXCHANGE INSIDE THE WALLET TAB
             // =========================================================
             function findXbWalletMountTarget() {
-                // Hanya pasang di tab Wallet halaman utama (bukan saat buka sub-slide Deposit/Transfer/VIP)
+                // Pasang di paling atas tab Wallet utama (bukan saat buka sub-slide Deposit/Transfer/VIP)
                 if (typeof activeTab !== 'undefined' && activeTab !== 'wallet') return null;
                 if (window._walSlide && window._walSlide !== 'main') return null;
 
                 const vp = document.getElementById('mainViewport');
-                if (!vp) return null;
+                if (!vp || vp.children.length === 0) return null;
 
                 const walWrap = vp.querySelector('.xb-wal-wrap');
-                if (walWrap) {
-                    const heroCard = walWrap.querySelector(':scope > .xb-vgrid-card:not(.is-profile-grid)');
-                    if (heroCard) return { container: walWrap, anchor: heroCard };
-                }
-
-                const directHero = vp.querySelector('.xb-vgrid-card:not(.is-profile-grid)');
-                if (directHero && directHero.parentElement) {
-                    return { container: directHero.parentElement, anchor: directHero };
-                }
-                return null;
+                return { container: walWrap || vp };
             }
 
             function mountXbExchangeInWallet() {
@@ -8368,17 +8379,26 @@
                 }
 
                 const target = findXbWalletMountTarget();
-                if (!target || !target.container || !target.anchor) return;
+                if (!target || !target.container) return;
 
                 const sw = document.createElement('div');
                 sw.id = 'xbWalExSwitcher';
                 sw.className = 'xb-wal-switcher';
                 sw.innerHTML = `
                     <button type="button" class="xb-wal-sw-btn active" data-wtab="wallet" onclick="switchXbWalletTab('wallet')">
-                        <span>💳</span><span>Wallet &amp; Ledger</span>
+                        <span class="sw-top">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                            <span>XianBee-Tech Wallet</span>
+                        </span>
+                        <span class="sw-sub">Deposit • Transfer • Ledger</span>
                     </button>
                     <button type="button" class="xb-wal-sw-btn" data-wtab="exchange" onclick="switchXbWalletTab('exchange')">
-                        <span>⚡</span><span>XianBee-Tech Exchange</span>
+                        <span class="sw-top">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><path d="M7 16V4m0 0L3 8m4-4 4 4"/><path d="M17 8v12m0 0 4-4m-4 4-4-4"/></svg>
+                            <span>XianBee-Tech Exchange</span>
+                            <span style="width:5px;height:5px;border-radius:50%;background:#34d399;box-shadow:0 0 6px #34d399;flex-shrink:0;"></span>
+                        </span>
+                        <span class="sw-sub">Swap • Buy Crypto • IDR</span>
                     </button>
                 `;
 
@@ -8387,7 +8407,7 @@
                 hub.className = 'xb-ex-hub';
                 hub.style.display = 'none';
 
-                target.anchor.insertAdjacentElement('afterend', sw);
+                target.container.insertBefore(sw, target.container.firstChild);
                 sw.insertAdjacentElement('afterend', hub);
 
                 applyXbWalletTabVisibility();
@@ -30476,7 +30496,10 @@ let _ghAgeCheckerResults = [];
 
             // Wallet & Exchange
             ['Wallet & Ledger', 'Dompet & Riwayat'],
+            ['XianBee-Tech Wallet', 'Dompet XianBee-Tech'],
             ['XianBee-Tech Exchange', 'Tukar Aset XianBee-Tech'],
+            ['Deposit • Transfer • Ledger', 'Isi Saldo • Transfer • Riwayat'],
+            ['Swap • Buy Crypto • IDR', 'Tukar • Beli Kripto • IDR'],
             ['Available Balance', 'Saldo Tersedia'],
             ['AVAILABLE BALANCE', 'SALDO TERSEDIA'],
             ['Hidden Balance', 'Saldo Disembunyikan'],
