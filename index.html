@@ -8435,7 +8435,7 @@
                 <button class="side-btn active" data-tab="home" onclick="switchTab('home')">🏪 Marketplace</button>
                 <button class="side-btn" data-tab="boost" onclick="switchTab('boost')">🚀 Boost Service</button>
                 <button class="side-btn" data-tab="wallet" onclick="switchTab('wallet')">💳 Wallet</button>
-                <button class="side-btn" data-tab="vault" onclick="switchTab('vault')">🔐 Vault</button>
+                <button class="side-btn" data-tab="vault" onclick="switchTab('vault')">🔐 Assets</button>
                 <button class="side-btn" data-tab="profile" onclick="switchTab('profile')">👤 Profile</button>
                 <button class="side-btn" id="sidebarAdminBtn" data-tab="admin" onclick="switchTab('admin')" style="color:var(--accent-cyan);display:none;">⚙️ Admin Center</button>
             </nav>
@@ -8551,7 +8551,7 @@
                 </button>
                 <button class="bnav-btn" data-tab="vault" onclick="switchTab('vault')">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    <span style="font-size:0.56rem;font-weight:800;">Vault</span>
+                    <span style="font-size:0.56rem;font-weight:800;">Assets</span>
                 </button>
                 <button class="bnav-btn" data-tab="profile" onclick="switchTab('profile')">
                     <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -12252,7 +12252,7 @@
                         <span class="xb-hero-plat-title">GitHub Marketplace</span>
                         <span class="xb-hero-plat-logo">${XB_MP_SVGS.github}</span>
                     </div>
-                    <div class="xb-hero-plat-sub">Aged 2011–2026 • Rare Badges • 2FA Vault</div>
+                    <div class="xb-hero-plat-sub">Aged 2011–2026 • Rare Badges • Full 2FA</div>
                     <div class="xb-hero-plat-meta">
                         <span class="xb-mp-prim-pill">PRIMARY</span>
                         <span class="xb-mp-cnt-pill">● ${totalLiveAccounts || 210}</span>
@@ -12335,7 +12335,7 @@
                     </div>
                 </div>
                 <button type="button" class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;padding:7px 6px;font-size:0.64rem;border-radius:9px;white-space:nowrap;${!hasStock ? `border-color:${plat.border};color:${cardAcc};` : ''}" onclick="${actionFn}">
-                    ${hasStock ? `Inspect Vault (${list.length})` : '⚡ Pre-Order / Direct'}
+                    ${hasStock ? `View Stock (${list.length})` : '⚡ Pre-Order / Direct'}
                 </button>
             `;
             return card;
@@ -13043,7 +13043,7 @@
                     </div>
                 </div>
                 <button class="btn-ui ${hasStock ? 'primary' : 'secondary'}" style="width:100%;padding:7px 6px;font-size:0.66rem;border-radius:9px;white-space:nowrap;" onclick="openInPageYearVault('${yObj.yr}', '${yObj.title}', ${yObj.usdt})">
-                    Inspect Vault (${list.length})
+                    View Stock (${list.length})
                 </button>
             `;
             return card;
@@ -16186,8 +16186,8 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                             <div style="display:flex;align-items:center;gap:7px;min-width:0;">
                                 <span style="font-size:1.1rem;">🔐</span>
                                 <div style="min-width:0;">
-                                    <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">Encrypted Asset Vault</div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:#38bdf8;font-weight:700;">OWNED CREDENTIALS • LIVE 30s 2FA • BOOST TRACKER</div>
+                                    <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);white-space:nowrap;">My Digital Assets</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:#38bdf8;font-weight:700;">MY ORDERS &amp; ACCOUNTS • LIVE 30s 2FA • BOOST TRACKER</div>
                                 </div>
                             </div>
                             ${vault.length > 0 ? `<button type="button" class="xb-adm-mini-btn" style="color:#34d399;border-color:rgba(52,211,153,0.45);" onclick="downloadAllVaultTxtV2()">💾 .TXT All</button>` : ''}
@@ -16202,7 +16202,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                                 <div class="xb-wal-kpi-val" style="color:#34d399;">${tfaCount} Active</div>
                             </div>
                             <div class="xb-wal-kpi-box">
-                                <div class="xb-wal-kpi-lbl">VAULT VALUE</div>
+                                <div class="xb-wal-kpi-lbl">TOTAL VALUE</div>
                                 <div class="xb-wal-kpi-val" style="color:#c084fc;">${fmtPrice(totalValUsdt)}</div>
                             </div>
                         </div>
@@ -17871,8 +17871,8 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                                 <div class="xb-vg-stat-v in">${fmtPrice(an.totalSpend)}</div>
                             </div>
                             <div class="xb-vg-stat-box">
-                                <div class="xb-vg-stat-k">VAULT ASSETS</div>
-                                <div class="xb-vg-stat-v tx">${vaultCount} Vaults</div>
+                                <div class="xb-vg-stat-k">MY ASSETS</div>
+                                <div class="xb-vg-stat-v tx">${vaultCount} Items</div>
                             </div>
                             <div class="xb-vg-stat-box">
                                 <div class="xb-vg-stat-k">VIP REWARD</div>
@@ -17882,7 +17882,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
 
                         <div class="xb-vg-actions">
                             <button type="button" class="xb-vg-btn outline" onclick="openWalletSlide('vip'); switchTab('wallet');">👑 VIP Cashback Hub</button>
-                            <button type="button" class="xb-vg-btn solid" onclick="switchTab('vault');">🔐 My Vault (${vaultCount})</button>
+                            <button type="button" class="xb-vg-btn solid" onclick="switchTab('vault');">🔐 My Assets (${vaultCount})</button>
                         </div>
                     </div>
 
@@ -25703,7 +25703,7 @@ let _ghAgeCheckerResults = [];
                 ${credsHtml}
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
                     <button class="btn-ui secondary" style="padding:11px;" onclick="closeModal('paymentGatewayModal'); switchTab('vault');">
-                        🔐 Open Vault
+                        🔐 My Assets
                     </button>
                     <button class="btn-ui primary" style="padding:11px;" onclick="closeModal('paymentGatewayModal')">
                         ✅ Done
@@ -27532,7 +27532,7 @@ let _ghAgeCheckerResults = [];
                     <div class="xb-wal-card" style="padding:22px 12px;text-align:center;">
                         <div style="font-size:1.5rem;margin-bottom:5px;">🛒</div>
                         <div style="font-size:0.78rem;font-weight:800;color:var(--text-primary);">Your Shopping Cart is Empty</div>
-                        <div style="font-size:0.62rem;color:var(--text-secondary);margin-top:3px;">Tap <b>Inspect Vault</b> on any GitHub tier to pick an account.</div>
+                        <div style="font-size:0.62rem;color:var(--text-secondary);margin-top:3px;">Tap <b>View Stock</b> on any GitHub tier to pick an account.</div>
                     </div>
                 `;
                 document.getElementById('cartGrandTotal').innerText = fmtPrice(0);
@@ -30208,7 +30208,9 @@ let _ghAgeCheckerResults = [];
             ['Marketplace', 'Pasar'],
             ['Boost Service', 'Layanan Boost'],
             ['Wallet', 'Dompet'],
-            ['Vault', 'Brankas'],
+            ['Assets', 'Aset'],
+            ['My Assets', 'Aset Saya'],
+            ['Vault', 'Aset'],
             ['Profile', 'Profil'],
             ['Admin Center', 'Pusat Admin'],
             ['GITHUB ENTERPRISE MARKET', 'PASAR GITHUB ENTERPRISE'],
@@ -30289,7 +30291,7 @@ let _ghAgeCheckerResults = [];
 
             // Marketplace
             ['GitHub Marketplace', 'Pasar GitHub'],
-            ['Aged 2011–2026 • Rare Badges • 2FA Vault', 'Akun Tua 2011–2026 • Lencana Langka • Brankas 2FA'],
+            ['Aged 2011–2026 • Rare Badges • Full 2FA', 'Akun 2011–2026 • Lencana Langka • 2FA Lengkap'],
             ['PRIMARY', 'UTAMA'],
             ['Social Media', 'Media Sosial'],
             ['CEX & Mail', 'CEX & Email'],
@@ -30556,12 +30558,15 @@ let _ghAgeCheckerResults = [];
             ['Security PIN', 'PIN Keamanan'],
             ['Redeem Voucher', 'Tukar Voucher'],
 
-            // Vault Tab
-            ['Encrypted Asset Vault', 'Brankas Aset Terenkripsi'],
-            ['OWNED CREDENTIALS • LIVE 30s 2FA • BOOST TRACKER', 'KREDENSIAL MILIK ANDA • 2FA 30d LANGSUNG • PELACAK BOOST'],
+            // Vault / Assets Tab
+            ['My Digital Assets', 'Aset Digital Saya'],
+            ['My Orders & Accounts', 'Pesanan & Akun Saya'],
+            ['MY ORDERS & ACCOUNTS • LIVE 30s 2FA • BOOST TRACKER', 'PESANAN & AKUN SAYA • 2FA 30d LANGSUNG • PELACAK BOOST'],
             ['OWNED ASSETS', 'ASET DIMILIKI'],
             ['LIVE 2FA READY', '2FA LANGSUNG SIAP'],
-            ['VAULT VALUE', 'NILAI BRANKAS'],
+            ['TOTAL VALUE', 'TOTAL NILAI'],
+            ['MY ASSETS', 'ASET SAYA'],
+            ['View Stock', 'Lihat Stok'],
             ['Boosts', 'Boost'],
             ['Free Tools', 'Alat Gratis'],
             ['Search platform, @username, or invoice...', 'Cari platform, @username, atau invoice...'],
@@ -30800,7 +30805,9 @@ let _ghAgeCheckerResults = [];
             ['Choose Image File', 'Pilih File Gambar'],
             ['No screenshot selected yet', 'Belum ada bukti transfer dipilih'],
             ['Submit Payment Screenshot to Admin', 'Kirim Bukti Pembayaran ke Admin'],
-            ['Open Vault', 'Buka Brankas'],
+            ['Open Vault', 'Buka Aset'],
+            ['Track in Vault', 'Lacak Pesanan'],
+            ['TOP VAULT TIER', 'KATEGORI FAVORIT'],
 
             // Admin Center & Studios
             ['COMMAND CENTER', 'PUSAT KOMANDO'],
@@ -30863,7 +30870,9 @@ let _ghAgeCheckerResults = [];
         });
 
         const XB_I18N_REGEX_TO_ID = [
-            [/\bInspect Vault\s*\((\d+)\)/gi, 'Lihat Brankas ($1)'],
+            [/\bView Stock\s*\((\d+)\)/gi, 'Lihat Stok ($1)'],
+            [/\bInspect Vault\s*\((\d+)\)/gi, 'Lihat Stok ($1)'],
+            [/\bMy Assets\s*\((\d+)\)/gi, 'Aset Saya ($1)'],
             [/\b(\d+)\s+LIVE ACCOUNTS\b/gi, '$1 AKUN TERSEDIA'],
             [/\b(\d+)\s+LIVE\s*•\s*HYBRID READY\b/gi, '$1 TERSEDIA • HIBRIDA SIAP'],
             [/\b(\d+)\s+LIVE\b/gi, '$1 TERSEDIA'],
@@ -30930,7 +30939,7 @@ let _ghAgeCheckerResults = [];
             [/\b(.+?)\s+Boost Service\b/gi, 'Layanan Boost $1'],
             [/\b(\d+)%\s*BACK\b/gi, 'CASHBACK $1%'],
             [/\bPERSONAL PORTFOLIO SPEND\s*\(([^)]+)\)/gi, 'BELANJA PORTOFOLIO PRIBADI ($1)'],
-            [/\bGitHub Vault\s+(\d{4})/gi, 'Brankas GitHub $1'],
+            [/\bGitHub Vault\s+(\d{4})/gi, 'Akun GitHub $1'],
             [/\bAged\s+(20\d{2}[–-]20\d{2})/gi, 'Akun Tua $1'],
             [/\bIn Queue\b/gi, 'Dalam Antrean'],
             [/\b100% Delivered\b/gi, '100% Terkirim'],
