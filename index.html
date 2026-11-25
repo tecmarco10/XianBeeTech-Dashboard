@@ -4938,11 +4938,138 @@
         .grid-years-2col .xb-ex-year-tag.sm {
             font-size: 0.72rem !important;
         }
-        .grid-years-2col .btn-ui {
+.grid-years-2col .btn-ui {
             padding: 4.5px 5px !important;
             font-size: 0.6rem !important;
             border-radius: 7px !important;
             line-height: 1.2 !important;
+        }
+
+        /* 6. COMPACT WALLET & PROFILE VIP GRID CARDS */
+        .xb-wal-wrap,
+        .xb-vp-wrap {
+            gap: 7px !important;
+        }
+        .xb-wal-switcher {
+            padding: 3px !important;
+            gap: 4px !important;
+            margin: 0 0 2px 0 !important;
+            border-radius: 11px !important;
+        }
+        .xb-wal-sw-btn {
+            padding: 5px 4px !important;
+            border-radius: 8px !important;
+        }
+        .xb-vgrid-card {
+            padding: 9px 10px 9px !important;
+            border-radius: 14px !important;
+        }
+        .xb-vg-top {
+            margin-bottom: 6px !important;
+            gap: 5px !important;
+        }
+        .xb-vg-corner-btn {
+            height: 22px !important;
+            padding: 0 7px !important;
+            font-size: 0.56rem !important;
+            border-radius: 6px !important;
+        }
+        .xb-vg-tier-pill {
+            padding: 2.5px 8px !important;
+            font-size: 0.5rem !important;
+            border-radius: 6px !important;
+        }
+        .xb-vg-center {
+            gap: 3px !important;
+        }
+        .xb-vg-vip-chip {
+            padding: 2px 8px !important;
+            font-size: 0.51rem !important;
+        }
+        .xb-vg-handle {
+            font-size: 0.66rem !important;
+        }
+        .xb-vgrid-card.is-profile-grid .xb-vg-handle {
+            font-size: 0.76rem !important;
+        }
+        .xb-vg-prf-av {
+            width: 42px !important;
+            height: 42px !important;
+            border-radius: 12px !important;
+            padding: 2px !important;
+            margin-bottom: 1px !important;
+        }
+        .xb-vg-prf-av-inner {
+            border-radius: 10px !important;
+            font-size: 0.9rem !important;
+        }
+        .xb-vg-divider {
+            margin: 6px 0 !important;
+        }
+        .xb-vg-bal-lbl {
+            font-size: 0.5rem !important;
+            gap: 5px !important;
+        }
+        .xb-vg-eye-btn {
+            width: 21px !important;
+            height: 18px !important;
+            font-size: 0.58rem !important;
+        }
+        .xb-vg-bal-row {
+            gap: 6px !important;
+            margin-top: 1px !important;
+        }
+        .xb-vg-bal-num {
+            font-size: 1.28rem !important;
+        }
+        .xb-vg-usdt-pill {
+            padding: 2px 6px !important;
+            font-size: 0.52rem !important;
+        }
+        .xb-vg-idr-sub {
+            font-size: 0.54rem !important;
+            margin-top: 1px !important;
+        }
+        .xb-vg-stats-3 {
+            gap: 4px !important;
+            margin: 6px 0 !important;
+        }
+        .xb-vg-stat-box {
+            padding: 4px 3px !important;
+            border-radius: 8px !important;
+        }
+        .xb-vg-stat-k {
+            font-size: 0.42rem !important;
+        }
+        .xb-vg-stat-v {
+            font-size: 0.58rem !important;
+            margin-top: 1px !important;
+        }
+        .xb-vg-actions {
+            gap: 5px !important;
+            margin-top: 2px !important;
+        }
+        .xb-vg-btn {
+            height: 30px !important;
+            font-size: 0.62rem !important;
+            border-radius: 8px !important;
+        }
+        .xb-wal-act-btn {
+            padding: 6px 3px !important;
+            gap: 3px !important;
+            border-radius: 10px !important;
+        }
+        .xb-wal-act-ico {
+            width: 25px !important;
+            height: 25px !important;
+            border-radius: 7px !important;
+        }
+        .xb-wal-act-lbl {
+            font-size: 0.55rem !important;
+        }
+        .xb-wal-card {
+            padding: 9px 10px !important;
+            border-radius: 13px !important;
         }
         .xb-ex-col-act-btn:active { transform: scale(0.97); }
         .xb-ex-col-act-btn.vip {
@@ -26724,7 +26851,7 @@ let _ghAgeCheckerResults = [];
                                 <div class="xb-bst-cat-head">
                                     <span style="display:inline-flex;align-items:center;gap:5px;min-width:0;">
                                         <span style="color:${g.col};display:inline-flex;align-items:center;">${XB_MP_SVGS[g.ico] || XB_MP_SVGS.webpro}</span>
-                                        <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.title}</span>
+                                        <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${activeOpt ? activeOpt.short : g.title}</span>
                                     </span>
                                     <span style="font-size:0.55rem;color:${hasAct ? '#34d399' : 'var(--text-muted)'};">${isOpen ? '▲' : '▾'}</span>
                                 </div>
@@ -26733,7 +26860,6 @@ let _ghAgeCheckerResults = [];
                                         <span class="xb-mp-mini-ico" style="--mi-col:${mi.col};">${XB_MP_SVGS[mi.ico] || XB_MP_SVGS.webpro}</span>
                                     `).join('')}
                                 </div>
-                                <div class="xb-bst-cat-sub" style="${hasAct ? 'color:#34d399;' : ''}">${activeOpt ? `● ${activeOpt.short} Active` : g.sub}</div>
                             </button>
                         `;
                     }).join('')}
