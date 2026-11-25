@@ -5696,6 +5696,78 @@
             gap: 2px !important;
             position: relative;
         }
+
+        /* 2-COLUMN TOKEN & NETWORK PICKER + ADMIN VISIBILITY MANAGER */
+        .xb-ex-tok-grid-2 {
+            display: grid !important;
+            grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            gap: 6px !important;
+            max-height: 55vh;
+            overflow-y: auto;
+            padding-right: 2px;
+        }
+        .xb-ex-tok-card2 {
+            width: 100%;
+            min-width: 0;
+            padding: 7px 8px;
+            border-radius: 10px;
+            border: 1.5px solid var(--ex-hairline);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            text-align: left;
+        }
+        .xb-ex-tok-card2.active {
+            border-color: #f43f5e;
+            background: linear-gradient(145deg, rgba(15, 23, 52, 0.96), rgba(35, 16, 62, 0.92));
+            box-shadow: 0 0 5px rgba(244, 63, 94, 0.36);
+        }
+        .xb-ex-tok-card2.is-off {
+            opacity: 0.45;
+            border-color: rgba(148, 163, 184, 0.2);
+        }
+        [data-theme="platinum"] .xb-ex-tok-card2.active {
+            background: #fff1f2;
+            border-color: #e11d48;
+        }
+        .xb-ex-adm-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            max-height: 82px;
+            overflow-y: auto;
+        }
+        .xb-ex-adm-chip {
+            padding: 4px 7px;
+            border-radius: 7px;
+            border: 1px solid rgba(148, 163, 184, 0.28);
+            background: var(--bg-input);
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.52rem;
+            font-weight: 800;
+            cursor: pointer;
+        }
+        .xb-ex-adm-chip.on {
+            border-color: #38bdf8;
+            background: rgba(56, 189, 248, 0.14);
+            color: #38bdf8;
+        }
+        .xb-ex-adm-btn {
+            border: 1px solid rgba(244, 63, 94, 0.55);
+            background: rgba(244, 63, 94, 0.14);
+            color: #fb7185;
+            border-radius: 7px;
+            padding: 3px 7px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.52rem;
+            font-weight: 800;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
         .xb-ex-pkg-card.active {
             border-color: #f43f5e !important;
             background: linear-gradient(145deg, rgba(16, 28, 66, 0.92), rgba(34, 15, 62, 0.9)) !important;
@@ -8756,50 +8828,266 @@ const XB_EX_BANK_THEMES = {
                 updateXbExDynamicCalc();
             }
 
-            function openXbExGasTokenPicker() {
+            const XB_EX_HIDDEN_COINS_KEY = 'xb_ex_hidden_coins_v1';
+
+            function isXbExAdminUser() {
+                try {
+                    if (window.isAdmin === true || localStorage.getItem('xb_is_admin') === 'true') return true;
+                    const uid = String(
+                        (window.currentUser && (window.currentUser.id || window.currentUser.tg_id)) ||
+                        (window.tgUser && window.tgUser.id) ||
+                        localStorage.getItem('xb_tg_id') ||
+                        localStorage.getItem('xb_user_id') || ''
+                    ).trim();
+                    if (uid && typeof ADMIN_IDS !== 'undefined' && Array.isArray(ADMIN_IDS) && ADMIN_IDS.map(String).includes(uid)) {
+                        return true;
+                    }
+                    const admBtn = document.querySelector('[onclick*="openAdmin"], [onclick*="StealthCommand"], #adminPanelBtn');
+                    if (admBtn && admBtn.offsetParent !== null) return true;
+                } catch (e) {}
+                return false;
+            }
+
+            function getXbExHiddenSet() {
+                try {
+                    const arr = JSON.parse(localStorage.getItem(XB_EX_HIDDEN_COINS_KEY) || '[]');
+                    if (Array.isArray(arr)) return new Set(arr.map(String));
+                } catch (e) {}
+                return new Set();
+            }
+
+            function saveXbExHiddenSet(hiddenSet) {
+                const arr = Array.from(hiddenSet);
+                try { localStorage.setItem(XB_EX_HIDDEN_COINS_KEY, JSON.stringify(arr)); } catch (e) {}
+                const enabled = getXbExEnabledCoins();
+                if (window._xbExState && enabled.length > 0) {
+                    if (!enabled.some(c => c.code === window._xbExState.swapTo)) {
+                        window._xbExState.swapTo = enabled[0].code;
+                    }
+                    if (!enabled.some(c => c.code === window._xbExState.gasCoin)) {
+                        const defG = getXbExDefaultGasCoin();
+                        if (defG) {
+                            window._xbExState.gasCat = defG.cat;
+                            window._xbExState.gasCoin = defG.code;
+                        }
+                    }
+                }
+            }
+
+            function getXbExEnabledCoins() {
+                const hidden = getXbExHiddenSet();
+                const list = (Array.isArray(XB_EX_COINS) ? XB_EX_COINS : []).filter(c => !hidden.has(c.code));
+                return list.length > 0 ? list : (XB_EX_COINS.length ? [XB_EX_COINS[0]] : []);
+            }
+
+            function getXbExDefaultGasCoin() {
+                const enabled = getXbExEnabledCoins();
+                const usdts = enabled.filter(c => String(c.sym || '').toUpperCase() === 'USDT');
+                if (usdts.length > 0) {
+                    const pref = usdts.find(c => /bep|bsc|base|arb|pol/i.test(c.net || c.code));
+                    return pref || usdts[0];
+                }
+                return enabled[0] || XB_EX_COINS[0];
+            }
+
+            function openXbExUnifiedTokenPicker(modeTarget) {
                 const root = ensureXbExModalRoot();
+                const target = modeTarget === 'gas' ? 'gas' : 'swap';
                 root.innerHTML = `
                     <div class="xb-ex-modal-box">
-                        <div style="display:flex;align-items:center;justify-content:space-between;">
-                            <div style="font-size:0.86rem;font-weight:800;color:var(--text-primary);">⚡ Select Token &amp; Network</div>
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);">⚡ Select Token &amp; Network</div>
                             <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
                         </div>
-                        <input type="text" class="xb-ex-input" placeholder="Search ETH, Base, Arbitrum, SOL, TON, BNB..."
-                            oninput="renderXbExGasTokenPickerList(this.value)">
-                        <div class="xb-ex-tok-list" id="xbExGasTokListBox"></div>
+                        <input type="text" class="xb-ex-input" placeholder="Search USDT, ETH, Base, BEP-20, SOL, TON..."
+                            oninput="renderXbExUnifiedTokenGrid(this.value, '${target}')">
+                        <div class="xb-ex-tok-grid-2" id="xbExUnifiedTokGrid"></div>
                     </div>
                 `;
                 root.classList.add('open');
-                renderXbExGasTokenPickerList('');
+                renderXbExUnifiedTokenGrid('', target);
             }
 
-            function renderXbExGasTokenPickerList(query) {
-                const box = document.getElementById('xbExGasTokListBox');
+            function renderXbExUnifiedTokenGrid(query, target) {
+                const box = document.getElementById('xbExUnifiedTokGrid');
                 if (!box) return;
                 const q = String(query || '').trim().toLowerCase();
-                const cur = window._xbExState.gasCoin;
-                const list = XB_EX_COINS.filter(c => !q || c.sym.toLowerCase().includes(q) || c.net.toLowerCase().includes(q) || (c.name || '').toLowerCase().includes(q));
+                const cur = target === 'gas' ? window._xbExState.gasCoin : window._xbExState.swapTo;
+                const list = getXbExEnabledCoins().filter(c =>
+                    !q || c.sym.toLowerCase().includes(q) || c.net.toLowerCase().includes(q) || (c.name || '').toLowerCase().includes(q)
+                );
                 box.innerHTML = list.map(c => {
                     const sp = getXbExSpot(c);
                     const isAct = c.code === cur;
+                    const clickJs = target === 'gas'
+                        ? `window._xbExState.gasCat='${escXbEx(c.cat)}'; window._xbExState.gasCoin='${escXbEx(c.code)}'; closeXbExModal(); renderXbExBody(true);`
+                        : `window._xbExState.swapTo='${escXbEx(c.code)}'; closeXbExModal(); renderXbExBody(true);`;
                     return `
-                        <button type="button" class="xb-ex-tok-row" style="${isAct ? 'border-color:#f43f5e;' : ''}"
-                            onclick="window._xbExState.gasCat='${escXbEx(c.cat)}'; window._xbExState.gasCoin='${escXbEx(c.code)}'; closeXbExModal(); renderXbExBody(true);">
-                            <div style="display:flex;align-items:center;gap:9px;min-width:0;">
-                                ${getXbExCoinSvg(c, 26)}
-                                <div style="min-width:0;text-align:left;">
-                                    <div style="font-size:0.74rem;font-weight:800;">${escXbEx(c.sym)}</div>
-                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;color:var(--text-muted);">${escXbEx(c.net)}</div>
-                                </div>
+                        <button type="button" class="xb-ex-tok-card2 ${isAct ? 'active' : ''}" onclick="${clickJs}">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                                <span style="display:inline-flex;align-items:center;gap:5px;min-width:0;">
+                                    ${getXbExCoinSvg(c, 18)}
+                                    <span style="font-size:0.68rem;font-weight:800;white-space:nowrap;">${escXbEx(c.sym)}</span>
+                                </span>
+                                <span style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;color:#34d399;flex-shrink:0;">${sp.ready ? fmtXbExUsdPrice(sp.usd) : '...'}</span>
                             </div>
-                            <div style="text-align:right;font-family:'JetBrains Mono',monospace;flex-shrink:0;">
-                                <div style="font-size:0.62rem;font-weight:800;color:#34d399;">${sp.ready ? fmtXbExUsdPrice(sp.usd) : '...'}</div>
-                                <div style="font-size:0.49rem;color:${isAct ? '#f43f5e' : '#38bdf8'};font-weight:800;">${isAct ? '● ACTIVE' : ('Min ' + fmtXbExIdr(c.minIdr))}</div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;font-family:'JetBrains Mono',monospace;">
+                                <span style="font-size:0.49rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escXbEx(c.net)}</span>
+                                <span style="font-size:0.46rem;font-weight:800;color:${isAct ? '#f43f5e' : '#38bdf8'};flex-shrink:0;">${isAct ? '● ON' : ('Min ' + Math.round(c.minIdr / 1000) + 'k')}</span>
                             </div>
                         </button>
                     `;
-                }).join('') || `<div style="text-align:center;padding:16px;font-size:0.7rem;color:var(--text-muted);">Token tidak ditemukan.</div>`;
+                }).join('') || `<div style="grid-column:1/-1;text-align:center;padding:16px;font-size:0.68rem;color:var(--text-muted);">Token tidak ditemukan.</div>`;
             }
+
+            function openXbExGasTokenPicker() {
+                openXbExUnifiedTokenPicker('gas');
+            }
+
+            let _xbExAdmSearch = '';
+
+            function openXbExAdminCoinManager() {
+                const root = ensureXbExModalRoot();
+                _xbExAdmSearch = '';
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box" style="gap:8px;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div id="xbExAdmMgrTitle" style="font-size:0.82rem;font-weight:800;color:var(--text-primary);">⚙️ Manage Coins &amp; Networks</div>
+                            <button type="button" onclick="closeXbExModal(); renderXbExBody(true);" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
+                            <button type="button" class="xb-ex-pre-btn" style="color:#34d399;border-color:rgba(52,211,153,0.45);" onclick="xbExAdminApplyPreset('all')">✓ All ON</button>
+                            <button type="button" class="xb-ex-pre-btn" style="color:#38bdf8;border-color:rgba(56,189,248,0.45);" onclick="xbExAdminApplyPreset('usdt')">💵 USDT Only</button>
+                            <button type="button" class="xb-ex-pre-btn" style="color:#fbbf24;border-color:rgba(251,191,36,0.45);" onclick="xbExAdminApplyPreset('top')">⭐ Top Coins</button>
+                        </div>
+
+                        <div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;font-weight:800;color:var(--text-muted);margin-bottom:4px;">TOGGLE BY COIN (1-TAP ALL NETWORKS)</div>
+                            <div class="xb-ex-adm-chips" id="xbExAdmSymChips"></div>
+                        </div>
+
+                        <input type="text" class="xb-ex-input" style="height:34px;" placeholder="Filter coin or network (ex: USDT, BEP-20, Base)..."
+                            oninput="_xbExAdmSearch=this.value; renderXbExAdminCoinManagerBody(false);">
+
+                        <div class="xb-ex-tok-grid-2" id="xbExAdmNetGrid" style="max-height:36vh;"></div>
+
+                        <button type="button" class="btn-ui primary" style="width:100%;height:38px;border-radius:10px;font-size:0.72rem;"
+                            onclick="closeXbExModal(); renderXbExBody(true); showToast('✅ Coin & Network visibility saved!');">
+                            ✓ Save &amp; Apply
+                        </button>
+                    </div>
+                `;
+                root.classList.add('open');
+                renderXbExAdminCoinManagerBody(false);
+            }
+
+            function xbExAdminApplyPreset(preset) {
+                const hidden = new Set();
+                if (preset === 'usdt') {
+                    XB_EX_COINS.forEach(c => { if (String(c.sym || '').toUpperCase() !== 'USDT') hidden.add(c.code); });
+                } else if (preset === 'top') {
+                    const top = new Set(['USDT', 'USDC', 'ETH', 'SOL', 'BNB', 'TON', 'TRX']);
+                    XB_EX_COINS.forEach(c => { if (!top.has(String(c.sym || '').toUpperCase())) hidden.add(c.code); });
+                }
+                saveXbExHiddenSet(hidden);
+                renderXbExAdminCoinManagerBody(true);
+            }
+
+            function xbExAdminToggleSym(sym) {
+                const hidden = getXbExHiddenSet();
+                const group = XB_EX_COINS.filter(c => String(c.sym || '').toUpperCase() === sym);
+                const anyOn = group.some(c => !hidden.has(c.code));
+                if (anyOn && getXbExEnabledCoins().length <= group.filter(c => !hidden.has(c.code)).length) {
+                    return showToast('⚠️ Minimal 1 koin/jaringan harus tetap aktif!');
+                }
+                group.forEach(c => { if (anyOn) hidden.add(c.code); else hidden.delete(c.code); });
+                saveXbExHiddenSet(hidden);
+                renderXbExAdminCoinManagerBody(true);
+            }
+
+            function xbExAdminToggleCode(code, cardEl) {
+                const hidden = getXbExHiddenSet();
+                const isCurrentlyOn = !hidden.has(code);
+                if (isCurrentlyOn && getXbExEnabledCoins().length <= 1) {
+                    return showToast('⚠️ Minimal 1 jaringan harus tetap aktif!');
+                }
+                if (isCurrentlyOn) hidden.add(code);
+                else hidden.delete(code);
+                saveXbExHiddenSet(hidden);
+
+                if (cardEl) {
+                    const nowOn = !hidden.has(code);
+                    cardEl.classList.toggle('active', nowOn);
+                    cardEl.classList.toggle('is-off', !nowOn);
+                    const stEl = cardEl.querySelector('.adm-st-lbl');
+                    if (stEl) {
+                        stEl.innerText = nowOn ? '✓ ON' : 'OFF';
+                        stEl.style.color = nowOn ? '#34d399' : '#94a3b8';
+                    }
+                    renderXbExAdminCoinManagerHeaderAndChips();
+                } else {
+                    renderXbExAdminCoinManagerBody(true);
+                }
+            }
+
+            function renderXbExAdminCoinManagerHeaderAndChips() {
+                const hidden = getXbExHiddenSet();
+                const onCnt = XB_EX_COINS.filter(c => !hidden.has(c.code)).length;
+                const ttl = document.getElementById('xbExAdmMgrTitle');
+                if (ttl) ttl.innerText = `⚙️ Coins & Networks (${onCnt}/${XB_EX_COINS.length} ON)`;
+
+                const chipsEl = document.getElementById('xbExAdmSymChips');
+                if (chipsEl) {
+                    const syms = Array.from(new Set(XB_EX_COINS.map(c => String(c.sym || '').toUpperCase())));
+                    chipsEl.innerHTML = syms.map(sym => {
+                        const grp = XB_EX_COINS.filter(c => String(c.sym || '').toUpperCase() === sym);
+                        const activeN = grp.filter(c => !hidden.has(c.code)).length;
+                        return `<button type="button" class="xb-ex-adm-chip ${activeN > 0 ? 'on' : ''}" onclick="xbExAdminToggleSym('${escXbEx(sym)}')">${activeN > 0 ? '✓ ' : ''}${escXbEx(sym)} (${activeN}/${grp.length})</button>`;
+                    }).join('');
+                }
+            }
+
+            function renderXbExAdminCoinManagerBody(keepScroll = true) {
+                renderXbExAdminCoinManagerHeaderAndChips();
+                const grid = document.getElementById('xbExAdmNetGrid');
+                if (!grid) return;
+                const prevScroll = keepScroll ? grid.scrollTop : 0;
+                const hidden = getXbExHiddenSet();
+                const q = String(_xbExAdmSearch || '').trim().toLowerCase();
+                const list = XB_EX_COINS.filter(c => !q || c.sym.toLowerCase().includes(q) || c.net.toLowerCase().includes(q));
+                grid.innerHTML = list.map(c => {
+                    const isOn = !hidden.has(c.code);
+                    return `
+                        <button type="button" class="xb-ex-tok-card2 ${isOn ? 'active' : 'is-off'}" onclick="xbExAdminToggleCode('${escXbEx(c.code)}', this)">
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;">
+                                <span style="display:inline-flex;align-items:center;gap:5px;min-width:0;">
+                                    ${getXbExCoinSvg(c, 16)}
+                                    <span style="font-size:0.65rem;font-weight:800;">${escXbEx(c.sym)}</span>
+                                </span>
+                                <span class="adm-st-lbl" style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;font-weight:900;color:${isOn ? '#34d399' : '#94a3b8'};">${isOn ? '✓ ON' : 'OFF'}</span>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.49rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escXbEx(c.net)}</div>
+                        </button>
+                    `;
+                }).join('');
+                if (keepScroll) grid.scrollTop = prevScroll;
+            }
+
+            // Override Swap picker to use the exact same 2-column grid + Admin visibility filter & default Buy Crypto to USDT
+            setTimeout(() => {
+                window.openXbExTokenPicker = function(targetField) {
+                    openXbExUnifiedTokenPicker(targetField === 'gas' ? 'gas' : 'swap');
+                };
+                if (window._xbExState && !window._xbExState._gasInitUsdt) {
+                    const defUsdt = getXbExDefaultGasCoin();
+                    if (defUsdt) {
+                        window._xbExState.gasCat = defUsdt.cat;
+                        window._xbExState.gasCoin = defUsdt.code;
+                        window._xbExState._gasInitUsdt = true;
+                    }
+                }
+            }, 80);
 
             function openXbExBankPicker() {
                 const root = ensureXbExModalRoot();
@@ -9096,14 +9384,27 @@ const XB_EX_BANK_THEMES = {
                     `;
                 }
 
-                // ---------------- MODE 2: BUY CRYPTO (SELECT TOKEN PICKER + 4/3 NETWORK GRID + 2-LINE PACKS) ----------------
+                // ---------------- MODE 2: BUY CRYPTO (DEFAULT USDT • SELECT TOKEN PICKER + 4/3 NETWORK GRID) ----------------
                 else if (st.mode === 'gas') {
-                    const catCoins = XB_EX_COINS.filter(c => c.cat === st.gasCat);
-                    let activeCoin = catCoins.find(c => c.code === st.gasCoin);
+                    const enabledCoins = getXbExEnabledCoins();
+                    if (!st._gasInitUsdt) {
+                        const defUsdt = getXbExDefaultGasCoin();
+                        if (defUsdt) {
+                            st.gasCat = defUsdt.cat;
+                            st.gasCoin = defUsdt.code;
+                        }
+                        st._gasInitUsdt = true;
+                    }
+                    let activeCoin = enabledCoins.find(c => c.code === st.gasCoin);
                     if (!activeCoin) {
-                        activeCoin = catCoins[0] || XB_EX_COINS[6];
+                        activeCoin = getXbExDefaultGasCoin();
+                        st.gasCat = activeCoin.cat;
                         st.gasCoin = activeCoin.code;
                     }
+                    const sameSymCoins = enabledCoins.filter(c => String(c.sym || '').toUpperCase() === String(activeCoin.sym || '').toUpperCase());
+                    const catCoins = sameSymCoins.length >= 2
+                        ? sameSymCoins
+                        : enabledCoins.filter(c => c.cat === activeCoin.cat);
                     const spot = getXbExSpot(activeCoin);
                     const idrRate = st.liveIdr > 1000 ? st.liveIdr : 0;
                     const chgSign = spot.chg >= 0 ? '+' : '';
@@ -9353,10 +9654,13 @@ const XB_EX_BANK_THEMES = {
                                 ${escXbEx(st.feedSource)} • 1 USDT = ${idrTxt}
                             </span>
                         </span>
-                        <button type="button" onclick="refreshXbExLivePrices(true)"
-                            style="border:1px solid rgba(56,189,248,0.45);background:rgba(56,189,248,0.1);color:#38bdf8;border-radius:7px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;cursor:pointer;flex-shrink:0;">
-                            ↻ ${st.lastSyncStr ? st.lastSyncStr.replace(' WIB','') : 'SYNC'}
-                        </button>
+                        <span style="display:inline-flex;align-items:center;gap:4px;flex-shrink:0;">
+                            ${isXbExAdminUser() ? `<button type="button" class="xb-ex-adm-btn" onclick="openXbExAdminCoinManager()">⚙️ Coins</button>` : ''}
+                            <button type="button" onclick="refreshXbExLivePrices(true)"
+                                style="border:1px solid rgba(56,189,248,0.45);background:rgba(56,189,248,0.1);color:#38bdf8;border-radius:7px;padding:3px 7px;font-family:'JetBrains Mono',monospace;font-size:0.52rem;font-weight:800;cursor:pointer;flex-shrink:0;">
+                                ↻ ${st.lastSyncStr ? st.lastSyncStr.replace(' WIB','') : 'SYNC'}
+                            </button>
+                        </span>
                     </div>
 
                     <div class="xb-ex-modes">
