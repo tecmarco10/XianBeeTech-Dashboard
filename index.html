@@ -4880,6 +4880,62 @@
             padding: 5px 2px !important;
             gap: 2px !important;
         }
+        .xb-ex-col-brand.full {
+            grid-column: 1 / -1;
+        }
+        .xb-ex-col-actions {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 5px;
+            margin-top: 6px;
+        }
+        .xb-ex-col-act-btn {
+            height: 29px;
+            padding: 0 7px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: clamp(0.54rem, 2.5vw, 0.63rem);
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            white-space: nowrap;
+            overflow: hidden;
+            transition: transform 0.14s ease, filter 0.16s ease;
+        }
+        .xb-ex-col-act-btn:active { transform: scale(0.97); }
+        .xb-ex-col-act-btn.vip {
+            border: 1px solid rgba(251, 191, 36, 0.55);
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.22) 0%, rgba(124, 58, 237, 0.24) 100%);
+            color: #fde047;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        .xb-ex-col-act-btn.sales {
+            border: 1px solid rgba(56, 189, 248, 0.58);
+            background: linear-gradient(135deg, rgba(14, 165, 233, 0.22) 0%, rgba(16, 185, 129, 0.22) 100%);
+            color: #38bdf8;
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+        [data-theme="platinum"] .xb-ex-col-act-btn.vip {
+            background: linear-gradient(135deg, #fef3c7 0%, #ede9fe 100%);
+            border-color: rgba(217, 119, 6, 0.45);
+            color: #b45309;
+        }
+        [data-theme="platinum"] .xb-ex-col-act-btn.sales {
+            background: linear-gradient(135deg, #e0f2fe 0%, #d1fae5 100%);
+            border-color: rgba(2, 132, 199, 0.42);
+            color: #0369a1;
+        }
+        .xb-live-pulse-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #34d399;
+            box-shadow: 0 0 7px #34d399;
+            flex-shrink: 0;
+        }
     </style>
     <!-- Chart.js for Slick 3D/Gradient Interactive Graphs -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -8525,9 +8581,7 @@
                             <button type="button" class="xb-lang-btn active" data-lang="EN" onclick="setAppLanguage('EN')">EN</button>
                         </div>
 
-                        <button class="xb-ex-icon-btn" type="button" onclick="openStoreGlobal3DTelemetry()" title="Global Store 3D Telemetry" style="padding:0 7px;color:#38bdf8;">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                        </button>
+                        
 
                         <button class="xb-ex-icon-btn" type="button" onclick="openNotificationsModal()" title="Live Notifications" style="padding:0 7px;">
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
@@ -12523,7 +12577,7 @@
             colBanner.style.cssText = `--mp-acc:${plat.accent};--mp-border:${plat.border};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
             colBanner.innerHTML = `
                 <div class="xb-ex-col-head">
-                    <div class="xb-ex-col-brand">
+                    <div class="xb-ex-col-brand full">
                         <div class="xb-ex-col-logo" style="color:${plat.accent};border-color:${plat.border};">
                             ${XB_MP_SVGS[plat.key]}
                         </div>
@@ -12537,10 +12591,6 @@
                             </div>
                         </div>
                     </div>
-                    <button type="button" class="xb-ex-vip-btn" onclick="openLeaderboardModal()" title="VIP Hall of Fame">
-                        <span style="font-size:0.68rem;font-weight:800;line-height:1.1;display:inline-flex;align-items:center;gap:3px;">👑 VIP</span>
-                        <span style="font-size:0.44rem;font-weight:800;letter-spacing:0.55px;opacity:0.9;">RANKING</span>
-                    </button>
                 </div>
                 <div class="xb-ex-col-stats">
                     <div class="xb-ex-col-stat">
@@ -12559,6 +12609,14 @@
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">DELIVERY</div>
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#fbbf24;margin-top:1px;">Instant</div>
                     </div>
+                </div>
+                <div class="xb-ex-col-actions">
+                    <button type="button" class="xb-ex-col-act-btn vip" onclick="openLeaderboardModal()">
+                        <span>👑</span><span>VIP Ranking</span><span>➔</span>
+                    </button>
+                    <button type="button" class="xb-ex-col-act-btn sales" onclick="openStoreGlobal3DTelemetry()">
+                        <span class="xb-live-pulse-dot"></span><span>📈</span><span>Global Sales 3D</span><span>➔</span>
+                    </button>
                 </div>
             `;
             vp.appendChild(colBanner);
@@ -12712,7 +12770,7 @@
                 colBanner.className = 'xb-ex-collection';
                 colBanner.innerHTML = `
                     <div class="xb-ex-col-head">
-                        <div class="xb-ex-col-brand">
+                        <div class="xb-ex-col-brand full">
                             <div class="xb-ex-col-logo">
                                 <img src="logo.png" alt="XianBee" style="width:100%;height:100%;object-fit:contain;" onerror="this.outerHTML='<span style=\\'font-size:1.3rem;\\'>🐙</span>'">
                             </div>
@@ -12726,10 +12784,6 @@
                                 </div>
                             </div>
                         </div>
-                        <button type="button" class="xb-ex-vip-btn" onclick="openLeaderboardModal()" title="VIP Hall of Fame">
-                            <span style="font-size:0.68rem;font-weight:800;line-height:1.1;display:inline-flex;align-items:center;gap:3px;">👑 VIP</span>
-                            <span style="font-size:0.44rem;font-weight:800;letter-spacing:0.55px;opacity:0.9;">RANKING</span>
-                        </button>
                     </div>
                     <div class="xb-ex-col-stats">
                         <div class="xb-ex-col-stat">
@@ -12748,6 +12802,14 @@
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">DELIVERY</div>
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#fbbf24;margin-top:1px;">Instant</div>
                         </div>
+                    </div>
+                    <div class="xb-ex-col-actions">
+                        <button type="button" class="xb-ex-col-act-btn vip" onclick="openLeaderboardModal()">
+                            <span>👑</span><span>VIP Ranking</span><span>➔</span>
+                        </button>
+                        <button type="button" class="xb-ex-col-act-btn sales" onclick="openStoreGlobal3DTelemetry()">
+                            <span class="xb-live-pulse-dot"></span><span>📈</span><span>Global Sales 3D</span><span>➔</span>
+                        </button>
                     </div>
                 `;
                 vp.appendChild(colBanner);
@@ -30322,6 +30384,8 @@ let _ghAgeCheckerResults = [];
             ['XianBee GitHub Collection', 'Koleksi GitHub XianBee'],
             ['Verified 2011–2026 • Full 2FA Ready', 'Terverifikasi 2011–2026 • 2FA Lengkap'],
             ['RANKING', 'PERINGKAT'],
+            ['VIP Ranking', 'Peringkat VIP'],
+            ['Global Sales 3D', 'Penjualan Global 3D'],
             ['FLOOR', 'TERENDAH'],
             ['LISTED', 'TERSEDIA'],
             ['TIERS', 'TINGKATAN'],
