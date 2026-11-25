@@ -5908,6 +5908,8 @@
         .scb-inp-row { display:flex; align-items:center; gap:5px; }
         .scb-inp { width:100%; height:34px; background:var(--bg-input); border:1px solid rgba(56,189,248,0.38); border-radius:8px; padding:0 9px; color:var(--text-primary); font-family:'JetBrains Mono',monospace; font-size:0.65rem; font-weight:700; outline:none; box-sizing:border-box; }
         .scb-inp:focus { border-color:#38bdf8; }
+        .scb-inp[type="date"] { color-scheme: dark; }
+        [data-theme="platinum"] .scb-inp[type="date"] { color-scheme: light; }
         .scb-paste-btn { height:34px; padding:0 9px; border-radius:8px; border:1px solid rgba(56,189,248,0.42); background:rgba(56,189,248,0.1); color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.55rem; font-weight:800; cursor:pointer; flex-shrink:0; }
 
         .scb-qty-row { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:5px; }
@@ -23537,13 +23539,13 @@ let _ghAgeCheckerResults = [];
             cdLabel: '',
             heatSeed: 1,
             params: {
-                omni:     { niche: '7', num_repos: 2, commits: 25, repo_mode: '1', cron: '5' },
-                repo:     { niche: '7', num_repos: 3, commits: 25, repo_mode: '1' },
+                omni:     { niche: '7', num_repos: 3, commits: 25, repo_mode: '3', cron: '5' },
+                repo:     { niche: '2', num_repos: 3, commits: 25, repo_mode: '3' },
                 profile:  {},
                 workflow: { cron: '5' },
-                boost:    { boost_action: 'follow', targets: '', speed_mode: '2', target_limit: 50, daily_cap: 5 },
-                badges:   { badge_mode: 'ALL', prefer_existing: true, helper_token: '' },
-                commit:   { date_range: 'year', last_days: 60, persona: 'casual', total_commits: 80, commit_repo_mode: 'existing' },
+                boost:    { boost_action: 'follow', targets: '', speed_mode: '2', custom_delay_min: 60, custom_delay_max: 60, target_limit: 50, daily_cap: 5 },
+                badges:   { badge_mode: 'ALL', prefer_existing: true, helper_token: '', star_target: '', star_count: 16, star_speed: '1' },
+                commit:   { date_range: 'year', last_days: 60, start_date: '2025-01-01', end_date: new Date().toISOString().slice(0, 10), persona: 'casual', total_commits: 80, commit_repo_mode: 'existing' },
                 audit:    { check_web_404: true }
             }
         };
@@ -23900,11 +23902,34 @@ let _ghAgeCheckerResults = [];
             if (!open) { scbUpdateHeroMeta(); scbRenderBody(); }
         }
 
-        function scbTogglePickPat(tok) {
-            if (_scbState.selectedPats.has(tok)) _scbState.selectedPats.delete(tok);
-            else _scbState.selectedPats.add(tok);
+        function scbUpdatePatSheetCounters() {
+            const activeCnt = scbGetActiveTokens().length;
+            const ttl = document.getElementById('scbPatSheetTitle');
+            const btn = document.getElementById('scbPatApplyBtn');
+            if (ttl) ttl.innerText = `🔑 Select PAT Account Pool (${activeCnt})`;
+            if (btn) btn.innerText = `✓ Apply Selection (${activeCnt} PATs)`;
             scbUpdateHeroMeta();
-            scbRenderPatSheet();
+        }
+
+        function scbTogglePickPat(tok, rowEl) {
+            const willPick = !_scbState.selectedPats.has(tok);
+            if (willPick) _scbState.selectedPats.add(tok);
+            else _scbState.selectedPats.delete(tok);
+
+            // Patch DOM baris langsung tanpa re-render list -> posisi scroll 100% tetap di tempat!
+            if (rowEl) {
+                rowEl.classList.toggle('picked', willPick);
+                const ico = rowEl.querySelector('.scb-row-ico');
+                const tag = rowEl.querySelector('.scb-row-tag');
+                if (ico) ico.innerText = willPick ? '✓' : '○';
+                if (tag) {
+                    tag.innerText = willPick ? '✓ PICKED' : '+ PICK';
+                    tag.style.color = willPick ? '#34d399' : '#38bdf8';
+                }
+            } else {
+                scbRenderPatListOnly(true);
+            }
+            scbUpdatePatSheetCounters();
         }
 
         function scbQuickPickPats(mode) {
@@ -23919,34 +23944,67 @@ let _ghAgeCheckerResults = [];
                     }
                 }
             }
-            scbUpdateHeroMeta();
-            scbRenderPatSheet();
+            scbRenderPatListOnly(true);
+            scbUpdatePatSheetCounters();
         }
 
         function scbToggleYearGroup(yr) {
             const grp = _scbState.auditPool.filter(a => a.year === yr);
             const allOn = grp.every(a => _scbState.selectedPats.has(a.patToken));
             grp.forEach(a => { if (allOn) _scbState.selectedPats.delete(a.patToken); else _scbState.selectedPats.add(a.patToken); });
-            scbUpdateHeroMeta();
-            scbRenderPatSheet();
+            scbRenderPatListOnly(true);
+            scbUpdatePatSheetCounters();
         }
 
-        function scbRenderPatSheet() {
-            const host = document.getElementById('scbPatSheetHost');
-            if (!host) return;
-            if (!_scbState.patSheetOpen) { host.innerHTML = ''; return; }
-            const activeCnt = scbGetActiveTokens().length;
+        function scbRenderPatListOnly(keepScroll = true) {
+            const listEl = document.getElementById('scbPatScrollList');
+            if (!listEl) return;
+            const prevTop = keepScroll ? listEl.scrollTop : 0;
             const q = (_scbState.patSearch || '').trim().toLowerCase();
             const filtered = _scbState.auditPool.filter(a => !q || a.username.toLowerCase().includes(q) || a.year.toLowerCase().includes(q));
             const byYr = new Map();
             filtered.forEach(a => { if (!byYr.has(a.year)) byYr.set(a.year, []); byYr.get(a.year).push(a); });
             const yrKeys = Array.from(byYr.keys()).sort();
 
+            listEl.innerHTML = _scbState.auditLoading
+                ? `<div style="text-align:center;padding:18px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#38bdf8;">⏳ Pulling PAT_Age_Audit pool...</div>`
+                : (yrKeys.length === 0
+                    ? `<div style="text-align:center;padding:18px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);">No PATs found. Switch to Paste tab.</div>`
+                    : yrKeys.map(yr => {
+                        const list = byYr.get(yr);
+                        return `
+                            <div class="scb-yr-hdr" onclick="scbToggleYearGroup('${scbEsc(yr)}')">
+                                <span>📂 ${scbEsc(yr)} (${list.length})</span>
+                                <span>Toggle All</span>
+                            </div>
+                            ${list.map(a => {
+                                const on = _scbState.selectedPats.has(a.patToken);
+                                return `
+                                    <div class="scb-acc-row ${on?'picked':''}" onclick="scbTogglePickPat('${scbEsc(a.patToken)}', this)">
+                                        <span style="font-size:0.61rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                            <span class="scb-row-ico">${on ? '✓' : '○'}</span> #${a.pool_no} @${scbEsc(a.username)}
+                                        </span>
+                                        <span class="scb-row-tag" style="font-size:0.52rem;font-weight:800;color:${on?'#34d399':'#38bdf8'};flex-shrink:0;">${on ? '✓ PICKED' : '+ PICK'}</span>
+                                    </div>
+                                `;
+                            }).join('')}
+                        `;
+                    }).join(''));
+            if (keepScroll) listEl.scrollTop = prevTop;
+        }
+
+        function scbRenderPatSheet() {
+            const host = document.getElementById('scbPatSheetHost');
+            if (!host) return;
+            if (!_scbState.patSheetOpen) { host.innerHTML = ''; return; }
+            const prevTop = document.getElementById('scbPatScrollList')?.scrollTop || 0;
+            const activeCnt = scbGetActiveTokens().length;
+
             host.innerHTML = `
                 <div class="scb-sheet-backdrop" onclick="if(event.target===this) scbTogglePatSheet(false)">
                     <div class="scb-sheet-box">
                         <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
-                            <span style="font-size:0.74rem;font-weight:900;color:var(--text-primary);">🔑 Select PAT Account Pool (${activeCnt})</span>
+                            <span id="scbPatSheetTitle" style="font-size:0.74rem;font-weight:900;color:var(--text-primary);">🔑 Select PAT Account Pool (${activeCnt})</span>
                             <button type="button" class="scb-close-btn" onclick="scbTogglePatSheet(false)">✕</button>
                         </div>
                         <div class="scb-grid-2">
@@ -23960,7 +24018,7 @@ let _ghAgeCheckerResults = [];
                         ${_scbState.patTab === 'audit' ? `
                             <div class="scb-inp-row">
                                 <input type="text" class="scb-inp" style="height:32px;" placeholder="Search @username or year..."
-                                    value="${scbEsc(_scbState.patSearch)}" oninput="_scbState.patSearch=this.value; scbRenderPatSheet();">
+                                    value="${scbEsc(_scbState.patSearch)}" oninput="_scbState.patSearch=this.value; scbRenderPatListOnly(false);">
                                 <button type="button" class="scb-paste-btn" style="height:32px;" onclick="scbLoadAuditPool(true)">↻</button>
                             </div>
                             <div class="scb-grid-4">
@@ -23969,43 +24027,23 @@ let _ghAgeCheckerResults = [];
                                 <button type="button" class="scb-qty-pill" style="color:#34d399;" onclick="scbQuickPickPats('all')">All</button>
                                 <button type="button" class="scb-qty-pill" style="color:#f87171;" onclick="scbQuickPickPats('clear')">Clear</button>
                             </div>
-                            <div style="flex:1;min-height:120px;max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;">
-                                ${_scbState.auditLoading
-                                    ? `<div style="text-align:center;padding:18px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#38bdf8;">⏳ Pulling PAT_Age_Audit pool...</div>`
-                                    : (yrKeys.length === 0
-                                        ? `<div style="text-align:center;padding:18px;font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:var(--text-muted);">No PATs found. Switch to Paste tab.</div>`
-                                        : yrKeys.map(yr => {
-                                            const list = byYr.get(yr);
-                                            return `
-                                                <div class="scb-yr-hdr" onclick="scbToggleYearGroup('${scbEsc(yr)}')">
-                                                    <span>📂 ${scbEsc(yr)} (${list.length})</span>
-                                                    <span>Toggle All</span>
-                                                </div>
-                                                ${list.map(a => {
-                                                    const on = _scbState.selectedPats.has(a.patToken);
-                                                    return `
-                                                        <div class="scb-acc-row ${on?'picked':''}" onclick="scbTogglePickPat('${scbEsc(a.patToken)}')">
-                                                            <span style="font-size:0.61rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                                                ${on ? '✓' : '○'} #${a.pool_no} @${scbEsc(a.username)}
-                                                            </span>
-                                                            <span style="font-size:0.52rem;font-weight:800;color:${on?'#34d399':'#38bdf8'};flex-shrink:0;">${on ? '✓ PICKED' : '+ PICK'}</span>
-                                                        </div>
-                                                    `;
-                                                }).join('')}
-                                            `;
-                                        }).join(''))}
-                            </div>
+                            <div id="scbPatScrollList" style="flex:1;min-height:120px;max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:4px;"></div>
                         ` : `
                             <textarea class="scb-inp" style="height:125px;padding:8px;resize:none;" placeholder="Paste ghp_... or github_pat_... tokens"
-                                oninput="_scbState.pastedRaw=this.value; scbUpdateHeroMeta();">${scbEsc(_scbState.pastedRaw)}</textarea>
+                                oninput="_scbState.pastedRaw=this.value; scbUpdatePatSheetCounters();">${scbEsc(_scbState.pastedRaw)}</textarea>
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:#34d399;">✓ Auto-extracts &amp; deduplicates ghp_ / github_pat_ tokens.</div>
                         `}
-                        <button type="button" class="btn-ui primary" style="width:100%;height:38px;border-radius:9px;font-size:0.7rem;" onclick="scbTogglePatSheet(false)">
+                        <button type="button" id="scbPatApplyBtn" class="btn-ui primary" style="width:100%;height:38px;border-radius:9px;font-size:0.7rem;" onclick="scbTogglePatSheet(false)">
                             ✓ Apply Selection (${activeCnt} PATs)
                         </button>
                     </div>
                 </div>
             `;
+            if (_scbState.patTab === 'audit') {
+                scbRenderPatListOnly(false);
+                const nl = document.getElementById('scbPatScrollList');
+                if (nl) nl.scrollTop = prevTop;
+            }
         }
 
         function scbRenderTerminalCardHtml() {
@@ -24024,10 +24062,14 @@ let _ghAgeCheckerResults = [];
                     { k: 'watch',  ico: '👁️', lbl: 'Watchers',  acc: 'acc-green' }
                 ];
                 const spds = [
-                    { k: '1', name: 'Fast Safe', sub: '4–9s/act',   acc: '' },
-                    { k: '2', name: 'Organic',   sub: '9–15s/act',  acc: 'acc-purple' },
-                    { k: '3', name: 'Stealth',   sub: '18–40s/act', acc: 'acc-red' }
+                    { k: '1', name: 'Fast Safe', sub: '4–9s / act',   acc: '' },
+                    { k: '2', name: 'Organic',   sub: '9–15s / act',  acc: 'acc-purple' },
+                    { k: '3', name: 'Stealth',   sub: '18–40s / act', acc: 'acc-red' },
+                    { k: '4', name: '⏱️ Custom', sub: 'Free Seconds', acc: 'acc-green' }
                 ];
+                const dMinVal = Math.max(1, Number(p.custom_delay_min || 60));
+                const dMaxVal = Math.max(dMinVal, Number(p.custom_delay_max || dMinVal));
+                const fmtSecReadable = (s) => s >= 60 ? `${Math.floor(s/60)}m${s%60 ? ' '+(s%60)+'s' : ''}` : `${s}s`;
                 bodyHtml = `
                     <div class="scb-grid-4">
                         ${svcs.map(s => `
@@ -24066,7 +24108,7 @@ let _ghAgeCheckerResults = [];
 
                     <div>
                         <div class="scb-lbl"><span>DELIVERY SPEED TRACK</span></div>
-                        <div class="scb-grid-3">
+                        <div class="scb-grid-2">
                             ${spds.map(sp => `
                                 <button type="button" class="scb-opt-box ${sp.acc} ${p.speed_mode===sp.k?'active':''}" onclick="_scbState.params.boost.speed_mode='${sp.k}'; scbRenderBody();">
                                     <span class="ot">${p.speed_mode===sp.k?'✓ ':''}${sp.name}</span>
@@ -24075,9 +24117,30 @@ let _ghAgeCheckerResults = [];
                             `).join('')}
                         </div>
                     </div>
+
+                    ${p.speed_mode === '4' ? `
+                        <div>
+                            <div class="scb-lbl"><span>CUSTOM DELAY (SECONDS)</span><span style="color:#34d399;">${fmtSecReadable(dMinVal)}${dMaxVal > dMinVal ? ' – ' + fmtSecReadable(dMaxVal) : ''} / act</span></div>
+                            <div class="scb-qty-row" style="margin-bottom:5px;">
+                                ${[{s:15,l:'15s'},{s:30,l:'30s'},{s:60,l:'60s'},{s:120,l:'2m'},{s:300,l:'5m'}].map(pr => `
+                                    <button type="button" class="scb-qty-pill ${dMinVal===pr.s && dMaxVal===pr.s?'active':''}"
+                                        onclick="_scbState.params.boost.custom_delay_min=${pr.s}; _scbState.params.boost.custom_delay_max=${pr.s}; scbRenderBody();">${pr.l}</button>
+                                `).join('')}
+                            </div>
+                            <div class="scb-grid-2">
+                                <input type="number" min="1" max="3600" class="scb-inp" style="height:31px;" value="${dMinVal}" placeholder="Min Detik (ex: 60)"
+                                    oninput="const v=Math.max(1,parseInt(this.value||'1',10)); _scbState.params.boost.custom_delay_min=v; if(_scbState.params.boost.custom_delay_max<v)_scbState.params.boost.custom_delay_max=v;">
+                                <input type="number" min="1" max="3600" class="scb-inp" style="height:31px;" value="${dMaxVal}" placeholder="Max Detik (ex: 60)"
+                                    oninput="_scbState.params.boost.custom_delay_max=Math.max(1,parseInt(this.value||'60',10));">
+                            </div>
+                        </div>
+                    ` : ''}
                 `;
+                const spdSummary = p.speed_mode === '1' ? 'Fast Safe'
+                    : (p.speed_mode === '3' ? 'Stealth'
+                    : (p.speed_mode === '4' ? `Custom ${fmtSecReadable(dMinVal)}${dMaxVal > dMinVal ? '–'+fmtSecReadable(dMaxVal) : ''}` : 'Organic'));
                 summaryRows = [
-                    ['Metric & Speed', `${p.boost_action.toUpperCase()} • ${p.speed_mode==='1'?'Fast Safe':(p.speed_mode==='3'?'Stealth':'Organic')}`],
+                    ['Metric & Speed', `${p.boost_action.toUpperCase()} • ${spdSummary}`],
                     ['Limit / Cap', `${p.target_limit || 'ALL'} Units • Cap ${p.daily_cap || '∞'}/day`]
                 ];
             } else if (modId === 'omni' || modId === 'repo') {
@@ -24188,51 +24251,127 @@ let _ghAgeCheckerResults = [];
                 summaryRows = [['Active Cron', `${cObj.lbl} (${cObj.sub})`]];
             } else if (modId === 'badges') {
                 const bModes = [
-                    { k: 'ALL',                 lbl: '🔥 All 5' },
+                    { k: 'ALL',                 lbl: '🔥 All 5 Badges (Quickdraw • YOLO • Pull Shark • Pair • Galaxy)', full: true },
                     { k: 'PULL_SHARK',          lbl: '🦈 Pull Shark' },
                     { k: 'YOLO',                lbl: '🚀 YOLO' },
                     { k: 'PAIR_EXTRAORDINAIRE', lbl: '👯 Pair Extra' },
                     { k: 'QUICKDRAW',           lbl: '⚡ Quickdraw' },
-                    { k: 'GALAXY_BRAIN',        lbl: '🧠 Galaxy' }
+                    { k: 'GALAXY_BRAIN',        lbl: '🧠 Galaxy' },
+                    { k: 'STARSTRUCK',          lbl: '⭐ Starstruck', acc: 'acc-gold' }
                 ];
+                const isStarstruck = (p.badge_mode === 'STARSTRUCK');
                 bodyHtml = `
                     <div class="scb-grid-3">
                         ${bModes.map(b => `
-                            <button type="button" class="scb-opt-box is-row ${p.badge_mode===b.k?'active':''}" onclick="_scbState.params.badges.badge_mode='${b.k}'; scbRenderBody();">
+                            <button type="button" class="scb-opt-box is-row ${b.full?'scb-span-full':''} ${b.acc||''} ${p.badge_mode===b.k?'active':''}" onclick="_scbState.params.badges.badge_mode='${b.k}'; scbRenderBody();">
                                 <span class="ot">${p.badge_mode===b.k?'✓ ':''}${b.lbl}</span>
                             </button>
                         `).join('')}
                     </div>
-                    <div class="scb-grid-2">
-                        <button type="button" class="scb-opt-box is-row ${p.prefer_existing?'active':''}" onclick="_scbState.params.badges.prefer_existing=true; scbRenderBody();">
-                            <span class="ot">${p.prefer_existing?'✓ ':''}Existing Repo</span>
-                        </button>
-                        <button type="button" class="scb-opt-box is-row ${!p.prefer_existing?'active':''}" onclick="_scbState.params.badges.prefer_existing=false; scbRenderBody();">
-                            <span class="ot">${!p.prefer_existing?'✓ ':''}Create New Repo</span>
-                        </button>
-                    </div>
-                    <div>
-                        <div class="scb-lbl"><span>HELPER PAT (OPTIONAL)</span><span>EMPTY = AUTO-ROTATE</span></div>
-                        <div class="scb-inp-row">
-                            <input type="text" id="scbBadgeHelperInp" class="scb-inp" value="${scbEsc(p.helper_token)}" placeholder="Leave blank for T1→T2→T3→T1..."
-                                oninput="_scbState.params.badges.helper_token=this.value;">
-                            <button type="button" class="scb-paste-btn" onclick="scbPasteInput('scbBadgeHelperInp','badges','helper_token')">📋 Paste</button>
+
+                    ${isStarstruck ? `
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:#fde68a;background:rgba(245,158,11,0.1);border:1px solid rgba(251,191,36,0.38);border-radius:8px;padding:6px 8px;line-height:1.35;">
+                            ⭐ <b>Starstruck</b> butuh <b>16 Stars</b> di 1 repo publik (Bronze x1). PAT Pool terpilih otomatis jadi Starrer!
                         </div>
-                    </div>
+                        <div>
+                            <div class="scb-lbl"><span>TARGET REPO / USERNAME</span><span>EMPTY = REPO PAT #1</span></div>
+                            <div class="scb-inp-row">
+                                <input type="text" id="scbStarTgtInp" class="scb-inp" value="${scbEsc(p.star_target)}" placeholder="owner/repo or @username (blank = auto)"
+                                    oninput="_scbState.params.badges.star_target=this.value;">
+                                <button type="button" class="scb-paste-btn" onclick="scbPasteInput('scbStarTgtInp','badges','star_target')">📋 Paste</button>
+                            </div>
+                        </div>
+                        <div class="scb-grid-3">
+                            ${[{n:16,l:'16★ Bronze'},{n:18,l:'18★ Buffer'},{n:128,l:'128★ Silver'}].map(st => `
+                                <button type="button" class="scb-opt-box is-row acc-gold ${Number(p.star_count)===st.n?'active':''}"
+                                    onclick="_scbState.params.badges.star_count=${st.n}; scbRenderBody();">
+                                    <span class="ot">${Number(p.star_count)===st.n?'✓ ':''}${st.l}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                        <div class="scb-grid-2">
+                            <input type="number" min="1" max="5000" class="scb-inp" style="height:31px;" value="${p.star_count || 16}" placeholder="Stars Count"
+                                oninput="_scbState.params.badges.star_count=parseInt(this.value||'16',10);">
+                            <button type="button" class="scb-opt-box is-row active" style="min-height:31px;"
+                                onclick="_scbState.params.badges.star_speed='${p.star_speed==='1'?'2':'1'}'; scbRenderBody();">
+                                <span class="ot">${p.star_speed==='1'?'✓ Fast (4–9s)':'✓ Organic (9–15s)'}</span>
+                            </button>
+                        </div>
+                    ` : `
+                        <div class="scb-grid-2">
+                            <button type="button" class="scb-opt-box is-row ${p.prefer_existing?'active':''}" onclick="_scbState.params.badges.prefer_existing=true; scbRenderBody();">
+                                <span class="ot">${p.prefer_existing?'✓ ':''}Existing Repo</span>
+                            </button>
+                            <button type="button" class="scb-opt-box is-row ${!p.prefer_existing?'active':''}" onclick="_scbState.params.badges.prefer_existing=false; scbRenderBody();">
+                                <span class="ot">${!p.prefer_existing?'✓ ':''}Create New Repo</span>
+                            </button>
+                        </div>
+                        <div>
+                            <div class="scb-lbl"><span>HELPER PAT (OPTIONAL)</span><span>EMPTY = AUTO-ROTATE</span></div>
+                            <div class="scb-inp-row">
+                                <input type="text" id="scbBadgeHelperInp" class="scb-inp" value="${scbEsc(p.helper_token)}" placeholder="Leave blank for T1→T2→T3→T1..."
+                                    oninput="_scbState.params.badges.helper_token=this.value;">
+                                <button type="button" class="scb-paste-btn" onclick="scbPasteInput('scbBadgeHelperInp','badges','helper_token')">📋 Paste</button>
+                            </div>
+                        </div>
+                    `}
                 `;
-                summaryRows = [
-                    ['Target Badge', p.badge_mode],
-                    ['Mode', p.helper_token ? 'Fixed Helper PAT' : 'Auto-Rotate Pool']
-                ];
+                summaryRows = isStarstruck
+                    ? [
+                        ['Target Badge', `⭐ STARSTRUCK (${p.star_count || 16} Stars)`],
+                        ['Target Repo', p.star_target || 'Auto-Detect Repo PAT #1']
+                    ]
+                    : [
+                        ['Target Badge', p.badge_mode],
+                        ['Mode', p.helper_token ? 'Fixed Helper PAT' : 'Auto-Rotate Pool']
+                    ];
             } else if (modId === 'commit') {
+                const todayIso = new Date().toISOString().slice(0, 10);
                 bodyHtml = `
-                    <div class="scb-grid-3">
-                        ${[{k:'month',l:'This Month'},{k:'year',l:'This Year'},{k:'last_n',l:'Last N Days'}].map(r => `
+                    <div class="scb-grid-2">
+                        ${[{k:'month',l:'This Month'},{k:'year',l:'This Year'},{k:'last_n',l:'Last N Days'},{k:'custom',l:'📅 Custom Calendar'}].map(r => `
                             <button type="button" class="scb-opt-box is-row ${p.date_range===r.k?'active':''}" onclick="_scbState.params.commit.date_range='${r.k}'; scbRenderBody();">
                                 <span class="ot">${p.date_range===r.k?'✓ ':''}${r.l}</span>
                             </button>
                         `).join('')}
                     </div>
+
+                    ${p.date_range === 'last_n' ? `
+                        <div>
+                            <div class="scb-lbl"><span>LAST N DAYS</span></div>
+                            <input type="number" min="7" max="3650" class="scb-inp" style="height:31px;" value="${p.last_days}"
+                                oninput="_scbState.params.commit.last_days=parseInt(this.value||'60',10);">
+                        </div>
+                    ` : ''}
+
+                    ${p.date_range === 'custom' ? `
+                        <div>
+                            <div class="scb-lbl"><span>QUICK YEAR JUMP</span><span>TAP YEAR / PICK CALENDAR</span></div>
+                            <div class="scb-grid-3" style="margin-bottom:5px;">
+                                ${[2021, 2022, 2023, 2024, 2025, 2026].map(yr => {
+                                    const yEnd = yr === 2026 ? todayIso : `${yr}-12-31`;
+                                    const isYr = p.start_date === `${yr}-01-01` && p.end_date === yEnd;
+                                    return `
+                                        <button type="button" class="scb-qty-pill ${isYr?'active':''}"
+                                            onclick="_scbState.params.commit.start_date='${yr}-01-01'; _scbState.params.commit.end_date='${yEnd}'; scbRenderBody();">${yr}</button>
+                                    `;
+                                }).join('')}
+                            </div>
+                            <div class="scb-grid-2">
+                                <div>
+                                    <div class="scb-lbl"><span>START DATE</span></div>
+                                    <input type="date" class="scb-inp" style="height:32px;" max="${todayIso}" value="${scbEsc(p.start_date || '2025-01-01')}"
+                                        onchange="_scbState.params.commit.start_date=this.value; scbRenderBody();">
+                                </div>
+                                <div>
+                                    <div class="scb-lbl"><span>END DATE</span></div>
+                                    <input type="date" class="scb-inp" style="height:32px;" max="${todayIso}" value="${scbEsc(p.end_date || todayIso)}"
+                                        onchange="_scbState.params.commit.end_date=this.value; scbRenderBody();">
+                                </div>
+                            </div>
+                        </div>
+                    ` : ''}
+
                     <div class="scb-grid-4">
                         ${[{k:'casual',l:'🌿 Casual'},{k:'sprint',l:'🔥 Sprint'},{k:'busy',l:'💼 Busy'},{k:'full',l:'🟩 Full'}].map(pr => `
                             <button type="button" class="scb-opt-box is-row ${p.persona===pr.k?'active':''}" onclick="_scbState.params.commit.persona='${pr.k}'; scbRenderBody();">
@@ -24261,8 +24400,11 @@ let _ghAgeCheckerResults = [];
                         <div class="scb-heat-grid">${scbBuildHeatmapHtml(p.persona, p.total_commits)}</div>
                     </div>
                 `;
+                const rngSummary = p.date_range === 'month' ? 'This Month'
+                    : (p.date_range === 'last_n' ? `${p.last_days} Days`
+                    : (p.date_range === 'custom' ? `${p.start_date} ➔ ${p.end_date}` : 'This Year'));
                 summaryRows = [
-                    ['Pattern & Range', `${p.persona.toUpperCase()} • ${p.date_range==='month'?'This Month':(p.date_range==='last_n'?p.last_days+' Days':'This Year')}`],
+                    ['Pattern & Range', `${p.persona.toUpperCase()} • ${rngSummary}`],
                     ['Total Commits', `${p.total_commits} Real-Dev Commits`]
                 ];
             } else {
