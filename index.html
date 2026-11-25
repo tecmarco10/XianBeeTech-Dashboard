@@ -11122,7 +11122,7 @@ const XB_EX_BANK_THEMES = {
             // =========================================================================
             // 🔔 ADMIN NOTIFICATION TEST LAB (25 UNIFIED TEMPLATES • 24-CHAR ANTI-WRAP)
             // =========================================================================
-            const _XB_LAB_SEP = '━━━━━━━━━━━━━━━━━━━━━━━━';
+            const _XB_LAB_SEP = '━━━━━━━━━━━━━━━━━━━━━━━━━━━';
             const _XB_LAB_FOOTER_STORE =
                 '\n' + _XB_LAB_SEP + '\n' +
                 '🛡️ <b>Engineered by Abie Haryatmo</b>\n' +
@@ -11131,15 +11131,16 @@ const XB_EX_BANK_THEMES = {
                 _XB_LAB_SEP;
             const _XB_LAB_FOOTER_WORKER =
                 '\n' + _XB_LAB_SEP + '\n' +
-                '<i>🕒 26 Nov 2026, 02:05 WIB • XianBee Engine</i>';
+                '<i>🕒 26 Nov 2026, 02:50 WIB • XianBee Engine</i>';
 
-            function _xbLabBox(titleHtml, rows, noteHtml, isWorker) {
+            function _xbLabBox(titleHtml, rows, noteHtml, isWorker, copySlotHtml) {
                 const body = rows.map(r => `🔹 <code>${r[0]}</code> ▸ ${r[1]}`).join('\n');
                 return (
                     `${_XB_LAB_SEP}\n` +
                     `${titleHtml}\n` +
                     `${_XB_LAB_SEP}\n` +
                     `<blockquote>${body}</blockquote>` +
+                    (copySlotHtml ? `\n${copySlotHtml}` : '') +
                     (noteHtml ? `\n${noteHtml}` : '') +
                     (isWorker ? _XB_LAB_FOOTER_WORKER : _XB_LAB_FOOTER_STORE)
                 );
@@ -11371,6 +11372,11 @@ const XB_EX_BANK_THEMES = {
                             `).join('')}
                         </div>
 
+                        <button type="button" id="xbBotMenuToggleBtn" class="xb-ex-pre-btn" style="width:100%;height:34px;border-color:${window._xbBotMenuEnabled===false?'rgba(244,63,94,0.6)':'rgba(52,211,153,0.6)'};color:${window._xbBotMenuEnabled===false?'#fb7185':'#34d399'};background:${window._xbBotMenuEnabled===false?'rgba(244,63,94,0.12)':'rgba(16,185,129,0.12)'};"
+                            onclick="xbToggleTelegramBotMenuGlobal()">
+                            ${window._xbBotMenuEnabled === false ? '🤖 Telegram Bot Menu: OFF (Web-Only + Live 2FA)' : '🤖 Telegram Bot Menu: ON (Hybrid Mode)'}
+                        </button>
+
                         <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;">
                             <button type="button" class="xb-ex-adm-chip ${_xbNotifLabState.pack==='all'?'on':''}" style="flex-shrink:0;" onclick="_xbNotifLabState.pack='all'; renderXbNotifTestLabModal();">All (25)</button>
                             ${_XB_NOTIF_LAB_PACKS.map(pk => `
@@ -11496,6 +11502,35 @@ const XB_EX_BANK_THEMES = {
                 }
                 if (_xbNotifLabState.channel !== 'tg' && typeof pullWebCloudSyncState === 'function') {
                     setTimeout(() => pullWebCloudSyncState(true), 500);
+                }
+            }
+
+            async function xbToggleTelegramBotMenuGlobal() {
+                const nextVal = (window._xbBotMenuEnabled === false) ? true : false;
+                const btn = document.getElementById('xbBotMenuToggleBtn');
+                if (btn) { btn.disabled = true; btn.innerText = '⏳ Syncing Bot Menu Mode...'; }
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'set_bot_menu_config',
+                            secret: 'XB-PAT-GUARD-2026',
+                            enabled: nextVal
+                        })
+                    });
+                    const d = await res.json();
+                    if (d && d.result) {
+                        window._xbBotMenuEnabled = d.bot_menu_enabled;
+                        if (typeof showToast === 'function') {
+                            showToast(d.bot_menu_enabled ? '🤖 Telegram Bot Menu: ON (Hybrid)' : '🌐 Telegram Bot Menu: OFF (Web-Only + 2FA)');
+                        }
+                        renderXbNotifTestLabModal();
+                    }
+                } catch (e) {
+                    if (typeof showToast === 'function') showToast('⚠️ Gagal sync status Bot Menu.');
+                } finally {
+                    if (btn) btn.disabled = false;
                 }
             }
 
