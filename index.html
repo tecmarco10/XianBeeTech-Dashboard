@@ -10409,6 +10409,10 @@
                     if (typeof json.public_notifs_enabled === 'boolean') {
                         localStorage.setItem('xb_public_notifs_on', String(json.public_notifs_enabled));
                     }
+                    if (json.store_visibility && typeof json.store_visibility === 'object') {
+                        localStorage.setItem('xb_store_box_vis', JSON.stringify(json.store_visibility));
+                        if (typeof enforceHiddenPlatformFallback === 'function') enforceHiddenPlatformFallback();
+                    }
 
                     if (json.global_flash_sale && typeof json.global_flash_sale === 'object') {
                         if (Array.isArray(json.global_flash_sale.accounts)) {
@@ -11941,6 +11945,89 @@
                 `;
             }
 
+            const _vis = getStoreBoxVisibilityCfg();
+            const _mpBtns = [];
+
+            if (_vis.mp_social) {
+                _mpBtns.push(`
+                    <button type="button" class="xb-mp-dual-btn ${_mpDrawerTab === 'social' ? 'open' : ''} ${isSocialActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('social')">
+                        <div class="xb-mp-dual-head">
+                            <span class="xb-mp-dual-title">${isSocialActive ? XB_MP_PLATFORMS[_mpPlatform].shortName : 'Social Media'}</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'social' ? '▲' : (socialTotal > 0 ? `● ${socialTotal}` : '▾')}</span>
+                        </div>
+                        <div class="xb-mp-logo-strip">
+                            ${socialKeys.map(pk => {
+                                const p = XB_MP_PLATFORMS[pk];
+                                return `<span class="xb-mp-mini-ico ${_mpPlatform === pk ? 'is-cur' : ''}" style="--mi-col:${p.accent};">${XB_MP_SVGS[pk]}</span>`;
+                            }).join('')}
+                        </div>
+                    </button>
+                `);
+            }
+            if (_vis.mp_cex_email) {
+                _mpBtns.push(`
+                    <button type="button" class="xb-mp-dual-btn is-cex ${_mpDrawerTab === 'cex_email' ? 'open' : ''} ${isCexEmailActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('cex_email')">
+                        <div class="xb-mp-dual-head">
+                            <span class="xb-mp-dual-title">${_mpPlatform === 'cex' ? 'CEX Accounts' : (_mpPlatform === 'email' ? 'Email Accounts' : 'CEX & Mail')}</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'cex_email' ? '▲' : (cexEmailTotal > 0 ? `● ${cexEmailTotal}` : '▾')}</span>
+                        </div>
+                        <div class="xb-mp-logo-strip">
+                            <span class="xb-mp-mini-ico" style="--mi-col:#2dd4bf;" title="MEXC">${XB_MP_SVGS.mexc}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#38bdf8;" title="OKX">${XB_MP_SVGS.okx}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#f3ba2f;" title="Binance">${XB_MP_SVGS.binance}</span>
+                            <span class="xb-mp-mini-ico" title="Gmail">${XB_MP_SVGS.gmail}</span>
+                            <span class="xb-mp-mini-ico" title="Outlook">${XB_MP_SVGS.outlook}</span>
+                            <span class="xb-mp-mini-ico" title="ProtonMail">${XB_MP_SVGS.proton}</span>
+                        </div>
+                    </button>
+                `);
+            }
+            if (_vis.mp_pro_apps) {
+                _mpBtns.push(`
+                    <button type="button" class="xb-mp-dual-btn is-apps ${_mpDrawerTab === 'pro_apps' ? 'open' : ''} ${isAppsActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('pro_apps')">
+                        <div class="xb-mp-dual-head">
+                            <span class="xb-mp-dual-title">Pro Apps &amp; AI</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'pro_apps' ? '▲' : '▾'}</span>
+                        </div>
+                        <div class="xb-mp-logo-strip">
+                            <span class="xb-mp-mini-ico" style="--mi-col:#10a37f;" title="ChatGPT">${XB_MP_SVGS.chatgpt}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#60a5fa;" title="Gemini">${XB_MP_SVGS.gemini}</span>
+                            <span class="xb-mp-mini-ico" title="Canva Pro">${XB_MP_SVGS.canva}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#f8fafc;" title="CapCut Pro">${XB_MP_SVGS.capcut}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#00a8e1;" title="Prime Video">${XB_MP_SVGS.prime}</span>
+                            <span class="xb-mp-mini-ico" title="Vidio">${XB_MP_SVGS.vidio}</span>
+                        </div>
+                    </button>
+                `);
+            }
+            if (_vis.mp_games_ppob) {
+                _mpBtns.push(`
+                    <button type="button" class="xb-mp-dual-btn is-ppob ${_mpDrawerTab === 'games_ppob' ? 'open' : ''} ${isPpobActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('games_ppob')">
+                        <div class="xb-mp-dual-head">
+                            <span class="xb-mp-dual-title">Games &amp; PPOB</span>
+                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'games_ppob' ? '▲' : '▾'}</span>
+                        </div>
+                        <div class="xb-mp-logo-strip">
+                            <span class="xb-mp-mini-ico" style="--mi-col:#fbbf24;" title="Mobile Legends">${XB_MP_SVGS.mlbb}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#f97316;" title="Free Fire">${XB_MP_SVGS.freefire}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#f43f5e;" title="Valorant">${XB_MP_SVGS.valorant}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#38bdf8;" title="Pulsa & Data">${XB_MP_SVGS.pulsa}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#10b981;" title="E-Wallet">${XB_MP_SVGS.ewallet}</span>
+                            <span class="xb-mp-mini-ico" style="--mi-col:#facc15;" title="PLN">${XB_MP_SVGS.pln}</span>
+                        </div>
+                    </button>
+                `);
+            }
+
+            if (_mpBtns.length % 2 === 1) {
+                _mpBtns[0] = _mpBtns[0].replace('<button type="button"', '<button type="button" style="grid-column:1/-1;"');
+            }
+
+            const _drawerAllowed = (_mpDrawerTab === 'social' && _vis.mp_social)
+                || (_mpDrawerTab === 'cex_email' && _vis.mp_cex_email)
+                || (_mpDrawerTab === 'pro_apps' && _vis.mp_pro_apps)
+                || (_mpDrawerTab === 'games_ppob' && _vis.mp_games_ppob);
+
             wrap.innerHTML = `
                 <!-- BARIS 1: GITHUB MARKETPLACE (CENTERED HERO + DUAL GITHUB LOGOS + BADGES BELOW) -->
                 <button type="button" class="xb-hero-plat-card ${isGh ? 'active' : ''}" onclick="switchMarketplacePlatform('github')">
@@ -11956,68 +12043,9 @@
                     </div>
                 </button>
 
-                <!-- BARIS 2 & 3: GRID 2x2 SIMETRIS (SOCIAL MEDIA | CEX & MAIL / PRO APPS & AI | GAMES & PPOB) -->
-                <div class="xb-mp-dual-row">
-                    <button type="button" class="xb-mp-dual-btn ${_mpDrawerTab === 'social' ? 'open' : ''} ${isSocialActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('social')">
-                        <div class="xb-mp-dual-head">
-                            <span class="xb-mp-dual-title">${isSocialActive ? XB_MP_PLATFORMS[_mpPlatform].shortName : 'Social Media'}</span>
-                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'social' ? '▲' : (socialTotal > 0 ? `● ${socialTotal}` : '▾')}</span>
-                        </div>
-                        <div class="xb-mp-logo-strip">
-                            ${socialKeys.map(pk => {
-                                const p = XB_MP_PLATFORMS[pk];
-                                return `<span class="xb-mp-mini-ico ${_mpPlatform === pk ? 'is-cur' : ''}" style="--mi-col:${p.accent};">${XB_MP_SVGS[pk]}</span>`;
-                            }).join('')}
-                        </div>
-                    </button>
+                ${_mpBtns.length > 0 ? `<div class="xb-mp-dual-row">${_mpBtns.join('')}</div>` : ''}
 
-                    <button type="button" class="xb-mp-dual-btn is-cex ${_mpDrawerTab === 'cex_email' ? 'open' : ''} ${isCexEmailActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('cex_email')">
-                        <div class="xb-mp-dual-head">
-                            <span class="xb-mp-dual-title">${_mpPlatform === 'cex' ? 'CEX Accounts' : (_mpPlatform === 'email' ? 'Email Accounts' : 'CEX & Mail')}</span>
-                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'cex_email' ? '▲' : (cexEmailTotal > 0 ? `● ${cexEmailTotal}` : '▾')}</span>
-                        </div>
-                        <div class="xb-mp-logo-strip">
-                            <span class="xb-mp-mini-ico" style="--mi-col:#2dd4bf;" title="MEXC">${XB_MP_SVGS.mexc}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#38bdf8;" title="OKX">${XB_MP_SVGS.okx}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#f3ba2f;" title="Binance">${XB_MP_SVGS.binance}</span>
-                            <span class="xb-mp-mini-ico" title="Gmail">${XB_MP_SVGS.gmail}</span>
-                            <span class="xb-mp-mini-ico" title="Outlook">${XB_MP_SVGS.outlook}</span>
-                            <span class="xb-mp-mini-ico" title="ProtonMail">${XB_MP_SVGS.proton}</span>
-                        </div>
-                    </button>
-
-                    <button type="button" class="xb-mp-dual-btn is-apps ${_mpDrawerTab === 'pro_apps' ? 'open' : ''} ${isAppsActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('pro_apps')">
-                        <div class="xb-mp-dual-head">
-                            <span class="xb-mp-dual-title">Pro Apps &amp; AI</span>
-                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'pro_apps' ? '▲' : '▾'}</span>
-                        </div>
-                        <div class="xb-mp-logo-strip">
-                            <span class="xb-mp-mini-ico" style="--mi-col:#10a37f;" title="ChatGPT">${XB_MP_SVGS.chatgpt}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#60a5fa;" title="Gemini">${XB_MP_SVGS.gemini}</span>
-                            <span class="xb-mp-mini-ico" title="Canva Pro">${XB_MP_SVGS.canva}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#f8fafc;" title="CapCut Pro">${XB_MP_SVGS.capcut}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#00a8e1;" title="Prime Video">${XB_MP_SVGS.prime}</span>
-                            <span class="xb-mp-mini-ico" title="Vidio">${XB_MP_SVGS.vidio}</span>
-                        </div>
-                    </button>
-
-                    <button type="button" class="xb-mp-dual-btn is-ppob ${_mpDrawerTab === 'games_ppob' ? 'open' : ''} ${isPpobActive ? 'active-plat' : ''}" onclick="toggleMarketplaceDrawer('games_ppob')">
-                        <div class="xb-mp-dual-head">
-                            <span class="xb-mp-dual-title">Games &amp; PPOB</span>
-                            <span class="xb-mp-dual-chev">${_mpDrawerTab === 'games_ppob' ? '▲' : '▾'}</span>
-                        </div>
-                        <div class="xb-mp-logo-strip">
-                            <span class="xb-mp-mini-ico" style="--mi-col:#fbbf24;" title="Mobile Legends">${XB_MP_SVGS.mlbb}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#f97316;" title="Free Fire">${XB_MP_SVGS.freefire}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#f43f5e;" title="Valorant">${XB_MP_SVGS.valorant}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#38bdf8;" title="Pulsa & Data">${XB_MP_SVGS.pulsa}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#10b981;" title="E-Wallet">${XB_MP_SVGS.ewallet}</span>
-                            <span class="xb-mp-mini-ico" style="--mi-col:#facc15;" title="PLN">${XB_MP_SVGS.pln}</span>
-                        </div>
-                    </button>
-                </div>
-
-                ${drawerHtml}
+                ${_drawerAllowed ? drawerHtml : ''}
             `;
             return wrap;
         }
@@ -18092,13 +18120,21 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                         action: "execAdminCmd('manage_vouchers')"
                     },
                     {
+                        icon: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>`,
+                        accent: '#34d399',
+                        title: 'Store Categories',
+                        sub: 'Show / Hide Market & Boost',
+                        badge: `${getStoreBoxVisActiveCount()}/8 ON`,
+                        badgeColor: '#34d399',
+                        action: "execAdminCmd('manage_box_visibility')"
+                    },
+                    {
                         icon: svgIco.chart,
                         accent: '#38bdf8',
-                        title: '3D Store Sales Telemetry',
-                        sub: 'Daily, Weekly, Yearly & All-Time USDT',
+                        title: '3D Sales Telemetry',
+                        sub: 'Daily, Weekly & All-Time',
                         badge: 'Live 3D',
                         badgeColor: '#38bdf8',
-                        span2: true,
                         action: 'openStoreGlobal3DTelemetry()'
                     }
                 ],
@@ -20149,6 +20185,8 @@ let _ghAgeCheckerResults = [];
                 openAdminVouchersManagerModal();
             } else if (cmd === 'manage_flash_stock') {
                 openAdminFlashSaleManagerModal();
+            } else if (cmd === 'manage_box_visibility') {
+                openAdminBoxVisibilityModal();
             } else if (cmd === 'open_admin_notifs') {
                 openNotificationsModal();
                 switchNotifFeed('admin');
@@ -20164,6 +20202,200 @@ let _ghAgeCheckerResults = [];
                     showToast(`Wallet balance set to ${userBalanceUsdt.toFixed(2)} USDT!`);
                 }
             }
+        }
+
+        // =========================================================
+        // 🎛️ ADMIN STORE CATEGORY VISIBILITY CONTROLLER (MARKET & BOOST)
+        // =========================================================
+        const XB_DEFAULT_BOX_VIS = {
+            mp_social: true,
+            mp_cex_email: true,
+            mp_pro_apps: true,
+            mp_games_ppob: true,
+            bst_socmed: true,
+            bst_ecom: true,
+            bst_stream: true,
+            bst_webpro: true
+        };
+
+        function getStoreBoxVisibilityCfg() {
+            try {
+                const saved = JSON.parse(localStorage.getItem('xb_store_box_vis') || '{}');
+                return Object.assign({}, XB_DEFAULT_BOX_VIS, saved);
+            } catch (e) {
+                return Object.assign({}, XB_DEFAULT_BOX_VIS);
+            }
+        }
+
+        function getStoreBoxVisActiveCount() {
+            const cfg = getStoreBoxVisibilityCfg();
+            return Object.keys(XB_DEFAULT_BOX_VIS).filter(k => cfg[k] !== false).length;
+        }
+
+        function enforceHiddenPlatformFallback() {
+            const cfg = getStoreBoxVisibilityCfg();
+            const socialKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
+            if ((!cfg.mp_social && socialKeys.includes(_mpPlatform))
+                || (!cfg.mp_cex_email && (_mpPlatform === 'cex' || _mpPlatform === 'email'))
+                || (!cfg.mp_pro_apps && _mpPlatform === 'pro_apps')
+                || (!cfg.mp_games_ppob && _mpPlatform === 'games_ppob')) {
+                _mpPlatform = 'github';
+                _mpDrawerTab = '';
+            }
+            const curB = window._bstPlatform || 'github';
+            const bstSoc = ['instagram', 'tiktok', 'youtube', 'twitter', 'telegram', 'facebook'];
+            if ((!cfg.bst_socmed && bstSoc.includes(curB))
+                || (!cfg.bst_ecom && curB === 'ecommerce')
+                || (!cfg.bst_stream && curB === 'stream')
+                || (!cfg.bst_webpro && curB === 'webpro')) {
+                window._bstPlatform = 'github';
+                window._bstOpenCat = '';
+            }
+        }
+
+        const XB_GLOBAL_BOX_VIS_KEY = 'xb_global_store_box_vis';
+        window._xbBoxVisLastPushTs = 0;
+
+        async function saveStoreBoxVisibilityCfg(cfg) {
+            const payloadStr = JSON.stringify(cfg);
+            window._xbBoxVisLastPushTs = Date.now();
+            localStorage.setItem('xb_store_box_vis', payloadStr);
+            enforceHiddenPlatformFallback();
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_user_avatar',
+                        mode: 'save',
+                        avatar_key: XB_GLOBAL_BOX_VIS_KEY,
+                        username: 'ADMIN_STORE_VISIBILITY',
+                        avatar_data: payloadStr
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result) {
+                    showToast('☁️ Tersimpan global ke semua pembeli!');
+                }
+            } catch (e) {}
+        }
+
+        async function pullGlobalStoreBoxVisibility() {
+            if (Date.now() - (window._xbBoxVisLastPushTs || 0) < 6000) return;
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_user_avatar',
+                        mode: 'pull',
+                        avatar_key: XB_GLOBAL_BOX_VIS_KEY
+                    })
+                });
+                const json = await res.json();
+                if (json && json.result && typeof json.avatar_data === 'string' && json.avatar_data.startsWith('{')) {
+                    const parsed = JSON.parse(json.avatar_data);
+                    if (parsed && typeof parsed === 'object') {
+                        const prevStr = localStorage.getItem('xb_store_box_vis') || '';
+                        const nextStr = JSON.stringify(Object.assign({}, XB_DEFAULT_BOX_VIS, parsed));
+                        if (prevStr !== nextStr) {
+                            localStorage.setItem('xb_store_box_vis', nextStr);
+                            enforceHiddenPlatformFallback();
+                            if (activeTab === 'home' || activeTab === 'boost' || activeTab === 'admin') {
+                                renderViewport();
+                            }
+                        }
+                    }
+                }
+            } catch (e) {}
+        }
+        setTimeout(pullGlobalStoreBoxVisibility, 350);
+        setInterval(pullGlobalStoreBoxVisibility, 30000);
+
+        function toggleAdminStoreBoxVis(key) {
+            const cfg = getStoreBoxVisibilityCfg();
+            cfg[key] = !cfg[key];
+            saveStoreBoxVisibilityCfg(cfg);
+            openAdminBoxVisibilityModal();
+            renderViewport();
+            showToast(cfg[key] ? '👁️ Kategori ditampilkan!' : '🙈 Kategori disembunyikan!');
+        }
+
+        function setAllAdminStoreBoxVis(showAll) {
+            const cfg = {};
+            Object.keys(XB_DEFAULT_BOX_VIS).forEach(k => { cfg[k] = Boolean(showAll); });
+            saveStoreBoxVisibilityCfg(cfg);
+            openAdminBoxVisibilityModal();
+            renderViewport();
+            showToast(showAll ? '👁️ Semua kategori ditampilkan!' : '🙈 Mode GitHub Only aktif!');
+        }
+
+        function openAdminBoxVisibilityModal() {
+            const modal = document.getElementById('paymentGatewayModal');
+            const body = document.getElementById('paymentGatewayBody');
+            if (!modal || !body) return;
+            modal.classList.remove('xb-fullpage-modal', 'xb-cyber-telem-modal', 'xb-bw-modal');
+            modal.classList.add('active');
+
+            const cfg = getStoreBoxVisibilityCfg();
+            const mpRows = [
+                { k: 'mp_social',     ico: '📱', name: 'Social Media',   sub: 'X, Discord, Reddit, IG, FB, TikTok, TG' },
+                { k: 'mp_cex_email',  ico: '🔶', name: 'CEX & Mail',     sub: 'MEXC, OKX, Binance, Gmail, Outlook' },
+                { k: 'mp_pro_apps',   ico: '👑', name: 'Pro Apps & AI',  sub: 'ChatGPT, Gemini, Canva, Streaming' },
+                { k: 'mp_games_ppob', ico: '🎮', name: 'Games & PPOB',   sub: 'Top-Up Games, Pulsa, E-Wallet, PLN' }
+            ];
+            const bstRows = [
+                { k: 'bst_socmed', ico: '📸', name: 'Social Media Boost', sub: 'IG, TikTok, YT, X, Telegram, FB' },
+                { k: 'bst_ecom',   ico: '🛒', name: 'E-Commerce Boost',   sub: 'Shopee, Tokopedia & Store' },
+                { k: 'bst_stream', ico: '🎧', name: 'Streaming Boost',    sub: 'Spotify, Twitch & Discord' },
+                { k: 'bst_webpro', ico: '🌐', name: 'Web & Others Boost', sub: 'Website Traffic & LinkedIn' }
+            ];
+
+            const renderRows = (rows) => rows.map(r => {
+                const isOn = cfg[r.k] !== false;
+                return `
+                    <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 9px;border-radius:10px;background:var(--bg-input);border:1px solid ${isOn ? 'rgba(52,211,153,0.38)' : 'var(--ex-hairline)'};">
+                        <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
+                            <span style="font-size:0.95rem;flex-shrink:0;">${r.ico}</span>
+                            <div style="min-width:0;flex:1;">
+                                <div style="font-size:0.72rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.name}</div>
+                                <div style="font-size:0.54rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.sub}</div>
+                            </div>
+                        </div>
+                        <button type="button" class="xb-prf-toggle-pill ${isOn ? 'on' : ''}" onclick="toggleAdminStoreBoxVis('${r.k}')" aria-label="Toggle ${r.name}"></button>
+                    </div>
+                `;
+            }).join('');
+
+            body.innerHTML = `
+                <div class="xb-ex-modal-hdr">
+                    <div style="display:flex;align-items:center;gap:8px;min-width:0;">
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;background:linear-gradient(135deg,#059669,#1d4ed8);border-color:rgba(255,255,255,0.35);">🎛️</span>
+                        <div style="min-width:0;">
+                            <h3 class="xb-brand-grad" style="margin:0;font-size:0.88rem;font-weight:800;">Store Categories Control</h3>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.5rem;color:#34d399;font-weight:800;">${getStoreBoxVisActiveCount()}/8 ACTIVE • GITHUB ALWAYS ON</div>
+                        </div>
+                    </div>
+                    <button type="button" class="xb-ex-mclose" onclick="closeModal('paymentGatewayModal')">✕</button>
+                </div>
+
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:10px;">
+                    <button type="button" class="xb-adm-mini-btn" style="justify-content:center;padding:7px;font-size:0.62rem;color:#34d399;border-color:rgba(52,211,153,0.45);" onclick="setAllAdminStoreBoxVis(true)">👁️ Show All (8/8)</button>
+                    <button type="button" class="xb-adm-mini-btn" style="justify-content:center;padding:7px;font-size:0.62rem;color:#fbbf24;border-color:rgba(251,191,36,0.45);" onclick="setAllAdminStoreBoxVis(false)">🙈 GitHub Only</button>
+                </div>
+
+                <div class="xb-wal-card" style="padding:9px 10px;margin-bottom:9px;display:flex;flex-direction:column;gap:6px;">
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:#38bdf8;">🏪 MARKETPLACE BOXES</div>
+                    ${renderRows(mpRows)}
+                </div>
+
+                <div class="xb-wal-card" style="padding:9px 10px;margin-bottom:11px;display:flex;flex-direction:column;gap:6px;">
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:#c084fc;">🚀 BOOST SERVICE BOXES</div>
+                    ${renderRows(bstRows)}
+                </div>
+
+                <button type="button" class="btn-ui primary" style="width:100%;padding:10px;font-size:0.74rem;border-radius:10px;" onclick="closeModal('paymentGatewayModal')">✅ Done</button>
+            `;
         }
 
 // =========================================================================
@@ -26057,7 +26289,9 @@ let _ghAgeCheckerResults = [];
                 }
             ];
 
-            const activeGrp = boostGroups.find(g => g.key === openCat && g.hasDrawer);
+            const _vis = getStoreBoxVisibilityCfg();
+            const visibleBoostGroups = boostGroups.filter(g => _vis['bst_' + g.key] !== false);
+            const activeGrp = visibleBoostGroups.find(g => g.key === openCat && g.hasDrawer);
             let subDrawerHtml = '';
             if (activeGrp) {
                 subDrawerHtml = `
@@ -26105,22 +26339,25 @@ let _ghAgeCheckerResults = [];
                     </div>
                 </button>
 
+                ${visibleBoostGroups.length > 0 ? `
                 <div class="xb-bst-cat-grid">
-                    ${boostGroups.map(g => {
+                    ${visibleBoostGroups.map((g, gIdx) => {
                         const isOpen = openCat === g.key;
                         const hasAct = g.items.includes(curPlat);
                         const activeMeta = hasAct ? platSvgMap[curPlat] : null;
+                        const isOddTop = (visibleBoostGroups.length % 2 === 1 && gIdx === 0);
                         return `
                             <button type="button" class="xb-bst-cat-box ${isOpen ? 'open' : ''} ${hasAct ? 'has-active' : ''}"
+                                style="${isOddTop ? 'grid-column:1/-1;align-items:center;text-align:center;' : ''}"
                                 onclick="toggleBoostCatBox('${g.key}')">
-                                <div class="xb-bst-cat-head">
+                                <div class="xb-bst-cat-head" style="${isOddTop ? 'justify-content:center;width:100%;' : ''}">
                                     <span style="display:inline-flex;align-items:center;gap:6px;min-width:0;">
                                         <span style="color:${g.col};display:inline-flex;align-items:center;">${XB_MP_SVGS[g.ico] || XB_MP_SVGS.webpro}</span>
                                         <span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${g.title}</span>
                                     </span>
                                     <span style="font-size:0.55rem;color:${hasAct ? '#34d399' : 'var(--text-muted)'};">${g.hasDrawer ? (isOpen ? '▲' : '▾') : (hasAct ? '●' : '➔')}</span>
                                 </div>
-                                <div class="xb-mp-logo-strip" style="justify-content:flex-start;">
+                                <div class="xb-mp-logo-strip" style="justify-content:${isOddTop ? 'center' : 'flex-start'};">
                                     ${g.miniIcons.map(mi => `
                                         <span class="xb-mp-mini-ico" style="--mi-col:${mi.col};">${XB_MP_SVGS[mi.ico] || XB_MP_SVGS.webpro}</span>
                                     `).join('')}
@@ -26130,6 +26367,7 @@ let _ghAgeCheckerResults = [];
                         `;
                     }).join('')}
                 </div>
+                ` : ''}
 
                 ${subDrawerHtml}
             `;
