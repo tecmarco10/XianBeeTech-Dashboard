@@ -9216,6 +9216,16 @@ const XB_EX_BANK_THEMES = {
                 btn.style.cssText = 'width:100%;margin-top:8px;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(56,189,248,0.5);background:linear-gradient(135deg,rgba(14,30,68,0.92),rgba(37,19,74,0.92));color:#f8fafc;font-family:"JetBrains Mono",monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;';
                 btn.innerHTML = `<span>🪙 Exchange Coins &amp; Networks</span><span class="xb-ex-sc-badge" style="color:#34d399;flex-shrink:0;">${badgeText}</span>`;
                 targetBox.appendChild(btn);
+
+                if (isXbExAdminUser() && !document.getElementById('xbNotifLabOpenBtn')) {
+                    const labBtn = document.createElement('button');
+                    labBtn.type = 'button';
+                    labBtn.id = 'xbNotifLabOpenBtn';
+                    labBtn.onclick = () => { if (typeof openXbNotifTestLab === 'function') openXbNotifTestLab(); };
+                    labBtn.style.cssText = 'width:100%;margin-top:6px;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(244,63,94,0.55);background:linear-gradient(135deg,rgba(24,14,48,0.94),rgba(44,14,42,0.92));color:#f8fafc;font-family:"JetBrains Mono",monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;';
+                    labBtn.innerHTML = `<span>🔔 Notif Test Lab (All 25)</span><span style="color:#fb7185;flex-shrink:0;">OPEN ➔</span>`;
+                    targetBox.appendChild(labBtn);
+                }
             }
 
             function xbTagMarketFilterBar() {
@@ -10312,6 +10322,1167 @@ const XB_EX_BANK_THEMES = {
                 });
             }
 
+            function xbExMd5Hex(str) {
+                if (typeof md5 === 'function') return md5(str);
+                function rl(v, s) { return (v << s) | (v >>> (32 - s)); }
+                function au(x, y) { const l = (x & 0xFFFF) + (y & 0xFFFF); return (((x >> 16) + (y >> 16) + (l >> 16)) << 16) | (l & 0xFFFF); }
+                const s = unescape(encodeURIComponent(String(str || '')));
+                const x = [];
+                for (let i = 0; i < s.length * 8; i += 8) x[i >> 5] |= (s.charCodeAt(i / 8) & 0xFF) << (i % 32);
+                x[s.length * 8 >> 5] |= 0x80 << (s.length * 8 % 32);
+                x[(((s.length * 8 + 64) >>> 9) << 4) + 14] = s.length * 8;
+                let a = 1732584193, b = -271733879, c = -1732584194, d = 271733878;
+                const ff = (a,b,c,d,x,s,t) => au(rl(au(au(a,(b&c)|((~b)&d)),au(x,t)),s),b);
+                const gg = (a,b,c,d,x,s,t) => au(rl(au(au(a,(b&d)|(c&(~d))),au(x,t)),s),b);
+                const hh = (a,b,c,d,x,s,t) => au(rl(au(au(a,b^c^d),au(x,t)),s),b);
+                const ii = (a,b,c,d,x,s,t) => au(rl(au(au(a,c^(b|(~d))),au(x,t)),s),b);
+                for (let k = 0; k < x.length; k += 16) {
+                    const oa = a, ob = b, oc = c, od = d;
+                    a=ff(a,b,c,d,x[k+0],7,-680876936);d=ff(d,a,b,c,x[k+1],12,-389564586);c=ff(c,d,a,b,x[k+2],17,606105819);b=ff(b,c,d,a,x[k+3],22,-1044525330);
+                    a=ff(a,b,c,d,x[k+4],7,-176418897);d=ff(d,a,b,c,x[k+5],12,1200080426);c=ff(c,d,a,b,x[k+6],17,-1473231341);b=ff(b,c,d,a,x[k+7],22,-45705983);
+                    a=ff(a,b,c,d,x[k+8],7,1770035416);d=ff(d,a,b,c,x[k+9],12,-1958414417);c=ff(c,d,a,b,x[k+10],17,-42063);b=ff(b,c,d,a,x[k+11],22,-1990404162);
+                    a=ff(a,b,c,d,x[k+12],7,1804603682);d=ff(d,a,b,c,x[k+13],12,-40341101);c=ff(c,d,a,b,x[k+14],17,-1502002290);b=ff(b,c,d,a,x[k+15],22,1236535329);
+                    a=gg(a,b,c,d,x[k+1],5,-165796510);d=gg(d,a,b,c,x[k+6],9,-1069501632);c=gg(c,d,a,b,x[k+11],14,643717713);b=gg(b,c,d,a,x[k+0],20,-373897302);
+                    a=gg(a,b,c,d,x[k+5],5,-701558691);d=gg(d,a,b,c,x[k+10],9,38016083);c=gg(c,d,a,b,x[k+15],14,-660478335);b=gg(b,c,d,a,x[k+4],20,-405537848);
+                    a=gg(a,b,c,d,x[k+9],5,568446438);d=gg(d,a,b,c,x[k+14],9,-1019803690);c=gg(c,d,a,b,x[k+3],14,-187363961);b=gg(b,c,d,a,x[k+8],20,1163531501);
+                    a=gg(a,b,c,d,x[k+13],5,-1444681467);d=gg(d,a,b,c,x[k+2],9,-51403784);c=gg(c,d,a,b,x[k+7],14,1735328473);b=gg(b,c,d,a,x[k+12],20,-1926607734);
+                    a=hh(a,b,c,d,x[k+5],4,-378558);d=hh(d,a,b,c,x[k+8],11,-2022574463);c=hh(c,d,a,b,x[k+11],16,1839030562);b=hh(b,c,d,a,x[k+14],23,-35309556);
+                    a=hh(a,b,c,d,x[k+1],4,-1530992060);d=hh(d,a,b,c,x[k+4],11,1272893353);c=hh(c,d,a,b,x[k+7],16,-155497632);b=hh(b,c,d,a,x[k+10],23,-1094730640);
+                    a=hh(a,b,c,d,x[k+13],4,681279174);d=hh(d,a,b,c,x[k+0],11,-358537222);c=hh(c,d,a,b,x[k+3],16,-722521979);b=hh(b,c,d,a,x[k+6],23,76029189);
+                    a=hh(a,b,c,d,x[k+9],4,-640364487);d=hh(d,a,b,c,x[k+12],11,-421815835);c=hh(c,d,a,b,x[k+15],16,530742520);b=hh(b,c,d,a,x[k+2],23,-995338651);
+                    a=ii(a,b,c,d,x[k+0],6,-198630844);d=ii(d,a,b,c,x[k+7],10,1126891415);c=ii(c,d,a,b,x[k+14],15,-1416354905);b=ii(b,c,d,a,x[k+5],21,-57434055);
+                    a=ii(a,b,c,d,x[k+12],6,1700485571);d=ii(d,a,b,c,x[k+3],10,-1894986606);c=ii(c,d,a,b,x[k+10],15,-1051523);b=ii(b,c,d,a,x[k+1],21,-2054922799);
+                    a=ii(a,b,c,d,x[k+8],6,1873313359);d=ii(d,a,b,c,x[k+15],10,-30611744);c=ii(c,d,a,b,x[k+6],15,-1560198380);b=ii(b,c,d,a,x[k+13],21,1309151649);
+                    a=ii(a,b,c,d,x[k+4],6,-145523070);d=ii(d,a,b,c,x[k+11],10,-1120210379);c=ii(c,d,a,b,x[k+2],15,718787259);b=ii(b,c,d,a,x[k+9],21,-343485551);
+                    a=au(a,oa);b=au(b,ob);c=au(c,oc);d=au(d,od);
+                }
+                const hex = '0123456789abcdef';
+                return [a,b,c,d].map(w => [0,1,2,3].map(j => hex[(w>>(j*8+4))&15]+hex[(w>>(j*8))&15]).join('')).join('');
+            }
+
+            function xbExSyncLocalBalance(newBal) {
+                const nb = Math.max(0, Number(parseFloat(newBal || 0).toFixed(2)));
+                try { localStorage.setItem('xb_wallet_balance', String(nb)); } catch (e) {}
+                try { if (typeof userBalance !== 'undefined') userBalance = nb; } catch (e) {}
+                try { if (window.currentUser) window.currentUser.balance = nb; } catch (e) {}
+                try {
+                    const wu = JSON.parse(localStorage.getItem('xb_web_user') || 'null');
+                    if (wu && typeof wu === 'object') { wu.balance = nb; localStorage.setItem('xb_web_user', JSON.stringify(wu)); }
+                } catch (e) {}
+                try { if (typeof updateWalletBalanceUI === 'function') updateWalletBalanceUI(); } catch (e) {}
+                try { if (typeof renderWalletSection === 'function') renderWalletSection(); } catch (e) {}
+                try { if (typeof renderXbExBody === 'function') renderXbExBody(true); } catch (e) {}
+                try { if (typeof pullWebCloudSyncState === 'function') pullWebCloudSyncState(true); } catch (e) {}
+            }
+
+            async function xbExCheckPendingRefundsNow() {
+                if (typeof GSHEET_WEBHOOK_URL === 'undefined' || !GSHEET_WEBHOOK_URL) return;
+                try {
+                    const r = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'check_exchange_refunds' })
+                    });
+                    const d = await r.json();
+                    if (d && d.result && d.refunded_count > 0) {
+                        if (typeof showToast === 'function') showToast('↩️ Auto-Refund selesai! Saldo USDT sudah kembali.');
+                        if (typeof pullWebCloudSyncState === 'function') pullWebCloudSyncState(true);
+                        if (typeof renderXbExBody === 'function') renderXbExBody(true);
+                    }
+                } catch (e) {}
+            }
+
+            function xbExGetBuyerIdentity() {
+                let uid = '', uname = '', name = '';
+                try {
+                    const wu = JSON.parse(localStorage.getItem('xb_web_user') || 'null');
+                    if (wu) { uid = String(wu.user_id || wu.id || ''); uname = String(wu.username || ''); name = String(wu.name || wu.username || ''); }
+                } catch (e) {}
+                try {
+                    if (window.tgUser) {
+                        uid = uid || String(window.tgUser.id || '');
+                        uname = uname || String(window.tgUser.username || '');
+                        name = name || String(window.tgUser.first_name || window.tgUser.username || '');
+                    }
+                    if (window.currentUser) {
+                        uid = uid || String(window.currentUser.id || window.currentUser.user_id || '');
+                        uname = uname || String(window.currentUser.username || '');
+                        name = name || String(window.currentUser.name || window.currentUser.username || '');
+                    }
+                } catch (e) {}
+                uid = uid || String(localStorage.getItem('xb_tg_id') || localStorage.getItem('xb_user_id') || '').trim();
+                uname = (uname || String(localStorage.getItem('xb_username') || 'Client')).replace(/^@+/, '').trim();
+                name = name || uname;
+                return { uid, uname, name };
+            }
+
+            async function executeXbExServerOrderV2() {
+                if (window._xbExOrderBusy) return;
+                const inp = document.getElementById('xbExPinInp');
+                const errEl = document.getElementById('xbExPinErr');
+                const pin = String(inp ? inp.value : '').trim();
+                if (!/^\d{6}$/.test(pin)) {
+                    if (errEl) errEl.innerText = 'Masukkan 6 digit PIN.';
+                    return;
+                }
+
+                const savedPin = localStorage.getItem('xb_user_pin');
+                const savedHash = localStorage.getItem('xb_bot_pin_hash');
+                let pinOk = true;
+                if (savedPin && /^\d{6}$/.test(savedPin)) {
+                    pinOk = (pin === savedPin);
+                } else if (savedHash && savedHash.length === 32) {
+                    pinOk = (xbExMd5Hex(pin).toLowerCase() === savedHash.toLowerCase());
+                } else {
+                    localStorage.setItem('xb_user_pin', pin);
+                }
+
+                if (!pinOk) {
+                    if (errEl) errEl.innerText = '❌ PIN salah! Silakan coba lagi.';
+                    if (inp) inp.value = '';
+                    document.querySelectorAll('#xbExPinDots .xb-ex-pin-dot').forEach(d => d.classList.remove('filled'));
+                    return;
+                }
+
+                const st = window._xbExState || {};
+                const ord = st.pendingOrder || {};
+                const buyer = xbExGetBuyerIdentity();
+                const invId = 'INV-EX-' + Math.floor(10000 + Math.random() * 89999);
+                const payload = {
+                    action: 'xb_exchange_order',
+                    invoice_id: invId,
+                    mode: st.mode || 'swap',
+                    buyer_uid: buyer.uid,
+                    buyer_username: buyer.uname,
+                    buyer_name: buyer.name,
+                    title: ord.title || 'XianBee Exchange',
+                    pay_usdt: Number(ord.payUsdt || 0),
+                    receive_text: ord.receiveText || '-',
+                    destination: ord.destination || '-',
+                    rate_text: ord.rateText || '-'
+                };
+
+                if (st.mode === 'swap') {
+                    const coin = getXbExCoin(st.swapTo);
+                    const spot = getXbExSpot(coin);
+                    const q = calcXbExProgressiveQuote(payload.pay_usdt, coin);
+                    payload.currency = coin.sym;
+                    payload.network = coin.net;
+                    payload.receive_amount = (spot.usd > 0) ? Number((q.buyerNetUsd / spot.usd).toFixed(6)) : 0;
+                    payload.fee_usd = Number((q.marginUsd + q.netFeeUsd).toFixed(2));
+                } else if (st.mode === 'gas') {
+                    const coin = getXbExCoin(st.gasCoin);
+                    const spot = getXbExSpot(coin);
+                    const q = calcXbExProgressiveQuote(payload.pay_usdt, coin);
+                    payload.currency = coin.sym;
+                    payload.network = coin.net;
+                    payload.receive_amount = (spot.usd > 0) ? Number((q.buyerNetUsd / spot.usd).toFixed(6)) : 0;
+                    payload.fee_usd = Number((q.marginUsd + q.netFeeUsd).toFixed(2));
+                } else {
+                    const prov = getXbExActiveIdrProvider();
+                    const q = calcXbExConvertIdrQuote(payload.pay_usdt);
+                    payload.bank_provider = prov.provider;
+                    payload.bank_type = prov.typeLabel;
+                    payload.bank_holder = String(st.idrHolder || '').trim();
+                    payload.destination = String(st.idrDest || ord.destination || '').trim();
+                    payload.net_idr = Math.round(q.netIdr || 0);
+                    payload.fee_usd = Number((q.feeUsd || 0).toFixed(2));
+                }
+
+                window._xbExOrderBusy = true;
+                const root = ensureXbExModalRoot();
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box" style="text-align:center;padding:24px 16px;">
+                        <div style="font-size:1.5rem;margin-bottom:6px;">⚡</div>
+                        <div style="font-size:0.84rem;font-weight:800;color:var(--text-primary);">Processing Order &amp; Server Payout...</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#38bdf8;margin-top:4px;">${escXbEx(invId)} • Sending Telegram Notifications</div>
+                    </div>
+                `;
+
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify(payload)
+                    });
+                    const d = await res.json();
+                    if (!d || !d.result) {
+                        root.innerHTML = `
+                            <div class="xb-ex-modal-box" style="text-align:center;">
+                                <div style="font-size:1.4rem;">❌</div>
+                                <div style="font-size:0.84rem;font-weight:800;color:#f87171;">Order Rejected</div>
+                                <div style="font-size:0.66rem;color:var(--text-secondary);">${escXbEx((d && d.error) || 'Failed to process order. Balance was NOT deducted.')}</div>
+                                <button type="button" class="btn-ui primary" style="width:100%;height:38px;border-radius:10px;" onclick="closeXbExModal()">Close</button>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    if (d.new_balance !== undefined) xbExSyncLocalBalance(d.new_balance);
+
+                    const isSent = d.payout_status === 'SENT';
+                    const isRef  = d.payout_status === 'PENDING_REFUND';
+                    if (isRef && Number(d.refund_delay_sec || 0) > 0) {
+                        setTimeout(xbExCheckPendingRefundsNow, (Number(d.refund_delay_sec) + 4) * 1000);
+                    }
+
+                    root.innerHTML = `
+                        <div class="xb-ex-modal-box">
+                            <div style="text-align:center;">
+                                <div style="font-size:1.6rem;">${isSent ? '✅' : (isRef ? '⏳' : '🇮🇩')}</div>
+                                <div style="font-size:0.86rem;font-weight:900;color:${isSent ? '#34d399' : (isRef ? '#fbbf24' : '#38bdf8')};">
+                                    ${isSent ? 'Payout Sent Successfully!' : (isRef ? 'Order Queued (Auto-Refund Guard)' : 'Convert IDR Submitted!')}
+                                </div>
+                            </div>
+                            <div class="xb-ex-quote-box">
+                                <div class="xb-ex-qrow"><span>Invoice</span><b>${escXbEx(d.invoice_id)}</b></div>
+                                <div class="xb-ex-qrow"><span>Paid</span><b style="color:#f87171;">-$${payload.pay_usdt.toFixed(2)} USDT</b></div>
+                                <div class="xb-ex-qrow"><span>Receive</span><b style="color:#34d399;">${escXbEx(payload.receive_text)}</b></div>
+                                ${isSent ? `<div class="xb-ex-qrow"><span>OxaPay Track</span><b style="color:#38bdf8;">${escXbEx(d.track_id)}</b></div>` : ''}
+                                <div class="xb-ex-qrow"><span>New Balance</span><b>$${Number(d.new_balance || 0).toFixed(2)} USDT</b></div>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.56rem;color:var(--text-secondary);text-align:center;line-height:1.4;">
+                                ${escXbEx(d.message)}
+                            </div>
+                            <button type="button" class="btn-ui primary" style="width:100%;height:39px;border-radius:10px;font-size:0.74rem;" onclick="closeXbExModal(); renderXbExBody(true);">✓ Done</button>
+                        </div>
+                    `;
+                } catch (e) {
+                    root.innerHTML = `
+                        <div class="xb-ex-modal-box" style="text-align:center;">
+                            <div style="font-size:1.4rem;">⚠️</div>
+                            <div style="font-size:0.82rem;font-weight:800;color:#fbbf24;">Network Error</div>
+                            <div style="font-size:0.65rem;color:var(--text-secondary);">Unable to connect to Exchange Server. Please try again.</div>
+                            <button type="button" class="btn-ui primary" style="width:100%;height:38px;border-radius:10px;" onclick="closeXbExModal()">Close</button>
+                        </div>
+                    `;
+                } finally {
+                    window._xbExOrderBusy = false;
+                }
+            }
+
+            setTimeout(xbExCheckPendingRefundsNow, 3200);
+
+            // =========================================================================
+            // 🪙 WEB OXAPAY CRYPTO DEPOSIT AUTOPILOT (BROWSER & MINI APP)
+            // =========================================================================
+            const _XB_WEB_DEP_KEY = 'xb_web_oxapay_pending_v1';
+            let _xbWebDepPollTimer = null;
+            let _xbWebDepChecking = false;
+
+            function xbWebDepGetPending() {
+                try {
+                    const obj = JSON.parse(localStorage.getItem(_XB_WEB_DEP_KEY) || 'null');
+                    if (obj && obj.track_id && (Date.now() - Number(obj.created_ts || 0) < 7200000)) return obj;
+                } catch (e) {}
+                return null;
+            }
+
+            function xbWebDepSavePending(obj) {
+                try {
+                    if (obj) localStorage.setItem(_XB_WEB_DEP_KEY, JSON.stringify(obj));
+                    else localStorage.removeItem(_XB_WEB_DEP_KEY);
+                } catch (e) {}
+            }
+
+            function xbWebDepStopPoll() {
+                if (_xbWebDepPollTimer) {
+                    clearInterval(_xbWebDepPollTimer);
+                    _xbWebDepPollTimer = null;
+                }
+            }
+
+            function xbWebDepUpdateIdrPreview(val) {
+                const amt = Math.max(0, parseFloat(val || '0') || 0);
+                const idrRate = (window._xbExState && window._xbExState.liveIdr > 10000) ? window._xbExState.liveIdr : 16450;
+                const el = document.getElementById('xbWebDepIdrEst');
+                if (el) el.innerText = amt > 0 ? `≈ Rp ${Math.round(amt * idrRate).toLocaleString('id-ID')}` : 'Min Deposit $1.00 USDT';
+            }
+
+            function openXbWebOxaPayDepositModal(prefillAmt = '', autoCreate = false) {
+                const buyer = xbExGetBuyerIdentity();
+                const uLow = String(buyer.uname || '').toLowerCase();
+                if (!buyer.uid && (!uLow || uLow === 'client' || uLow.indexOf('guest') !== -1)) {
+                    if (typeof showToast === 'function') showToast('⚠️ Silakan Login / Sign In dulu sebelum deposit!');
+                    return;
+                }
+
+                const pending = xbWebDepGetPending();
+                if (pending && !prefillAmt) {
+                    return renderXbWebDepWaitingModal(pending);
+                }
+
+                const initVal = (prefillAmt && Number(prefillAmt) >= 1) ? String(Number(prefillAmt)) : '10';
+                const root = ensureXbExModalRoot();
+                root.style.zIndex = '99999';
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="font-size:0.86rem;font-weight:900;color:var(--text-primary);">🪙 OxaPay Crypto Deposit</div>
+                            <button type="button" onclick="xbWebDepStopPoll(); closeXbExModal();" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                        </div>
+
+                        <div class="xb-ex-well">
+                            <div class="xb-ex-well-top">
+                                <span>DEPOSIT AMOUNT (MIN $1.00)</span>
+                                <span style="color:#34d399;">AUTOPILOT</span>
+                            </div>
+                            <div class="xb-ex-well-main">
+                                <input type="number" step="any" min="1" class="xb-ex-amt-inp" id="xbWebDepAmtInp"
+                                    value="${escXbEx(initVal)}" placeholder="10.00"
+                                    oninput="xbWebDepUpdateIdrPreview(this.value)">
+                                <span class="xb-ex-tok-btn" style="cursor:default;border-color:rgba(16,185,129,0.5);">
+                                    ${getXbExCoinSvg('USDT', 18)}
+                                    <span>USDT</span>
+                                </span>
+                            </div>
+                            <div id="xbWebDepIdrEst" style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;color:var(--text-muted);"></div>
+                        </div>
+
+                        <div class="xb-ex-presets" style="grid-template-columns:repeat(5,1fr);">
+                            ${[5, 10, 25, 50, 100].map(v => `
+                                <button type="button" class="xb-ex-pre-btn" onclick="const i=document.getElementById('xbWebDepAmtInp'); if(i){i.value='${v}'; xbWebDepUpdateIdrPreview('${v}');}">$${v}</button>
+                            `).join('')}
+                        </div>
+
+                        <div class="xb-ex-quote-box">
+                            <div class="xb-ex-qrow"><span>Account</span><b style="color:#38bdf8;">@${escXbEx(buyer.uname)}</b></div>
+                            <div class="xb-ex-qrow"><span>Supported</span><b>USDT (BEP20/TRC20/SOL/TON), BTC, ETH, BNB</b></div>
+                            <div class="xb-ex-qrow"><span>Credit Speed</span><b style="color:#34d399;">⚡ Auto-Credited on Confirm</b></div>
+                        </div>
+
+                        <button type="button" id="xbWebDepCreateBtn" class="btn-ui primary" style="width:100%;height:42px;border-radius:11px;font-size:0.74rem;border:1px solid rgba(244,63,94,0.5);"
+                            onclick="xbWebDepCreateInvoice()">
+                            ⚡ Generate OxaPay Payment Link
+                        </button>
+                    </div>
+                `;
+                root.classList.add('open');
+                xbWebDepUpdateIdrPreview(initVal);
+                if (autoCreate && Number(initVal) >= 1) {
+                    setTimeout(() => xbWebDepCreateInvoice(), 150);
+                }
+            }
+
+            async function xbWebDepCreateInvoice() {
+                const inp = document.getElementById('xbWebDepAmtInp');
+                const btn = document.getElementById('xbWebDepCreateBtn');
+                const amt = Number(parseFloat(inp ? inp.value : '0').toFixed(2));
+                if (isNaN(amt) || amt < 1) {
+                    return (typeof showToast === 'function') && showToast('⚠️ Minimal deposit $1.00 USDT.');
+                }
+                const buyer = xbExGetBuyerIdentity();
+                if (btn) { btn.disabled = true; btn.innerText = '⏳ Creating OxaPay Invoice...'; }
+
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'web_oxapay_deposit',
+                            sub_action: 'create',
+                            amount_usd: amt,
+                            buyer_uid: buyer.uid,
+                            buyer_username: buyer.uname,
+                            buyer_name: buyer.name
+                        })
+                    });
+                    const d = await res.json();
+                    if (!d || !d.result || !d.pay_url || !d.track_id) {
+                        if (btn) { btn.disabled = false; btn.innerText = '⚡ Generate OxaPay Payment Link'; }
+                        return (typeof showToast === 'function') && showToast('❌ ' + ((d && d.error) || 'Gagal membuat invoice OxaPay.'));
+                    }
+
+                    const depObj = {
+                        invoice_id: d.invoice_id,
+                        track_id: String(d.track_id),
+                        pay_url: String(d.pay_url),
+                        amount_usd: Number(d.amount_usd || amt),
+                        created_ts: Date.now()
+                    };
+                    xbWebDepSavePending(depObj);
+                    renderXbWebDepWaitingModal(depObj);
+                } catch (e) {
+                    if (btn) { btn.disabled = false; btn.innerText = '⚡ Generate OxaPay Payment Link'; }
+                    if (typeof showToast === 'function') showToast('⚠️ Gagal terhubung ke server deposit.');
+                }
+            }
+
+            function renderXbWebDepWaitingModal(depObj) {
+                const root = ensureXbExModalRoot();
+                root.style.zIndex = '99999';
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="font-size:0.84rem;font-weight:900;color:#38bdf8;">🪙 OxaPay Autopilot Active</div>
+                            <button type="button" onclick="xbWebDepStopPoll(); closeXbExModal();" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                        </div>
+
+                        <div class="xb-ex-quote-box">
+                            <div class="xb-ex-qrow"><span>Invoice ID</span><b>${escXbEx(depObj.invoice_id)}</b></div>
+                            <div class="xb-ex-qrow"><span>Amount Due</span><b style="color:#34d399;font-size:0.74rem;">$${Number(depObj.amount_usd).toFixed(2)} USDT</b></div>
+                            <div class="xb-ex-qrow"><span>Track ID</span><b>${escXbEx(depObj.track_id)}</b></div>
+                            <div class="xb-ex-qrow"><span>Status</span><b id="xbWebDepStatusTxt" style="color:#fbbf24;">⏳ WAITING PAYMENT</b></div>
+                        </div>
+
+                        <a href="${escXbEx(depObj.pay_url)}" target="_blank" rel="noopener noreferrer"
+                            class="btn-ui primary" style="width:100%;height:42px;border-radius:11px;font-size:0.74rem;text-decoration:none;display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid rgba(56,189,248,0.55);">
+                            💳 Open OxaPay Payment Page ↗
+                        </a>
+
+                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+                            <button type="button" class="xb-ex-pre-btn" style="height:35px;color:#38bdf8;border-color:rgba(56,189,248,0.45);"
+                                onclick="navigator.clipboard.writeText('${escXbEx(depObj.pay_url)}').then(()=>showToast('📋 Link OxaPay disalin!'));">
+                                📋 Copy Link
+                            </button>
+                            <button type="button" id="xbWebDepChkBtn" class="xb-ex-pre-btn" style="height:35px;color:#34d399;border-color:rgba(52,211,153,0.45);"
+                                onclick="xbWebDepCheckNow(true)">
+                                🔄 Check Status
+                            </button>
+                        </div>
+
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:var(--text-muted);text-align:center;line-height:1.4;">
+                            Auto-checking blockchain every 8s. Saldo otomatis masuk ke dompet &amp; Telegram DM begitu pembayaran terkonfirmasi.
+                        </div>
+
+                        <button type="button" class="xb-ex-pre-btn" style="height:32px;color:#f87171;border-color:rgba(248,113,113,0.35);"
+                            onclick="xbWebDepStopPoll(); xbWebDepSavePending(null); openXbWebOxaPayDepositModal('10', false);">
+                            ✕ Cancel / New Amount
+                        </button>
+                    </div>
+                `;
+                root.classList.add('open');
+                xbWebDepStopPoll();
+                _xbWebDepPollTimer = setInterval(() => xbWebDepCheckNow(false), 8000);
+            }
+
+            async function xbWebDepCheckNow(manual = false) {
+                const pending = xbWebDepGetPending();
+                if (!pending || _xbWebDepChecking) return;
+                _xbWebDepChecking = true;
+                const stEl = document.getElementById('xbWebDepStatusTxt');
+                const btn = document.getElementById('xbWebDepChkBtn');
+                if (manual && btn) btn.innerText = '⏳ Checking...';
+
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'web_oxapay_deposit',
+                            sub_action: 'check',
+                            track_id: pending.track_id
+                        })
+                    });
+                    const d = await res.json();
+                    if (d && d.result) {
+                        const st = String(d.status || 'waiting').toLowerCase();
+                        if (st === 'paid') {
+                            xbWebDepStopPoll();
+                            xbWebDepSavePending(null);
+                            if (d.new_balance !== undefined) xbExSyncLocalBalance(d.new_balance);
+                            if (typeof showToast === 'function') showToast(`✅ Deposit +$${Number(d.amount_usd || pending.amount_usd).toFixed(2)} USDT masuk!`);
+
+                            const root = document.getElementById('xbExModalRoot');
+                            if (root && root.classList.contains('open')) {
+                                root.innerHTML = `
+                                    <div class="xb-ex-modal-box" style="text-align:center;">
+                                        <div style="font-size:1.7rem;">✅</div>
+                                        <div style="font-size:0.88rem;font-weight:900;color:#34d399;">Deposit Confirmed!</div>
+                                        <div class="xb-ex-quote-box" style="text-align:left;">
+                                            <div class="xb-ex-qrow"><span>Invoice</span><b>${escXbEx(d.invoice_id || pending.invoice_id)}</b></div>
+                                            <div class="xb-ex-qrow"><span>Credited</span><b style="color:#34d399;">+$${Number(d.amount_usd || pending.amount_usd).toFixed(2)} USDT</b></div>
+                                            <div class="xb-ex-qrow"><span>New Balance</span><b>$${Number(d.new_balance || 0).toFixed(2)} USDT</b></div>
+                                            ${d.network ? `<div class="xb-ex-qrow"><span>Network</span><b>${escXbEx(d.network)}</b></div>` : ''}
+                                        </div>
+                                        ${d.explorer_url ? `<a href="${escXbEx(d.explorer_url)}" target="_blank" rel="noopener noreferrer" style="font-family:'JetBrains Mono',monospace;font-size:0.58rem;color:#38bdf8;text-decoration:underline;">🌐 View Blockchain Transaction</a>` : ''}
+                                        <button type="button" class="btn-ui primary" style="width:100%;height:40px;border-radius:10px;font-size:0.74rem;" onclick="closeXbExModal()">✓ Done</button>
+                                    </div>
+                                `;
+                            }
+                        } else if (st === 'expired' || st === 'failed') {
+                            xbWebDepStopPoll();
+                            xbWebDepSavePending(null);
+                            if (stEl) { stEl.innerText = '🔴 ' + st.toUpperCase(); stEl.style.color = '#f87171'; }
+                            if (manual && typeof showToast === 'function') showToast('⚠️ Invoice OxaPay sudah kadaluarsa. Silakan buat baru.');
+                        } else {
+                            if (stEl) {
+                                stEl.innerText = st === 'confirming' ? '⚡ CONFIRMING ON CHAIN...' : ('⏳ ' + st.toUpperCase());
+                                stEl.style.color = st === 'confirming' ? '#38bdf8' : '#fbbf24';
+                            }
+                            if (manual && typeof showToast === 'function') showToast(`⏳ Status OxaPay: ${st.toUpperCase()}`);
+                        }
+                    }
+                } catch (e) {} finally {
+                    _xbWebDepChecking = false;
+                    if (btn) btn.innerText = '🔄 Check Status';
+                }
+            }
+
+            // 1. Auto-hook Telegram.WebApp.sendData({ action: 'TOPUP', method: 'crypto' }) agar autopilot di Web & Mini App
+            (function hookXbWebOxaPayDeposit() {
+                try {
+                    if (window.Telegram && window.Telegram.WebApp && typeof window.Telegram.WebApp.sendData === 'function' && !window._xbOxaSendDataHooked) {
+                        window._xbOxaSendDataHooked = true;
+                        const _origSendData = window.Telegram.WebApp.sendData.bind(window.Telegram.WebApp);
+                        window.Telegram.WebApp.sendData = function(strData) {
+                            try {
+                                const parsed = JSON.parse(strData);
+                                if (parsed && parsed.action === 'TOPUP' && String(parsed.method || '').toLowerCase() === 'crypto') {
+                                    openXbWebOxaPayDepositModal(parsed.amount || 10, true);
+                                    return;
+                                }
+                            } catch (e) {}
+                            return _origSendData(strData);
+                        };
+                    }
+                } catch (e) {}
+
+                // 2. Tangkap klik tombol Top-Up Crypto / OxaPay pada halaman Wallet & modal Top-Up
+                document.addEventListener('click', function(ev) {
+                    const btn = ev.target && ev.target.closest ? ev.target.closest('button, [role="button"], [onclick]') : null;
+                    if (!btn) return;
+                    if (btn.closest('#xbExHubContainer') || btn.closest('#xbExModalRoot') || btn.closest('.scb-root')) return;
+
+                    const txt = (btn.textContent || '').trim().toLowerCase();
+                    const onClickAttr = String(btn.getAttribute('onclick') || '').toLowerCase();
+                    const container = btn.closest('.modal-body, .modal-content, #paymentGatewayBody, [id*="wallet" i], [id*="topup" i], section') || btn.parentElement;
+                    const ctxTxt = container ? (container.textContent || '').toLowerCase().slice(0, 600) : '';
+
+                    const isOxaBtn = txt.includes('oxapay') || onClickAttr.includes('oxapay');
+                    const isCryptoTopupBtn =
+                        (txt.includes('crypto') || txt.includes('usdt')) &&
+                        (
+                            txt.includes('topup') || txt.includes('top-up') || txt.includes('top up') || txt.includes('deposit') ||
+                            onClickAttr.includes('topup') || onClickAttr.includes('deposit') ||
+                            ((ctxTxt.includes('top-up') || ctxTxt.includes('top up') || ctxTxt.includes('deposit balance') || ctxTxt.includes('deposit saldo')) &&
+                             !ctxTxt.includes('checkout') && !ctxTxt.includes('pay with balance'))
+                        );
+
+                    if (isOxaBtn || isCryptoTopupBtn) {
+                        ev.preventDefault();
+                        ev.stopPropagation();
+                        let detectedAmt = '';
+                        if (container) {
+                            const numInp = container.querySelector('input[type="number"]');
+                            if (numInp && Number(numInp.value) >= 1) detectedAmt = String(Number(numInp.value));
+                        }
+                        openXbWebOxaPayDepositModal(detectedAmt, false);
+                    }
+                }, true);
+
+                // 3. Auto-resume cek pending deposit jika halaman baru dibuka ulang
+                setTimeout(() => {
+                    const pend = xbWebDepGetPending();
+                    if (pend) {
+                        xbWebDepCheckNow(false);
+                        if (!_xbWebDepPollTimer) _xbWebDepPollTimer = setInterval(() => xbWebDepCheckNow(false), 12000);
+                    }
+                }, 2600);
+            })();
+
+            // =========================================================================
+            // 🏦 ADMIN WEB NOTIF ACTIONS: UPLOAD BUKTI TRANSFER CONVERT IDR -> DM BUYER
+            // =========================================================================
+            let _xbExIdrProofB64 = '';
+
+            function xbExCompressProofFile(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onerror = () => reject(new Error('Gagal baca gambar.'));
+                    reader.onload = () => {
+                        const img = new Image();
+                        img.onerror = () => reject(new Error('File bukan gambar valid.'));
+                        img.onload = () => {
+                            const maxW = 920;
+                            const scale = img.width > maxW ? (maxW / img.width) : 1;
+                            const canvas = document.createElement('canvas');
+                            canvas.width = Math.round(img.width * scale);
+                            canvas.height = Math.round(img.height * scale);
+                            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+                            resolve(canvas.toDataURL('image/jpeg', 0.76));
+                        };
+                        img.src = reader.result;
+                    };
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            async function onXbExIdrProofPicked(inp) {
+                const f = inp && inp.files && inp.files[0];
+                if (!f) return;
+                const prev = document.getElementById('xbExIdrProofPrev');
+                const lbl = document.getElementById('xbExIdrProofLbl');
+                if (lbl) lbl.innerText = '⏳ Mengompres bukti transfer...';
+                try {
+                    _xbExIdrProofB64 = await xbExCompressProofFile(f);
+                    if (prev) { prev.src = _xbExIdrProofB64; prev.style.display = 'block'; }
+                    if (lbl) lbl.innerText = '✅ Siap dikirim ke DM Bot Pembeli';
+                } catch (e) {
+                    _xbExIdrProofB64 = '';
+                    if (lbl) lbl.innerText = '❌ Gagal membaca file gambar.';
+                }
+            }
+
+            async function openXbExAdminIdrProofModal(invId) {
+                _xbExIdrProofB64 = '';
+                const root = ensureXbExModalRoot();
+                root.style.zIndex = '99999';
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box" style="text-align:center;padding:22px;">
+                        <div style="font-size:0.8rem;font-weight:800;color:#38bdf8;">⏳ Memuat detail ${escXbEx(invId)}...</div>
+                    </div>
+                `;
+                root.classList.add('open');
+
+                try {
+                    const r = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action: 'ex_idr_action', sub_action: 'get', secret: 'XB-PAT-GUARD-2026', invoice_id: invId })
+                    });
+                    const d = await r.json();
+                    if (!d || !d.result || !d.order) {
+                        root.innerHTML = `<div class="xb-ex-modal-box" style="text-align:center;"><div style="color:#f87171;font-weight:800;">❌ ${escXbEx((d && d.error) || 'Order tidak ditemukan')}</div><button type="button" class="btn-ui primary" style="width:100%;height:38px;" onclick="closeXbExModal()">Tutup</button></div>`;
+                        return;
+                    }
+                    const o = d.order;
+                    if (o.status !== 'PENDING') {
+                        root.innerHTML = `<div class="xb-ex-modal-box" style="text-align:center;"><div style="color:#34d399;font-weight:800;">ℹ️ Order ${escXbEx(invId)} sudah berstatus ${escXbEx(o.status)}</div><button type="button" class="btn-ui primary" style="width:100%;height:38px;" onclick="closeXbExModal()">Tutup</button></div>`;
+                        return;
+                    }
+
+                    root.innerHTML = `
+                        <div class="xb-ex-modal-box">
+                            <div style="display:flex;align-items:center;justify-content:space-between;">
+                                <div style="font-size:0.84rem;font-weight:900;color:#34d399;">📸 Upload Bukti Transfer IDR</div>
+                                <button type="button" onclick="closeXbExModal()" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                            </div>
+                            <div class="xb-ex-quote-box">
+                                <div class="xb-ex-qrow"><span>Invoice</span><b>${escXbEx(o.invoice_id)}</b></div>
+                                <div class="xb-ex-qrow"><span>Buyer</span><b>@${escXbEx(o.uname)} (${escXbEx(o.uid)})</b></div>
+                                <div class="xb-ex-qrow"><span>Nominal IDR</span><b style="color:#34d399;font-size:0.74rem;">${escXbEx(o.idr_fmt)}</b></div>
+                                <div class="xb-ex-qrow"><span>Tujuan</span><b>${escXbEx(o.bank_provider)} • ${escXbEx(o.destination)}</b></div>
+                                <div class="xb-ex-qrow"><span>Atas Nama</span><b>${escXbEx(o.bank_holder)}</b></div>
+                            </div>
+                            <div>
+                                <div id="xbExIdrProofLbl" style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;font-weight:800;color:#38bdf8;margin-bottom:5px;">PILIH FOTO / SCREENSHOT BUKTI TRANSFER:</div>
+                                <input type="file" accept="image/*" class="xb-ex-input" style="padding:7px;height:auto;" onchange="onXbExIdrProofPicked(this)">
+                                <img id="xbExIdrProofPrev" style="display:none;width:100%;max-height:170px;object-fit:contain;border-radius:9px;margin-top:7px;border:1px solid rgba(56,189,248,0.4);">
+                            </div>
+                            <button type="button" id="xbExIdrSendProofBtn" class="btn-ui primary" style="width:100%;height:41px;border-radius:10px;font-size:0.72rem;"
+                                onclick="xbExAdminSubmitIdrProof('${escXbEx(o.invoice_id)}')">
+                                📤 Kirim Bukti ke DM Pembeli &amp; Selesai
+                            </button>
+                        </div>
+                    `;
+                } catch (e) {
+                    closeXbExModal();
+                    if (typeof showToast === 'function') showToast('⚠️ Gagal mengambil detail Convert IDR.');
+                }
+            }
+
+            async function xbExAdminSubmitIdrProof(invId) {
+                if (!_xbExIdrProofB64) {
+                    return (typeof showToast === 'function') && showToast('⚠️ Pilih foto bukti transfer terlebih dahulu!');
+                }
+                const btn = document.getElementById('xbExIdrSendProofBtn');
+                if (btn) { btn.disabled = true; btn.innerText = '⏳ Mengirim Bukti ke DM Pembeli...'; }
+                try {
+                    const r = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'ex_idr_action',
+                            sub_action: 'complete',
+                            secret: 'XB-PAT-GUARD-2026',
+                            invoice_id: invId,
+                            proof_b64: _xbExIdrProofB64
+                        })
+                    });
+                    const d = await r.json();
+                    if (d && d.result) {
+                        closeXbExModal();
+                        if (typeof showToast === 'function') showToast('✅ Bukti transfer terkirim ke DM Bot Pembeli!');
+                        try { if (typeof pullWebCloudSyncState === 'function') pullWebCloudSyncState(true); } catch (e) {}
+                    } else {
+                        if (btn) { btn.disabled = false; btn.innerText = '📤 Kirim Bukti ke DM Pembeli & Selesai'; }
+                        if (typeof showToast === 'function') showToast('❌ ' + ((d && d.error) || 'Gagal menyelesaikan order.'));
+                    }
+                } catch (e) {
+                    if (btn) { btn.disabled = false; btn.innerText = '📤 Kirim Bukti ke DM Pembeli & Selesai'; }
+                    if (typeof showToast === 'function') showToast('⚠️ Gagal koneksi ke server.');
+                }
+            }
+
+            async function xbExAdminRejectIdr(invId) {
+                if (!confirm('Tolak order Convert IDR ' + invId + ' dan kembalikan saldo USDT pembeli?')) return;
+                try {
+                    const r = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'ex_idr_action',
+                            sub_action: 'reject',
+                            secret: 'XB-PAT-GUARD-2026',
+                            invoice_id: invId,
+                            reason: 'Ditolak & direfund Admin via Web'
+                        })
+                    });
+                    const d = await r.json();
+                    if (d && d.result) {
+                        if (typeof showToast === 'function') showToast('↩️ Order ditolak & saldo pembeli telah dikembalikan!');
+                        try { if (typeof pullWebCloudSyncState === 'function') pullWebCloudSyncState(true); } catch (e) {}
+                    } else {
+                        if (typeof showToast === 'function') showToast('❌ ' + ((d && d.error) || 'Gagal refund.'));
+                    }
+                } catch (e) {
+                    if (typeof showToast === 'function') showToast('⚠️ Gagal koneksi ke server.');
+                }
+            }
+
+            function xbExMountIdrAdminNotifButtons() {
+                if (!isXbExAdminUser()) return;
+                const nodes = document.querySelectorAll('div, li, section, article');
+                for (let i = 0; i < nodes.length; i++) {
+                    const el = nodes[i];
+                    if (el.offsetParent === null || el.querySelector('.xb-ex-idr-adm-actions')) continue;
+                    const txt = (el.textContent || '').trim();
+                    if (txt.length < 25 || txt.length > 520) continue;
+                    if (!/CONVERT\s+IDR\s+REQUEST/i.test(txt) || /COMPLETED|REFUNDED/i.test(txt)) continue;
+                    const mInv = txt.match(/(INV-EX-\d+)/);
+                    if (!mInv) continue;
+                    // Hanya pasang pada elemen kartu terdalam yang memuat teks CONVERT IDR REQUEST
+                    let childHas = false;
+                    for (let c = 0; c < el.children.length; c++) {
+                        if (/CONVERT\s+IDR\s+REQUEST/i.test(el.children[c].textContent || '') && /(INV-EX-\d+)/.test(el.children[c].textContent || '')) {
+                            childHas = true; break;
+                        }
+                    }
+                    if (childHas) continue;
+                    const invId = mInv[1];
+                    const bar = document.createElement('div');
+                    bar.className = 'xb-ex-idr-adm-actions';
+                    bar.style.cssText = 'display:grid;grid-template-columns:1.35fr 1fr;gap:6px;margin-top:7px;';
+                    bar.innerHTML = `
+                        <button type="button" style="height:31px;border-radius:8px;border:1px solid rgba(52,211,153,0.6);background:rgba(16,185,129,0.16);color:#34d399;font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;cursor:pointer;"
+                            onclick="event.stopPropagation(); openXbExAdminIdrProofModal('${invId}')">✅ Sudah Transfer (Bukti)</button>
+                        <button type="button" style="height:31px;border-radius:8px;border:1px solid rgba(248,113,113,0.5);background:rgba(248,113,113,0.12);color:#f87171;font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;cursor:pointer;"
+                            onclick="event.stopPropagation(); xbExAdminRejectIdr('${invId}')">❌ Tolak &amp; Refund</button>
+                    `;
+                    el.appendChild(bar);
+                }
+            }
+
+            document.addEventListener('click', () => {
+                setTimeout(xbExMountIdrAdminNotifButtons, 180);
+                setTimeout(xbExMountIdrAdminNotifButtons, 650);
+            }, true);
+
+            // =========================================================================
+            // 🔔 ADMIN NOTIFICATION TEST LAB (25 UNIFIED TEMPLATES • 24-CHAR ANTI-WRAP)
+            // =========================================================================
+            const _XB_LAB_SEP = '━━━━━━━━━━━━━━━━━━━━━━━━';
+            const _XB_LAB_FOOTER_STORE =
+                '\n' + _XB_LAB_SEP + '\n' +
+                '🛡️ <b>Engineered by Abie Haryatmo</b>\n' +
+                '🤝 <b>Powered by XianBee-Tech</b>\n' +
+                '🤖 <b>Bot: @XianBeeTechStore_Bot</b>\n' +
+                _XB_LAB_SEP;
+            const _XB_LAB_FOOTER_WORKER =
+                '\n' + _XB_LAB_SEP + '\n' +
+                '<i>🕒 26 Nov 2026, 02:05 WIB • XianBee Engine</i>';
+
+            function _xbLabBox(titleHtml, rows, noteHtml, isWorker) {
+                const body = rows.map(r => `🔹 <code>${r[0]}</code> ▸ ${r[1]}`).join('\n');
+                return (
+                    `${_XB_LAB_SEP}\n` +
+                    `${titleHtml}\n` +
+                    `${_XB_LAB_SEP}\n` +
+                    `<blockquote>${body}</blockquote>` +
+                    (noteHtml ? `\n${noteHtml}` : '') +
+                    (isWorker ? _XB_LAB_FOOTER_WORKER : _XB_LAB_FOOTER_STORE)
+                );
+            }
+
+            function _xbLabWebBody(rows, noteHtml) {
+                return rows.map(r => `🔹 ${r[0]}: ${r[1]}`).join('\n') + (noteHtml ? `\n${noteHtml}` : '');
+            }
+
+            const _XB_NOTIF_LAB_PACKS = [
+                { id: 'store',   lbl: '🛒 Store (5)' },
+                { id: 'wallet',  lbl: '💳 Wallet (5)' },
+                { id: 'ex',      lbl: '💱 Exchange (6)' },
+                { id: 'boost',   lbl: '🚀 Boost/PPOB (5)' },
+                { id: 'studio',  lbl: '🛰️ Studio (4)' }
+            ];
+
+            const _XB_NOTIF_LAB_TEMPLATES = [
+                // --- PACK 1: STORE & CHECKOUT (5) ---
+                {
+                    id: 'st_alert_dm', pack: 'store', name: 'New Stock Alert (DM)', scope: 'buyer',
+                    rows: [['Catalog','<b>GitHub Year 2019</b>'],['Added','<b>+3 Accounts</b>'],['Status','🟢 <b>3 / 3 Ready</b>'],['Sample','<b>#01 • @dev***99 ($15.00)</b>']],
+                    title: '🔥 <b>NEW STOCK ALERT</b>',
+                    note: '⚡ <i>Tap below for instant checkout:</i>',
+                    markup: { inline_keyboard: [[{ text: '⚡ Buy @sample ($15.00)', callback_data: 'noop_lab' }], [{ text: '🤝 Offer', callback_data: 'noop_lab' }, { text: '🛒 +Cart', callback_data: 'noop_lab' }]] }
+                },
+                {
+                    id: 'st_alert_pub', pack: 'store', name: 'New Stock Alert (Channel)', scope: 'admin',
+                    rows: [['Catalog','<b>Arctic Vault 2020</b>'],['Added','<b>+2 Accounts</b>'],['Status','🟢 <b>2 / 2 Ready</b>'],['Price','<b>From $40.00 USDT</b>']],
+                    title: '🔥 <b>NEW STOCK ALERT</b>',
+                    note: '🛍️ <i>Masked preview — checkout inside Bot.</i>',
+                    markup: { inline_keyboard: [[{ text: '🛍️ Checkout in Bot (2/2 Ready)', callback_data: 'noop_lab' }]] }
+                },
+                {
+                    id: 'st_dispatch', pack: 'store', name: 'Account Dispatched (DM)', scope: 'buyer',
+                    rows: [['Invoice','<code>INV-XIAN-84210</code>'],['Asset','<b>2019-devmaster</b>'],['User','<code>devmaster</code>'],['Pass','<code>Xb#9921Pass</code>'],['2FA Key','<code>JBSWY3DPEHPK3PXP</code>']],
+                    title: '📦 <b>ACCOUNT DISPATCHED</b>',
+                    note: '🛡️ <i>Change password &amp; email AFTER 24 hours.</i>'
+                },
+                {
+                    id: 'st_cart_pub', pack: 'store', name: 'Cart Sold Out (Public)', scope: 'admin',
+                    rows: [['Invoice','<code>INV-XIAN-84211</code>'],['Client','<b>Ma*** (@ma***88)</b>'],['User ID','<code>67****23</code>'],['Service','<b>Cart Checkout</b>'],['Items','<b>4 Digital Assets</b>'],['Total','<b>$42.50 USDT</b>']],
+                    title: '🛒 <b>ASSETS SOLD OUT</b>',
+                    note: '✅ <i>Status: Credentials auto-dispatched.</i>'
+                },
+                {
+                    id: 'st_loyalty', pack: 'store', name: 'Loyalty Milestone (Admin)', scope: 'admin',
+                    rows: [['Client','<b>@abieharyatmo</b>'],['User ID','<code>6740043923</code>'],['Target','<b>Account $500+</b>'],['Reached','<b>$512.00 USDT</b>'],['Bonus','<b>$51.20 USDT (10%)</b>']],
+                    title: '🎁 <b>LOYALTY MILESTONE HIT</b>',
+                    note: '👇 <i>Select action below to credit reward:</i>',
+                    markup: { inline_keyboard: [[{ text: '⚡ Send +$51.20 USDT', callback_data: 'noop_lab' }], [{ text: '✍️ Custom', callback_data: 'noop_lab' }, { text: '🚫 Skip', callback_data: 'noop_lab' }]] }
+                },
+
+                // --- PACK 2: WALLET & DEPOSIT (5) ---
+                {
+                    id: 'wl_dep_dm', pack: 'wallet', name: 'OxaPay Deposit (Buyer DM)', scope: 'buyer',
+                    rows: [['Invoice','<code>INV-WEB-51920</code>'],['Gateway','<b>OxaPay (BEP20)</b>'],['TX Hash','<a href="https://bscscan.com">View Explorer 🌐</a>'],['Old Bal','<b>$12.00 USDT</b>'],['Top-Up','<b>+$50.00 USDT</b>'],['New Bal','<b>$62.00 USDT</b>']],
+                    title: '⚡ <b>DEPOSIT CONFIRMED</b>',
+                    note: '✅ <i>Funds credited to your XianBee wallet.</i>'
+                },
+                {
+                    id: 'wl_dep_pub', pack: 'wallet', name: 'OxaPay Deposit (Channel)', scope: 'admin',
+                    rows: [['Client','<b>@****8891</b>'],['Invoice','<code>INV-WEB-51920</code>'],['Type','<b>Balance Top-Up</b>'],['Amount','<b>$50.00 USDT</b>'],['Network','<b>BSC (BEP20)</b>'],['TX Hash','<a href="https://bscscan.com">View TX 🌐</a>']],
+                    title: '💎 <b>XIANBEE PAYMENT</b>',
+                    note: '✨ <i>Status: Settled &amp; Blockchain Verified.</i>'
+                },
+                {
+                    id: 'wl_dep_adm', pack: 'wallet', name: 'OxaPay Deposit (Admin)', scope: 'admin',
+                    rows: [['Invoice','<code>INV-WEB-51920</code>'],['Client','<b>@abieharyatmo</b>'],['User ID','<code>6740043923</code>'],['Top-Up','<b>+$50.00 USDT</b>'],['Network','<b>BSC (BEP20)</b>'],['New Bal','<b>$62.00 USDT</b>']],
+                    title: '💰 <b>DEPOSIT RECEIVED</b>',
+                    note: '📡 <i>Source: Web OxaPay Autopilot.</i>'
+                },
+                {
+                    id: 'wl_p2p', pack: 'wallet', name: 'P2P Transfer Sent/Recv', scope: 'buyer',
+                    rows: [['Tx ID','<code>TRF-73812</code>'],['From','<b>@abieharyatmo</b>'],['To','<b>@xianbeestore</b>'],['Amount','<b>$25.00 USDT</b>'],['Balance','<b>$37.00 USDT</b>']],
+                    title: '📤 <b>P2P TRANSFER SENT</b>',
+                    note: '⚡ <i>Instant internal ledger settlement.</i>'
+                },
+                {
+                    id: 'wl_ref', pack: 'wallet', name: 'Referral Bonus Earned', scope: 'buyer',
+                    rows: [['Source','<b>Affiliate 5%</b>'],['From ID','<code>70****71</code>'],['Earned','<b>+$2.50 USDT</b>'],['New Bal','<b>$39.50 USDT</b>']],
+                    title: '🎉 <b>REFERRAL BONUS</b>',
+                    note: '✅ <i>Commission credited automatically.</i>'
+                },
+
+                // --- PACK 3: EXCHANGE & CONVERT IDR (6) ---
+                {
+                    id: 'ex_sent_dm', pack: 'ex', name: 'Swap/Buy Sent (Buyer DM)', scope: 'buyer',
+                    rows: [['Invoice','<code>INV-EX-44102</code>'],['Order','<b>Buy Crypto</b>'],['Paid','<b>-$3.10 USDT</b>'],['Sent','<b>0.0008 ETH</b>'],['Network','<b>Base</b>'],['Wallet','<code>0x71aC...9F04</code>'],['Track','<code>OXA-882910</code>']],
+                    title: '✅ <b>EXCHANGE SENT (100%)</b>',
+                    note: '🎉 <i>Crypto delivered to destination wallet.</i>'
+                },
+                {
+                    id: 'ex_sent_pub', pack: 'ex', name: 'Swap/Buy Done (Public)', scope: 'admin',
+                    rows: [['Invoice','<code>INV-EX-44102</code>'],['Client','<b>Ab*** (@ab***mo)</b>'],['Order','<b>ETH (Base)</b>'],['Sent','<b>0.0008 ETH</b>'],['Wallet','<code>0x71a...9F04</code>']],
+                    title: '✅ <b>EXCHANGE COMPLETED</b>',
+                    note: '🎉 <i>Status: Instant crypto payout confirmed.</i>'
+                },
+                {
+                    id: 'ex_oxa_low', pack: 'ex', name: 'OxaPay Low Bal (Admin)', scope: 'admin',
+                    rows: [['Invoice','<code>INV-EX-44105</code>'],['Client','<b>@abieharyatmo</b>'],['Paid','<b>$10.00 USDT</b>'],['Wanted','<b>9.15 USDT (BEP20)</b>'],['Error','<code>Insufficient balance</code>'],['Refund','<b>Auto in ±2 min</b>']],
+                    title: '🚨 <b>OXAPAY SALDO KURANG</b>',
+                    note: '↩️ <i>Auto-refund scheduled. Top up OxaPay!</i>'
+                },
+                {
+                    id: 'ex_refund', pack: 'ex', name: 'Auto-Refund (Buyer DM)', scope: 'buyer',
+                    rows: [['Invoice','<code>INV-EX-44105</code>'],['Refund','<b>+$10.00 USDT</b>'],['Balance','<b>$47.00 USDT</b>'],['Status','<b>AUTO-REFUNDED</b>']],
+                    title: '↩️ <b>AUTO-REFUND COMPLETED</b>',
+                    note: '✅ <i>Balance restored due to network busy.</i>'
+                },
+                {
+                    id: 'ex_idr_adm', pack: 'ex', name: 'Convert IDR Req (Admin)', scope: 'admin',
+                    rows: [['Invoice','<code>INV-EX-91204</code>'],['Client','<b>@abieharyatmo</b>'],['Paid','<b>$10.00 USDT</b>'],['Net IDR','<b>Rp 154.500</b>'],['Method','<b>BCA (Bank)</b>'],['No Rek','<code>1234567890</code>'],['Holder','<b>MAMO HARYATMO</b>']],
+                    title: '🏦 <b>CONVERT IDR REQUEST</b>',
+                    note: '👇 <i>Tap Sudah Transfer lalu upload bukti:</i>',
+                    markup: { inline_keyboard: [[{ text: '✅ Sudah Transfer (Upload Bukti)', callback_data: 'noop_lab' }], [{ text: '❌ Tolak & Refund Saldo', callback_data: 'noop_lab' }]] }
+                },
+                {
+                    id: 'ex_idr_done', pack: 'ex', name: 'Convert IDR Done (Buyer)', scope: 'buyer',
+                    rows: [['Invoice','<code>INV-EX-91204</code>'],['Amount','<b>Rp 154.500</b>'],['Method','<b>BCA</b>'],['No Rek','<code>1234567890</code>'],['Holder','<b>MAMO HARYATMO</b>'],['Status','🟢 <b>TRANSFERRED</b>']],
+                    title: '✅ <b>CONVERT IDR COMPLETED</b>',
+                    note: '🎉 <i>Dana terkirim! Cek mutasi rekening Anda.</i>'
+                },
+
+                // --- PACK 4: BOOST, SMM & PPOB (5) ---
+                {
+                    id: 'bs_act_dm', pack: 'boost', name: 'Boost Activated (DM)', scope: 'buyer',
+                    rows: [['Invoice','<code>INV-BST-30112</code>'],['Service','<b>GitHub Stars</b>'],['Track','<b>⚡ Ultra Track</b>'],['Qty','<b>+50 Units</b>'],['Target','<a href="https://github.com/tecmarco10/XianBee">tecmarco10/XianBee</a>'],['Paid','<b>$22.50 USDT</b>']],
+                    title: '🚀 <b>BOOST ACTIVATED</b>',
+                    note: '📡 <i>Status: Live Tracker Active (0%).</i>'
+                },
+                {
+                    id: 'bs_50_dm', pack: 'boost', name: 'Boost 50% Progress (DM)', scope: 'buyer',
+                    rows: [['Invoice','<code>INV-BST-30112</code>'],['Service','<b>GitHub Stars</b>'],['Progress','<b>25 / 50 (50%)</b>'],['Bar','<code>[██████░░░░░░]</code>'],['Target','<b>tecmarco10/XianBee</b>']],
+                    title: '⚡ <b>BOOST IN PROGRESS</b>',
+                    note: '⏳ <i>Auto-delivery running smoothly.</i>'
+                },
+                {
+                    id: 'bs_100_dm', pack: 'boost', name: 'Boost 100% Done (DM)', scope: 'buyer',
+                    rows: [['Invoice','<code>INV-BST-30112</code>'],['Service','<b>GitHub Stars</b>'],['Qty','<b>+50 Units (100%)</b>'],['Target','<b>tecmarco10/XianBee</b>'],['Duration','<b>48m 12s</b>']],
+                    title: '✅ <b>BOOST COMPLETED</b>',
+                    note: '🎉 <i>Order 100% delivered &amp; verified!</i>'
+                },
+                {
+                    id: 'bs_100_pub', pack: 'boost', name: 'Boost Done (Public)', scope: 'admin',
+                    rows: [['Invoice','<code>INV-BST-30112</code>'],['Client','<b>Ab*** (@ab***mo)</b>'],['Service','<b>GitHub Stars</b>'],['Qty','<b>+50 Units (100%)</b>'],['Target','<code>te***10/Xi***ee</code>'],['Duration','<b>48m 12s</b>']],
+                    title: '✅ <b>ORDER COMPLETED</b>',
+                    note: '🎉 <i>Status: 100% delivered &amp; verified!</i>'
+                },
+                {
+                    id: 'bs_ppob', pack: 'boost', name: 'PPOB / Pro Apps Success', scope: 'buyer',
+                    rows: [['Trx ID','<code>VIP-994821</code>'],['Product','<b>Canva Pro 1 Bulan</b>'],['Target','<code>user@gmail.com</code>'],['SN/Note','<code>INVITE SENT OK</code>'],['Paid','<b>-$1.20 USDT</b>'],['Balance','<b>$38.30 USDT</b>']],
+                    title: '✅ <b>PPOB SUCCESSFUL</b>',
+                    note: '⚡ <i>Processed instantly via main server.</i>'
+                },
+
+                // --- PACK 5: PC STUDIO & SWEEPER (4) ---
+                {
+                    id: 'pc_bridge', pack: 'studio', name: 'PC Bridge Online', scope: 'admin', worker: true,
+                    rows: [['Status','🟢 <b>ONLINE READY</b>'],['Tunnel','<code>xxxx.trycloudflare.com</code>'],['Pair Key','<code>url|Tiana01</code>']],
+                    title: '🖥️ <b>PC BRIDGE ONLINE</b>',
+                    note: '<i>Open Web App ➔ Bridge ➔ Paste &amp; Ping</i>'
+                },
+                {
+                    id: 'pc_mission', pack: 'studio', name: 'Stealth Mission Done', scope: 'admin', worker: true,
+                    rows: [['Mission','<code>PC-OMNI-020512</code>'],['Module','<b>👑 Omni Automation</b>'],['Accounts','<b>3 PAT(s)</b>'],['Result','<b>✅ 3 OK | ❌ 0 Fail</b>'],['Duration','<b>4m 18s</b>']],
+                    title: '✅ <b>MISSION COMPLETED</b>',
+                    note: '<i>Triggered via Web App Stealth Command</i>'
+                },
+                {
+                    id: 'pc_pat', pack: 'studio', name: 'PAT Token Generated', scope: 'admin', worker: true,
+                    rows: [['Account','<b>@Nara-bot</b>'],['Expires','<b>90 Days</b>'],['Scopes','<b>Safe (5 Scopes)</b>'],['Sheet1','<b>Saved Col H ✅</b>'],['Token','<tg-spoiler><code>ghp_TestToken123456</code></tg-spoiler>']],
+                    title: '🔑 <b>GITHUB PAT GENERATED</b>',
+                    note: '<i>⏳ Cooldown 2m 15s before next account</i>'
+                },
+                {
+                    id: 'pc_sweep', pack: 'studio', name: 'Year Live Sweeper', scope: 'admin', worker: true,
+                    rows: [['Catalog','<b>GitHub Year 2019</b>'],['Checked','<b>48 / 48 (100%)</b>'],['Healthy','🟢 <b>47 Accounts</b>'],['Suspend','🔴 <b>1 Account</b>'],['Score','<b>98% 🟢🟢🟢🟢🟢🟢</b>']],
+                    title: '🛡️ <b>YEAR 2019 SCAN DONE</b>',
+                    note: '<i>Next Rotation: GitHub Year 2020 (3H)</i>'
+                }
+            ];
+
+            const _xbNotifLabState = {
+                pack: 'all',
+                channel: 'both',      // both | tg | web
+                targetAdmin: '6740043923',
+                running: false,
+                abort: false,
+                sentCnt: 0,
+                totCnt: 0
+            };
+
+            function openXbNotifTestLab() {
+                const buyer = xbExGetBuyerIdentity();
+                if (buyer.uid === '7095661271') _xbNotifLabState.targetAdmin = '7095661271';
+                renderXbNotifTestLabModal();
+            }
+
+            function renderXbNotifTestLabModal() {
+                const root = ensureXbExModalRoot();
+                root.style.zIndex = '99999';
+                const list = _xbNotifLabState.pack === 'all'
+                    ? _XB_NOTIF_LAB_TEMPLATES
+                    : _XB_NOTIF_LAB_TEMPLATES.filter(t => t.pack === _xbNotifLabState.pack);
+
+                root.innerHTML = `
+                    <div class="xb-ex-modal-box" style="gap:8px;max-height:88vh;">
+                        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                            <div style="font-size:0.84rem;font-weight:900;color:var(--text-primary);">🔔 Notification Test Lab (25)</div>
+                            <button type="button" onclick="_xbNotifLabState.abort=true; closeXbExModal();" style="border:none;background:transparent;color:var(--text-muted);font-size:1rem;cursor:pointer;">✕</button>
+                        </div>
+
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.52rem;color:#34d399;background:rgba(16,185,129,0.1);border:1px solid rgba(52,211,153,0.4);border-radius:8px;padding:6px 8px;line-height:1.35;">
+                            🛡️ <b>SAFE DM-ONLY MODE:</b> 24-char ━ standard. Tidak pernah bocor ke Channel/Grup publik atau buyer.
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
+                            ${[{k:'both',l:'📡 TG + Web'},{k:'tg',l:'✈️ TG Only'},{k:'web',l:'🌐 Web Only'}].map(ch => `
+                                <button type="button" class="xb-ex-pre-btn" style="${_xbNotifLabState.channel===ch.k?'border-color:#f43f5e;color:#fff;background:rgba(244,63,94,0.2);':''}"
+                                    onclick="_xbNotifLabState.channel='${ch.k}'; renderXbNotifTestLabModal();">${ch.l}</button>
+                            `).join('')}
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:5px;">
+                            ${[{k:'6740043923',l:'👤 Admin 1'},{k:'7095661271',l:'👤 Admin 2'},{k:'both',l:'👥 Both'}].map(ad => `
+                                <button type="button" class="xb-ex-pre-btn" style="${_xbNotifLabState.targetAdmin===ad.k?'border-color:#38bdf8;color:#38bdf8;background:rgba(56,189,248,0.16);':''}"
+                                    onclick="_xbNotifLabState.targetAdmin='${ad.k}'; renderXbNotifTestLabModal();">${ad.l}</button>
+                            `).join('')}
+                        </div>
+
+                        <div style="display:flex;gap:4px;overflow-x:auto;padding-bottom:2px;">
+                            <button type="button" class="xb-ex-adm-chip ${_xbNotifLabState.pack==='all'?'on':''}" style="flex-shrink:0;" onclick="_xbNotifLabState.pack='all'; renderXbNotifTestLabModal();">All (25)</button>
+                            ${_XB_NOTIF_LAB_PACKS.map(pk => `
+                                <button type="button" class="xb-ex-adm-chip ${_xbNotifLabState.pack===pk.id?'on':''}" style="flex-shrink:0;" onclick="_xbNotifLabState.pack='${pk.id}'; renderXbNotifTestLabModal();">${pk.lbl}</button>
+                            `).join('')}
+                        </div>
+
+                        <div id="xbLabStatusBar" style="font-family:'JetBrains Mono',monospace;font-size:0.55rem;font-weight:800;text-align:center;color:#38bdf8;display:${_xbNotifLabState.running?'block':'none'};">
+                            ⏳ Sending ${_xbNotifLabState.sentCnt}/${_xbNotifLabState.totCnt}...
+                        </div>
+
+                        <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:6px;">
+                            <button type="button" id="xbLabSendBatchBtn" class="btn-ui primary" style="height:37px;border-radius:9px;font-size:0.68rem;"
+                                onclick="${_xbNotifLabState.running ? '_xbNotifLabState.abort=true;' : 'xbNotifLabSendBatch()'}">
+                                ${_xbNotifLabState.running ? '🛑 Stop Sending' : ('🚀 Send ' + (_xbNotifLabState.pack==='all' ? 'All 25' : ('Pack (' + list.length + ')')))}
+                            </button>
+                            <button type="button" class="xb-ex-pre-btn" style="height:37px;color:#fb7185;border-color:rgba(244,63,94,0.45);"
+                                onclick="xbNotifLabClearWebTests()">
+                                🧹 Clear Web
+                            </button>
+                        </div>
+
+                        <div style="max-height:36vh;overflow-y:auto;display:flex;flex-direction:column;gap:5px;padding-right:2px;">
+                            ${list.map((tpl, idx) => `
+                                <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;padding:7px 9px;border-radius:9px;background:var(--bg-input);border:1px solid var(--ex-hairline);font-family:'JetBrains Mono',monospace;">
+                                    <div style="min-width:0;">
+                                        <div style="font-size:0.61rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${idx + 1}. ${escXbEx(tpl.name)}</div>
+                                        <div style="font-size:0.48rem;color:var(--text-muted);">${tpl.pack.toUpperCase()} • ${tpl.scope.toUpperCase()} • ${tpl.worker ? 'WORKER' : 'STORE'}</div>
+                                    </div>
+                                    <button type="button" class="xb-ex-paste-btn" style="height:26px;padding:0 9px;font-size:0.54rem;"
+                                        onclick="xbNotifLabSendOne('${tpl.id}', this)">▶ Test</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+                root.classList.add('open');
+            }
+
+            async function xbNotifLabDispatchTemplate(tpl) {
+                const buyer = xbExGetBuyerIdentity();
+                const tgHtml = _xbLabBox(tpl.title, tpl.rows, tpl.note, !!tpl.worker);
+                const webTitle = tpl.title.replace(/<[^>]+>/g, '');
+                const webBody = _xbLabWebBody(tpl.rows, tpl.note);
+
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'admin_notif_test_lab',
+                        sub_action: 'send',
+                        secret: 'XB-PAT-GUARD-2026',
+                        tpl_id: tpl.id,
+                        channel: _xbNotifLabState.channel,
+                        target_admin: _xbNotifLabState.targetAdmin,
+                        web_scope: tpl.scope || 'admin',
+                        user_id: buyer.uid,
+                        username: buyer.uname,
+                        tg_html: tgHtml,
+                        reply_markup: tpl.markup || null,
+                        web_title: webTitle,
+                        web_body: webBody
+                    })
+                });
+                return await res.json();
+            }
+
+            async function xbNotifLabSendOne(tplId, btnEl) {
+                const tpl = _XB_NOTIF_LAB_TEMPLATES.find(t => t.id === tplId);
+                if (!tpl) return;
+                if (btnEl) { btnEl.disabled = true; btnEl.innerText = '⏳'; }
+                try {
+                    const d = await xbNotifLabDispatchTemplate(tpl);
+                    if (d && d.result) {
+                        if (btnEl) btnEl.innerText = '✓ OK';
+                        if (typeof showToast === 'function') showToast(`✅ Sent: ${tpl.name}`);
+                        if (_xbNotifLabState.channel !== 'tg' && typeof pullWebCloudSyncState === 'function') {
+                            setTimeout(() => pullWebCloudSyncState(true), 400);
+                        }
+                    } else {
+                        if (btnEl) btnEl.innerText = '❌';
+                    }
+                } catch (e) {
+                    if (btnEl) btnEl.innerText = '❌';
+                } finally {
+                    setTimeout(() => { if (btnEl) { btnEl.disabled = false; btnEl.innerText = '▶ Test'; } }, 1400);
+                }
+            }
+
+            async function xbNotifLabSendBatch() {
+                if (_xbNotifLabState.running) return;
+                const list = _xbNotifLabState.pack === 'all'
+                    ? _XB_NOTIF_LAB_TEMPLATES
+                    : _XB_NOTIF_LAB_TEMPLATES.filter(t => t.pack === _xbNotifLabState.pack);
+                if (!list.length) return;
+
+                _xbNotifLabState.running = true;
+                _xbNotifLabState.abort = false;
+                _xbNotifLabState.sentCnt = 0;
+                _xbNotifLabState.totCnt = list.length;
+                renderXbNotifTestLabModal();
+
+                for (let i = 0; i < list.length; i++) {
+                    if (_xbNotifLabState.abort) break;
+                    const bar = document.getElementById('xbLabStatusBar');
+                    if (bar) bar.innerText = `⏳ Sending ${i + 1}/${list.length}: ${list[i].name}...`;
+                    try {
+                        await xbNotifLabDispatchTemplate(list[i]);
+                        _xbNotifLabState.sentCnt = i + 1;
+                    } catch (e) {}
+                    if (i + 1 < list.length && !_xbNotifLabState.abort) {
+                        await new Promise(r => setTimeout(r, 1150));
+                    }
+                }
+
+                const stopped = _xbNotifLabState.abort;
+                const sentN = _xbNotifLabState.sentCnt;
+                _xbNotifLabState.running = false;
+                _xbNotifLabState.abort = false;
+                renderXbNotifTestLabModal();
+                if (typeof showToast === 'function') {
+                    showToast(stopped ? `🛑 Stopped at ${sentN}/${list.length}` : `✅ ${sentN} test notifications sent!`);
+                }
+                if (_xbNotifLabState.channel !== 'tg' && typeof pullWebCloudSyncState === 'function') {
+                    setTimeout(() => pullWebCloudSyncState(true), 500);
+                }
+            }
+
+            async function xbNotifLabClearWebTests() {
+                const buyer = xbExGetBuyerIdentity();
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'admin_notif_test_lab',
+                            sub_action: 'clear_web',
+                            secret: 'XB-PAT-GUARD-2026',
+                            user_id: buyer.uid,
+                            username: buyer.uname
+                        })
+                    });
+                    const d = await res.json();
+                    if (d && d.result) {
+                        if (typeof showToast === 'function') showToast('🧹 Semua notif tes Web berhasil dibersihkan!');
+                        if (typeof pullWebCloudSyncState === 'function') pullWebCloudSyncState(true);
+                    }
+                } catch (e) {
+                    if (typeof showToast === 'function') showToast('⚠️ Gagal menghapus notif tes Web.');
+                }
+            }
+
             function onXbExPinPadKey(k) {
                 const inp = document.getElementById('xbExPinInp');
                 if (!inp) return;
@@ -10326,7 +11497,7 @@ const XB_EX_BANK_THEMES = {
                 const errEl = document.getElementById('xbExPinErr');
                 if (errEl) errEl.innerText = '';
                 if (cur.length === 6) {
-                    setTimeout(() => executeXbExConfirmedOrder(), 120);
+                    setTimeout(() => executeXbExServerOrderV2(), 120);
                 }
             }
 
