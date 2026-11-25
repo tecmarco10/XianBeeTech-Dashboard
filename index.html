@@ -5440,10 +5440,30 @@
             gap: 4px !important;
         }
         .xb-ex-mbtn {
-            padding: 7px 3px !important;
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            gap: 5px !important;
+            padding: 8px 4px !important;
             border-radius: 8px !important;
             border: 1.5px solid transparent !important;
-            font-size: 0.6rem !important;
+            font-size: 0.61rem !important;
+            font-weight: 800 !important;
+            text-align: center !important;
+            white-space: nowrap !important;
+            line-height: 1 !important;
+        }
+        .xb-ex-mbtn svg {
+            flex-shrink: 0;
+        }
+        .xb-ex-id-flag {
+            display: inline-flex;
+            width: 13px;
+            height: 9px;
+            border-radius: 2px;
+            overflow: hidden;
+            border: 0.5px solid rgba(255, 255, 255, 0.35);
+            flex-shrink: 0;
         }
         .xb-ex-mbtn.active {
             background: linear-gradient(135deg, rgba(14, 30, 68, 0.92), rgba(37, 19, 74, 0.92)) !important;
@@ -9095,9 +9115,19 @@ const XB_EX_BANK_THEMES = {
                     </div>
 
                     <div class="xb-ex-modes">
-                        <button type="button" class="xb-ex-mbtn ${st.mode === 'swap' ? 'active' : ''}" onclick="setXbExMode('swap')">🔄 Swap</button>
-                        <button type="button" class="xb-ex-mbtn ${st.mode === 'gas' ? 'active' : ''}" onclick="setXbExMode('gas')">⛽ Buy Crypto</button>
-                        <button type="button" class="xb-ex-mbtn ${st.mode === 'idr' ? 'active' : ''}" onclick="setXbExMode('idr')">🇮🇩 Convert to IDR</button>
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'swap' ? 'active' : ''}" onclick="setXbExMode('swap')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 16V4m0 0-3 3m3-3 3 3M17 8v12m0 0 3-3m-3 3-3-3"/></svg>
+                            <span>Swap</span>
+                        </button>
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'gas' ? 'active' : ''}" onclick="setXbExMode('gas')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                            <span>Buy Crypto</span>
+                        </button>
+                        <button type="button" class="xb-ex-mbtn ${st.mode === 'idr' ? 'active' : ''}" onclick="setXbExMode('idr')">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                            <span>Convert IDR</span>
+                            <span class="xb-ex-id-flag"><svg width="13" height="9" viewBox="0 0 13 9"><rect width="13" height="4.5" fill="#ef4444"/><rect y="4.5" width="13" height="4.5" fill="#ffffff"/></svg></span>
+                        </button>
                     </div>
 
                     ${modeHtml}
