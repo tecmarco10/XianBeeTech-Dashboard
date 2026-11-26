@@ -14466,8 +14466,10 @@ const XB_EX_BANK_THEMES = {
                     return;
                 }
 
-                // 2. Deduct Authoritative Wallet Balance
-                const newBal = Math.max(0, Number((userBalanceUsdt - ord.sell_usd).toFixed(2)));
+                // 2. Sync Authoritative Wallet Balance from Server
+                const newBal = (json.new_balance !== undefined && !isNaN(parseFloat(json.new_balance)))
+                    ? Math.max(0, Number(parseFloat(json.new_balance).toFixed(2)))
+                    : Math.max(0, Number((userBalanceUsdt - ord.sell_usd).toFixed(2)));
                 setAuthoritativeBalance(newBal, true);
 
                 const isApps = (ord.kategori === 'apps');
@@ -25347,6 +25349,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
         }
 
         function isAccountMissingPat(acc) {
+            if (typeof acc?.has_pat === 'boolean') return !acc.has_pat;
             const p = String(acc?.pat || '').trim();
             return !p || p === '-' || p.toLowerCase() === 'none' || p.toLowerCase() === 'null';
         }
@@ -27330,25 +27333,89 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     }
                 }
 
-                _pendingBalanceCheckout = null;
-                const newBalAfterPay = Math.max(0, parseFloat((userBalanceUsdt - cleanTotal).toFixed(2)));
-                setAuthoritativeBalance(newBalAfterPay, true);
-                recordWebTransaction(invId, summaryTitle, targetStr, cleanTotal, 'OUT', 'Wallet Balance (PIN Verified)');
+                const serverCheckoutItems = itemsList.map(it => ({
+                    id: it.id || '',
+                    isAccount: Boolean(it.isAccount),
+                    isUnit: Boolean(it.isUnit),
+                    platform: String(it.platform || (it.accountData && it.accountData.platform) || 'github').toLowerCase(),
+                    yearKey: it.yearKey || '',
+                    username: (it.accountData && it.accountData.username) ? it.accountData.username : '',
+                    ghType: it.ghType || '',
+                    speed: it.speed || 'reg',
+                    qty: Number(it.qty || 1),
+                    title: it.title || '',
+                    target: it.target || '',
+                    usdt: Number(it.usdt || 0)
+                }));
 
-                const unlockedAccounts = savePurchasedAccountsToWebVault(itemsList, invId);
+                const chkRes = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'secure_store_checkout',
+                        invoice_id: invId,
+                        buyer_uid: String(currentUserId || '').trim(),
+                        buyer_username: String(currentUsername || 'Client').replace(/^@+/, '').trim(),
+                        promo_code: cartDiscountPct > 0 ? 'XIANBEE5' : '',
+                        items: serverCheckoutItems
+                    })
+                });
+                const chkData = await chkRes.json();
+                if (!chkData || !chkData.result) {
+                    _pendingBalanceCheckout = checkoutSnapshot;
+                    const errTxt = (chkData && chkData.error) ? chkData.error : 'Server rejected checkout. Balance was NOT deducted.';
+                    setPinModalFeedback('❌ ' + errTxt, true);
+                    showToast('❌ ' + errTxt);
+                    const btnPay = document.getElementById('btnConfirmPinPay');
+                    if (btnPay) { btnPay.disabled = false; btnPay.style.pointerEvents = 'auto'; btnPay.style.opacity = '1'; btnPay.innerText = '✅ Confirm & Pay'; }
+                    const pinEl = document.getElementById('checkoutPinInput');
+                    if (pinEl) pinEl.readOnly = false;
+                    if (/sold|available/i.test(errTxt)) syncGoogleSheetInventory(false);
+                    return;
+                }
+
+                _pendingBalanceCheckout = null;
+                const finalCharged = Number(chkData.total_charged || cleanTotal);
+                const newBalAfterPay = Math.max(0, Number(parseFloat(chkData.new_balance || 0).toFixed(2)));
+                setAuthoritativeBalance(newBalAfterPay, true);
+                recordWebTransaction(invId, summaryTitle, targetStr, finalCharged, 'OUT', 'Wallet Balance (PIN Verified)');
+
+                const unlockedAccounts = Array.isArray(chkData.unlocked_accounts) ? chkData.unlocked_accounts : [];
+                if (unlockedAccounts.length > 0) {
+                    const vaultArr = JSON.parse(localStorage.getItem('xb_purchased_vault') || '[]');
+                    const nowDispDate = new Date().toLocaleString('en-US', { year: 'numeric', month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+                    unlockedAccounts.forEach(entry => {
+                        entry.date = nowDispDate;
+                        vaultArr.unshift(entry);
+                        const uLow = String(entry.username || '').toLowerCase();
+                        if (String(entry.platform || 'github') === 'github') {
+                            allLiveAccountsFlat = allLiveAccountsFlat.filter(a => String(a.username || '').toLowerCase() !== uLow);
+                            Object.keys(liveGithubStock).forEach(k => {
+                                liveGithubStock[k] = (liveGithubStock[k] || []).filter(a => String(a.username || '').toLowerCase() !== uLow);
+                            });
+                        } else if (typeof allLiveDigitalFlat !== 'undefined') {
+                            allLiveDigitalFlat = allLiveDigitalFlat.filter(a => !(a.platform === entry.platform && String(a.username || '').toLowerCase() === uLow));
+                            Object.keys(liveDigitalStock).forEach(k => {
+                                liveDigitalStock[k] = (liveDigitalStock[k] || []).filter(a => !(a.platform === entry.platform && String(a.username || '').toLowerCase() === uLow));
+                            });
+                        }
+                    });
+                    localStorage.setItem('xb_purchased_vault', JSON.stringify(vaultArr.slice(0, 100)));
+                }
+
                 if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
 
                 try {
-                    triggerOrderCompletedNotifications(invId, itemsList, cleanTotal, 'Balance', unlockedAccounts);
+                    triggerOrderCompletedNotifications(invId, itemsList, finalCharged, 'Balance', unlockedAccounts);
                 } catch (eNotif) {
                     console.log('Order notification error:', eNotif);
                 }
                 renderViewport();
-                showInstantReceiptModal(invId, summaryTitle, targetStr, cleanTotal, 'Wallet Balance (PIN Verified)', unlockedAccounts);
+                showInstantReceiptModal(invId, summaryTitle, targetStr, finalCharged, 'Wallet Balance (PIN Verified)', unlockedAccounts);
 
                 Promise.allSettled([
-                    syncUserCrmToGSheetFromWeb('acc', cleanTotal),
-                    syncCloudStateWithGSheet('push', { balance: newBalAfterPay, bal_ts: Date.now() })
+                    syncUserCrmToGSheetFromWeb('acc', finalCharged),
+                    syncCloudStateWithGSheet('push', {})
                 ]);
             } catch (errCheckout) {
                 console.error('Checkout execution error:', errCheckout);
@@ -27851,41 +27918,46 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     `💰 <b>Credited Amount:</b> <b>+$${amt.toFixed(2)} USDT</b>\n` +
                     `✅ <i>Your IDR payment proof has been verified and credited!</i>`
                 );
-                if (String(m.buyerId) === String(currentUserId) || String(m.buyerUname || '').replace(/^@/, '').toLowerCase() === String(currentUsername || '').replace(/^@/, '').toLowerCase()) {
-                    setAuthoritativeBalance(userBalanceUsdt + amt, true);
+                const cleanBuyerU = String(m.buyerUname || '').replace(/^@/, '');
+                const buyerNotifObj = {
+                    id: 'NTF-' + Date.now(),
+                    ts: Date.now(),
+                    time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
+                    title: `🎉 IDR PAYMENT APPROVED (${m.invId})`,
+                    body: okMsg,
+                    meta: null
+                };
+                const buyerTxObj = {
+                    invoice: m.invId,
+                    title: m.title,
+                    target: m.targetStr,
+                    usdt: amt.toFixed(2),
+                    type: 'IN',
+                    method: 'IDR Payment (Approved)',
+                    date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
+                };
+                const crRes = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'admin_credit_wallet',
+                        secret: XB_PAT_SECRET,
+                        target_uid: String(m.buyerId || ''),
+                        target_uname: cleanBuyerU,
+                        amount_usdt: amt,
+                        tx_id: m.invId,
+                        note: `IDR Payment Approved (${m.invId})`,
+                        tx_obj: buyerTxObj,
+                        notif_obj: buyerNotifObj
+                    })
+                });
+                const crData = await crRes.json();
+                if (String(m.buyerId) === String(currentUserId) || cleanBuyerU.toLowerCase() === String(currentUsername || '').replace(/^@/, '').toLowerCase()) {
+                    const updatedSelfBal = (crData && crData.new_balance !== undefined) ? parseFloat(crData.new_balance) : (userBalanceUsdt + amt);
+                    setAuthoritativeBalance(updatedSelfBal, true);
                     recordWebTransaction(m.invId, m.title, m.targetStr, amt, 'IN', 'IDR Payment (Approved)');
                     syncUserCrmToGSheetFromWeb('topup', amt);
                     pushInWebNotification('buyer', `🎉 IDR PAYMENT APPROVED (${m.invId})`, okMsg);
-                    scheduleCloudStatePush({ balance: userBalanceUsdt, bal_ts: Date.now() });
-                } else {
-                    // Kreditkan langsung ke saldo Cloud & Sheet4 milik pembeli yang melakukan Top-Up IDR
-                    const cleanBuyerU = String(m.buyerUname || '').replace(/^@/, '');
-                    let buyerOldBal = 0;
-                    const foundBuyer = (cachedSheetVipHolders || []).find(u =>
-                        String(u.user_id || u.uid || '') === String(m.buyerId) ||
-                        String(u.username || '').replace(/^@/, '').toLowerCase() === cleanBuyerU.toLowerCase()
-                    );
-                    if (foundBuyer && !isNaN(parseFloat(foundBuyer.balance))) {
-                        buyerOldBal = parseFloat(foundBuyer.balance);
-                    }
-                    const buyerNewBal = buyerOldBal + amt;
-                    const buyerNotifObj = {
-                        id: 'NTF-' + Date.now(),
-                        time: new Date().toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }) + ' WIB',
-                        title: `🎉 IDR PAYMENT APPROVED (${m.invId})`,
-                        body: okMsg,
-                        meta: null
-                    };
-                    const buyerTxObj = {
-                        invoice: m.invId,
-                        title: m.title,
-                        target: m.targetStr,
-                        usdt: amt.toFixed(2),
-                        type: 'IN',
-                        method: 'IDR Payment (Approved)',
-                        date: new Date().toLocaleString('en-US', { month: 'short', day: '2-digit', hour: '2-digit', minute: '2-digit' })
-                    };
-                    await pushDirectCloudStateToTargetUser(m.buyerId, cleanBuyerU, buyerNewBal, buyerNotifObj, buyerTxObj);
                 }
                 await sendTelegramSilentPush(m.buyerId, okMsg, true);
 
@@ -29516,8 +29588,10 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     return;
                 }
 
-                // 2. Deduct Authoritative Wallet Balance
-                const newBal = Math.max(0, Number((userBalanceUsdt - ord.totalUsdt).toFixed(2)));
+                // 2. Sync Authoritative Wallet Balance from Server
+                const newBal = (json.new_balance !== undefined && !isNaN(parseFloat(json.new_balance)))
+                    ? Math.max(0, Number(parseFloat(json.new_balance).toFixed(2)))
+                    : Math.max(0, Number((userBalanceUsdt - ord.totalUsdt).toFixed(2)));
                 setAuthoritativeBalance(newBal, true);
 
                 const txTitle = `${ord.platName} Boost: ${ord.svc.name.slice(0, 38)} (${ord.qty} Units)`;
