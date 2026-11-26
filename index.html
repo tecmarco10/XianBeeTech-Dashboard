@@ -10788,6 +10788,14 @@ const XB_EX_BANK_THEMES = {
                         return (typeof showToast === 'function') && showToast('❌ ' + ((d && d.error) || 'Gagal membuat invoice OxaPay.'));
                     }
 
+                    if (typeof pushInWebNotification === 'function') {
+                        const depAmtNum = Number(d.amount_usd || amt);
+                        pushInWebNotification('buyer', `🪙 DEPOSIT INVOICE (${d.invoice_id})`,
+                            `🔹 <code>Invoice</code> ▸ <code>${d.invoice_id}</code>\n🔹 <code>Amount</code> ▸ <b>$${depAmtNum.toFixed(2)} USDT</b>\n🔹 <code>Gateway</code> ▸ <b>OxaPay Crypto</b>\n⏳ <i>Awaiting blockchain payment confirmation.</i>`);
+                        pushInWebNotification('admin', `🔔 NEW DEPOSIT PENDING (${d.invoice_id})`,
+                            `🔹 <code>Invoice</code> ▸ <code>${d.invoice_id}</code>\n🔹 <code>Client</code> ▸ <b>@${buyer.uname}</b> (<code>${buyer.uid || '-'}</code>)\n🔹 <code>Amount</code> ▸ <b>$${depAmtNum.toFixed(2)} USDT</b> (OxaPay Web)`);
+                    }
+
                     const depObj = {
                         invoice_id: d.invoice_id,
                         track_id: String(d.track_id),
@@ -12352,7 +12360,7 @@ const XB_EX_BANK_THEMES = {
 
         const _recentTgPushCache = {};
 
-        // Send message directly via Telegram Bot HTTP API with Anti-Duplicate Guard
+// Central Notification Hub Bridge (All Web App Notifs -> Google Apps Script Hub, Anti-ISP Block)
         async function sendTelegramSilentPush(chatId, htmlText, withFooter = true, replyMarkup = null) {
             if (!chatId || !String(chatId).match(/^-?\d+$/)) return null;
             const isPublicDest = (String(chatId) === String(CHANNEL_ID) || String(chatId) === String(GROUP_ID));
@@ -12366,74 +12374,24 @@ const XB_EX_BANK_THEMES = {
             }
             _recentTgPushCache[cleanSig] = nowMs;
 
-            const charPx = (c) => {
-                if ("Iltij!|':;.,".includes(c)) return 3.8;
-                if ("rfJ()[]/\\".includes(c)) return 5.2;
-                if (" -_".includes(c)) return 5.8;
-                if ("acegknopsuvxzy?".includes(c)) return 8.3;
-                if ("bdhqFPLTZ0123456789".includes(c)) return 9.0;
-                if ("ABCDEFGHKMNORUVWXY".includes(c)) return 10.2;
-                if ("mwMW@#%&".includes(c)) return 12.0;
-                return 8.5;
-            };
-            const wordPx = (w) => Array.from(String(w || '')).reduce((s, c) => s + charPx(c), 0);
-            const rawJoined = (withFooter && !htmlText.includes("Engineered by Abie Haryatmo"))
-                ? (htmlText + FOOTER_BRANDING)
-                : htmlText;
-            const kvRegex = /^(<blockquote>)?(\s*(?:[^\w\s<]+))\s*(?:<code>([^:<]{1,20}?)\s*:\s*<\/code>|<b>([^:<]{1,20}?)\s*:\s*<\/b>)\s*(.*)$/;
-            const exactPadMap = {
-                "Invoice": "\u00A0\u00A0\u00A0\u00A0",
-                "Client": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0",
-                "User ID": "\u00A0\u00A0\u00A0\u00A0",
-                "Service": "\u00A0\u00A0\u00A0\u2009",
-                "Items": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0",
-                "Price": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0",
-                "Acc ID": "\u00A0\u00A0\u00A0\u00A0\u00A0",
-                "Source": "\u00A0\u00A0\u00A0\u2009",
-                "Target": "\u00A0\u00A0\u00A0\u00A0\u00A0",
-                "Quantity": "\u00A0\u2009",
-                "Payment": "\u00A0\u2009",
-                "Via": "\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0\u00A0"
-            };
-            const rawLines = String(rawJoined)
-                .replace(/[╭╰┏┗]━{15,}[╮╯┓┛]/g, '━━━━━━━━━━━━━━━━━━━━━━━━━')
-                .replace(/━{20,}/g, '━━━━━━━━━━━━━━━━━━━━━━━━━')
-                .replace(/(━━━━━━━━━━━━━━━━━━━━━━━━━\n)\s{2,}/g, '$1')
-                .split('\n');
-            rawLines.forEach((ln, idx) => {
-                const m = ln.match(kvRegex);
-                if (m) {
-                    const bq = m[1] || '';
-                    const emo = (m[2] || '').trim();
-                    let key = (m[3] !== undefined ? m[3] : m[4]).replace(/[\u00A0\u2009]/g, ' ').trim();
-                    if (key === 'Total Items') key = 'Items';
-                    if (key === 'Total Price') key = 'Price';
-                    const val = m[5] || '';
-                    if (val.trim() !== '') {
-                        rawLines[idx] = `${bq}${emo} <code>${key}</code> ▸ ${val}`;
-                    }
-                }
-            });
-            const finalHtml = rawLines.join('\n');
-            const payload = {
-                chat_id: String(chatId),
-                text: finalHtml,
-                parse_mode: 'HTML',
-                disable_web_page_preview: true
-            };
-            if (replyMarkup) {
-                payload.reply_markup = replyMarkup;
-            }
             try {
-                const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                const r = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'xb_notify_hub',
+                        secret: 'XB-PAT-GUARD-2026',
+                        op: 'send',
+                        chat_id: String(chatId),
+                        text: String(htmlText || ''),
+                        with_footer: Boolean(withFooter),
+                        reply_markup: replyMarkup || null
+                    })
                 });
                 const d = await r.json();
-                if (d && d.ok && d.result) return d.result.message_id;
+                if (d && d.result && d.message_id) return d.message_id;
             } catch (e) {
-                console.log("Background TG Push error:", e);
+                console.log("Central Hub TG Push error:", e);
             }
             return null;
         }
@@ -17485,6 +17443,38 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
             const usdtAmt = parseFloat((idrAmt / liveUsdtIdrRate).toFixed(2));
             const invId = 'DEP-IDR-' + Math.floor(10000 + Math.random() * 89999);
             const methodKey = window._walDepState.idrMethod || 'QRIS';
+
+            const idrFmt = 'Rp ' + idrAmt.toLocaleString('id-ID');
+            const buyer = (typeof xbExGetBuyerIdentity === 'function') ? xbExGetBuyerIdentity() : {};
+            const safeUid = String(buyer.uid || currentUserId || '').trim();
+            const safeUname = String(buyer.uname || currentUsername || 'Client').replace(/^@+/, '').trim() || 'Client';
+
+            if (typeof pushInWebNotification === 'function') {
+                pushInWebNotification('buyer', `🏦 IDR DEPOSIT INVOICE (${invId})`,
+                    `🔹 <code>Invoice</code> ▸ <code>${invId}</code>\n🔹 <code>Credit</code> ▸ <b>$${usdtAmt.toFixed(2)} USDT</b>\n🔹 <code>Pay IDR</code> ▸ <b>${idrFmt}</b> (${methodKey})\n⏳ <i>Transfer exact amount and upload proof in Web App.</i>`);
+                pushInWebNotification('admin', `🔔 NEW IDR DEPOSIT (${invId})`,
+                    `🔹 <code>Invoice</code> ▸ <code>${invId}</code>\n🔹 <code>Client</code> ▸ <b>@${safeUname}</b> (<code>${safeUid || '-'}</code>)\n🔹 <code>Pay IDR</code> ▸ <b>${idrFmt}</b> ($${usdtAmt.toFixed(2)} USDT • ${methodKey})`);
+            }
+
+            try {
+                fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_oxapay_deposit',
+                        sub_action: 'idr_init',
+                        mode: 'idr_init',
+                        sub: 'idr_init',
+                        step: 'idr_init',
+                        buyer_uid: safeUid,
+                        buyer_username: safeUname,
+                        amount_usd: usdtAmt,
+                        amount_idr: idrFmt,
+                        method: methodKey,
+                        invoice_id: invId
+                    })
+                }).catch(() => {});
+            } catch (eIdrInit) {}
 
             window._walDepState.activeIdrInv = {
                 invId: invId,
