@@ -29853,43 +29853,53 @@ let _ghAgeCheckerResults = [];
             const idrAmount = Math.round(amountUsdt * liveUsdtIdrRate);
             const idrFmt = 'Rp ' + idrAmount.toLocaleString('id-ID');
             const actionKey = `REM_TOPUP_${invId}`;
+            const buyer = (typeof xbExGetBuyerIdentity === 'function') ? xbExGetBuyerIdentity() : {};
+            const safeUid = String(buyer.uid || currentUserId || '').trim();
+            const safeUname = String(buyer.uname || currentUsername || 'Client').replace(/^@+/, '').trim() || 'Client';
+
+            // Buka modal QRIS / SeaBank / DANA langsung tanpa nunggu network
+            renderIdrGatewayView('QRIS');
 
             const adminIdrCreatedMsg = (
-                `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                `   🇮🇩 <b>N E W  I D R  I N V O I C E  (W E B)</b>\n` +
-                `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                `👤 <b>Client:</b> ${currentFullName} (@${currentUsername.replace('@','')} | <code>${currentUserId}</code>)\n` +
-                `🧾 <b>Invoice ID:</b> <code>${invId}</code>\n` +
-                `📦 <b>Item:</b> <b>${title}</b>\n` +
-                `💰 <b>Amount Due:</b> <b>${idrFmt}</b> ($${amountUsdt.toFixed(2)} USDT)\n` +
-                `⏳ <i>Status: Awaiting IDR Transfer & Screenshot Upload...</i>`
+                `🔹 <code>Invoice</code> ▸ <code>${invId}</code>\n` +
+                `🔹 <code>Client</code> ▸ <b>@${safeUname}</b> (<code>${safeUid || '-'}</code>)\n` +
+                `🔹 <code>Credit</code> ▸ <b>$${amountUsdt.toFixed(2)} USDT</b>\n` +
+                `🔹 <code>Pay IDR</code> ▸ <b>${idrFmt}</b>\n` +
+                `⏳ <i>Awaiting IDR transfer & payment proof upload.</i>`
             );
 
             const remMeta = {
                 type: 'remind_topup',
                 actionKey: actionKey,
                 invId: invId,
-                buyerId: currentUserId,
-                buyerUname: currentUsername,
+                buyerId: safeUid,
+                buyerUname: safeUname,
                 itemTitle: title,
                 amountUsdt: amountUsdt
             };
-            const notifId = pushInWebNotification('admin', `🇮🇩 PENDING IDR INVOICE (${invId})`, adminIdrCreatedMsg, remMeta);
-            pushInWebNotification('buyer', `🇮🇩 IDR INVOICE (${invId})`, `Please transfer <b>${idrFmt}</b> ($${amountUsdt.toFixed(2)} USDT) via QRIS, SeaBank, or DANA and upload your payment screenshot.`);
+            pushInWebNotification('admin', `🔔 NEW IDR DEPOSIT (${invId})`, adminIdrCreatedMsg, remMeta);
+            pushInWebNotification('buyer', `🏦 IDR DEPOSIT INVOICE (${invId})`, `Please transfer <b>${idrFmt}</b> ($${amountUsdt.toFixed(2)} USDT) via QRIS, SeaBank, or DANA and upload your payment proof.`);
 
-            const remKb = {
-                inline_keyboard: [
-                    [{ text: '🔔 Remind Buyer to Pay', callback_data: `admrem_topup_${currentUserId}_${invId}` }]
-                ]
-            };
-            const tgMsgIdsMap = {};
-            for (const admId of ADMIN_IDS) {
-                const mid = await sendTelegramSilentPush(admId, adminIdrCreatedMsg, true, remKb);
-                if (mid) tgMsgIdsMap[admId] = mid;
-            }
-            attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
-
-            renderIdrGatewayView('QRIS');
+            // Tembak notif Telegram (Buyer DM + Admin DM + Cloud Admin) lewat Apps Script (anti-blokir ISP)
+            try {
+                fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_oxapay_deposit',
+                        sub_action: 'idr_init',
+                        mode: 'idr_init',
+                        sub: 'idr_init',
+                        step: 'idr_init',
+                        buyer_uid: safeUid,
+                        buyer_username: safeUname,
+                        amount_usd: Number(amountUsdt),
+                        amount_idr: idrFmt,
+                        method: 'QRIS / SeaBank / DANA',
+                        invoice_id: invId
+                    })
+                }).catch(() => {});
+            } catch (eIdrPush) {}
         }
 
         function renderIdrGatewayView(methodType) {
