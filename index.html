@@ -9100,51 +9100,15 @@ const XB_EX_BANK_THEMES = {
             }
 
             function xbExMountButtonInStoreCategory() {
-                const onCnt = getXbExEnabledCoins().length;
-                const totCnt = Array.isArray(XB_EX_COINS) ? XB_EX_COINS.length : 0;
-                const badgeText = `${onCnt}/${totCnt} ON ➔`;
-                const isAdm = isXbExAdminUser();
+                const stray = document.getElementById('xbNotifLabStudioBtn');
+                if (stray) stray.remove();
 
-                // 1. Mount di Store Category (tanpa early-return yang memblokir tombol Notif Test Lab)
-                let existingBtn = document.getElementById('xbExStoreCatCoinsBtn');
+                const existingBtn = document.getElementById('xbExStoreCatCoinsBtn');
                 if (existingBtn && document.body.contains(existingBtn)) {
+                    const onCnt = getXbExEnabledCoins().length;
+                    const totCnt = Array.isArray(XB_EX_COINS) ? XB_EX_COINS.length : 0;
                     const bSpan = existingBtn.querySelector('.xb-ex-sc-badge');
-                    if (bSpan) bSpan.innerText = badgeText;
-                    if (isAdm && !document.getElementById('xbNotifLabOpenBtn') && existingBtn.parentElement) {
-                        existingBtn.insertAdjacentElement('afterend', xbCreateNotifLabBtnEl('xbNotifLabOpenBtn'));
-                    }
-                } else {
-                    const nodes = document.querySelectorAll('h1,h2,h3,h4,div,span,p,label');
-                    let targetBox = null;
-                    for (let i = 0; i < nodes.length; i++) {
-                        const el = nodes[i];
-                        if (el.closest('button') || el.offsetParent === null) continue;
-                        const txt = (el.textContent || '').trim();
-                        if (txt.length > 0 && txt.length <= 44 && /store\s*categor(y|ies)|kategori\s*toko/i.test(txt)) {
-                            targetBox = el.closest('.modal-body, .modal-content, .card, .panel, [id*="Body"], [id*="Modal"], section') || el.parentElement;
-                            if (targetBox) break;
-                        }
-                    }
-                    if (targetBox) {
-                        const btn = document.createElement('button');
-                        btn.type = 'button';
-                        btn.id = 'xbExStoreCatCoinsBtn';
-                        btn.onclick = xbExOpenCoinsFromStoreCat;
-                        btn.style.cssText = 'width:100%;margin-top:8px;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(56,189,248,0.5);background:linear-gradient(135deg,rgba(14,30,68,0.92),rgba(37,19,74,0.92));color:#f8fafc;font-family:"JetBrains Mono",monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;';
-                        btn.innerHTML = `<span>🪙 Exchange Coins &amp; Networks</span><span class="xb-ex-sc-badge" style="color:#34d399;flex-shrink:0;">${badgeText}</span>`;
-                        targetBox.appendChild(btn);
-                        if (isAdm && !document.getElementById('xbNotifLabOpenBtn')) {
-                            targetBox.appendChild(xbCreateNotifLabBtnEl('xbNotifLabOpenBtn'));
-                        }
-                    }
-                }
-
-                // 2. Mount juga di Tab Admin Studio (tepat di bawah tombol Stealth Command biar langsung kelihatan)
-                if (isAdm && !document.getElementById('xbNotifLabStudioBtn')) {
-                    const stealthEl = document.querySelector('[onclick*="StealthCommand"], [onclick*="PcStealth"], [onclick*="PcCockpit"]');
-                    if (stealthEl && stealthEl.offsetParent !== null && stealthEl.parentElement) {
-                        stealthEl.insertAdjacentElement('afterend', xbCreateNotifLabBtnEl('xbNotifLabStudioBtn'));
-                    }
+                    if (bSpan) bSpan.innerText = `${onCnt}/${totCnt} ON ➔`;
                 }
             }
 
@@ -23054,9 +23018,20 @@ let _ghAgeCheckerResults = [];
                     ${renderRows(mpRows)}
                 </div>
 
-                <div class="xb-wal-card" style="padding:9px 10px;margin-bottom:11px;display:flex;flex-direction:column;gap:6px;">
+                <div class="xb-wal-card" style="padding:9px 10px;margin-bottom:9px;display:flex;flex-direction:column;gap:6px;">
                     <div style="font-family:'JetBrains Mono',monospace;font-size:0.54rem;font-weight:800;color:#c084fc;">🚀 BOOST SERVICE BOXES</div>
                     ${renderRows(bstRows)}
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:11px;">
+                    <button type="button" id="xbExStoreCatCoinsBtn" onclick="xbExOpenCoinsFromStoreCat()" style="width:100%;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(56,189,248,0.5);background:linear-gradient(135deg,rgba(14,30,68,0.92),rgba(37,19,74,0.92));color:#f8fafc;font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;">
+                        <span>🪙 Exchange Coins &amp; Networks</span>
+                        <span class="xb-ex-sc-badge" style="color:#34d399;flex-shrink:0;">${typeof getXbExEnabledCoins === 'function' ? getXbExEnabledCoins().length : 0}/${Array.isArray(XB_EX_COINS) ? XB_EX_COINS.length : 0} ON ➔</span>
+                    </button>
+                    <button type="button" id="xbNotifLabOpenBtn" onclick="if(typeof openXbNotifTestLab==='function') openXbNotifTestLab()" style="width:100%;padding:9px 11px;border-radius:10px;border:1.5px solid rgba(244,63,94,0.58);background:linear-gradient(135deg,rgba(24,14,48,0.95),rgba(44,14,42,0.94));color:#f8fafc;font-family:'JetBrains Mono',monospace;font-size:0.62rem;font-weight:800;display:flex;align-items:center;justify-content:space-between;gap:8px;cursor:pointer;">
+                        <span>🔔 Notif Test Lab (All 25)</span>
+                        <span style="color:#fb7185;flex-shrink:0;">OPEN ➔</span>
+                    </button>
                 </div>
 
                 <button type="button" class="btn-ui primary" style="width:100%;padding:10px;font-size:0.74rem;border-radius:10px;" onclick="closeModal('paymentGatewayModal')">✅ Done</button>
