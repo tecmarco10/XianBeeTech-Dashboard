@@ -762,7 +762,7 @@
             padding: 16px;
             opacity: 0;
             pointer-events: none;
-            transition: 0.22s;
+            transition: opacity 0.18s ease;
         }
 
         .modal-overlay.active {
@@ -4080,8 +4080,13 @@
         .xb-prf-toggle-pill::after { content: ''; position: absolute; top: 2px; left: 2px; width: 16px; height: 16px; border-radius: 50%; background: #ffffff; transition: transform 0.2s ease; }
         .xb-prf-toggle-pill.on::after { transform: translateX(18px); }
 
-        /* UNIFIED FULL-PAGE 100DVH STUDIO FRAME (ASSET EXCHANGE EDITION) */
-        #paymentGatewayModal.xb-fullpage-modal { padding: 5px; }
+        /* UNIFIED FULL-PAGE 100DVH STUDIO FRAME (ZERO-BLUR SMOOTH 60FPS) */
+        #paymentGatewayModal.xb-fullpage-modal {
+            padding: 5px;
+            background: rgba(3, 6, 16, 0.94) !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
         #paymentGatewayModal.xb-fullpage-modal > #paymentGatewayBody {
             width: 100%;
             max-width: 540px;
@@ -4091,10 +4096,11 @@
             border-radius: 16px;
             background: var(--bg-surface);
             border: 1px solid var(--ex-hairline);
-            box-shadow: 0 18px 46px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.2);
+            box-shadow: none;
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            transform: translateZ(0);
         }
         .xb-studio-title-bar {
             position: relative;
@@ -5974,7 +5980,7 @@
         .scb-nav-btn.active { background:linear-gradient(135deg,#0e1e44,#241348); border-color:#f43f5e; color:#ffffff; }
         [data-theme="platinum"] .scb-nav-btn.active { background:#ffffff; border-color:#e11d48; color:#0f172a; }
 
-        .scb-scroll { flex:1; min-height:0; overflow-y:auto; display:flex; flex-direction:column; gap:7px; }
+        .scb-scroll { flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain; touch-action:pan-y; transform:translateZ(0); display:flex; flex-direction:column; gap:7px; }
         .scb-scroll.is-fill { overflow:hidden; }
 
         /* 8-MODULE COMPACT SWITCHER (2 ROWS x 4 COLS, RAMPING & SEJAJAR) */
@@ -24161,6 +24167,10 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
         function scbRenderBody() {
             const box = document.getElementById('scbScrollBody');
             if (!box) return;
+            const keepScroll = (_scbState._lastRenderTab === _scbState.tab && _scbState._lastRenderMod === _scbState.mod);
+            const prevScroll = keepScroll ? box.scrollTop : 0;
+            _scbState._lastRenderTab = _scbState.tab;
+            _scbState._lastRenderMod = _scbState.mod;
             box.classList.toggle('is-fill', _scbState.tab === 'monitor');
 
             if (_scbState.tab === 'terminal') {
@@ -24285,11 +24295,13 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     </div>
                 `;
             }
+            if (keepScroll) box.scrollTop = prevScroll;
         }
 
         function closeXbStealthCommandV2() {
             if (_scbState.pollTimer) { clearInterval(_scbState.pollTimer); _scbState.pollTimer = null; }
             scbStopCdTicker();
+            document.body.style.overflow = '';
             const modal = document.getElementById('paymentGatewayModal');
             if (modal) modal.classList.remove('xb-fullpage-modal');
             closeModal('paymentGatewayModal');
@@ -24299,10 +24311,11 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
             const modal = document.getElementById('paymentGatewayModal');
             const body = document.getElementById('paymentGatewayBody');
             if (!modal || !body) return;
+            document.body.style.overflow = 'hidden';
             const ghLogo = (typeof GH_SVG_EMBLEM !== 'undefined') ? GH_SVG_EMBLEM : '🐙';
 
             body.innerHTML = `
-                <div class="scb-root">
+                <div class="scb-root" data-no-i18n="1">
                     <div class="scb-hero">
                         <div class="scb-hero-top">
                             <span class="scb-hero-logo xb-ex-gh-badge">${ghLogo}</span>
@@ -30715,6 +30728,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
 
         // SOLID FOOTER SHIELD + TIGHT CART SPACING + SAFE BOTTOM SCROLL CLEARANCE
         function syncExchangeBottomLayout() {
+            if (document.querySelector('.modal-overlay.active')) return;
             if (window.innerWidth >= 1100) {
                 const gDesk = document.getElementById('xbBottomOpaqueGuard');
                 if (gDesk) gDesk.style.display = 'none';
@@ -33359,8 +33373,13 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
 
         // Real-time MutationObserver for all dynamic renders, modals & live refreshes
         let _xbI18nRaf = null;
-        const _xbI18nObserver = new MutationObserver(() => {
+        const _xbI18nObserver = new MutationObserver((mutations) => {
             if (_xbI18nMutating || _xbI18nRaf) return;
+            const hasTranslatable = mutations.some(m => {
+                const el = m.target && m.target.nodeType === 1 ? m.target : m.target?.parentElement;
+                return el && !el.closest('[data-no-i18n="1"]');
+            });
+            if (!hasTranslatable) return;
             _xbI18nRaf = requestAnimationFrame(() => {
                 _xbI18nRaf = null;
                 xbTranslateNodeTree(document.body);
