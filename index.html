@@ -7501,9 +7501,9 @@
                             <button class="btn-ui secondary" type="button" style="padding:8px 6px;font-size:0.7rem;border-radius:9px;min-width:0;" onclick="enterGuestPreviewMode()">
                                 👁️ Guest Preview
                             </button>
-                            <a href="https://t.me/XianBeeTechStore_Bot" target="_blank" class="btn-ui secondary" style="padding:8px 6px;font-size:0.7rem;border-radius:9px;min-width:0;border-color:rgba(56,189,248,0.45);color:#38bdf8;">
-                                ✈️ Telegram Bot
-                            </a>
+                            <button class="btn-ui secondary" type="button" style="padding:8px 6px;font-size:0.7rem;border-radius:9px;min-width:0;border-color:rgba(56,189,248,0.45);color:#38bdf8;" onclick="xbHandleTelegramGateBtn()">
+                                ✈️ Telegram Sign In
+                            </button>
                         </div>
                     </div>
 
@@ -8095,6 +8095,37 @@
                     if (typeof showToast === 'function') showToast('🔒 Signed out safely. Redirecting...');
                     setTimeout(() => { window.location.href = window.location.pathname; }, 220);
                 }
+            }
+
+            function xbHandleTelegramGateBtn() {
+                const tgApp = window.Telegram && window.Telegram.WebApp;
+                const tgU = tgApp && tgApp.initDataUnsafe && tgApp.initDataUnsafe.user;
+
+                // 1. Jika di dalam Telegram Mini App & data akun terbaca -> langsung auto Sign-In ulang
+                if (tgU && tgU.id) {
+                    localStorage.removeItem('xb_tg_disconnected');
+                    localStorage.setItem('xb_tg_id', String(tgU.id));
+                    if (tgU.username) localStorage.setItem('xb_username', String(tgU.username));
+                    if (typeof isTelegramMiniAppEnv === 'function' && isTelegramMiniAppEnv() && typeof reconnectTelegramSession === 'function') {
+                        reconnectTelegramSession();
+                    } else {
+                        const gate = document.getElementById('enterpriseAuthGate');
+                        if (gate) gate.classList.remove('active');
+                        if (typeof showToast === 'function') showToast('✅ Reconnecting Telegram session...');
+                        setTimeout(() => window.location.reload(), 250);
+                    }
+                    return;
+                }
+
+                // 2. Jika di dalam WebView Telegram tanpa user data -> buka lewat API resmi Telegram (anti blokir WebView)
+                const botUrl = 'https://t.me/XianBeeTechStore_Bot';
+                if (tgApp && typeof tgApp.openTelegramLink === 'function') {
+                    tgApp.openTelegramLink(botUrl);
+                    return;
+                }
+
+                // 3. Jika di Browser biasa (Chrome/Safari) -> buka bot di tab baru
+                window.open(botUrl, '_blank', 'noopener,noreferrer');
             }
 
             function reconnectTelegramSession() {
@@ -10436,22 +10467,46 @@ const XB_EX_BANK_THEMES = {
                 let uid = '', uname = '', name = '';
                 try {
                     const wu = JSON.parse(localStorage.getItem('xb_web_user') || 'null');
-                    if (wu) { uid = String(wu.user_id || wu.id || ''); uname = String(wu.username || ''); name = String(wu.name || wu.username || ''); }
+                    if (wu) {
+                        uid = String(wu.user_id || wu.id || wu.uid || '').trim();
+                        uname = String(wu.username || '').trim();
+                        name = String(wu.name || wu.username || '').trim();
+                    }
                 } catch (e) {}
                 try {
-                    if (window.tgUser) {
-                        uid = uid || String(window.tgUser.id || '');
-                        uname = uname || String(window.tgUser.username || '');
-                        name = name || String(window.tgUser.first_name || window.tgUser.username || '');
-                    }
-                    if (window.currentUser) {
-                        uid = uid || String(window.currentUser.id || window.currentUser.user_id || '');
-                        uname = uname || String(window.currentUser.username || '');
-                        name = name || String(window.currentUser.name || window.currentUser.username || '');
+                    const tgWebU = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.initDataUnsafe && window.Telegram.WebApp.initDataUnsafe.user;
+                    if (tgWebU) {
+                        uid = uid || String(tgWebU.id || '').trim();
+                        uname = uname || String(tgWebU.username || '').trim();
+                        name = name || String(tgWebU.first_name || tgWebU.username || '').trim();
                     }
                 } catch (e) {}
-                uid = uid || String(localStorage.getItem('xb_tg_id') || localStorage.getItem('xb_user_id') || '').trim();
-                uname = (uname || String(localStorage.getItem('xb_username') || 'Client')).replace(/^@+/, '').trim();
+                try {
+                    const qs = new URLSearchParams(window.location.search || '');
+                    uid = uid || String(qs.get('uid') || '').trim();
+                    uname = uname || String(qs.get('uname') || '').trim();
+                } catch (e) {}
+                try {
+                    const gTg = (typeof tgUser !== 'undefined' && tgUser) ? tgUser : window.tgUser;
+                    if (gTg) {
+                        uid = uid || String(gTg.id || '').trim();
+                        uname = uname || String(gTg.username || '').trim();
+                        name = name || String(gTg.first_name || gTg.username || '').trim();
+                    }
+                    const gCur = (typeof currentUser !== 'undefined' && currentUser) ? currentUser : window.currentUser;
+                    if (gCur) {
+                        uid = uid || String(gCur.id || gCur.user_id || gCur.uid || '').trim();
+                        uname = uname || String(gCur.username || '').trim();
+                        name = name || String(gCur.name || gCur.username || '').trim();
+                    }
+                } catch (e) {}
+                uid = uid || String(localStorage.getItem('xb_tg_id') || localStorage.getItem('xb_user_id') || localStorage.getItem('xb_uid') || '').trim();
+                uname = (uname || String(localStorage.getItem('xb_username') || '')).replace(/^@+/, '').trim();
+                if (!uid) {
+                    const mUid = (document.body ? document.body.innerText : '').match(/UID[:\s]+(\d{5,15})/i);
+                    if (mUid) uid = mUid[1];
+                }
+                if (!uname) uname = uid ? ('ID_' + uid) : 'Client';
                 name = name || uname;
                 return { uid, uname, name };
             }
@@ -10889,25 +10944,28 @@ const XB_EX_BANK_THEMES = {
                     const container = btn.closest('.modal-body, .modal-content, #paymentGatewayBody, [id*="wallet" i], [id*="topup" i], section') || btn.parentElement;
                     const ctxTxt = container ? (container.textContent || '').toLowerCase().slice(0, 600) : '';
 
-                    const isOxaBtn = txt.includes('oxapay') || onClickAttr.includes('oxapay');
+                    const isTabToggle = /^crypto\s*\(oxapay\)$/i.test(txt) || onClickAttr.includes('switch') || onClickAttr.includes('tab');
+                    if (isTabToggle) return;
+
+                    const isOxaPayAction = (txt.includes('oxapay') && (txt.includes('pay') || txt.includes('deposit') || txt.includes('top'))) || onClickAttr.includes('oxapay');
                     const isCryptoTopupBtn =
                         (txt.includes('crypto') || txt.includes('usdt')) &&
                         (
                             txt.includes('topup') || txt.includes('top-up') || txt.includes('top up') || txt.includes('deposit') ||
-                            onClickAttr.includes('topup') || onClickAttr.includes('deposit') ||
-                            ((ctxTxt.includes('top-up') || ctxTxt.includes('top up') || ctxTxt.includes('deposit balance') || ctxTxt.includes('deposit saldo')) &&
-                             !ctxTxt.includes('checkout') && !ctxTxt.includes('pay with balance'))
+                            onClickAttr.includes('topup') || onClickAttr.includes('deposit')
                         );
 
-                    if (isOxaBtn || isCryptoTopupBtn) {
+                    if (isOxaPayAction || isCryptoTopupBtn) {
                         ev.preventDefault();
                         ev.stopPropagation();
                         let detectedAmt = '';
-                        if (container) {
+                        const mBtnAmt = txt.match(/pay\s+([\d.]+)\s*usdt/i);
+                        if (mBtnAmt && Number(mBtnAmt[1]) >= 1) detectedAmt = String(Number(mBtnAmt[1]));
+                        if (!detectedAmt && container) {
                             const numInp = container.querySelector('input[type="number"]');
                             if (numInp && Number(numInp.value) >= 1) detectedAmt = String(Number(numInp.value));
                         }
-                        openXbWebOxaPayDepositModal(detectedAmt, false);
+                        openXbWebOxaPayDepositModal(detectedAmt, Number(detectedAmt) >= 1);
                     }
                 }, true);
 
