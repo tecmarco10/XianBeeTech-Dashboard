@@ -6291,6 +6291,574 @@
         .scb-acc-row { display:flex; align-items:center; justify-content:space-between; gap:6px; padding:6px 8px; border-radius:8px; background:var(--bg-input); border:1px solid rgba(148,163,184,0.22); cursor:pointer; font-family:'JetBrains Mono',monospace; }
         .scb-acc-row.picked { border-color:#34d399; border-left:3px solid #34d399; background:rgba(16,185,129,0.1); }
         .scb-yr-hdr { display:flex; justify-content:space-between; align-items:center; padding:4px 8px; border-radius:7px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.38); color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.55rem; font-weight:800; cursor:pointer; }
+
+        /* Fix kontras teks aktif di Platinum Light Mode */
+        .side-btn.active,
+        [data-theme="platinum"] .xb-adm-tab.active {
+            color: #ffffff !important;
+        }
+
+        /* =========================================================
+           🖥️ EXECUTIVE DESKTOP OVERHAUL (>= 1100px ONLY — ZERO MOBILE IMPACT)
+           ========================================================= */
+        @media (min-width: 1100px) {
+            /* 1. SIDEBAR & MAIN WORKSPACE */
+            .sidebar {
+                width: 252px !important;
+                padding: 18px 14px !important;
+                box-shadow: 4px 0 24px rgba(15, 23, 42, 0.08);
+            }
+            [data-theme="obsidian"] .sidebar {
+                box-shadow: 4px 0 28px rgba(0, 0, 0, 0.45);
+            }
+            .sidebar .brand-box {
+                padding: 2px 6px 16px 6px !important;
+                gap: 10px !important;
+            }
+            .sidebar .brand-orb {
+                width: 48px !important;
+                height: 48px !important;
+            }
+            .side-btn {
+                padding: 11px 14px !important;
+                font-size: 0.88rem !important;
+                border-radius: 12px !important;
+            }
+
+            .main-area {
+                margin-left: 252px !important;
+                padding-top: 76px !important;
+                padding-bottom: 44px !important;
+            }
+            .container {
+                max-width: 1360px !important;
+                padding: 12px 24px 32px 24px !important;
+            }
+
+            /* 2. SINGLE-ROW SLEEK DESKTOP TOPBAR (NO DUPLICATE BRAND) */
+            .topbar {
+                left: 252px !important;
+                padding: 10px 24px 8px 24px !important;
+            }
+            .xb-ex-topbar-shell {
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+                gap: 8px !important;
+                padding: 8px 14px !important;
+                border-radius: 14px !important;
+                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.18) !important;
+            }
+            [data-theme="platinum"] .xb-ex-topbar-shell {
+                box-shadow: 0 4px 18px rgba(15, 23, 42, 0.07), inset 0 1px 0 #ffffff !important;
+            }
+            .xb-ex-row1,
+            .xb-ex-row2 {
+                display: contents !important;
+            }
+            .xb-ex-row1 > div:first-child {
+                display: none !important;
+            }
+            .xb-ex-row2 > .xb-ex-search-wrap {
+                order: 1;
+                flex: 1 1 320px;
+                max-width: 480px;
+                margin-right: auto;
+            }
+            .xb-ex-row1 > div:last-child {
+                order: 2;
+                gap: 6px !important;
+            }
+            .xb-ex-row2 > .xb-lang-switch {
+                order: 3;
+                height: 34px !important;
+            }
+            .xb-ex-row2 > button {
+                order: 4;
+            }
+            .xb-ex-row2 > .xb-ex-icon-btn.cart {
+                order: 6;
+            }
+            .xb-ex-search-input {
+                height: 36px !important;
+                font-size: 0.82rem !important;
+                padding: 0 30px 0 34px !important;
+                border-radius: 10px !important;
+            }
+            .xb-ex-icon-btn,
+            .xb-ex-row1 .xb-ex-icon-btn,
+            .xb-hdr-chat-btn {
+                height: 34px !important;
+                font-size: 0.74rem !important;
+                padding: 0 11px !important;
+                border-radius: 10px !important;
+            }
+            .xb-hdr-chat-btn {
+                width: 36px !important;
+                min-width: 36px !important;
+                padding: 0 !important;
+            }
+            .xb-ex-icon-btn.bal #topBalanceText {
+                max-width: 110px !important;
+                font-size: 0.76rem !important;
+            }
+            .xb-ex-icon-btn #currSwitchText {
+                font-size: 0.72rem !important;
+            }
+            .xb-lang-btn {
+                height: 28px !important;
+                min-width: 28px !important;
+                font-size: 0.68rem !important;
+            }
+
+            /* 3. MARKETPLACE & BOOST HERO + CATEGORY SWITCHER */
+            .xb-mp-switcher,
+            .xb-bst-opt-a {
+                gap: 10px !important;
+                margin-bottom: 14px !important;
+            }
+            .xb-hero-plat-card,
+            .xb-hero-plat-card.is-mp-hero {
+                min-height: 92px !important;
+                padding: 13px 20px !important;
+                gap: 6px !important;
+                border-radius: 16px !important;
+            }
+            .xb-hero-plat-card .xb-hero-plat-top {
+                grid-template-columns: 38px minmax(0, 1fr) 38px !important;
+                gap: 12px !important;
+            }
+            .xb-hero-plat-card .xb-hero-plat-logo {
+                width: 38px !important;
+                height: 38px !important;
+                border-radius: 11px !important;
+            }
+            .xb-hero-plat-card .xb-hero-plat-logo svg {
+                width: 22px !important;
+                height: 22px !important;
+            }
+            .xb-hero-plat-card .xb-hero-plat-title {
+                font-size: 1.12rem !important;
+            }
+            .xb-hero-plat-card .xb-hero-plat-sub {
+                font-size: 0.74rem !important;
+            }
+            .xb-hero-plat-meta .xb-mp-prim-pill,
+            .xb-hero-plat-meta .xb-mp-cnt-pill {
+                font-size: 0.64rem !important;
+                padding: 3px 10px !important;
+            }
+            .xb-hero-mp-bottom {
+                grid-template-columns: 115px minmax(0, 1fr) 115px !important;
+                margin-top: 2px;
+            }
+            .xb-hero-plat-card .xb-hero-corner-btn {
+                height: 28px !important;
+                font-size: 0.68rem !important;
+                border-radius: 8px !important;
+                gap: 5px !important;
+            }
+
+            /* Semua kategori sejajar 1 baris rapi (tidak ada kotak ganjil melar) */
+            .xb-mp-dual-row,
+            .xb-bst-cat-grid {
+                grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)) !important;
+                gap: 10px !important;
+            }
+            .xb-mp-dual-row > button,
+            .xb-bst-cat-grid > button {
+                grid-column: auto !important;
+                padding: 10px 12px !important;
+                gap: 6px !important;
+                border-radius: 12px !important;
+            }
+            .xb-mp-dual-title,
+            .xb-bst-cat-head {
+                font-size: 0.82rem !important;
+            }
+            .xb-mp-dual-chev {
+                font-size: 0.62rem !important;
+                padding: 2px 7px !important;
+            }
+            .xb-mp-mini-ico {
+                width: 22px !important;
+                height: 22px !important;
+                border-radius: 6px !important;
+            }
+            .xb-mp-mini-ico svg {
+                width: 13px !important;
+                height: 13px !important;
+            }
+            .xb-mp-grid-6 {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 8px !important;
+            }
+            .xb-mp-plat-btn {
+                padding: 10px 12px !important;
+            }
+            .xb-mp-plat-name {
+                font-size: 0.78rem !important;
+            }
+            .xb-mp-plat-sub {
+                font-size: 0.62rem !important;
+            }
+
+            /* 4. COLLECTION BANNER, SINGLE-ROW FILTER BAR & SORT BAR */
+            .xb-ex-collection {
+                padding: 14px 18px !important;
+                margin-bottom: 12px !important;
+                border-radius: 16px !important;
+            }
+            .xb-ex-col-logo {
+                width: 38px !important;
+                height: 38px !important;
+                border-radius: 10px !important;
+            }
+            .xb-ex-col-brand h2 {
+                font-size: 1.02rem !important;
+            }
+            .xb-ex-col-brand > div > div:last-child {
+                font-size: 0.66rem !important;
+                margin-top: 2px !important;
+            }
+            .xb-ex-col-stats {
+                gap: 10px !important;
+                margin-top: 10px !important;
+            }
+            .xb-ex-col-stat {
+                padding: 8px 10px !important;
+                border-radius: 10px !important;
+            }
+            .xb-ex-col-stat > div:first-child {
+                font-size: 0.58rem !important;
+            }
+            .xb-ex-col-stat > div:last-child {
+                font-size: 0.9rem !important;
+                margin-top: 2px !important;
+            }
+
+            /* 7 Filter Chips sejajar 1 baris di desktop */
+            [data-xb-mkt-filters="1"] {
+                display: grid !important;
+                grid-template-columns: 1.05fr 1.35fr !important;
+                gap: 8px !important;
+                margin-bottom: 10px !important;
+            }
+            [data-xb-mkt-filters="1"] .xb-ex-chips-r1,
+            [data-xb-mkt-filters="1"] .xb-ex-chips-r2 {
+                gap: 8px !important;
+            }
+            [data-xb-mkt-filters="1"] .xb-ex-filter-chip,
+            .xb-ex-filter-chip {
+                font-size: 0.74rem !important;
+                padding: 9px 10px !important;
+                border-radius: 9px !important;
+            }
+            .xb-ex-sort-bar {
+                height: 38px !important;
+                margin-bottom: 14px !important;
+                border-radius: 11px !important;
+            }
+            .xb-ex-live-wrap,
+            .xb-ex-sort-select {
+                font-size: 0.74rem !important;
+            }
+
+            /* 5. MARKETPLACE 4-COLUMN PROPORTIONAL CARDS (16 TAHUN = 4x4 PAS!) */
+            .grid-years-2col {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 14px !important;
+            }
+            .grid-years-2col .item-card {
+                padding: 12px !important;
+                gap: 10px !important;
+                border-radius: 15px !important;
+            }
+            .grid-years-2col .xb-ex-art {
+                height: 82px !important;
+                padding: 9px 10px !important;
+                border-radius: 11px !important;
+            }
+            .grid-years-2col .xb-ex-gh-badge {
+                width: 26px !important;
+                height: 26px !important;
+                border-radius: 7px !important;
+            }
+            .grid-years-2col .xb-ex-stock-pill {
+                height: 24px !important;
+                padding: 0 8px !important;
+                font-size: 0.66rem !important;
+            }
+            .grid-years-2col .xb-ex-chip {
+                font-size: 0.6rem !important;
+                padding: 3px 8px !important;
+            }
+            .grid-years-2col .xb-ex-year-tag {
+                font-size: 1.22rem !important;
+            }
+            .grid-years-2col .xb-ex-year-tag.sm {
+                font-size: 0.94rem !important;
+            }
+            .grid-years-2col .item-card .xb-ex-art + div > div > div:first-child {
+                font-size: 0.58rem !important;
+            }
+            .grid-years-2col .item-card .xb-ex-art + div > div > div:last-child {
+                font-size: 0.88rem !important;
+            }
+            .grid-years-2col .btn-ui {
+                padding: 9px 10px !important;
+                font-size: 0.76rem !important;
+                border-radius: 10px !important;
+            }
+            .xb-ex-acc-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 14px !important;
+            }
+            .xb-ex-special-title {
+                font-size: 0.94rem !important;
+                padding: 8px 12px !important;
+            }
+            .xb-ex-special-sub {
+                font-size: 0.74rem !important;
+            }
+
+            /* 6. ADMIN COMMAND CENTER — FULL-WIDTH EXECUTIVE DASHBOARD */
+            .xb-adm-wrap {
+                max-width: 100% !important;
+                gap: 14px !important;
+            }
+            .xb-adm-top {
+                padding: 12px 16px !important;
+            }
+            .xb-adm-title {
+                font-size: 0.96rem !important;
+            }
+            .xb-adm-mini-btn,
+            .xb-adm-pc-pill {
+                padding: 6px 11px !important;
+                font-size: 0.72rem !important;
+                border-radius: 8px !important;
+            }
+            .xb-adm-kpi {
+                padding: 12px 10px !important;
+            }
+            .xb-adm-kpi-lbl {
+                font-size: 0.64rem !important;
+            }
+            .xb-adm-kpi-val {
+                font-size: 1.28rem !important;
+                margin-top: 3px !important;
+            }
+            .xb-adm-tabs {
+                padding: 5px !important;
+                gap: 8px !important;
+                border-radius: 13px !important;
+            }
+            .xb-adm-tab {
+                font-size: 0.82rem !important;
+                padding: 10px 8px !important;
+                border-radius: 10px !important;
+            }
+            .xb-bento-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 14px !important;
+            }
+            .xb-bento-card {
+                min-height: 124px !important;
+                padding: 16px 15px !important;
+                border-radius: 16px !important;
+            }
+            .xb-bento-ico {
+                width: 34px !important;
+                height: 34px !important;
+            }
+            .xb-bento-title {
+                font-size: 0.92rem !important;
+            }
+            .xb-bento-sub {
+                font-size: 0.72rem !important;
+            }
+            .xb-bento-pill {
+                font-size: 0.64rem !important;
+                padding: 4px 9px !important;
+            }
+            .xb-ops-bar,
+            .xb-adm-flash-bar {
+                padding: 12px 16px !important;
+                border-radius: 14px !important;
+            }
+            .xb-adm-flash-btn {
+                font-size: 0.72rem !important;
+                padding: 8px 14px !important;
+            }
+            .xb-adm-dev-btn {
+                padding: 10px 12px !important;
+                font-size: 0.74rem !important;
+            }
+            .xb-ops-queue-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 14px !important;
+                align-items: start !important;
+            }
+            .xb-vb-card {
+                padding: 14px !important;
+                gap: 10px !important;
+                border-radius: 15px !important;
+            }
+            .xb-vb-step {
+                font-size: 0.62rem !important;
+                padding: 6px 4px !important;
+            }
+            .xb-vb-kpi {
+                padding: 7px 9px !important;
+            }
+            .xb-vb-kpi-k {
+                font-size: 0.56rem !important;
+            }
+            .xb-vb-kpi-v {
+                font-size: 0.76rem !important;
+            }
+            .xb-tok-meta-bar {
+                font-size: 0.66rem !important;
+                padding: 7px 10px !important;
+            }
+
+            /* 7. BOOST SERVICE, WALLET, VAULT & PROFILE DESKTOP POLISH */
+            .xb-bst-terminal {
+                padding: 18px 20px !important;
+                gap: 14px !important;
+                border-radius: 16px !important;
+            }
+            .xb-bst-lbl {
+                font-size: 0.68rem !important;
+            }
+            .xb-bst-svc-btn {
+                padding: 12px 8px !important;
+                gap: 4px !important;
+            }
+            .xb-bst-svc-btn span.t {
+                font-size: 0.8rem !important;
+            }
+            .xb-bst-svc-btn span.p {
+                font-size: 0.66rem !important;
+            }
+            .xb-bst-target-inp {
+                height: 40px !important;
+                font-size: 0.82rem !important;
+            }
+            .xb-bst-speed-btn {
+                padding: 10px 8px !important;
+            }
+            .xb-bst-speed-btn .sn {
+                font-size: 0.8rem !important;
+            }
+            .xb-bst-speed-btn .sp {
+                font-size: 0.66rem !important;
+            }
+            .xb-bst-qty-pill,
+            .xb-bst-qty-inp {
+                height: 38px !important;
+                font-size: 0.78rem !important;
+            }
+            .xb-bst-packs {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 14px !important;
+            }
+
+            .xb-wal-wrap,
+            .xb-vp-wrap {
+                max-width: 1060px !important;
+                margin: 0 auto !important;
+                gap: 14px !important;
+            }
+            #xbWalExSwitcher.xb-wal-switcher {
+                top: 72px !important;
+                padding: 6px !important;
+                border-radius: 14px !important;
+            }
+            #xbWalExSwitcher .xb-wal-sw-btn {
+                padding: 9px 10px !important;
+            }
+            #xbWalExSwitcher .xb-wal-sw-btn .sw-top {
+                font-size: 0.88rem !important;
+            }
+            #xbWalExSwitcher .xb-wal-sw-btn .sw-sub {
+                font-size: 0.64rem !important;
+            }
+            .xb-vgrid-card {
+                padding: 18px 22px !important;
+                border-radius: 18px !important;
+            }
+            .xb-vg-corner-btn {
+                height: 30px !important;
+                padding: 0 12px !important;
+                font-size: 0.72rem !important;
+            }
+            .xb-vg-tier-pill {
+                font-size: 0.66rem !important;
+                padding: 4px 12px !important;
+            }
+            .xb-vg-bal-num {
+                font-size: 2rem !important;
+            }
+            .xb-vg-stat-box {
+                padding: 10px 8px !important;
+            }
+            .xb-vg-stat-k {
+                font-size: 0.58rem !important;
+            }
+            .xb-vg-stat-v {
+                font-size: 0.84rem !important;
+            }
+            .xb-vg-btn {
+                height: 40px !important;
+                font-size: 0.78rem !important;
+            }
+            .xb-wal-act-btn {
+                padding: 12px 8px !important;
+                gap: 6px !important;
+            }
+            .xb-wal-act-ico {
+                width: 34px !important;
+                height: 34px !important;
+            }
+            .xb-wal-act-lbl {
+                font-size: 0.76rem !important;
+            }
+            .xb-wal-tx-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+            .xb-vp-seg-btn {
+                font-size: 0.8rem !important;
+                padding: 10px 8px !important;
+            }
+            #xbVaultAccListBody {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 12px !important;
+                align-items: start !important;
+            }
+            .xb-prf-menu-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+            .xb-prf-menu-row {
+                padding: 13px 15px !important;
+            }
+
+            /* 8. STUDIO MODALS LEBIH LEGA DI LAYAR PC */
+            #paymentGatewayModal.xb-fullpage-modal > #paymentGatewayBody {
+                max-width: 720px !important;
+                padding: 16px 18px !important;
+            }
+            .modal-box {
+                max-width: 600px !important;
+            }
+        }
     </style>
     
     </head>
