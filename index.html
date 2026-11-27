@@ -5489,6 +5489,20 @@
         [data-theme="platinum"] #xbWalExSwitcher .xb-wal-sw-btn.active .sw-sub {
             color: #475569 !important;
         }
+        #xbWalExSwitcher .xb-wal-sw-btn .sw-top > span:first-of-type {
+            background: linear-gradient(90deg, #a855f7 0%, #ec4899 50%, #38bdf8 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        [data-theme="platinum"] #xbWalExSwitcher .xb-wal-sw-btn .sw-top > span:first-of-type {
+            background: linear-gradient(90deg, #7c3aed 0%, #db2777 50%, #2563eb 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
 
         /* OPSI 2 EXCHANGE HUB (DEMO 3 LAYOUT + OBSIDIAN NAVY / MYTHIC RED / CYAN) */
         .xb-ex-hub { gap: 8px !important; }
@@ -6080,34 +6094,193 @@
         .scb-srow { display:flex; justify-content:space-between; align-items:center; gap:8px; color:var(--text-secondary); }
         .scb-srow b { color:var(--text-primary); text-align:right; }
 
-        /* MONITOR (PAT STUDIO CENTERED HEADERS + FULL HEIGHT LOG STREAM) */
-        .scb-mon-job-banner {
-            border-top:1.5px solid #38bdf8; border-bottom:1.5px solid #a855f7;
-            background:rgba(56,189,248,0.08); border-radius:8px; padding:6px 8px;
-            text-align:center; font-family:'JetBrains Mono',monospace; flex-shrink:0;
+        /* MONITOR V2 — LUXURY EXECUTIVE CYBER TELEMETRY (DARK & LIGHT SYNC) */
+        @keyframes scbMonAurora { 0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%} }
+        @keyframes scbMonSheen { 0%{transform:translateX(-120%)} 100%{transform:translateX(240%)} }
+        @keyframes scbMonPulse { 0%,100%{box-shadow:0 0 0 0 rgba(56,189,248,0.65)} 60%{box-shadow:0 0 0 6px rgba(56,189,248,0)} }
+
+        .scb-mon-shell {
+            position:relative; flex:1; min-height:0; height:100%; overflow:hidden;
+            display:flex; flex-direction:column; gap:7px; padding:9px;
+            border-radius:15px; border:1px solid var(--ex-hairline);
+            background:
+                linear-gradient(rgba(56,189,248,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(56,189,248,0.035) 1px, transparent 1px),
+                var(--ex-card-bg);
+            background-size:18px 18px, 18px 18px, 100% 100%;
+            box-shadow:0 12px 28px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.2);
         }
-        .scb-mon-job-title { font-size:0.67rem; font-weight:900; color:#f8fafc; letter-spacing:0.4px; }
+        .scb-mon-shell::before {
+            content:''; position:absolute; top:0; left:10%; right:10%; height:1px;
+            background:var(--ex-sheen); pointer-events:none;
+        }
+        [data-theme="platinum"] .scb-mon-shell {
+            box-shadow:0 8px 22px rgba(15,23,42,0.08), inset 0 1px 0 #ffffff;
+        }
+
+        /* 1. HERO MISSION CARD WITH CORNER BRACKETS & KPI STRIP */
+        .scb-mon-hero {
+            position:relative; flex-shrink:0; border-radius:12px; padding:8px 10px;
+            background:linear-gradient(145deg, rgba(6,10,24,0.88) 0%, rgba(14,26,62,0.84) 55%, rgba(30,15,64,0.86) 100%);
+            border:1px solid rgba(56,189,248,0.34);
+            display:flex; flex-direction:column; gap:7px; overflow:hidden;
+            box-shadow:inset 0 1px 0 rgba(255,255,255,0.14);
+        }
+        .scb-mon-hero::before, .scb-mon-hero::after {
+            content:''; position:absolute; width:9px; height:9px; pointer-events:none;
+        }
+        .scb-mon-hero::before { top:-1px; left:-1px; border-top:2px solid #38bdf8; border-left:2px solid #38bdf8; border-top-left-radius:12px; }
+        .scb-mon-hero::after  { bottom:-1px; right:-1px; border-bottom:2px solid #c084fc; border-right:2px solid #c084fc; border-bottom-right-radius:12px; }
+        [data-theme="platinum"] .scb-mon-hero {
+            background:linear-gradient(145deg, #ffffff 0%, #eff6ff 58%, #f5f3ff 100%);
+            border-color:rgba(37,99,235,0.28);
+        }
+
+        .scb-mon-hero-row { display:flex; align-items:center; justify-content:space-between; gap:8px; }
+        .scb-mon-hero-left { display:flex; align-items:center; gap:8px; min-width:0; flex:1; }
+        .scb-mon-orb {
+            width:28px; height:28px; border-radius:9px; flex-shrink:0;
+            background:rgba(56,189,248,0.14); border:1px solid rgba(56,189,248,0.5);
+            display:inline-flex; align-items:center; justify-content:center;
+        }
+        .scb-mon-orb-dot { width:8px; height:8px; border-radius:50%; background:#38bdf8; }
+        .scb-mon-orb-dot.run  { background:#38bdf8; animation:scbMonPulse 1.5s infinite; }
+        .scb-mon-orb-dot.done { background:#34d399; box-shadow:0 0 8px #34d399; }
+        .scb-mon-orb-dot.err  { background:#f87171; box-shadow:0 0 8px #f87171; }
+        .scb-mon-orb-dot.idle { background:#94a3b8; }
+
+        .scb-mon-job-title {
+            font-size:0.74rem; font-weight:900; letter-spacing:0.2px; color:#ffffff;
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis; line-height:1.15;
+        }
         [data-theme="platinum"] .scb-mon-job-title { color:#0f172a; }
-        .scb-mon-job-sub { font-size:0.53rem; font-weight:800; color:#38bdf8; margin-top:2px; }
+        .scb-mon-job-sub {
+            font-family:'JetBrains Mono',monospace; font-size:0.5rem; font-weight:800; color:#7dd3fc;
+            margin-top:2px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+        [data-theme="platinum"] .scb-mon-job-sub { color:#2563eb; }
 
-        .scb-stages { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; flex-shrink:0; }
-        .scb-stage { border:1px solid rgba(148,163,184,0.22); background:var(--bg-input); border-radius:7px; padding:4px 2px; text-align:center; font-family:'JetBrains Mono',monospace; font-size:0.49rem; font-weight:800; color:var(--text-muted); }
-        .scb-stage.done { border-color:rgba(52,211,153,0.55); color:#34d399; background:rgba(16,185,129,0.1); }
-        .scb-stage.cur  { border-color:rgba(251,191,36,0.65); color:#fbbf24; background:rgba(251,191,36,0.12); }
+        .scb-mon-pct-big {
+            font-family:'JetBrains Mono',monospace; font-size:1.12rem; font-weight:900; line-height:1;
+            background:linear-gradient(95deg, #38bdf8 0%, #c084fc 55%, #34d399 100%);
+            -webkit-background-clip:text; -webkit-text-fill-color:transparent;
+            flex-shrink:0;
+        }
 
+        .scb-mon-kpis { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:5px; }
+        .scb-mon-kpi {
+            background:rgba(4,7,18,0.58); border:1px solid rgba(255,255,255,0.1);
+            border-radius:8px; padding:4px 5px; display:flex; align-items:center; justify-content:space-between; gap:4px;
+            font-family:'JetBrains Mono',monospace;
+        }
+        [data-theme="platinum"] .scb-mon-kpi { background:rgba(255,255,255,0.92); border-color:rgba(79,70,229,0.16); }
+        .scb-mon-kpi-k { font-size:0.46rem; font-weight:800; color:var(--text-muted); letter-spacing:0.35px; }
+        .scb-mon-kpi-v { font-size:0.64rem; font-weight:900; }
+
+        /* 2. AURORA PROGRESS GAUGE + 4-STAGE STEPPER */
+        .scb-mon-gauge-box {
+            flex-shrink:0; border-radius:11px; padding:7px 9px;
+            background:var(--bg-input); border:1px solid var(--ex-hairline);
+            display:flex; flex-direction:column; gap:6px;
+        }
+        .scb-mon-stage-line {
+            display:flex; align-items:center; justify-content:space-between; gap:6px;
+            font-family:'JetBrains Mono',monospace; font-size:0.53rem; font-weight:800;
+        }
+        .scb-mon-track {
+            position:relative; width:100%; height:13px; border-radius:99px; overflow:hidden;
+            background:linear-gradient(90deg, rgba(15,23,42,0.92), rgba(49,16,66,0.78), rgba(12,74,110,0.86));
+            border:1px solid rgba(56,189,248,0.52);
+            box-shadow:inset 0 2px 5px rgba(0,0,0,0.6), 0 0 12px rgba(56,189,248,0.18);
+        }
+        [data-theme="platinum"] .scb-mon-track {
+            background:#e2e8f0; border-color:rgba(37,99,235,0.35); box-shadow:inset 0 1px 3px rgba(15,23,42,0.12);
+        }
+        .scb-mon-fill {
+            position:relative; height:100%; width:0%; border-radius:99px; overflow:hidden;
+            background-image:linear-gradient(90deg, #2563eb 0%, #38bdf8 30%, #a855f7 65%, #34d399 100%);
+            background-size:220% 100%; animation:scbMonAurora 2.6s ease infinite;
+            transition:width 0.4s cubic-bezier(0.22,1,0.36,1);
+        }
+        .scb-mon-fill::after {
+            content:''; position:absolute; top:0; bottom:0; width:42%;
+            background:linear-gradient(90deg, transparent, rgba(255,255,255,0.55), transparent);
+            animation:scbMonSheen 1.6s ease-in-out infinite; pointer-events:none;
+        }
+        .scb-mon-tick { position:absolute; top:0; bottom:0; width:1px; background:rgba(255,255,255,0.18); pointer-events:none; }
+
+        .scb-stages { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px; }
+        .scb-stage {
+            border:1px solid rgba(148,163,184,0.2); background:rgba(255,255,255,0.03);
+            border-radius:7px; padding:4px 2px; text-align:center;
+            font-family:'JetBrains Mono',monospace; font-size:0.49rem; font-weight:800; color:var(--text-muted);
+            white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+        }
+        .scb-stage.done { border-color:rgba(52,211,153,0.55); color:#34d399; background:rgba(16,185,129,0.12); }
+        .scb-stage.cur  { border-color:rgba(251,191,36,0.72); color:#fde047; background:rgba(245,158,11,0.15); box-shadow:0 0 10px rgba(245,158,11,0.2); }
+        [data-theme="platinum"] .scb-stage { background:#ffffff; }
+        [data-theme="platinum"] .scb-stage.done { color:#047857; background:#ecfdf5; }
+        [data-theme="platinum"] .scb-stage.cur  { color:#b45309; background:#fef3c7; }
+
+        /* 3. TACTICAL COOLDOWN HUD */
         .scb-mon-cd {
-            display:none; flex-direction:column; gap:4px; flex-shrink:0; text-align:center;
-            background:rgba(245,158,11,0.1); border:1px solid rgba(251,191,36,0.55); border-radius:8px; padding:6px 8px;
+            display:none; flex-direction:column; gap:5px; flex-shrink:0;
+            background:linear-gradient(135deg, rgba(245,158,11,0.14), rgba(15,23,42,0.85));
+            border:1px solid rgba(251,191,36,0.6); border-left:3.5px solid #fbbf24;
+            border-radius:10px; padding:6px 9px; font-family:'JetBrains Mono',monospace;
         }
-        .scb-mon-cd-hdr { border-top:1px solid rgba(251,191,36,0.45); border-bottom:1px solid rgba(251,191,36,0.45); padding:2px 4px; font-family:'JetBrains Mono',monospace; font-size:0.55rem; font-weight:800; color:#fbbf24; }
+        [data-theme="platinum"] .scb-mon-cd { background:linear-gradient(135deg, #fffbeb, #ffffff); }
+        .scb-mon-cd-hdr { display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:0.54rem; font-weight:800; color:#fbbf24; }
+        [data-theme="platinum"] .scb-mon-cd-hdr { color:#b45309; }
 
-        .scb-mon-items { max-height:84px; overflow-y:auto; display:flex; flex-direction:column; gap:4px; flex-shrink:0; }
-        .scb-log-box {
-            flex:1; min-height:120px; overflow-y:auto;
-            background:#060913; border:1px solid rgba(56,189,248,0.28); border-radius:10px; padding:7px;
-            font-family:'JetBrains Mono',monospace; font-size:0.57rem; display:flex; flex-direction:column; gap:6px;
+        /* 4. COMPACT ACTION BAR + COLLAPSIBLE ACCOUNT QUEUE */
+        .scb-mon-ctrl-row { display:grid; grid-template-columns:1.15fr 0.9fr 0.95fr; gap:5px; flex-shrink:0; }
+        .scb-mon-items-wrap {
+            display:none; flex-direction:column; gap:4px; flex-shrink:0;
+            background:var(--bg-input); border:1px solid var(--ex-hairline);
+            border-radius:10px; padding:6px 7px;
         }
-        [data-theme="platinum"] .scb-log-box { background:#f8fafc; }
+        .scb-mon-items-hdr {
+            display:flex; align-items:center; justify-content:space-between; gap:6px;
+            font-family:'JetBrains Mono',monospace; font-size:0.5rem; font-weight:800; color:#38bdf8; cursor:pointer;
+        }
+        .scb-mon-items {
+            max-height:76px; overflow-y:auto; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px;
+        }
+        .scb-mon-item-pill {
+            background:var(--ex-card-bg); border:1px solid var(--ex-hairline); border-left:3px solid #38bdf8;
+            border-radius:7px; padding:4px 6px; font-family:'JetBrains Mono',monospace; min-width:0;
+        }
+
+        /* 5. EXECUTIVE CONSOLE STREAM */
+        .scb-log-shell {
+            flex:1; min-height:115px; display:flex; flex-direction:column; overflow:hidden;
+            border-radius:11px; border:1px solid rgba(56,189,248,0.34);
+            background:#050812; box-shadow:inset 0 2px 10px rgba(0,0,0,0.55);
+        }
+        [data-theme="platinum"] .scb-log-shell { background:#f8fafc; border-color:rgba(37,99,235,0.24); box-shadow:none; }
+        .scb-log-bar {
+            flex-shrink:0; display:flex; align-items:center; justify-content:space-between; gap:6px;
+            padding:5px 9px; border-bottom:1px solid rgba(255,255,255,0.09);
+            background:rgba(13,22,46,0.75); font-family:'JetBrains Mono',monospace;
+        }
+        [data-theme="platinum"] .scb-log-bar { background:#e2e8f0; border-bottom-color:rgba(15,23,42,0.1); }
+        .scb-log-dots { display:inline-flex; align-items:center; gap:4px; }
+        .scb-log-dots i { width:6px; height:6px; border-radius:50%; display:inline-block; }
+
+        .scb-log-box {
+            flex:1; min-height:0; overflow-y:auto; padding:6px 7px;
+            font-family:'JetBrains Mono',monospace; font-size:0.55rem;
+            display:flex; flex-direction:column; gap:5px;
+        }
+        .scb-log-entry {
+            background:rgba(15,23,42,0.72); border:1px solid rgba(148,163,184,0.16); border-left:3px solid #38bdf8;
+            border-radius:8px; padding:5px 7px; flex-shrink:0; display:flex; flex-direction:column; gap:3px;
+        }
+        [data-theme="platinum"] .scb-log-entry { background:#ffffff; border-color:rgba(15,23,42,0.1); }
+        .scb-log-meta { display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:0.49rem; font-weight:800; }
+        .scb-log-tag { padding:1px 5px; border-radius:4px; border:1px solid currentColor; letter-spacing:0.3px; }
+        .scb-log-msg { color:var(--text-primary); line-height:1.38; word-break:break-word; }
 
         .scb-heat-grid { display:grid; grid-template-columns:repeat(18,minmax(0,1fr)); gap:2px; background:var(--bg-input); border:1px solid rgba(52,211,153,0.34); border-radius:8px; padding:5px; }
         .scb-heat-cell { aspect-ratio:1; border-radius:2px; background:rgba(148,163,184,0.15); }
@@ -12106,6 +12279,7 @@ const XB_EX_BANK_THEMES = {
                 const basePayload = {
                     action: 'web_cloud_sync_state',
                     mode: mode,
+                    secret: isAdmin ? getAdminSecret() : '',
                     sync_key: getCloudSyncAccountKey(),
                     user_id: String(currentUserId),
                     username: String(currentUsername),
@@ -15705,8 +15879,8 @@ const XB_EX_BANK_THEMES = {
                 colBanner.innerHTML = `
                     <div class="xb-ex-col-head">
                         <div class="xb-ex-col-brand full">
-                            <div class="xb-ex-col-logo">
-                                <img src="logo.png" alt="XianBee" style="width:100%;height:100%;object-fit:contain;" onerror="this.outerHTML='<span style=\\'font-size:1.3rem;\\'>🐙</span>'">
+                            <div class="xb-ex-col-logo xb-ex-gh-badge">
+                                ${GH_SVG_EMBLEM}
                             </div>
                             <div style="min-width:0;flex:1;">
                                 <div style="display:flex;align-items:center;gap:4px;min-width:0;">
@@ -20142,7 +20316,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
             if (targetEl.closest('#xbCyberTelemRoot')) return;
 
             const onClickAttr = String(targetEl.getAttribute('onclick') || '');
-            const isNamedTelemetry = /telemetry|storeSale|salesAnalytics|globalSale|openAnalytics|openStats/i.test(onClickAttr)
+            const isNamedTelemetry = /openStoreGlobal3DTelemetry|storeSale|salesAnalytics|globalSale|openAnalytics|openStats/i.test(onClickAttr)
                 && !/switchTab\s*\(\s*['"]admin['"]/i.test(onClickAttr);
 
             let isHeaderChartIcon = false;
@@ -21020,7 +21194,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'set_boost_ops_config',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         auto_fulfill: next
                     })
                 });
@@ -21059,7 +21233,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'pull_boost_queue',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         include_slots: true
                     })
                 });
@@ -21135,7 +21309,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                     const rp = await fetch(GSHEET_WEBHOOK_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action: 'pull_pat_age_audit' })
+                        body: JSON.stringify({ action: 'pull_pat_age_audit', secret: getAdminSecret() })
                     }).then(r => r.json());
                     if (rp && rp.result && Array.isArray(rp.items)) {
                         window._xbActivePatPoolItems = rp.items;
@@ -21491,7 +21665,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'update_boost_order_status',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         invoice_id: invoiceId,
                         status: newStatus
                     })
@@ -22826,7 +23000,7 @@ let _ghAgeCheckerResults = [];
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'set_public_notifs_config',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         enabled: nextPub
                     })
                 }).catch(() => {});
@@ -23309,6 +23483,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
         function scbTickCdBanner() {
             const box = document.getElementById('scbCdBanner');
             const txt = document.getElementById('scbCdText');
+            const timeEl = document.getElementById('scbCdTime');
             const bar = document.getElementById('scbCdBar');
             if (!box || !txt || !bar) return;
             const rem = _scbState.cdUntil - Date.now();
@@ -23319,7 +23494,8 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
             const s = String(sec % 60).padStart(2, '0');
             const pct = Math.min(99, Math.max(4, Math.round(((tot - rem) / tot) * 100)));
             box.style.display = 'flex';
-            txt.innerText = `⏳ ${String(_scbState.cdLabel || 'SAFE COOLDOWN').toUpperCase()} • ${m}:${s}`;
+            txt.innerText = `⏳ ${String(_scbState.cdLabel || 'SAFE COOLDOWN').toUpperCase()}`;
+            if (timeEl) timeEl.innerText = `${m}:${s} • ${pct}%`;
             bar.style.width = `${pct}%`;
         }
 
@@ -23425,30 +23601,45 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
             return html;
         }
 
+        function scbCopyMonitorLogs() {
+            const logs = (_scbState.telemetry && Array.isArray(_scbState.telemetry.logs)) ? _scbState.telemetry.logs : [];
+            if (!logs.length) return showToast('⚠️ No monitor logs to copy yet.');
+            const txt = logs.map(l => `[${l.time || '--:--:--'}] ${l.tag || '[PC]'} ${l.msg || ''}`).join('\n');
+            navigator.clipboard.writeText(txt).then(() => showToast(`📋 Copied ${logs.length} telemetry log(s)!`)).catch(() => {});
+        }
+
+        function scbToggleMonItems() {
+            _scbState._monItemsCollapsed = !_scbState._monItemsCollapsed;
+            const listEl = document.getElementById('scbMonItemsList');
+            const chev = document.getElementById('scbMonItemsChev');
+            if (listEl) listEl.style.display = _scbState._monItemsCollapsed ? 'none' : 'grid';
+            if (chev) chev.innerText = _scbState._monItemsCollapsed ? '▼ SHOW' : '▲ HIDE';
+        }
+
         function scbFormatLogCardHtml(lg) {
             let cleanMsg = String(lg.msg || '').trim().replace(/\.{2,}$/, '').trim();
             let rightStage = '';
             const m = cleanMsg.match(/\[([1-4]\/4)\]/);
             if (m) {
-                rightStage = `[${m[1]}]`;
+                rightStage = m[1];
                 cleanMsg = cleanMsg.replace(m[0], '').replace(/\s{2,}/g, ' ').trim();
             } else if (lg.isDone) {
-                rightStage = '[4/4]';
+                rightStage = '4/4';
             }
-            const tag = String(lg.tag || '[PC]').toUpperCase();
+            const tag = String(lg.tag || 'PC').replace(/^\[|\]$/g, '').toUpperCase();
             const isCd = /COOLDOWN|WAIT/i.test(tag);
-            const hdrCol = lg.isErr ? '#f87171' : (lg.isDone ? '#34d399' : (isCd ? '#fbbf24' : '#38bdf8'));
-            const bdrCol = lg.isErr ? 'rgba(248,113,113,0.42)' : (lg.isDone ? 'rgba(52,211,153,0.42)' : (isCd ? 'rgba(251,191,36,0.45)' : 'rgba(56,189,248,0.34)'));
+            const col = lg.isErr ? '#f87171' : (lg.isDone ? '#34d399' : (isCd ? '#fbbf24' : '#38bdf8'));
 
             return `
-                <div style="background:var(--bg-input);border:1px solid ${bdrCol};border-radius:8px;padding:5px 7px;flex-shrink:0;">
-                    <div style="border-top:1px solid ${bdrCol};border-bottom:1px solid ${bdrCol};padding:2px 4px;margin-bottom:4px;text-align:center;font-size:0.54rem;font-weight:800;color:${hdrCol};letter-spacing:0.3px;">
-                        🕒 ${scbEsc(lg.time || '--:--:--')} • ${scbEsc(tag)}
+                <div class="scb-log-entry" style="border-left-color:${col};">
+                    <div class="scb-log-meta">
+                        <span style="display:inline-flex;align-items:center;gap:5px;">
+                            <span class="scb-log-tag" style="color:${col};">${scbEsc(tag)}</span>
+                            <span style="color:var(--text-muted);">${scbEsc(lg.time || '--:--:--')}</span>
+                        </span>
+                        ${rightStage ? `<span style="color:${col};font-weight:900;">STEP ${rightStage}</span>` : ''}
                     </div>
-                    <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:7px;line-height:1.35;">
-                        <span style="color:var(--text-primary);flex:1;min-width:0;word-break:break-word;">${scbEsc(cleanMsg)}</span>
-                        ${rightStage ? `<span style="color:${hdrCol};font-weight:800;font-size:0.55rem;background:var(--bg-surface);border:1px solid ${bdrCol};padding:1px 5px;border-radius:4px;flex-shrink:0;">${rightStage}</span>` : ''}
-                    </div>
+                    <div class="scb-log-msg">${scbEsc(cleanMsg)}</div>
                 </div>
             `;
         }
@@ -23456,66 +23647,95 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
         function scbPatchMonitorDom() {
             const card = document.getElementById('scbMonCard');
             if (!card) return scbRenderBody();
-            const t = _scbState.telemetry || { status: 'IDLE', feature_label: '', mission_id: '', stage: 0, stage_label: 'WAITING FOR MISSION QUEUE...', pct: 0, items: [], logs: [] };
+            const t = _scbState.telemetry || { status: 'IDLE', feature_label: '', mission_id: '', stage: 0, stage_label: 'Standing by for mission dispatch', pct: 0, items: [], logs: [] };
             const pct = Math.max(0, Math.min(100, Number(t.pct || 0)));
             const st = String(t.status || 'IDLE').toUpperCase();
             const curModObj = _SCB_MODULES.find(m => m.id === (t.feature || _scbState.mod));
-            const jobTitle = t.feature_label || (curModObj ? `${curModObj.ico} ${curModObj.title}` : '🛰️ STEALTH COMMAND');
-            const jobSub = t.mission_id ? `${t.mission_id} • ${st} (${pct}%)` : 'STANDBY • READY FOR MISSION';
+            const jobTitle = t.feature_label || (curModObj ? `${curModObj.ico} ${curModObj.title}` : '🛰️ Stealth Command');
+            const jobSub = t.mission_id ? `${t.mission_id} • ${st}` : 'STANDBY • READY FOR MISSION';
 
+            const items = Array.isArray(t.items) ? t.items : [];
+            const doneCnt = items.filter(i => String(i.status || '').toUpperCase() === 'COMPLETED').length;
+            const failCnt = items.filter(i => ['FAILED', 'ERROR'].includes(String(i.status || '').toUpperCase())).length;
+            const activeCnt = Math.max(0, items.length - doneCnt - failCnt);
+
+            const orbDot = document.getElementById('scbMonOrbDot');
             const jtEl = document.getElementById('scbMonJobTitle');
             const jsEl = document.getElementById('scbMonJobSub');
+            const pctEl = document.getElementById('scbMonPctBig');
+            const kDone = document.getElementById('scbMonKpiDone');
+            const kAct = document.getElementById('scbMonKpiAct');
+            const kFail = document.getElementById('scbMonKpiFail');
             const stEl = document.getElementById('scbMonStageTxt');
+            const stBadge = document.getElementById('scbMonStatusPill');
             const pfEl = document.getElementById('scbMonProgFill');
             const sgEl = document.getElementById('scbMonStagesRow');
+            const itWrap = document.getElementById('scbMonItemsWrap');
+            const itTitle = document.getElementById('scbMonItemsTitle');
             const itEl = document.getElementById('scbMonItemsList');
             const lbEl = document.getElementById('scbLogBox');
+            const lbCnt = document.getElementById('scbMonLogCnt');
 
-            if (jtEl) jtEl.innerText = jobTitle.toUpperCase();
-            if (jsEl) {
-                jsEl.innerText = jobSub;
-                jsEl.style.color = st === 'COMPLETED' ? '#34d399' : (st === 'FAILED' || st === 'STOPPED' ? '#f87171' : '#38bdf8');
+            if (orbDot) {
+                orbDot.className = 'scb-mon-orb-dot ' + (st === 'RUNNING' ? 'run' : (st === 'COMPLETED' ? 'done' : (st === 'FAILED' || st === 'STOPPED' ? 'err' : 'idle')));
             }
+            if (jtEl) jtEl.innerText = jobTitle;
+            if (jsEl) jsEl.innerText = jobSub;
+            if (pctEl) pctEl.innerText = `${pct}%`;
+            if (kDone) kDone.innerText = String(doneCnt);
+            if (kAct) kAct.innerText = String(activeCnt);
+            if (kFail) kFail.innerText = String(failCnt);
+
+            const stColor = st === 'COMPLETED' ? '#34d399' : (st === 'FAILED' || st === 'STOPPED' ? '#f87171' : (st === 'RUNNING' ? '#38bdf8' : 'var(--text-muted)'));
             if (stEl) {
-                stEl.innerText = t.stage_label || 'IDLE';
-                stEl.style.color = st === 'COMPLETED' ? '#34d399' : (st === 'FAILED' || st === 'STOPPED' ? '#f87171' : '#38bdf8');
+                stEl.innerText = t.stage_label || 'Standing by for mission dispatch';
+                stEl.style.color = stColor;
             }
-            if (pfEl) pfEl.style.width = `${Math.max(pct, st === 'IDLE' ? 0 : 5)}%`;
+            if (stBadge) {
+                stBadge.innerText = st === 'RUNNING' ? '● LIVE' : (st === 'COMPLETED' ? '✓ DONE' : (st === 'FAILED' || st === 'STOPPED' ? '✕ HALT' : '○ IDLE'));
+                stBadge.style.color = stColor;
+                stBadge.style.borderColor = stColor;
+            }
+            if (pfEl) pfEl.style.width = `${Math.max(pct, st === 'IDLE' ? 0 : 4)}%`;
 
             if (sgEl) {
                 const stages = ['1. Auth', '2. Run', '3. Verify', '4. Done'];
                 sgEl.innerHTML = stages.map((sLbl, idx) => {
                     const n = idx + 1;
                     const cls = (st === 'COMPLETED' || n < Number(t.stage || 0)) ? 'done' : (st === 'RUNNING' && n === Number(t.stage || 0) ? 'cur' : '');
-                    return `<div class="scb-stage ${cls}">${cls === 'done' ? '✓ ' : ''}${sLbl}</div>`;
+                    return `<div class="scb-stage ${cls}">${cls === 'done' ? '✓ ' : (cls === 'cur' ? '⚡ ' : '')}${sLbl}</div>`;
                 }).join('');
             }
 
-            if (itEl) {
-                const items = Array.isArray(t.items) ? t.items : [];
-                itEl.style.display = items.length > 0 ? 'flex' : 'none';
+            if (itWrap && itEl) {
+                itWrap.style.display = items.length > 0 ? 'flex' : 'none';
+                if (itTitle) itTitle.innerText = `📋 TARGET QUEUE (${doneCnt}/${items.length})`;
+                itEl.style.display = _scbState._monItemsCollapsed ? 'none' : 'grid';
                 itEl.innerHTML = items.map(it => {
-                    const c = it.status === 'COMPLETED' ? '#34d399' : (it.status === 'FAILED' ? '#f87171' : '#38bdf8');
+                    const stU = String(it.status || '').toUpperCase();
+                    const c = stU === 'COMPLETED' ? '#34d399' : (stU === 'FAILED' ? '#f87171' : '#38bdf8');
+                    const ico = stU === 'COMPLETED' ? '✓' : (stU === 'FAILED' ? '✕' : '⚡');
                     return `
-                        <div style="background:var(--bg-input);border:1px solid rgba(148,163,184,0.2);border-left:3px solid ${c};border-radius:7px;padding:5px 8px;font-family:'JetBrains Mono',monospace;">
-                            <div style="display:flex;justify-content:space-between;font-size:0.58rem;font-weight:800;">
-                                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${scbEsc(it.label)}</span>
-                                <span style="color:${c};flex-shrink:0;">${scbEsc(it.status)}</span>
+                        <div class="scb-mon-item-pill" style="border-left-color:${c};">
+                            <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;font-size:0.53rem;font-weight:800;">
+                                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--text-primary);">${scbEsc(it.label)}</span>
+                                <span style="color:${c};flex-shrink:0;">${ico}</span>
                             </div>
-                            ${it.detail ? `<div style="font-size:0.5rem;color:var(--text-muted);margin-top:1px;">${scbEsc(it.detail)}</div>` : ''}
+                            ${it.detail ? `<div style="font-size:0.46rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px;">${scbEsc(it.detail)}</div>` : ''}
                         </div>
                     `;
                 }).join('');
             }
 
             if (lbEl) {
-                const logs = Array.isArray(t.logs) ? t.logs.slice(-40) : [];
+                const logs = Array.isArray(t.logs) ? t.logs.slice(-50) : [];
+                if (lbCnt) lbCnt.innerText = `${logs.length} EVENTS`;
                 const sig = logs.length + '|' + (logs.length ? (logs[logs.length - 1].time + logs[logs.length - 1].msg) : '');
                 if (sig !== _scbState.lastLogSig) {
                     _scbState.lastLogSig = sig;
                     lbEl.innerHTML = logs.length > 0
                         ? logs.map(scbFormatLogCardHtml).join('')
-                        : `<div style="text-align:center;color:var(--text-muted);padding:18px;">Standing by for live PC telemetry...</div>`;
+                        : `<div style="margin:auto;text-align:center;color:var(--text-muted);padding:20px 10px;line-height:1.5;">🛰️ Telemetry stream ready.<br>Dispatch a mission from <b>⚡ Command</b> to monitor live PC execution.</div>`;
                     lbEl.scrollTop = lbEl.scrollHeight;
                 }
             }
@@ -24201,38 +24421,93 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 `;
             } else if (_scbState.tab === 'monitor') {
                 box.innerHTML = `
-                    <div class="scb-term-card is-monitor" id="scbMonCard">
-                        <div class="scb-mon-job-banner">
-                            <div class="scb-mon-job-title" id="scbMonJobTitle">🛰️ STEALTH COMMAND</div>
-                            <div class="scb-mon-job-sub" id="scbMonJobSub">STANDBY • READY FOR MISSION</div>
-                        </div>
-
-                        <div id="scbMonStageTxt" style="text-align:center;font-family:'JetBrains Mono',monospace;font-size:0.58rem;font-weight:800;color:#38bdf8;flex-shrink:0;">
-                            WAITING FOR MISSION QUEUE...
-                        </div>
-
-                        <div class="progress-track" style="margin:0;flex-shrink:0;">
-                            <div class="progress-fill" id="scbMonProgFill" style="width:0%;"></div>
-                        </div>
-
-                        <div class="scb-stages" id="scbMonStagesRow"></div>
-
-                        <div class="scb-mon-cd" id="scbCdBanner">
-                            <div class="scb-mon-cd-hdr" id="scbCdText">⏳ SAFE COOLDOWN</div>
-                            <div style="height:4px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden;">
-                                <div id="scbCdBar" style="height:100%;width:10%;background:#fbbf24;"></div>
+                    <div class="scb-mon-shell" id="scbMonCard">
+                        <!-- 1. EXECUTIVE MISSION HERO & LIVE KPI STRIP -->
+                        <div class="scb-mon-hero">
+                            <div class="scb-mon-hero-row">
+                                <div class="scb-mon-hero-left">
+                                    <span class="scb-mon-orb"><span class="scb-mon-orb-dot idle" id="scbMonOrbDot"></span></span>
+                                    <div style="min-width:0;flex:1;">
+                                        <div class="scb-mon-job-title" id="scbMonJobTitle">🛰️ Stealth Command</div>
+                                        <div class="scb-mon-job-sub" id="scbMonJobSub">STANDBY • READY FOR MISSION</div>
+                                    </div>
+                                </div>
+                                <div class="scb-mon-pct-big" id="scbMonPctBig">0%</div>
+                            </div>
+                            <div class="scb-mon-kpis">
+                                <div class="scb-mon-kpi">
+                                    <span class="scb-mon-kpi-k">DONE</span>
+                                    <span class="scb-mon-kpi-v" id="scbMonKpiDone" style="color:#34d399;">0</span>
+                                </div>
+                                <div class="scb-mon-kpi">
+                                    <span class="scb-mon-kpi-k">ACTIVE</span>
+                                    <span class="scb-mon-kpi-v" id="scbMonKpiAct" style="color:#38bdf8;">0</span>
+                                </div>
+                                <div class="scb-mon-kpi">
+                                    <span class="scb-mon-kpi-k">FAILED</span>
+                                    <span class="scb-mon-kpi-v" id="scbMonKpiFail" style="color:#f87171;">0</span>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="scb-grid-2" style="flex-shrink:0;">
-                            <button type="button" class="scb-act-btn danger" onclick="scbStopMission()">🛑 Safe Stop</button>
-                            <button type="button" class="scb-act-btn cyan" onclick="scbResetMission()">🧹 Reset</button>
+                        <!-- 2. AURORA EXECUTION GAUGE + 4-STAGE PIPELINE -->
+                        <div class="scb-mon-gauge-box">
+                            <div class="scb-mon-stage-line">
+                                <span id="scbMonStageTxt" style="color:#38bdf8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">Standing by for mission dispatch</span>
+                                <span id="scbMonStatusPill" class="xb-ex-chip" style="color:var(--text-muted);border-color:var(--ex-hairline);flex-shrink:0;">○ IDLE</span>
+                            </div>
+                            <div class="scb-mon-track">
+                                <div class="scb-mon-fill" id="scbMonProgFill"></div>
+                                <span class="scb-mon-tick" style="left:25%;"></span>
+                                <span class="scb-mon-tick" style="left:50%;"></span>
+                                <span class="scb-mon-tick" style="left:75%;"></span>
+                            </div>
+                            <div class="scb-stages" id="scbMonStagesRow"></div>
                         </div>
 
-                        <div class="scb-mon-items" id="scbMonItemsList" style="display:none;"></div>
+                        <!-- 3. TACTICAL COOLDOWN HUD (AUTO-SHOW WHEN WAITING) -->
+                        <div class="scb-mon-cd" id="scbCdBanner">
+                            <div class="scb-mon-cd-hdr">
+                                <span id="scbCdText">⏳ SAFE COOLDOWN</span>
+                                <span id="scbCdTime" style="color:#fde047;">00:00 • 0%</span>
+                            </div>
+                            <div style="height:5px;background:rgba(255,255,255,0.12);border-radius:99px;overflow:hidden;">
+                                <div id="scbCdBar" style="height:100%;width:10%;background:linear-gradient(90deg,#f59e0b,#fde047,#34d399);transition:width 0.25s linear;"></div>
+                            </div>
+                        </div>
 
-                        <div class="scb-log-box" id="scbLogBox">
-                            <div style="text-align:center;color:var(--text-muted);padding:18px;">Standing by for live PC telemetry...</div>
+                        <!-- 4. COMPACT CONTROL STRIP -->
+                        <div class="scb-mon-ctrl-row">
+                            <button type="button" class="scb-act-btn danger" onclick="scbStopMission()">🛑 Safe Stop</button>
+                            <button type="button" class="scb-act-btn cyan" onclick="scbResetMission()">🧹 Reset</button>
+                            <button type="button" class="scb-act-btn green" onclick="scbCopyMonitorLogs()">📋 Copy</button>
+                        </div>
+
+                        <!-- 5. COLLAPSIBLE 2-COL TARGET QUEUE -->
+                        <div class="scb-mon-items-wrap" id="scbMonItemsWrap">
+                            <div class="scb-mon-items-hdr" onclick="scbToggleMonItems()">
+                                <span id="scbMonItemsTitle">📋 TARGET QUEUE (0/0)</span>
+                                <span id="scbMonItemsChev" style="color:var(--text-muted);">▲ HIDE</span>
+                            </div>
+                            <div class="scb-mon-items" id="scbMonItemsList"></div>
+                        </div>
+
+                        <!-- 6. LIVE TELEMETRY CONSOLE STREAM -->
+                        <div class="scb-log-shell">
+                            <div class="scb-log-bar">
+                                <span style="display:inline-flex;align-items:center;gap:6px;">
+                                    <span class="scb-log-dots">
+                                        <i style="background:#f87171;"></i>
+                                        <i style="background:#fbbf24;"></i>
+                                        <i style="background:#34d399;"></i>
+                                    </span>
+                                    <span style="font-size:0.52rem;font-weight:800;color:#38bdf8;letter-spacing:0.4px;">LIVE PC TELEMETRY STREAM</span>
+                                </span>
+                                <span id="scbMonLogCnt" style="font-size:0.49rem;font-weight:800;color:var(--text-muted);">0 EVENTS</span>
+                            </div>
+                            <div class="scb-log-box" id="scbLogBox">
+                                <div style="margin:auto;text-align:center;color:var(--text-muted);padding:20px 10px;line-height:1.5;">🛰️ Telemetry stream ready.<br>Dispatch a mission from <b>⚡ Command</b> to monitor live PC execution.</div>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -24699,7 +24974,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     body: JSON.stringify({
                         action: 'admin_creator_job',
                         sub_action: 'enqueue_create',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         accounts: accounts,
                         delay_min: dMin,
                         delay_max: dMax
@@ -24805,7 +25080,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     body: JSON.stringify({
                         action: 'admin_creator_job',
                         sub_action: 'enqueue_customize',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         items: itemsPayload
                     })
                 });
@@ -24839,7 +25114,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     body: JSON.stringify({
                         action: 'admin_creator_job',
                         sub_action: 'submit_otp',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         job_id: waitingJob.job_id,
                         otp_code: otpVal
                     })
@@ -24864,7 +25139,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     body: JSON.stringify({
                         action: 'admin_creator_job',
                         sub_action: 'promote_to_store',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         job_id: jobId
                     })
                 });
@@ -24889,7 +25164,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     body: JSON.stringify({
                         action: 'admin_creator_job',
                         sub_action: 'cancel_all',
-                        secret: XB_PAT_SECRET
+                        secret: getAdminSecret()
                     })
                 });
                 showToast('🛑 Active queue stopped.');
@@ -24909,7 +25184,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     body: JSON.stringify({
                         action: 'admin_creator_job',
                         sub_action: 'status',
-                        secret: XB_PAT_SECRET
+                        secret: getAdminSecret()
                     })
                 });
                 const data = await res.json();
@@ -25002,7 +25277,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
         }
 
 // --- 🔑 ADMIN EXECUTIVE GITHUB PAT STUDIO V3 (ZERO-SCROLL COCKPIT) ---
-        const XB_PAT_SECRET = "getAdminSecret()";
+        // Admin secret dibaca dinamis lewat getAdminSecret()
         const XB_PAT_LOCAL_STORAGE_KEY = "xb_pat_studio_state_v4";
         let _patPollTimer = null;
         let _patCooldownTickTimer = null;
@@ -26041,7 +26316,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     signal: ctrl.signal,
-                    body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'status', secret: XB_PAT_SECRET })
+                    body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'status', secret: getAdminSecret() })
                 });
                 const data = await res.json();
                 if (reqEpoch !== _patBatchGenerationEpoch) return;
@@ -26103,7 +26378,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'cancel', secret: XB_PAT_SECRET })
+                    body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'cancel', secret: getAdminSecret() })
                 });
                 const data = await res.json();
                 if (data && data.batch) {
@@ -26535,7 +26810,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     body: JSON.stringify({
                         action: 'admin_pat_job',
                         sub_action: 'enqueue',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         runner_target: runnerTarget,
                         usernames: sheetOnlyUsernames.join('\n'),
                         custom_accounts: customAccountsArr,
@@ -27957,7 +28232,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'admin_credit_wallet',
-                        secret: XB_PAT_SECRET,
+                        secret: getAdminSecret(),
                         target_uid: String(m.buyerId || ''),
                         target_uname: cleanBuyerU,
                         amount_usdt: amt,
@@ -31745,6 +32020,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'live_support_chat',
+                        secret: isCurrentUserSupportAdmin() ? getAdminSecret() : '',
                         sub_action: 'mark_read',
                         thread_key: threadKey,
                         reader: isAdm ? 'admin' : 'buyer'
@@ -31762,6 +32038,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'live_support_chat',
+                        secret: isCurrentUserSupportAdmin() ? getAdminSecret() : '',
                         sub_action: 'pull',
                         is_admin: isAdm,
                         thread_key: ownKey
@@ -31857,6 +32134,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'live_support_chat',
+                        secret: isCurrentUserSupportAdmin() ? getAdminSecret() : '',
                         sub_action: 'delete_thread',
                         thread_key: delKey
                     })
@@ -32010,6 +32288,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'live_support_chat',
+                        secret: isCurrentUserSupportAdmin() ? getAdminSecret() : '',
                         sub_action: 'send',
                         thread_key: activeTh.thread_key,
                         user_id: isAdm ? String(activeTh.user_id || '') : String(currentUserId || ''),
