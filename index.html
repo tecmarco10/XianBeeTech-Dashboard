@@ -7520,7 +7520,8 @@
 
             /* Judul Kotak Pembatas: Kotak Tetap Ramping, Teks Besar, Rata Tengah + 1 Spasi per Huruf */
             .xb-pc-hscroll-track .xb-ex-special-hdr,
-            .xb-pc-hscroll-track .xb-ex-divider {
+            .xb-pc-hscroll-track .xb-ex-divider,
+            .xb-pc-vip-stage > .xb-ex-divider {
                 position: relative !important;
                 margin: 0 !important;
                 width: 100% !important;
@@ -7536,11 +7537,14 @@
                 padding: 6px 56px !important;
             }
             .xb-pc-hscroll-track .xb-ex-divider::before,
-            .xb-pc-hscroll-track .xb-ex-divider::after {
+            .xb-pc-hscroll-track .xb-ex-divider::after,
+            .xb-pc-vip-stage > .xb-ex-divider::before,
+            .xb-pc-vip-stage > .xb-ex-divider::after {
                 display: none !important;
             }
             .xb-pc-hscroll-track .xb-ex-special-title,
-            .xb-pc-hscroll-track .xb-ex-divider > span {
+            .xb-pc-hscroll-track .xb-ex-divider > span,
+            .xb-pc-vip-stage > .xb-ex-divider > span {
                 width: auto !important;
                 display: inline-block !important;
                 margin: 0 !important;
@@ -7645,6 +7649,17 @@
             .xb-pc-vip-stage .xb-bst-terminal > .xb-bst-head,
             .xb-pc-vip-stage .xb-vip-pill-scroll {
                 display: none !important;
+            }
+            /* Kunci input filter & target agar tidak pernah melar ke bawah (flex-grow: 0) */
+            .xb-pc-vip-stage .xb-bst-terminal > input.xb-bst-target-inp {
+                flex: 0 0 34px !important;
+                height: 34px !important;
+                min-height: 34px !important;
+                max-height: 34px !important;
+            }
+            .xb-pc-vip-stage .xb-pc-vip-dock .xb-bst-target-inp {
+                flex: 0 0 auto !important;
+                height: 37px !important;
             }
             .xb-pc-vip-stage .xb-vip-sku-grid {
                 flex: 1 1 0 !important;
