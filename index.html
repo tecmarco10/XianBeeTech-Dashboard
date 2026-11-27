@@ -6311,8 +6311,11 @@
         .xb-pc-filter-panel,
         .xb-pc-rail-foot,
         .xb-pc-only-div,
-        .xb-pc-pillar-cnt {
-            display: none;
+        .xb-pc-pillar-cnt,
+        .xb-pc-only-hero,
+        .xb-pc-only-col,
+        .xb-pc-social-rail {
+            display: none !important;
         }
 
         /* =========================================================
@@ -6820,14 +6823,21 @@
                 gap: 12px !important;
             }
 
-            /* 4. EQUAL-HEIGHT TOP BENTO (GITHUB MARKETPLACE === XIANBEE COLLECTION) */
+            /* 4. EQUAL-HEIGHT TOP BENTO (50:50 SAMA PANJANG: MARKETPLACE === COLLECTION) */
             .xb-pc-mkt-top {
                 flex-shrink: 0 !important;
                 display: grid !important;
-                grid-template-columns: minmax(0, 1.48fr) minmax(340px, 1fr) !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
                 gap: 14px !important;
                 align-items: stretch !important;
                 margin-bottom: 0 !important;
+            }
+            /* Paksa 50:50 sama panjang di semua platform (GitHub, Social, Email, CEX, Pro Apps) */
+            .xb-pc-mkt-top {
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+            }
+            body:not(.xb-pc-mkt-lock) .xb-pc-mkt-top {
+                margin-bottom: 14px !important;
             }
             .xb-pc-mkt-top.is-single {
                 grid-template-columns: 1fr !important;
@@ -6842,8 +6852,72 @@
             .xb-pc-mkt-top .xb-mp-dual-row {
                 display: none !important;
             }
-            .xb-pc-mkt-top.is-subplat .xb-hero-plat-card.is-mp-hero {
+            .xb-pc-mkt-top.is-subplat > .xb-mp-switcher {
                 display: none !important;
+            }
+            .xb-pc-mkt-top .xb-pc-only-hero,
+            .xb-pc-mkt-top .xb-pc-only-col {
+                display: flex !important;
+            }
+
+            /* Switcher 7 Social Platforms rapi di dalam panel kiri FILTERS & SORT (PC only) */
+            .xb-pc-social-rail {
+                order: 2;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 5px;
+                padding-bottom: 9px;
+                border-bottom: 1px dashed var(--ex-hairline);
+            }
+            .xb-pc-social-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 5px;
+            }
+            .xb-pc-social-btn {
+                height: 31px;
+                padding: 0 8px;
+                border-radius: 8px;
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                color: var(--text-secondary);
+                display: inline-flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 6px;
+                font-family: inherit;
+                font-size: 0.68rem;
+                font-weight: 700;
+                cursor: pointer;
+                transition: 0.15s ease;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .xb-pc-social-btn svg {
+                width: 14px;
+                height: 14px;
+                flex-shrink: 0;
+            }
+            .xb-pc-social-btn:hover {
+                border-color: rgba(56, 189, 248, 0.55);
+                color: var(--text-primary);
+            }
+            .xb-pc-social-btn.active {
+                background: var(--grad-primary) !important;
+                border-color: #38bdf8 !important;
+                color: #ffffff !important;
+                box-shadow: 0 3px 10px rgba(99, 102, 241, 0.35);
+            }
+            .xb-pc-social-btn:last-child:nth-child(2n+1) {
+                grid-column: 1 / -1;
+                justify-content: center;
+            }
+            .xb-pc-mkt-rail .xb-ex-chips-wrap:not([data-xb-mkt-filters="1"]) {
+                order: 3 !important;
+            }
+            .xb-pc-rail-foot {
+                order: 4 !important;
             }
             .xb-pc-mkt-top .xb-mp-drawer-box {
                 height: 100% !important;
@@ -16988,6 +17062,73 @@ const XB_EX_BANK_THEMES = {
             drawer.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
+        function buildDesktopPlatformHeroEl(cfg) {
+            const hero = document.createElement('div');
+            hero.className = 'xb-hero-plat-card is-mp-hero xb-pc-only-hero';
+            const iconBoxStyle = cfg.accent
+                ? `color:${cfg.accent};border-color:${cfg.border || 'var(--ex-hairline)'};`
+                : '';
+            hero.innerHTML = `
+                <div class="xb-hero-plat-top">
+                    <div class="xb-hero-plat-logo" style="${iconBoxStyle}">${cfg.iconSvg}</div>
+                    <div style="text-align:center;min-width:0;">
+                        <div class="xb-hero-plat-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cfg.title}</div>
+                        <div class="xb-hero-plat-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cfg.subtitle}</div>
+                    </div>
+                    <div class="xb-hero-plat-logo" style="${iconBoxStyle}">${cfg.iconSvg}</div>
+                </div>
+                <div class="xb-hero-mp-bottom">
+                    <div class="xb-hero-plat-meta">
+                        <span class="xb-mp-prim-pill">${cfg.badge || 'VERIFIED'}</span>
+                        <span class="xb-mp-cnt-pill">● ACTIVE</span>
+                    </div>
+                </div>
+            `;
+            return hero;
+        }
+
+        function buildDesktopVipCollectionEl(cfg) {
+            const col = document.createElement('div');
+            col.className = 'xb-ex-collection xb-pc-only-col';
+            col.innerHTML = `
+                <div class="xb-ex-col-head">
+                    <div class="xb-ex-col-brand full">
+                        <div class="xb-ex-col-logo" style="color:${cfg.accent};border-color:${cfg.border};">
+                            ${cfg.iconSvg}
+                        </div>
+                        <div style="min-width:0;flex:1;">
+                            <div style="display:flex;align-items:center;gap:4px;min-width:0;">
+                                <h2 class="xb-brand-grad" style="margin:0;font-size:clamp(0.76rem,3.4vw,0.92rem);font-weight:800;letter-spacing:-0.25px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cfg.colTitle}</h2>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="${cfg.accent}" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                            </div>
+                            <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;font-weight:700;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                ${cfg.colSubtitle}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="xb-ex-col-stats">
+                    <div class="xb-ex-col-stat">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">${cfg.s1k}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:${cfg.accent};margin-top:1px;">${cfg.s1v}</div>
+                    </div>
+                    <div class="xb-ex-col-stat">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">${cfg.s2k}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#34d399;margin-top:1px;">${cfg.s2v}</div>
+                    </div>
+                    <div class="xb-ex-col-stat">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">${cfg.s3k}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#f472b6;margin-top:1px;">${cfg.s3v}</div>
+                    </div>
+                    <div class="xb-ex-col-stat">
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">${cfg.s4k}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#fbbf24;margin-top:1px;">${cfg.s4v}</div>
+                    </div>
+                </div>
+            `;
+            return col;
+        }
+
         function renderDigitalPlatformMarketplace(vp, platKey, topBentoEl = null) {
             const plat = XB_MP_PLATFORMS[platKey];
             if (!plat) return;
@@ -16997,7 +17138,25 @@ const XB_EX_BANK_THEMES = {
                 ? Math.min(...platAccs.map(a => a._computed_usdt || 15))
                 : Math.min(...plat.vaults.map(v => v.usdt));
 
-            // 1. PLATFORM COLLECTION BANNER (IDENTICAL STRUCTURE TO GITHUB)
+            const cleanPlatName = String(plat.title || plat.shortName || '')
+                .replace(/^XianBee\s+/i, '')
+                .replace(/\s*(Marketplace|Collection|Accounts|Vault)\s*$/i, '')
+                .trim() || plat.shortName;
+
+            // 1A. LEFT 50% HERO CARD ON DESKTOP (IDENTICAL TO GITHUB MARKETPLACE)
+            if (topBentoEl) {
+                topBentoEl.classList.add('is-subplat');
+                topBentoEl.appendChild(buildDesktopPlatformHeroEl({
+                    title: `${cleanPlatName} Marketplace`,
+                    subtitle: plat.subtitle,
+                    iconSvg: XB_MP_SVGS[plat.key] || '',
+                    accent: plat.accent,
+                    border: plat.border,
+                    badge: 'VERIFIED'
+                }));
+            }
+
+            // 1B. RIGHT 50% COLLECTION BANNER (IDENTICAL TO XIANBEE GITHUB COLLECTION)
             const colBanner = document.createElement('div');
             colBanner.className = 'xb-ex-collection mp-themed';
             colBanner.style.cssText = `--mp-acc:${plat.accent};--mp-border:${plat.border};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
@@ -17009,7 +17168,7 @@ const XB_EX_BANK_THEMES = {
                         </div>
                         <div style="min-width:0;flex:1;">
                             <div style="display:flex;align-items:center;gap:4px;min-width:0;">
-                                <h2 style="margin:0;font-size:clamp(0.76rem,3.4vw,0.92rem);font-weight:800;letter-spacing:-0.25px;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${plat.title}</h2>
+                                <h2 class="xb-brand-grad" style="margin:0;font-size:clamp(0.76rem,3.4vw,0.92rem);font-weight:800;letter-spacing:-0.25px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">XianBee ${cleanPlatName} Collection</h2>
                                 <svg width="14" height="14" viewBox="0 0 24 24" fill="${plat.accent}" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
                             </div>
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;font-weight:700;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
@@ -17036,7 +17195,6 @@ const XB_EX_BANK_THEMES = {
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#fbbf24;margin-top:1px;">Instant</div>
                     </div>
                 </div>
-                
             `;
             if (topBentoEl) topBentoEl.appendChild(colBanner);
             else vp.appendChild(colBanner);
@@ -17048,6 +17206,23 @@ const XB_EX_BANK_THEMES = {
             mktRail.innerHTML = `<div class="xb-pc-rail-head"><span>🎛️ FILTERS &amp; SORT</span><span style="color:#34d399;">${plat.shortName.toUpperCase()}</span></div>`;
             const mktStage = document.createElement('div');
             mktStage.className = 'xb-pc-mkt-stage';
+
+            // 1C. DESKTOP SOCIAL PLATFORM SWITCHER INSIDE LEFT RAIL (X, DISCORD, REDDIT, IG, FB, TIKTOK, TELEGRAM)
+            const socialKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
+            if (socialKeys.includes(platKey)) {
+                const socRail = document.createElement('div');
+                socRail.className = 'xb-pc-social-rail';
+                socRail.innerHTML = `
+                    <div class="xb-pc-fsec-lbl"><span>SOCIAL PLATFORMS</span><span style="color:#38bdf8;">${socialKeys.length}</span></div>
+                    <div class="xb-pc-social-grid">
+                        ${socialKeys.filter(sk => XB_MP_PLATFORMS[sk]).map(sk => {
+                            const sp = XB_MP_PLATFORMS[sk];
+                            return `<button type="button" class="xb-pc-social-btn ${sk === platKey ? 'active' : ''}" onclick="switchMarketplacePlatform('${sk}')"><span style="color:${sk === platKey ? '#ffffff' : sp.accent};display:inline-flex;">${XB_MP_SVGS[sk] || ''}</span><span style="overflow:hidden;text-overflow:ellipsis;">${sp.shortName}</span></button>`;
+                        }).join('')}
+                    </div>
+                `;
+                mktRail.appendChild(socRail);
+            }
 
             // 2. FILTER CHIPS (KHUSUS EMAIL: BARIS 1 OLD/FRESH + BARIS 2 PROVIDER)
             const chipsWrap = document.createElement('div');
@@ -17110,7 +17285,6 @@ const XB_EX_BANK_THEMES = {
 
             if (topBentoEl) {
                 topBentoEl.classList.add('is-subplat');
-                if (_mpDrawerTab !== 'social') topBentoEl.classList.add('is-single');
             }
 
             const hBar = document.createElement('div');
@@ -17431,12 +17605,41 @@ const XB_EX_BANK_THEMES = {
                 vp.appendChild(topBento);
 
                 if (_mpPlatform === 'pro_apps' || _mpPlatform === 'games_ppob') {
-                    topBento.classList.add('is-single');
+                    const isProApps = (_mpPlatform === 'pro_apps');
+                    const vipSvg = isProApps
+                        ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>`
+                        : `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`;
+                    topBento.classList.add('is-subplat');
+                    topBento.appendChild(buildDesktopPlatformHeroEl({
+                        title: isProApps ? 'Pro Apps & AI Marketplace' : 'Top-Up Hub Marketplace',
+                        subtitle: isProApps
+                            ? 'ChatGPT • Gemini • Canva • CapCut • Streaming'
+                            : 'Games Diamonds • Pulsa • Data • E-Wallet • PLN',
+                        iconSvg: vipSvg,
+                        accent: isProApps ? '#c084fc' : '#38bdf8',
+                        border: isProApps ? 'rgba(192,132,252,0.45)' : 'rgba(56,189,248,0.45)',
+                        badge: isProApps ? 'PREMIUM' : 'AUTOMATED'
+                    }));
+                    topBento.appendChild(buildDesktopVipCollectionEl({
+                        colTitle: isProApps ? 'XianBee Pro Apps & AI Collection' : 'XianBee Top-Up Hub Collection',
+                        colSubtitle: isProApps
+                            ? 'Verified Pro Accounts & Streaming • Instant Delivery'
+                            : '24/7 Direct ID Game Top-Up & PPOB Bills',
+                        iconSvg: vipSvg,
+                        accent: isProApps ? '#c084fc' : '#38bdf8',
+                        border: isProApps ? 'rgba(192,132,252,0.45)' : 'rgba(56,189,248,0.45)',
+                        s1k: 'FLOOR',    s1v: fmtPrice(isProApps ? 1.0 : 0.5),
+                        s2k: 'CATALOGS', s2v: isProApps ? '13+ Apps' : 'Games & Bills',
+                        s3k: 'TIERS',    s3v: isProApps ? 'Pro & AI' : 'Direct ID',
+                        s4k: 'DELIVERY', s4v: 'Instant'
+                    }));
+
                     if (typeof renderVipResellerMarketplace === 'function') {
                         renderVipResellerMarketplace(vp, _mpPlatform);
                     } else {
                         vp.innerHTML += `<div class="xb-wal-card" style="text-align:center;padding:22px;font-size:0.74rem;color:var(--text-secondary);">⚡ Terminal live siap aktif setelah pasang Batch 3!</div>`;
                     }
+                    if (typeof syncDesktopSidebarState === 'function') syncDesktopSidebarState();
                     return;
                 }
                 if (_mpPlatform !== 'github') {
