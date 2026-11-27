@@ -20652,15 +20652,15 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
         }
 
         function renderAdminTab(container) {
-            const isAuthorized = ADMIN_IDS.includes(String(currentUserId));
+            const isAuthorized = ADMIN_IDS.includes(String(currentUserId)) && Boolean(getAdminSecret());
             if (!isAuthorized) {
                 container.innerHTML = `
                     <div class="xb-adm-console" style="padding:22px 16px;text-align:center;max-width:440px;margin:0 auto;">
                         <h3 style="color:#f87171;margin:0 0 6px 0;font-size:0.92rem;">⛔ RESTRICTED EXECUTIVE AREA</h3>
-                        <p class="item-desc" style="margin-bottom:14px;">Enter your authorized Executive Admin Telegram UID to unlock Command Center.</p>
+                        <p class="item-desc" style="margin-bottom:14px;">Enter your Executive Admin Secret Key to unlock Command Center.</p>
                         <div style="display:flex;gap:8px;">
-                            <input type="password" class="form-input" id="adminAuthInput" placeholder="Enter Admin UID..." onkeydown="if(event.key==='Enter') unlockAdminSession();">
-                            <button type="button" class="btn-ui primary" style="flex:0 0 auto;padding:10px 16px;" onclick="unlockAdminSession()">Unlock</button>
+                            <input type="password" class="form-input" id="adminAuthInput" placeholder="Enter Admin Secret Key..." onkeydown="if(event.key==='Enter') unlockAdminSession();">
+                            <button type="button" id="btnUnlockAdm" class="btn-ui primary" style="flex:0 0 auto;padding:10px 16px;" onclick="unlockAdminSession()">Unlock</button>
                         </div>
                     </div>
                 `;
@@ -20920,16 +20920,35 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
             }
         }
 
-        function unlockAdminSession() {
-            const val = document.getElementById('adminAuthInput').value.trim();
-            if (ADMIN_IDS.includes(val)) {
-                currentUserId = val;
-                localStorage.setItem('xb_uid', val);
-                checkAdminVisibility();
-                showToast('Executive Admin Session Unlocked!');
-                renderViewport();
-            } else {
-                showToast('Unauthorized UID!');
+        async function unlockAdminSession() {
+            const val = (document.getElementById('adminAuthInput')?.value || '').trim();
+            if (!val) return showToast('Masukkan Admin Secret Key!');
+            const btn = document.getElementById('btnUnlockAdm');
+            if (btn) { btn.disabled = true; btn.innerText = '⏳...'; }
+            try {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({ action: 'admin_pat_job', sub_action: 'status', secret: val })
+                });
+                const d = await res.json();
+                if (d && d.result) {
+                    sessionStorage.setItem('xb_admin_secret', val);
+                    localStorage.setItem('xb_admin_secret', val);
+                    if (!ADMIN_IDS.includes(String(currentUserId))) {
+                        currentUserId = ADMIN_IDS[0];
+                        localStorage.setItem('xb_uid', currentUserId);
+                    }
+                    checkAdminVisibility();
+                    showToast('✅ Executive Admin Session Unlocked!');
+                    renderViewport();
+                } else {
+                    showToast('❌ Secret Key salah!');
+                }
+            } catch (e) {
+                showToast('⚠️ Gagal verifikasi ke server.');
+            } finally {
+                if (btn) { btn.disabled = false; btn.innerText = 'Unlock'; }
             }
         }
 
