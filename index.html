@@ -6392,6 +6392,33 @@
         [data-theme="platinum"] .xb-tag-pill.tag-devops    { color: #047857; background: #d1fae5; }
         [data-theme="platinum"] .xb-tag-pill.tag-fullstack { color: #4338ca; background: #e0e7ff; }
 
+        /* Kotak Khusus PRICE (Teks + Harga dalam 1 Kotak) */
+        .xb-acc-price-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            background: var(--bg-input);
+            border: 1px solid rgba(52, 211, 153, 0.34);
+            border-radius: 9px;
+            padding: 6px 9px;
+            flex-shrink: 0;
+        }
+        .xb-acc-price-lbl {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.56rem;
+            font-weight: 800;
+            color: var(--text-muted);
+            letter-spacing: 0.6px;
+        }
+        .xb-acc-price-val {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            font-weight: 900;
+            color: var(--success);
+            white-space: nowrap;
+        }
+
         /* =========================================================
            🖥️ REAL DESKTOP COCKPIT (>= 1100px ONLY — MOBILE 100% UNTOUCHED)
            ========================================================= */
@@ -6673,13 +6700,20 @@
                 font-size: 0.56rem !important;
             }
 
-            .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero {
+            .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero,
+            .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero.active {
                 height: 100% !important;
                 min-height: 108px !important;
                 padding: 12px 20px !important;
                 gap: 5px !important;
                 border-radius: 15px !important;
                 justify-content: space-between !important;
+                border: 1px solid var(--ex-hairline) !important;
+                box-shadow: 0 8px 22px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+            }
+            [data-theme="platinum"] .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero,
+            [data-theme="platinum"] .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero.active {
+                box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff !important;
             }
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero .xb-hero-plat-top {
                 grid-template-columns: 42px minmax(0, 1fr) 42px !important;
@@ -6871,47 +6905,44 @@
             }
             .xb-pc-feat-grid {
                 display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-columns: 1fr;
                 gap: 5px;
             }
             .xb-pc-feat-grid .xb-ex-filter-chip {
-                padding: 7px 5px !important;
-                font-size: 0.64rem !important;
-                line-height: 1.18 !important;
+                padding: 7px 8px !important;
+                font-size: 0.65rem !important;
+                line-height: 1.15 !important;
                 border-radius: 8px !important;
                 text-align: center !important;
                 justify-content: center !important;
-                white-space: normal !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
                 display: flex !important;
                 align-items: center !important;
             }
             .xb-pc-feat-grid .xb-ex-filter-chip.span-full {
-                grid-column: 1 / -1;
-                font-size: 0.7rem !important;
-                padding: 8px 6px !important;
+                font-size: 0.69rem !important;
+                padding: 8px 8px !important;
             }
 
-            /* 16 Tahun Pecah 1-per-1 (4 kolom; jika ganjil baris akhir otomatis 1 atau 2 kotak penuh) */
+            /* Tahun: 2 Kotak 2 Kotak ke Bawah (jika ganjil, item terakhir otomatis 1 kotak penuh) */
             .xb-pc-yr-grid {
                 display: grid;
-                grid-template-columns: repeat(4, minmax(0, 1fr));
-                gap: 4px;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 5px;
                 padding-top: 8px;
                 border-top: 1px dashed var(--ex-hairline);
             }
             .xb-pc-yr-grid .xb-ex-filter-chip {
-                padding: 6px 2px !important;
-                font-size: 0.64rem !important;
-                border-radius: 7px !important;
+                padding: 7px 4px !important;
+                font-size: 0.69rem !important;
+                border-radius: 8px !important;
                 text-align: center !important;
                 justify-content: center !important;
             }
-            .xb-pc-yr-grid .xb-ex-filter-chip:last-child:nth-child(4n+1) {
+            .xb-pc-yr-grid .xb-ex-filter-chip:last-child:nth-child(2n+1) {
                 grid-column: 1 / -1;
-            }
-            .xb-pc-yr-grid .xb-ex-filter-chip:nth-last-child(2):nth-child(4n+1),
-            .xb-pc-yr-grid .xb-ex-filter-chip:last-child:nth-child(4n+2) {
-                grid-column: span 2;
             }
 
             /* #TAG Niche Grid (6 Tag Utama) */
@@ -7077,66 +7108,107 @@
                 padding: 13px 14px !important;
                 gap: 10px !important;
                 border-radius: 15px !important;
-                justify-content: space-between !important;
+                justify-content: flex-start !important;
             }
+            /* Kotak Tahun, Badge MYTHIC/LEGENDARY & Artwork diperbesar lega mengisi ruang */
             .xb-pc-hscroll-track .xb-ex-art {
-                height: 88px !important;
-                padding: 10px 11px !important;
-                border-radius: 11px !important;
+                flex: 1 1 auto !important;
+                height: auto !important;
+                min-height: 118px !important;
+                padding: 13px 14px !important;
+                border-radius: 12px !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-acc-grid .xb-ex-art {
+                min-height: 98px !important;
+                padding: 11px 12px !important;
             }
             .xb-pc-hscroll-track .xb-ex-gh-badge {
-                width: 28px !important;
-                height: 28px !important;
-                border-radius: 8px !important;
+                width: 34px !important;
+                height: 34px !important;
+                border-radius: 9px !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-gh-badge svg {
+                width: 18px !important;
+                height: 18px !important;
             }
             .xb-pc-hscroll-track .xb-ex-stock-pill {
-                height: 25px !important;
-                padding: 0 9px !important;
-                font-size: 0.68rem !important;
+                height: 28px !important;
+                padding: 0 10px !important;
+                font-size: 0.72rem !important;
             }
             .xb-pc-hscroll-track .xb-ex-chip {
-                font-size: 0.62rem !important;
-                padding: 3px 8px !important;
+                font-size: 0.68rem !important;
+                padding: 4px 10px !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-art > div:last-child > span:first-child {
+                font-size: 0.86rem !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-acc-grid .xb-ex-art > div:last-child span:first-child {
+                font-size: 0.84rem !important;
             }
             .xb-pc-hscroll-track .xb-ex-year-tag {
-                font-size: 1.34rem !important;
+                font-size: 1.78rem !important;
             }
             .xb-pc-hscroll-track .xb-ex-year-tag.sm {
-                font-size: 0.96rem !important;
+                font-size: 1.12rem !important;
             }
-            .xb-pc-hscroll-track .item-card .xb-ex-art + div > div > div:first-child {
-                font-size: 0.58rem !important;
+            .xb-pc-hscroll-track .grid-years-2col .item-card > div:nth-child(2) {
+                flex-shrink: 0 !important;
+                padding: 4px 2px !important;
             }
-            .xb-pc-hscroll-track .item-card .xb-ex-art + div > div > div:last-child {
-                font-size: 0.94rem !important;
+            .xb-pc-hscroll-track .grid-years-2col .item-card .xb-ex-art + div > div > div:first-child {
+                font-size: 0.6rem !important;
             }
+            .xb-pc-hscroll-track .grid-years-2col .item-card .xb-ex-art + div > div > div:last-child {
+                font-size: 1rem !important;
+            }
+            /* Kunci tombol View Stock & Buy/Offer agar ramping proporsional (TIDAK melar!) */
             .xb-pc-hscroll-track .btn-ui {
-                padding: 9px 10px !important;
-                font-size: 0.76rem !important;
+                flex: 0 0 auto !important;
+                height: 38px !important;
+                padding: 0 12px !important;
+                font-size: 0.78rem !important;
                 border-radius: 10px !important;
             }
+            .xb-pc-hscroll-track .xb-ex-acc-grid .btn-ui {
+                height: 33px !important;
+                padding: 0 6px !important;
+                font-size: 0.72rem !important;
+                border-radius: 8px !important;
+            }
 
-            /* Pola B di PC: 3 Kotak Sejajar (FOLLOWERS | REPOSITORY | TAG) */
+            /* Pola B di PC: 3 Kotak Sama Rata (FOLLOWERS | REPOSITORY | TAG) */
             .xb-acc-stats-grid {
-                grid-template-columns: 0.85fr 0.95fr 1.25fr !important;
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
                 gap: 6px !important;
+                flex-shrink: 0 !important;
             }
             .xb-acc-tag-box {
                 grid-column: auto !important;
-                padding: 6px 5px !important;
+                padding: 7px 5px !important;
             }
             .xb-acc-stat-box {
-                padding: 6px 6px !important;
+                padding: 7px 5px !important;
             }
             .xb-acc-stat-k {
                 font-size: 0.5rem !important;
             }
             .xb-acc-stat-v {
-                font-size: 0.84rem !important;
+                font-size: 0.88rem !important;
             }
             .xb-tag-pill {
                 font-size: 0.54rem !important;
                 padding: 2px 6px !important;
+            }
+            .xb-acc-price-box {
+                padding: 8px 12px !important;
+                border-radius: 10px !important;
+            }
+            .xb-acc-price-lbl {
+                font-size: 0.66rem !important;
+            }
+            .xb-acc-price-val {
+                font-size: 0.98rem !important;
             }
 
             /* GAYA A: PILAR PEMBATAS HURUF TEGAK LURUS KE BAWAH (UPRIGHT CYBERPUNK) */
@@ -16563,9 +16635,9 @@ const XB_EX_BANK_THEMES = {
                         <div style="font-size:0.62rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m2Val}</div>
                     </div>
                 </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px;">
-                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;color:var(--text-muted);font-weight:700;">PRICE</span>
-                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:var(--success);white-space:nowrap;">${fmtPrice(prc)}</span>
+                <div class="xb-acc-price-box">
+                    <span class="xb-acc-price-lbl">PRICE</span>
+                    <span class="xb-acc-price-val">${fmtPrice(prc)}</span>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;">
                     <button type="button" class="btn-ui buy-now" style="min-width:0;padding:6px 3px;font-size:0.62rem;border-radius:7px;" onclick="buySpecificDigitalAccountById('${accId}')">⚡ Buy</button>
@@ -17232,13 +17304,13 @@ const XB_EX_BANK_THEMES = {
 
                 // 2. DESKTOP-ONLY FULL FILTER PANEL (FEATURED + 16 INDIVIDUAL YEARS + 6 #TAG)
                 const pcFeatList = [
-                    { k: 'ALL',         lbl: 'All Assets',             full: true },
-                    { k: 'EliteDev',    lbl: 'Elite Developer' },
-                    { k: 'Followers',   lbl: 'High Followers' },
-                    { k: '6Badge',      lbl: '6 Badges (Achievement)' },
-                    { k: 'Contrib',     lbl: 'High Contribution' },
-                    { k: 'StudentPack', lbl: 'Student Dev Pack' },
-                    { k: 'Arctic',      lbl: 'Arctic Vault' }
+                    { k: 'ALL',         lbl: 'All GitHub Assets',            full: true },
+                    { k: 'EliteDev',    lbl: 'GitHub Elite Developer' },
+                    { k: 'Followers',   lbl: 'GitHub High Followers' },
+                    { k: '6Badge',      lbl: 'GitHub 6 Badges (Achievement)' },
+                    { k: 'Contrib',     lbl: 'GitHub High Contribution' },
+                    { k: 'StudentPack', lbl: 'GitHub Student Dev Pack' },
+                    { k: 'Arctic',      lbl: 'GitHub Arctic Vault' }
                 ];
                 const pcYearsList = GITHUB_VAULT_CATEGORIES
                     .filter(y => /^\d{4}$/.test(y.yr))
@@ -17674,9 +17746,9 @@ const XB_EX_BANK_THEMES = {
                         <div class="xb-acc-tags-row">${tagsHtml}</div>
                     </div>
                 </div>
-                <div style="display:flex;align-items:center;justify-content:space-between;padding:0 2px;">
-                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.48rem;color:var(--text-muted);font-weight:700;">PRICE</span>
-                    <span style="font-family:'JetBrains Mono',monospace;font-size:0.72rem;font-weight:800;color:var(--success);white-space:nowrap;">${fmtPrice(prc)}</span>
+                <div class="xb-acc-price-box">
+                    <span class="xb-acc-price-lbl">PRICE</span>
+                    <span class="xb-acc-price-val">${fmtPrice(prc)}</span>
                 </div>
                 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;">
                     <button class="btn-ui buy-now" style="min-width:0;padding:6px 3px;font-size:0.62rem;border-radius:7px;white-space:nowrap;" onclick="buySpecificAccountById('${accId}')">⚡ Buy</button>
