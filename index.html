@@ -6292,72 +6292,168 @@
         .scb-acc-row.picked { border-color:#34d399; border-left:3px solid #34d399; background:rgba(16,185,129,0.1); }
         .scb-yr-hdr { display:flex; justify-content:space-between; align-items:center; padding:4px 8px; border-radius:7px; background:rgba(56,189,248,0.12); border:1px solid rgba(56,189,248,0.38); color:#38bdf8; font-family:'JetBrains Mono',monospace; font-size:0.55rem; font-weight:800; cursor:pointer; }
 
-        /* Fix kontras teks aktif di Light Mode */
+/* Fix kontras teks aktif di Light Mode */
         .side-btn.active,
         [data-theme="platinum"] .xb-adm-tab.active {
             color: #ffffff !important;
         }
 
-        /* Wrapper Split-Pane Desktop: 100% transparan di HP (< 1100px) */
+        /* Wrapper Split-Pane & Horizontal Scroll Desktop: 100% transparan di HP (< 1100px) */
         .xb-pc-mkt-top,
         .xb-pc-mkt-workspace,
         .xb-pc-mkt-rail,
-        .xb-pc-mkt-stage {
+        .xb-pc-mkt-stage,
+        .xb-pc-hscroll-track {
             display: contents;
         }
-        .xb-pc-rail-head {
+        .xb-pc-rail-head,
+        .xb-pc-hscroll-bar {
             display: none;
         }
 
         /* =========================================================
-           🖥️ REAL DESKTOP MARKETPLACE WORKSPACE (>= 1100px ONLY)
+           🖥️ REAL DESKTOP COCKPIT (>= 1100px ONLY — MOBILE 100% UNTOUCHED)
            ========================================================= */
         @media (min-width: 1100px) {
-            /* 1. FLUID SHELL & SINGLE-ROW TOPBAR */
+            /* 1. LEFT AUTO-STRETCH NAVIGATION SIDEBAR (252px + FULL LOGO BANNER) */
             .sidebar {
-                width: 242px !important;
-                padding: 18px 14px !important;
-                box-shadow: 4px 0 24px rgba(15, 23, 42, 0.08);
+                width: 252px !important;
+                height: 100vh !important;
+                padding: 10px 10px 8px 10px !important;
+                gap: 7px !important;
+                overflow: hidden !important;
+                box-shadow: 4px 0 26px rgba(15, 23, 42, 0.08);
             }
             [data-theme="obsidian"] .sidebar {
-                box-shadow: 4px 0 28px rgba(0, 0, 0, 0.48);
+                box-shadow: 4px 0 32px rgba(0, 0, 0, 0.55);
             }
             .sidebar .brand-box {
-                padding: 2px 6px 16px 6px !important;
+                flex-shrink: 0 !important;
+                padding: 10px 10px !important;
                 gap: 10px !important;
+                border-radius: 13px !important;
+                border: 1px solid var(--ex-hairline) !important;
+                background: var(--ex-card-bg) !important;
+                box-shadow: 0 6px 18px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+            }
+            [data-theme="platinum"] .sidebar .brand-box {
+                box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07), inset 0 1px 0 #ffffff;
             }
             .sidebar .brand-orb {
                 width: 48px !important;
                 height: 48px !important;
+                border-radius: 12px !important;
+                padding: 3px !important;
             }
-            .side-btn {
-                padding: 11px 14px !important;
-                font-size: 0.86rem !important;
-                border-radius: 11px !important;
+            .sidebar .brand-name {
+                font-size: 1rem !important;
+                line-height: 1.15 !important;
+            }
+            .sidebar .brand-tag {
+                font-size: 0.54rem !important;
+                letter-spacing: 0.65px !important;
+                margin-top: 2px !important;
             }
 
+            /* AUTO-STRETCH NAV: tombol tersisa otomatis meregang merata jika ada yang di-hide */
+            .sidebar-nav {
+                margin-top: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 3px !important;
+                flex: 1 1 0 !important;
+                min-height: 0 !important;
+                overflow: hidden !important;
+            }
+            .side-grp-lbl {
+                flex-shrink: 0;
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.5rem;
+                font-weight: 800;
+                letter-spacing: 0.85px;
+                color: var(--text-muted);
+                padding: 4px 8px 1px 8px;
+                text-transform: uppercase;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+            .side-btn {
+                flex: 1 1 0 !important;
+                min-height: 26px !important;
+                max-height: 44px !important;
+                padding: 0 10px !important;
+                gap: 8px !important;
+                border-radius: 9px !important;
+                font-size: 0.74rem !important;
+                font-weight: 700 !important;
+                border: 1px solid transparent !important;
+                white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
+                align-items: center !important;
+            }
+            .side-btn .sb-ico {
+                width: 22px;
+                height: 22px;
+                border-radius: 6px;
+                background: var(--bg-soft);
+                border: 1px solid var(--border-subtle);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.76rem;
+                flex-shrink: 0;
+            }
+            .side-btn.active .sb-ico {
+                background: rgba(255, 255, 255, 0.2);
+                border-color: rgba(255, 255, 255, 0.35);
+            }
+            .side-btn .sb-lbl {
+                flex: 1;
+                min-width: 0;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .xb-sidebar-logout-btn {
+                width: 100% !important;
+                margin: 2px 0 0 0 !important;
+                height: 30px !important;
+                font-size: 0.68rem !important;
+                flex-shrink: 0 !important;
+            }
+            .sidebar-footer {
+                padding-top: 6px !important;
+                gap: 4px !important;
+                flex-shrink: 0 !important;
+            }
+            .rate-chip {
+                padding: 6px 9px !important;
+                font-size: 0.64rem !important;
+            }
+
+            /* 2. MAIN AREA & SINGLE-ROW TOPBAR (NO DUPLICATE BRAND) */
             .main-area {
-                margin-left: 242px !important;
-                padding-top: 72px !important;
-                padding-bottom: 42px !important;
+                margin-left: 252px !important;
+                padding-top: 68px !important;
+                padding-bottom: 36px !important;
             }
             .container {
                 max-width: none !important;
                 width: 100% !important;
-                padding: 12px 24px 36px 24px !important;
+                padding: 10px 20px 20px 20px !important;
             }
-
             .topbar {
-                left: 242px !important;
-                padding: 10px 24px 6px 24px !important;
+                left: 252px !important;
+                padding: 8px 20px 4px 20px !important;
             }
             .xb-ex-topbar-shell {
                 display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
                 gap: 8px !important;
-                padding: 8px 14px !important;
-                border-radius: 14px !important;
+                padding: 7px 12px !important;
+                border-radius: 13px !important;
             }
             .xb-ex-row1,
             .xb-ex-row2 {
@@ -6368,8 +6464,8 @@
             }
             .xb-ex-row2 > .xb-ex-search-wrap {
                 order: 1;
-                flex: 1 1 360px;
-                max-width: 520px;
+                flex: 1 1 320px;
+                max-width: 500px;
                 margin-right: auto;
             }
             .xb-ex-row1 > div:last-child {
@@ -6378,7 +6474,7 @@
             }
             .xb-ex-row2 > .xb-lang-switch {
                 order: 3;
-                height: 36px !important;
+                height: 34px !important;
             }
             .xb-ex-row2 > button {
                 order: 4;
@@ -6387,161 +6483,171 @@
                 order: 6;
             }
             .xb-ex-search-input {
-                height: 36px !important;
-                font-size: 0.83rem !important;
-                padding: 0 32px 0 34px !important;
-                border-radius: 10px !important;
+                height: 34px !important;
+                font-size: 0.8rem !important;
+                padding: 0 30px 0 32px !important;
+                border-radius: 9px !important;
             }
             .xb-ex-icon-btn,
             .xb-ex-row1 .xb-ex-icon-btn,
             .xb-hdr-chat-btn {
-                height: 36px !important;
-                font-size: 0.76rem !important;
-                padding: 0 11px !important;
-                border-radius: 10px !important;
+                height: 34px !important;
+                font-size: 0.74rem !important;
+                padding: 0 10px !important;
+                border-radius: 9px !important;
             }
             .xb-hdr-chat-btn {
-                width: 38px !important;
-                min-width: 38px !important;
+                width: 36px !important;
+                min-width: 36px !important;
                 padding: 0 !important;
             }
             .xb-ex-icon-btn.bal #topBalanceText {
-                max-width: 120px !important;
-                font-size: 0.78rem !important;
+                max-width: 115px !important;
+                font-size: 0.76rem !important;
             }
             .xb-ex-icon-btn #currSwitchText {
-                font-size: 0.72rem !important;
+                font-size: 0.7rem !important;
             }
             .xb-lang-btn {
-                height: 30px !important;
-                min-width: 30px !important;
-                font-size: 0.68rem !important;
+                height: 28px !important;
+                min-width: 28px !important;
+                font-size: 0.66rem !important;
             }
 
-            /* 2. TOP BENTO HEADER (KIRI: HERO + 4 KATEGORI | KANAN: COLLECTION STATS) */
+            /* 3. ZERO VERTICAL SCROLL LOCK FOR DESKTOP MARKETPLACE */
+            body.xb-pc-mkt-lock {
+                height: 100vh !important;
+                overflow: hidden !important;
+            }
+            body.xb-pc-mkt-lock .app-shell,
+            body.xb-pc-mkt-lock .main-area {
+                height: 100vh !important;
+                overflow: hidden !important;
+            }
+            body.xb-pc-mkt-lock .main-area {
+                padding-bottom: 0 !important;
+            }
+            body.xb-pc-mkt-lock .container {
+                flex: 1 1 0 !important;
+                min-height: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
+                padding: 8px 20px 14px 20px !important;
+            }
+            body.xb-pc-mkt-lock #mainViewport {
+                flex: 1 1 0 !important;
+                min-height: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                overflow: hidden !important;
+                gap: 12px !important;
+            }
+
+            /* 4. EQUAL-HEIGHT TOP BENTO (GITHUB MARKETPLACE === XIANBEE COLLECTION) */
             .xb-pc-mkt-top {
+                flex-shrink: 0 !important;
                 display: grid !important;
-                grid-template-columns: minmax(0, 1.62fr) minmax(300px, 1fr) !important;
-                gap: 16px !important;
+                grid-template-columns: minmax(0, 1.48fr) minmax(340px, 1fr) !important;
+                gap: 14px !important;
                 align-items: stretch !important;
-                margin-bottom: 16px !important;
+                margin-bottom: 0 !important;
             }
             .xb-pc-mkt-top.is-single {
                 grid-template-columns: 1fr !important;
             }
             .xb-pc-mkt-top > .xb-mp-switcher {
                 margin-bottom: 0 !important;
-                gap: 10px !important;
+                gap: 0 !important;
                 display: flex !important;
                 flex-direction: column !important;
-                justify-content: space-between !important;
+                height: 100% !important;
+            }
+            /* Sembunyikan 4 kotak kategori duplikat di PC karena sudah ada di Sidebar Kiri */
+            .xb-pc-mkt-top .xb-mp-dual-row {
+                display: none !important;
+            }
+            .xb-pc-mkt-top.is-subplat .xb-hero-plat-card.is-mp-hero {
+                display: none !important;
+            }
+            .xb-pc-mkt-top .xb-mp-drawer-box {
+                height: 100% !important;
+                justify-content: center !important;
+                padding: 10px 12px !important;
+            }
+            .xb-pc-mkt-top .xb-mp-grid-6 {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 7px !important;
+            }
+            .xb-pc-mkt-top .xb-mp-plat-btn {
+                padding: 7px 9px !important;
+            }
+            .xb-pc-mkt-top .xb-mp-plat-name {
+                font-size: 0.72rem !important;
+            }
+            .xb-pc-mkt-top .xb-mp-plat-sub {
+                font-size: 0.56rem !important;
             }
 
-            /* Hero GitHub Marketplace: Logo & Teks Besar Proporsional Desktop */
+            /* Left Hero Card: Tinggi 100% Sama Persis dengan Collection Card di Kanan */
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero {
-                flex: 1 1 auto !important;
-                min-height: 122px !important;
-                padding: 16px 22px !important;
-                gap: 7px !important;
-                border-radius: 16px !important;
+                height: 100% !important;
+                min-height: 112px !important;
+                padding: 13px 20px !important;
+                gap: 6px !important;
+                border-radius: 15px !important;
+                justify-content: space-between !important;
             }
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero .xb-hero-plat-top {
-                grid-template-columns: 50px minmax(0, 1fr) 50px !important;
-                gap: 14px !important;
+                grid-template-columns: 42px minmax(0, 1fr) 42px !important;
+                gap: 12px !important;
             }
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero .xb-hero-plat-logo {
-                width: 50px !important;
-                height: 50px !important;
-                border-radius: 13px !important;
+                width: 42px !important;
+                height: 42px !important;
+                border-radius: 11px !important;
             }
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero .xb-hero-plat-logo svg {
-                width: 28px !important;
-                height: 28px !important;
+                width: 24px !important;
+                height: 24px !important;
             }
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero .xb-hero-plat-title {
-                font-size: 1.52rem !important;
-                letter-spacing: -0.3px !important;
+                font-size: 1.32rem !important;
+                letter-spacing: -0.25px !important;
             }
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero .xb-hero-plat-sub {
-                font-size: 0.82rem !important;
+                font-size: 0.74rem !important;
             }
             .xb-pc-mkt-top .xb-hero-plat-meta .xb-mp-prim-pill,
             .xb-pc-mkt-top .xb-hero-plat-meta .xb-mp-cnt-pill {
-                font-size: 0.66rem !important;
-                padding: 3px 11px !important;
+                font-size: 0.62rem !important;
+                padding: 2.5px 10px !important;
             }
             .xb-pc-mkt-top .xb-hero-mp-bottom {
-                grid-template-columns: 118px minmax(0, 1fr) 118px !important;
-                margin-top: 2px;
+                grid-template-columns: 112px minmax(0, 1fr) 112px !important;
             }
             .xb-pc-mkt-top .xb-hero-corner-btn {
-                height: 32px !important;
-                font-size: 0.72rem !important;
-                border-radius: 9px !important;
+                height: 28px !important;
+                font-size: 0.68rem !important;
+                border-radius: 8px !important;
                 gap: 5px !important;
             }
-            .xb-pc-mkt-top .xb-hero-corner-btn svg {
-                width: 13px !important;
-                height: 13px !important;
-            }
 
-            /* 4 Kotak Kategori Sejajar 1 Baris Horizontal */
-            .xb-pc-mkt-top .xb-mp-dual-row {
-                display: grid !important;
-                grid-template-columns: none !important;
-                grid-auto-flow: column !important;
-                grid-auto-columns: minmax(0, 1fr) !important;
-                gap: 8px !important;
-            }
-            .xb-pc-mkt-top .xb-mp-dual-row > button {
-                grid-column: auto !important;
-                padding: 10px 8px !important;
-                gap: 6px !important;
-                border-radius: 12px !important;
-            }
-            .xb-pc-mkt-top .xb-mp-dual-title {
-                font-size: 0.78rem !important;
-            }
-            .xb-pc-mkt-top .xb-mp-dual-chev {
-                font-size: 0.58rem !important;
-                padding: 2px 6px !important;
-            }
-            .xb-pc-mkt-top .xb-mp-mini-ico {
-                width: 21px !important;
-                height: 21px !important;
-                border-radius: 6px !important;
-            }
-            .xb-pc-mkt-top .xb-mp-mini-ico svg {
-                width: 12px !important;
-                height: 12px !important;
-            }
-            .xb-pc-mkt-top .xb-mp-grid-6 {
-                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-                gap: 8px !important;
-            }
-            .xb-pc-mkt-top .xb-mp-plat-btn {
-                padding: 9px 10px !important;
-            }
-            .xb-pc-mkt-top .xb-mp-plat-name {
-                font-size: 0.76rem !important;
-            }
-            .xb-pc-mkt-top .xb-mp-plat-sub {
-                font-size: 0.58rem !important;
-            }
-
-            /* Right Bento Card: XianBee Collection + 2x2 Stats Matrix */
+            /* Right Collection Card: Exact Same Height as Hero Card */
             .xb-pc-mkt-top > .xb-ex-collection {
+                height: 100% !important;
+                min-height: 112px !important;
                 margin-bottom: 0 !important;
-                padding: 16px 18px !important;
-                border-radius: 16px !important;
+                padding: 13px 16px !important;
+                border-radius: 15px !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: space-between !important;
-                gap: 12px !important;
+                gap: 9px !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-brand.full {
                 justify-content: flex-start !important;
-                gap: 11px !important;
+                gap: 10px !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-brand.full > div:last-child {
                 text-align: left !important;
@@ -6550,59 +6656,63 @@
                 justify-content: flex-start !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-logo {
-                width: 44px !important;
-                height: 44px !important;
-                border-radius: 12px !important;
+                width: 38px !important;
+                height: 38px !important;
+                border-radius: 10px !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-logo svg {
-                width: 24px !important;
-                height: 24px !important;
+                width: 21px !important;
+                height: 21px !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-brand h2 {
-                font-size: 1.05rem !important;
+                font-size: 0.96rem !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-brand > div > div:last-child {
-                font-size: 0.68rem !important;
-                margin-top: 3px !important;
+                font-size: 0.62rem !important;
+                margin-top: 2px !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-stats {
                 display: grid !important;
-                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-                gap: 9px !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 7px !important;
                 margin-top: 0 !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-stat {
-                padding: 10px 12px !important;
-                border-radius: 11px !important;
+                padding: 6px 7px !important;
+                border-radius: 9px !important;
                 text-align: left !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-stat > div:first-child {
-                font-size: 0.58rem !important;
+                font-size: 0.5rem !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-stat > div:last-child {
-                font-size: 0.98rem !important;
-                margin-top: 3px !important;
+                font-size: 0.78rem !important;
+                margin-top: 2px !important;
             }
 
-            /* 3. SPLIT-PANE MARKETPLACE WORKSPACE (KIRI: STICKY FILTER | KANAN: KATALOG) */
+            /* 5. FULL-HEIGHT SPLIT WORKSPACE (LEFT FILTER MENTOK BAWAH | RIGHT HORIZONTAL SCROLL) */
             .xb-pc-mkt-workspace {
+                flex: 1 1 0 !important;
+                min-height: 0 !important;
                 display: grid !important;
-                grid-template-columns: 256px minmax(0, 1fr) !important;
-                gap: 18px !important;
-                align-items: start !important;
+                grid-template-columns: 236px minmax(0, 1fr) !important;
+                gap: 14px !important;
+                align-items: stretch !important;
+                overflow: hidden !important;
             }
 
-            /* Left Sticky Filter Rail */
+            /* Left Filter Rail: Mentok Penuh 100% Sampai Bawah */
             .xb-pc-mkt-rail {
+                height: 100% !important;
+                min-height: 0 !important;
                 display: flex !important;
                 flex-direction: column !important;
-                gap: 12px !important;
-                position: sticky !important;
-                top: 78px !important;
+                gap: 10px !important;
                 background: var(--ex-card-bg) !important;
                 border: 1px solid var(--ex-hairline) !important;
-                border-radius: 16px !important;
-                padding: 14px !important;
+                border-radius: 15px !important;
+                padding: 13px !important;
+                overflow-y: auto !important;
                 box-shadow: 0 10px 26px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.16);
             }
             [data-theme="platinum"] .xb-pc-mkt-rail {
@@ -6612,26 +6722,26 @@
                 display: flex !important;
                 align-items: center !important;
                 justify-content: space-between !important;
-                padding-bottom: 10px !important;
+                padding-bottom: 9px !important;
                 border-bottom: 1px solid var(--ex-hairline) !important;
                 font-family: 'JetBrains Mono', monospace;
-                font-size: 0.68rem;
+                font-size: 0.64rem;
                 font-weight: 800;
                 letter-spacing: 0.6px;
                 color: var(--accent-cyan);
+                flex-shrink: 0;
             }
-
-            /* Sort & Live Status stacked cleanly inside Sticky Rail */
             .xb-pc-mkt-rail .xb-ex-sort-bar {
                 order: 1;
+                flex-shrink: 0;
                 display: flex !important;
                 flex-direction: column !important;
                 height: auto !important;
-                gap: 8px !important;
-                padding: 10px !important;
+                gap: 7px !important;
+                padding: 9px !important;
                 margin-bottom: 0 !important;
                 background: var(--bg-input) !important;
-                border-radius: 11px !important;
+                border-radius: 10px !important;
             }
             .xb-pc-mkt-rail .xb-ex-sort-divider {
                 display: none !important;
@@ -6640,23 +6750,24 @@
                 width: 100%;
                 justify-content: flex-start !important;
                 padding: 0 2px !important;
-                font-size: 0.68rem !important;
+                font-size: 0.64rem !important;
             }
             .xb-pc-mkt-rail .xb-ex-sort-select {
                 width: 100% !important;
-                height: 36px !important;
-                padding: 0 10px !important;
-                font-size: 0.72rem !important;
+                height: 34px !important;
+                padding: 0 9px !important;
+                font-size: 0.7rem !important;
                 text-align: left !important;
                 text-align-last: left !important;
                 background: var(--bg-surface) !important;
                 border: 1px solid var(--ex-hairline) !important;
                 border-radius: 8px !important;
             }
-
-            /* Filter Chips transformed into Desktop Vertical Filter Menu */
             .xb-pc-mkt-rail .xb-ex-chips-wrap {
                 order: 2;
+                flex: 1 1 auto !important;
+                display: flex !important;
+                flex-direction: column !important;
                 gap: 10px !important;
                 margin-bottom: 0 !important;
             }
@@ -6668,7 +6779,7 @@
             .xb-pc-mkt-rail .xb-ex-chips-r1::before {
                 content: 'FEATURED CATALOGS';
                 font-family: 'JetBrains Mono', monospace;
-                font-size: 0.56rem;
+                font-size: 0.54rem;
                 font-weight: 800;
                 letter-spacing: 0.7px;
                 color: var(--text-muted);
@@ -6676,104 +6787,192 @@
             }
             .xb-pc-mkt-rail .xb-ex-chips-r1 .xb-ex-filter-chip {
                 text-align: left !important;
-                padding: 10px 12px !important;
-                font-size: 0.78rem !important;
-                border-radius: 10px !important;
+                padding: 9px 11px !important;
+                font-size: 0.74rem !important;
+                border-radius: 9px !important;
             }
             .xb-pc-mkt-rail .xb-ex-chips-r2 {
                 display: grid !important;
                 grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
                 gap: 6px !important;
-                padding-top: 8px !important;
+                padding-top: 9px !important;
                 border-top: 1px dashed var(--ex-hairline) !important;
             }
             .xb-pc-mkt-rail .xb-ex-chips-r2 .xb-ex-filter-chip {
-                padding: 9px 6px !important;
-                font-size: 0.7rem !important;
+                padding: 8px 5px !important;
+                font-size: 0.68rem !important;
+                border-radius: 8px !important;
+            }
+            .xb-pc-rail-foot {
+                order: 3;
+                margin-top: auto;
+                padding-top: 10px;
+                border-top: 1px dashed var(--ex-hairline);
+                font-family: 'JetBrains Mono', monospace;
+                font-size: 0.56rem;
+                color: var(--text-muted);
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            /* 6. RIGHT HORIZONTAL SCROLL STAGE (ZERO VERTICAL SCROLL) */
+            .xb-pc-mkt-stage {
+                height: 100% !important;
+                min-height: 0 !important;
+                min-width: 0 !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 8px !important;
+                overflow: hidden !important;
+            }
+            .xb-pc-hscroll-bar {
+                flex-shrink: 0;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                gap: 10px;
+                padding: 6px 12px;
+                border-radius: 11px;
+                background: var(--ex-card-bg);
+                border: 1px solid var(--ex-hairline);
+                font-family: 'JetBrains Mono', monospace;
+            }
+            .xb-pc-hscroll-btn {
+                width: 28px;
+                height: 26px;
+                border-radius: 7px;
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                color: var(--text-primary);
+                font-weight: 800;
+                font-size: 0.72rem;
+                cursor: pointer;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                transition: 0.15s ease;
+            }
+            .xb-pc-hscroll-btn:hover {
+                border-color: #38bdf8;
+                color: #38bdf8;
+            }
+
+            .xb-pc-hscroll-track {
+                flex: 1 1 0 !important;
+                min-height: 0 !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: stretch !important;
+                gap: 12px !important;
+                overflow-x: auto !important;
+                overflow-y: hidden !important;
+                padding-bottom: 6px !important;
+                scroll-behavior: smooth;
+            }
+            .xb-pc-hscroll-track::-webkit-scrollbar {
+                height: 7px !important;
+            }
+            .xb-pc-hscroll-track::-webkit-scrollbar-thumb {
+                background: linear-gradient(90deg, #38bdf8, #8b5cf6) !important;
+                border-radius: 99px !important;
+            }
+
+            /* Cards arranged in crisp 2-row horizontal columns (compact, zero stretch) */
+            .xb-pc-hscroll-track .grid-years-2col,
+            .xb-pc-hscroll-track .xb-ex-acc-grid {
+                display: grid !important;
+                grid-auto-flow: column !important;
+                grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
+                grid-auto-columns: 222px !important;
+                gap: 11px !important;
+                width: max-content !important;
+                height: 100% !important;
+                flex-shrink: 0 !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-span-2 {
+                grid-column: auto !important;
+            }
+            .xb-pc-hscroll-track .item-card {
+                height: 100% !important;
+                padding: 10px 11px !important;
+                gap: 8px !important;
+                border-radius: 13px !important;
+                justify-content: space-between !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-art {
+                height: 74px !important;
+                padding: 8px 9px !important;
+                border-radius: 10px !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-gh-badge {
+                width: 24px !important;
+                height: 24px !important;
+                border-radius: 7px !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-stock-pill {
+                height: 22px !important;
+                padding: 0 7px !important;
+                font-size: 0.62rem !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-chip {
+                font-size: 0.56rem !important;
+                padding: 2.5px 7px !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-year-tag {
+                font-size: 1.16rem !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-year-tag.sm {
+                font-size: 0.86rem !important;
+            }
+            .xb-pc-hscroll-track .item-card .xb-ex-art + div > div > div:first-child {
+                font-size: 0.54rem !important;
+            }
+            .xb-pc-hscroll-track .item-card .xb-ex-art + div > div > div:last-child {
+                font-size: 0.84rem !important;
+            }
+            .xb-pc-hscroll-track .btn-ui {
+                padding: 8px 8px !important;
+                font-size: 0.72rem !important;
                 border-radius: 9px !important;
             }
 
-            /* Right Product Catalog Stage (Clean Multi-Column Cards, Zero Stretch) */
-            .xb-pc-mkt-stage {
+            /* Special Tiers vertical separator pillar inside horizontal scroll */
+            .xb-pc-hscroll-track .xb-ex-special-hdr,
+            .xb-pc-hscroll-track .xb-ex-divider {
+                margin: 0 !important;
+                width: 82px !important;
+                height: 100% !important;
+                flex-shrink: 0 !important;
+                border-radius: 13px !important;
+                border: 1.5px dashed rgba(56, 189, 248, 0.45) !important;
+                background: linear-gradient(180deg, rgba(56, 189, 248, 0.08), rgba(168, 85, 247, 0.1)) !important;
                 display: flex !important;
                 flex-direction: column !important;
-                gap: 14px !important;
-                min-width: 0 !important;
+                align-items: center !important;
+                justify-content: center !important;
+                padding: 10px 6px !important;
             }
-            .xb-pc-mkt-stage .grid-years-2col {
-                grid-template-columns: repeat(auto-fill, minmax(215px, 1fr)) !important;
-                gap: 14px !important;
+            .xb-pc-hscroll-track .xb-ex-divider::before,
+            .xb-pc-hscroll-track .xb-ex-divider::after {
+                display: none !important;
             }
-            .xb-pc-mkt-stage .grid-years-2col .xb-ex-span-2 {
-                grid-column: auto !important;
+            .xb-pc-hscroll-track .xb-ex-special-title,
+            .xb-pc-hscroll-track .xb-ex-divider > span {
+                writing-mode: vertical-rl !important;
+                transform: rotate(180deg) !important;
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+                font-size: 0.76rem !important;
+                letter-spacing: 2px !important;
+                color: var(--accent-cyan) !important;
             }
-            .xb-pc-mkt-stage .grid-years-2col .item-card {
-                padding: 13px !important;
-                gap: 11px !important;
-                border-radius: 15px !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .xb-ex-art {
-                height: 92px !important;
-                padding: 10px 11px !important;
-                border-radius: 11px !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .xb-ex-gh-badge {
-                width: 26px !important;
-                height: 26px !important;
-                border-radius: 7px !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .xb-ex-stock-pill {
-                height: 24px !important;
-                padding: 0 8px !important;
-                font-size: 0.66rem !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .xb-ex-chip {
-                font-size: 0.6rem !important;
-                padding: 3px 8px !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .xb-ex-year-tag {
-                font-size: 1.28rem !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .xb-ex-year-tag.sm {
-                font-size: 0.92rem !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .item-card .xb-ex-art + div > div > div:first-child {
-                font-size: 0.58rem !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .item-card .xb-ex-art + div > div > div:last-child {
-                font-size: 0.9rem !important;
-            }
-            .xb-pc-mkt-stage .grid-years-2col .btn-ui {
-                padding: 9px 10px !important;
-                font-size: 0.78rem !important;
-                border-radius: 10px !important;
-            }
-            .xb-pc-mkt-stage .xb-ex-acc-grid {
-                grid-template-columns: repeat(auto-fill, minmax(225px, 1fr)) !important;
-                gap: 14px !important;
-            }
-            .xb-pc-mkt-stage .xb-ex-special-hdr {
-                margin: 6px 0 0 0 !important;
-            }
-            .xb-pc-mkt-stage .xb-ex-special-title {
-                font-size: 0.95rem !important;
-                padding: 8px 14px !important;
-            }
-            .xb-pc-mkt-stage .xb-ex-special-sub {
-                font-size: 0.74rem !important;
+            .xb-pc-hscroll-track .xb-ex-special-sub {
+                display: none !important;
             }
 
-            /* 4. VIP-RESELLER (PRO APPS / GAMES & PPOB) DESKTOP PROPORTION */
-            .xb-vip-sku-grid {
-                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
-                gap: 10px !important;
-                max-height: 380px !important;
-            }
-            .xb-vip-sku-card {
-                padding: 11px 12px !important;
-            }
-
-            /* 5. SLIDE-OVER RIGHT STOCK INSPECTOR DRAWER (ALA STRIPE / GITHUB) */
+            /* 7. SLIDE-OVER RIGHT STOCK INSPECTOR DRAWER */
             #inPageVaultDrawer {
                 position: fixed !important;
                 inset: 0 !important;
@@ -6804,6 +7003,55 @@
             #inPageVaultDrawer .xb-ex-acc-grid {
                 grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
                 gap: 12px !important;
+            }
+
+            /* 8. BOOST, WALLET, ADMIN & VIP-RESELLER DESKTOP CLEANUP */
+            .xb-bst-opt-a > .xb-bst-cat-grid,
+            .xb-bst-opt-a > .xb-hero-plat-card {
+                display: none !important;
+            }
+            .xb-vip-sku-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+                max-height: 400px !important;
+            }
+            .xb-adm-wrap {
+                max-width: none !important;
+            }
+            .xb-bento-grid {
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                gap: 12px !important;
+            }
+            .xb-ops-queue-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 12px !important;
+                align-items: start !important;
+            }
+            .xb-wal-wrap,
+            .xb-vp-wrap {
+                max-width: 1120px !important;
+                margin: 0 auto !important;
+            }
+            .xb-wal-tx-list,
+            #xbVaultAccListBody,
+            .xb-prf-menu-list {
+                display: grid !important;
+                grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                gap: 10px !important;
+            }
+            #paymentGatewayModal.xb-fullpage-modal > #paymentGatewayBody {
+                max-width: 740px !important;
+                padding: 16px 20px !important;
+            }
+        }
+
+        /* Monitor tinggi (>= 860px): 3 baris horizontal agar kartu tetap proporsional */
+        @media (min-width: 1100px) and (min-height: 860px) {
+            .xb-pc-hscroll-track .grid-years-2col,
+            .xb-pc-hscroll-track .xb-ex-acc-grid {
+                grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+                grid-auto-columns: 232px !important;
             }
         }
     </style>
@@ -9345,6 +9593,7 @@
                     if (isEx) el.classList.add('xb-wal-ex-hidden');
                     else el.classList.remove('xb-wal-ex-hidden');
                 });
+                if (typeof syncDesktopSidebarState === 'function') syncDesktopSidebarState();
             }
 
 const XB_EX_BANK_THEMES = {
@@ -12160,25 +12409,40 @@ const XB_EX_BANK_THEMES = {
     </div>
 
     <div class="app-shell">
-        <!-- 🖥️ DESKTOP SIDEBAR -->
+        <!-- 🖥️ DESKTOP SIDEBAR (FULL LOGO BANNER + 16 AUTO-STRETCH BUTTONS) -->
         <aside class="sidebar">
-            <div class="brand-box" onclick="switchTab('home')">
-                <div class="brand-orb" style="width:66px;height:66px;background:#07080d;border:1.5px solid rgba(99,102,241,0.55);box-shadow:0 4px 16px rgba(99,102,241,0.28);padding:5px;border-radius:50%;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
-                    <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;border-radius:50%;">
+            <div class="brand-box" onclick="desktopNavClick('mp_github')">
+                <div class="brand-orb" style="width:48px;height:48px;background:#07080d;border:1.5px solid rgba(56,189,248,0.55);box-shadow:0 4px 16px rgba(99,102,241,0.32);padding:3px;border-radius:12px;overflow:hidden;flex-shrink:0;display:flex;align-items:center;justify-content:center;">
+                    <img src="logo.png" alt="XianBee-Tech" style="width:100%;height:100%;object-fit:contain;border-radius:9px;">
                 </div>
-                <div style="text-align:center;flex:1;">
-                    <h2 class="brand-name" style="background:linear-gradient(90deg, #38bdf8 0%, #6366f1 48%, #c084fc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-size:1.1rem;">XianBee-Tech</h2>
-                    <span class="brand-tag" style="text-transform:none;letter-spacing:0.4px;font-size:0.66rem;color:#38bdf8;font-weight:700;">GITHUB ENTERPRISE MARKET</span>
+                <div style="text-align:left;flex:1;min-width:0;">
+                    <h2 class="brand-name xb-brand-grad" style="font-size:1.02rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">XianBee-Tech</h2>
+                    <span class="brand-tag" style="text-transform:uppercase;letter-spacing:0.65px;font-size:0.54rem;color:#38bdf8;font-weight:800;">DIGITAL ASSET HUB</span>
                 </div>
             </div>
 
-            <nav class="sidebar-nav">
-                <button class="side-btn active" data-tab="home" onclick="switchTab('home')">🏪 Marketplace</button>
-                <button class="side-btn" data-tab="boost" onclick="switchTab('boost')">🚀 Boost Service</button>
-                <button class="side-btn" data-tab="wallet" onclick="switchTab('wallet')">💳 Wallet</button>
-                <button class="side-btn" data-tab="vault" onclick="switchTab('vault')">🔐 Assets</button>
-                <button class="side-btn" data-tab="profile" onclick="switchTab('profile')">👤 Profile</button>
-                <button class="side-btn" id="sidebarAdminBtn" data-tab="admin" onclick="switchTab('admin')" style="color:var(--accent-cyan);display:none;">⚙️ Admin Center</button>
+            <nav class="sidebar-nav" data-no-i18n="1">
+                <div class="side-grp-lbl" id="sideGrpMarketplace"><span>MARKETPLACE</span><span style="color:#38bdf8;">●</span></div>
+                <button type="button" class="side-btn active" data-dnav="mp_github" onclick="desktopNavClick('mp_github')"><span class="sb-ico">🐙</span><span class="sb-lbl">GitHub Accounts</span></button>
+                <button type="button" class="side-btn" data-dnav="mp_social" data-vis-key="mp_social" onclick="desktopNavClick('mp_social')"><span class="sb-ico">📱</span><span class="sb-lbl">Social Accounts</span></button>
+                <button type="button" class="side-btn" data-dnav="mp_email" data-vis-key="mp_cex_email" onclick="desktopNavClick('mp_email')"><span class="sb-ico">📧</span><span class="sb-lbl">Email Accounts</span></button>
+                <button type="button" class="side-btn" data-dnav="mp_cex" data-vis-key="mp_cex_email" onclick="desktopNavClick('mp_cex')"><span class="sb-ico">🔶</span><span class="sb-lbl">CEX Accounts</span></button>
+                <button type="button" class="side-btn" data-dnav="mp_pro_apps" data-vis-key="mp_pro_apps" onclick="desktopNavClick('mp_pro_apps')"><span class="sb-ico">👑</span><span class="sb-lbl">Pro Apps &amp; AI</span></button>
+                <button type="button" class="side-btn" data-dnav="mp_games_ppob" data-vis-key="mp_games_ppob" onclick="desktopNavClick('mp_games_ppob')"><span class="sb-ico">🎮</span><span class="sb-lbl">Top-Up Hub</span></button>
+
+                <div class="side-grp-lbl" id="sideGrpBoost"><span>BOOST SERVICES</span><span style="color:#c084fc;">⚡</span></div>
+                <button type="button" class="side-btn" data-dnav="bst_github" onclick="desktopNavClick('bst_github')"><span class="sb-ico">🚀</span><span class="sb-lbl">GitHub Boost</span></button>
+                <button type="button" class="side-btn" data-dnav="bst_socmed" data-vis-key="bst_socmed" onclick="desktopNavClick('bst_socmed')"><span class="sb-ico">📸</span><span class="sb-lbl">Social Boost</span></button>
+                <button type="button" class="side-btn" data-dnav="bst_ecom" data-vis-key="bst_ecom" onclick="desktopNavClick('bst_ecom')"><span class="sb-ico">🛒</span><span class="sb-lbl">Store Boost</span></button>
+                <button type="button" class="side-btn" data-dnav="bst_stream" data-vis-key="bst_stream" onclick="desktopNavClick('bst_stream')"><span class="sb-ico">🎧</span><span class="sb-lbl">Stream Boost</span></button>
+                <button type="button" class="side-btn" data-dnav="bst_webpro" data-vis-key="bst_webpro" onclick="desktopNavClick('bst_webpro')"><span class="sb-ico">🌐</span><span class="sb-lbl">Web Traffic Boost</span></button>
+
+                <div class="side-grp-lbl" id="sideGrpWorkspace"><span>WORKSPACE</span><span style="color:#34d399;">◆</span></div>
+                <button type="button" class="side-btn" data-dnav="ws_wallet" onclick="desktopNavClick('ws_wallet')"><span class="sb-ico">💳</span><span class="sb-lbl">XianBee-Tech Wallet</span></button>
+                <button type="button" class="side-btn" data-dnav="ws_exchange" onclick="desktopNavClick('ws_exchange')"><span class="sb-ico">⇄</span><span class="sb-lbl">XianBee-Tech Exchange</span></button>
+                <button type="button" class="side-btn" data-dnav="ws_vault" onclick="desktopNavClick('ws_vault')"><span class="sb-ico">🔐</span><span class="sb-lbl">XianBee-Tech Assets</span></button>
+                <button type="button" class="side-btn" data-dnav="ws_profile" onclick="desktopNavClick('ws_profile')"><span class="sb-ico">👤</span><span class="sb-lbl">XianBee-Tech Profile</span></button>
+                <button type="button" class="side-btn" id="sidebarAdminBtn" data-dnav="ws_admin" onclick="desktopNavClick('ws_admin')" style="color:var(--accent-cyan);display:none;"><span class="sb-ico">⚙️</span><span class="sb-lbl">Command Center</span></button>
             </nav>
 
             <div class="sidebar-footer">
@@ -16312,15 +16576,173 @@ const XB_EX_BANK_THEMES = {
             else if (_exSort === 'price_desc') vList.sort((a, b) => b.usdt - a.usdt);
             else if (_exSort === 'stock_desc') vList.sort((a, b) => (liveDigitalStock[b.key]?.length || 0) - (liveDigitalStock[a.key]?.length || 0));
 
+            if (topBentoEl) {
+                topBentoEl.classList.add('is-subplat');
+                if (_mpDrawerTab !== 'social') topBentoEl.classList.add('is-single');
+            }
+
+            const hBar = document.createElement('div');
+            hBar.className = 'xb-pc-hscroll-bar';
+            hBar.innerHTML = `
+                <span style="font-size:0.66rem;font-weight:800;color:var(--text-primary);">${plat.title} <span style="color:#38bdf8;">(${vList.length} Catalogs • Scroll ➔)</span></span>
+                <div style="display:flex;align-items:center;gap:6px;">
+                    <button type="button" class="xb-pc-hscroll-btn" onclick="scrollDesktopMktTrack(-1)" title="Scroll Left">◀</button>
+                    <button type="button" class="xb-pc-hscroll-btn" onclick="scrollDesktopMktTrack(1)" title="Scroll Right">▶</button>
+                </div>
+            `;
+            mktStage.appendChild(hBar);
+
+            const hTrack = document.createElement('div');
+            hTrack.id = 'xbPcHScrollTrack';
+            hTrack.className = 'xb-pc-hscroll-track';
+
             const grid = document.createElement('div');
             grid.className = 'grid-years-2col';
             const oddTopSpan = (vList.length % 2 === 1);
             vList.forEach((v, idx) => grid.appendChild(createDigitalVaultCard(plat, v, oddTopSpan && idx === 0)));
-            mktStage.appendChild(grid);
+            hTrack.appendChild(grid);
+            mktStage.appendChild(hTrack);
+            bindDesktopHorizontalWheel(hTrack);
 
             mktWs.appendChild(mktRail);
             mktWs.appendChild(mktStage);
             vp.appendChild(mktWs);
+            if (typeof syncDesktopSidebarState === 'function') syncDesktopSidebarState();
+        }
+
+        function desktopNavClick(navKey) {
+            const dr = document.getElementById('inPageVaultDrawer');
+            if (dr) dr.style.display = 'none';
+
+            if (navKey === 'mp_github') {
+                activeTab = 'home';
+                switchMarketplacePlatform('github');
+            } else if (navKey === 'mp_social') {
+                const socKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
+                activeTab = 'home';
+                if (!socKeys.includes(_mpPlatform)) _mpPlatform = 'x';
+                _mpSubFilter = 'ALL';
+                _mpDrawerTab = 'social';
+                renderViewport();
+            } else if (navKey === 'mp_email') {
+                activeTab = 'home';
+                switchMarketplacePlatform('email', 'ALL', 'ALL');
+            } else if (navKey === 'mp_cex') {
+                activeTab = 'home';
+                switchMarketplacePlatform('cex', 'ALL', 'ALL');
+            } else if (navKey === 'mp_pro_apps') {
+                activeTab = 'home';
+                openVipCatalogSelection('pro_apps', 'apps', 'chatgpt');
+            } else if (navKey === 'mp_games_ppob') {
+                activeTab = 'home';
+                openVipCatalogSelection('games_ppob', 'games', 'mobile legends');
+            } else if (navKey === 'bst_github') {
+                activeTab = 'boost';
+                window._bstOpenCat = '';
+                switchBoostPlatform('github');
+            } else if (navKey === 'bst_socmed') {
+                activeTab = 'boost';
+                switchBoostPlatform('instagram', 'instagram', 'Instagram', '');
+                window._bstOpenCat = 'socmed';
+                renderViewport();
+            } else if (navKey === 'bst_ecom') {
+                activeTab = 'boost';
+                switchBoostPlatform('ecommerce', 'shopee', 'Shopee', 'shopee');
+                window._bstOpenCat = 'ecom';
+                renderViewport();
+            } else if (navKey === 'bst_stream') {
+                activeTab = 'boost';
+                switchBoostPlatform('stream', 'spotify', 'Spotify', 'spotify');
+                window._bstOpenCat = 'stream';
+                renderViewport();
+            } else if (navKey === 'bst_webpro') {
+                activeTab = 'boost';
+                switchBoostPlatform('webpro', 'traffic', 'Web Traffic', 'traffic|website|google|seo');
+                window._bstOpenCat = 'webpro';
+                renderViewport();
+            } else if (navKey === 'ws_wallet') {
+                if (window._xbExState) window._xbExState.walletTab = 'wallet';
+                window._walSlide = 'main';
+                switchTab('wallet');
+                if (typeof applyXbWalletTabVisibility === 'function') applyXbWalletTabVisibility();
+            } else if (navKey === 'ws_exchange') {
+                if (window._xbExState) window._xbExState.walletTab = 'exchange';
+                window._walSlide = 'main';
+                switchTab('wallet');
+                setTimeout(() => { if (typeof switchXbWalletTab === 'function') switchXbWalletTab('exchange'); }, 30);
+            } else if (navKey === 'ws_vault') {
+                switchTab('vault');
+            } else if (navKey === 'ws_profile') {
+                switchTab('profile');
+            } else if (navKey === 'ws_admin') {
+                switchTab('admin');
+            }
+            syncDesktopSidebarState();
+        }
+
+        function syncDesktopSidebarState() {
+            const vis = (typeof getStoreBoxVisibilityCfg === 'function') ? getStoreBoxVisibilityCfg() : {};
+            const isAdmin = ADMIN_IDS.includes(String(currentUserId));
+
+            // 1. Visibility sync (hidden items collapse cleanly -> remaining buttons auto-stretch!)
+            document.querySelectorAll('.sidebar-nav .side-btn[data-vis-key]').forEach(btn => {
+                const vKey = btn.getAttribute('data-vis-key');
+                btn.style.display = (vis[vKey] === false) ? 'none' : 'flex';
+            });
+            const admBtn = document.getElementById('sidebarAdminBtn');
+            if (admBtn) admBtn.style.display = isAdmin ? 'flex' : 'none';
+
+            // 2. Active highlight
+            let actKey = 'mp_github';
+            if (activeTab === 'home') {
+                if (_mpPlatform === 'github') actKey = 'mp_github';
+                else if (_mpPlatform === 'email') actKey = 'mp_email';
+                else if (_mpPlatform === 'cex') actKey = 'mp_cex';
+                else if (_mpPlatform === 'pro_apps') actKey = 'mp_pro_apps';
+                else if (_mpPlatform === 'games_ppob') actKey = 'mp_games_ppob';
+                else actKey = 'mp_social';
+            } else if (activeTab === 'boost') {
+                const bp = window._bstPlatform || 'github';
+                if (bp === 'github') actKey = 'bst_github';
+                else if (bp === 'ecommerce') actKey = 'bst_ecom';
+                else if (bp === 'stream') actKey = 'bst_stream';
+                else if (bp === 'webpro') actKey = 'bst_webpro';
+                else actKey = 'bst_socmed';
+            } else if (activeTab === 'wallet') {
+                actKey = (window._xbExState && window._xbExState.walletTab === 'exchange') ? 'ws_exchange' : 'ws_wallet';
+            } else if (activeTab === 'vault') {
+                actKey = 'ws_vault';
+            } else if (activeTab === 'profile') {
+                actKey = 'ws_profile';
+            } else if (activeTab === 'admin') {
+                actKey = 'ws_admin';
+            }
+
+            document.querySelectorAll('.sidebar-nav .side-btn[data-dnav]').forEach(btn => {
+                btn.classList.toggle('active', btn.getAttribute('data-dnav') === actKey);
+            });
+
+            // 3. Zero-vertical-scroll lock ONLY on Desktop Marketplace Catalog views
+            const lockMkt = (activeTab === 'home') && (_mpPlatform !== 'pro_apps') && (_mpPlatform !== 'games_ppob');
+            document.body.classList.toggle('xb-pc-mkt-lock', lockMkt);
+        }
+
+        function scrollDesktopMktTrack(dir) {
+            const trk = document.getElementById('xbPcHScrollTrack');
+            if (!trk) return;
+            trk.scrollBy({ left: dir * 520, behavior: 'smooth' });
+        }
+
+        function bindDesktopHorizontalWheel(trackEl) {
+            if (!trackEl || trackEl.dataset.wheelBound) return;
+            trackEl.dataset.wheelBound = '1';
+            trackEl.addEventListener('wheel', (e) => {
+                if (window.innerWidth < 1100) return;
+                if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+                    e.preventDefault();
+                    trackEl.scrollLeft += e.deltaY * 1.15;
+                }
+            }, { passive: false });
         }
 
         function switchTab(tabName) {
@@ -16330,11 +16752,12 @@ const XB_EX_BANK_THEMES = {
             activeSub = 'ALL';
             document.getElementById('inPageVaultDrawer').style.display = 'none';
 
-            document.querySelectorAll('.side-btn, .bnav-btn').forEach(btn => {
+            document.querySelectorAll('.bnav-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.getAttribute('data-tab') === tabName);
             });
 
             renderViewport();
+            syncDesktopSidebarState();
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -16538,9 +16961,38 @@ const XB_EX_BANK_THEMES = {
                 `;
                 mktRail.appendChild(sortBar);
 
+                const railFoot = document.createElement('div');
+                railFoot.className = 'xb-pc-rail-foot';
+                railFoot.innerHTML = `
+                    <div>🛡️ <b style="color:var(--text-primary);">2FA + Full Access</b></div>
+                    <div>↔️ Scroll mouse wheel to browse</div>
+                `;
+                mktRail.appendChild(railFoot);
+
+                const stageTitleTxt = _exSearchQuery
+                    ? `Search: "${_exSearchQuery}"`
+                    : (_exFilter === 'ALL' ? 'GitHub Aged 2011–2026 & Special Tiers' : `Filtered View: ${_exFilter}`);
+                const hBar = document.createElement('div');
+                hBar.className = 'xb-pc-hscroll-bar';
+                hBar.innerHTML = `
+                    <span style="font-size:0.66rem;font-weight:800;color:var(--text-primary);">${stageTitleTxt} <span style="color:#38bdf8;">• Horizontal Scroll ➔</span></span>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <button type="button" class="xb-pc-hscroll-btn" onclick="scrollDesktopMktTrack(-1)" title="Scroll Left">◀</button>
+                        <button type="button" class="xb-pc-hscroll-btn" onclick="scrollDesktopMktTrack(1)" title="Scroll Right">▶</button>
+                    </div>
+                `;
+                mktStage.appendChild(hBar);
+
+                const hTrack = document.createElement('div');
+                hTrack.id = 'xbPcHScrollTrack';
+                hTrack.className = 'xb-pc-hscroll-track';
+                mktStage.appendChild(hTrack);
+                bindDesktopHorizontalWheel(hTrack);
+
                 mktWs.appendChild(mktRail);
                 mktWs.appendChild(mktStage);
                 vp.appendChild(mktWs);
+                if (typeof syncDesktopSidebarState === 'function') syncDesktopSidebarState();
 
                 // LIVE SEARCH MODE (DIRECTLY SHOW MATCHING ACCOUNTS + MATCHING VAULTS)
                 if (_exSearchQuery) {
@@ -16557,24 +17009,24 @@ const XB_EX_BANK_THEMES = {
                         const dAcc = document.createElement('div');
                         dAcc.className = 'xb-ex-divider';
                         dAcc.innerHTML = `<span>MATCHING LIVE ACCOUNTS (${matchedAccs.length})</span>`;
-                        mktStage.appendChild(dAcc);
+                        hTrack.appendChild(dAcc);
                         const accGrid = document.createElement('div');
                         accGrid.className = 'xb-ex-acc-grid';
                         matchedAccs.slice(0, 40).forEach(acc => accGrid.appendChild(createSpecificAccountCard(acc, acc._cat_key || acc.year || '2026')));
-                        mktStage.appendChild(accGrid);
+                        hTrack.appendChild(accGrid);
                     }
                     if (matchedVaults.length > 0) {
                         const dVlt = document.createElement('div');
                         dVlt.className = 'xb-ex-divider';
                         dVlt.innerHTML = `<span>MATCHING VAULTS (${matchedVaults.length})</span>`;
-                        mktStage.appendChild(dVlt);
+                        hTrack.appendChild(dVlt);
                         const vGrid = document.createElement('div');
                         vGrid.className = 'grid-years-2col';
                         matchedVaults.forEach(y => vGrid.appendChild(createGithubYearCard(y)));
-                        mktStage.appendChild(vGrid);
+                        hTrack.appendChild(vGrid);
                     }
                     if (matchedAccs.length === 0 && matchedVaults.length === 0) {
-                        mktStage.innerHTML += `<div class="item-card" style="text-align:center;padding:24px;color:var(--text-muted);font-weight:700;">No assets found matching "${_exSearchQuery}".</div>`;
+                        hTrack.innerHTML += `<div class="item-card" style="text-align:center;padding:24px;color:var(--text-muted);font-weight:700;">No assets found matching "${_exSearchQuery}".</div>`;
                     }
                     return;
                 }
@@ -16586,15 +17038,15 @@ const XB_EX_BANK_THEMES = {
                     const spDiv = document.createElement('div');
                     spDiv.className = 'xb-ex-divider';
                     spDiv.innerHTML = `<span>${spLabel} • ${spAccs.length} LIVE ACCOUNTS</span>`;
-                    mktStage.appendChild(spDiv);
+                    hTrack.appendChild(spDiv);
 
                     if (spAccs.length > 0) {
                         const accGrid = document.createElement('div');
                         accGrid.className = 'xb-ex-acc-grid';
                         spAccs.forEach(acc => accGrid.appendChild(createSpecificAccountCard(acc, _exFilter)));
-                        mktStage.appendChild(accGrid);
+                        hTrack.appendChild(accGrid);
                     } else {
-                        mktStage.innerHTML += `<div class="item-card" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;font-weight:700;">0 live accounts currently available in ${spLabel}.</div>`;
+                        hTrack.innerHTML += `<div class="item-card" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;font-weight:700;">0 live accounts currently available in ${spLabel}.</div>`;
                     }
                     return;
                 }
@@ -16610,15 +17062,15 @@ const XB_EX_BANK_THEMES = {
                     const yrDiv = document.createElement('div');
                     yrDiv.className = 'xb-ex-divider';
                     yrDiv.innerHTML = `<span>GITHUB ${minY}–${maxY} • ${rangeAccs.length} LIVE ACCOUNTS</span>`;
-                    mktStage.appendChild(yrDiv);
+                    hTrack.appendChild(yrDiv);
 
                     if (rangeAccs.length > 0) {
                         const accGrid = document.createElement('div');
                         accGrid.className = 'xb-ex-acc-grid';
                         rangeAccs.forEach(acc => accGrid.appendChild(createSpecificAccountCard(acc, acc._cat_key || String(acc.year || minY))));
-                        mktStage.appendChild(accGrid);
+                        hTrack.appendChild(accGrid);
                     } else {
-                        mktStage.innerHTML += `<div class="item-card" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;font-weight:700;">0 live accounts currently available for ${minY}–${maxY}.</div>`;
+                        hTrack.innerHTML += `<div class="item-card" style="text-align:center;padding:20px;color:var(--text-muted);font-size:0.75rem;font-weight:700;">0 live accounts currently available for ${minY}–${maxY}.</div>`;
                     }
                     return;
                 }
@@ -16628,7 +17080,7 @@ const XB_EX_BANK_THEMES = {
                 const yrGrid = document.createElement('div');
                 yrGrid.className = 'grid-years-2col';
                 allYearVaults.forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
-                mktStage.appendChild(yrGrid);
+                hTrack.appendChild(yrGrid);
 
                 const spDiv = document.createElement('div');
                 spDiv.className = 'xb-ex-special-hdr';
@@ -16636,7 +17088,7 @@ const XB_EX_BANK_THEMES = {
                     <div class="xb-ex-special-title">★ SPECIAL TIERS ★</div>
                     <div class="xb-ex-special-sub">High Followers • Arctic Badge • High Contribution • 6 Badges</div>
                 `;
-                mktStage.appendChild(spDiv);
+                hTrack.appendChild(spDiv);
 
                 const spGrid = document.createElement('div');
                 spGrid.className = 'grid-years-2col';
@@ -16649,7 +17101,7 @@ const XB_EX_BANK_THEMES = {
                     otherSpOrder.map(k => GITHUB_VAULT_CATEGORIES.find(y => y.yr === k)).filter(Boolean)
                 );
                 otherSpList.forEach(y => spGrid.appendChild(createGithubYearCard(y, false)));
-                mktStage.appendChild(spGrid);
+                hTrack.appendChild(spGrid);
                 return;
             }
 
