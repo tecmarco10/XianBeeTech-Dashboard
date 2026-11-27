@@ -7209,43 +7209,43 @@
                 flex: 1 1 0 !important;
                 min-height: 0 !important;
                 display: flex !important;
-                flex-direction: row !important;
+                flex-direction: column !important;
                 align-items: stretch !important;
                 gap: 14px !important;
-                overflow-x: auto !important;
-                overflow-y: hidden !important;
-                padding: 3px 2px 7px 2px !important;
+                overflow-x: hidden !important;
+                overflow-y: auto !important;
+                padding: 3px 6px 14px 2px !important;
                 scroll-behavior: smooth;
             }
             .xb-pc-hscroll-track::-webkit-scrollbar {
-                height: 7px !important;
+                width: 7px !important;
             }
             .xb-pc-hscroll-track::-webkit-scrollbar-thumb {
-                background: linear-gradient(90deg, #38bdf8, #8b5cf6) !important;
+                background: linear-gradient(180deg, #38bdf8, #8b5cf6) !important;
                 border-radius: 99px !important;
             }
 
-            /* Kartu Tahun: 3 Baris Rapi (SEMUA KOLOM 1, 2, 3+ 100% SAMA LEBAR!) */
+            /* Kartu Tahun & Akun: 4 Kolom Mentok Kanan (2011-2014 / 2015-2018 / 2019-2022 / 2023-2026) */
             .xb-pc-hscroll-track .grid-years-2col {
                 display: grid !important;
-                grid-template-columns: none !important;
-                grid-auto-flow: column !important;
-                grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
-                grid-auto-columns: 248px !important;
-                gap: 11px !important;
-                width: max-content !important;
-                height: 100% !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                grid-auto-flow: row !important;
+                grid-template-rows: none !important;
+                grid-auto-columns: auto !important;
+                gap: 12px !important;
+                width: 100% !important;
+                height: auto !important;
                 flex-shrink: 0 !important;
             }
             .xb-pc-hscroll-track .xb-ex-acc-grid {
                 display: grid !important;
-                grid-template-columns: none !important;
-                grid-auto-flow: column !important;
-                grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
-                grid-auto-columns: 294px !important;
-                gap: 13px !important;
-                width: max-content !important;
-                height: 100% !important;
+                grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+                grid-auto-flow: row !important;
+                grid-template-rows: none !important;
+                grid-auto-columns: auto !important;
+                gap: 12px !important;
+                width: 100% !important;
+                height: auto !important;
                 flex-shrink: 0 !important;
             }
             /* Anti loncat ke atas & anti garis terpotong saat hover */
@@ -7257,18 +7257,20 @@
             .xb-pc-hscroll-track .xb-ex-span-2 {
                 grid-column: auto !important;
             }
+            /* Tinggi kartu tetap proporsional seperti sebelumnya, lebarnya penuh 4 kolom */
             .xb-pc-hscroll-track .grid-years-2col .item-card {
-                height: 100% !important;
-                padding: 9px 11px !important;
-                gap: 7px !important;
+                height: 196px !important;
+                padding: 10px 12px !important;
+                gap: 8px !important;
                 border-radius: 13px !important;
                 justify-content: flex-start !important;
             }
             .xb-pc-hscroll-track .xb-ex-acc-grid .item-card {
-                height: 100% !important;
-                padding: 12px 13px !important;
-                gap: 9px !important;
-                border-radius: 15px !important;
+                height: auto !important;
+                min-height: 268px !important;
+                padding: 11px 11px !important;
+                gap: 8px !important;
+                border-radius: 14px !important;
                 justify-content: flex-start !important;
             }
             /* Kotak Tahun, Badge MYTHIC/LEGENDARY & Artwork proporsional untuk 3 baris */
@@ -7393,23 +7395,22 @@
                 font-size: 0.98rem !important;
             }
 
-            /* GAYA A: PILAR PEMBATAS HURUF TEGAK LURUS KE BAWAH (CENTERED & BESAR) */
+            /* Pembatas Horizontal Rapi Full-Width untuk Scroll Bawah */
             .xb-pc-hscroll-track .xb-ex-special-hdr,
             .xb-pc-hscroll-track .xb-ex-divider {
-                margin: 0 !important;
-                width: 66px !important;
-                height: 100% !important;
+                margin: 2px 0 0 0 !important;
+                width: 100% !important;
+                height: auto !important;
                 flex-shrink: 0 !important;
-                border-radius: 14px !important;
-                border: 1.5px dashed rgba(56, 189, 248, 0.52) !important;
-                background: linear-gradient(180deg, rgba(56, 189, 248, 0.09), rgba(168, 85, 247, 0.12)) !important;
+                border-radius: 12px !important;
+                border: 1px dashed rgba(56, 189, 248, 0.45) !important;
+                background: linear-gradient(90deg, rgba(56, 189, 248, 0.08), rgba(168, 85, 247, 0.1)) !important;
                 display: flex !important;
-                flex-direction: column !important;
+                flex-direction: row !important;
                 align-items: center !important;
-                justify-content: center !important;
-                gap: 12px !important;
-                padding: 14px 4px !important;
-                overflow: hidden !important;
+                justify-content: space-between !important;
+                gap: 10px !important;
+                padding: 9px 14px !important;
             }
             .xb-pc-hscroll-track .xb-ex-divider::before,
             .xb-pc-hscroll-track .xb-ex-divider::after {
@@ -7418,33 +7419,32 @@
             .xb-pc-hscroll-track .xb-ex-special-title,
             .xb-pc-hscroll-track .xb-ex-divider > span {
                 width: auto !important;
-                display: block !important;
-                margin: 0 auto !important;
-                align-self: center !important;
-                text-align: center !important;
-                writing-mode: vertical-rl !important;
-                text-orientation: upright !important;
+                display: inline-block !important;
+                margin: 0 !important;
+                text-align: left !important;
+                writing-mode: horizontal-tb !important;
+                text-orientation: mixed !important;
                 transform: none !important;
                 border: none !important;
                 background: transparent !important;
                 padding: 0 !important;
                 font-family: 'JetBrains Mono', monospace !important;
-                font-size: 1rem !important;
+                font-size: 0.78rem !important;
                 font-weight: 900 !important;
-                letter-spacing: 3.5px !important;
-                line-height: 1 !important;
+                letter-spacing: 1px !important;
+                line-height: 1.2 !important;
                 color: var(--accent-cyan) !important;
                 white-space: nowrap !important;
             }
             .xb-pc-pillar-cnt {
                 font-family: 'JetBrains Mono', monospace;
-                font-size: 0.78rem;
+                font-size: 0.7rem;
                 font-weight: 900;
                 color: #34d399;
                 background: rgba(16, 185, 129, 0.16);
-                border: 1.5px solid rgba(52, 211, 153, 0.55);
-                padding: 3px 9px;
-                border-radius: 8px;
+                border: 1px solid rgba(52, 211, 153, 0.52);
+                padding: 2px 9px;
+                border-radius: 7px;
                 flex-shrink: 0;
             }
             .xb-pc-hscroll-track .xb-ex-special-sub {
@@ -12925,13 +12925,21 @@ const XB_EX_BANK_THEMES = {
                     </div>
                 </div>
 
-                <!-- WORKSPACE (CLEAN LABELS WITHOUT REPEATING BRAND) -->
-                <div class="side-grp-lbl" id="sideGrpWorkspace"><span>WORKSPACE</span><span style="color:#34d399;">◆</span></div>
-                <button type="button" class="side-btn" data-dnav="ws_wallet" onclick="desktopNavClick('ws_wallet')"><span class="sb-ico">💳</span><span class="sb-lbl">Wallet</span></button>
-                <button type="button" class="side-btn" data-dnav="ws_exchange" onclick="desktopNavClick('ws_exchange')"><span class="sb-ico">⇄</span><span class="sb-lbl">Exchange</span></button>
-                <button type="button" class="side-btn" data-dnav="ws_vault" onclick="desktopNavClick('ws_vault')"><span class="sb-ico">🔐</span><span class="sb-lbl">Assets</span></button>
-                <button type="button" class="side-btn" data-dnav="ws_profile" onclick="desktopNavClick('ws_profile')"><span class="sb-ico">👤</span><span class="sb-lbl">Profile</span></button>
-                <button type="button" class="side-btn" id="sidebarAdminBtn" data-dnav="ws_admin" onclick="desktopNavClick('ws_admin')" style="color:var(--accent-cyan);display:none;"><span class="sb-ico">⚙️</span><span class="sb-lbl">Command Center</span></button>
+                <!-- ACCORDION 3: WORKSPACE -->
+                <div class="side-acc-group open" id="sideAccWorkspace">
+                    <button type="button" class="side-acc-hdr" onclick="toggleDesktopSideGroup('workspace')">
+                        <span class="sb-ico">💼</span>
+                        <span class="sb-lbl">Workspace</span>
+                        <span class="side-acc-chev">▾</span>
+                    </button>
+                    <div class="side-acc-body">
+                        <button type="button" class="side-btn" data-dnav="ws_wallet" onclick="desktopNavClick('ws_wallet')"><span class="sb-ico">💳</span><span class="sb-lbl">Wallet</span></button>
+                        <button type="button" class="side-btn" data-dnav="ws_exchange" onclick="desktopNavClick('ws_exchange')"><span class="sb-ico">⇄</span><span class="sb-lbl">Exchange</span></button>
+                        <button type="button" class="side-btn" data-dnav="ws_vault" onclick="desktopNavClick('ws_vault')"><span class="sb-ico">🔐</span><span class="sb-lbl">Assets</span></button>
+                        <button type="button" class="side-btn" data-dnav="ws_profile" onclick="desktopNavClick('ws_profile')"><span class="sb-ico">👤</span><span class="sb-lbl">Profile</span></button>
+                        <button type="button" class="side-btn" id="sidebarAdminBtn" data-dnav="ws_admin" onclick="desktopNavClick('ws_admin')" style="color:var(--accent-cyan);display:none;"><span class="sb-ico">⚙️</span><span class="sb-lbl">Command Center</span></button>
+                    </div>
+                </div>
             </nav>
 
             <div class="sidebar-footer">
@@ -17073,11 +17081,8 @@ const XB_EX_BANK_THEMES = {
             const hBar = document.createElement('div');
             hBar.className = 'xb-pc-hscroll-bar';
             hBar.innerHTML = `
-                <span style="font-size:0.66rem;font-weight:800;color:var(--text-primary);">${plat.title} <span style="color:#38bdf8;">(${vList.length} Catalogs • Scroll ➔)</span></span>
-                <div style="display:flex;align-items:center;gap:6px;">
-                    <button type="button" class="xb-pc-hscroll-btn" onclick="scrollDesktopMktTrack(-1)" title="Scroll Left">◀</button>
-                    <button type="button" class="xb-pc-hscroll-btn" onclick="scrollDesktopMktTrack(1)" title="Scroll Right">▶</button>
-                </div>
+                <span style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${plat.title}</span>
+                <span style="font-size:0.62rem;font-weight:800;color:#38bdf8;">${vList.length} Catalogs</span>
             `;
             mktStage.appendChild(hBar);
 
@@ -17285,55 +17290,38 @@ const XB_EX_BANK_THEMES = {
                 btn.classList.toggle('active', btn.getAttribute('data-dnav') === actKey);
             });
 
-            // 2B. Auto-buka grup Accordion yang aktif (lipat yang tidak aktif agar lapang)
+            // 2B. Pastikan grup aktif terbuka tanpa pernah menutup grup lain secara otomatis
             const accMp = document.getElementById('sideAccMarketplace');
             const accBst = document.getElementById('sideAccBoost');
-            if (accMp && accBst) {
-                if (actKey.startsWith('mp_')) {
-                    accMp.classList.add('open');
-                    accBst.classList.remove('open');
-                } else if (actKey.startsWith('bst_')) {
-                    accBst.classList.add('open');
-                    accMp.classList.remove('open');
-                }
-            }
+            const accWs = document.getElementById('sideAccWorkspace');
+            if (actKey.startsWith('mp_') && accMp) accMp.classList.add('open');
+            else if (actKey.startsWith('bst_') && accBst) accBst.classList.add('open');
+            else if (actKey.startsWith('ws_') && accWs) accWs.classList.add('open');
 
-            // 3. Zero-vertical-scroll lock ONLY on Desktop Marketplace Catalog views
+            // 3. Keep Desktop Marketplace Shell Locked (Scroll hanya di area katalog kanan)
             const lockMkt = (activeTab === 'home') && (_mpPlatform !== 'pro_apps') && (_mpPlatform !== 'games_ppob');
             document.body.classList.toggle('xb-pc-mkt-lock', lockMkt);
         }
 
         function toggleDesktopSideGroup(grpKey) {
-            const accMp = document.getElementById('sideAccMarketplace');
-            const accBst = document.getElementById('sideAccBoost');
-            if (!accMp || !accBst) return;
-            if (grpKey === 'marketplace') {
-                const willOpen = !accMp.classList.contains('open');
-                accMp.classList.toggle('open', willOpen);
-                if (willOpen) accBst.classList.remove('open');
-            } else if (grpKey === 'boost') {
-                const willOpen = !accBst.classList.contains('open');
-                accBst.classList.toggle('open', willOpen);
-                if (willOpen) accMp.classList.remove('open');
-            }
+            const idMap = {
+                marketplace: 'sideAccMarketplace',
+                boost: 'sideAccBoost',
+                workspace: 'sideAccWorkspace'
+            };
+            const targetGrp = document.getElementById(idMap[grpKey] || '');
+            if (targetGrp) targetGrp.classList.toggle('open');
         }
 
         function scrollDesktopMktTrack(dir) {
             const trk = document.getElementById('xbPcHScrollTrack');
             if (!trk) return;
-            trk.scrollBy({ left: dir * 520, behavior: 'smooth' });
+            trk.scrollBy({ top: dir * 420, behavior: 'smooth' });
         }
 
         function bindDesktopHorizontalWheel(trackEl) {
-            if (!trackEl || trackEl.dataset.wheelBound) return;
-            trackEl.dataset.wheelBound = '1';
-            trackEl.addEventListener('wheel', (e) => {
-                if (window.innerWidth < 1100) return;
-                if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-                    e.preventDefault();
-                    trackEl.scrollLeft += e.deltaY * 1.15;
-                }
-            }, { passive: false });
+            // Scroll vertikal normal (tanpa hijack ke samping)
+            return;
         }
 
         function switchTab(tabName) {
@@ -17605,7 +17593,7 @@ const XB_EX_BANK_THEMES = {
                 railFoot.className = 'xb-pc-rail-foot';
                 railFoot.innerHTML = `
                     <div>🛡️ <b style="color:var(--text-primary);">2FA + Full Access</b></div>
-                    <div>↔️ Scroll wheel to browse right</div>
+                    <div>⚡ Instant Vault Delivery</div>
                 `;
                 mktRail.appendChild(railFoot);
 
@@ -17626,11 +17614,9 @@ const XB_EX_BANK_THEMES = {
                 const hBar = document.createElement('div');
                 hBar.className = 'xb-pc-hscroll-bar';
                 hBar.innerHTML = `
-                    <span style="font-size:0.66rem;font-weight:800;color:var(--text-primary);">${baseViewTitle} <span style="color:#38bdf8;">• Horizontal Scroll ➔</span></span>
+                    <span style="font-size:0.68rem;font-weight:800;color:var(--text-primary);">${baseViewTitle}</span>
                     <div style="display:flex;align-items:center;gap:6px;">
-                        ${activeTag ? `<button type="button" class="xb-adm-mini-btn" style="color:#f87171;border-color:rgba(248,113,113,0.45);padding:3px 7px;font-size:0.58rem;" onclick="setExchangeTagFilter('')">✕ #${activeTag}</button>` : ''}
-                        <button type="button" class="xb-pc-hscroll-btn" onclick="scrollDesktopMktTrack(-1)" title="Scroll Left">◀</button>
-                        <button type="button" class="xb-pc-hscroll-btn" onclick="scrollDesktopMktTrack(1)" title="Scroll Right">▶</button>
+                        ${activeTag ? `<button type="button" class="xb-adm-mini-btn" style="color:#f87171;border-color:rgba(248,113,113,0.45);padding:3px 7px;font-size:0.58rem;" onclick="setExchangeTagFilter('')">✕ #${activeTag}</button>` : `<span style="font-size:0.6rem;font-weight:800;color:#34d399;">● 4×4 GRID</span>`}
                     </div>
                 `;
                 mktStage.appendChild(hBar);
