@@ -6448,24 +6448,10 @@
             border-color: #ef4444 !important;
         }
 
-        /* 5 Warna Tombol Filter & Tahun Sinkron per Tier */
-        .xb-ex-filter-chip.xb-fchip-crimson   { color: #ff5c66 !important; border-color: rgba(239, 68, 68, 0.72) !important; background: rgba(239, 68, 68, 0.16) !important; }
-        .xb-ex-filter-chip.xb-fchip-mythic    { color: #f472b6 !important; border-color: rgba(236, 72, 153, 0.58) !important; background: rgba(236, 72, 153, 0.13) !important; }
-        .xb-ex-filter-chip.xb-fchip-legendary { color: #fbbf24 !important; border-color: rgba(245, 158, 11, 0.58) !important; background: rgba(245, 158, 11, 0.13) !important; }
-        .xb-ex-filter-chip.xb-fchip-epic      { color: #c084fc !important; border-color: rgba(168, 85, 247, 0.58) !important; background: rgba(168, 85, 247, 0.13) !important; }
-        .xb-ex-filter-chip.xb-fchip-rare      { color: #38bdf8 !important; border-color: rgba(56, 189, 248, 0.55) !important; background: rgba(56, 189, 248, 0.12) !important; }
-
-        .xb-ex-filter-chip.xb-fchip-crimson.active   { color: #ffffff !important; border-color: #f87171 !important; background: linear-gradient(135deg, #b91c1c, #ef4444) !important; box-shadow: 0 3px 12px rgba(239, 68, 68, 0.45); }
-        .xb-ex-filter-chip.xb-fchip-mythic.active    { color: #ffffff !important; border-color: #f472b6 !important; background: linear-gradient(135deg, #be185d, #ec4899) !important; box-shadow: 0 3px 12px rgba(236, 72, 153, 0.42); }
-        .xb-ex-filter-chip.xb-fchip-legendary.active { color: #ffffff !important; border-color: #fbbf24 !important; background: linear-gradient(135deg, #b45309, #f59e0b) !important; box-shadow: 0 3px 12px rgba(245, 158, 11, 0.42); }
-        .xb-ex-filter-chip.xb-fchip-epic.active      { color: #ffffff !important; border-color: #c084fc !important; background: linear-gradient(135deg, #6d28d9, #a855f7) !important; box-shadow: 0 3px 12px rgba(168, 85, 247, 0.42); }
-        .xb-ex-filter-chip.xb-fchip-rare.active      { color: #ffffff !important; border-color: #38bdf8 !important; background: linear-gradient(135deg, #0369a1, #38bdf8) !important; box-shadow: 0 3px 12px rgba(56, 189, 248, 0.42); }
-
-        [data-theme="platinum"] .xb-ex-filter-chip.xb-fchip-crimson:not(.active)   { color: #b91c1c !important; background: #fee2e2 !important; border-color: #ef4444 !important; }
-        [data-theme="platinum"] .xb-ex-filter-chip.xb-fchip-mythic:not(.active)    { color: #be185d !important; background: #fce7f3 !important; border-color: #ec4899 !important; }
-        [data-theme="platinum"] .xb-ex-filter-chip.xb-fchip-legendary:not(.active) { color: #b45309 !important; background: #fef3c7 !important; border-color: #f59e0b !important; }
-        [data-theme="platinum"] .xb-ex-filter-chip.xb-fchip-epic:not(.active)      { color: #6d28d9 !important; background: #f3e8ff !important; border-color: #a855f7 !important; }
-        [data-theme="platinum"] .xb-ex-filter-chip.xb-fchip-rare:not(.active)      { color: #0369a1 !important; background: #e0f2fe !important; border-color: #38bdf8 !important; }
+        /* Tombol VIP Rank & Global Sales khusus Topbar Desktop (tersembunyi total di HP) */
+        .xb-pc-hdr-pill {
+            display: none !important;
+        }
 
         /* =========================================================
            🖥️ REAL DESKTOP COCKPIT (>= 1100px ONLY — MOBILE 100% UNTOUCHED)
@@ -6511,57 +6497,144 @@
                 margin-top: 2px !important;
             }
 
-            /* AUTO-STRETCH NAV — RATA TENGAH */
+            /* SIDEBAR NAV — RATA KIRI, LAPANG & ACCORDION */
             .sidebar-nav {
-                margin-top: 0 !important;
+                margin-top: 2px !important;
                 display: flex !important;
                 flex-direction: column !important;
-                gap: 3px !important;
+                gap: 5px !important;
                 flex: 1 1 0 !important;
                 min-height: 0 !important;
-                overflow: hidden !important;
+                overflow-y: auto !important;
+                padding-right: 2px !important;
+            }
+            .side-acc-group {
+                display: flex;
+                flex-direction: column;
+                gap: 4px;
+                flex-shrink: 0;
+            }
+            .side-acc-hdr {
+                width: 100%;
+                height: 38px;
+                padding: 0 11px;
+                border-radius: 10px;
+                border: 1px solid var(--ex-hairline);
+                background: var(--bg-input);
+                color: var(--text-primary);
+                display: flex;
+                align-items: center;
+                justify-content: flex-start;
+                gap: 9px;
+                cursor: pointer;
+                font-family: inherit;
+                font-size: 0.8rem;
+                font-weight: 800;
+                letter-spacing: 0.15px;
+                text-align: left;
+                transition: 0.16s ease;
+                flex-shrink: 0;
+            }
+            .side-acc-hdr:hover {
+                border-color: rgba(56, 189, 248, 0.55);
+            }
+            .side-acc-group.open > .side-acc-hdr {
+                border-color: rgba(99, 102, 241, 0.52);
+                background: rgba(99, 102, 241, 0.1);
+            }
+            [data-theme="platinum"] .side-acc-group.open > .side-acc-hdr {
+                background: #eef2ff;
+                border-color: rgba(79, 70, 229, 0.38);
+            }
+            .side-acc-hdr .sb-ico {
+                width: 24px;
+                height: 24px;
+                border-radius: 7px;
+                background: var(--bg-soft);
+                border: 1px solid var(--border-subtle);
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.8rem;
+                flex-shrink: 0;
+            }
+            .side-acc-hdr .sb-lbl {
+                flex: 1;
+                min-width: 0;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .side-acc-chev {
+                font-size: 0.68rem;
+                color: var(--text-muted);
+                transition: transform 0.18s ease;
+                flex-shrink: 0;
+            }
+            .side-acc-group.open > .side-acc-hdr .side-acc-chev {
+                transform: rotate(180deg);
+                color: #38bdf8;
+            }
+            .side-acc-body {
+                display: none;
+                flex-direction: column;
+                gap: 3px;
+                margin-left: 11px;
+                padding-left: 8px;
+                border-left: 1.5px solid var(--ex-hairline);
+            }
+            .side-acc-group.open > .side-acc-body {
+                display: flex;
             }
             .side-grp-lbl {
                 flex-shrink: 0;
                 font-family: 'JetBrains Mono', monospace;
-                font-size: 0.5rem;
+                font-size: 0.58rem;
                 font-weight: 800;
-                letter-spacing: 0.85px;
+                letter-spacing: 0.8px;
                 color: var(--text-muted);
-                padding: 4px 8px 1px 8px;
+                padding: 8px 11px 3px 11px;
+                margin-top: 2px;
+                border-top: 1px dashed var(--ex-hairline);
                 text-transform: uppercase;
                 display: flex;
                 align-items: center;
-                justify-content: center;
-                gap: 6px;
+                justify-content: space-between;
             }
             .side-btn {
-                flex: 1 1 0 !important;
-                min-height: 26px !important;
-                max-height: 44px !important;
-                padding: 0 10px !important;
-                gap: 7px !important;
+                flex: 0 0 auto !important;
+                height: 35px !important;
+                min-height: 35px !important;
+                max-height: 35px !important;
+                padding: 0 11px !important;
+                gap: 9px !important;
                 border-radius: 9px !important;
-                font-size: 0.74rem !important;
+                font-size: 0.78rem !important;
                 font-weight: 700 !important;
                 border: 1px solid transparent !important;
                 white-space: nowrap !important;
                 overflow: hidden !important;
                 text-overflow: ellipsis !important;
                 align-items: center !important;
-                justify-content: center !important;
-                text-align: center !important;
+                justify-content: flex-start !important;
+                text-align: left !important;
+            }
+            .side-acc-body .side-btn {
+                height: 33px !important;
+                min-height: 33px !important;
+                max-height: 33px !important;
+                font-size: 0.75rem !important;
             }
             .side-btn .sb-ico {
-                width: 22px;
-                height: 22px;
+                width: 23px;
+                height: 23px;
                 border-radius: 6px;
                 background: var(--bg-soft);
                 border: 1px solid var(--border-subtle);
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                font-size: 0.75rem;
+                font-size: 0.76rem;
                 flex-shrink: 0;
             }
             .side-btn.active .sb-ico {
@@ -6569,11 +6642,11 @@
                 border-color: rgba(255, 255, 255, 0.35);
             }
             .side-btn .sb-lbl {
-                flex: 0 1 auto !important;
+                flex: 1 1 auto !important;
                 min-width: 0;
                 overflow: hidden;
                 text-overflow: ellipsis;
-                text-align: center !important;
+                text-align: left !important;
             }
             .xb-sidebar-logout-btn {
                 width: 100% !important;
@@ -6624,8 +6697,9 @@
             }
             .xb-ex-row2 > .xb-ex-search-wrap {
                 order: 1;
-                flex: 1 1 320px;
-                max-width: 500px;
+                flex: 1 1 200px;
+                min-width: 170px;
+                max-width: 410px;
                 margin-right: auto;
             }
             .xb-ex-row1 > div:last-child {
@@ -6639,6 +6713,26 @@
             .xb-ex-row2 > button {
                 order: 4;
             }
+            .xb-ex-row2 > .xb-pc-hdr-pill {
+                display: inline-flex !important;
+                order: 5 !important;
+                gap: 5px !important;
+                padding: 0 10px !important;
+                font-size: 0.71rem !important;
+                font-weight: 800 !important;
+                white-space: nowrap !important;
+                flex-shrink: 0 !important;
+            }
+            .xb-ex-row2 > .xb-pc-hdr-pill.is-vip {
+                color: #fbbf24 !important;
+                border-color: rgba(251, 191, 36, 0.42) !important;
+            }
+            .xb-ex-row2 > .xb-pc-hdr-pill.is-sales {
+                color: #38bdf8 !important;
+                border-color: rgba(56, 189, 248, 0.42) !important;
+            }
+            [data-theme="platinum"] .xb-ex-row2 > .xb-pc-hdr-pill.is-vip { color: #b45309 !important; }
+            [data-theme="platinum"] .xb-ex-row2 > .xb-pc-hdr-pill.is-sales { color: #0369a1 !important; }
             .xb-ex-row2 > .xb-ex-icon-btn.cart {
                 order: 6;
             }
@@ -6789,13 +6883,11 @@
                 padding: 2.5px 10px !important;
             }
             .xb-pc-mkt-top .xb-hero-mp-bottom {
-                grid-template-columns: 110px minmax(0, 1fr) 110px !important;
+                grid-template-columns: 1fr !important;
+                justify-items: center !important;
             }
             .xb-pc-mkt-top .xb-hero-corner-btn {
-                height: 28px !important;
-                font-size: 0.68rem !important;
-                border-radius: 8px !important;
-                gap: 5px !important;
+                display: none !important;
             }
 
             .xb-pc-mkt-top > .xb-ex-collection {
@@ -7028,12 +7120,14 @@
             .xb-pc-tag-btn:hover {
                 transform: translateY(-1px);
             }
-            .xb-pc-tag-btn.tag-web3      { color: #f59e0b; border-color: rgba(245, 158, 11, 0.38); }
-            .xb-pc-tag-btn.tag-ai-ml     { color: #38bdf8; border-color: rgba(56, 189, 248, 0.38); }
-            .xb-pc-tag-btn.tag-security  { color: #fb7185; border-color: rgba(251, 113, 133, 0.38); }
-            .xb-pc-tag-btn.tag-cloud     { color: #60a5fa; border-color: rgba(96, 165, 250, 0.38); }
-            .xb-pc-tag-btn.tag-devops    { color: #34d399; border-color: rgba(52, 211, 153, 0.38); }
-            .xb-pc-tag-btn.tag-fullstack { color: #818cf8; border-color: rgba(129, 140, 248, 0.38); }
+            .xb-pc-tag-btn {
+                color: var(--text-secondary);
+                border-color: var(--ex-hairline);
+            }
+            .xb-pc-tag-btn:hover {
+                border-color: rgba(56, 189, 248, 0.55);
+                color: var(--text-primary);
+            }
             .xb-pc-tag-btn.active {
                 background: var(--grad-primary) !important;
                 color: #ffffff !important;
@@ -7120,7 +7214,7 @@
                 gap: 14px !important;
                 overflow-x: auto !important;
                 overflow-y: hidden !important;
-                padding-bottom: 6px !important;
+                padding: 3px 2px 7px 2px !important;
                 scroll-behavior: smooth;
             }
             .xb-pc-hscroll-track::-webkit-scrollbar {
@@ -7131,9 +7225,10 @@
                 border-radius: 99px !important;
             }
 
-            /* Kartu Tahun: 3 Baris Rapi ke Bawah | Kartu Akun: 2 Baris Lega */
+            /* Kartu Tahun: 3 Baris Rapi (SEMUA KOLOM 1, 2, 3+ 100% SAMA LEBAR!) */
             .xb-pc-hscroll-track .grid-years-2col {
                 display: grid !important;
+                grid-template-columns: none !important;
                 grid-auto-flow: column !important;
                 grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
                 grid-auto-columns: 248px !important;
@@ -7144,6 +7239,7 @@
             }
             .xb-pc-hscroll-track .xb-ex-acc-grid {
                 display: grid !important;
+                grid-template-columns: none !important;
                 grid-auto-flow: column !important;
                 grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
                 grid-auto-columns: 294px !important;
@@ -7151,6 +7247,12 @@
                 width: max-content !important;
                 height: 100% !important;
                 flex-shrink: 0 !important;
+            }
+            /* Anti loncat ke atas & anti garis terpotong saat hover */
+            .xb-pc-hscroll-track .item-card:hover {
+                transform: none !important;
+                filter: brightness(1.06);
+                box-shadow: 0 0 0 1.5px rgba(56, 189, 248, 0.55), 0 8px 20px rgba(0, 0, 0, 0.35) !important;
             }
             .xb-pc-hscroll-track .xb-ex-span-2 {
                 grid-column: auto !important;
@@ -12790,26 +12892,45 @@ const XB_EX_BANK_THEMES = {
             </div>
 
             <nav class="sidebar-nav" data-no-i18n="1">
-                <div class="side-grp-lbl" id="sideGrpMarketplace"><span>MARKETPLACE</span><span style="color:#38bdf8;">●</span></div>
-                <button type="button" class="side-btn active" data-dnav="mp_github" onclick="desktopNavClick('mp_github')"><span class="sb-ico">🐙</span><span class="sb-lbl">GitHub Accounts</span></button>
-                <button type="button" class="side-btn" data-dnav="mp_social" data-vis-key="mp_social" onclick="desktopNavClick('mp_social')"><span class="sb-ico">📱</span><span class="sb-lbl">Social Accounts</span></button>
-                <button type="button" class="side-btn" data-dnav="mp_email" data-vis-key="mp_cex_email" onclick="desktopNavClick('mp_email')"><span class="sb-ico">📧</span><span class="sb-lbl">Email Accounts</span></button>
-                <button type="button" class="side-btn" data-dnav="mp_cex" data-vis-key="mp_cex_email" onclick="desktopNavClick('mp_cex')"><span class="sb-ico">🔶</span><span class="sb-lbl">CEX Accounts</span></button>
-                <button type="button" class="side-btn" data-dnav="mp_pro_apps" data-vis-key="mp_pro_apps" onclick="desktopNavClick('mp_pro_apps')"><span class="sb-ico">👑</span><span class="sb-lbl">Pro Apps &amp; AI</span></button>
-                <button type="button" class="side-btn" data-dnav="mp_games_ppob" data-vis-key="mp_games_ppob" onclick="desktopNavClick('mp_games_ppob')"><span class="sb-ico">🎮</span><span class="sb-lbl">Top-Up Hub</span></button>
+                <!-- ACCORDION 1: MARKETPLACE -->
+                <div class="side-acc-group open" id="sideAccMarketplace">
+                    <button type="button" class="side-acc-hdr" onclick="toggleDesktopSideGroup('marketplace')">
+                        <span class="sb-ico">🏪</span>
+                        <span class="sb-lbl">Marketplace</span>
+                        <span class="side-acc-chev">▾</span>
+                    </button>
+                    <div class="side-acc-body">
+                        <button type="button" class="side-btn active" data-dnav="mp_github" onclick="desktopNavClick('mp_github')"><span class="sb-ico">🐙</span><span class="sb-lbl">GitHub Accounts</span></button>
+                        <button type="button" class="side-btn" data-dnav="mp_social" data-vis-key="mp_social" onclick="desktopNavClick('mp_social')"><span class="sb-ico">📱</span><span class="sb-lbl">Social Accounts</span></button>
+                        <button type="button" class="side-btn" data-dnav="mp_email" data-vis-key="mp_cex_email" onclick="desktopNavClick('mp_email')"><span class="sb-ico">📧</span><span class="sb-lbl">Email Accounts</span></button>
+                        <button type="button" class="side-btn" data-dnav="mp_cex" data-vis-key="mp_cex_email" onclick="desktopNavClick('mp_cex')"><span class="sb-ico">🔶</span><span class="sb-lbl">CEX Accounts</span></button>
+                        <button type="button" class="side-btn" data-dnav="mp_pro_apps" data-vis-key="mp_pro_apps" onclick="desktopNavClick('mp_pro_apps')"><span class="sb-ico">👑</span><span class="sb-lbl">Pro Apps &amp; AI</span></button>
+                        <button type="button" class="side-btn" data-dnav="mp_games_ppob" data-vis-key="mp_games_ppob" onclick="desktopNavClick('mp_games_ppob')"><span class="sb-ico">🎮</span><span class="sb-lbl">Top-Up Hub</span></button>
+                    </div>
+                </div>
 
-                <div class="side-grp-lbl" id="sideGrpBoost"><span>BOOST SERVICES</span><span style="color:#c084fc;">⚡</span></div>
-                <button type="button" class="side-btn" data-dnav="bst_github" onclick="desktopNavClick('bst_github')"><span class="sb-ico">🚀</span><span class="sb-lbl">GitHub Boost</span></button>
-                <button type="button" class="side-btn" data-dnav="bst_socmed" data-vis-key="bst_socmed" onclick="desktopNavClick('bst_socmed')"><span class="sb-ico">📸</span><span class="sb-lbl">Social Boost</span></button>
-                <button type="button" class="side-btn" data-dnav="bst_ecom" data-vis-key="bst_ecom" onclick="desktopNavClick('bst_ecom')"><span class="sb-ico">🛒</span><span class="sb-lbl">Store Boost</span></button>
-                <button type="button" class="side-btn" data-dnav="bst_stream" data-vis-key="bst_stream" onclick="desktopNavClick('bst_stream')"><span class="sb-ico">🎧</span><span class="sb-lbl">Stream Boost</span></button>
-                <button type="button" class="side-btn" data-dnav="bst_webpro" data-vis-key="bst_webpro" onclick="desktopNavClick('bst_webpro')"><span class="sb-ico">🌐</span><span class="sb-lbl">Web Traffic Boost</span></button>
+                <!-- ACCORDION 2: BOOST SERVICES -->
+                <div class="side-acc-group" id="sideAccBoost">
+                    <button type="button" class="side-acc-hdr" onclick="toggleDesktopSideGroup('boost')">
+                        <span class="sb-ico">⚡</span>
+                        <span class="sb-lbl">Boost Services</span>
+                        <span class="side-acc-chev">▾</span>
+                    </button>
+                    <div class="side-acc-body">
+                        <button type="button" class="side-btn" data-dnav="bst_github" onclick="desktopNavClick('bst_github')"><span class="sb-ico">🚀</span><span class="sb-lbl">GitHub Boost</span></button>
+                        <button type="button" class="side-btn" data-dnav="bst_socmed" data-vis-key="bst_socmed" onclick="desktopNavClick('bst_socmed')"><span class="sb-ico">📸</span><span class="sb-lbl">Social Boost</span></button>
+                        <button type="button" class="side-btn" data-dnav="bst_ecom" data-vis-key="bst_ecom" onclick="desktopNavClick('bst_ecom')"><span class="sb-ico">🛒</span><span class="sb-lbl">Store Boost</span></button>
+                        <button type="button" class="side-btn" data-dnav="bst_stream" data-vis-key="bst_stream" onclick="desktopNavClick('bst_stream')"><span class="sb-ico">🎧</span><span class="sb-lbl">Stream Boost</span></button>
+                        <button type="button" class="side-btn" data-dnav="bst_webpro" data-vis-key="bst_webpro" onclick="desktopNavClick('bst_webpro')"><span class="sb-ico">🌐</span><span class="sb-lbl">Web Traffic Boost</span></button>
+                    </div>
+                </div>
 
+                <!-- WORKSPACE (CLEAN LABELS WITHOUT REPEATING BRAND) -->
                 <div class="side-grp-lbl" id="sideGrpWorkspace"><span>WORKSPACE</span><span style="color:#34d399;">◆</span></div>
-                <button type="button" class="side-btn" data-dnav="ws_wallet" onclick="desktopNavClick('ws_wallet')"><span class="sb-ico">💳</span><span class="sb-lbl">XianBee-Tech Wallet</span></button>
-                <button type="button" class="side-btn" data-dnav="ws_exchange" onclick="desktopNavClick('ws_exchange')"><span class="sb-ico">⇄</span><span class="sb-lbl">XianBee-Tech Exchange</span></button>
-                <button type="button" class="side-btn" data-dnav="ws_vault" onclick="desktopNavClick('ws_vault')"><span class="sb-ico">🔐</span><span class="sb-lbl">XianBee-Tech Assets</span></button>
-                <button type="button" class="side-btn" data-dnav="ws_profile" onclick="desktopNavClick('ws_profile')"><span class="sb-ico">👤</span><span class="sb-lbl">XianBee-Tech Profile</span></button>
+                <button type="button" class="side-btn" data-dnav="ws_wallet" onclick="desktopNavClick('ws_wallet')"><span class="sb-ico">💳</span><span class="sb-lbl">Wallet</span></button>
+                <button type="button" class="side-btn" data-dnav="ws_exchange" onclick="desktopNavClick('ws_exchange')"><span class="sb-ico">⇄</span><span class="sb-lbl">Exchange</span></button>
+                <button type="button" class="side-btn" data-dnav="ws_vault" onclick="desktopNavClick('ws_vault')"><span class="sb-ico">🔐</span><span class="sb-lbl">Assets</span></button>
+                <button type="button" class="side-btn" data-dnav="ws_profile" onclick="desktopNavClick('ws_profile')"><span class="sb-ico">👤</span><span class="sb-lbl">Profile</span></button>
                 <button type="button" class="side-btn" id="sidebarAdminBtn" data-dnav="ws_admin" onclick="desktopNavClick('ws_admin')" style="color:var(--accent-cyan);display:none;"><span class="sb-ico">⚙️</span><span class="sb-lbl">Command Center</span></button>
             </nav>
 
@@ -17164,9 +17285,37 @@ const XB_EX_BANK_THEMES = {
                 btn.classList.toggle('active', btn.getAttribute('data-dnav') === actKey);
             });
 
+            // 2B. Auto-buka grup Accordion yang aktif (lipat yang tidak aktif agar lapang)
+            const accMp = document.getElementById('sideAccMarketplace');
+            const accBst = document.getElementById('sideAccBoost');
+            if (accMp && accBst) {
+                if (actKey.startsWith('mp_')) {
+                    accMp.classList.add('open');
+                    accBst.classList.remove('open');
+                } else if (actKey.startsWith('bst_')) {
+                    accBst.classList.add('open');
+                    accMp.classList.remove('open');
+                }
+            }
+
             // 3. Zero-vertical-scroll lock ONLY on Desktop Marketplace Catalog views
             const lockMkt = (activeTab === 'home') && (_mpPlatform !== 'pro_apps') && (_mpPlatform !== 'games_ppob');
             document.body.classList.toggle('xb-pc-mkt-lock', lockMkt);
+        }
+
+        function toggleDesktopSideGroup(grpKey) {
+            const accMp = document.getElementById('sideAccMarketplace');
+            const accBst = document.getElementById('sideAccBoost');
+            if (!accMp || !accBst) return;
+            if (grpKey === 'marketplace') {
+                const willOpen = !accMp.classList.contains('open');
+                accMp.classList.toggle('open', willOpen);
+                if (willOpen) accBst.classList.remove('open');
+            } else if (grpKey === 'boost') {
+                const willOpen = !accBst.classList.contains('open');
+                accBst.classList.toggle('open', willOpen);
+                if (willOpen) accMp.classList.remove('open');
+            }
         }
 
         function scrollDesktopMktTrack(dir) {
@@ -17387,15 +17536,15 @@ const XB_EX_BANK_THEMES = {
                 `;
                 mktRail.appendChild(chipsWrap);
 
-                // 2. DESKTOP-ONLY FULL FILTER PANEL (URUTAN SESUAI TIER & WARNA SINKRON)
+                // 2. DESKTOP-ONLY FULL FILTER PANEL (WARNA NETRAL TENANG — FOKUS KE KARTU)
                 const pcFeatList = [
-                    { k: 'ALL',         lbl: 'All GitHub Assets',             full: true, tierCls: '' },
-                    { k: 'EliteDev',    lbl: 'GitHub Elite Developer',        tierCls: 'xb-fchip-crimson' },
-                    { k: 'Followers',   lbl: 'GitHub High Followers',         tierCls: 'xb-fchip-mythic' },
-                    { k: 'Contrib',     lbl: 'GitHub High Contribution',      tierCls: 'xb-fchip-legendary' },
-                    { k: '6Badge',      lbl: 'GitHub 6 Badges',               tierCls: 'xb-fchip-legendary' },
-                    { k: 'Arctic',      lbl: 'GitHub Arctic Code Vault',      tierCls: 'xb-fchip-epic' },
-                    { k: 'StudentPack', lbl: 'GitHub Student Developer Pack', tierCls: 'xb-fchip-rare' }
+                    { k: 'ALL',         lbl: 'All GitHub Assets',             full: true },
+                    { k: 'EliteDev',    lbl: 'GitHub Elite Developer' },
+                    { k: 'Followers',   lbl: 'GitHub High Followers' },
+                    { k: 'Contrib',     lbl: 'GitHub High Contribution' },
+                    { k: '6Badge',      lbl: 'GitHub 6 Badges' },
+                    { k: 'Arctic',      lbl: 'GitHub Arctic Code Vault' },
+                    { k: 'StudentPack', lbl: 'GitHub Student Developer Pack' }
                 ];
                 const pcYearsList = GITHUB_VAULT_CATEGORIES
                     .filter(y => /^\d{4}$/.test(y.yr))
@@ -17408,16 +17557,15 @@ const XB_EX_BANK_THEMES = {
                     <div class="xb-pc-fsec-lbl"><span>FEATURED CATALOGS</span></div>
                     <div class="xb-pc-feat-grid">
                         ${pcFeatList.map(f => `
-                            <button type="button" class="xb-ex-filter-chip ${f.full ? 'span-full' : ''} ${f.tierCls} ${_exFilter === f.k ? 'active' : ''}" onclick="setExchangeFilter('${f.k}')">${f.lbl}</button>
+                            <button type="button" class="xb-ex-filter-chip ${f.full ? 'span-full' : ''} ${_exFilter === f.k ? 'active' : ''}" onclick="setExchangeFilter('${f.k}')">${f.lbl}</button>
                         `).join('')}
                     </div>
 
                     <div class="xb-pc-fsec-lbl" style="margin-top:2px;"><span>BY YEAR (${pcYearsList[0] || '2011'}–${pcYearsList[pcYearsList.length - 1] || '2026'})</span></div>
                     <div class="xb-pc-yr-grid">
-                        ${pcYearsList.map(yr => {
-                            const yTier = getAssetRarityTier(yr);
-                            return `<button type="button" class="xb-ex-filter-chip xb-fchip-${yTier.key} ${yr === '2011' ? 'xb-yr-special-aged' : ''} ${_exFilter === yr ? 'active' : ''}" onclick="setExchangeFilter('${yr}')">${yr === '2011' ? '★ 2011 • Special Aged' : yr}</button>`;
-                        }).join('')}
+                        ${pcYearsList.map(yr => `
+                            <button type="button" class="xb-ex-filter-chip ${yr === '2011' ? 'xb-yr-special-aged' : ''} ${_exFilter === yr ? 'active' : ''}" onclick="setExchangeFilter('${yr}')">${yr === '2011' ? '★ 2011 • Special Aged' : yr}</button>
+                        `).join('')}
                     </div>
 
                     <div class="xb-pc-tag-wrap">
@@ -33471,13 +33619,33 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
 
         function mountHeaderChatButton() {
             const bellBtn = document.querySelector('[onclick*="openNotificationsModal"]');
+            const cartBtn = document.querySelector('.xb-ex-icon-btn.cart, [onclick*="openCartModal"]');
             if (bellBtn && bellBtn.parentNode) {
                 bellBtn.insertAdjacentElement('afterend', chatFab);
-                return;
-            }
-            const cartBtn = document.querySelector('.xb-ex-icon-btn.cart, [onclick*="openCartModal"]');
-            if (cartBtn && cartBtn.parentNode) {
+            } else if (cartBtn && cartBtn.parentNode) {
                 cartBtn.insertAdjacentElement('beforebegin', chatFab);
+            }
+
+            // Desktop-Only Top Header Pills: VIP Rank & Global Sales (100% tersembunyi di HP)
+            if (cartBtn && cartBtn.parentNode && !document.getElementById('xbPcHdrVipBtn')) {
+                const vipBtn = document.createElement('button');
+                vipBtn.id = 'xbPcHdrVipBtn';
+                vipBtn.type = 'button';
+                vipBtn.className = 'xb-ex-icon-btn xb-pc-hdr-pill is-vip';
+                vipBtn.title = 'VIP Hall of Fame & Rankings';
+                vipBtn.innerHTML = '👑 VIP Rank';
+                vipBtn.onclick = () => openLeaderboardModal();
+
+                const salesBtn = document.createElement('button');
+                salesBtn.id = 'xbPcHdrSalesBtn';
+                salesBtn.type = 'button';
+                salesBtn.className = 'xb-ex-icon-btn xb-pc-hdr-pill is-sales';
+                salesBtn.title = 'Global Marketplace Sales Telemetry';
+                salesBtn.innerHTML = '📊 Global Sales';
+                salesBtn.onclick = () => openStoreGlobal3DTelemetry();
+
+                cartBtn.insertAdjacentElement('beforebegin', vipBtn);
+                cartBtn.insertAdjacentElement('beforebegin', salesBtn);
             }
         }
         mountHeaderChatButton();
