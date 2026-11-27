@@ -6926,23 +6926,38 @@
                 padding: 8px 8px !important;
             }
 
-            /* Tahun: 2 Kotak 2 Kotak ke Bawah (jika ganjil, item terakhir otomatis 1 kotak penuh) */
+            /* Tahun: 2011 Full Baris (Special Aged) + 2012–2026 Grid 3 Kolom (5x3 Pas!) */
             .xb-pc-yr-grid {
                 display: grid;
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                gap: 5px;
-                padding-top: 8px;
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+                gap: 4px;
+                padding-top: 7px;
                 border-top: 1px dashed var(--ex-hairline);
             }
             .xb-pc-yr-grid .xb-ex-filter-chip {
-                padding: 7px 4px !important;
-                font-size: 0.69rem !important;
-                border-radius: 8px !important;
+                padding: 6px 3px !important;
+                font-size: 0.65rem !important;
+                border-radius: 7px !important;
                 text-align: center !important;
                 justify-content: center !important;
             }
-            .xb-pc-yr-grid .xb-ex-filter-chip:last-child:nth-child(2n+1) {
-                grid-column: 1 / -1;
+            .xb-pc-yr-grid .xb-ex-filter-chip.xb-yr-special-aged {
+                grid-column: 1 / -1 !important;
+                padding: 7px 8px !important;
+                font-size: 0.66rem !important;
+                letter-spacing: 0.3px;
+                color: #fbbf24 !important;
+                border-color: rgba(251, 191, 36, 0.45) !important;
+                background: linear-gradient(90deg, rgba(245, 158, 11, 0.12), rgba(168, 85, 247, 0.12)) !important;
+            }
+            .xb-pc-yr-grid .xb-ex-filter-chip.xb-yr-special-aged.active {
+                color: #ffffff !important;
+                background: var(--grad-primary) !important;
+                border-color: #38bdf8 !important;
+            }
+            [data-theme="platinum"] .xb-pc-yr-grid .xb-ex-filter-chip.xb-yr-special-aged:not(.active) {
+                color: #b45309 !important;
+                background: linear-gradient(90deg, #fef3c7, #f3e8ff) !important;
             }
 
             /* #TAG Niche Grid (6 Tag Utama) */
@@ -7079,13 +7094,13 @@
                 border-radius: 99px !important;
             }
 
-            /* 2 Baris Lega & Besar (TIDAK 3 baris sempit!) */
+            /* Kartu Tahun: 3 Baris Rapi ke Bawah | Kartu Akun: 2 Baris Lega */
             .xb-pc-hscroll-track .grid-years-2col {
                 display: grid !important;
                 grid-auto-flow: column !important;
-                grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
-                grid-auto-columns: 262px !important;
-                gap: 14px !important;
+                grid-template-rows: repeat(3, minmax(0, 1fr)) !important;
+                grid-auto-columns: 248px !important;
+                gap: 11px !important;
                 width: max-content !important;
                 height: 100% !important;
                 flex-shrink: 0 !important;
@@ -7094,8 +7109,8 @@
                 display: grid !important;
                 grid-auto-flow: column !important;
                 grid-template-rows: repeat(2, minmax(0, 1fr)) !important;
-                grid-auto-columns: 298px !important;
-                gap: 14px !important;
+                grid-auto-columns: 294px !important;
+                gap: 13px !important;
                 width: max-content !important;
                 height: 100% !important;
                 flex-shrink: 0 !important;
@@ -7103,74 +7118,102 @@
             .xb-pc-hscroll-track .xb-ex-span-2 {
                 grid-column: auto !important;
             }
-            .xb-pc-hscroll-track .item-card {
+            .xb-pc-hscroll-track .grid-years-2col .item-card {
                 height: 100% !important;
-                padding: 13px 14px !important;
-                gap: 10px !important;
+                padding: 9px 11px !important;
+                gap: 7px !important;
+                border-radius: 13px !important;
+                justify-content: flex-start !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-acc-grid .item-card {
+                height: 100% !important;
+                padding: 12px 13px !important;
+                gap: 9px !important;
                 border-radius: 15px !important;
                 justify-content: flex-start !important;
             }
-            /* Kotak Tahun, Badge MYTHIC/LEGENDARY & Artwork diperbesar lega mengisi ruang */
-            .xb-pc-hscroll-track .xb-ex-art {
-                flex: 1 1 auto !important;
+            /* Kotak Tahun, Badge MYTHIC/LEGENDARY & Artwork proporsional untuk 3 baris */
+            .xb-pc-hscroll-track .grid-years-2col .xb-ex-art {
+                flex: 1 1 0 !important;
                 height: auto !important;
-                min-height: 118px !important;
-                padding: 13px 14px !important;
-                border-radius: 12px !important;
+                min-height: 68px !important;
+                padding: 8px 10px !important;
+                border-radius: 10px !important;
             }
             .xb-pc-hscroll-track .xb-ex-acc-grid .xb-ex-art {
-                min-height: 98px !important;
+                flex: 1 1 auto !important;
+                height: auto !important;
+                min-height: 92px !important;
                 padding: 11px 12px !important;
+                border-radius: 11px !important;
             }
-            .xb-pc-hscroll-track .xb-ex-gh-badge {
-                width: 34px !important;
-                height: 34px !important;
-                border-radius: 9px !important;
+            .xb-pc-hscroll-track .grid-years-2col .xb-ex-gh-badge {
+                width: 26px !important;
+                height: 26px !important;
+                border-radius: 7px !important;
             }
-            .xb-pc-hscroll-track .xb-ex-gh-badge svg {
-                width: 18px !important;
-                height: 18px !important;
+            .xb-pc-hscroll-track .grid-years-2col .xb-ex-gh-badge svg {
+                width: 14px !important;
+                height: 14px !important;
             }
-            .xb-pc-hscroll-track .xb-ex-stock-pill {
-                height: 28px !important;
-                padding: 0 10px !important;
-                font-size: 0.72rem !important;
+            .xb-pc-hscroll-track .xb-ex-acc-grid .xb-ex-gh-badge {
+                width: 30px !important;
+                height: 30px !important;
+                border-radius: 8px !important;
             }
-            .xb-pc-hscroll-track .xb-ex-chip {
+            .xb-pc-hscroll-track .grid-years-2col .xb-ex-stock-pill {
+                height: 23px !important;
+                padding: 0 8px !important;
+                font-size: 0.64rem !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-acc-grid .xb-ex-stock-pill {
+                height: 26px !important;
+                padding: 0 9px !important;
                 font-size: 0.68rem !important;
-                padding: 4px 10px !important;
             }
-            .xb-pc-hscroll-track .xb-ex-art > div:last-child > span:first-child {
-                font-size: 0.86rem !important;
+            .xb-pc-hscroll-track .grid-years-2col .xb-ex-chip {
+                font-size: 0.59rem !important;
+                padding: 3px 8px !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-acc-grid .xb-ex-chip {
+                font-size: 0.64rem !important;
+                padding: 3.5px 9px !important;
+            }
+            .xb-pc-hscroll-track .grid-years-2col .xb-ex-art > div:last-child > span:first-child {
+                font-size: 0.74rem !important;
             }
             .xb-pc-hscroll-track .xb-ex-acc-grid .xb-ex-art > div:last-child span:first-child {
-                font-size: 0.84rem !important;
+                font-size: 0.82rem !important;
             }
-            .xb-pc-hscroll-track .xb-ex-year-tag {
-                font-size: 1.78rem !important;
+            .xb-pc-hscroll-track .grid-years-2col .xb-ex-year-tag {
+                font-size: 1.4rem !important;
             }
-            .xb-pc-hscroll-track .xb-ex-year-tag.sm {
-                font-size: 1.12rem !important;
+            .xb-pc-hscroll-track .grid-years-2col .xb-ex-year-tag.sm {
+                font-size: 0.92rem !important;
+            }
+            .xb-pc-hscroll-track .xb-ex-acc-grid .xb-ex-year-tag.sm {
+                font-size: 1.06rem !important;
             }
             .xb-pc-hscroll-track .grid-years-2col .item-card > div:nth-child(2) {
                 flex-shrink: 0 !important;
-                padding: 4px 2px !important;
+                padding: 1px 2px !important;
             }
             .xb-pc-hscroll-track .grid-years-2col .item-card .xb-ex-art + div > div > div:first-child {
-                font-size: 0.6rem !important;
+                font-size: 0.52rem !important;
             }
             .xb-pc-hscroll-track .grid-years-2col .item-card .xb-ex-art + div > div > div:last-child {
-                font-size: 1rem !important;
+                font-size: 0.84rem !important;
             }
-            /* Kunci tombol View Stock & Buy/Offer agar ramping proporsional (TIDAK melar!) */
-            .xb-pc-hscroll-track .btn-ui {
+            /* Kunci tombol View Stock (31px) & Buy/Offer (33px) agar ramping proporsional */
+            .xb-pc-hscroll-track .grid-years-2col .btn-ui {
                 flex: 0 0 auto !important;
-                height: 38px !important;
-                padding: 0 12px !important;
-                font-size: 0.78rem !important;
-                border-radius: 10px !important;
+                height: 31px !important;
+                padding: 0 10px !important;
+                font-size: 0.7rem !important;
+                border-radius: 8px !important;
             }
             .xb-pc-hscroll-track .xb-ex-acc-grid .btn-ui {
+                flex: 0 0 auto !important;
                 height: 33px !important;
                 padding: 0 6px !important;
                 font-size: 0.72rem !important;
@@ -17330,7 +17373,7 @@ const XB_EX_BANK_THEMES = {
                     <div class="xb-pc-fsec-lbl" style="margin-top:2px;"><span>BY YEAR (${pcYearsList[0] || '2011'}–${pcYearsList[pcYearsList.length - 1] || '2026'})</span></div>
                     <div class="xb-pc-yr-grid">
                         ${pcYearsList.map(yr => `
-                            <button type="button" class="xb-ex-filter-chip ${_exFilter === yr ? 'active' : ''}" onclick="setExchangeFilter('${yr}')">${yr}</button>
+                            <button type="button" class="xb-ex-filter-chip ${yr === '2011' ? 'xb-yr-special-aged' : ''} ${_exFilter === yr ? 'active' : ''}" onclick="setExchangeFilter('${yr}')">${yr === '2011' ? '★ 2011 • Special Aged' : yr}</button>
                         `).join('')}
                     </div>
 
