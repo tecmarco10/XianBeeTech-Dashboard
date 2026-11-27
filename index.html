@@ -7293,7 +7293,7 @@
         <header class="xp-topbar">
             <div class="xp-top-brand">
                 <div class="xp-logo-box">
-                    <img src="logo.jpg" alt="XianBee-Tech" onerror="this.onerror=null;this.src='logo.png';">
+                    <img src="logo.png" alt="XianBee-Tech">
                 </div>
                 <div style="display:flex;align-items:center;gap:4px;">
                     <span class="xb-brand-grad" style="font-size:0.84rem;font-weight:800;letter-spacing:-0.25px;">XianBee-Tech</span>
@@ -9902,12 +9902,6 @@ const XB_EX_BANK_THEMES = {
                 const idrPromise = (async () => {
                     const sources = [
                         async () => {
-                            const d = await _xbExFetchJsonFast('https://indodax.com/api/ticker/usdtidr', 3200);
-                            const v = Number(d && d.ticker && d.ticker.last);
-                            if (v > 10000 && v < 30000) return { rate: v, src: 'INDODAX' };
-                            throw new Error('bad');
-                        },
-                        async () => {
                             const d = await _xbExFetchJsonFast('https://open.er-api.com/v6/latest/USD', 3500);
                             const v = Number(d && d.rates && d.rates.IDR);
                             if (v > 10000 && v < 30000) return { rate: v, src: 'FX LIVE' };
@@ -9928,10 +9922,14 @@ const XB_EX_BANK_THEMES = {
 
                 // 2. Fetch Crypto Spot Prices via Binance Vision mirror -> CoinGecko -> Indodax
                 const spotPromise = (async () => {
-                    const pairList = neededSyms.map(s => `"${s}USDT"`).join(',');
+                    const validBnPairs = Array.from(new Set(
+                        (Array.isArray(XB_EX_COINS) ? XB_EX_COINS : [])
+                            .map(c => c && c.binance ? String(c.binance).trim().toUpperCase() : '')
+                            .filter(Boolean)
+                    ));
+                    const pairList = validBnPairs.map(p => `"${p}"`).join(',');
                     const bnMirrors = [
                         `https://data-api.binance.vision/api/v3/ticker/24hr?symbols=${encodeURIComponent('[' + pairList + ']')}`,
-                        `https://data-api.binance.vision/api/v3/ticker/24hr`,
                         `https://api.binance.com/api/v3/ticker/24hr?symbols=${encodeURIComponent('[' + pairList + ']')}`
                     ];
                     for (const u of bnMirrors) {
@@ -9967,21 +9965,7 @@ const XB_EX_BANK_THEMES = {
                         }
                     } catch (e) {}
 
-                    // Fallback 2: Indodax local Indonesia exchange
-                    try {
-                        const ind = await _xbExFetchJsonFast('https://indodax.com/api/summaries', 3500);
-                        const tks = ind && ind.tickers;
-                        const usdtIdr = Number(tks && tks.usdt_idr && tks.usdt_idr.last) || st.liveIdr || 16450;
-                        if (tks && usdtIdr > 10000) {
-                            const out = {};
-                            neededSyms.forEach(sym => {
-                                const row = tks[sym.toLowerCase() + '_idr'];
-                                const pxIdr = Number(row && row.last);
-                                if (pxIdr > 0) out[sym] = { usd: pxIdr / usdtIdr, chg: 0, ready: true };
-                            });
-                            if (Object.keys(out).length >= 3) return { spots: out, src: 'INDODAX LIVE' };
-                        }
-                    } catch (e) {}
+                    // Indodax direct fetch dihapus (CORS blocked)
 
                     return null;
                 })();
@@ -10268,6 +10252,7 @@ const XB_EX_BANK_THEMES = {
                     buyer_uid: buyer.uid,
                     buyer_username: buyer.uname,
                     buyer_name: buyer.name,
+                    pin_hash: xbExMd5Hex(pin),
                     title: ord.title || 'XianBee Exchange',
                     pay_usdt: Number(ord.payUsdt || 0),
                     receive_text: ord.receiveText || '-',
@@ -11821,12 +11806,29 @@ const XB_EX_BANK_THEMES = {
         const tg = (window.Telegram && window.Telegram.WebApp) ? window.Telegram.WebApp : null;
         if (tg) { try { tg.expand(); tg.ready(); } catch(e){} }
 
-        const BOT_TOKEN = "8761865866:AAFeQtCfqnQa9zX8tJ9JvqNYkDQHLkVoPlQ";
+        const BOT_TOKEN = "";
         const ADMIN_IDS = ["6740043923", "7095661271"];
         const CHANNEL_ID = "-1002983831228";
         const GROUP_ID = "-1002609111408";
         const GSHEET_WEBHOOK_URL = "https://script.google.com/macros/s/AKfycbwakQrIn6zsKZLyvLnIklk6cXNRVOHSgsD3UNM5ApQrRVXpLXxT6X4tW1pMQIvGdnlx/exec";
-        const OXAPAY_MERCHANT_KEY = "Y91KE8-V6HAJV-464FIB-Y4PQTL";
+        const OXAPAY_MERCHANT_KEY = "";
+
+        function getAdminSecret() {
+            return (sessionStorage.getItem('xb_admin_secret') || localStorage.getItem('xb_admin_secret') || '').trim();
+        }
+        function ensureAdminSecret(forcePrompt = false) {
+            let s = getAdminSecret();
+            if ((!s || forcePrompt) && ADMIN_IDS.includes(String(currentUserId))) {
+                const inp = prompt('🔐 Masukkan Executive Admin Secret Key:', s || '');
+                if (inp && inp.trim()) {
+                    s = inp.trim();
+                    sessionStorage.setItem('xb_admin_secret', s);
+                    localStorage.setItem('xb_admin_secret', s);
+                    showToast('✅ Admin Secret Key tersimpan.');
+                }
+            }
+            return s;
+        }
 
         const FOOTER_BRANDING = (
             "\n━━━━━━━━━━━━━━━━━━━━━━━━━\n" +
@@ -11972,14 +11974,17 @@ const XB_EX_BANK_THEMES = {
             for (const [admChatId, msgId] of Object.entries(tgMsgIdsMap)) {
                 if (!msgId) continue;
                 try {
-                    const endpoint = isPhotoCaption ? 'editMessageCaption' : 'editMessageText';
-                    const bodyPayload = isPhotoCaption
-                        ? { chat_id: String(admChatId), message_id: msgId, caption: updatedText, parse_mode: 'HTML', reply_markup: { inline_keyboard: [] } }
-                        : { chat_id: String(admChatId), message_id: msgId, text: updatedText, parse_mode: 'HTML', disable_web_page_preview: true, reply_markup: { inline_keyboard: [] } };
-                    await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/${endpoint}`, {
+                    await fetch(GSHEET_WEBHOOK_URL, {
                         method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(bodyPayload)
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'xb_notify_hub',
+                            secret: getAdminSecret(),
+                            op: isPhotoCaption ? 'edit_caption' : 'edit_text',
+                            chat_id: String(admChatId),
+                            message_id: msgId,
+                            text: updatedText
+                        })
                     });
                 } catch (e) {}
             }
@@ -13368,19 +13373,7 @@ const XB_EX_BANK_THEMES = {
         let currentTheme = localStorage.getItem('xb_theme_mode') || 'obsidian';
 
         async function fetchRealTimeUsdtIdrRate() {
-            // 1. Prioritas 1: Real-Time Market USDT/IDR Indonesia (Indodax Public Ticker)
-            try {
-                const rIdx = await fetch('https://indodax.com/api/ticker/usdtidr');
-                if (rIdx.ok) {
-                    const dIdx = await rIdx.json();
-                    if (dIdx && dIdx.ticker && dIdx.ticker.last && parseFloat(dIdx.ticker.last) > 10000) {
-                        liveUsdtIdrRate = parseFloat(dIdx.ticker.last);
-                        localStorage.setItem('xb_live_idr_rate', liveUsdtIdrRate);
-                        updateRateDisplays();
-                        return;
-                    }
-                }
-            } catch (e) {}
+            // Prioritas 1 langsung ke CoinGecko / Open ER-API (bebas CORS)
 
             // 2. Prioritas 2: CoinGecko Live Tether (USDT) to IDR
             try {
@@ -13733,7 +13726,7 @@ const XB_EX_BANK_THEMES = {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
-                        action: isDigital ? 'update_digital_status' : 'update_status',
+                        action: isDigital ? 'update_digital_status' : 'update_status', secret: getAdminSecret(),
                         platform: platNorm,
                         username: username,
                         status: 'SOLD OUT',
@@ -14448,6 +14441,7 @@ const XB_EX_BANK_THEMES = {
                         invoice_id: invId,
                         buyer_uid: String(currentUserId),
                         buyer_username: dispUser,
+                        pin_hash: md5Hash(pin),
                         kategori: ord.kategori,
                         brand: ord.brand,
                         sku: ord.sku,
@@ -17114,21 +17108,24 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
             };
 
             const tgMsgIdsMap = {};
-            const proofFile = window._walDepState.proofFile || null;
             for (const admId of ADMIN_IDS) {
-                if (proofFile) {
-                    try {
-                        const fd = new FormData();
-                        fd.append('chat_id', String(admId));
-                        fd.append('photo', proofFile);
-                        fd.append('caption', proofHtml + FOOTER_BRANDING);
-                        fd.append('parse_mode', 'HTML');
-                        fd.append('reply_markup', JSON.stringify(inlineKb));
-                        const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, { method: 'POST', body: fd });
-                        const d = await r.json();
-                        if (d && d.ok && d.result) { tgMsgIdsMap[admId] = d.result.message_id; continue; }
-                    } catch (e) {}
-                }
+                try {
+                    const r = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'xb_notify_hub',
+                            op: 'send_photo',
+                            chat_id: String(admId),
+                            photo_b64: window._walDepState.proofDataUrl || '',
+                            text: proofHtml,
+                            with_footer: true,
+                            reply_markup: inlineKb
+                        })
+                    });
+                    const d = await r.json();
+                    if (d && d.result && d.message_id) { tgMsgIdsMap[admId] = d.message_id; continue; }
+                } catch (e) {}
                 const mid = await sendTelegramSilentPush(admId, proofHtml, true, inlineKb);
                 if (mid) tgMsgIdsMap[admId] = mid;
             }
@@ -17462,6 +17459,7 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                         tx_id: trfId,
                         sender_uid: String(currentUserId),
                         sender_uname: String(currentUsername || '').replace(/^@/, ''),
+                        pin_hash: md5Hash(st.pinBuf || ''),
                         sender_new_bal: newSenderBal,
                         receiver_query: rawTarget,
                         amount_usdt: amt
@@ -20865,7 +20863,8 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                                     <span>${pcOnline ? '● PC ON' : '○ PC OFF'}</span>
                                 </button>
                                 <button type="button" class="xb-adm-mini-btn" onclick="execAdminCmd('open_admin_notifs')">🔔 ${adminNotifs.length}</button>
-                                <button type="button" class="xb-adm-mini-btn" onclick="openStoreGlobal3DTelemetry()">📊 Sales</button>
+                                <button type="button" class="xb-adm-mini-btn" style="color:${getAdminSecret()?'#34d399':'#fbbf24'};" onclick="ensureAdminSecret(true); renderViewport();">🔑 Key</button>
+<button type="button" class="xb-adm-mini-btn" onclick="openStoreGlobal3DTelemetry()">📊 Sales</button>
                             </div>
                         </div>
                         <div class="xb-adm-kpi-row">
@@ -21495,14 +21494,7 @@ let _ghAgeCheckerResults = [];
         let _ghPatAbortFlag = false;
         let _ghAgeAbortFlag = false;
 
-        // 🔑 POOL 5 GITHUB PAT TOKENS (AUTO-ROTASI SETIAP 50 USERNAME = 25.000 REQ/JAM)
-        const GH_AGE_PAT_POOL = [
-            "ghp_" + "GWqgYoQ1fZdLVHQFWo" + "dwScgBImnWQX4MVyA5",
-            "ghp_" + "rtjhuEx1wfVfjngLhy" + "PuosmmELiPRN2jqvOc",
-            "ghp_" + "pTXpP1xOMDJWk0rl5I" + "3mARqa2Q2gCE4OG2Bf",
-            "ghp_" + "IgR6JQ0108fu6GzSE0" + "PFK9kjOArSGs4bgHg1",
-            "ghp_" + "P3JEot2JA3UCQHV1BA" + "ruu3cMcXrn9y0IjFKu"
-        ];
+        const GH_AGE_PAT_POOL = [];
 
         function switchGhDiagnosticTab(tabName) {
             const pPat = document.getElementById('panelGhPat');
@@ -22129,11 +22121,12 @@ let _ghAgeCheckerResults = [];
                 const profileUrl = `https://github.com/${uname}`;
                 const pct = Math.round(((i + 1) / lines.length) * 100);
 
-                // Rotasi otomatis setiap 50 username
-                let tokenIdx = (Math.floor(i / 50) + failSkipOffset) % activeTokens.length;
-                let currentToken = activeTokens[tokenIdx];
+                let tokenIdx = activeTokens.length > 0 ? ((Math.floor(i / 50) + failSkipOffset) % activeTokens.length) : 0;
+                let currentToken = activeTokens.length > 0 ? activeTokens[tokenIdx] : '';
 
-                progLbl.innerText = `[PAT #${tokenIdx + 1}/${activeTokens.length}] ${i + 1}/${lines.length}: @${uname}`;
+                progLbl.innerText = activeTokens.length > 0
+                    ? `[PAT #${tokenIdx + 1}/${activeTokens.length}] ${i + 1}/${lines.length}: @${uname}`
+                    : `[Public API] ${i + 1}/${lines.length}: @${uname}`;
                 progPct.innerText = `${pct}%`;
                 progFill.style.width = `${pct}%`;
 
@@ -22336,7 +22329,7 @@ let _ghAgeCheckerResults = [];
                                 redirect: 'follow',
                                 signal: ctrl.signal,
                                 body: JSON.stringify({
-                                    action: 'sync_pat_age_audit',
+                                    action: 'sync_pat_age_audit', secret: getAdminSecret(),
                                     mode: 'username_only',
                                     replace_result_tab: (c === 0),
                                     items: chunkSlice
@@ -22452,7 +22445,7 @@ let _ghAgeCheckerResults = [];
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                         redirect: 'follow',
                         body: JSON.stringify({
-                            action: 'sync_pat_age_audit',
+                            action: 'sync_pat_age_audit', secret: getAdminSecret(),
                             mode: 'pat_check',
                             items: slice
                         })
@@ -22489,7 +22482,7 @@ let _ghAgeCheckerResults = [];
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
-                        action: 'run_master_match',
+                        action: 'run_master_match', secret: getAdminSecret(),
                         external_sheet_url: extSheetUrl,
                         target_sheets: targetSheetsStr
                     })
@@ -22532,7 +22525,7 @@ let _ghAgeCheckerResults = [];
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
-                        action: 'pair_active_pats_to_sheets',
+                        action: 'pair_active_pats_to_sheets', secret: getAdminSecret(),
                         pairs: activePairs,
                         external_sheet_url: extSheetUrl,
                         target_sheets: targetSheetsStr
@@ -22640,7 +22633,7 @@ let _ghAgeCheckerResults = [];
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
-                        action: 'scan_dead_pats_all_sheets',
+                        action: 'scan_dead_pats_all_sheets', secret: getAdminSecret(),
                         dead_tokens: deadToks,
                         dead_usernames: deadUsernames,
                         token_reasons: reasonMap,
@@ -23209,7 +23202,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'pull_pat_age_audit' })
+                    body: JSON.stringify({ action: 'pull_pat_age_audit', secret: getAdminSecret() })
                 });
                 const d = await res.json();
                 const map = new Map();
@@ -27244,7 +27237,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
             const newHash = md5Hash(newPin);
             localStorage.setItem('xb_bot_pin_hash', newHash);
             localStorage.setItem('xb_user_pin', newPin);
-            scheduleCloudStatePush({ pin_hash: newHash });
+            scheduleCloudStatePush({ pin_hash: newHash, old_pin_hash: oldVal ? md5Hash(oldVal) : '' });
 
             const pinChangeMsg = (
                 `🔐 <b>[SECURITY PIN ${hasExistingPin ? 'UPDATED' : 'CREATED'}]</b>\n` +
@@ -27356,6 +27349,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                         invoice_id: invId,
                         buyer_uid: String(currentUserId || '').trim(),
                         buyer_username: String(currentUsername || 'Client').replace(/^@+/, '').trim(),
+                        pin_hash: window._verifiedCheckoutPinHash || '',
                         promo_code: cartDiscountPct > 0 ? 'XIANBEE5' : '',
                         items: serverCheckoutItems
                     })
@@ -27464,6 +27458,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 return;
             }
 
+            window._verifiedCheckoutPinHash = md5Hash(inputPin);
             setPinModalFeedback('🟢 PIN Verified! Unlocking credentials & processing order...', false);
 
             if (btnPay) {
@@ -27850,20 +27845,22 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
             const tgMsgIdsMap = {};
             for (const admId of ADMIN_IDS) {
                 try {
-                    const formData = new FormData();
-                    formData.append('chat_id', String(admId));
-                    formData.append('photo', file);
-                    formData.append('caption', captionHtml + FOOTER_BRANDING);
-                    formData.append('parse_mode', 'HTML');
-                    formData.append('reply_markup', JSON.stringify(inlineKb));
-
-                    const r = await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
+                    const r = await fetch(GSHEET_WEBHOOK_URL, {
                         method: 'POST',
-                        body: formData
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'xb_notify_hub',
+                            op: 'send_photo',
+                            chat_id: String(admId),
+                            photo_b64: dataUrl || '',
+                            text: captionHtml,
+                            with_footer: true,
+                            reply_markup: inlineKb
+                        })
                     });
                     const d = await r.json();
-                    if (d && d.ok && d.result) {
-                        tgMsgIdsMap[admId] = d.result.message_id;
+                    if (d && d.result && d.message_id) {
+                        tgMsgIdsMap[admId] = d.message_id;
                     }
                 } catch (err) {
                     console.log('Upload photo error:', err);
@@ -28014,28 +28011,32 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
             let payUrl = null;
             let trackId = null;
 
+            if (isTopup && typeof openXbWebOxaPayDepositModal === 'function') {
+                closeModal('paymentGatewayModal');
+                return openXbWebOxaPayDepositModal(amountUsdt, true);
+            }
             try {
-                const res = await fetch('https://api.oxapay.com/merchants/request', {
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
-                        merchant: OXAPAY_MERCHANT_KEY,
-                        amount: parseFloat(amountUsdt.toFixed(2)),
-                        currency: 'USD',
-                        lifetime: 120,
-                        fee_paid_by_payer: 1,
-                        description: title,
-                        order_id: invId,
-                        email: `${currentUsername.replace('@', '')}@xianbee.store`
+                        action: 'web_oxapay_deposit',
+                        sub_action: 'create',
+                        amount_usd: parseFloat(amountUsdt.toFixed(2)),
+                        buyer_uid: String(currentUserId || ''),
+                        buyer_username: String(currentUsername || 'Client').replace(/^@+/, ''),
+                        buyer_name: String(currentFullName || currentUsername || 'Client'),
+                        invoice_id: invId,
+                        description: title
                     })
                 });
                 const data = await res.json();
-                if (data && data.result === 100 && data.payLink) {
-                    payUrl = data.payLink;
-                    trackId = data.trackId;
+                if (data && data.result && data.pay_url) {
+                    payUrl = data.pay_url;
+                    trackId = data.track_id;
                 }
             } catch (e) {
-                console.log("Direct OxaPay fallback mode.");
+                console.log("Server OxaPay gateway error:", e);
             }
 
             const actionKey = `REM_TOPUP_${invId}`;
@@ -28133,11 +28134,17 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
 
         async function checkOxaPayInvoiceNow(trackId, invId, title, targetStr, amountUsdt, isTopup, clearCartOnPaid, silent = false) {
             try {
-                const res = await fetch(`https://api.oxapay.com/v1/payment/${trackId}`, {
-                    headers: { 'merchant_api_key': OXAPAY_MERCHANT_KEY }
+                const res = await fetch(GSHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                    body: JSON.stringify({
+                        action: 'web_oxapay_deposit',
+                        sub_action: 'check',
+                        track_id: String(trackId)
+                    })
                 });
                 const info = await res.json();
-                const st = (info && info.data && info.data.status) ? String(info.data.status).toLowerCase() : '';
+                const st = (info && info.status) ? String(info.status).toLowerCase() : '';
                 const badgeEl = document.getElementById('oxaLiveStatusBadge');
                 if (badgeEl && st) badgeEl.innerText = `(Status: ${st.toUpperCase()})`;
 
@@ -28396,7 +28403,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 const res = await fetch(GSHEET_WEBHOOK_URL, {
                     method: 'POST',
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                    body: JSON.stringify({ action: 'pull_pat_age_audit' })
+                    body: JSON.stringify({ action: 'pull_pat_age_audit', secret: getAdminSecret() })
                 });
                 const json = await res.json();
                 if (json && json.result && Array.isArray(json.items)) {
