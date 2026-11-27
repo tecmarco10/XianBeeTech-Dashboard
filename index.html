@@ -6309,7 +6309,9 @@
         .xb-pc-rail-head,
         .xb-pc-hscroll-bar,
         .xb-pc-filter-panel,
-        .xb-pc-rail-foot {
+        .xb-pc-rail-foot,
+        .xb-pc-only-div,
+        .xb-pc-pillar-cnt {
             display: none;
         }
 
@@ -7180,21 +7182,9 @@
             [data-theme="platinum"] .xb-pc-mkt-stage {
                 box-shadow: 0 6px 20px rgba(15, 23, 42, 0.06), inset 0 1px 0 #ffffff !important;
             }
+            /* Hapus bar judul atas yang dobel di PC */
             .xb-pc-hscroll-bar {
-                flex-shrink: 0;
-                display: flex !important;
-                align-items: center !important;
-                justify-content: space-between !important;
-                gap: 10px;
-                padding: 8px 14px !important;
-                border-radius: 0 !important;
-                background: rgba(255, 255, 255, 0.025) !important;
-                border: none !important;
-                border-bottom: 1px solid var(--ex-hairline) !important;
-                font-family: 'JetBrains Mono', monospace;
-            }
-            [data-theme="platinum"] .xb-pc-hscroll-bar {
-                background: #f8fafc !important;
+                display: none !important;
             }
             .xb-pc-hscroll-btn {
                 width: 28px;
@@ -7236,11 +7226,7 @@
                 background: linear-gradient(180deg, #38bdf8, #8b5cf6) !important;
                 border-radius: 99px !important;
             }
-            .xb-pc-hscroll-track > .xb-pc-hide-top-div {
-                display: none !important;
-            }
-
-            /* Grid 4 Kolom Mentok Kanan (4x3 Tampil Utuh dalam 1 Kotak) */
+            /* Grid 4 Kolom Mentok Kanan (Judul + 4x3 Kartu Tampil Utuh dalam 1 Kotak) */
             .xb-pc-hscroll-track .grid-years-2col,
             .xb-pc-hscroll-track .xb-ex-acc-grid {
                 display: grid !important;
@@ -7263,20 +7249,20 @@
                 grid-column: auto !important;
             }
 
-            /* Tinggi Pas 3 Baris (4x3) untuk Kartu Tahun & Kartu Akun */
+            /* Tinggi Pas 3 Baris (4x3) sudah memperhitungkan 1 kotak judul di atas */
             .xb-pc-hscroll-track .grid-years-2col .item-card {
-                height: 192px !important;
-                height: max(172px, calc((100cqh - 20px) / 3)) !important;
-                padding: 9px 11px !important;
-                gap: 7px !important;
+                height: 178px !important;
+                height: max(160px, calc((100cqh - 62px) / 3)) !important;
+                padding: 8px 10px !important;
+                gap: 6px !important;
                 border-radius: 12px !important;
                 justify-content: flex-start !important;
             }
             .xb-pc-hscroll-track .xb-ex-acc-grid .item-card {
-                height: 192px !important;
-                height: max(182px, calc((100cqh - 20px) / 3)) !important;
-                padding: 7px 9px !important;
-                gap: 5px !important;
+                height: 180px !important;
+                height: max(168px, calc((100cqh - 62px) / 3)) !important;
+                padding: 6px 8px !important;
+                gap: 4px !important;
                 border-radius: 12px !important;
                 justify-content: flex-start !important;
             }
@@ -7415,22 +7401,22 @@
                 font-size: 0.82rem !important;
             }
 
-            /* Pembatas Horizontal Rapi Full-Width untuk Scroll Bawah */
+            /* Judul Kotak Pembatas: Kotak Tetap Ramping, Teks Besar, Rata Tengah + 1 Spasi per Huruf */
             .xb-pc-hscroll-track .xb-ex-special-hdr,
             .xb-pc-hscroll-track .xb-ex-divider {
-                margin: 2px 0 0 0 !important;
+                position: relative !important;
+                margin: 0 !important;
                 width: 100% !important;
                 height: auto !important;
                 flex-shrink: 0 !important;
-                border-radius: 12px !important;
-                border: 1px dashed rgba(56, 189, 248, 0.45) !important;
-                background: linear-gradient(90deg, rgba(56, 189, 248, 0.08), rgba(168, 85, 247, 0.1)) !important;
+                border-radius: 10px !important;
+                border: 1px dashed rgba(56, 189, 248, 0.48) !important;
+                background: linear-gradient(90deg, rgba(56, 189, 248, 0.08), rgba(168, 85, 247, 0.12), rgba(56, 189, 248, 0.08)) !important;
                 display: flex !important;
                 flex-direction: row !important;
                 align-items: center !important;
-                justify-content: space-between !important;
-                gap: 10px !important;
-                padding: 9px 14px !important;
+                justify-content: center !important;
+                padding: 6px 56px !important;
             }
             .xb-pc-hscroll-track .xb-ex-divider::before,
             .xb-pc-hscroll-track .xb-ex-divider::after {
@@ -7441,31 +7427,40 @@
                 width: auto !important;
                 display: inline-block !important;
                 margin: 0 !important;
-                text-align: left !important;
+                text-align: center !important;
                 writing-mode: horizontal-tb !important;
                 text-orientation: mixed !important;
                 transform: none !important;
                 border: none !important;
                 background: transparent !important;
-                padding: 0 !important;
+                padding: 0 0 0 0.32em !important;
                 font-family: 'JetBrains Mono', monospace !important;
-                font-size: 0.78rem !important;
+                font-size: 1.02rem !important;
                 font-weight: 900 !important;
-                letter-spacing: 1px !important;
-                line-height: 1.2 !important;
+                letter-spacing: 0.32em !important;
+                word-spacing: 0.3em !important;
+                line-height: 1.15 !important;
                 color: var(--accent-cyan) !important;
                 white-space: nowrap !important;
+                overflow: hidden !important;
+                text-overflow: ellipsis !important;
             }
             .xb-pc-pillar-cnt {
+                display: inline-flex !important;
+                align-items: center;
+                justify-content: center;
+                position: absolute !important;
+                right: 11px !important;
+                top: 50% !important;
+                transform: translateY(-50%) !important;
                 font-family: 'JetBrains Mono', monospace;
-                font-size: 0.7rem;
+                font-size: 0.72rem;
                 font-weight: 900;
                 color: #34d399;
                 background: rgba(16, 185, 129, 0.16);
-                border: 1px solid rgba(52, 211, 153, 0.52);
+                border: 1px solid rgba(52, 211, 153, 0.55);
                 padding: 2px 9px;
                 border-radius: 7px;
-                flex-shrink: 0;
             }
             .xb-pc-hscroll-track .xb-ex-special-sub {
                 display: none !important;
@@ -17110,6 +17105,11 @@ const XB_EX_BANK_THEMES = {
             hTrack.id = 'xbPcHScrollTrack';
             hTrack.className = 'xb-pc-hscroll-track';
 
+            const digTitleDiv = document.createElement('div');
+            digTitleDiv.className = 'xb-ex-divider xb-pc-only-div';
+            digTitleDiv.innerHTML = `<span>${plat.title.toUpperCase()}</span><div class="xb-pc-pillar-cnt">${vList.length}</div>`;
+            hTrack.appendChild(digTitleDiv);
+
             const grid = document.createElement('div');
             grid.className = 'grid-years-2col';
             const oddTopSpan = (vList.length % 2 === 1);
@@ -17618,12 +17618,12 @@ const XB_EX_BANK_THEMES = {
                 mktRail.appendChild(railFoot);
 
                 const specialLabelMap = {
-                    EliteDev: 'ELITE DEVELOPER',
-                    Followers: 'HIGH FOLLOWERS',
-                    Contrib: 'HIGH CONTRIBUTION',
-                    '6Badge': 'GITHUB 6 BADGES',
-                    Arctic: 'ARCTIC CODE VAULT',
-                    StudentPack: 'STUDENT DEVELOPER PACK'
+                    EliteDev: 'GITHUB - ELITE DEVELOPER',
+                    Followers: 'GITHUB - HIGH FOLLOWERS',
+                    Contrib: 'GITHUB - HIGH CONTRIBUTION',
+                    '6Badge': 'GITHUB - 6 BADGES',
+                    Arctic: 'GITHUB - ARCTIC CODE VAULT',
+                    StudentPack: 'GITHUB - STUDENT DEVELOPER PACK'
                 };
                 const baseViewTitle = _exSearchQuery
                     ? `Search: "${_exSearchQuery}"`
@@ -17669,7 +17669,7 @@ const XB_EX_BANK_THEMES = {
                     if (matchedAccs.length > 0) {
                         const dAcc = document.createElement('div');
                         dAcc.className = 'xb-ex-divider';
-                        dAcc.innerHTML = `<span>SEARCH RESULT</span><div class="xb-pc-pillar-cnt">${matchedAccs.length}</div>`;
+                        dAcc.innerHTML = `<span>GITHUB - SEARCH RESULT</span><div class="xb-pc-pillar-cnt">${matchedAccs.length}</div>`;
                         hTrack.appendChild(dAcc);
                         const accGrid = document.createElement('div');
                         accGrid.className = 'xb-ex-acc-grid';
@@ -17679,7 +17679,7 @@ const XB_EX_BANK_THEMES = {
                     if (matchedVaults.length > 0 && !activeTag) {
                         const dVlt = document.createElement('div');
                         dVlt.className = 'xb-ex-divider';
-                        dVlt.innerHTML = `<span>VAULTS</span><div class="xb-pc-pillar-cnt">${matchedVaults.length}</div>`;
+                        dVlt.innerHTML = `<span>GITHUB - MATCHING VAULTS</span><div class="xb-pc-pillar-cnt">${matchedVaults.length}</div>`;
                         hTrack.appendChild(dVlt);
                         const vGrid = document.createElement('div');
                         vGrid.className = 'grid-years-2col';
@@ -17692,7 +17692,7 @@ const XB_EX_BANK_THEMES = {
                     return;
                 }
 
-                const metaBadgeEl = document.getElementById('xbPcStageMetaBadge');
+                const tagSuffix = activeTag ? ` • #${activeTag.toUpperCase()}` : '';
 
                 // DIRECT LIVE ACCOUNTS FOR SPECIAL CATALOGS
                 if (['EliteDev', 'Followers', 'Arctic', 'Contrib', '6Badge', 'StudentPack'].includes(_exFilter)) {
@@ -17700,10 +17700,9 @@ const XB_EX_BANK_THEMES = {
                         (liveGithubStock[_exFilter] || []).filter(a => accountMatchesTagFilter(a, activeTag)),
                         _exFilter
                     );
-                    if (metaBadgeEl) metaBadgeEl.innerText = `● ${spAccs.length} LIVE • 4×3 GRID`;
-                    const spLabel = specialLabelMap[_exFilter] || _exFilter.toUpperCase();
+                    const spLabel = (specialLabelMap[_exFilter] || ('GITHUB - ' + _exFilter.toUpperCase())) + tagSuffix;
                     const spDiv = document.createElement('div');
-                    spDiv.className = 'xb-ex-divider xb-pc-hide-top-div';
+                    spDiv.className = 'xb-ex-divider';
                     spDiv.innerHTML = `<span>${spLabel}</span><div class="xb-pc-pillar-cnt">${spAccs.length}</div>`;
                     hTrack.appendChild(spDiv);
 
@@ -17713,7 +17712,7 @@ const XB_EX_BANK_THEMES = {
                         spAccs.forEach(acc => accGrid.appendChild(createSpecificAccountCard(acc, _exFilter)));
                         hTrack.appendChild(accGrid);
                     } else {
-                        hTrack.innerHTML += `<div class="item-card" style="text-align:center;padding:22px;color:var(--text-muted);font-size:0.78rem;font-weight:700;margin:auto;">0 live accounts available in ${spLabel}${activeTag ? ' with #' + activeTag : ''}.</div>`;
+                        hTrack.innerHTML += `<div class="item-card" style="text-align:center;padding:22px;color:var(--text-muted);font-size:0.78rem;font-weight:700;margin:auto;">0 live accounts available in ${spLabel}.</div>`;
                     }
                     return;
                 }
@@ -17730,10 +17729,10 @@ const XB_EX_BANK_THEMES = {
                         [...byKey, ...extras].filter(a => accountMatchesTagFilter(a, activeTag)),
                         _exFilter
                     );
-                    if (metaBadgeEl) metaBadgeEl.innerText = `● ${yrAccs.length} LIVE • 4×3 GRID`;
+                    const yrTitle = (_exFilter === '2011' ? 'GITHUB - 2011 SPECIAL AGED' : `GITHUB - ${_exFilter}`) + tagSuffix;
                     const yrDiv = document.createElement('div');
-                    yrDiv.className = 'xb-ex-divider xb-pc-hide-top-div';
-                    yrDiv.innerHTML = `<span>GITHUB ${_exFilter}</span><div class="xb-pc-pillar-cnt">${yrAccs.length}</div>`;
+                    yrDiv.className = 'xb-ex-divider';
+                    yrDiv.innerHTML = `<span>${yrTitle}</span><div class="xb-pc-pillar-cnt">${yrAccs.length}</div>`;
                     hTrack.appendChild(yrDiv);
 
                     if (yrAccs.length > 0) {
@@ -17755,10 +17754,9 @@ const XB_EX_BANK_THEMES = {
                         return !isNaN(yNum) && yNum >= minY && yNum <= maxY && accountMatchesTagFilter(a, activeTag);
                     });
                     const rangeAccs = sortSpecificAccountList(rawRangeAccs);
-                    if (metaBadgeEl) metaBadgeEl.innerText = `● ${rangeAccs.length} LIVE • 4×3 GRID`;
                     const yrDiv = document.createElement('div');
-                    yrDiv.className = 'xb-ex-divider xb-pc-hide-top-div';
-                    yrDiv.innerHTML = `<span>${minY}-${maxY}</span><div class="xb-pc-pillar-cnt">${rangeAccs.length}</div>`;
+                    yrDiv.className = 'xb-ex-divider';
+                    yrDiv.innerHTML = `<span>GITHUB - ${minY}–${maxY}${tagSuffix}</span><div class="xb-pc-pillar-cnt">${rangeAccs.length}</div>`;
                     hTrack.appendChild(yrDiv);
 
                     if (rangeAccs.length > 0) {
@@ -17775,10 +17773,9 @@ const XB_EX_BANK_THEMES = {
                 // TAG-ONLY FILTER ACROSS ALL LIVE ACCOUNTS (WHEN ALL ASSETS + #TAG SELECTED)
                 if (activeTag) {
                     const tagAccs = sortSpecificAccountList(allLiveAccountsFlat.filter(a => accountMatchesTagFilter(a, activeTag)));
-                    if (metaBadgeEl) metaBadgeEl.innerText = `● ${tagAccs.length} LIVE • 4×3 GRID`;
                     const tagDiv = document.createElement('div');
-                    tagDiv.className = 'xb-ex-divider xb-pc-hide-top-div';
-                    tagDiv.innerHTML = `<span>#${activeTag.toUpperCase()}</span><div class="xb-pc-pillar-cnt">${tagAccs.length}</div>`;
+                    tagDiv.className = 'xb-ex-divider';
+                    tagDiv.innerHTML = `<span>GITHUB - #${activeTag.toUpperCase()}</span><div class="xb-pc-pillar-cnt">${tagAccs.length}</div>`;
                     hTrack.appendChild(tagDiv);
 
                     if (tagAccs.length > 0) {
@@ -17794,6 +17791,11 @@ const XB_EX_BANK_THEMES = {
 
                 // DEFAULT "ALL ASSETS": 2011–2026 VAULTS + SPECIAL TIERS (INCLUDING ELITE DEVELOPER)
                 const allYearVaults = sortVaultCategoryList(GITHUB_VAULT_CATEGORIES.filter(y => /^\d{4}$/.test(y.yr)));
+                const agedDiv = document.createElement('div');
+                agedDiv.className = 'xb-ex-divider xb-pc-only-div';
+                agedDiv.innerHTML = `<span>GITHUB - AGED 2011–2026</span><div class="xb-pc-pillar-cnt">${allYearVaults.length}</div>`;
+                hTrack.appendChild(agedDiv);
+
                 const yrGrid = document.createElement('div');
                 yrGrid.className = 'grid-years-2col';
                 allYearVaults.forEach(y => yrGrid.appendChild(createGithubYearCard(y)));
@@ -17802,9 +17804,9 @@ const XB_EX_BANK_THEMES = {
                 const spDiv = document.createElement('div');
                 spDiv.className = 'xb-ex-special-hdr';
                 spDiv.innerHTML = `
-                    <div class="xb-ex-special-title">SPECIAL TIERS</div>
+                    <div class="xb-ex-special-title">GITHUB - SPECIAL TIERS</div>
                     <div class="xb-pc-pillar-cnt">6</div>
-                    <div class="xb-ex-special-sub">Elite Developer • High Followers • Arctic • High Contribution • 6 Badges • Student Pack</div>
+                    <div class="xb-ex-special-sub">Elite Developer • High Followers • High Contribution • 6 Badges • Arctic • Student Pack</div>
                 `;
                 hTrack.appendChild(spDiv);
 
