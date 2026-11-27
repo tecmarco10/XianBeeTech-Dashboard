@@ -9069,7 +9069,7 @@ const XB_EX_BANK_THEMES = {
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                         body: JSON.stringify({
                             action: 'set_ex_coins_config',
-                            secret: 'XB-PAT-GUARD-2026',
+                            secret: getAdminSecret(),
                             hidden: hiddenArr
                         })
                     });
@@ -10748,7 +10748,7 @@ const XB_EX_BANK_THEMES = {
                     const r = await fetch(GSHEET_WEBHOOK_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action: 'ex_idr_action', sub_action: 'get', secret: 'XB-PAT-GUARD-2026', invoice_id: invId })
+                        body: JSON.stringify({ action: 'ex_idr_action', sub_action: 'get', secret: getAdminSecret(), invoice_id: invId })
                     });
                     const d = await r.json();
                     if (!d || !d.result || !d.order) {
@@ -10804,7 +10804,7 @@ const XB_EX_BANK_THEMES = {
                         body: JSON.stringify({
                             action: 'ex_idr_action',
                             sub_action: 'complete',
-                            secret: 'XB-PAT-GUARD-2026',
+                            secret: getAdminSecret(),
                             invoice_id: invId,
                             proof_b64: _xbExIdrProofB64
                         })
@@ -10833,7 +10833,7 @@ const XB_EX_BANK_THEMES = {
                         body: JSON.stringify({
                             action: 'ex_idr_action',
                             sub_action: 'reject',
-                            secret: 'XB-PAT-GUARD-2026',
+                            secret: getAdminSecret(),
                             invoice_id: invId,
                             reason: 'Ditolak & direfund Admin via Web'
                         })
@@ -11197,7 +11197,7 @@ const XB_EX_BANK_THEMES = {
                     body: JSON.stringify({
                         action: 'admin_notif_test_lab',
                         sub_action: 'send',
-                        secret: 'XB-PAT-GUARD-2026',
+                        secret: getAdminSecret(),
                         tpl_id: tpl.id,
                         channel: _xbNotifLabState.channel,
                         target_admin: _xbNotifLabState.targetAdmin,
@@ -11284,7 +11284,7 @@ const XB_EX_BANK_THEMES = {
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                         body: JSON.stringify({
                             action: 'set_bot_menu_config',
-                            secret: 'XB-PAT-GUARD-2026',
+                            secret: getAdminSecret(),
                             enabled: nextVal
                         })
                     });
@@ -11312,7 +11312,7 @@ const XB_EX_BANK_THEMES = {
                         body: JSON.stringify({
                             action: 'admin_notif_test_lab',
                             sub_action: 'clear_web',
-                            secret: 'XB-PAT-GUARD-2026',
+                            secret: getAdminSecret(),
                             user_id: buyer.uid,
                             username: buyer.uname
                         })
@@ -11951,7 +11951,7 @@ const XB_EX_BANK_THEMES = {
                     headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     body: JSON.stringify({
                         action: 'xb_notify_hub',
-                        secret: 'XB-PAT-GUARD-2026',
+                        secret: getAdminSecret(),
                         op: 'send',
                         chat_id: String(chatId),
                         text: String(htmlText || ''),
@@ -25002,7 +25002,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
         }
 
 // --- 🔑 ADMIN EXECUTIVE GITHUB PAT STUDIO V3 (ZERO-SCROLL COCKPIT) ---
-        const XB_PAT_SECRET = "XB-PAT-GUARD-2026";
+        const XB_PAT_SECRET = "getAdminSecret()";
         const XB_PAT_LOCAL_STORAGE_KEY = "xb_pat_studio_state_v4";
         let _patPollTimer = null;
         let _patCooldownTickTimer = null;
