@@ -15845,12 +15845,166 @@ const XB_EX_BANK_THEMES = {
             return out;
         }
 
-       function renderVipResellerMarketplace(vp, modeKey) {
+       const XB_VIP_CACHE_LS_KEY = 'xb_vip_sku_cache_v1';
+       const XB_VIP_STALE_MS = 10 * 60 * 1000; // Auto-refresh diam-diam jika cache > 10 menit
+
+       function hydrateVipCacheFromStorage() {
             window._vipTermState = window._vipTermState || {
                 cache: {}, loadingKey: '', err: '', selectedSku: null,
                 target: '', zone: '', search: '', sort: 'default', appCat: 'ALL', planFilter: 'ALL'
             };
             const st = window._vipTermState;
+            st._tsMap = st._tsMap || {};
+            st._errMap = st._errMap || {};
+            if (st._hydrated) return st;
+            st._hydrated = true;
+            try {
+                const raw = localStorage.getItem(XB_VIP_CACHE_LS_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.items && typeof parsed.items === 'object') {
+                        Object.keys(parsed.items).forEach(k => {
+                            if (Array.isArray(parsed.items[k]) && parsed.items[k].length > 0 && !st.cache[k]) {
+                                st.cache[k] = parsed.items[k];
+                                st._tsMap[k] = Number((parsed.tsMap && parsed.tsMap[k]) || parsed.savedAt || 0);
+                            }
+                        });
+                    }
+                }
+            } catch (e) {}
+            return st;
+       }
+
+       function persistVipCacheToStorage() {
+            try {
+                const st = window._vipTermState;
+                if (!st || !st.cache) return;
+                localStorage.setItem(XB_VIP_CACHE_LS_KEY, JSON.stringify({
+                    savedAt: Date.now(),
+                    tsMap: st._tsMap || {},
+                    items: st.cache
+                }));
+            } catch (e) {}
+       }
+
+       async function xbFetchVipBrand(kategori, brand, opts = {}) {
+            const st = hydrateVipCacheFromStorage();
+            const force = Boolean(opts.force);
+            const silent = Boolean(opts.silent);
+            const skipPreRender = Boolean(opts.skipPreRender);
+            const cacheKey = `${kategori}::${brand}`;
+
+            if (typeof GSHEET_WEBHOOK_URL === 'undefined' || !GSHEET_WEBHOOK_URL) return;
+            if (!force && Array.isArray(st.cache[cacheKey]) && st.cache[cacheKey].length > 0) {
+                const age = Date.now() - Number(st._tsMap[cacheKey] || 0);
+                if (age < XB_VIP_STALE_MS) return st.cache[cacheKey];
+            }
+
+            window._vipInflight = window._vipInflight || {};
+            if (window._vipInflight[cacheKey]) {
+                if (!silent) {
+                    st.loadingKey = cacheKey;
+                    st._errMap[cacheKey] = '';
+                    if (!skipPreRender) renderViewport();
+                }
+                return window._vipInflight[cacheKey];
+            }
+
+            if (!silent) {
+                st.loadingKey = cacheKey;
+                st._errMap[cacheKey] = '';
+                st.err = '';
+                if (!skipPreRender) renderViewport();
+            }
+
+            const job = (async () => {
+                try {
+                    const res = await fetch(GSHEET_WEBHOOK_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({
+                            action: 'vip_reseller',
+                            sub_action: 'pull_services',
+                            kategori: kategori,
+                            brand: brand,
+                            idr_rate: Math.round((typeof liveUsdtIdrRate !== 'undefined' && liveUsdtIdrRate) ? liveUsdtIdrRate : 18195),
+                            force_refresh: force
+                        })
+                    });
+                    const json = await res.json();
+                    if (json && json.result && Array.isArray(json.services)) {
+                        st.cache[cacheKey] = json.services;
+                        st._tsMap[cacheKey] = Date.now();
+                        st._errMap[cacheKey] = '';
+                        persistVipCacheToStorage();
+                    } else if (!silent) {
+                        st._errMap[cacheKey] = (json && json.error) ? json.error : 'Gagal memuat katalog.';
+                    }
+                } catch (e) {
+                    if (!silent) st._errMap[cacheKey] = 'Koneksi gagal saat memuat katalog.';
+                } finally {
+                    delete window._vipInflight[cacheKey];
+                    if (st.loadingKey === cacheKey) st.loadingKey = '';
+                    const isViewingThis = (typeof activeTab !== 'undefined' && activeTab === 'home')
+                        && (typeof _mpPlatform !== 'undefined' && (_mpPlatform === 'pro_apps' || _mpPlatform === 'games_ppob'))
+                        && (`${st.kategori}::${st.brand}` === cacheKey);
+                    if (isViewingThis) renderViewport();
+                }
+            })();
+
+            window._vipInflight[cacheKey] = job;
+            return job;
+       }
+
+       function startVipBackgroundPreload(scope = 'pro_apps', extraGroup = null) {
+            const st = hydrateVipCacheFromStorage();
+            window._vipPreloadDone = window._vipPreloadDone || {};
+            const scopeKey = extraGroup ? `${scope}::${extraGroup.key}` : scope;
+            if (window._vipPreloadDone[scopeKey]) return;
+            window._vipPreloadDone[scopeKey] = true;
+
+            const queue = [];
+            if (scope === 'pro_apps' && typeof XB_VIP_APPS_CATALOG !== 'undefined') {
+                const allApps = [...(XB_VIP_APPS_CATALOG.pro || []), ...(XB_VIP_APPS_CATALOG.streaming || [])];
+                allApps.forEach(a => queue.push({ kat: 'apps', br: a.brand }));
+            } else if (scope === 'games' && typeof XB_VIP_GAMES_CATALOG !== 'undefined') {
+                XB_VIP_GAMES_CATALOG.forEach(g => queue.push({ kat: 'games', br: g.brand }));
+            } else if (scope === 'ppob' && extraGroup && Array.isArray(extraGroup.brands)) {
+                const firstKat = (extraGroup.subCats && extraGroup.subCats[0]) ? extraGroup.subCats[0].k : st.kategori;
+                extraGroup.brands.forEach(b => queue.push({ kat: firstKat, br: b.brand }));
+            }
+
+            // Filter yang memang belum ada di cache atau sudah > 10 menit
+            const pending = queue.filter(item => {
+                const ck = `${item.kat}::${item.br}`;
+                const hasData = Array.isArray(st.cache[ck]) && st.cache[ck].length > 0;
+                const fresh = (Date.now() - Number(st._tsMap[ck] || 0)) < XB_VIP_STALE_MS;
+                return !(hasData && fresh);
+            });
+            if (pending.length === 0) return;
+
+            // Jalankan 3 worker paralel diam-diam di latar belakang (cepat & aman untuk Apps Script)
+            let cursor = 0;
+            const runWorker = async () => {
+                while (cursor < pending.length) {
+                    const task = pending[cursor++];
+                    try {
+                        await xbFetchVipBrand(task.kat, task.br, { force: false, silent: true });
+                    } catch (e) {}
+                }
+            };
+            const workers = Math.min(3, pending.length);
+            for (let w = 0; w < workers; w++) runWorker();
+       }
+
+       // Otomatis preload semua 13 Pro Apps & AI diam-diam 2.5 detik setelah web terbuka
+       if (!window._vipAutoPreloadArmed) {
+            window._vipAutoPreloadArmed = true;
+            setTimeout(() => startVipBackgroundPreload('pro_apps'), 2500);
+       }
+
+       function renderVipResellerMarketplace(vp, modeKey) {
+            const st = hydrateVipCacheFromStorage();
 
             if (!st.brand || st.mode !== modeKey) {
                 st.mode = modeKey;
@@ -15865,10 +16019,28 @@ const XB_EX_BANK_THEMES = {
             const meta = getVipBrandMeta(modeKey, st.kategori, st.brand, st.groupKey);
             const cacheKey = `${st.kategori}::${st.brand}`;
             const rawList = st.cache[cacheKey] || [];
-            const isLoading = st.loadingKey === cacheKey;
+            const brandErr = (st._errMap && st._errMap[cacheKey]) || '';
+            const hasFetchedOnce = Boolean(st._tsMap && st._tsMap[cacheKey]);
+            const isInflight = Boolean(window._vipInflight && window._vipInflight[cacheKey]);
+            let isLoading = (st.loadingKey === cacheKey) || (isInflight && rawList.length === 0);
 
-            if (!isLoading && rawList.length === 0 && !st.err) {
-                loadVipResellerServices(st.kategori, st.brand, false);
+            // Jalankan fetch secara async (setTimeout 0) agar TIDAK PERNAH double-render
+            if (!isLoading && rawList.length === 0 && !hasFetchedOnce && !brandErr) {
+                isLoading = true;
+                st.loadingKey = cacheKey;
+                setTimeout(() => xbFetchVipBrand(st.kategori, st.brand, { force: false, silent: false, skipPreRender: true }), 0);
+            } else if (rawList.length > 0 && (Date.now() - Number(st._tsMap[cacheKey] || 0)) >= XB_VIP_STALE_MS) {
+                // Data lama langsung tampil 0ms, sambil refresh diam-diam di latar belakang
+                setTimeout(() => xbFetchVipBrand(st.kategori, st.brand, { force: false, silent: true }), 120);
+            }
+
+            // Preload brand lain di grup yang sama diam-diam di latar belakang
+            if (modeKey === 'pro_apps') {
+                setTimeout(() => startVipBackgroundPreload('pro_apps'), 250);
+            } else if (meta.group) {
+                setTimeout(() => startVipBackgroundPreload('ppob', meta.group), 250);
+            } else {
+                setTimeout(() => startVipBackgroundPreload('games'), 250);
             }
 
             if (rawList.length > 0 && (!st.selectedSku || !rawList.some(x => x.sku === st.selectedSku.sku))) {
@@ -15911,11 +16083,11 @@ const XB_EX_BANK_THEMES = {
                         <div style="font-size:0.56rem;color:var(--text-muted);margin-top:5px;">Fetching real-time availability &amp; pricing</div>
                     </div>
                 `;
-            } else if (st.err || rawList.length === 0) {
+            } else if (brandErr || rawList.length === 0) {
                 listBodyHtml = `
                     <div style="text-align:center;padding:28px 12px;margin:auto;">
-                        <div style="font-size:0.74rem;font-weight:800;color:#f87171;margin-bottom:10px;">${escVipHtml(st.err || 'Belum ada paket aktif untuk ' + meta.name + '.')}</div>
-                        <button type="button" class="btn-ui primary" style="padding:8px 16px;font-size:0.68rem;" onclick="loadVipResellerServices('${st.kategori}', '${st.brand}', true)">↻ Reload Catalog</button>
+                        <div style="font-size:0.74rem;font-weight:800;color:#f87171;margin-bottom:10px;">${escVipHtml(brandErr || 'Belum ada paket aktif untuk ' + meta.name + '.')}</div>
+                        <button type="button" class="btn-ui primary" style="padding:8px 16px;font-size:0.68rem;" onclick="xbFetchVipBrand('${st.kategori}', '${st.brand}', { force: true, silent: false })">↻ Reload Catalog</button>
                     </div>
                 `;
             } else {
@@ -16007,7 +16179,7 @@ const XB_EX_BANK_THEMES = {
             vipSortBar.innerHTML = `
                 <div class="xb-ex-live-wrap" style="justify-content:space-between !important;">
                     <span style="display:inline-flex;align-items:center;gap:6px;"><span class="xb-ex-live-dot"></span><span>${readyCnt} READY • LIVE API</span></span>
-                    <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;padding:1px 6px;" title="Reload Catalog" onclick="loadVipResellerServices('${st.kategori}', '${st.brand}', true)">↻</button>
+                    <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;padding:1px 6px;" title="Reload Catalog" onclick="xbFetchVipBrand('${st.kategori}', '${st.brand}', { force: true, silent: false })">↻</button>
                 </div>
                 <select class="xb-ex-sort-select" onchange="window._vipTermState.sort=this.value; renderVipSkuListOnly('${escVipHtml(cacheKey)}');">
                     <option value="default" ${st.sort === 'default' ? 'selected' : ''}>↕ Sort: Ready First</option>
@@ -16170,7 +16342,7 @@ const XB_EX_BANK_THEMES = {
                     </div>
                     <div style="display:flex;gap:5px;flex-shrink:0;">
                         <button type="button" class="xb-adm-mini-btn" style="color:${meta.col};border-color:${meta.col}55;" onclick="toggleMarketplaceDrawer('${modeKey}')">📂 Ganti</button>
-                        <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="loadVipResellerServices('${st.kategori}', '${st.brand}', true)">↻</button>
+                        <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="xbFetchVipBrand('${st.kategori}', '${st.brand}', { force: true, silent: false })">↻</button>
                     </div>
                 </div>
                 ${groupSwitchHtml}
@@ -16178,6 +16350,8 @@ const XB_EX_BANK_THEMES = {
             `;
             mktStage.appendChild(term);
 
+            // Guard anti-double: pastikan hanya ada 1 workspace aktif di dalam viewport
+            vp.querySelectorAll(':scope > .xb-pc-mkt-workspace').forEach(el => el.remove());
             mktWs.appendChild(mktRail);
             mktWs.appendChild(mktStage);
             vp.appendChild(mktWs);
