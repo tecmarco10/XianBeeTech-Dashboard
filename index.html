@@ -6753,15 +6753,15 @@
                 flex-shrink: 0 !important;
             }
             .xb-ex-row2 > .xb-pc-hdr-pill.is-vip {
-                color: #fbbf24 !important;
-                border-color: rgba(251, 191, 36, 0.42) !important;
-            }
-            .xb-ex-row2 > .xb-pc-hdr-pill.is-sales {
                 color: #38bdf8 !important;
                 border-color: rgba(56, 189, 248, 0.42) !important;
             }
-            [data-theme="platinum"] .xb-ex-row2 > .xb-pc-hdr-pill.is-vip { color: #b45309 !important; }
-            [data-theme="platinum"] .xb-ex-row2 > .xb-pc-hdr-pill.is-sales { color: #0369a1 !important; }
+            .xb-ex-row2 > .xb-pc-hdr-pill.is-sales {
+                color: #60a5fa !important;
+                border-color: rgba(96, 165, 250, 0.42) !important;
+            }
+            [data-theme="platinum"] .xb-ex-row2 > .xb-pc-hdr-pill.is-vip { color: #0284c7 !important; }
+            [data-theme="platinum"] .xb-ex-row2 > .xb-pc-hdr-pill.is-sales { color: #2563eb !important; }
             .xb-ex-row2 > .xb-ex-icon-btn.cart {
                 order: 6;
             }
@@ -6836,9 +6836,12 @@
                 align-items: stretch !important;
                 margin-bottom: 0 !important;
             }
-            /* Paksa 50:50 sama panjang di semua platform (GitHub, Social, Email, CEX, Pro Apps) */
+            /* Paksa 50:50 sama panjang & SAMA TINGGI (116px) di semua platform */
             .xb-pc-mkt-top {
                 grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+                height: 116px !important;
+                min-height: 116px !important;
+                max-height: 116px !important;
             }
             body:not(.xb-pc-mkt-lock) .xb-pc-mkt-top {
                 margin-bottom: 14px !important;
@@ -6945,10 +6948,13 @@
 
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero,
             .xb-pc-mkt-top .xb-hero-plat-card.is-mp-hero.active {
-                height: 100% !important;
-                min-height: 108px !important;
-                padding: 12px 20px !important;
-                gap: 5px !important;
+                height: 116px !important;
+                min-height: 116px !important;
+                max-height: 116px !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
+                padding: 11px 18px !important;
+                gap: 4px !important;
                 border-radius: 15px !important;
                 justify-content: space-between !important;
                 border: 1px solid var(--ex-hairline) !important;
@@ -6992,15 +6998,18 @@
             }
 
             .xb-pc-mkt-top > .xb-ex-collection {
-                height: 100% !important;
-                min-height: 108px !important;
+                height: 116px !important;
+                min-height: 116px !important;
+                max-height: 116px !important;
+                box-sizing: border-box !important;
+                overflow: hidden !important;
                 margin-bottom: 0 !important;
-                padding: 12px 16px !important;
+                padding: 11px 16px !important;
                 border-radius: 15px !important;
                 display: flex !important;
                 flex-direction: column !important;
                 justify-content: space-between !important;
-                gap: 8px !important;
+                gap: 7px !important;
             }
             .xb-pc-mkt-top > .xb-ex-collection .xb-ex-col-brand.full {
                 justify-content: flex-start !important;
@@ -7167,27 +7176,30 @@
                 padding: 8px 8px !important;
             }
 
-            /* Tahun: 2011 Full Baris (Special Aged) + 2012–2026 Grid 3 Kolom (5x3 Pas!) */
+            /* Grid Tahun 6-Kolom Pintar: Normal 3-kolom | Sisa 1 = 100% Full | Sisa 2 = 50% : 50% */
             .xb-pc-yr-grid {
                 display: grid;
-                grid-template-columns: repeat(3, minmax(0, 1fr));
+                grid-template-columns: repeat(6, minmax(0, 1fr));
                 gap: 4px;
                 padding-top: 7px;
                 border-top: 1px dashed var(--ex-hairline);
             }
             .xb-pc-yr-grid .xb-ex-filter-chip {
+                grid-column: span 2;
                 padding: 6px 3px !important;
                 font-size: 0.65rem !important;
                 border-radius: 7px !important;
                 text-align: center !important;
                 justify-content: center !important;
             }
-            /* Grid Tahun 3 Kolom: kalau jumlah ganjil/bersisa, item PERTAMA yang dipanjangin */
+            /* Sisa 1: item pertama 100% full */
             .xb-pc-yr-grid .xb-ex-filter-chip:first-child:nth-last-child(3n+1) {
                 grid-column: 1 / -1 !important;
             }
-            .xb-pc-yr-grid .xb-ex-filter-chip:first-child:nth-last-child(3n+2) {
-                grid-column: span 2 !important;
+            /* Sisa 2: item pertama & kedua masing-masing 50% : 50% */
+            .xb-pc-yr-grid .xb-ex-filter-chip:first-child:nth-last-child(3n+2),
+            .xb-pc-yr-grid .xb-ex-filter-chip:nth-child(2):nth-last-child(3n+1) {
+                grid-column: span 3 !important;
             }
             .xb-pc-yr-grid .xb-ex-filter-chip.xb-yr-special-aged {
                 padding: 7px 8px !important;
@@ -7630,7 +7642,8 @@
                 box-shadow: none !important;
                 overflow: hidden !important;
             }
-            .xb-pc-vip-stage .xb-bst-terminal > .xb-bst-head {
+            .xb-pc-vip-stage .xb-bst-terminal > .xb-bst-head,
+            .xb-pc-vip-stage .xb-vip-pill-scroll {
                 display: none !important;
             }
             .xb-pc-vip-stage .xb-vip-sku-grid {
@@ -15784,7 +15797,26 @@ const XB_EX_BANK_THEMES = {
             renderViewport();
         }
 
-        function getFilteredSortedVipSkus(rawList, st) {
+        function getVipProviderLogoMeta(brandKeyOrName, fallbackSvg = '', fallbackCol = '#38bdf8') {
+            const k = String(brandKeyOrName || '').toLowerCase().trim();
+            if (k.includes('dana')) return { col: '#118eea', svg: (typeof XB_IDR_BRAND_SVGS !== 'undefined' && XB_IDR_BRAND_SVGS.DANA) ? XB_IDR_BRAND_SVGS.DANA : fallbackSvg };
+            if (k.includes('gopay') || k.includes('go pay')) return { col: '#00aed6', svg: (typeof XB_IDR_BRAND_SVGS !== 'undefined' && XB_IDR_BRAND_SVGS.GOPAY) ? XB_IDR_BRAND_SVGS.GOPAY : fallbackSvg };
+            if (k.includes('ovo')) return { col: '#8b5cf6', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#4c3494"/><circle cx="12" cy="12" r="5.5" stroke="#ffffff" stroke-width="2.6"/></svg>` };
+            if (k.includes('shopee')) return { col: '#f97316', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#ee4d2d"/><path d="M8.5 9V7.8a3.5 3.5 0 017 0V9m-9 0h11l-.9 9.5a1.5 1.5 0 01-1.5 1.4H8.9a1.5 1.5 0 01-1.5-1.4L6.5 9z" stroke="#fff" stroke-width="1.8" stroke-linejoin="round"/></svg>` };
+            if (k.includes('doku')) return { col: '#ef4444', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#dc2626"/><path d="M7 7h5a5 5 0 010 10H7V7zm3 2.6v4.8h2a2.4 2.4 0 000-4.8h-2z" fill="#fff"/></svg>` };
+            if (k.includes('linkaja')) return { col: '#ef4444', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#e11d48"/><path d="M8 7v10h8v-2.4h-5.4V7H8z" fill="#fff"/></svg>` };
+            if (k.includes('telkomsel')) return { col: '#ef4444', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#e11d48"/><path d="M6.5 7.5h11v2.6h-4.1v6.9h-2.8v-6.9H6.5V7.5z" fill="#fff"/></svg>` };
+            if (k.includes('indosat')) return { col: '#f59e0b', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#f59e0b"/><circle cx="12" cy="12" r="5" fill="#dc2626"/><circle cx="12" cy="12" r="2.2" fill="#fde047"/></svg>` };
+            if (k.includes('xl')) return { col: '#2563eb', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#1d4ed8"/><path d="M5.5 7.5l3 4.5-3 4.5h2.6l1.7-2.7 1.7 2.7h2.6l-3-4.5 3-4.5h-2.6l-1.7 2.7-1.7-2.7H5.5zm9.6 0v9h4.4v-2.2h-2V7.5h-2.4z" fill="#fff"/></svg>` };
+            if (k.includes('axis')) return { col: '#a855f7', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#7c3aed"/><path d="M12 5.5l5.5 12.5h-2.7l-1.1-2.7H10.3L9.2 18H6.5L12 5.5zm0 4.2l-1.1 3.3h2.2L12 9.7z" fill="#fff"/></svg>` };
+            if (k === 'tri' || k.includes('three')) return { col: '#ec4899', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#18181b"/><path d="M8 7.5h7.8v2.2l-3.4 2.4c1.9.3 3.4 1.4 3.4 3.2 0 2-1.8 3.2-4.3 3.2-2.2 0-3.7-.9-4.3-2.2l2.1-1.1c.4.8 1.1 1.2 2.1 1.2 1.1 0 1.8-.5 1.8-1.3 0-.9-.8-1.4-2.2-1.4h-1.2v-1.8l2.7-2H8V7.5z" fill="#ec4899"/></svg>` };
+            if (k.includes('smartfren')) return { col: '#f43f5e', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#e11d48"/><path d="M15.8 9.2c-.8-.8-2-1.3-3.5-1.3-1.8 0-2.9.6-2.9 1.5 0 .9 1 1.3 2.9 1.6 2.8.4 4.5 1.2 4.5 3.3 0 2.1-1.9 3.4-4.7 3.4-2.3 0-4.1-.8-5.1-2.1l1.7-1.6c.8.9 2 1.5 3.4 1.5 1.4 0 2.2-.5 2.2-1.2 0-.8-.9-1.2-2.8-1.5-2.7-.4-4.6-1.2-4.6-3.4 0-2 1.8-3.4 4.9-3.4 2.1 0 3.7.7 4.7 1.8l-1.7 1.4z" fill="#fff"/></svg>` };
+            if (k.includes('byu') || k.includes('by.u')) return { col: '#06b6d4', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#0891b2"/><path d="M6.5 7v10h4.2a3.3 3.3 0 00.9-6.5A3 3 0 009.8 7H6.5zm7.8 3.2v3.6a3.2 3.2 0 006.4 0v-3.6h-2.1v3.5a1.1 1.1 0 01-2.2 0v-3.5h-2.1z" fill="#fff"/></svg>` };
+            if (k.includes('pln')) return { col: '#facc15', svg: `<svg viewBox="0 0 24 24" fill="none"><rect width="24" height="24" rx="6" fill="#0284c7"/><path d="M13.2 4L7 13h4.5l-.7 7L17 11h-4.5l.7-7z" fill="#facc15"/></svg>` };
+            return { col: fallbackCol, svg: fallbackSvg };
+       }
+
+       function getFilteredSortedVipSkus(rawList, st) {
             const q = String((st && st.search) || '').trim().toLowerCase();
             const planF = String((st && st.planFilter) || 'ALL').toLowerCase();
             const sortMode = String((st && st.sort) || 'default');
@@ -15985,7 +16017,7 @@ const XB_EX_BANK_THEMES = {
             `;
             mktRail.appendChild(vipSortBar);
 
-            // 2. Desktop Brand Logo Grid (Order 2 — ganjil: item PERTAMA full-width!)
+            // 2. Desktop Brand / Category Logo Grid (Order 2 — ganjil: item PERTAMA full-width!)
             const brandRail = document.createElement('div');
             brandRail.className = 'xb-pc-social-rail';
             if (modeKey === 'pro_apps') {
@@ -16004,37 +16036,29 @@ const XB_EX_BANK_THEMES = {
                     </div>
                 `;
             } else {
-                const gameArr = (typeof XB_VIP_GAMES_CATALOG !== 'undefined') ? XB_VIP_GAMES_CATALOG : [];
+                // TOP-UP HUB: FEATURED CATALOGS LANGSUNG PPOB & BILLS + GAMES DENGAN LOGONYA SEMUA
                 const ppobArr = (typeof XB_VIP_PPOB_GROUPS !== 'undefined') ? XB_VIP_PPOB_GROUPS : [];
-                if (st.appCat === 'ppob') {
-                    brandRail.innerHTML = `
-                        <div class="xb-pc-fsec-lbl"><span>PPOB &amp; BILLS</span><span style="color:#38bdf8;">${ppobArr.length}</span></div>
-                        <div class="xb-pc-social-grid">
-                            ${ppobArr.map(pg => `
-                                <button type="button" class="xb-pc-social-btn ${st.groupKey === pg.key ? 'active' : ''}" onclick="openVipCatalogSelection('games_ppob', '${pg.subCats[0].k}', '${pg.brands[0].brand}', '${pg.key}')">
-                                    <span style="color:${st.groupKey === pg.key ? '#ffffff' : pg.col};display:inline-flex;">${XB_MP_SVGS[pg.ico] || ''}</span>
-                                    <span style="overflow:hidden;text-overflow:ellipsis;">${pg.name}</span>
-                                </button>
-                            `).join('')}
-                        </div>
-                    `;
-                } else {
-                    brandRail.innerHTML = `
-                        <div class="xb-pc-fsec-lbl"><span>DIRECT TOP-UP GAMES</span><span style="color:#38bdf8;">${gameArr.length}</span></div>
-                        <div class="xb-pc-social-grid">
-                            ${gameArr.map(g => `
-                                <button type="button" class="xb-pc-social-btn ${st.kategori === 'games' && st.brand === g.brand ? 'active' : ''}" onclick="openVipCatalogSelection('games_ppob', 'games', '${g.brand}')">
-                                    <span style="color:${st.kategori === 'games' && st.brand === g.brand ? '#ffffff' : g.col};display:inline-flex;">${XB_MP_SVGS[g.ico] || ''}</span>
-                                    <span style="overflow:hidden;text-overflow:ellipsis;">${g.name}</span>
-                                </button>
-                            `).join('')}
-                        </div>
-                    `;
-                }
+                const isGamesSel = (st.kategori === 'games' && !st.groupKey);
+                const gameIcoSvg = `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2a1.5 1.5 0 110-3 1.5 1.5 0 010 3zm4-3a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>`;
+                brandRail.innerHTML = `
+                    <div class="xb-pc-fsec-lbl"><span>PPOB, BILLS &amp; GAMES</span><span style="color:#38bdf8;">${ppobArr.length + 1}</span></div>
+                    <div class="xb-pc-social-grid">
+                        <button type="button" class="xb-pc-social-btn ${isGamesSel ? 'active' : ''}" onclick="window._vipTermState.appCat='games'; openVipCatalogSelection('games_ppob', 'games', 'mobile legends')">
+                            <span style="color:${isGamesSel ? '#ffffff' : '#fbbf24'};display:inline-flex;">${gameIcoSvg}</span>
+                            <span style="overflow:hidden;text-overflow:ellipsis;">Top-Up Games</span>
+                        </button>
+                        ${ppobArr.map(pg => `
+                            <button type="button" class="xb-pc-social-btn ${st.groupKey === pg.key ? 'active' : ''}" onclick="window._vipTermState.appCat='ppob'; openVipCatalogSelection('games_ppob', '${pg.subCats[0].k}', '${pg.brands[0].brand}', '${pg.key}')">
+                                <span style="color:${st.groupKey === pg.key ? '#ffffff' : pg.col};display:inline-flex;">${XB_MP_SVGS[pg.ico] || ''}</span>
+                                <span style="overflow:hidden;text-overflow:ellipsis;">${pg.name}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                `;
             }
             mktRail.appendChild(brandRail);
 
-            // 3. Desktop Featured Catalogs & Plan Filter (Order 3)
+            // 3. Desktop Lower Rail: Pro Apps Filters OR Top-Up Hub Provider/Game Logo Catalog (Order 3)
             const vipFilterPanel = document.createElement('div');
             vipFilterPanel.className = 'xb-pc-filter-panel';
             vipFilterPanel.style.order = '3';
@@ -16067,18 +16091,50 @@ const XB_EX_BANK_THEMES = {
                     </div>
                 `;
             } else {
-                const topupCats = [
-                    { k: 'games', lbl: '🎮 Direct Top-Up Games', full: true },
-                    { k: 'ppob',  lbl: '⚡ PPOB, E-Wallet & PLN', full: true }
-                ];
-                vipFilterPanel.innerHTML = `
-                    <div class="xb-pc-fsec-lbl"><span>FEATURED CATALOGS</span></div>
-                    <div class="xb-pc-feat-grid">
-                        ${topupCats.map(c => `
-                            <button type="button" class="xb-ex-filter-chip span-full ${st.appCat === c.k ? 'active' : ''}" onclick="window._vipTermState.appCat='${c.k}'; ${c.k === 'ppob' ? `openVipCatalogSelection('games_ppob', XB_VIP_PPOB_GROUPS[0].subCats[0].k, XB_VIP_PPOB_GROUPS[0].brands[0].brand, XB_VIP_PPOB_GROUPS[0].key)` : `openVipCatalogSelection('games_ppob', 'games', 'mobile legends')`};">${c.lbl}</button>
-                        `).join('')}
-                    </div>
-                `;
+                // DI BAWAH PPOB & BILLS: KATALOG SEMUA PROVIDER / GAME BESERTA LOGONYA
+                const gameArr = (typeof XB_VIP_GAMES_CATALOG !== 'undefined') ? XB_VIP_GAMES_CATALOG : [];
+                if (meta.group) {
+                    const grp = meta.group;
+                    const subCatHtml = grp.subCats.length > 1 ? `
+                        <div class="xb-pc-fsec-lbl"><span>TIPE ${escVipHtml(grp.name.toUpperCase())}</span></div>
+                        <div class="xb-pc-plan-grid" style="padding-top:0;border-top:none;">
+                            ${grp.subCats.map(sc => `
+                                <button type="button" class="xb-ex-filter-chip ${st.kategori === sc.k ? 'active' : ''}" onclick="openVipCatalogSelection('games_ppob', '${sc.k}', '${st.brand}', '${grp.key}')">${sc.lbl}</button>
+                            `).join('')}
+                        </div>
+                    ` : '';
+                    const provGridHtml = `
+                        <div class="xb-pc-fsec-lbl" style="margin-top:${grp.subCats.length > 1 ? '4px' : '0'};">
+                            <span>PROVIDER ${escVipHtml(grp.name.toUpperCase())}</span>
+                            <span style="color:#38bdf8;">${grp.brands.length}</span>
+                        </div>
+                        <div class="xb-pc-social-grid">
+                            ${grp.brands.map(b => {
+                                const pLogo = getVipProviderLogoMeta(b.brand || b.name, XB_MP_SVGS[grp.ico] || '', grp.col);
+                                const isBAct = (st.brand === b.brand);
+                                return `
+                                    <button type="button" class="xb-pc-social-btn ${isBAct ? 'active' : ''}" onclick="openVipCatalogSelection('games_ppob', '${st.kategori}', '${b.brand}', '${grp.key}')">
+                                        <span style="color:${isBAct ? '#ffffff' : pLogo.col};display:inline-flex;">${pLogo.svg}</span>
+                                        <span style="overflow:hidden;text-overflow:ellipsis;">${b.name}</span>
+                                    </button>
+                                `;
+                            }).join('')}
+                        </div>
+                    `;
+                    vipFilterPanel.innerHTML = subCatHtml + provGridHtml;
+                } else {
+                    vipFilterPanel.innerHTML = `
+                        <div class="xb-pc-fsec-lbl"><span>GAMES CATALOG</span><span style="color:#38bdf8;">${gameArr.length}</span></div>
+                        <div class="xb-pc-social-grid">
+                            ${gameArr.map(g => `
+                                <button type="button" class="xb-pc-social-btn ${st.kategori === 'games' && st.brand === g.brand ? 'active' : ''}" onclick="openVipCatalogSelection('games_ppob', 'games', '${g.brand}')">
+                                    <span style="color:${st.kategori === 'games' && st.brand === g.brand ? '#ffffff' : g.col};display:inline-flex;">${XB_MP_SVGS[g.ico] || ''}</span>
+                                    <span style="overflow:hidden;text-overflow:ellipsis;">${g.name}</span>
+                                </button>
+                            `).join('')}
+                        </div>
+                    `;
+                }
             }
             mktRail.appendChild(vipFilterPanel);
 
@@ -17331,17 +17387,17 @@ const XB_EX_BANK_THEMES = {
                 : '';
             hero.innerHTML = `
                 <div class="xb-hero-plat-top">
-                    <div class="xb-hero-plat-logo" style="${iconBoxStyle}">${cfg.iconSvg}</div>
-                    <div style="text-align:center;min-width:0;">
-                        <div class="xb-hero-plat-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cfg.title}</div>
-                        <div class="xb-hero-plat-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cfg.subtitle}</div>
-                    </div>
-                    <div class="xb-hero-plat-logo" style="${iconBoxStyle}">${cfg.iconSvg}</div>
+                    <span class="xb-hero-plat-logo" style="${iconBoxStyle}">${cfg.iconSvg}</span>
+                    <span class="xb-hero-plat-title" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cfg.title}</span>
+                    <span class="xb-hero-plat-logo" style="${iconBoxStyle}">${cfg.iconSvg}</span>
                 </div>
+                <div class="xb-hero-plat-sub" style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${cfg.subtitle}</div>
                 <div class="xb-hero-mp-bottom">
-                    <div class="xb-hero-plat-meta">
-                        <span class="xb-mp-prim-pill">${cfg.badge || 'VERIFIED'}</span>
-                        <span class="xb-mp-cnt-pill">● ACTIVE</span>
+                    <div class="xb-hero-mp-center">
+                        <div class="xb-hero-plat-meta">
+                            <span class="xb-mp-prim-pill">${cfg.badge || 'VERIFIED'}</span>
+                            <span class="xb-mp-cnt-pill">● ACTIVE</span>
+                        </div>
                     </div>
                 </div>
             `;
@@ -17479,12 +17535,12 @@ const XB_EX_BANK_THEMES = {
 
             // 1C. DESKTOP PLATFORM / PROVIDER LOGO SWITCHER INSIDE LEFT RAIL (GANJIL -> ITEM PERTAMA FULL)
             const socialKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
+            // 4 Provider Email murni (2x2 rapi — All Email sudah ada di Featured Catalogs)
             const emailProviders = [
-                { k: 'ALL',     lbl: 'All Email', color: '#34d399', svg: XB_MP_SVGS.email || '' },
-                { k: 'gmail',   lbl: 'Gmail',     color: '#ea4335', svg: XB_MP_SVGS.gmail || '' },
-                { k: 'outlook', lbl: 'Outlook',   color: '#0078d4', svg: XB_MP_SVGS.outlook || '' },
-                { k: 'proton',  lbl: 'Proton',    color: '#a78bfa', svg: XB_MP_SVGS.proton || '' },
-                { k: 'mailru',  lbl: 'Mail.ru',   color: '#3b82f6', svg: XB_MP_SVGS.mailru || '' }
+                { k: 'gmail',   lbl: 'Gmail',   color: '#ea4335', svg: XB_MP_SVGS.gmail || '' },
+                { k: 'outlook', lbl: 'Outlook', color: '#0078d4', svg: XB_MP_SVGS.outlook || '' },
+                { k: 'proton',  lbl: 'Proton',  color: '#a78bfa', svg: XB_MP_SVGS.proton || '' },
+                { k: 'mailru',  lbl: 'Mail.ru', color: '#3b82f6', svg: XB_MP_SVGS.mailru || '' }
             ];
             // 7 CEX asli (ganjil -> MEXC otomatis full-width di atas; klik ulang untuk kembali ke All CEX)
             const cexExchanges = [
@@ -17517,7 +17573,7 @@ const XB_EX_BANK_THEMES = {
                     <div class="xb-pc-fsec-lbl"><span>EMAIL PROVIDERS</span><span style="color:#38bdf8;">${emailProviders.length}</span></div>
                     <div class="xb-pc-social-grid">
                         ${emailProviders.map(ep => `
-                            <button type="button" class="xb-pc-social-btn ${_mpEmailProv === ep.k ? 'active' : ''}" onclick="window._mpYearFilter='';setEmailProviderFilter('${ep.k}')">
+                            <button type="button" class="xb-pc-social-btn ${_mpEmailProv === ep.k ? 'active' : ''}" onclick="window._mpYearFilter='';setEmailProviderFilter(_mpEmailProv==='${ep.k}'?'ALL':'${ep.k}')">
                                 <span style="color:${_mpEmailProv === ep.k ? '#ffffff' : ep.color};display:inline-flex;">${ep.svg}</span>
                                 <span style="overflow:hidden;text-overflow:ellipsis;">${ep.lbl}</span>
                             </button>
@@ -17571,7 +17627,7 @@ const XB_EX_BANK_THEMES = {
             }
             mktRail.appendChild(chipsWrap);
 
-            // 2B. DESKTOP-ONLY FEATURED CATALOGS + BY YEAR (DARI TAHUN BERDIRI PLATFORM s/d 2026)
+            // 2B. DESKTOP-ONLY FEATURED CATALOGS + BY YEAR (DARI TAHUN BERDIRI PLATFORM/PROVIDER s/d 2026)
             const foundingYearMap = {
                 x: 2006,
                 discord: 2015,
@@ -17580,7 +17636,9 @@ const XB_EX_BANK_THEMES = {
                 facebook: 2004,
                 tiktok: 2016,
                 telegram: 2013,
-                email: (_mpEmailProv === 'proton' ? 2014 : 2004),
+                email: (_mpEmailProv === 'proton' ? 2014
+                    : (_mpEmailProv === 'outlook' ? 2012
+                    : (_mpEmailProv === 'mailru' ? 1998 : 2004))),
                 cex: (activeCexExch === 'gateio' ? 2013
                     : (activeCexExch === 'lbank' ? 2015
                     : (activeCexExch === 'binance' || activeCexExch === 'okx' ? 2017
@@ -17597,7 +17655,7 @@ const XB_EX_BANK_THEMES = {
                 <div class="xb-pc-fsec-lbl"><span>FEATURED CATALOGS</span></div>
                 <div class="xb-pc-feat-grid">
                     ${plat.filters.map((f, idx) => `
-                        <button type="button" class="xb-ex-filter-chip ${idx === 0 ? 'span-full' : ''} ${!activeDigYr && _mpSubFilter === f.k ? 'active' : ''}" onclick="window._mpYearFilter='';setDigitalPlatformFilter('${f.k}')">${f.lbl}</button>
+                        <button type="button" class="xb-ex-filter-chip ${idx === 0 ? 'span-full' : ''} ${!activeDigYr && _mpSubFilter === f.k ? 'active' : ''}" onclick="window._mpYearFilter='';${idx === 0 && platKey === 'email' ? '_mpEmailProv=\'ALL\';' : ''}${idx === 0 && platKey === 'cex' ? 'window._mpCexExch=\'ALL\';' : ''}setDigitalPlatformFilter('${f.k}')">${f.lbl}</button>
                     `).join('')}
                 </div>
 
@@ -17710,12 +17768,102 @@ const XB_EX_BANK_THEMES = {
                     hTrack.innerHTML += `<div class="item-card" style="text-align:center;padding:22px;color:var(--text-muted);font-size:0.78rem;font-weight:700;margin:auto;">0 live accounts available for ${cleanPlatName} ${activeDigYr}.</div>`;
                 }
             } else {
-                const exchTag = (platKey === 'cex' && activeCexExch !== 'ALL')
-                    ? ` - ${activeCexExch.toUpperCase()}`
-                    : (platKey === 'email' && _mpEmailProv !== 'ALL' ? ` - ${_mpEmailProv.toUpperCase()}` : '');
+                const activeProvObj = platKey === 'email'
+                    ? emailProviders.find(p => p.k === _mpEmailProv)
+                    : (platKey === 'cex' ? cexExchanges.find(c => c.k === activeCexExch) : null);
+                const subBrandLbl = activeProvObj ? activeProvObj.lbl : cleanPlatName;
+                const subBrandSvg = (activeProvObj && activeProvObj.svg) ? activeProvObj.svg : (XB_MP_SVGS[plat.key] || '');
+                const subBrandAcc = (activeProvObj && activeProvObj.color) ? activeProvObj.color : plat.accent;
+                const subBrandFilterKey = activeProvObj ? activeProvObj.k : '';
+
+                // 1. KOTAK PER TAHUN (startYr s/d 2026) — SAMA SEPERTI GITHUB (0 STOCK OTOMATIS KE BAWAH)
+                if (_mpSubFilter === 'ALL' && !q) {
+                    const baseFreshPrice = platKey === 'email' ? 3.0 : (platKey === 'cex' ? 18.0 : 8.0);
+                    const yearCardsData = digYears.map((yr, idxY) => {
+                        const yInt = parseInt(yr, 10);
+                        const ageSpan = Math.max(0, 2026 - yInt);
+                        const liveYrList = platAccs.filter(a => {
+                            const matchY = String(a.year || '').includes(yr);
+                            if (!matchY) return false;
+                            if (subBrandFilterKey) {
+                                return `${a.category || ''} ${a.username || ''} ${a.email || ''}`.toLowerCase().includes(subBrandFilterKey);
+                            }
+                            return true;
+                        });
+                        const estUsdt = Number((baseFreshPrice + Math.min(ageSpan, 18) * (platKey === 'email' ? 0.5 : 1.5)).toFixed(2));
+                        const minUsdt = liveYrList.length > 0 ? Math.min(...liveYrList.map(a => a._computed_usdt || estUsdt)) : estUsdt;
+                        const yTier = idxY === 0
+                            ? { key: 'special', label: 'SPECIAL', cls: 'xb-tier-crimson' }
+                            : (idxY <= 2 ? { key: 'mythic', label: 'MYTHIC', cls: 'xb-tier-mythic' }
+                            : (idxY <= 7 ? { key: 'legendary', label: 'LEGENDARY', cls: 'xb-tier-legendary' }
+                            : (idxY <= 12 ? { key: 'epic', label: 'EPIC', cls: 'xb-tier-epic' }
+                            : { key: 'rare', label: 'RARE', cls: 'xb-tier-rare' })));
+                        return { yr, liveList: liveYrList, minUsdt, tier: yTier };
+                    });
+
+                    yearCardsData.sort((a, b) => {
+                        const z = (a.liveList.length > 0 ? 0 : 1) - (b.liveList.length > 0 ? 0 : 1);
+                        if (z !== 0) return z;
+                        if (_exSort === 'price_asc') return a.minUsdt - b.minUsdt;
+                        if (_exSort === 'price_desc') return b.minUsdt - a.minUsdt;
+                        if (_exSort === 'stock_desc') return b.liveList.length - a.liveList.length;
+                        if (_exSort === 'year_desc') return parseInt(b.yr, 10) - parseInt(a.yr, 10);
+                        return parseInt(a.yr, 10) - parseInt(b.yr, 10);
+                    });
+
+                    const yrHdr = document.createElement('div');
+                    yrHdr.className = 'xb-ex-divider xb-pc-only-div';
+                    yrHdr.innerHTML = `<span>${subBrandLbl.toUpperCase()} - AGED ${startYr}–2026</span><div class="xb-pc-pillar-cnt">${yearCardsData.length}</div>`;
+                    hTrack.appendChild(yrHdr);
+
+                    const yrGrid = document.createElement('div');
+                    yrGrid.className = 'grid-years-2col';
+                    yearCardsData.forEach(yc => {
+                        const hasStk = yc.liveList.length > 0;
+                        const stkCol = hasStk ? '#34d399' : '#94a3b8';
+                        const cardEl = document.createElement('div');
+                        cardEl.className = `item-card xb-card-${yc.tier.key}`;
+                        cardEl.style.cssText = `padding:9px;gap:7px;--mp-acc:${subBrandAcc};--mp-border:${plat.border};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
+                        const openAct = hasStk
+                            ? `window._mpYearFilter='${yc.yr}'; renderViewport();`
+                            : `openDirectOrderModal({ id:'${platKey}_${subBrandFilterKey || 'all'}_${yc.yr}_pre', platform:'${platKey}', yearKey:'${yc.yr}', isAccount:false, tag:'PRE-ORDER • ${subBrandLbl.toUpperCase()}', title:'${subBrandLbl} Account (${yc.yr})', desc:'Direct Pre-Order for verified ${subBrandLbl} (${yc.yr}) with ${plat.credHint}.', usdt:${yc.minUsdt}, prompt:'Delivery Contact (Telegram @username / Email) & Preferred Specs:' })`;
+                        cardEl.innerHTML = `
+                            <div class="xb-ex-art mp-art-themed" onclick="${openAct}" style="cursor:pointer;">
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;position:relative;z-index:1;">
+                                    <div style="display:flex;align-items:center;gap:4px;min-width:0;">
+                                        <span class="xb-ex-gh-badge" style="color:${subBrandAcc};">${subBrandSvg}</span>
+                                        <span class="xb-ex-stock-pill" style="color:${stkCol};border-color:${hasStk ? 'rgba(52,211,153,0.45)' : 'var(--ex-hairline)'};">${hasStk ? `● ${yc.liveList.length}` : '○ 0'}</span>
+                                    </div>
+                                    <span class="xb-ex-chip ${yc.tier.cls}">★ ${yc.tier.label}</span>
+                                </div>
+                                <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:5px;">
+                                    <span style="font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15;">${subBrandLbl} Account</span>
+                                    <span class="xb-ex-year-tag">${yc.yr}</span>
+                                </div>
+                            </div>
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 2px;">
+                                <div style="min-width:0;">
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">${hasStk ? 'FLOOR PRICE' : 'EST. PRICE'}</div>
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:800;color:var(--success);white-space:nowrap;">${fmtPrice(yc.minUsdt)}</div>
+                                </div>
+                                <div style="text-align:right;min-width:0;">
+                                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">ACCESS</div>
+                                    <div style="font-size:0.54rem;font-weight:700;color:${subBrandAcc};white-space:nowrap;">${plat.credHint}</div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn-ui ${hasStk ? 'primary' : 'secondary'}" style="width:100%;padding:7px 6px;font-size:0.64rem;border-radius:9px;white-space:nowrap;" onclick="${openAct}">
+                                ${hasStk ? `View Stock (${yc.liveList.length})` : 'View Stock (0)'}
+                            </button>
+                        `;
+                        yrGrid.appendChild(cardEl);
+                    });
+                    hTrack.appendChild(yrGrid);
+                }
+
+                // 2. SPECIAL / FEATURED CATALOG TIERS DI BAWAH KOTAK TAHUN
                 const digTitleDiv = document.createElement('div');
-                digTitleDiv.className = 'xb-ex-divider xb-pc-only-div';
-                digTitleDiv.innerHTML = `<span>${cleanPlatName.toUpperCase()}${exchTag} - CATALOGS</span><div class="xb-pc-pillar-cnt">${vList.length}</div>`;
+                digTitleDiv.className = 'xb-ex-special-hdr';
+                digTitleDiv.innerHTML = `<div class="xb-ex-special-title">${subBrandLbl.toUpperCase()} - SPECIAL TIERS</div><div class="xb-pc-pillar-cnt">${vList.length}</div>`;
                 hTrack.appendChild(digTitleDiv);
 
                 if (vList.length > 0) {
@@ -17725,7 +17873,7 @@ const XB_EX_BANK_THEMES = {
                     vList.forEach((v, idx) => grid.appendChild(createDigitalVaultCard(plat, v, oddTopSpan && idx === 0)));
                     hTrack.appendChild(grid);
                 } else {
-                    hTrack.innerHTML += `<div class="item-card" style="text-align:center;padding:22px;color:var(--text-muted);font-size:0.78rem;font-weight:700;margin:auto;">0 matching catalogs in ${cleanPlatName}${exchTag}.</div>`;
+                    hTrack.innerHTML += `<div class="item-card" style="text-align:center;padding:22px;color:var(--text-muted);font-size:0.78rem;font-weight:700;margin:auto;">0 matching catalogs in ${subBrandLbl}.</div>`;
                 }
             }
 
@@ -34297,7 +34445,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 vipBtn.type = 'button';
                 vipBtn.className = 'xb-ex-icon-btn xb-pc-hdr-pill is-vip';
                 vipBtn.title = 'VIP Hall of Fame & Rankings';
-                vipBtn.innerHTML = '👑 VIP Rank';
+                vipBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" style="flex-shrink:0;"><path d="M6 3h12l4 6-10 12L2 9z" fill="rgba(56,189,248,0.28)" stroke="currentColor" stroke-width="2.1" stroke-linejoin="round"/><path d="M2 9h20M12 3l-3.5 6L12 21l3.5-12L12 3z" stroke="#38bdf8" stroke-width="1.5" stroke-linejoin="round"/></svg><span>VIP Rank</span>`;
                 vipBtn.onclick = () => openLeaderboardModal();
 
                 const salesBtn = document.createElement('button');
@@ -34305,7 +34453,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 salesBtn.type = 'button';
                 salesBtn.className = 'xb-ex-icon-btn xb-pc-hdr-pill is-sales';
                 salesBtn.title = 'Global Marketplace Sales Telemetry';
-                salesBtn.innerHTML = '📊 Global Sales';
+                salesBtn.innerHTML = `<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" style="flex-shrink:0;"><line x1="6" y1="20" x2="6" y2="13"/><line x1="12" y1="20" x2="12" y2="5"/><line x1="18" y1="20" x2="18" y2="10"/></svg><span>Global Sales</span>`;
                 salesBtn.onclick = () => openStoreGlobal3DTelemetry();
 
                 cartBtn.insertAdjacentElement('beforebegin', vipBtn);
