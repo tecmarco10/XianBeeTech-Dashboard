@@ -16889,7 +16889,7 @@ const XB_EX_BANK_THEMES = {
                 subtitle: 'Aged No-KYC • MEXC & OKX Top Priority • Full Mail + 2FA',
                 accent: '#fbbf24', border: 'rgba(251, 191, 36, 0.52)', glow: 'rgba(245, 158, 11, 0.28)',
                 bg1: '#141005', bg2: '#2e2108', light: '#fef3c7',
-                m1Lbl: 'STATUS', m2Lbl: 'AGE', credHint: 'Aged No-KYC • 2FA',
+                m1Lbl: 'STATUS', m2Lbl: 'MAIL ACCESS', credHint: 'No KYC • Outlook',
                 filters: [{ k: 'ALL', lbl: 'All CEX' }, { k: 'TOP', lbl: 'MEXC & OKX' }, { k: 'TIER1', lbl: 'Tier-1 Aged' }, { k: 'SPOT', lbl: 'Spot Aged' }],
                 vaults: [
                     { key: 'cex_mexc',    brand: 'mexc',    accent: '#2dd4bf', tag: 'TOP • NO KYC', title: 'MEXC Aged (No KYC)',    filter: 'TOP',   tier: 'MYTHIC',    cls: 'xb-tier-mythic',    usdt: 25.00, desc: 'Best-seller Aged MEXC No-KYC account + OG Email & 2FA.' },
@@ -17426,10 +17426,18 @@ const XB_EX_BANK_THEMES = {
             const handle = String(acc.username || 'Account');
             const safeSlug = handle.replace(/[^a-zA-Z0-9_-]/g, '') || String(Math.floor(Math.random() * 9999));
             const accId = `${plat.key}-${catKey}-${safeSlug}`;
-            const dispTag = String(acc.year || acc.metric2 || plat.shortName);
-            const m1Val = acc.metric1 !== undefined && acc.metric1 !== '' ? acc.metric1 : (acc.followers || '-');
+            const dispTag = plat.key === 'cex'
+                ? `${acc.year || 'AGED'} • NO KYC`
+                : String(acc.year || acc.metric2 || plat.shortName);
+            const m1Val = acc.metric1 !== undefined && acc.metric1 !== '' ? acc.metric1 : (plat.key === 'cex' ? 'No KYC' : (acc.followers || '-'));
             const m2Val = acc.metric2 !== undefined && acc.metric2 !== '' ? acc.metric2 : (acc.year || '-');
             const viewUrl = acc.url || '';
+            let pubHandle = handle.startsWith('@') || plat.key === 'cex' || plat.key === 'email' ? handle : '@' + handle;
+            if ((plat.key === 'cex' || plat.key === 'email') && handle.indexOf('@') > 0) {
+                const emParts = handle.split('@');
+                const loc = emParts[0];
+                pubHandle = (loc.length <= 3 ? (loc[0] + '***') : (loc.slice(0, 2) + '***' + loc.slice(-2))) + '@' + emParts[1];
+            }
 
             ACCOUNT_CACHE_MAP[accId] = {
                 acc: Object.assign({}, acc, { platform: plat.key, category: catKey, _computed_usdt: prc }),
@@ -17450,7 +17458,7 @@ const XB_EX_BANK_THEMES = {
                         <span class="xb-ex-chip" style="color:${plat.accent};border-color:${plat.border};">${plat.shortName.toUpperCase()}</span>
                     </div>
                     <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:5px;min-width:0;">
-                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">${handle.startsWith('@') || plat.key === 'cex' ? handle : '@' + handle}</span>
+                        <span style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">${pubHandle}</span>
                         <span class="xb-ex-year-tag sm">${dispTag}</span>
                     </div>
                 </div>
@@ -17924,10 +17932,19 @@ const XB_EX_BANK_THEMES = {
             hTrack.id = 'xbPcHScrollTrack';
             hTrack.className = 'xb-pc-hscroll-track';
 
-            // Jika filter BY YEAR aktif -> tampilkan akun / katalog khusus tahun tersebut
+            // Jika filter BY YEAR aktif -> tampilkan akun / katalog khusus tahun & provider/exchange tersebut
             if (activeDigYr) {
                 const yrNum = parseInt(activeDigYr, 10);
-                const yrAccs = platAccs.filter(a => String(a.year || '').includes(activeDigYr));
+                const subFilterSlug = platKey === 'cex'
+                    ? (activeCexExch !== 'ALL' ? activeCexExch : '')
+                    : (platKey === 'email' && _mpEmailProv !== 'ALL' ? _mpEmailProv : '');
+                const yrAccs = platAccs.filter(a => {
+                    if (!String(a.year || '').includes(activeDigYr)) return false;
+                    if (subFilterSlug) {
+                        return `${a.category || ''} ${a.username || ''} ${a.email || ''}`.toLowerCase().includes(subFilterSlug);
+                    }
+                    return true;
+                });
                 const yrVaults = vList.filter(v => {
                     const txt = `${v.title || ''} ${v.desc || ''} ${v.tag || ''}`;
                     if (txt.includes(activeDigYr)) return true;
@@ -18002,7 +18019,8 @@ const XB_EX_BANK_THEMES = {
 
                     const yrHdr = document.createElement('div');
                     yrHdr.className = 'xb-ex-divider xb-pc-only-div';
-                    yrHdr.innerHTML = `<span>${subBrandLbl.toUpperCase()} - AGED ${startYr}–2026</span><div class="xb-pc-pillar-cnt">${yearCardsData.length}</div>`;
+                    const hdrSuffix = platKey === 'cex' ? `NO KYC • ${startYr}–2026` : `AGED ${startYr}–2026`;
+                    yrHdr.innerHTML = `<span>${subBrandLbl.toUpperCase()} - ${hdrSuffix}</span><div class="xb-pc-pillar-cnt">${yearCardsData.length}</div>`;
                     hTrack.appendChild(yrHdr);
 
                     const yrGrid = document.createElement('div');
@@ -18026,8 +18044,8 @@ const XB_EX_BANK_THEMES = {
                                     <span class="xb-ex-chip ${yc.tier.cls}">★ ${yc.tier.label}</span>
                                 </div>
                                 <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:5px;">
-                                    <span style="font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15;">${subBrandLbl} Account</span>
-                                    <span class="xb-ex-year-tag">${yc.yr}</span>
+                                    <span style="font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.15;">${platKey === 'cex' ? `${subBrandLbl} No KYC` : `${subBrandLbl} Account`}</span>
+                                    <span class="xb-ex-year-tag">${platKey === 'cex' ? `${yc.yr} • NO KYC` : yc.yr}</span>
                                 </div>
                             </div>
                             <div style="display:flex;align-items:center;justify-content:space-between;gap:4px;padding:0 2px;">
@@ -19214,7 +19232,7 @@ const XB_EX_BANK_THEMES = {
             const p = String(platKey || 'github').toLowerCase();
             if (p === 'x' || p === 'discord') return 'Auth Token';
             if (p === 'facebook') return 'Cookies';
-            if (p === 'cex') return 'KYC Info';
+            if (p === 'cex') return 'Outlook Pass';
             if (p === 'telegram') return 'Session / Phone';
             if (p === 'email') return 'Recovery Mail';
             if (p === 'tiktok') return 'OG Email';
