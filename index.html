@@ -14780,20 +14780,73 @@ const XB_EX_BANK_THEMES = {
             attachTgMsgIdsToAdminNotif(notifId, tgMsgIdsMap);
         }
 
-        function formatStandardServiceName(yrKey, fallbackTitle = 'Digital Asset') {
+        function formatStandardServiceName(yrKey, fallbackTitle = 'Digital Asset', platform = 'github') {
+            const p = String(platform || 'github').toLowerCase().trim();
             const y = String(yrKey || '').trim();
+            const yLow = y.toLowerCase();
+            const yrM = yLow.match(/(19\d{2}|20\d{2})/);
+            const yr = yrM ? yrM[1] : '';
+
+            if (p === 'cex') {
+                const sub = (typeof resolveDigitalSubBrandMeta === 'function') ? resolveDigitalSubBrandMeta('cex', yLow) : null;
+                const bLbl = sub ? sub.lbl : 'CEX';
+                return `${bLbl}${yr ? ' ' + yr : ' Aged'} (No KYC)`;
+            }
+            if (p === 'email') {
+                const sub = (typeof resolveDigitalSubBrandMeta === 'function') ? resolveDigitalSubBrandMeta('email', yLow) : null;
+                const bLbl = sub ? sub.lbl : 'Email';
+                return `${bLbl}${yr ? ' ' + yr : (yLow.includes('fresh') ? ' Fresh' : ' Aged')}`;
+            }
+            if (p !== 'github' && typeof XB_MP_PLATFORMS !== 'undefined' && XB_MP_PLATFORMS[p]) {
+                return `${XB_MP_PLATFORMS[p].shortName}${yr ? ' ' + yr : ' Vault'}`;
+            }
             if (/^\d{4}$/.test(y)) return `GitHub Year ${y}`;
             if (y === 'Arctic') return 'GitHub Arctic 2020';
             if (y === '6Badge') return 'GitHub 6 Badges';
+            if (y === 'EliteDev') return 'GitHub Elite Dev';
             if (y === 'Followers') return 'GitHub Followers';
             if (y === 'StudentPack') return 'Student Dev Pack';
             if (y === 'Contrib') return 'High Contrib 200K+';
             if (y === 'OldRepo') return 'GitHub Old Repo';
-            return String(fallbackTitle).split('—')[0].split('(@')[0].trim().slice(0, 18) || 'GitHub Account';
+            return String(fallbackTitle).split('—')[0].split('(@')[0].trim().slice(0, 24) || 'Digital Asset';
+        }
+
+        function buildAccountNotifCredsBlock(accObj) {
+            const p = String(accObj.platform || 'github').toLowerCase();
+            if (p === 'cex') {
+                const mailVal = (accObj.email && accObj.email !== '-') ? accObj.email : accObj.username;
+                const mailPass = (accObj.extraCred && accObj.extraCred !== '-') ? accObj.extraCred : accObj.password;
+                return (
+                    `🔸 <b>CEX Email:</b> <code>${accObj.username}</code>\n` +
+                    `🔸 <b>CEX Pass:</b> <code>${accObj.password}</code>\n` +
+                    `🔸 <b>Outlook:</b> <code>${mailVal}</code>\n` +
+                    `🔸 <b>Mail Pass:</b> <code>${mailPass}</code>` +
+                    (accObj.twofa && accObj.twofa !== '-' ? `\n🔸 <b>2FA Key:</b> <code>${accObj.twofa}</code>` : '')
+                );
+            }
+            if (p === 'email') {
+                return (
+                    `🔸 <b>Email:</b> <code>${accObj.username}</code>\n` +
+                    `🔸 <b>Password:</b> <code>${accObj.password}</code>` +
+                    (accObj.twofa && accObj.twofa !== '-' ? `\n🔸 <b>2FA Key:</b> <code>${accObj.twofa}</code>` : '') +
+                    (accObj.extraCred && accObj.extraCred !== '-' ? `\n🔸 <b>Recovery:</b> <code>${accObj.extraCred}</code>` : '')
+                );
+            }
+            let lines =
+                `🔸 <b>Username/Email:</b> <code>${accObj.username}</code>\n` +
+                `🔸 <b>Password:</b> <code>${accObj.password}</code>\n` +
+                `🔸 <b>2FA/Recovery:</b> <code>${accObj.twofa || '-'}</code>`;
+            if (p !== 'github' && accObj.email && accObj.email !== '-') {
+                lines += `\n🔸 <b>Email:</b> <code>${accObj.email}</code>`;
+            }
+            if (p !== 'github' && accObj.extraCred && accObj.extraCred !== '-') {
+                lines += `\n🔸 <b>${getVaultExtraCredLabel(p)}:</b> <code>${accObj.extraCred}</code>`;
+            }
+            return lines;
         }
 
         // Fire complete Notification Flow for ORDER / CHECKOUT (Clean & Elegant Telegram Format + Order by Web)
-        function triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, paymentMethodLabel, unlockedAccounts = []) {
+        function triggerOrderCompletedNotifications(invId, itemsList, totalUsdt, paymentMethodLabel, unlockedAccounts = [], skipTgPush = false) {
             const dispUser = currentUsername.startsWith('@') ? currentUsername : `@${currentUsername}`;
             const mName = maskData(currentFullName, "name");
             const mUser = maskData(currentUsername, "username");
@@ -14889,14 +14942,12 @@ const XB_EX_BANK_THEMES = {
                 } catch (e) {}
 
             } else if (itemsList.length === 1) {
-                // =========================================================
-                // 🟢 SINGLE ACCOUNT PURCHASE (CLEAN & ELEGANT + ORDER BY WEB)
-                // =========================================================
                 const singleItem = itemsList[0];
                 const accObj = unlockedAccounts[0] || null;
+                const platKey = String((accObj && accObj.platform) || singleItem.platform || 'github').toLowerCase();
                 const yrKey = accObj ? accObj.category : (singleItem.yearKey || '2026');
                 const cleanServiceName = singleItem.isAccount
-                    ? formatStandardServiceName(yrKey, singleItem.title)
+                    ? formatStandardServiceName(yrKey, singleItem.title, platKey)
                     : String(singleItem.title).split('—')[0].trim();
                 const fullAccId = accObj
                     ? `${accObj.category}-${accObj.username}`
@@ -14913,9 +14964,7 @@ const XB_EX_BANK_THEMES = {
                     `🔸 <b>Via:</b> <b>🌐 Order by Web</b>\n` +
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `🔐 <b>CREDENTIALS:</b>\n` +
-                    `🔸 <b>Username/Email:</b> <code>${accObj.username}</code>\n` +
-                    `🔸 <b>Password:</b> <code>${accObj.password}</code>\n` +
-                    `🔸 <b>2FA/Recovery:</b> <code>${accObj.twofa}</code>\n\n` +
+                    `${buildAccountNotifCredsBlock(accObj)}\n\n` +
                     `⚠️ <i>Please secure your account immediately!</i>`
                 ) : (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
@@ -14928,8 +14977,7 @@ const XB_EX_BANK_THEMES = {
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `✅ <i>Status: Balance deducted & Order confirmed via Web Store.</i>`
                 );
-                pushInWebNotification('buyer', '📦 ACCOUNT DISPATCHED (ORDER BY WEB)', buyerSingleMsg);
-                sendTelegramSilentPush(currentUserId, buyerSingleMsg, true);
+                pushInWebNotification('buyer', accObj ? `📦 ${cleanServiceName.toUpperCase()} DELIVERED` : `📦 PRE-ORDER CONFIRMED (${invId})`, buyerSingleMsg);
 
                 const secretSingleLog = (
                     `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
@@ -14945,54 +14993,50 @@ const XB_EX_BANK_THEMES = {
                     `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                     `✅ <i>Status: Auto-Dispatched to Client via Web Store.</i>`
                 );
-                pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (ORDER BY WEB)', secretSingleLog);
-                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretSingleLog, true));
+                pushInWebNotification('admin', `🕵️ ADMIN LOG (${cleanServiceName})`, secretSingleLog);
 
-                const publicSingleLog = (
-                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   🟢 <b>ASSET INSTANTLY SOLD</b> 🟢\n` +
-                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `<blockquote>🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
-                    `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
-                    `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
-                    `🔸 <b>Service:</b> <b>${cleanServiceName}</b>\n` +
-                    `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT</b>\n` +
-                    `🔸 <b>Acc ID:</b> <code>${maskedAccId}</code>\n` +
-                    `🔸 <b>Source:</b> <b>🌐 Order by Web</b></blockquote>\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `✅ <i>Balance deducted &amp; Auto-dispatched.</i>`
-                );
-                sendTelegramSilentPush(CHANNEL_ID, publicSingleLog, true);
-                sendTelegramSilentPush(GROUP_ID, publicSingleLog, true);
-
+                if (!skipTgPush) {
+                    sendTelegramSilentPush(currentUserId, buyerSingleMsg, true);
+                    ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretSingleLog, true));
+                    const publicSingleLog = (
+                        `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                        `   🟢 <b>ASSET INSTANTLY SOLD</b> 🟢\n` +
+                        `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                        `<blockquote>🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                        `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
+                        `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
+                        `🔸 <b>Service:</b> <b>${cleanServiceName}</b>\n` +
+                        `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT</b>\n` +
+                        `🔸 <b>Acc ID:</b> <code>${maskedAccId}</code>\n` +
+                        `🔸 <b>Source:</b> <b>🌐 Order by Web</b></blockquote>\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `✅ <i>Balance deducted &amp; Auto-dispatched.</i>`
+                    );
+                    sendTelegramSilentPush(CHANNEL_ID, publicSingleLog, true);
+                    sendTelegramSilentPush(GROUP_ID, publicSingleLog, true);
+                }
             } else {
-                // =========================================================
-                // 🛒 MULTI-ITEM CART CHECKOUT (ALL USERNAMES MASKED + ORDER BY WEB)
-                // =========================================================
                 const unmaskedIdsList = unlockedAccounts.length > 0
                     ? unlockedAccounts.map(a => `${a.category}-${a.username}`).join(', ')
                     : itemsList.map(x => String(x.id).replace(/-\d{10,}$/, '')).join(', ');
-                const maskedIdsList = unlockedAccounts.length > 0
-                    ? unlockedAccounts.map(a => maskData(`${a.category}-${a.username}`, 'target')).join(', ')
-                    : itemsList.map(x => maskData(String(x.id).replace(/-\d{10,}$/, ''), 'target')).join(', ');
 
                 for (const a of unlockedAccounts) {
+                    const aSvcLbl = formatStandardServiceName(a.category, a.platform, a.platform);
                     const eachBuyerMsg = (
                         `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
                         `   📦 <b>A C C O U N T  D I S P A T C H E D</b> 📦\n` +
                         `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
                         `🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                        `🔸 <b>Service:</b> <b>${aSvcLbl}</b>\n` +
                         `🔸 <b>Acc ID:</b> <code>${a.category}-${a.username}</code>\n` +
                         `🔸 <b>Via:</b> <b>🌐 Order by Web</b>\n` +
                         `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
                         `🔐 <b>CREDENTIALS:</b>\n` +
-                        `🔸 <b>Username/Email:</b> <code>${a.username}</code>\n` +
-                        `🔸 <b>Password:</b> <code>${a.password}</code>\n` +
-                        `🔸 <b>2FA/Recovery:</b> <code>${a.twofa}</code>\n\n` +
+                        `${buildAccountNotifCredsBlock(a)}\n\n` +
                         `⚠️ <i>Please secure your account immediately!</i>`
                     );
-                    pushInWebNotification('buyer', `📦 ACCOUNT DISPATCHED (@${a.username} • WEB)`, eachBuyerMsg);
-                    sendTelegramSilentPush(currentUserId, eachBuyerMsg, true);
+                    pushInWebNotification('buyer', `📦 ${aSvcLbl.toUpperCase()} (${a.username})`, eachBuyerMsg);
+                    if (!skipTgPush) sendTelegramSilentPush(currentUserId, eachBuyerMsg, true);
                 }
 
                 const secretCartLog = (
@@ -15010,32 +15054,33 @@ const XB_EX_BANK_THEMES = {
                     `✅ <i>Status: Auto-Dispatched to Client via Web Store.</i>`
                 );
                 pushInWebNotification('admin', '🕵️ SECRET ADMIN LOG (CART WEB)', secretCartLog);
-                ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretCartLog, true));
 
-                const firstMaskedId = unlockedAccounts.length > 0
-                    ? maskData(`${unlockedAccounts[0].category}-${unlockedAccounts[0].username}`, 'target')
-                    : maskData(String(itemsList[0].id).replace(/-\d{10,}$/, ''), 'target');
-                const compactAccIds = itemsList.length > 1
-                    ? `${firstMaskedId} (+${itemsList.length - 1} more)`
-                    : firstMaskedId;
-
-                const publicCartLog = (
-                    `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
-                    `   🛒 <b>MASSIVE ASSETS SOLD</b> 🛒\n` +
-                    `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
-                    `<blockquote>🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
-                    `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
-                    `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
-                    `🔸 <b>Service:</b> <b>Cart Checkout</b>\n` +
-                    `🔸 <b>Items:</b> <b>${itemsList.length} Digital Assets</b>\n` +
-                    `🔸 <b>Acc ID:</b> <code>${compactAccIds}</code>\n` +
-                    `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT</b>\n` +
-                    `🔸 <b>Source:</b> <b>🌐 Order by Web</b></blockquote>\n` +
-                    `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
-                    `✅ <i>Massive assets sold &amp; Auto-dispatched.</i>`
-                );
-                sendTelegramSilentPush(CHANNEL_ID, publicCartLog, true);
-                sendTelegramSilentPush(GROUP_ID, publicCartLog, true);
+                if (!skipTgPush) {
+                    ADMIN_IDS.forEach(admId => sendTelegramSilentPush(admId, secretCartLog, true));
+                    const firstMaskedId = unlockedAccounts.length > 0
+                        ? maskData(`${unlockedAccounts[0].category}-${unlockedAccounts[0].username}`, 'target')
+                        : maskData(String(itemsList[0].id).replace(/-\d{10,}$/, ''), 'target');
+                    const compactAccIds = itemsList.length > 1
+                        ? `${firstMaskedId} (+${itemsList.length - 1} more)`
+                        : firstMaskedId;
+                    const publicCartLog = (
+                        `╭━━━━━━━━━━━━━━━━━━━━━━━━━╮\n` +
+                        `   🛒 <b>MASSIVE ASSETS SOLD</b> 🛒\n` +
+                        `╰━━━━━━━━━━━━━━━━━━━━━━━━━╯\n` +
+                        `<blockquote>🔸 <b>Invoice:</b> <code>${invId}</code>\n` +
+                        `🔸 <b>Client:</b> ${mName} (${mUser})\n` +
+                        `🔸 <b>User ID:</b> <code>${mId}</code>\n` +
+                        `🔸 <b>Service:</b> <b>Cart Checkout</b>\n` +
+                        `🔸 <b>Items:</b> <b>${itemsList.length} Digital Assets</b>\n` +
+                        `🔸 <b>Acc ID:</b> <code>${compactAccIds}</code>\n` +
+                        `🔸 <b>Price:</b> <b>$${totalUsdt.toFixed(2)} USDT</b>\n` +
+                        `🔸 <b>Source:</b> <b>🌐 Order by Web</b></blockquote>\n` +
+                        `━━━━━━━━━━━━━━━━━━━━━━━━━\n` +
+                        `✅ <i>Massive assets sold &amp; Auto-dispatched.</i>`
+                    );
+                    sendTelegramSilentPush(CHANNEL_ID, publicCartLog, true);
+                    sendTelegramSilentPush(GROUP_ID, publicCartLog, true);
+                }
             }
         }
 
@@ -17421,6 +17466,30 @@ const XB_EX_BANK_THEMES = {
             return card;
         }
 
+        function resolveDigitalSubBrandMeta(platKey, keyOrHint) {
+            const hint = String(keyOrHint || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+            if (!hint || hint === 'all') return null;
+            const list = platKey === 'cex'
+                ? [
+                    { k: 'mexc',    lbl: 'MEXC',    color: '#2dd4bf', svg: XB_MP_SVGS.mexc || '',    sub: 'Aged No-KYC • Full Outlook Mail + 2FA' },
+                    { k: 'okx',     lbl: 'OKX',     color: '#38bdf8', svg: XB_MP_SVGS.okx || '',     sub: 'Aged No-KYC • Full Outlook Mail + 2FA' },
+                    { k: 'binance', lbl: 'Binance', color: '#f3ba2f', svg: XB_MP_SVGS.binance || '', sub: 'Aged No-KYC • Full Outlook Mail + 2FA' },
+                    { k: 'bybit',   lbl: 'Bybit',   color: '#f7a600', svg: XB_MP_SVGS.bybit || '',   sub: 'Aged No-KYC • Full Outlook Mail + 2FA' },
+                    { k: 'bitget',  lbl: 'Bitget',  color: '#06b6d4', svg: XB_MP_SVGS.bitget || '',  sub: 'Aged No-KYC • Full Outlook Mail + 2FA' },
+                    { k: 'gateio',  lbl: 'Gate.io', color: '#3b82f6', svg: XB_MP_SVGS.gateio || '',  sub: 'Aged No-KYC • Full Outlook Mail + 2FA' },
+                    { k: 'lbank',   lbl: 'LBank',   color: '#eab308', svg: XB_MP_SVGS.lbank || '',   sub: 'Aged No-KYC • Full Outlook Mail + 2FA' }
+                ]
+                : (platKey === 'email'
+                    ? [
+                        { k: 'gmail',   lbl: 'Gmail',      color: '#ea4335', svg: XB_MP_SVGS.gmail || '',   sub: 'Aged & Fresh Gmail • Recovery Mail + 2FA' },
+                        { k: 'outlook', lbl: 'Outlook',    color: '#0078d4', svg: XB_MP_SVGS.outlook || '', sub: 'Aged & Fresh Outlook • Recovery Mail + 2FA' },
+                        { k: 'proton',  lbl: 'ProtonMail', color: '#a78bfa', svg: XB_MP_SVGS.proton || '',  sub: 'Aged & Fresh ProtonMail • Privacy Ready' },
+                        { k: 'mailru',  lbl: 'Mail.ru',    color: '#3b82f6', svg: XB_MP_SVGS.mailru || '',  sub: 'Aged & Fresh Mail.ru • IMAP & Recovery Ready' }
+                    ]
+                    : []);
+            return list.find(item => hint === item.k || hint.includes(item.k)) || null;
+        }
+
         function createDigitalSpecificAccountCard(acc, plat, catKey) {
             const prc = acc._computed_usdt || parseFloat(acc.price_usd || 15) || 15;
             const handle = String(acc.username || 'Account');
@@ -17447,15 +17516,20 @@ const XB_EX_BANK_THEMES = {
 
             const card = document.createElement('div');
             card.className = 'item-card';
-            card.style.cssText = `padding:8px;gap:6px;--mp-acc:${plat.accent};--mp-border:${plat.border};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
+            const sbMeta = resolveDigitalSubBrandMeta(plat.key, `${catKey || ''} ${acc.category || ''}`);
+            const cardAcc = (sbMeta && sbMeta.color) || plat.accent;
+            const cardBorder = sbMeta ? `${sbMeta.color}80` : plat.border;
+            const cardSvg = (sbMeta && sbMeta.svg) || XB_MP_SVGS[plat.key];
+            const cardChipLbl = (sbMeta && sbMeta.lbl ? sbMeta.lbl : plat.shortName).toUpperCase();
+            card.style.cssText = `padding:8px;gap:6px;--mp-acc:${cardAcc};--mp-border:${cardBorder};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
             card.innerHTML = `
                 <div class="xb-ex-art mp-art-themed" style="height:70px;">
                     <div style="display:flex;justify-content:space-between;align-items:center;gap:4px;position:relative;z-index:1;">
                         <div style="display:flex;align-items:center;gap:4px;min-width:0;">
-                            <span class="xb-ex-gh-badge" style="color:${plat.accent};">${XB_MP_SVGS[plat.key]}</span>
+                            <span class="xb-ex-gh-badge" style="color:${cardAcc};">${cardSvg}</span>
                             <span class="xb-ex-stock-pill" style="color:#34d399;border-color:rgba(52,211,153,0.42);">● LIVE</span>
                         </div>
-                        <span class="xb-ex-chip" style="color:${plat.accent};border-color:${plat.border};">${plat.shortName.toUpperCase()}</span>
+                        <span class="xb-ex-chip" style="color:${cardAcc};border-color:${cardBorder};">${cardChipLbl}</span>
                     </div>
                     <div style="position:relative;z-index:1;display:flex;align-items:flex-end;justify-content:space-between;gap:5px;min-width:0;">
                         <span style="font-family:'JetBrains Mono',monospace;font-size:0.68rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1;">${pubHandle}</span>
@@ -17465,7 +17539,7 @@ const XB_EX_BANK_THEMES = {
                 <div class="xb-ex-stat-2">
                     <div class="xb-ex-stat-cell">
                         <div style="font-size:0.44rem;color:var(--text-muted);font-weight:700;">${plat.m1Lbl}</div>
-                        <div style="font-size:0.62rem;font-weight:800;color:${plat.accent};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m1Val}</div>
+                        <div style="font-size:0.62rem;font-weight:800;color:${cardAcc};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${m1Val}</div>
                     </div>
                     <div class="xb-ex-stat-cell">
                         <div style="font-size:0.44rem;color:var(--text-muted);font-weight:700;">${plat.m2Lbl}</div>
@@ -17555,7 +17629,7 @@ const XB_EX_BANK_THEMES = {
             wrapper.innerHTML = `
                 <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding-bottom:9px;margin-bottom:9px;border-bottom:1px solid var(--ex-hairline);">
                     <div style="display:flex;align-items:center;gap:8px;min-width:0;flex:1;">
-                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;color:${plat.accent};">${XB_MP_SVGS[plat.key]}</span>
+                        <span class="xb-ex-gh-badge" style="width:30px;height:30px;color:${vault.accent || plat.accent};">${(vault.brand && XB_MP_SVGS[vault.brand]) ? XB_MP_SVGS[vault.brand] : XB_MP_SVGS[plat.key]}</span>
                         <div style="min-width:0;flex:1;">
                             <div style="display:flex;align-items:center;gap:5px;">
                                 <h3 style="margin:0;font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${vault.title}</h3>
@@ -17643,50 +17717,77 @@ const XB_EX_BANK_THEMES = {
             return col;
         }
 
-        function renderDigitalPlatformMarketplace(vp, platKey, topBentoEl = null) {
+function renderDigitalPlatformMarketplace(vp, platKey, topBentoEl = null) {
             const plat = XB_MP_PLATFORMS[platKey];
             if (!plat) return;
 
-            const platAccs = allLiveDigitalFlat.filter(a => a.platform === platKey);
-            const floorUsdt = platAccs.length > 0
-                ? Math.min(...platAccs.map(a => a._computed_usdt || 15))
-                : Math.min(...plat.vaults.map(v => v.usdt));
+            // Reset filter tahun & sub-brand jika pindah platform
+            if (window._mpLastPlatKey !== platKey) {
+                window._mpYearFilter = '';
+                window._mpCexExch = 'ALL';
+                window._mpLastPlatKey = platKey;
+            }
+            const activeDigYr = String(window._mpYearFilter || '');
+            const activeCexExch = String(window._mpCexExch || 'ALL');
 
+            const platAccs = allLiveDigitalFlat.filter(a => a.platform === platKey);
             const cleanPlatName = String(plat.title || plat.shortName || '')
                 .replace(/^XianBee\s+/i, '')
                 .replace(/\s*(Marketplace|Collection|Accounts|Vault)\s*$/i, '')
                 .trim() || plat.shortName;
 
-            // 1A. LEFT 50% HERO CARD ON DESKTOP (IDENTICAL TO GITHUB MARKETPLACE)
+            // Resolusi sub-brand aktif (MEXC, OKX, Binance, Gmail, Outlook, Proton, Mail.ru)
+            const activeSubKey = platKey === 'cex'
+                ? (activeCexExch !== 'ALL' ? activeCexExch : '')
+                : (platKey === 'email' && _mpEmailProv !== 'ALL' ? _mpEmailProv : '');
+            const activeBrandMeta = resolveDigitalSubBrandMeta(platKey, activeSubKey);
+
+            const heroBrandName   = activeBrandMeta ? activeBrandMeta.lbl : cleanPlatName;
+            const heroBrandSvg    = (activeBrandMeta && activeBrandMeta.svg) || XB_MP_SVGS[plat.key] || '';
+            const heroBrandAccent = (activeBrandMeta && activeBrandMeta.color) || plat.accent;
+            const heroBrandBorder = activeBrandMeta ? `${activeBrandMeta.color}73` : plat.border;
+            const heroBrandSub    = (activeBrandMeta && activeBrandMeta.sub) || plat.subtitle;
+
+            const scopedPlatAccs = activeSubKey
+                ? platAccs.filter(a => `${a.category || ''} ${a.username || ''}`.toLowerCase().replace(/[^a-z0-9]/g, '').includes(activeSubKey))
+                : platAccs;
+            const scopedVaults = activeSubKey
+                ? plat.vaults.filter(v => `${v.key || ''} ${v.brand || ''} ${v.prov || ''}`.toLowerCase().replace(/[^a-z0-9]/g, '').includes(activeSubKey))
+                : plat.vaults;
+            const floorUsdt = scopedPlatAccs.length > 0
+                ? Math.min(...scopedPlatAccs.map(a => a._computed_usdt || 15))
+                : Math.min(...(scopedVaults.length > 0 ? scopedVaults : plat.vaults).map(v => v.usdt));
+
+            // 1A. LEFT 50% HERO CARD ON DESKTOP (DINAMIS SESUAI BRAND: MEXC, GMAIL, X, DLL)
             if (topBentoEl) {
                 topBentoEl.classList.add('is-subplat');
                 topBentoEl.appendChild(buildDesktopPlatformHeroEl({
-                    title: `${cleanPlatName} Marketplace`,
-                    subtitle: plat.subtitle,
-                    iconSvg: XB_MP_SVGS[plat.key] || '',
-                    accent: plat.accent,
-                    border: plat.border,
+                    title: `${heroBrandName} Marketplace`,
+                    subtitle: heroBrandSub,
+                    iconSvg: heroBrandSvg,
+                    accent: heroBrandAccent,
+                    border: heroBrandBorder,
                     badge: 'VERIFIED'
                 }));
             }
 
-            // 1B. RIGHT 50% COLLECTION BANNER (IDENTICAL TO XIANBEE GITHUB COLLECTION)
+            // 1B. RIGHT 50% COLLECTION BANNER (XIANBEE [BRAND] COLLECTION + LOGO ASLI)
             const colBanner = document.createElement('div');
             colBanner.className = 'xb-ex-collection mp-themed';
-            colBanner.style.cssText = `--mp-acc:${plat.accent};--mp-border:${plat.border};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
+            colBanner.style.cssText = `--mp-acc:${heroBrandAccent};--mp-border:${heroBrandBorder};--mp-glow:${plat.glow};--mp-bg1:${plat.bg1};--mp-bg2:${plat.bg2};--mp-light:${plat.light};`;
             colBanner.innerHTML = `
                 <div class="xb-ex-col-head">
                     <div class="xb-ex-col-brand full">
-                        <div class="xb-ex-col-logo" style="color:${plat.accent};border-color:${plat.border};">
-                            ${XB_MP_SVGS[plat.key]}
+                        <div class="xb-ex-col-logo" style="color:${heroBrandAccent};border-color:${heroBrandBorder};">
+                            ${heroBrandSvg}
                         </div>
                         <div style="min-width:0;flex:1;">
                             <div style="display:flex;align-items:center;gap:4px;min-width:0;">
-                                <h2 class="xb-brand-grad" style="margin:0;font-size:clamp(0.76rem,3.4vw,0.92rem);font-weight:800;letter-spacing:-0.25px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">XianBee ${cleanPlatName} Collection</h2>
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="${plat.accent}" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
+                                <h2 class="xb-brand-grad" style="margin:0;font-size:clamp(0.76rem,3.4vw,0.92rem);font-weight:800;letter-spacing:-0.25px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">XianBee ${heroBrandName} Collection</h2>
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="${heroBrandAccent}" style="flex-shrink:0;"><path d="M12 2l2.4 2.4 3.4-.5.9 3.3 3 1.7-1.1 3.2 1.1 3.2-3 1.7-.9 3.3-3.4-.5L12 22l-2.4-2.4-3.4.5-.9-3.3-3-1.7 1.1-3.2-1.1-3.2 3-1.7.9-3.3 3.4.5L12 2zm-1.2 13.4l5.2-5.2-1.4-1.4-3.8 3.8-1.6-1.6-1.4 1.4 3 3z"/></svg>
                             </div>
                             <div style="font-family:'JetBrains Mono',monospace;font-size:0.53rem;font-weight:700;color:var(--text-secondary);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                ${plat.subtitle}
+                                ${heroBrandSub}
                             </div>
                         </div>
                     </div>
@@ -17694,11 +17795,11 @@ const XB_EX_BANK_THEMES = {
                 <div class="xb-ex-col-stats">
                     <div class="xb-ex-col-stat">
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">FLOOR</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:${plat.accent};margin-top:1px;">${fmtPrice(floorUsdt)}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:${heroBrandAccent};margin-top:1px;">${fmtPrice(floorUsdt)}</div>
                     </div>
                     <div class="xb-ex-col-stat">
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">LISTED</div>
-                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#34d399;margin-top:1px;">${platAccs.length}</div>
+                        <div style="font-family:'JetBrains Mono',monospace;font-size:0.71rem;font-weight:800;color:#34d399;margin-top:1px;">${scopedPlatAccs.length}</div>
                     </div>
                     <div class="xb-ex-col-stat">
                         <div style="font-family:'JetBrains Mono',monospace;font-size:0.46rem;color:var(--text-muted);font-weight:700;">MODE</div>
@@ -17717,18 +17818,9 @@ const XB_EX_BANK_THEMES = {
             mktWs.className = 'xb-pc-mkt-workspace';
             const mktRail = document.createElement('aside');
             mktRail.className = 'xb-pc-mkt-rail';
-            mktRail.innerHTML = `<div class="xb-pc-rail-head"><span>🎛️ FILTERS &amp; SORT</span><span style="color:#34d399;">${plat.shortName.toUpperCase()}</span></div>`;
+            mktRail.innerHTML = `<div class="xb-pc-rail-head"><span>🎛️ FILTERS &amp; SORT</span><span style="color:#34d399;">${(activeBrandMeta ? activeBrandMeta.lbl : plat.shortName).toUpperCase()}</span></div>`;
             const mktStage = document.createElement('div');
             mktStage.className = 'xb-pc-mkt-stage';
-
-            // Reset filter tahun jika pindah platform
-            if (window._mpLastPlatKey !== platKey) {
-                window._mpYearFilter = '';
-                window._mpCexExch = 'ALL';
-                window._mpLastPlatKey = platKey;
-            }
-            const activeDigYr = String(window._mpYearFilter || '');
-            const activeCexExch = String(window._mpCexExch || 'ALL');
 
             // 1C. DESKTOP PLATFORM / PROVIDER LOGO SWITCHER INSIDE LEFT RAIL (GANJIL -> ITEM PERTAMA FULL)
             const socialKeys = ['x', 'discord', 'reddit', 'instagram', 'facebook', 'tiktok', 'telegram'];
@@ -17874,7 +17966,7 @@ const XB_EX_BANK_THEMES = {
             sortBar.innerHTML = `
                 <div class="xb-ex-live-wrap">
                     <span class="xb-ex-live-dot"></span>
-                    <span style="overflow:hidden;text-overflow:ellipsis;">${platAccs.length} LIVE • HYBRID READY</span>
+                    <span style="overflow:hidden;text-overflow:ellipsis;">${scopedPlatAccs.length} LIVE • HYBRID READY</span>
                 </div>
                 <span class="xb-ex-sort-divider"></span>
                 <select class="xb-ex-sort-select" onchange="setExchangeSort(this.value)">
@@ -17957,7 +18049,7 @@ const XB_EX_BANK_THEMES = {
 
                 const digTitleDiv = document.createElement('div');
                 digTitleDiv.className = 'xb-ex-divider xb-pc-only-div';
-                digTitleDiv.innerHTML = `<span>${cleanPlatName.toUpperCase()} - ${activeDigYr}</span><div class="xb-pc-pillar-cnt">${yrAccs.length}</div>`;
+                digTitleDiv.innerHTML = `<span>${heroBrandName.toUpperCase()} - ${activeDigYr}${platKey === 'cex' ? ' • NO KYC' : ''}</span><div class="xb-pc-pillar-cnt">${yrAccs.length}</div>`;
                 hTrack.appendChild(digTitleDiv);
 
                 if (yrAccs.length > 0 && typeof createDigitalSpecificAccountCard === 'function') {
@@ -18387,31 +18479,50 @@ const XB_EX_BANK_THEMES = {
 
                 if (_mpPlatform === 'pro_apps' || _mpPlatform === 'games_ppob') {
                     const isProApps = (_mpPlatform === 'pro_apps');
-                    const vipSvg = isProApps
+                    const vipFallbackSvg = isProApps
                         ? `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"/></svg>`
                         : `<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M21 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm-10 7H8v3H6v-3H3v-2h3V8h2v3h3v2zm4.5 2c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm4-3c-.83 0-1.5-.67-1.5-1.5S18.67 9 19.5 9s1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>`;
+                    const vipSt = (typeof hydrateVipCacheFromStorage === 'function') ? hydrateVipCacheFromStorage() : (window._vipTermState || {});
+                    const curVipKat = (vipSt.mode === _mpPlatform && vipSt.kategori) ? vipSt.kategori : (isProApps ? 'apps' : 'games');
+                    const curVipBrand = (vipSt.mode === _mpPlatform && vipSt.brand) ? vipSt.brand : (isProApps ? 'chatgpt' : 'mobile legends');
+                    const curVipGrp = (vipSt.mode === _mpPlatform) ? (vipSt.groupKey || '') : '';
+                    const vipMeta = (typeof getVipBrandMeta === 'function') ? getVipBrandMeta(_mpPlatform, curVipKat, curVipBrand, curVipGrp) : null;
+
+                    const vipBrandName = (vipMeta && vipMeta.name) ? vipMeta.name : (isProApps ? 'Pro Apps & AI' : 'Top-Up Hub');
+                    const vipProvLogo = (vipMeta && vipMeta.group && typeof getVipProviderLogoMeta === 'function')
+                        ? getVipProviderLogoMeta(curVipBrand || vipMeta.name, XB_MP_SVGS[vipMeta.ico] || vipFallbackSvg, vipMeta.col)
+                        : { col: (vipMeta && vipMeta.col) || (isProApps ? '#c084fc' : '#38bdf8'), svg: (vipMeta && XB_MP_SVGS[vipMeta.ico]) || vipFallbackSvg };
+                    const vipAcc = vipProvLogo.col || (isProApps ? '#c084fc' : '#38bdf8');
+                    const vipSvg = vipProvLogo.svg || vipFallbackSvg;
+                    const vipBorder = `${vipAcc}73`;
+                    const vipCacheArr = (vipSt.cache && vipSt.cache[`${curVipKat}::${curVipBrand}`]) || [];
+                    const vipReadyArr = vipCacheArr.filter(x => x && x.is_ready);
+                    const vipFloorUsd = vipReadyArr.length > 0
+                        ? Math.min(...vipReadyArr.map(x => Number(x.sell_usd || 0) || 999))
+                        : (isProApps ? 1.0 : 0.5);
+
                     topBento.classList.add('is-subplat');
                     topBento.appendChild(buildDesktopPlatformHeroEl({
-                        title: isProApps ? 'Pro Apps & AI Marketplace' : 'Top-Up Hub Marketplace',
+                        title: `${vipBrandName} Marketplace`,
                         subtitle: isProApps
-                            ? 'ChatGPT • Gemini • Canva • CapCut • Streaming'
-                            : 'Games Diamonds • Pulsa • Data • E-Wallet • PLN',
+                            ? `Official ${vipBrandName} • Private & Sharing • Instant`
+                            : `Direct ${vipBrandName} • Auto SN & Instant Receipt`,
                         iconSvg: vipSvg,
-                        accent: isProApps ? '#c084fc' : '#38bdf8',
-                        border: isProApps ? 'rgba(192,132,252,0.45)' : 'rgba(56,189,248,0.45)',
+                        accent: vipAcc,
+                        border: vipBorder,
                         badge: isProApps ? 'PREMIUM' : 'AUTOMATED'
                     }));
                     topBento.appendChild(buildDesktopVipCollectionEl({
-                        colTitle: isProApps ? 'XianBee Pro Apps & AI Collection' : 'XianBee Top-Up Hub Collection',
+                        colTitle: `XianBee ${vipBrandName} Collection`,
                         colSubtitle: isProApps
-                            ? 'Verified Pro Accounts & Streaming • Instant Delivery'
-                            : '24/7 Direct ID Game Top-Up & PPOB Bills',
+                            ? `Verified ${vipBrandName} Plans • Instant Delivery`
+                            : `24/7 Automated ${vipBrandName} • Direct Server`,
                         iconSvg: vipSvg,
-                        accent: isProApps ? '#c084fc' : '#38bdf8',
-                        border: isProApps ? 'rgba(192,132,252,0.45)' : 'rgba(56,189,248,0.45)',
-                        s1k: 'FLOOR',    s1v: fmtPrice(isProApps ? 1.0 : 0.5),
-                        s2k: 'CATALOGS', s2v: isProApps ? '13+ Apps' : 'Games & Bills',
-                        s3k: 'TIERS',    s3v: isProApps ? 'Pro & AI' : 'Direct ID',
+                        accent: vipAcc,
+                        border: vipBorder,
+                        s1k: 'FLOOR',    s1v: fmtPrice(vipFloorUsd),
+                        s2k: 'READY',    s2v: vipCacheArr.length > 0 ? String(vipReadyArr.length) : (isProApps ? 'Live API' : 'Auto'),
+                        s3k: 'TIERS',    s3v: isProApps ? 'Pro & AI' : (vipMeta && vipMeta.group ? vipMeta.group.name : 'Direct ID'),
                         s4k: 'DELIVERY', s4v: 'Instant'
                     }));
 
@@ -19440,26 +19551,50 @@ const XB_EX_BANK_THEMES = {
                             <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="copyVaultFieldByIdx(${idx}, 'password', 'Password')">📋</button>
                         </div>
 
-                        <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
-                            <div style="display:flex;align-items:center;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
-                                <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">2FA Key</span>
-                                <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
-                                <span style="color:var(--accent-cyan);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.twofa}</span>
+                        ${entry.twofa && entry.twofa !== '-' ? `
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
+                                <div style="display:flex;align-items:center;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">2FA Key</span>
+                                    <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
+                                    <span style="color:var(--accent-cyan);font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.twofa}</span>
+                                </div>
+                                <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="copyVaultFieldByIdx(${idx}, 'twofa', '2FA Key')">📋</button>
                             </div>
-                            <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="copyVaultFieldByIdx(${idx}, 'twofa', '2FA Key')">📋</button>
-                        </div>
+                        ` : ''}
 
-                        <!-- TOMBOL OTP, COPY ALL, SAVE .TXT & GITHUB MASUK DI DALAM KOTAK 3D -->
+                        ${entry.email && entry.email !== '-' ? `
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
+                                <div style="display:flex;align-items:center;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">${String(entry.platform || '').toLowerCase() === 'cex' ? 'Outlook' : 'Email'}</span>
+                                    <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
+                                    <span style="color:#38bdf8;font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.email}</span>
+                                </div>
+                                <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="copyVaultFieldByIdx(${idx}, 'email', 'Email')">📋</button>
+                            </div>
+                        ` : ''}
+
+                        ${entry.extraCred && entry.extraCred !== '-' ? `
+                            <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;min-width:0;">
+                                <div style="display:flex;align-items:center;min-width:0;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">
+                                    <span style="color:var(--text-muted);font-weight:700;display:inline-block;width:68px;flex-shrink:0;">${getVaultExtraCredLabel(entry.platform)}</span>
+                                    <span style="color:var(--text-muted);font-weight:700;margin-right:6px;">:</span>
+                                    <span style="color:#fbbf24;font-weight:800;overflow:hidden;text-overflow:ellipsis;">${entry.extraCred}</span>
+                                </div>
+                                <button type="button" class="top-pill" style="padding:2px 7px;font-size:0.6rem;border-radius:6px;flex-shrink:0;" onclick="copyVaultFieldByIdx(${idx}, 'extraCred', '${getVaultExtraCredLabel(entry.platform)}')">📋</button>
+                            </div>
+                        ` : ''}
+
+                        <!-- TOMBOL OTP, COPY ALL, SAVE .TXT & LINK -->
                         <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px;padding-top:7px;border-top:1px solid var(--border-subtle);font-family:'Plus Jakarta Sans',sans-serif;">
                             ${safeSecret.length >= 8 ? `
                                 <button class="btn-ui primary" id="${otpDomId}" style="width:100%;padding:7px 8px;font-size:0.68rem;border-radius:8px;min-width:0;" onclick="showInline2faOtp('${safeSecret}', '${otpDomId}')">
                                     🔑 Get Live 6-Digit 2FA OTP (30s)
                                 </button>
                             ` : ''}
-                            <div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;">
+                            <div style="display:grid;grid-template-columns:repeat(${entry.url ? 3 : 2},minmax(0,1fr));gap:6px;">
                                 <button class="btn-ui secondary" style="padding:7px 4px;font-size:0.66rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="copyFullCredentialBlock(${idx})">📋 Copy All</button>
                                 <button class="btn-ui buy-now" style="padding:7px 4px;font-size:0.66rem;min-width:0;border-radius:8px;white-space:nowrap;" onclick="downloadCredentialTxt(${idx})">💾 Save .TXT</button>
-                                <a href="${entry.url}" target="_blank" class="btn-ui secondary" style="padding:7px 4px;font-size:0.66rem;min-width:0;border-radius:8px;white-space:nowrap;">🌐 GitHub</a>
+                                ${entry.url ? `<a href="${entry.url}" target="_blank" class="btn-ui secondary" style="padding:7px 4px;font-size:0.66rem;min-width:0;border-radius:8px;white-space:nowrap;">🌐 ${String(entry.platform || 'github') === 'github' ? 'GitHub' : 'Profile'}</a>` : ''}
                             </div>
                         </div>
                     </div>
@@ -30054,6 +30189,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
             }
             return {
                 id: modalProduct.id + '-' + Date.now(),
+                platform: modalProduct.platform || (modalProduct.accountData && modalProduct.accountData.platform) || 'github',
                 yearKey: modalProduct.yearKey || '2026',
                 isAccount: !!modalProduct.isAccount,
                 accountData: modalProduct.accountData || null,
@@ -30431,7 +30567,7 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 if (isFromCart) { cart = []; cartDiscountPct = 0; updateCartUI(); }
 
                 try {
-                    triggerOrderCompletedNotifications(invId, itemsList, finalCharged, 'Balance', unlockedAccounts);
+                    triggerOrderCompletedNotifications(invId, itemsList, finalCharged, 'Balance', unlockedAccounts, true);
                 } catch (eNotif) {
                     console.log('Order notification error:', eNotif);
                 }
@@ -34074,8 +34210,8 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                         <span class="xb-ex-chip ${tier.cls}">★ ${tier.label}</span>
                         <span style="font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:800;color:#34d399;">List: ${fmtPrice(origPrice)}</span>
                     </div>
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">@${acc.username}</div>
-                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#38bdf8;margin-top:2px;">GitHub Vault ${yrKey} • 👥 ${acc.followers || 0} Flw • 📁 ${acc.repos || 0} Repos</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.84rem;font-weight:800;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${(entry.platform === 'cex' || entry.platform === 'email') ? maskData(acc.username, 'target') : '@' + acc.username}</div>
+                    <div style="font-family:'JetBrains Mono',monospace;font-size:0.6rem;color:#38bdf8;margin-top:2px;">${formatStandardServiceName(yrKey, '', entry.platform || 'github')}${(!entry.platform || entry.platform === 'github') ? ` • 👥 ${acc.followers || 0} Flw • 📁 ${acc.repos || 0} Repos` : ` • ${acc.metric1 || 'Verified'} • ${acc.metric2 || 'Ready'}`}</div>
                 </div>
 
                 <div style="margin-bottom:10px;">
@@ -34179,9 +34315,10 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
                 if (!_negoTargetEntry) return;
                 const acc = _negoTargetEntry.acc;
                 const yrKey = _negoTargetEntry.yrKey;
-                accId = `${yrKey}-${acc.username}`;
+                const nPlat = _negoTargetEntry.platform || acc.platform || 'github';
+                accId = nPlat === 'github' ? `${yrKey}-${acc.username}` : `${nPlat}-${yrKey}-${String(acc.username || '').replace(/[^a-zA-Z0-9_-]/g, '')}`;
                 origPrice = acc._computed_usdt || computeAccountPrice(acc, yrKey);
-                cleanItemName = `GitHub Vault ${yrKey}`;
+                cleanItemName = formatStandardServiceName(yrKey, '', nPlat);
                 itemSummary = `${cleanItemName} [${accId}]`;
             }
 
@@ -34396,7 +34533,12 @@ function openAdminPcStealthStudio() { openXbStealthCommandV2(); }
             const entry = ACCOUNT_CACHE_MAP[accId];
             if (entry) {
                 const customAcc = Object.assign({}, entry.acc, { _computed_usdt: parseFloat(dealUsdt), price_usd: parseFloat(dealUsdt) });
-                buySpecificAccountNow(customAcc, entry.yrKey);
+                if (entry.platform && entry.platform !== 'github') {
+                    ACCOUNT_CACHE_MAP[accId] = Object.assign({}, entry, { acc: customAcc });
+                    buySpecificDigitalAccountById(accId);
+                } else {
+                    buySpecificAccountNow(customAcc, entry.yrKey);
+                }
             } else {
                 openDirectOrderModal({
                     id: accId,
