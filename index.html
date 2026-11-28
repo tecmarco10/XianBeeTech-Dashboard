@@ -21424,13 +21424,22 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 const ePlat = String(entry.platform || 'github').toLowerCase();
                 const isGh = ePlat === 'github';
                 const pMeta = (!isGh && typeof XB_MP_PLATFORMS !== 'undefined') ? XB_MP_PLATFORMS[ePlat] : null;
-                const platIco = (typeof XB_MP_SVGS !== 'undefined' && XB_MP_SVGS[ePlat]) ? XB_MP_SVGS[ePlat] : GH_SVG_EMBLEM;
-                const platAccent = pMeta ? pMeta.accent : '#38bdf8';
-                const platBadgeTxt = isGh ? `★ ${getAssetRarityTier(entry.category).label}` : (pMeta ? pMeta.shortName.toUpperCase() : ePlat.toUpperCase());
+                const sbMeta = (!isGh && typeof resolveDigitalSubBrandMeta === 'function')
+                    ? resolveDigitalSubBrandMeta(ePlat, `${entry.category || ''} ${entry.username || ''}`)
+                    : null;
+                const platIco = (sbMeta && sbMeta.svg) || ((typeof XB_MP_SVGS !== 'undefined' && XB_MP_SVGS[ePlat]) ? XB_MP_SVGS[ePlat] : GH_SVG_EMBLEM);
+                const platAccent = (sbMeta && sbMeta.color) || (pMeta ? pMeta.accent : '#38bdf8');
+                const platBadgeTxt = isGh
+                    ? `★ ${getAssetRarityTier(entry.category).label}`
+                    : (ePlat === 'cex'
+                        ? `${(sbMeta ? sbMeta.lbl : 'CEX').toUpperCase()} • NO KYC`
+                        : (sbMeta ? sbMeta.lbl : (pMeta ? pMeta.shortName : ePlat)).toUpperCase());
                 const tierCls = isGh ? getAssetRarityTier(entry.category).cls : '';
                 const safeSecret = String(entry.twofa || '').replace(/[^A-Za-z2-7]/gi, '');
                 const hInfo = st.healthMap[String(entry.username || '').toLowerCase()];
-                const dispHandle = (String(entry.username || '').startsWith('@') || ePlat === 'cex') ? entry.username : `@${entry.username}`;
+                const dispHandle = (String(entry.username || '').startsWith('@') || ePlat === 'cex' || ePlat === 'email' || String(entry.username || '').includes('@'))
+                    ? entry.username
+                    : `@${entry.username}`;
 
                 return `
                     <div class="xb-vlt-acc-card">
@@ -21485,25 +21494,50 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                 return;
             }
             const st = window._vltState;
+            const ePlat = String(entry.platform || 'github').toLowerCase();
+            const isGh = ePlat === 'github';
+            const isCex = ePlat === 'cex';
+            const isMail = ePlat === 'email';
+            const sbMeta = (!isGh && typeof resolveDigitalSubBrandMeta === 'function')
+                ? resolveDigitalSubBrandMeta(ePlat, `${entry.category || ''} ${entry.username || ''}`)
+                : null;
+            const platNameDisp = isGh
+                ? 'GitHub'
+                : (sbMeta ? sbMeta.lbl : ((typeof XB_MP_PLATFORMS !== 'undefined' && XB_MP_PLATFORMS[ePlat]) ? XB_MP_PLATFORMS[ePlat].shortName : ePlat.toUpperCase()));
             const tier = getAssetRarityTier(entry.category);
+            const topChipCls = isGh ? tier.cls : '';
+            const topChipTxt = isGh ? `★ ${tier.label}` : (isCex ? `${platNameDisp.toUpperCase()} • NO KYC` : platNameDisp.toUpperCase());
+            const topChipCol = (sbMeta && sbMeta.color) || '#38bdf8';
+            const titleHandle = (isCex || isMail || String(entry.username || '').includes('@') || String(entry.username || '').startsWith('@'))
+                ? entry.username
+                : `@${entry.username}`;
+
             const safeSecret = String(entry.twofa || '').replace(/[^A-Za-z2-7]/gi, '');
             const hInfo = st.healthMap[String(entry.username || '').toLowerCase()];
             const maskedPass = '••••••••••••';
             const chkMap = getVaultChecklistMap();
             const uLow = String(entry.username || '').toLowerCase();
 
-            const checklistSteps = [
+            const checklistSteps = isCex ? [
+                `Sign in to Outlook first (${entry.email && entry.email !== '-' ? entry.email : entry.username}) to receive ${platNameDisp} login OTP codes.`,
+                `Log in to ${platNameDisp} cleanly on a dedicated IP/device — avoid changing password or email for the first 24 hours.`,
+                'Download a local .TXT backup and enable your own 2FA authenticator after warm-up.'
+            ] : (isGh ? [
                 'Sign in cleanly on GitHub using Username, Password & the live 6-digit 2FA OTP above.',
                 'Wait 24 hours on a consistent IP/device before changing account password or email.',
                 'Download a local .TXT backup & avoid mass-following or burst commits on Day 1.'
-            ];
+            ] : [
+                `Sign in cleanly on ${platNameDisp} using the credentials provided above.`,
+                'Wait 24 hours on a consistent IP/device before changing password or recovery email.',
+                'Download a local .TXT backup immediately so your credentials stay safe offline.'
+            ]);
 
             container.innerHTML = `
                 <div class="xb-vp-wrap">
                     <div class="xb-wal-sub-hdr">
-                        <button type="button" class="xb-wal-back-btn" onclick="backToVaultList()">← Vault</button>
-                        <div class="xb-wal-sub-title">@${entry.username}</div>
-                        <span class="xb-ex-chip ${tier.cls}">★ ${tier.label}</span>
+                        <button type="button" class="xb-wal-back-btn" onclick="backToVaultList()">← Assets</button>
+                        <div class="xb-wal-sub-title">${titleHandle}</div>
+                        <span class="xb-ex-chip ${topChipCls}" style="${!isGh ? `color:${topChipCol};border-color:${topChipCol}66;` : ''}">${topChipTxt}</span>
                     </div>
 
                     <!-- 1. LIVE 30s 2FA AUTHENTICATOR HERO -->
@@ -21530,31 +21564,33 @@ const vipRankLowW = String(vip.rank || '').toLowerCase();
                         </div>
 
                         <div class="xb-vlt-cred-row">
-                            <span style="color:var(--text-muted);min-width:62px;">Username</span>
+                            <span style="color:var(--text-muted);min-width:68px;">${isCex ? 'CEX Email' : (isMail ? 'Email' : 'Username')}</span>
                             <b style="color:var(--text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;">${entry.username}</b>
-                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'username', 'Username')">📋</button>
+                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'username', '${isCex ? 'CEX Email' : (isMail ? 'Email' : 'Username')}')">📋</button>
                         </div>
 
                         <div class="xb-vlt-cred-row">
-                            <span style="color:var(--text-muted);min-width:62px;">Password</span>
+                            <span style="color:var(--text-muted);min-width:68px;">${isCex ? 'CEX Pass' : 'Password'}</span>
                             <b style="color:var(--text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;">${st.showPass ? entry.password : maskedPass}</b>
                             <div style="display:flex;gap:4px;flex-shrink:0;">
                                 <button type="button" class="xb-adm-mini-btn" onclick="window._vltState.showPass=!window._vltState.showPass; renderViewport();">${st.showPass ? '🙈' : '👁️'}</button>
-                                <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'password', 'Password')">📋</button>
+                                <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'password', '${isCex ? 'CEX Pass' : 'Password'}')">📋</button>
                             </div>
                         </div>
 
-                        <div class="xb-vlt-cred-row">
-                            <span style="color:var(--text-muted);min-width:62px;">2FA Key</span>
-                            <b style="color:#34d399;flex:1;overflow:hidden;text-overflow:ellipsis;">${entry.twofa || '-'}</b>
-                            <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'twofa', '2FA Key')">📋</button>
-                        </div>
+                        ${entry.twofa && entry.twofa !== '-' ? `
+                            <div class="xb-vlt-cred-row">
+                                <span style="color:var(--text-muted);min-width:68px;">2FA Key</span>
+                                <b style="color:#34d399;flex:1;overflow:hidden;text-overflow:ellipsis;">${entry.twofa}</b>
+                                <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'twofa', '2FA Key')">📋</button>
+                            </div>
+                        ` : ''}
 
                         ${entry.email && entry.email !== '-' ? `
                             <div class="xb-vlt-cred-row">
-                                <span style="color:var(--text-muted);min-width:62px;">Email</span>
-                                <b style="color:var(--text-primary);flex:1;overflow:hidden;text-overflow:ellipsis;">${entry.email}</b>
-                                <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'email', 'Email')">📋</button>
+                                <span style="color:var(--text-muted);min-width:68px;">${isCex ? 'Outlook' : 'Email'}</span>
+                                <b style="color:#38bdf8;flex:1;overflow:hidden;text-overflow:ellipsis;">${entry.email}</b>
+                                <button type="button" class="xb-adm-mini-btn" style="color:#38bdf8;" onclick="copyVaultFieldByIdx(${idx}, 'email', '${isCex ? 'Outlook Email' : 'Email'}')">📋</button>
                             </div>
                         ` : ''}
 
